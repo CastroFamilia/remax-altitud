@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RE/MAX Altitud | Costa Rica Real Estate</title>
+    <meta name="description"
+        content="Discover your perfect property in Costa Rica. From the lush mountains of Perez Zeledon to the pristine beaches of Dominical. Choose your altitude with RE/MAX Altitud.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="/">
+                    <h1>RE<span>/</span>MAX <span>Altitud</span></h1>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li class="dropdown">
+                    <a href="#">Properties <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="perez-zeledon.html">Altitud (Mountains)</a></li>
+                        <li><a href="dominical.html">Altitud Cero (Coast)</a></li>
+                        <li>
+                            <hr>
+                        </li>
+                        <li><a href="#">Search Listings</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="services.html">Services <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="services.html#buy">Buy With Us</a></li>
+                        <li><a href="services.html#specialized">Specialized Properties</a></li>
+                        <li><a href="services.html#financing">Financing</a></li>
+                        <li>
+                            <hr>
+                        </li>
+                        <li><a href="services.html#list-with-us">List With Us</a></li>
+                    </ul>
+                </li>
+                <li><a href="join-team.html">Join Our Team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="#" class="agent-login-btn"><i class="fa-regular fa-user"></i> Agent Portal</a>
+                <div class="language-toggle">
+                    <span class="active">EN</span> | <span>ES</span>
+                </div>
+            </div>
+            <div class="mobile-menu-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Split Screen Hero Section -->
+    <section class="hero-split">
+        <!-- Overlay Search Bar -->
+        <div class="hero-search-container">
+            <h2 class="search-title">Find Your Perfect Costa Rica</h2>
+            <div class="search-bar glassmorphism" id="ai-search-panel" style="padding-right: 15px;">
+                <div class="search-field" style="flex: 1; min-width: 300px;">
+                    <label style="font-family: var(--font-ui)"><i class="fa-solid fa-wand-magic-sparkles"
+                            style="color: var(--remax-red); margin-right: 5px;"></i> Smart Search</label>
+                    <input type="text" placeholder="e.g. A mountain house with valley views in Perez Zeledon"
+                        id="ai-search-input" style="width: 100%;">
+                </div>
+                <button class="btn-primary search-btn" id="ai-search-btn">Search</button>
+            </div>
+
+            <div class="traditional-search-panel glassmorphism hidden" id="traditional-search-panel">
+                <div class="search-grid">
+                    <div class="search-field">
+                        <label style="font-family: var(--font-ui)">Type</label>
+                        <select>
+                            <option>Lot</option>
+                            <option>House</option>
+                            <option>Commercial</option>
+                            <option>Finca</option>
+                        </select>
+                    </div>
+                    <div class="search-field">
+                        <label style="font-family: var(--font-ui)">Location</label>
+                        <select>
+                            <option>Any Region</option>
+                            <option>Altitud (Pérez Zeledón)</option>
+                            <option>Altitud Cero (Dominical)</option>
+                        </select>
+                    </div>
+                    <div class="search-field">
+                        <label style="font-family: var(--font-ui)">Beds</label>
+                        <select>
+                            <option>Any</option>
+                            <option>1+</option>
+                            <option>2+</option>
+                            <option>3+</option>
+                            <option>4+</option>
+                        </select>
+                    </div>
+                    <div class="search-field">
+                        <label style="font-family: var(--font-ui)">Baths</label>
+                        <select>
+                            <option>Any</option>
+                            <option>1+</option>
+                            <option>2+</option>
+                            <option>3+</option>
+                        </select>
+                    </div>
+                    <div class="search-field area-toggle-field">
+                        <label style="font-family: var(--font-ui)">Area
+                            <span class="area-toggles">
+                                <button class="active" data-unit="m2">m&sup2;</button>
+                                <button data-unit="acres">Acres</button>
+                                <button data-unit="ft2">ft&sup2;</button>
+                            </span>
+                        </label>
+                        <div class="area-inputs">
+                            <input type="number" placeholder="Min">
+                            <span style="color: white; margin: 0 5px;">-</span>
+                            <input type="number" placeholder="Max">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary search-btn"
+                    style="width: 100%; justify-content: center; margin-top: 15px;">Search Properties</button>
+            </div>
+
+            <button class="advanced-search-toggle" id="toggle-search-mode">Traditional Search <i
+                    class="fa-solid fa-sliders"></i></button>
+        </div>
+
+        <!-- Left Side: Mountain -->
+        <a href="perez-zeledon.html" class="split-pane mountain-pane">
+            <div class="pane-content">
+                <span class="pane-subtitle">RE/MAX ALTITUD</span>
+                <h2 class="pane-title">The Mountains</h2>
+                <p class="pane-desc">Explore valleys, rivers, and lush green escapes in Perez Zeledon.</p>
+                <span class="btn-outline">Explore Mountain Homes <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+            <div class="pane-overlay"></div>
+        </a>
+
+        <!-- Right Side: Beach -->
+        <a href="dominical.html" class="split-pane beach-pane">
+            <div class="pane-content">
+                <span class="pane-subtitle">RE/MAX ALTITUD CERO</span>
+                <h2 class="pane-title">The Coast</h2>
+                <p class="pane-desc">Discover pristine beaches and infinite ocean views in Dominical.</p>
+                <span class="btn-outline">Explore Beach Homes <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+            <div class="pane-overlay"></div>
+        </a>
+    </section>
+
+    <!-- Featured Properties Preview (Unified) -->
+    <section class="featured-section">
+        <div class="section-header">
+            <h2>Exclusive Listings</h2>
+            <p>Hand-picked properties from the mountains to the sea.</p>
+        </div>
+        <div class="property-grid">
+            <!-- Property 1: Mountain -->
+            <div class="property-card">
+                <div class="card-image mountain-bg">
+                    <div class="card-badge">Perez Zeledon</div>
+                </div>
+                <div class="card-details">
+                    <h3 class="price">$450,000</h3>
+                    <h4>Stunning Valley View Home</h4>
+                    <p class="location"><i class="fa-solid fa-location-dot"></i> San Isidro de El General</p>
+                    <div class="specs">
+                        <span><i class="fa-solid fa-bed"></i> 3 Beds</span>
+                        <span><i class="fa-solid fa-bath"></i> 2 Baths</span>
+                        <span><i class="fa-solid fa-maximize"></i> 2,500 sqft</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Property 2: Beach -->
+            <div class="property-card">
+                <div class="card-image beach-bg">
+                    <div class="card-badge beach-badge">Dominical</div>
+                </div>
+                <div class="card-details">
+                    <h3 class="price">$1,200,000</h3>
+                    <h4>Modern Infinity Ocean View</h4>
+                    <p class="location"><i class="fa-solid fa-location-dot"></i> Costa Ballena</p>
+                    <div class="specs">
+                        <span><i class="fa-solid fa-bed"></i> 4 Beds</span>
+                        <span><i class="fa-solid fa-bath"></i> 4.5 Baths</span>
+                        <span><i class="fa-solid fa-maximize"></i> 4,000 sqft</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Property 3: Mountain Land -->
+            <div class="property-card">
+                <div class="card-image mountain-land-bg">
+                    <div class="card-badge">Perez Zeledon</div>
+                </div>
+                <div class="card-details">
+                    <h3 class="price">$150,000</h3>
+                    <h4>Riverfront Finca</h4>
+                    <p class="location"><i class="fa-solid fa-location-dot"></i> Rivas</p>
+                    <div class="specs">
+                        <span><i class="fa-solid fa-maximize"></i> 10 Acres</span>
+                        <span><i class="fa-solid fa-tree"></i> River Access</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="center-btn">
+            <button class="btn-secondary">View All Properties</button>
+        </div>
+    </section>
+
+    <!-- Join Our Team Section -->
+    <section class="join-team-section">
+        <div class="join-team-content glassmorphism">
+            <h2>Start Your Real Estate Career With Us</h2>
+            <p>Join the world's #1 real estate brand in Costa Rica. Whether you are looking to work in the mountains of
+                Perez Zeledon or the beaches of Dominical, RE/MAX Altitud gives you the tools, brand power, and network
+                to succeed.</p>
+            <div class="join-benefits">
+                <div class="benefit-item">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>World-Class Training</span>
+                </div>
+                <div class="benefit-item">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Global Network</span>
+                </div>
+                <div class="benefit-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Maximum Commission</span>
+                </div>
+            </div>
+            <a href="join-team.html" class="btn-primary" style="display: inline-flex; text-decoration: none;">Join Our
+                Team <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- AI Chat Agent (AIO & SEO Optimized) -->
+    <section class="ai-chat-widget closed" id="ai-widget" aria-label="MAX ALTITUD AI Real Estate Agent">
+        <header class="ai-chat-header">
+            <div class="ai-avatar">
+                <!-- Premium REMAX avatar -->
+                <img src="https://ui-avatars.com/api/?name=MA&background=FFFFFF&color=003DA5&rounded=true&bold=true"
+                    alt="MAX ALTITUD Agent">
+            </div>
+            <div class="ai-header-info">
+                <h3>MAX ALTITUD <span>AI Agent</span></h3>
+                <div class="ai-status">
+                    <span class="status-dot" aria-hidden="true"></span> <span class="status-text">Online & Ready</span>
+                </div>
+            </div>
+            <button class="ai-close-btn" id="ai-close-btn" aria-label="Close AI Chat"><i
+                    class="fa-solid fa-xmark"></i></button>
+        </header>
+
+        <div class="ai-chat-body" id="ai-chat-body" role="log" aria-live="polite">
+            <!-- Messages will be injected by JS -->
+        </div>
+
+        <footer class="ai-chat-footer">
+            <input type="text" id="ai-chat-input" placeholder="Type your answer here..."
+                aria-label="Message to MAX ALTITUD">
+            <button id="ai-chat-send" class="btn-primary-small" aria-label="Send Message"><i
+                    class="fa-solid fa-paper-plane"></i></button>
+        </footer>
+    </section>
+
+    <!-- Floating AI Button -->
+    <button class="ai-float-btn" id="ai-float-btn" aria-label="Ask MAX ALTITUD">
+        <div class="ai-float-icon">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <span class="ai-btn-text">Chat with MAX ALTITUD</span>
+    </button>
+
+    <script src="main.js"></script>
+</body>
+
+</html>

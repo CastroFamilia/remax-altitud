@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Our Team | RE/MAX Altitud Costa Rica</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .page-header {
+            padding: 150px 4rem 80px 4rem;
+            background: linear-gradient(rgba(11, 30, 67, 0.85), rgba(11, 30, 67, 0.95)), url('assets/perez_zeledon_hero.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .growth-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .value-prop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .value-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition-fast);
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(11, 30, 67, 0.1);
+        }
+
+        .value-card i {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+        }
+
+        .value-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: var(--remax-blue);
+            margin-bottom: 15px;
+        }
+
+        .value-card p {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .contact-form-section {
+            background: var(--bg-cream);
+            padding: 60px 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(194, 166, 97, 0.3);
+            text-align: center;
+        }
+
+        .contact-form-section h2 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--remax-red);
+            margin-bottom: 10px;
+        }
+
+        .form-wrapper {
+            max-width: 600px;
+            margin: 30px auto 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-wrapper input,
+        .form-wrapper textarea,
+        .form-wrapper select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+        }
+
+        .form-wrapper textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>RE<span>/</span>MAX <span>Altitud</span></h1>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li class="dropdown">
+                    <a href="#">Properties <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="perez-zeledon.html">Altitud (Mountains)</a></li>
+                        <li><a href="dominical.html">Altitud Cero (Coast)</a></li>
+                        <li>
+                            <hr>
+                        </li>
+                        <li><a href="#">Search Listings</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="services.html">Services <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="services.html#buy">Buy With Us</a></li>
+                        <li><a href="services.html#specialized">Specialized Properties</a></li>
+                        <li><a href="services.html#financing">Financing</a></li>
+                        <li>
+                            <hr>
+                        </li>
+                        <li><a href="services.html#list-with-us">List With Us</a></li>
+                    </ul>
+                </li>
+                <li><a href="join-team.html">Join Our Team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="language-toggle">
+                    <span class="active">EN</span> | <span>ES</span>
+                </div>
+            </div>
+            <div class="mobile-menu-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>Elevate Your <span>Career</span></h1>
+        <p style="font-size: 1.2rem; margin-top: 10px; max-width: 800px; margin-left: auto; margin-right: auto;">Join
+            Costa Rica's most distinguished luxury real estate boutique. Operating from the majestic peaks to the
+            pristine coast.</p>
+    </header>
+
+    <div class="growth-container">
+
+        <div class="value-prop-grid">
+            <div class="value-card">
+                <i class="fa-solid fa-gem"></i>
+                <h3>Luxury Boutique Brand</h3>
+                <p>Represent a brand synonymous with excellence. Work with high-net-worth individuals and handle the
+                    finest localized luxury portfolios across Pérez Zeledón and Dominical.</p>
+            </div>
+            <div class="value-card">
+                <i class="fa-solid fa-globe"></i>
+                <h3>Global & Local Network</h3>
+                <p>Leverage the #1 global real estate network while utilizing our deep, localized market knowledge and
+                    exclusive off-market listings in Costa Rica.</p>
+            </div>
+            <div class="value-card">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+                <h3>Maximum Commission</h3>
+                <p>Retain more of what you earn with highly competitive commission splits supported by our end-to-end
+                    transaction coordination and CRM tools.</p>
+            </div>
+        </div>
+
+        <div class="contact-form-section">
+            <h2>Take the Next Step</h2>
+            <p>Tell us a bit about your professional background and where you operate.</p>
+
+            <div class="form-wrapper">
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email Address" required>
+                <input type="tel" placeholder="Phone Number">
+                <select>
+                    <option disabled selected>Preferred Region</option>
+                    <option>Altitud (Mountains / Pérez Zeledón)</option>
+                    <option>Altitud Cero (Coast / Dominical)</option>
+                    <option>Both</option>
+                </select>
+                <textarea placeholder="Tell us about your real estate experience..." required></textarea>
+                <button type="button" class="btn-primary" style="justify-content: center; width: 100%;">Submit
+                    Inquiry</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Floating AI Button (Global Hook) -->
+    <button class="ai-float-btn" id="ai-float-btn" aria-label="Ask Alti">
+        <div class="ai-float-icon">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <span class="ai-btn-text">Chat with Alti</span>
+    </button>
+
+</body>
+
+</html>

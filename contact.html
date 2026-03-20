@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | RE/MAX Altitud Costa Rica</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .page-header {
+            padding: 150px 4rem 80px 4rem;
+            background: linear-gradient(rgba(0, 67, 255, 0.9), rgba(0, 67, 255, 0.9)), url('assets/dominical_hero.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .contact-container {
+            max-width: 1400px;
+            margin: -50px auto 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .contact-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-box h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--remax-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .contact-box h2 span {
+            font-size: 0.8rem;
+            background: var(--remax-red);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .contact-details {
+            margin-bottom: 30px;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .contact-details p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-details i {
+            color: var(--remax-red);
+            width: 30px;
+            text-align: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            background: #f9f9f9;
+        }
+
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--remax-blue);
+            background: white;
+        }
+
+        .map-section {
+            width: 100%;
+            height: 500px;
+            background: #eee;
+            position: relative;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: var(--transition-fast);
+        }
+
+        .whatsapp-float:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.6);
+        }
+
+        .site-footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 60px 4rem 20px 4rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo span {
+            color: var(--remax-red);
+        }
+
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--remax-blue);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links ul li a {
+            color: #bbb;
+            transition: var(--transition-fast);
+        }
+
+        .footer-links ul li a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition-fast);
+        }
+
+        .social-links a:hover {
+            background: var(--remax-red);
+        }
+
+        @media (max-width: 992px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>RE<span>/</span>MAX <span>Altitud</span></h1>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li class="dropdown">
+                    <a href="#">Properties <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="perez-zeledon.html">Altitud (Mountains)</a></li>
+                        <li><a href="dominical.html">Altitud Cero (Coast)</a></li>
+                        <li>
+                            <hr>
+                        </li>
+                        <li><a href="#">Search Listings</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="services.html">Services <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="services.html#buy">Buy With Us</a></li>
+                        <li><a href="services.html#specialized">Specialized Properties</a></li>
+                        <li><a href="services.html#financing">Financing</a></li>
+                        <li>
+                            <hr>
+                        </li>
+                        <li><a href="services.html#list-with-us">List With Us</a></li>
+                    </ul>
+                </li>
+                <li><a href="join-team.html">Join Our Team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="language-toggle">
+                    <span class="active">EN</span> | <span>ES</span>
+                </div>
+            </div>
+            <div class="mobile-menu-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>Get in <span>Touch</span></h1>
+        <p>Two distinct offices, one unparalleled standard of service.</p>
+    </header>
+
+    <div class="contact-container">
+
+        <!-- Altitud (PZ) Form -->
+        <div class="contact-box" style="border-top: 5px solid var(--mountain-green);">
+            <h2>RE/MAX Altitud <span>Mountain HQ</span></h2>
+            <div class="contact-details">
+                <p><i class="fa-solid fa-location-dot"></i> San Isidro de El General, Plaza Monte</p>
+                <p><i class="fa-solid fa-phone"></i> +506 2772-XXXX</p>
+                <p><i class="fa-solid fa-envelope"></i> pz@remax-altitud.cr</p>
+            </div>
+            <form class="contact-form">
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email Address" required>
+                <input type="tel" placeholder="Phone Number">
+                <textarea placeholder="How can our Mountain team help you?" required></textarea>
+                <button type="button" class="btn-primary" style="justify-content: center;">Send to Pérez Zeledón
+                    Office</button>
+            </form>
+        </div>
+
+        <!-- Altitud Cero (Dominical) Form -->
+        <div class="contact-box" style="border-top: 5px solid var(--beach-blue);">
+            <h2>RE/MAX Altitud Cero <span>Coast HQ</span></h2>
+            <div class="contact-details">
+                <p><i class="fa-solid fa-location-dot"></i> Dominical, Plaza Pueblo Rio</p>
+                <p><i class="fa-solid fa-phone"></i> +506 2787-XXXX</p>
+                <p><i class="fa-solid fa-envelope"></i> coast@remax-altitud.cr</p>
+            </div>
+            <form class="contact-form">
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email Address" required>
+                <input type="tel" placeholder="Phone Number">
+                <textarea placeholder="How can our Coastal team help you?" required></textarea>
+                <button type="button" class="btn-primary"
+                    style="justify-content: center; background: var(--remax-blue);">Send to Dominical Office</button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Map Section placeholder -->
+    <div class="map-section">
+        <!-- In a real deployment, an iframe from Google Maps or Mapbox with markers for both locations goes here -->
+        <div
+            style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: url('https://miro.medium.com/max/1400/1*qYUvh-dpBl5hxENsLqLRvw.png') center/cover;">
+            <div class="glassmorphism" style="padding: 20px; text-align: center; color: var(--text-main);">
+                <h3 style="margin-bottom: 10px; font-family: var(--font-heading);">Interactive HQ Map</h3>
+                <p>Showing <strong>Altitud</strong> (PZ) and <strong>Altitud Cero</strong> (Dominical)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>RE<span>/</span>MAX <span>Altitud</span></h2>
+                <p style="color: #bbb; margin-bottom: 20px;">Costa Rica's premier luxury real estate portal covering the
+                    majestic mountains and the pristine coast.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Explore</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="perez-zeledon.html">Pérez Zeledón (Mountains)</a></li>
+                    <li><a href="dominical.html">Dominical (Coast)</a></li>
+                    <li><a href="services.html">Our Services</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Contact</h3>
+                <ul>
+                    <li><i class="fa-solid fa-phone"></i> Altitud: +506 2772-XXXX</li>
+                    <li><i class="fa-solid fa-phone"></i> Altitud Cero: +506 2787-XXXX</li>
+                    <li><a href="mailto:info@remax-altitud.cr"><i class="fa-solid fa-envelope"></i>
+                            info@remax-altitud.cr</a></li>
+                </ul>
+            </div>
+        </div>
+        <div
+            style="text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); color: #888; font-size: 0.9rem;">
+            &copy; 2026 RE/MAX Altitud Costa Rica. All rights reserved. Each office independently owned and operated.
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/50680000000" class="whatsapp-float" aria-label="Chat on WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Floating AI Button (Global Hook) -->
+    <button class="ai-float-btn" id="ai-float-btn" aria-label="Ask MAX ALTITUD" style="bottom: 100px;">
+        <div class="ai-float-icon">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <span class="ai-btn-text">Chat with Alti</span>
+    </button>
+
+</body>
+
+</html>
