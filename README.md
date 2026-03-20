@@ -78,4 +78,4 @@ API docs: [`docs/`](docs/)
 
 ## Next Step
 
-→ Create **Product Brief** via `bmad-bmm-create-product-brief`
+→ Create **Product Brief** via `/bmad-bmm-create-product-brief`
