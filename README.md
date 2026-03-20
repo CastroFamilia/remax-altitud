@@ -20,38 +20,38 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 
 ### Phase 1: Analysis
 
-| Step | Status | Description |
-|------|--------|-------------|
-| Brainstorm Project | ✅ Done | 51+ feature ideas generated across 8 themes |
-| Market Research | ⬜ Optional | Competitive analysis and market landscape |
-| Domain Research | ⬜ Optional | Real estate industry deep dive |
-| Technical Research | ⬜ Optional | Architecture and technology feasibility |
-| Create Brief | ⬜ Pending | Product brief from brainstorming results |
+| Step | Command | Status | Description |
+|------|---------|--------|-------------|
+| Brainstorm Project | `bmad-brainstorming` | ✅ Done | 51+ feature ideas generated across 8 themes |
+| Market Research | `bmad-bmm-market-research` | ⬜ Optional | Competitive analysis and market landscape |
+| Domain Research | `bmad-bmm-domain-research` | ⬜ Optional | Real estate industry deep dive |
+| Technical Research | `bmad-bmm-technical-research` | ⬜ Optional | Architecture and technology feasibility |
+| Create Brief | `bmad-bmm-create-product-brief` | ⬜ Pending | Product brief from brainstorming results |
 
 ### Phase 2: Planning
 
-| Step | Status | Description |
-|------|--------|-------------|
-| Create PRD | ⬜ Required | Product Requirements Document |
-| Validate PRD | ⬜ Optional | PRD quality validation |
-| Create UX | ⬜ Optional | UX design specifications |
+| Step | Command | Status | Description |
+|------|---------|--------|-------------|
+| Create PRD | `bmad-bmm-create-prd` | ⬜ Required | Product Requirements Document |
+| Validate PRD | `bmad-bmm-validate-prd` | ⬜ Optional | PRD quality validation |
+| Create UX | `bmad-bmm-create-ux-design` | ⬜ Optional | UX design specifications |
 
 ### Phase 3: Solutioning
 
-| Step | Status | Description |
-|------|--------|-------------|
-| Create Architecture | ⬜ Required | Technical architecture decisions |
-| Create Epics & Stories | ⬜ Required | Breakdown into epics and user stories |
-| Check Readiness | ⬜ Required | Implementation readiness validation |
+| Step | Command | Status | Description |
+|------|---------|--------|-------------|
+| Create Architecture | `bmad-bmm-create-architecture` | ⬜ Required | Technical architecture decisions |
+| Create Epics & Stories | `bmad-bmm-create-epics-and-stories` | ⬜ Required | Breakdown into epics and user stories |
+| Check Readiness | `bmad-bmm-check-implementation-readiness` | ⬜ Required | Implementation readiness validation |
 
 ### Phase 4: Implementation
 
-| Step | Status | Description |
-|------|--------|-------------|
-| Sprint Planning | ⬜ Required | Sprint plan for development |
-| Create Story | ⬜ Required | Individual story preparation |
-| Dev Story | ⬜ Required | Story implementation |
-| Code Review | ⬜ Optional | Code quality review |
+| Step | Command | Status | Description |
+|------|---------|--------|-------------|
+| Sprint Planning | `bmad-bmm-sprint-planning` | ⬜ Required | Sprint plan for development |
+| Create Story | `bmad-bmm-create-story` | ⬜ Required | Individual story preparation |
+| Dev Story | `bmad-bmm-dev-story` | ⬜ Required | Story implementation |
+| Code Review | `bmad-bmm-code-review` | ⬜ Optional | Code quality review |
 
 ## Data Sources
 
