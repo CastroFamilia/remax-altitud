@@ -23,10 +23,10 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 | Step | Status | Description |
 |------|--------|-------------|
 | Brainstorm Project<br>`/bmad-brainstorming` | ✅ Done | 51+ feature ideas generated across 8 themes |
-| Market Research<br>`/bmad-bmm-market-research` | ⬜ Optional | Competitive analysis and market landscape |
-| Domain Research<br>`/bmad-bmm-domain-research` | ⬜ Optional | Real estate industry deep dive |
-| Technical Research<br>`/bmad-bmm-technical-research` | ⬜ Optional | Architecture and technology feasibility |
-| Create Brief<br>`/bmad-bmm-create-product-brief` | ⬜ Pending | Product brief from brainstorming results |
+| Market Research<br>`/bmad-bmm-market-research` | ✅ Done | Competitive analysis and market landscape |
+| Domain Research<br>`/bmad-bmm-domain-research` | ✅ Done | Real estate industry deep dive |
+| Technical Research<br>`/bmad-bmm-technical-research` | ✅ Done | Architecture and technology feasibility |
+| Create Brief<br>`/bmad-bmm-create-product-brief` | ✅ Done | Product brief synthesizing all research phases |
 
 ### Phase 2: Planning
 
@@ -62,20 +62,29 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 
 API docs: [`docs/`](docs/)
 
-## Tech Stack
+## Tech Stack (Planned)
 
-- **Data sync**: Background job pulling from RE/MAX CCA JSON API
-- **Translation**: AI-powered translation to 6 languages
-- **SEO**: Static page generation, daily regeneration after sync
-- **Frontend**: Mobile-first responsive design
+- **Framework**: Next.js 15 (App Router, React 19, TypeScript)
+- **Styling**: Tailwind CSS + shadcn/ui
+- **i18n**: next-intl (6 languages)
+- **Database**: Supabase (PostgreSQL + PostGIS)
+- **Maps**: Mapbox GL JS (react-map-gl)
+- **Translation**: DeepL API Pro + GPT-4
+- **Hosting**: Vercel (Pro plan)
+- **Data sync**: Vercel Cron → RE/MAX CCA API → AI translate → Supabase → ISR revalidation
 
 ## Key Documents
 
 | Document | Location |
 |----------|----------|
+| **BMAD Progress Tracker** | [`_bmad-output/bmad-progress.md`](_bmad-output/bmad-progress.md) |
+| **Product Brief** | [`_bmad-output/product-brief/`](_bmad-output/product-brief/) |
 | Brainstorming Session | [`_bmad-output/brainstorming/`](_bmad-output/brainstorming/) |
+| Domain Research | [`_bmad-output/domain-research/`](_bmad-output/domain-research/) |
+| Market Research | [`_bmad-output/market-research/`](_bmad-output/market-research/) |
+| Technical Research | [`_bmad-output/technical-research/`](_bmad-output/technical-research/) |
 | API Documentation | [`docs/`](docs/) |
 
 ## Next Step
 
-→ Create **Product Brief** via `/bmad-bmm-create-product-brief`
+→ Create **PRD** via `/bmad-bmm-create-prd` — transform the product brief into detailed feature specifications, acceptance criteria, and user stories.
