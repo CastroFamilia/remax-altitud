@@ -32,7 +32,7 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 
 | Step | Status | Description |
 |------|--------|-------------|
-| Create PRD<br>`/bmad-bmm-create-prd` | ⬜ Required | Product Requirements Document |
+| Create PRD<br>`/bmad-bmm-create-prd` | ✅ Done | 50 FRs, 30 NFRs, 5 user journeys |
 | Validate PRD<br>`/bmad-bmm-validate-prd` | ⬜ Optional | PRD quality validation |
 | Create UX<br>`/bmad-bmm-create-ux-design` | ⬜ Optional | UX design specifications |
 
@@ -65,19 +65,23 @@ API docs: [`docs/`](docs/)
 ## Tech Stack (Planned)
 
 - **Framework**: Next.js 15 (App Router, React 19, TypeScript)
-- **Styling**: Tailwind CSS + shadcn/ui
-- **i18n**: next-intl (6 languages)
+- **Styling**: Vanilla CSS (design system)
+- **i18n**: next-intl (EN/ES MVP, architecture for 6)
 - **Database**: Supabase (PostgreSQL + PostGIS)
-- **Maps**: Mapbox GL JS (react-map-gl)
-- **Translation**: DeepL API Pro + GPT-4
-- **Hosting**: Vercel (Pro plan)
-- **Data sync**: Vercel Cron → RE/MAX CCA API → AI translate → Supabase → ISR revalidation
+- **Maps**: Mapbox GL JS (3D terrain, clustering, interactive pins)
+- **Translation**: DeepL API with domain-specific glossary
+- **Images**: Vercel Image Optimization via `next/image`
+- **Analytics**: Vercel Analytics (cookieless) + GA4 consent mode
+- **Hosting**: Vercel (edge CDN, ISR, serverless functions)
+- **CI/CD**: Vercel auto-deploy + Lighthouse CI (performance gates)
+- **Data sync**: Vercel Cron → RE/MAX CCA API → validate → translate → optimize → Supabase → ISR revalidation
 
 ## Key Documents
 
 | Document | Location |
 |----------|----------|
 | **BMAD Progress Tracker** | [`_bmad-output/bmad-progress.md`](_bmad-output/bmad-progress.md) |
+| **Product Requirements Document** | [`_bmad-output/planning-artifacts/prd.md`](_bmad-output/planning-artifacts/prd.md) |
 | **Product Brief** | [`_bmad-output/product-brief/`](_bmad-output/product-brief/) |
 | Brainstorming Session | [`_bmad-output/brainstorming/`](_bmad-output/brainstorming/) |
 | Domain Research | [`_bmad-output/domain-research/`](_bmad-output/domain-research/) |
@@ -87,4 +91,4 @@ API docs: [`docs/`](docs/)
 
 ## Next Step
 
-→ Create **PRD** via `/bmad-bmm-create-prd` — transform the product brief into detailed feature specifications, acceptance criteria, and user stories.
+→ Optionally **validate PRD** via `/bmad-bmm-validate-prd`, or proceed to **architecture** via `/bmad-bmm-create-architecture`.
