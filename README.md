@@ -32,8 +32,8 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 
 | Step | Status | Description |
 |------|--------|-------------|
-| Create PRD<br>`/bmad-bmm-create-prd` | ✅ Done | 50 FRs, 30 NFRs, 5 user journeys |
-| Validate PRD<br>`/bmad-bmm-validate-prd` | ⬜ Optional | PRD quality validation |
+| Create PRD<br>`/bmad-bmm-create-prd` | ✅ Done | 50 FRs, 30 NFRs, 8 user journeys |
+| Validate PRD<br>`/bmad-bmm-validate-prd` | ✅ Done | 12-step validation — 5/5 Excellent, 0 warnings |
 | Create UX<br>`/bmad-bmm-create-ux-design` | ⬜ Optional | UX design specifications |
 
 ### Phase 3: Solutioning
@@ -82,6 +82,7 @@ API docs: [`docs/`](docs/)
 |----------|----------|
 | **BMAD Progress Tracker** | [`_bmad-output/bmad-progress.md`](_bmad-output/bmad-progress.md) |
 | **Product Requirements Document** | [`_bmad-output/planning-artifacts/prd.md`](_bmad-output/planning-artifacts/prd.md) |
+| **PRD Validation Report** | [`_bmad-output/planning-artifacts/prd-validation-report.md`](_bmad-output/planning-artifacts/prd-validation-report.md) |
 | **Product Brief** | [`_bmad-output/product-brief/`](_bmad-output/product-brief/) |
 | Brainstorming Session | [`_bmad-output/brainstorming/`](_bmad-output/brainstorming/) |
 | Domain Research | [`_bmad-output/domain-research/`](_bmad-output/domain-research/) |
@@ -91,4 +92,4 @@ API docs: [`docs/`](docs/)
 
 ## Next Step
 
-→ Optionally **validate PRD** via `/bmad-bmm-validate-prd`, or proceed to **architecture** via `/bmad-bmm-create-architecture`.
+→ Proceed to **architecture** via `/bmad-bmm-create-architecture`, or optionally create **UX design** via `/bmad-bmm-create-ux-design`.

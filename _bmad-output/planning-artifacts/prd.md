@@ -152,6 +152,21 @@ Core functionality needed to start generating leads for both offices:
 - **Social sharing cards** — deep-linked, visually rich cards for WhatsApp/Facebook
 - **"Similar Properties"** recommendation engine
 
+### Out of Scope (MVP)
+
+The following are explicitly excluded from MVP and will NOT be built:
+
+- ❌ User registration / buyer accounts
+- ❌ Mortgage calculator
+- ❌ 3D virtual property tours
+- ❌ CRM integration (HubSpot, Salesforce)
+- ❌ Native mobile app
+- ❌ AI chatbot
+- ❌ Payment processing
+- ❌ Manual listing entry (all listings come from RE/MAX API sync)
+- ❌ Property alerts / saved searches
+- ❌ Blog/CMS
+
 ## User Journeys
 
 ### Journey 1: Maria — The American Dreamer Becomes a Buyer
@@ -167,6 +182,8 @@ Core functionality needed to start generating leads for both offices:
 **Resolution:** Emma responds within an hour. Video call scheduled for Thursday. Maria bookmarks the site and sends the listing link to her daughter — the link loads as a **standalone landing page** with full gallery, area context, and agent CTA. Two weeks later, Maria's on a plane. Three months later — homeowner.
 
 > **Capabilities:** Auto-detect language, map-first search, lifestyle tag filtering, area guides, ZMT status indicator, gallery-first listing, WhatsApp CTA with pre-populated message, agent-language matching, standalone listing URLs.
+
+**Edge Case — No Results:** Later that week, Maria searches "beachfront homes under $100K" in Pérez Zeledón — a mountain area. Zero results. The map zooms to PZ and shows: *"No properties match your filters in this area."* Below: smart suggestions — *"Try: 'Mountain homes under $100K' in Pérez Zeledón, or 'Beach homes under $100K' in Dominical/Uvita."* And a CTA: *"Can't find what you're looking for? Tell an agent your dream home."* Pre-populated WhatsApp with her search criteria forwarded as context. She taps it. Emma now has context before the first message.
 
 ---
 
@@ -190,15 +207,15 @@ Core functionality needed to start generating leads for both offices:
 
 **Persona:** Hans, 55, engineer from Munich. Owns rental properties in Germany. Market slowing — seeking diversification. Analytical, wants data. Speaks German and English.
 
-**Opening Scene:** Hans reads about CR appreciation in a German expat forum. Visits remax-altitud.cr. Site detects his browser language and loads in German. *"Deutsch? Beeindruckend."* First CR real estate site he's seen in his language.
+**Opening Scene:** Hans reads about CR appreciation in a German expat forum. Visits remax-altitud.cr. Site detects his German browser language — but German isn't available yet (Phase 2). The site loads in English with a subtle note: *"More languages coming soon."* Hans is comfortable in English — it's the investment data that matters to him.
 
-**Rising Action:** He switches to map view. Filters by "Investment Property" lifestyle tag + "Land." Lots clustered near Uvita — 3D terrain shows the coastal ridge and ocean proximity. He sorts by price per m². Three lots under $100K.
+**Rising Action:** He switches to map view. Filters by "Investment Property" lifestyle tag + "Land." Lots clustered near Uvita — 3D terrain shows the coastal ridge and ocean proximity. He sorts by price per m². Three lots under $100K. The visual, map-first approach transcends language — Hans understands the geography instantly.
 
-**Climax:** A 5,000 m² lot in Uvita — $95K. Size shown in m² and hectares (his units), price in USD with approximate EUR conversion. "Titled Property ✓." Area guide snippet: "Uvita: 6–10% annual appreciation, vacation rental yields $40K–$80K/year for 2BR ocean-view." He opens WhatsApp CTA — **message pre-populated in English** with property reference. The listing notes: *"Our agents speak English and Spanish. WhatsApp offers built-in translation for your convenience."*
+**Climax:** A 5,000 m² lot in Uvita — $95K. Size shown in m² and hectares (his units), price in USD. "Titled Property ✓." He opens WhatsApp CTA — **message pre-populated in English** with property reference. The listing notes: *"Our agents speak English and Spanish. WhatsApp offers built-in translation for your convenience."*
 
 **Resolution:** Agent Emma responds (she speaks German conversationally, but the formal communication is in English). Hans flies to CR for a 4-day tour, buys 2 lots. Six months later, building a vacation rental. Now a repeat client and referral source for his German network.
 
-> **Capabilities:** Auto-detect German, lifestyle tag "Investment Property," map-first search with 3D terrain, metric units (m²/hectares), EUR currency hint, area guide with investment data, WhatsApp CTA in English with translation transparency note, agent-language matching.
+> **Capabilities:** Language fallback (loads English when preferred locale unavailable), lifestyle tag "Investment Property," map-first search with 3D terrain, metric units (m²/hectares), WhatsApp CTA in English with translation transparency note, agent-language matching. **Phase 2 unlock:** Full German UI, EUR currency conversion, German-language SEO pages.
 
 ---
 
@@ -236,28 +253,81 @@ Core functionality needed to start generating leads for both offices:
 
 ---
 
+### Journey 6: Andrés — The Local Buyer
+
+**Persona:** Andrés, 35, hospital administrator in San Isidro del General. Renting an apartment with his wife and 2 kids. They've saved enough for a down payment on a house. Spanish only. Uses an Android phone.
+
+**Opening Scene:** Andrés searches "casas en venta Pérez Zeledón" on his phone during lunch. RE/MAX Altitud's PZ area page ranks on Google — loads in Spanish. He sees "Buscar Propiedades" and familiar town names.
+
+**Rising Action:** He skips the map — he knows every neighborhood in PZ. Switches to grid view (FR2). Filters: "Casa," 2+ bedrooms, under $150K. 12 results. He scrolls through listings, recognizing streets from the photos. No surprises geographically — he's evaluating price, condition, and title status.
+
+**Climax:** A 3BR house in Barrio Los Angeles — $128K. "Propiedad Titulada ✓" — critical for his bank mortgage. 400 m² lot, recently painted. Agent: Gustavo Valverde, speaks Spanish. One tap on WhatsApp — pre-populated message in Spanish: *"Hola Gustavo, me interesa la casa en Barrio Los Angeles..."*
+
+**Resolution:** Gustavo responds: *"¡Mae, conozco esa casa! Puedo mostrarla el sábado."* Andrés visits with his wife on Saturday. Bank pre-approval in hand. Two months later — homeowner, 10 minutes from the hospital.
+
+> **Capabilities:** Full Spanish UX, grid-view search (local users skip the map), property type and price filters, ZMT/title status display (critical for mortgage qualification), WhatsApp CTA in Spanish, agent-language matching, area page SEO for local search queries.
+
+---
+
+### Journey 7: Laura — The Active Agent
+
+**Persona:** Laura, 34, bilingual agent at RE/MAX Altitud PZ office. 3 years in real estate, 22 exclusive listings. Speaks English and Spanish. Active on WhatsApp with her client network.
+
+**Opening Scene:** Laura adds her RE/MAX Altitud profile link to her email signature, WhatsApp status, and Instagram bio. A Canadian prospect opens it — sees Laura's photo, RE/MAX badge, "Speaks: English, Spanish," and all 22 of her listings with thumbnails. WhatsApp CTA at the top of her profile.
+
+**Rising Action:** A new lead notification arrives — a buyer named Juan contacted Laura through a listing page. The lead record shows: source (property listing, FR40), property reference, buyer language (Spanish), and the buyer's message. Laura responds via WhatsApp within 30 minutes.
+
+**Climax:** Laura checks her profile page on the site. Her newest listing appeared overnight after the daily sync — photo optimized, description in English and Spanish. She copies the listing URL and shares it to her client WhatsApp group. The standalone URL loads with full gallery, area context, and her contact info as the listing agent.
+
+**Resolution:** Laura's clients tell her the site "looks like the international platforms." She refers a colleague to the "Únete a Nuestro Equipo" page. For the first time, her digital presence matches the RE/MAX brand promise — and it works while she sleeps.
+
+> **Capabilities:** Agent profile pages with listings, photo, languages, and office affiliation (FR24-26). Shareable profile URLs. WhatsApp CTA on profile. Lead routing with source tracking (FR40). Daily-synced listings on agent pages. Standalone listing URLs for sharing (FR13). Professional presentation matching RE/MAX brand standards.
+
+---
+
+### Journey 8: Sofia — The Potential Recruit
+
+**Persona:** Sofia, 29, licensed real estate agent working with a small independent agency in Quepos. Bilingual (EN/ES). Considering switching to a franchise for better tools, leads, and brand recognition.
+
+**Opening Scene:** Sofia hears from a friend that RE/MAX Altitud has a new website generating leads in multiple languages. She searches "RE/MAX Altitud join team" and finds the "Join Our Team" page. It loads in English.
+
+**Rising Action:** She sees agent profiles with professional photos, listing counts, and language badges. She browses Laura's profile — 22 listings, professional presentation, WhatsApp integration. She compares this to her current agency's Facebook-only presence.
+
+**Climax:** The "Join Our Team" page lists benefits: RE/MAX brand, lead generation technology, multilingual exposure, training programs. A CTA: "Interested? Contact our office." Simple contact form or direct WhatsApp to the office manager. Sofia fills it out — name, current license info, languages spoken, area of interest.
+
+**Resolution:** Nico receives the recruitment inquiry with source tracking. He schedules a call. Sofia joins RE/MAX Altitud two months later — her listings now reach 6 language markets. The website didn't just generate buyer leads — it recruited the talent.
+
+> **Capabilities:** "Join Our Team" page with benefits showcase (FR48), agent profile pages as recruitment proof points (FR24-26), professional brand presentation, recruitment inquiry form with source tracking (FR40), WhatsApp CTA for office contact.
+
+---
+
 ### Journey Requirements Summary
 
 | Capability Area | Journeys | MVP? |
 |----------------|----------|------|
-| Map-first search + clustering | Maria, Hans | ✅ |
+| Map-first search + clustering | Maria, Hans, Andrés (optional) | ✅ |
+| Grid-view search (list toggle) | Andrés | ✅ |
 | Lifestyle tag filtering | Maria, Hans, Nico | ✅ |
-| Auto-detect language | Maria, Hans | ✅ |
-| WhatsApp CTA (pre-populated, English) | Maria, Hans, Jennifer | ✅ |
+| Auto-detect language (with fallback) | Maria, Hans | ✅ |
+| WhatsApp CTA (pre-populated) | Maria, Hans, Jennifer, Andrés, Laura | ✅ |
 | Seller capture forms (email optional) | Carlos, Jennifer | ✅ |
-| Agent-language matching | Maria, Hans, Jennifer | ✅ |
-| ZMT / land status indicators | Maria, Hans | ✅ |
+| Agent-language matching | Maria, Hans, Jennifer, Andrés | ✅ |
+| ZMT / land status indicators | Maria, Hans, Andrés | ✅ |
 | Area guide content | Maria, Hans | ✅ |
-| Localized units + currency hints | Hans | ✅ |
+| Localized units (m², acres, hectares) | Hans | ✅ |
 | Sync pipeline monitoring + failure alerts | Nico | ✅ |
-| Lead management + agent routing | Nico | ✅ |
+| Lead management + agent routing | Nico, Laura | ✅ |
 | Lifestyle tag admin (Supabase) | Nico | ✅ |
-| Standalone listing URLs (shareable) | Maria (shares to daughter) | ✅ |
+| Standalone listing URLs (shareable) | Maria, Laura | ✅ |
 | No-results state with alternatives | Maria (edge case) | ✅ |
-| Low-end Android form support | Carlos | ✅ (NFR) |
+| Low-end Android form support | Carlos, Andrés | ✅ (NFR) |
 | Dominical office digital presence | Jennifer, Nico | ✅ |
-| Full Spanish UX | Carlos | ✅ |
+| Full Spanish UX | Carlos, Andrés | ✅ |
+| Agent profile pages (shareable, with listings) | Laura, Sofia, Jennifer | ✅ |
+| Agent recruitment page ("Join Our Team") | Sofia | ✅ |
+| Lead source tracking on all forms | Nico, Laura, Sofia | ✅ |
 | Lead follow-up reminders | Nico | 🟡 Growth |
+| Full German UI + EUR conversion | Hans | 🟡 Phase 2 |
 | Financing guides for foreigners | Hans | 🟡 Phase 2 (Relocation Hub) |
 
 > **Resilience pattern:** Supabase DB is the source of truth for the website. API sync failures don't take the site down — the site continues serving all existing listings with optimized photos and translations. Sync alerts notify admin that new data isn't flowing.
@@ -351,6 +421,9 @@ See **Non-Functional Requirements** section for measurable performance targets (
 - ⚠️ Hans (investor) — partial (English, not German yet), but lifestyle tags + investment filters work
 - ✅ Jennifer (expat seller) — full seller form + Dominical office
 - ✅ Nico (admin) — full sync monitoring + lead management + tag admin
+- ✅ Andrés (local buyer, Spanish) — grid-view search → listing → WhatsApp
+- ✅ Laura (active agent) — profile page, lead routing, listing sharing
+- ✅ Sofia (recruit) — "Join Our Team" page → recruitment inquiry
 
 **Must-have capabilities:**
 - Map-first property search (Mapbox, pins, clustering, 3D terrain)
@@ -446,7 +519,7 @@ See **Non-Functional Requirements** section for measurable performance targets (
 ### Lead Generation — Investors
 
 - **FR31:** Visitors can discover investment-relevant properties through lifestyle tags ("Investment Property," "Rental Potential," "Commercial")
-- **FR32:** Listings display area appreciation data and rental yield context when present in listing metadata or area data
+- **FR32:** Listings display area appreciation and rental yield context when available. Data is admin-curated static content per area (not sourced from API). Displayed as informational context with disclaimer: "Based on market estimates — consult an agent for current data"
 
 ### Data Pipeline & Content Management
 
@@ -458,22 +531,22 @@ See **Non-Functional Requirements** section for measurable performance targets (
 - **FR38:** The site continues serving existing listings from the database when API sync fails
 - **FR39:** The system detects listings removed from the API during sync and handles them gracefully (hides from search, preserves URL for SEO)
 - **FR40:** The system captures lead source (UTM parameters + referrer) on every form submission and WhatsApp click
-- **FR50:** The sync pipeline validates incoming API data before writing to the database — rejecting records with missing required fields or data anomalies, and alerting admin of rejected records
+- **FR41:** The sync pipeline validates incoming API data before writing to the database — rejecting records with missing required fields or data anomalies, and alerting admin of rejected records
 
 ### Administration & Operations
 
-- **FR41:** Admin can view sync status logs with timestamps (success/failure, counts, errors)
-- **FR42:** Admin can view and manage leads (source, property reference, language, assigned agent, UTM source)
-- **FR43:** Admin can reassign leads to different agents
-- **FR44:** Admin can add, edit, or remove lifestyle tags on listings
-- **FR45:** Admin can hide/unhide listings from the website (without affecting API data)
-- **FR46:** Admin can monitor SEO performance via integrated analytics
+- **FR42:** Admin can view sync status logs with timestamps (success/failure, counts, errors)
+- **FR43:** Admin can view and manage leads (source, property reference, language, assigned agent, UTM source)
+- **FR44:** Admin can reassign leads to different agents
+- **FR45:** Admin can add, edit, or remove lifestyle tags on listings
+- **FR46:** Admin can hide/unhide listings from the website (without affecting API data)
+- **FR47:** Admin can monitor SEO performance via integrated analytics
 
 ### Static Content & Site Pages
 
-- **FR47:** The site displays a Homepage with featured listings (admin-curated or most recent) and office value proposition
-- **FR48:** The site displays About/Offices, Services, Contact, and Join Our Team pages
-- **FR49:** The site maintains full SEO architecture (structured data, sitemaps, meta tags, hreflang, 301 redirects from WordPress)
+- **FR48:** The site displays a Homepage with featured listings (admin-curated or most recent) and office value proposition
+- **FR49:** The site displays About/Offices, Services, Contact, and Join Our Team pages
+- **FR50:** The site maintains full SEO architecture (structured data, sitemaps, meta tags, hreflang, 301 redirects from WordPress)
 
 ## Non-Functional Requirements
 
@@ -488,26 +561,26 @@ See **Non-Functional Requirements** section for measurable performance targets (
 
 ### Security & Privacy
 
-- **NFR7:** All traffic served over HTTPS (Vercel default)
-- **NFR8:** Admin access to Supabase dashboard protected by authentication
-- **NFR9:** Lead data (names, phone numbers, emails) encrypted at rest in Supabase
+- **NFR7:** All traffic served over HTTPS with TLS encryption enforced
+- **NFR8:** Admin access to the database management dashboard protected by authentication
+- **NFR9:** Lead data (names, phone numbers, emails) encrypted at rest in the database
 - **NFR10:** The system does not store visitor IP addresses, browser fingerprints, or personal data unless the visitor explicitly submits a form
-- **NFR11:** API keys (RE/MAX API, DeepL, Mapbox) stored as environment variables, never in client-side code
-- **NFR12:** Analytics use cookieless mode for MVP (Vercel Analytics + GA4 consent mode). Cookie consent banner deferred until marketing cookies added
+- **NFR11:** All third-party API keys stored as environment variables, never in client-side code
+- **NFR12:** Analytics use cookieless mode for MVP (consent-mode compliant). Cookie consent banner deferred until marketing cookies added
 
 ### Scalability
 
-- **NFR13:** System supports up to 1,000 concurrent visitors without performance degradation (Vercel edge CDN)
-- **NFR14:** Database supports up to 1,000 listings without query performance degradation (PostGIS spatial indexing)
+- **NFR13:** System supports up to 1,000 concurrent visitors without performance degradation via edge CDN
+- **NFR14:** Database supports up to 1,000 listings without query performance degradation via spatial indexing
 - **NFR15:** Sync pipeline completes within 2 hours. Incremental sync processes only changed/new listings. Alert admin if sync exceeds 2 hours or fails
 - **NFR16:** Architecture supports adding 4 new languages without code changes (i18n config + translation pipeline only)
 
 ### Integration Reliability
 
 - **NFR17:** API sync pipeline retries up to 3 times on failure before alerting admin
-- **NFR18:** API sync failures do not affect site availability (Supabase resilience pattern)
-- **NFR19:** DeepL API rate limits respected; translation queue processed with backoff
-- **NFR20:** Mapbox tile loading uses CDN caching to minimize API calls
+- **NFR18:** API sync failures do not affect site availability — site serves cached data from the database
+- **NFR19:** Translation API rate limits respected; translation queue processed with exponential backoff
+- **NFR20:** Map tile loading uses CDN caching to minimize API calls
 
 ### Accessibility
 
@@ -525,5 +598,5 @@ See **Non-Functional Requirements** section for measurable performance targets (
 
 ### Backup & Recovery
 
-- **NFR29:** Supabase database has automated daily backups with 7-day retention
-- **NFR30:** Point-in-time recovery available (Supabase Pro plan)
+- **NFR29:** Database has automated daily backups with 7-day retention
+- **NFR30:** Point-in-time recovery (PITR) available for disaster recovery
