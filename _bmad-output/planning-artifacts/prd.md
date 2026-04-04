@@ -491,6 +491,28 @@ See **Non-Functional Requirements** section for measurable performance targets (
 - **FR13:** Visitors can share a listing URL that loads as a standalone landing page with full context
 - **FR14:** Visitors landing on a hidden or removed listing see a "No longer available" state with links to similar properties
 - **FR15:** Visitors can use smart search presets (e.g., "Beach homes under $300K", "Land in PZ") that combine pre-configured filter + lifestyle tag combinations
+- **FR16:** Visitors can tap a "Near me" button that uses the browser Geolocation API to center the map on their current location and display nearby listings within a configurable radius; if geolocation permission is denied, the map defaults to the nearest office area with a non-blocking notification
+
+### Community Pages
+
+- **FR17:** Visitors can browse dedicated community landing pages (`/areas/[area]/communities/[slug]`) with hero imagery, description, quick facts (elevation, distance to airport, infrastructure, amenities), and available properties filtered to that community
+- **FR18:** Visitors can view a community index page (`/communities`) showing all communities with hero photo, name, tagline, and price range
+- **FR19:** Visitors see a "Featured Communities" section on the homepage with 2-3 spotlight cards linking to community pages, showing community name, one-liner tagline, hero photo, price range, and listing count
+- **FR20:** Each community page displays a mini-map (Mapbox static) showing the community's location within its broader area for geographic context
+- **FR21:** Each community page shows lot/property availability with status indicators (Available, Sold, Reserved) — displayed as a sortable list on mobile, with optional master plan/site map view on desktop
+
+### Shortlist & Agent Representation
+
+- **FR22:** Visitors can save/shortlist properties by tapping a ♡ icon on any PropertyCard or Listing Detail page. Shortlist persists in `localStorage` for anonymous users (Phase 2: persisted to user account). **Cap: 20 properties maximum** — at limit, show "Remove one to add more." The ♡ icon uses `aria-label` ("Save property" / "Remove from saved") and toggles with a visible color change (`#888` outline → `--color-accent` #660000 filled), not just fill, for low-vision accessibility.
+- **FR23:** Visitors can view their shortlist from a persistent icon in the navigation bar, showing saved property count and linking to a **simple comparison page** displaying saved properties with photos, prices, and a mini-map showing all saved locations. Not a feature-dense comparison grid.
+- **FR23b:** Visitors can share their shortlist via a "Share my shortlist" button that generates a unique URL (e.g., `remax-altitud.cr/shortlist/abc123`) encoding the saved property IDs. This URL works cross-device and can be sent to family/partners without requiring user accounts.
+- **FR23c:** On the second ♡ save, a brief tooltip appears: *"Save more — your agent will show you all of them."* This plants the single-agent representation mental model early, before the selection screen.
+- **FR24:** When a visitor taps **"Ask about these"** (warm CTA, not "Contact about saved properties") from the shortlist, the system applies smart agent routing:
+  - **All properties from 1 agent**: WhatsApp fires directly to that agent with all property refs.
+  - **Majority (2+) from 1 agent**: System auto-suggests that agent with messaging: *"[Agent] specializes in the areas you're exploring. She can show you all [N] properties."* Primary CTA contacts that agent; secondary CTA allows choosing a different agent.
+  - **All properties from different agents (or tie)**: Agent selection screen appears showing agent cards (photo, name, languages, listing count) **auto-sorted by language match** to the user's detected language. Education interstitial: *"🏠 One agent, all your visits — your chosen agent will coordinate visits to all your saved properties, even those listed by other agents."*
+- **FR25:** The pre-populated WhatsApp message includes ALL shortlisted property references (titles + refs) in a single message, regardless of how many properties are saved.
+- **FR26:** The chosen/assigned agent receives the full shortlist context and is responsible for coordinating viewings of properties listed by other agents internally.
 
 ### Multilingual Experience
 
@@ -527,20 +549,23 @@ See **Non-Functional Requirements** section for measurable performance targets (
 - **FR34:** The system optimizes API images (WebP, responsive sizes) during sync
 - **FR35:** The system translates new listing content to available languages during sync
 - **FR36:** The system auto-tags listings with lifestyle tags based on configurable attribute rules (e.g., condos in tourist zones → "Rental Potential"), with manual override capability
-- **FR37:** The system sends an automated alert to admin when sync fails
-- **FR38:** The site continues serving existing listings from the database when API sync fails
-- **FR39:** The system detects listings removed from the API during sync and handles them gracefully (hides from search, preserves URL for SEO)
-- **FR40:** The system captures lead source (UTM parameters + referrer) on every form submission and WhatsApp click
-- **FR41:** The sync pipeline validates incoming API data before writing to the database — rejecting records with missing required fields or data anomalies, and alerting admin of rejected records
+- **FR37:** The system auto-tags listings with a community ID by matching property coordinates against defined community geo-fence polygons (PostGIS) during sync, with manual override capability in admin
+- **FR38:** The system sends an automated alert to admin when sync fails
+- **FR39:** The site continues serving existing listings from the database when API sync fails
+- **FR40:** The system detects listings removed from the API during sync and handles them gracefully (hides from search, preserves URL for SEO)
+- **FR41:** The system captures lead source (UTM parameters + referrer) on every form submission and WhatsApp click
+- **FR42:** The sync pipeline validates incoming API data before writing to the database — rejecting records with missing required fields or data anomalies, and alerting admin of rejected records
 
 ### Administration & Operations
 
-- **FR42:** Admin can view sync status logs with timestamps (success/failure, counts, errors)
-- **FR43:** Admin can view and manage leads (source, property reference, language, assigned agent, UTM source)
-- **FR44:** Admin can reassign leads to different agents
-- **FR45:** Admin can add, edit, or remove lifestyle tags on listings
-- **FR46:** Admin can hide/unhide listings from the website (without affecting API data)
-- **FR47:** Admin can monitor SEO performance via integrated analytics
+- **FR43:** Admin can view sync status logs with timestamps (success/failure, counts, errors)
+- **FR44:** Admin can view and manage leads (source, property reference, language, assigned agent, UTM source). **For shortlist leads**: the lead record shows all shortlisted property refs, specifying which properties belong to the chosen/assigned agent and which belong to other agents. Example: "Hans → Agent: Emma • Emma's listings: #123, #456, #789 • Gustavo's listings: #321, #654." This gives the office full visibility into cross-agent interest without triggering agent-to-agent notifications.
+- **FR45:** Admin can reassign leads to different agents
+- **FR46:** Admin can add, edit, or remove lifestyle tags on listings
+- **FR47:** Admin can add, edit, or remove community assignments on listings (auto-populated by geo-fence, manually overridable)
+- **FR48:** Admin can create and manage communities: name, slug, description, quick facts, hero image, and geo-fence polygon (drawn on a map interface)
+- **FR49:** Admin can hide/unhide listings from the website (without affecting API data)
+- **FR50:** Admin can monitor SEO performance via integrated analytics
 
 ### Static Content & Site Pages
 

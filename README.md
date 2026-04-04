@@ -18,7 +18,7 @@ A complete real estate website for **RE/MAX Altitud** (2 offices in Costa Rica) 
 
 The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)** for structured product development.
 
-### Phase 1: Analysis
+### Phase 1: Analysis ✅
 
 | Step | Status | Description |
 |------|--------|-------------|
@@ -28,19 +28,19 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 | Technical Research<br>`/bmad-bmm-technical-research` | ✅ Done | Architecture and technology feasibility |
 | Create Brief<br>`/bmad-bmm-create-product-brief` | ✅ Done | Product brief synthesizing all research phases |
 
-### Phase 2: Planning
+### Phase 2: Planning ✅
 
 | Step | Status | Description |
 |------|--------|-------------|
 | Create PRD<br>`/bmad-bmm-create-prd` | ✅ Done | 50 FRs, 30 NFRs, 8 user journeys |
 | Validate PRD<br>`/bmad-bmm-validate-prd` | ✅ Done | 12-step validation — 5/5 Excellent, 0 warnings |
-| Create UX<br>`/bmad-bmm-create-ux-design` | 🔄 In Progress | UX design specification — persona tiering, emotional journey mapping, core experience principles |
+| Create UX<br>`/bmad-bmm-create-ux-design` | ✅ Done | 14/14 steps — ~2,590 lines. Personas, journeys, component specs, patterns, responsive strategy, accessibility audit |
 
 ### Phase 3: Solutioning
 
 | Step | Status | Description |
 |------|--------|-------------|
-| Create Architecture<br>`/bmad-bmm-create-architecture` | ⬜ Required | Technical architecture decisions |
+| Create Architecture<br>`/bmad-bmm-create-architecture` | ⬜ **Next** | Technical architecture decisions |
 | Create Epics & Stories<br>`/bmad-bmm-create-epics-and-stories` | ⬜ Required | Breakdown into epics and user stories |
 | Check Readiness<br>`/bmad-bmm-check-implementation-readiness` | ⬜ Required | Implementation readiness validation |
 
@@ -52,6 +52,20 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 | Create Story<br>`/bmad-bmm-create-story` | ⬜ Required | Individual story preparation |
 | Dev Story<br>`/bmad-bmm-dev-story` | ⬜ Required | Story implementation |
 | Code Review<br>`/bmad-bmm-code-review` | ⬜ Optional | Code quality review |
+
+## UX Design Highlights
+
+The completed UX specification covers:
+
+- **5 personas** — Maria (international buyer), Carlos (seller), Hans (investor), Andrés (local buyer), Community Discovery
+- **5 user journeys** with smart agent routing and ♡ shortlist system
+- **18 shadcn/ui primitives** + **18 custom components** with full specs
+- **Split-hero gateway** — dual-pane mountain/coast entry point
+- **Map-first search** — Mapbox GL with 3D terrain, price-bubble pins, pull-up sheet
+- **WhatsApp-first contact** — pre-populated messages, zero typing
+- **Smart agent routing** — auto-assigns agent based on shortlist, educates buyers
+- **WCAG 2.1 AA** — contrast audit, keyboard nav, screen reader ARIA, reduced motion
+- **$150 Android target** — < 2.5s LCP, < 150KB app JS, CSS scroll-snap
 
 ## Data Sources
 
@@ -65,15 +79,16 @@ API docs: [`docs/`](docs/)
 ## Tech Stack (Planned)
 
 - **Framework**: Next.js 15 (App Router, React 19, TypeScript)
-- **Styling**: Vanilla CSS (design system)
-- **i18n**: next-intl (EN/ES MVP, architecture for 6)
+- **UI Primitives**: shadcn/ui (Radix-based, copy-pasted, fully owned)
+- **Styling**: Tailwind CSS v4 (design tokens via CSS custom properties)
+- **i18n**: next-intl (EN/ES MVP, per-route locale loading)
 - **Database**: Supabase (PostgreSQL + PostGIS)
-- **Maps**: Mapbox GL JS (3D terrain, clustering, interactive pins)
+- **Maps**: Mapbox GL JS (3D terrain, clustering, interactive price-bubble pins)
 - **Translation**: DeepL API with domain-specific glossary
-- **Images**: Vercel Image Optimization via `next/image`
+- **Images**: Vercel Image Optimization via `next/image` (WebP, LQIP)
 - **Analytics**: Vercel Analytics (cookieless) + GA4 consent mode
 - **Hosting**: Vercel (edge CDN, ISR, serverless functions)
-- **CI/CD**: Vercel auto-deploy + Lighthouse CI (performance gates)
+- **CI/CD**: Vercel auto-deploy + Lighthouse CI (score ≥ 90 gate)
 - **Data sync**: Vercel Cron → RE/MAX CCA API → validate → translate → optimize → Supabase → ISR revalidation
 
 ## Key Documents
@@ -93,4 +108,4 @@ API docs: [`docs/`](docs/)
 
 ## Next Step
 
-→ Currently creating **UX design specification** via `/bmad-bmm-create-ux-design` (Steps 1-4 complete: initialization, project understanding, core experience, emotional response). Next: inspiration analysis, design system, user flows, wireframes.
+→ **Create Architecture** via `/bmad-bmm-create-architecture` — database schema, API design, Supabase/PostGIS setup, Next.js route structure, and deployment strategy.
