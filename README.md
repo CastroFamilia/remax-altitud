@@ -40,8 +40,8 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 
 | Step | Status | Description |
 |------|--------|-------------|
-| Create Architecture<br>`/bmad-bmm-create-architecture` | ⬜ **Next** | Technical architecture decisions |
-| Create Epics & Stories<br>`/bmad-bmm-create-epics-and-stories` | ⬜ Required | Breakdown into epics and user stories |
+| Create Architecture<br>`/bmad-bmm-create-architecture` | ✅ Done | 16 sections — system architecture, DB schema, sync pipeline, API design, i18n, frontend, SEO, security, ADRs |
+| Create Epics & Stories<br>`/bmad-bmm-create-epics-and-stories` | ⬜ **Next** | Breakdown into epics and user stories |
 | Check Readiness<br>`/bmad-bmm-check-implementation-readiness` | ⬜ Required | Implementation readiness validation |
 
 ### Phase 4: Implementation
@@ -99,6 +99,7 @@ API docs: [`docs/`](docs/)
 | **Product Requirements Document** | [`_bmad-output/planning-artifacts/prd.md`](_bmad-output/planning-artifacts/prd.md) |
 | **PRD Validation Report** | [`_bmad-output/planning-artifacts/prd-validation-report.md`](_bmad-output/planning-artifacts/prd-validation-report.md) |
 | **UX Design Specification** | [`_bmad-output/planning-artifacts/ux-design-specification.md`](_bmad-output/planning-artifacts/ux-design-specification.md) |
+| **Architecture Document** | [`_bmad-output/planning-artifacts/architecture.md`](_bmad-output/planning-artifacts/architecture.md) |
 | **Product Brief** | [`_bmad-output/product-brief/`](_bmad-output/product-brief/) |
 | Brainstorming Session | [`_bmad-output/brainstorming/`](_bmad-output/brainstorming/) |
 | Domain Research | [`_bmad-output/domain-research/`](_bmad-output/domain-research/) |
@@ -108,4 +109,4 @@ API docs: [`docs/`](docs/)
 
 ## Next Step
 
-→ **Create Architecture** via `/bmad-bmm-create-architecture` — database schema, API design, Supabase/PostGIS setup, Next.js route structure, and deployment strategy.
+→ **Create Epics & Stories** via `/bmad-bmm-create-epics-and-stories` — break down the architecture into implementable epics and user stories for sprint planning.
