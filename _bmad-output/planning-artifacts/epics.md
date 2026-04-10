@@ -1,5 +1,5 @@
 ---
-stepsCompleted: ['step-01-validate-prerequisites', 'step-02-design-epics']
+stepsCompleted: ['step-01-validate-prerequisites', 'step-02-design-epics', 'step-03-create-stories', 'step-04-final-validation']
 inputDocuments:
   - '_bmad-output/planning-artifacts/prd.md'
   - '_bmad-output/planning-artifacts/architecture.md'
@@ -22,7 +22,7 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 
 ### Functional Requirements
 
-> **Source:** PRD — 68 functional requirements (FR1–FR68), sequentially numbered across all sections.
+> **Source:** PRD — 69 functional requirements (FR1–FR69), sequentially numbered across all sections.
 
 #### Property Discovery (Search & Browse) — FR1–FR16
 
@@ -119,7 +119,7 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 | FR54 | Lead source capture (UTM parameters + referrer) on every form/WhatsApp click |
 | FR55 | Sync pipeline validates incoming data, rejects bad records, alerts admin |
 
-#### Administration & Operations — FR56–FR63, FR67–FR68
+#### Administration & Operations — FR56–FR66
 
 | ID | Requirement |
 |----|------------|
@@ -131,16 +131,17 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 | FR61 | Create/manage communities (name, slug, facts, hero, geo-fence polygon) |
 | FR62 | Hide/unhide listings from website |
 | FR63 | Monitor SEO performance via integrated analytics |
-| FR67 | Per-agent lead history: all leads (buyer/seller/investor) with date, name, email, phone, type, property ref, source. Filterable by agent and type. Business continuity for agent departures |
-| FR68 | Bulk-reassign leads from one agent to another with logging (old agent, new agent, date). CSV export of agent's client contacts (name, email, phone) for manual outreach |
+| FR64 | Per-agent lead history: all leads (buyer/seller/investor) with date, name, email, phone, type, property ref, source. Filterable by agent and type. Business continuity for agent departures |
+| FR65 | Bulk-reassign leads from one agent to another with logging (old agent, new agent, date). CSV export of agent's client contacts (name, email, phone) for manual outreach |
+| FR66 | Anonymous analytics event on save/unsave; admin per-property shortlist popularity: total saves, 30-day saves, "most shortlisted" ranking; shortlist count on lead detail view. No visitor-identifying data stored |
 
-#### Static Content & Site Pages — FR64–FR66
+#### Static Content & Site Pages — FR67–FR69
 
 | ID | Requirement |
 |----|------------|
-| FR64 | Homepage with featured listings and value proposition |
-| FR65 | About/Offices, Services, Contact, Join Our Team pages |
-| FR66 | Full SEO architecture (structured data, sitemaps, meta tags, hreflang, 301 redirects) |
+| FR67 | Homepage with featured listings and value proposition |
+| FR68 | About/Offices, Services, Contact, Join Our Team pages |
+| FR69 | Full SEO architecture (structured data, sitemaps, meta tags, hreflang, 301 redirects) |
 
 ---
 
@@ -377,13 +378,14 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 | FR61 | Epic 8 | Community CRUD (geo-fence polygon) |
 | FR62 | Epic 8 | Hide/unhide listings |
 | FR63 | Epic 8 | SEO performance monitoring |
-| FR64 | Epic 1 | Homepage with featured listings |
-| FR65 | Epic 1 | Static pages (About, Services, Contact, Join) |
-| FR66 | Epic 4 | Full SEO architecture |
-| FR67 | Epic 8 | Per-agent lead history (dates, contact info, filterable) |
-| FR68 | Epic 8 | Bulk reassignment + CSV export of agent contacts |
+| FR64 | Epic 8 | Per-agent lead history (dates, contact info, filterable) |
+| FR65 | Epic 8 | Bulk reassignment + CSV export of agent contacts |
+| FR66 | Epic 8 | Shortlist analytics (anonymous events, per-property popularity, demand intelligence) |
+| FR67 | Epic 1 | Homepage with featured listings |
+| FR68 | Epic 1 | Static pages (About, Services, Contact, Join) |
+| FR69 | Epic 4 | Full SEO architecture |
 
-**Coverage:** 68/68 FRs mapped (100%)
+**Coverage:** 69/69 FRs mapped (100%)
 
 ---
 
@@ -393,7 +395,7 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 
 Visitors can access a professionally branded, multilingual-ready platform with consistent visual identity, navigation, and static content pages.
 
-**FRs covered:** FR29, FR30, FR32, FR64, FR65
+**FRs covered:** FR29, FR30, FR32, FR67, FR68
 **Key NFRs:** NFR1-3, NFR7, NFR11, NFR21-24, NFR25, NFR28-30
 **Key ARs:** AR7-9, AR11-12, AR16, AR18-21
 **Key UX-DRs:** UX-DR1-7, UX-DR15-20, UX-DR23-24, UX-DR26, UX-DR28, UX-DR30, UX-DR32
@@ -437,7 +439,7 @@ Visitors can discover and browse properties through an interactive map with pins
 
 Visitors can view complete property listings and agent profiles — evaluating properties and connecting with agents via WhatsApp or email.
 
-**FRs covered:** FR8, FR13, FR31, FR33, FR34, FR35, FR36, FR37, FR38, FR39, FR66
+**FRs covered:** FR8, FR13, FR31, FR33, FR34, FR35, FR36, FR37, FR38, FR39, FR69
 **Key NFRs:** NFR6, NFR25-27
 **Key ARs:** AR13-15, AR22
 **Key UX-DRs:** UX-DR9, UX-DR11, UX-DR25, UX-DR27
@@ -465,7 +467,7 @@ Sellers can submit property listing inquiries and CMA requests through a progres
 
 Visitors can explore curated communities and area guides — discovering developments, neighborhoods, and lifestyle zones with rich content and filtered properties.
 
-**FRs covered:** FR17, FR18, FR19, FR20, FR21, FR44, FR45, FR50, FR66
+**FRs covered:** FR17, FR18, FR19, FR20, FR21, FR44, FR45, FR50
 **Key ARs:** AR2 (geo-fence)
 **Key UX-DRs:** UX-DR13, UX-DR14, UX-DR33
 
@@ -493,7 +495,7 @@ Visitors can save properties to a shortlist, compare them, share with family, an
 
 Admin can manage leads, sync operations, listing visibility, lifestyle tags, community assignments, agent lead histories, and monitor platform health.
 
-**FRs covered:** FR56, FR57, FR58, FR59, FR60, FR61, FR62, FR63, FR67, FR68
+**FRs covered:** FR56, FR57, FR58, FR59, FR60, FR61, FR62, FR63, FR64, FR65, FR66
 **Key NFRs:** NFR8-10, NFR12
 **Key ARs:** AR16, AR17, AR19
 
@@ -707,7 +709,7 @@ So that I understand RE/MAX Altitud's unique geographic coverage within 3 second
 
 **Given** the homepage
 **When** scrolling past the hero
-**Then** placeholder sections appear for: Featured Properties (carousel shell), Featured Communities (shell), Area Highlights (shell), Sell CTA block, Footer (FR64)
+**Then** placeholder sections appear for: Featured Properties (carousel shell), Featured Communities (shell), Area Highlights (shell), Sell CTA block, Footer (FR67)
 
 **Given** the two entry paths
 **When** the page loads
@@ -728,19 +730,19 @@ So that I can trust the company and reach out through my preferred channel.
 
 **Given** the About page
 **When** rendered
-**Then** it displays office information for both Altitud (PZ) and Altitud Cero (Dominical/Uvita) (FR65)
+**Then** it displays office information for both Altitud (PZ) and Altitud Cero (Dominical/Uvita) (FR68)
 
 **Given** the Services page
 **When** rendered
-**Then** it displays Buy/Sell/Invest services with bilingual content (FR65)
+**Then** it displays Buy/Sell/Invest services with bilingual content (FR68)
 
 **Given** the Contact page
 **When** rendered
-**Then** it displays office addresses, phone numbers, email, and a contact form (FR65)
+**Then** it displays office addresses, phone numbers, email, and a contact form (FR68)
 
 **Given** the Join Our Team page
 **When** rendered
-**Then** it displays recruitment information and an inquiry form (FR65)
+**Then** it displays recruitment information and an inquiry form (FR68)
 
 **Given** any static page
 **When** inspecting the HTML
@@ -1511,7 +1513,7 @@ So that we maintain search rankings and maximize organic discovery.
 
 **Given** any page
 **When** rendered
-**Then** it has proper title tag, meta description, canonical URL, and Open Graph tags (FR66)
+**Then** it has proper title tag, meta description, canonical URL, and Open Graph tags (FR69)
 
 **And** Lighthouse CI gate enforces score ≥ 80 on all pages (NFR28)
 
@@ -1546,3 +1548,693 @@ So that I can compare options and discover alternatives without going back to se
 **Then** they display as a horizontal swipe carousel (UX-DR31)
 
 **And** similar properties carousel uses the same PropertyCard component from Epic 3
+
+---
+
+## Epic 5: Seller Lead Capture
+
+Sellers can submit property listing inquiries and CMA requests through a progressive form, getting matched with an area-specific agent.
+
+### Story 5.1: Seller Landing Page & "List With Us" Form
+
+As a **seller**,
+I want to submit my property for listing through a simple, progressive form on a dedicated seller page,
+So that I can connect with an area-specific RE/MAX agent without needing an account or technical knowledge.
+
+**Acceptance Criteria:**
+
+**Given** the seller page (`/{locale}/sell`)
+**When** loaded
+**Then** an SEO content hero is rendered above the form: value proposition (h1/h2), benefits, process explanation, and testimonials — 200-300 words of indexable content (UX-DR12)
+
+**Given** the SEO landing section
+**When** a visitor scrolls or taps "Comenzar" / "Get Started"
+**Then** the 3-step form begins with a segmented progress bar showing step labels and time estimates (60s / 90s / 30s) (UX-DR12)
+
+**Given** Step 1 (Basics — 60s target)
+**When** rendered
+**Then** it shows: Property Type (radio group: Casa, Lote/Terreno, Finca, Condominio, Comercial), Location (text field loads first with "Type address or nearest landmark"; interactive map pin-drop loads progressively after 2s), and Size (with m²/acres/ft² toggle) (FR42, UX-DR12)
+
+**Given** the map in Step 1
+**When** the map fails to load or the device is too slow
+**Then** the text field remains functional and geocodes the entered address/landmark to coordinates (UX-DR12)
+
+**Given** Step 2 (Details — 90s target)
+**When** rendered
+**Then** it shows: Price Expectation (currency input), "I need help with pricing" checkbox, Description (optional textarea), Photos (optional upload), and Bedrooms/Bathrooms (dropdowns, hidden for Lote/Terreno type) (FR42, UX-DR12)
+
+**Given** the "I need help with pricing" checkbox
+**When** checked
+**Then** the price field becomes optional and a note is attached to the lead record indicating the seller needs a pricing consultation (UX-DR12)
+
+**Given** Step 3 (Contact — 30s target)
+**When** rendered
+**Then** it shows: Name (required), Phone/WhatsApp (required), Email (optional, clearly marked as optional), and Preferred Language (auto-detected, selectable) (FR42)
+
+**Given** all 3 steps
+**When** navigating between them
+**Then** "Back" and "Next" buttons are available; previously entered data is preserved; the progress bar updates to reflect the current step (UX-DR12)
+
+**Given** the form completes on a $150 Android phone on 4G
+**When** timed end-to-end
+**Then** it is completable in under 3 minutes total (UX-DR12)
+
+**Given** form validation errors
+**When** a required field is empty and "Next" is tapped
+**Then** inline error messages appear below the field in the user's language with the field highlighted in `--color-error`
+
+**And** the seller page is SSG for maximum performance (Architecture rendering strategy)
+**And** all form labels, placeholders, buttons, and error messages display in the selected locale (EN/ES) (FR32)
+**And** the SellerForm component is lazy-loaded (~15KB, not in main bundle) (AR performance budget)
+
+---
+
+### Story 5.2: CMA Request Form
+
+As a **seller**,
+I want to request a free Comparative Market Analysis through a dedicated form,
+So that I can learn my property's market value before deciding to list.
+
+**Acceptance Criteria:**
+
+**Given** the CMA form entry point
+**When** accessed from the seller landing page or a direct CTA
+**Then** a "Request a Free CMA" form loads with a value proposition explaining what a CMA is and why it's free (FR41)
+
+**Given** the CMA form
+**When** rendered
+**Then** it collects: Name (required), Phone/WhatsApp (required), Email (optional), Property Type (dropdown), Location (address text or map pin, reusing the location component from Story 5.1), Approximate Size (with unit toggle), and Comment/Message (optional) (FR42)
+
+**Given** a completed CMA form
+**When** submitted
+**Then** the lead is stored with source = "cma_form" and intent = "sell" (distinguishable from seller listing leads)
+
+**Given** the CMA form
+**When** submitted successfully
+**Then** a confirmation screen displays with the matched agent card (photo, name, languages, WhatsApp + Email CTAs) and message: "Your CMA request has been received. [Agent] will contact you within 24 hours." (FR43)
+
+**Given** the CMA form
+**When** a user is on the seller page
+**Then** it is accessible as a secondary CTA ("Just need a valuation? Request a Free CMA") without navigating away from the seller page context
+
+**And** all form labels, validation messages, and confirmation text display in the selected locale (EN/ES)
+**And** the CMA form shares form field components (Input, RadioGroup, location picker) with the seller listing form for consistency
+
+---
+
+### Story 5.3: Seller Lead Storage, Routing & Source Tracking
+
+As an **admin**,
+I want seller form and CMA submissions stored with full context and routed to the right agent,
+So that leads are never lost and the assigned agent has all the information needed to respond.
+
+**Acceptance Criteria:**
+
+**Given** a seller listing form is submitted
+**When** the lead is created via POST `/api/leads`
+**Then** a lead record is stored with: name, phone, email (if provided), source = "seller_form", intent = "sell", property details (type, location coordinates, size, price or "needs pricing help"), description, preferred language, and assigned_agent_id (FR43)
+
+**Given** a CMA form is submitted
+**When** the lead is created
+**Then** a lead record is stored with: source = "cma_form", intent = "sell", and all collected fields (FR43)
+
+**Given** the leads table
+**When** a seller/CMA lead is created
+**Then** the `leads` table includes all schema fields per Architecture: id, name, email, phone, source, intent, language, assigned_agent_id, property_id (null for seller leads), notes (seller description/pricing note), status ("new"), utm_source, utm_medium, utm_campaign, referrer, created_at
+
+**Given** lead source tracking
+**When** a seller visits the form page via a URL with UTM parameters (e.g., `?utm_source=facebook&utm_medium=ad&utm_campaign=sellers_pz`)
+**Then** the UTM values and HTTP referrer are captured and stored on the lead record (FR54)
+
+**Given** WhatsApp clicks on the confirmation page
+**When** the seller taps "WhatsApp [Agent]" on the agent match card
+**Then** a WhatsApp lead event is also recorded with source context (FR54)
+
+**Given** agent routing logic
+**When** a seller submits a form with location coordinates
+**Then** the system matches the nearest office (Altitud PZ or Altitud Cero) and assigns an active agent from that office (FR43)
+
+**Given** lead PII (name, phone, email)
+**When** stored in the database
+**Then** phone and email fields are encrypted at column level (AR17, NFR9)
+
+**Given** the `/api/leads` endpoint
+**When** receiving a POST request
+**Then** all input is validated with Zod schema (AR18) and invalid submissions return a clear error response
+
+**And** lead creation is idempotent — duplicate submissions within 60 seconds (same phone + same source) are rejected with a friendly "Already submitted" response
+**And** Sentry captures any lead creation failures with full context (AR19)
+
+---
+
+## Epic 6: Community Pages & Area Guides
+
+Visitors can explore curated communities and area guides — discovering developments, neighborhoods, and lifestyle zones with rich content and filtered properties.
+
+### Story 6.1: Area Guide Pages
+
+As a **visitor**,
+I want to explore area guides with lifestyle narratives, climate info, and filtered properties,
+So that I can understand what living in a specific area feels like before browsing listings.
+
+**Acceptance Criteria:**
+
+**Given** an area guide page (e.g., `/{locale}/areas/perez-zeledon`)
+**When** loaded
+**Then** it renders: hero image with area name (h1), lifestyle narrative description (always visible — not behind a tab, critical for SEO indexing), climate/altitude data, and nearest services (FR17, UX-DR13)
+
+**Given** the area guide description section
+**When** rendered
+**Then** it is always visible (not tabbed) to ensure full SEO indexing of the content (UX-DR13)
+
+**Given** the area guide page
+**When** scrolling below the description
+**Then** tabbed sections appear: "Properties" (filtered property grid for this area), "Agents" (AgentCards for agents covering this area), and "Similar Areas" (SimilarAreasSlider with nearby area cards) (UX-DR13)
+
+**Given** the Properties tab
+**When** selected
+**Then** it shows a property grid filtered to this area, using the PropertyCard component from Epic 3
+
+**Given** the area guide page
+**When** a community belongs to this area
+**Then** linked communities are shown as gold-bordered CommunityCards within the area guide or as a separate tab/section
+
+**Given** an area index page (`/{locale}/areas`)
+**When** loaded
+**Then** it lists all available areas with hero cards showing area name, region badge, property count, and description snippet (FR18)
+
+**And** area guide pages are SSG (static generation) for maximum performance (Architecture rendering strategy)
+**And** all content displays in the selected locale (EN/ES)
+**And** JSON-LD structured data for Place schema is present (AR14)
+
+---
+
+### Story 6.2: Community Pages
+
+As a **visitor**,
+I want to explore curated community developments with quick facts, availability status, and filtered properties,
+So that I can evaluate premium developments and check which lots/homes are available.
+
+**Acceptance Criteria:**
+
+**Given** a community page (e.g., `/{locale}/areas/perez-zeledon/communities/rise`)
+**When** loaded
+**Then** it renders: hero image with community name + area name (h1), tagline, and price range ("Homes from $180K–$650K") (UX-DR14)
+
+**Given** the community quick facts section
+**When** rendered
+**Then** an icon grid displays: 📍 Elevation, ✈ Distance to airport, 🌐 Internet/infrastructure, 🏊 Amenities, 🏗 Developer name, 📅 Established year (UX-DR14)
+
+**Given** the community description
+**When** rendered
+**Then** 300-500 words of SEO content (developer story, lifestyle, environment) is always visible (not tabbed), with a Mapbox static mini-map showing the community pin within the broader area (UX-DR14)
+
+**Given** the "Available Properties" tab
+**When** selected
+**Then** a filtered property grid shows only properties tagged to this community. On mobile, it displays as a sortable list with status indicators: ✅ Available, ❌ Sold, 🟡 Reserved (FR21, UX-DR14)
+
+**Given** a desktop viewport
+**When** the "Site Map" tab is visible
+**Then** it shows a zoomable master plan/site map image. On mobile, this tab is hidden — replaced by the sortable lot list above (UX-DR14)
+
+**Given** the "Similar Communities" section
+**When** rendered below the tabs
+**Then** a SimilarCommunitiesSlider shows nearby community cards (always visible, not tabbed) (UX-DR14)
+
+**Given** a community card on any page (homepage, area guide)
+**When** rendered
+**Then** it uses a gold border (`--color-gold`) to visually differentiate curated communities from standard area cards (UX-DR33)
+
+**Given** the "Featured Communities" section on the homepage
+**When** rendered
+**Then** 2-3 community hero-scale cards appear with gold borders, each showing: hero photo, name, tagline, price range, listing count, and link to the community page (FR19)
+
+**And** community pages are SSG + ISR (revalidated on-demand after sync) since property availability changes daily
+**And** a community index page (`/{locale}/communities`) lists all communities with hero cards
+
+---
+
+### Story 6.3: Community Mini-Map & Geo-Fence Display
+
+As a **visitor**,
+I want to see where a community is located on a map relative to the broader area,
+So that I can understand the geography and proximity to key landmarks.
+
+**Acceptance Criteria:**
+
+**Given** a community page
+**When** the mini-map renders
+**Then** a Mapbox static map shows: the community pin, the broader area boundary, and nearby landmarks (beach, hospital, airport) (FR20)
+
+**Given** the community's geo-fence polygon
+**When** stored in the database
+**Then** the polygon boundary is displayed on the mini-map as a shaded overlay (FR20)
+
+**Given** an area guide page
+**When** communities within that area are listed
+**Then** each community card includes a thumbnail mini-map showing its location within the area
+
+**And** mini-maps are lightweight static images (not interactive Mapbox GL instances) to minimize bundle impact
+**And** mini-maps include alt text describing the location for accessibility (NFR24)
+
+---
+
+### Story 6.4: Investment Discovery & Area Context
+
+As an **investor**,
+I want to discover investment-relevant properties and see area appreciation data,
+So that I can make informed decisions about where to invest.
+
+**Acceptance Criteria:**
+
+**Given** the search page
+**When** a visitor selects lifestyle tags "Investment Property," "Rental Potential," or "Commercial"
+**Then** properties tagged with those categories are filtered and displayed (FR44)
+
+**Given** an area guide or community page
+**When** investment context data is available (admin-curated)
+**Then** it displays: area appreciation trends and rental yield estimates with a disclaimer: "Based on market estimates — consult an agent for current data" (FR45)
+
+**Given** investment context data
+**When** not available for an area
+**Then** the section is gracefully hidden (not an empty section) (UX-DR20)
+
+**Given** a listing detail page for an "Investment Property" tagged listing
+**When** the area section renders
+**Then** it includes any available investment context from the listing's area (FR45)
+
+**And** investment data is admin-curated static content per area (not API-sourced) (FR45)
+**And** the disclaimer is always displayed alongside investment data and cannot be removed independently
+
+---
+
+### Story 6.5: Community Geo-Fence Auto-Tagging
+
+As an **admin**,
+I want properties automatically tagged to communities based on their geographic coordinates,
+So that community pages always show current available properties without manual assignment for each listing.
+
+**Acceptance Criteria:**
+
+**Given** a community has a geo-fence polygon stored in the database
+**When** the daily sync pipeline runs (Step 6: GEO-TAG)
+**Then** properties with coordinates inside the polygon are automatically assigned `community_id` matching that community (FR50, AR2)
+
+**Given** a property moves (coordinates change) during sync
+**When** it falls inside a different community polygon
+**Then** its `community_id` is updated to the new community
+
+**Given** a property that falls outside all community polygons
+**When** processed during sync
+**Then** its `community_id` remains null (not tagged to any community)
+
+**Given** an admin has manually assigned a community to a listing
+**When** the sync pipeline's geo-tagging step runs
+**Then** the manual override is preserved and NOT reset by auto-tagging (FR50)
+
+**Given** a new community is created by an admin
+**When** the geo-fence polygon is drawn and saved
+**Then** the next sync run auto-populates the community with matching properties
+
+**And** geo-fence matching uses PostGIS `ST_Within` for efficient spatial queries (AR2)
+**And** this story extends the sync pipeline from Epic 2 (Step 6) — no new pipeline is created
+
+---
+
+## Epic 7: Shortlist & Smart Agent Routing
+
+Visitors can save properties to a shortlist, compare them, share the list, and contact a single agent about all saved properties through intelligent routing.
+
+### Story 7.1: Save & Shortlist Properties
+
+As a **visitor**,
+I want to save properties to a shortlist by tapping a heart icon,
+So that I can build a comparison set while browsing without creating an account.
+
+**Acceptance Criteria:**
+
+**Given** any PropertyCard or Listing Detail page
+**When** a visitor taps the ♡ icon
+**Then** the property is added to the shortlist in `localStorage` and the icon changes from outline (#888) to filled (`--color-accent` #660000) with both color and fill change for low-vision accessibility (FR22)
+
+**Given** the ♡ icon
+**When** rendered
+**Then** it includes `aria-label` ("Save property" / "Remove from saved") that updates with toggle state (FR22)
+
+**Given** a shortlist with 20 properties
+**When** a visitor tries to save a 21st
+**Then** a toast notification appears: "Remove one to add more" — the 21st property is NOT saved (FR22)
+
+**Given** a visitor has saved 1 property and saves a 2nd
+**When** the 2nd ♡ is tapped
+**Then** a brief tooltip appears: "Save more — your agent will show you all of them." (FR25)
+
+**Given** the tooltip from FR25
+**When** it has been shown once per session
+**Then** it does not repeat for subsequent saves
+
+**Given** the navigation bar
+**When** a visitor has saved properties
+**Then** a persistent shortlist icon displays the saved property count as a badge (FR23)
+
+**Given** the shortlist data
+**When** stored in `localStorage`
+**Then** it persists across page navigations and browser sessions (same device)
+
+**And** the SaveButton is a Client Component using `use-shortlist` hook
+**And** keyboard users can activate the ♡ icon via Enter/Space keys (NFR22)
+
+---
+
+### Story 7.2: Shortlist Comparison Page
+
+As a **visitor**,
+I want to view all my saved properties on a comparison page with photos, prices, and a map,
+So that I can evaluate my options side-by-side before contacting an agent.
+
+**Acceptance Criteria:**
+
+**Given** the shortlist page (`/{locale}/shortlist`)
+**When** loaded with saved properties
+**Then** it displays a simple comparison layout with: property photo, title, price, key specs (beds/baths/area), ZMT badge, and a remove (✕) button for each (FR23)
+
+**Given** the shortlist page
+**When** loaded
+**Then** a mini-map shows all saved property locations as pins, giving geographic context (FR23)
+
+**Given** an empty shortlist
+**When** the page loads
+**Then** a friendly empty state appears: "No properties saved yet. Browse listings and tap ♡ to save." with a CTA linking to the search page
+
+**Given** the shortlist page
+**When** a property is removed via the ✕ button
+**Then** it is removed from `localStorage` and the UI updates immediately without page reload
+
+**Given** the shortlist page
+**When** at least 1 property is saved
+**Then** two CTAs appear: "Ask about these" (primary, warm CTA) and "Share my shortlist" (secondary) (FR26)
+
+**And** the shortlist page is a Client Component (reads from `localStorage`)
+**And** the page is not a feature-dense comparison grid — it's a simple visual overview (FR23)
+
+---
+
+### Story 7.3: Shareable Shortlist URL
+
+As a **visitor**,
+I want to share my shortlist via a unique URL,
+So that my family or partner can see the same properties on their device without needing an account.
+
+**Acceptance Criteria:**
+
+**Given** the "Share my shortlist" button on the shortlist page
+**When** tapped
+**Then** a POST request is sent to `/api/shortlist` which creates a `shortlist_shares` record with the property IDs and returns a unique share URL (e.g., `remax-altitud.cr/shortlist/abc123`) (FR24)
+
+**Given** the share URL
+**When** opened on another device or browser
+**Then** it loads a read-only shortlist page showing the same properties with photos, prices, specs, and a mini-map (FR24)
+
+**Given** the `shortlist_shares` table
+**When** a share record is created
+**Then** it stores: share_id (unique slug), property_ids (text[]), locale, created_at, and expires_at (30 days) per Architecture schema
+
+**Given** a shared shortlist URL
+**When** opened after 30 days
+**Then** a friendly expiration message appears: "This shortlist has expired. Start a new search." with a link to the search page
+
+**Given** the share URL
+**When** opened
+**Then** the user's locale is used (not the original sharer's) for UI text, but property data is the same
+
+**And** the share URL is copy-to-clipboard with a toast: "Link copied! Share it with anyone."
+**And** the `/api/shortlist` endpoint validates that all property IDs exist and are visible before creating the share
+
+---
+
+### Story 7.4: Smart Agent Routing from Shortlist
+
+As a **visitor**,
+I want to contact one agent about all my saved properties through an intelligent routing system,
+So that I get a single point of contact who coordinates all viewings — even for properties listed by different agents.
+
+**Acceptance Criteria:**
+
+**Given** the "Ask about these" CTA on the shortlist page
+**When** all shortlisted properties belong to 1 agent
+**Then** WhatsApp opens directly to that agent with a pre-populated message listing ALL property refs (titles + reference IDs) (FR26, FR27)
+
+**Given** a shortlist where a majority (2+) of properties belong to 1 agent
+**When** "Ask about these" is tapped
+**Then** the system auto-suggests that agent with messaging: "[Agent] specializes in the areas you're exploring. She can show you all [N] properties." with a primary CTA to contact that agent and a secondary CTA to "Choose a different agent" (FR26)
+
+**Given** a shortlist where properties are evenly distributed across agents (or tied)
+**When** "Ask about these" is tapped
+**Then** an AgentSelectionModal appears with agent cards showing: photo, name, languages spoken, listing count. Agents are auto-sorted by language match to the user's detected locale. An education interstitial reads: "🏠 One agent, all your visits — your chosen agent will coordinate visits to all your saved properties, even those listed by other agents." (FR26)
+
+**Given** an agent is selected (any routing path)
+**When** WhatsApp opens
+**Then** the pre-populated message includes ALL shortlisted property references (titles + refs) in a single message, regardless of how many are saved (FR27)
+
+**Given** a shortlist lead is created
+**When** the lead record is stored
+**Then** it includes: assigned_agent_id, shortlist_property_ids[] (all saved property IDs), source = "whatsapp" (or contact form), intent = "buy" or "invest", UTM/referrer data, and the user's language (FR28, FR54)
+
+**Given** the admin lead view (FR57)
+**When** viewing a shortlist lead
+**Then** it shows which properties belong to the assigned agent and which belong to other agents (e.g., "Hans → Agent: Emma • Emma's listings: #123, #456 • Gustavo's listings: #321, #654") (FR57)
+
+**And** the AgentSelectionModal is lazy-loaded (~5KB) — only fetched when the modal opens (AR performance budget)
+**And** email CTA is available as an alternative to WhatsApp on the agent selection screen
+
+---
+
+## Epic 8: Administration & Operations
+
+Admin can monitor the platform, manage leads, curate content, and maintain operational oversight via Supabase dashboard and admin-facing features.
+
+### Story 8.1: Sync Status Dashboard & Monitoring
+
+As an **admin**,
+I want to view sync status logs with timestamps, counts, and error details,
+So that I can monitor data freshness and quickly diagnose sync failures.
+
+**Acceptance Criteria:**
+
+**Given** the admin sync log view (Supabase dashboard or admin page)
+**When** accessed
+**Then** it displays a chronological list of sync_log records showing: started_at, completed_at, status (success/failure/partial), properties_added, properties_updated, properties_removed, agents_synced, translations_queued, images_optimized, and error_message (FR56)
+
+**Given** a sync failure
+**When** the sync completes with status = "failure"
+**Then** the error_message field contains diagnostic details and the admin has already received an automated alert (email/WhatsApp) from the sync pipeline (FR56, FR51)
+
+**Given** the sync log
+**When** filtered by date range
+**Then** the admin can view historical sync performance and identify patterns (e.g., frequent API timeouts)
+
+**Given** the sync status
+**When** accessed at any time
+**Then** the admin can see when the last successful sync occurred and how many listings are currently active
+
+**And** sync logs are stored in the `sync_logs` table per Architecture schema
+**And** this story reads from data created by Epic 2's sync pipeline — no duplicate pipeline
+
+---
+
+### Story 8.2: Lead Management & Agent Assignment
+
+As an **admin**,
+I want to view, filter, and manage all leads with full source context,
+So that I can ensure leads are routed to the right agents and track conversion performance.
+
+**Acceptance Criteria:**
+
+**Given** the admin lead management view
+**When** accessed
+**Then** it displays all leads with: name, email, phone, source (whatsapp/seller_form/contact_form/cma_form), intent (buy/sell/invest/recruit), property reference, language, assigned agent, UTM source/medium/campaign, status, and created_at (FR57)
+
+**Given** a shortlist lead
+**When** viewed in the lead management view
+**Then** it shows all shortlisted property refs, grouped by which belong to the assigned agent and which belong to other agents (e.g., "Hans → Agent: Emma • Emma's: #123, #456 • Gustavo's: #321, #654") (FR57)
+
+**Given** a lead assigned to the wrong agent
+**When** the admin uses the reassign action
+**Then** the lead's assigned_agent_id is updated and a log entry records: previous agent, new agent, and reassignment date (FR58)
+
+**Given** the lead list
+**When** filtered by agent, source, intent, status, or date range
+**Then** the list updates to show only matching leads
+
+**Given** the per-agent lead history view
+**When** the admin selects an agent
+**Then** all leads ever assigned to that agent are displayed (buyer inquiry, seller listing, CMA request, shortlist inquiry) with: date, name, email, phone, lead type, property reference, and source. Filterable by lead type (FR64)
+
+**And** lead PII is displayed only to authenticated admin users (NFR8)
+**And** the lead management interface operates through Supabase dashboard views/tables for MVP
+
+---
+
+### Story 8.3: Bulk Lead Reassignment & Export
+
+As an **admin**,
+I want to bulk-reassign leads from one agent to another and export client contacts,
+So that I can maintain business continuity when an agent departs the organization.
+
+**Acceptance Criteria:**
+
+**Given** the admin bulk reassignment tool
+**When** the admin selects a source agent and a target agent (or multiple target agents for distribution)
+**Then** all leads currently assigned to the source agent are reassigned to the target agent(s) (FR65)
+
+**Given** a bulk reassignment action
+**When** executed
+**Then** every reassigned lead has an automatic log entry recording: previous_agent_id, new_agent_id, and reassignment_date (FR65)
+
+**Given** the admin selects "distribute" across multiple agents
+**When** the distribution is executed
+**Then** leads are distributed round-robin or evenly among the selected target agents
+
+**Given** the admin CSV export action
+**When** the admin selects an agent and exports
+**Then** a CSV file is generated containing: name, email, phone for all client contacts (leads) associated with that agent. This enables manual outreach/notification purposes when an agent departs (FR65)
+
+**Given** the bulk reassignment
+**When** there are zero leads for the source agent
+**Then** a clear message appears: "No leads to reassign for [Agent Name]"
+
+**And** bulk reassignment requires explicit confirmation ("Are you sure? This will reassign X leads from [Source] to [Target].")
+**And** reassignment logs are immutable — they cannot be edited or deleted
+
+---
+
+### Story 8.4: Lifestyle Tag Administration
+
+As an **admin**,
+I want to add, edit, and remove lifestyle tags on listings,
+So that I can curate which properties appear under specific discovery categories.
+
+**Acceptance Criteria:**
+
+**Given** the admin listing tag view
+**When** accessed for a specific listing
+**Then** the admin can see all current lifestyle tags assigned to that listing (FR59)
+
+**Given** the admin tag management UI
+**When** the admin adds a tag (e.g., "Investment Property") to a listing
+**Then** the tag is appended to the listing's `lifestyle_tags` array and the listing appears in filtered search results for that tag after next ISR revalidation (FR59)
+
+**Given** the admin tag management UI
+**When** the admin removes a tag from a listing
+**Then** the tag is removed from the `lifestyle_tags` array and the listing no longer appears in filtered results for that tag (FR59)
+
+**Given** auto-tagging from the sync pipeline (Epic 2)
+**When** an admin manually overrides a tag on a listing
+**Then** the manual override takes precedence — the sync pipeline does not reset admin-set tags (FR49)
+
+**Given** the lifestyle tag definitions
+**When** the admin needs to create a new tag category
+**Then** it can be added via the `constants/lifestyle-tags.ts` configuration (with auto-tag rules if applicable)
+
+**And** tag changes are reflected on ISR-cached pages after next revalidation
+**And** the tag administration operates through Supabase dashboard for MVP (FR59)
+
+---
+
+### Story 8.5: Community Administration
+
+As an **admin**,
+I want to create and manage communities with rich metadata and geo-fence polygons,
+So that I can curate premium development pages and control which properties are tagged to them.
+
+**Acceptance Criteria:**
+
+**Given** the admin community management interface
+**When** the admin creates a new community
+**Then** the admin can set: name, slug, tagline (EN/ES), description (EN/ES), hero image URL, quick facts (elevation, amenities, developer, established year, airport distance, infrastructure), and site map image URL (FR61)
+
+**Given** the community creation/edit interface
+**When** the admin needs to define a geo-fence
+**Then** a map interface allows the admin to draw a polygon on an interactive Mapbox map that defines the community's geographic boundary (FR61)
+
+**Given** the admin community assignment view
+**When** accessed for a specific listing
+**Then** the admin can see the auto-populated community assignment (from geo-fence match) and manually override it to a different community or remove the assignment (FR60)
+
+**Given** an admin manually assigns a community to a listing
+**When** the next sync pipeline runs
+**Then** the manual override is preserved and NOT reset by auto-tagging (FR60)
+
+**Given** the admin edits a community's geo-fence polygon
+**When** saved
+**Then** the next sync run re-evaluates property-community assignments based on the new polygon boundary
+
+**And** community data (name, description, quick facts) is stored in the `communities` table per Architecture schema
+**And** the geo-fence polygon is stored as a PostGIS geography `Polygon 4326` type
+
+---
+
+### Story 8.6: Listing Visibility & SEO Monitoring
+
+As an **admin**,
+I want to hide/unhide listings and monitor SEO performance,
+So that I can control what appears on the website and track search engine performance.
+
+**Acceptance Criteria:**
+
+**Given** the admin listing management view
+**When** the admin toggles a listing's visibility to "hidden"
+**Then** the listing's `is_visible` field is set to `false` and it is excluded from all search results, map pins, and property grids — without affecting the underlying API data (FR62)
+
+**Given** a hidden listing
+**When** its URL is accessed directly
+**Then** it shows "No longer available" with links to similar properties and an agent CTA — converting dead links into leads (AR12)
+
+**Given** the admin re-enables visibility
+**When** the listing's `is_visible` field is set back to `true`
+**Then** the listing reappears in search results, map pins, and property grids after next ISR revalidation
+
+**Given** the SEO monitoring requirement
+**When** the admin accesses analytics
+**Then** Google Analytics 4 and Google Search Console are integrated and accessible, providing: organic traffic trends, top-performing pages, keyword rankings, and indexing status (FR63)
+
+**Given** the analytics integration
+**When** rendering any page
+**Then** GA4 tracking code is present and loads in cookieless mode for MVP (NFR12)
+
+**And** listing visibility changes do not require a full site rebuild — they are effective after next ISR revalidation
+**And** the admin can view which listings are currently hidden via a filtered view of `is_visible = false`
+
+---
+
+### Story 8.7: Shortlist Analytics
+
+As an **admin**,
+I want to see which properties are being shortlisted most frequently by visitors,
+So that I can identify market demand patterns and provide agents with demand intelligence.
+
+**Acceptance Criteria:**
+
+**Given** a visitor saves or unsaves a property from their shortlist (Epic 7 SaveButton)
+**When** the save/unsave action occurs
+**Then** an anonymous analytics event is fired containing: property_id, locale, action (save/unsave), and timestamp. No visitor-identifying data (IP, cookies, fingerprint) is captured or stored (FR66)
+
+**Given** the admin opens the shortlist analytics view
+**When** the view loads
+**Then** each property displays: total saves (all-time), saves in the last 30 days, and current active shortlist count (FR66)
+
+**Given** the admin shortlist analytics view
+**When** sorted by popularity
+**Then** properties are ranked by 30-day save count ("most shortlisted"), enabling identification of high-demand listings (FR66)
+
+**Given** the admin opens a lead detail view
+**When** the lead references a specific property
+**Then** the shortlist popularity count for that property is visible alongside the lead context, providing demand intelligence to the agent receiving the lead (FR66)
+
+**Given** a property with zero shortlist saves
+**When** displayed in the analytics view
+**Then** it shows "0 saves" — not hidden or excluded from the list
+
+**And** shortlist analytics events are stored in a lightweight `shortlist_events` table (property_id, locale, action, created_at) — no PII columns
+**And** aggregate counts can be computed via SQL queries on the events table (no pre-computation needed for MVP scale of ~300-400 listings)
+**And** the analytics operates through Supabase dashboard queries/views for MVP

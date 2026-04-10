@@ -167,6 +167,23 @@ The following are explicitly excluded from MVP and will NOT be built:
 - ❌ Property alerts / saved searches
 - ❌ Blog/CMS
 
+### Constraints & Assumptions
+
+| Type | Item | Addressed In |
+|------|------|--------------|
+| Constraint | Solo developer for MVP | Executive Summary |
+| Constraint | RE/MAX brand guidelines compliance | NFR25-26 |
+| Constraint | RE/MAX API dependency (daily sync, no real-time) | FR46, Risk Mitigation |
+| Constraint | Two-office structure (Altitud + Altitud Cero) | FR46, Project Classification |
+| Constraint | Third-party API cost budgets (maps, translation) | Risk Mitigation |
+| Constraint | SEO migration — must preserve existing rankings | FR69, Success Criteria |
+| Assumption | RE/MAX API provides sufficient listing data | FR55 (validation pipeline) |
+| Assumption | Agents will adopt WhatsApp-first workflow | Journey 1-4, FR34 |
+| Assumption | European markets drive primary non-US demand | FR10 (EUR prioritization) |
+| Assumption | 6-language coverage addresses target buyer markets | Success Criteria, FR29-33 |
+| Assumption | Database free/Pro tier sufficient for MVP scale | Risk Mitigation |
+| Assumption | Solo dev can maintain translation quality via glossary | FR33, Domain Requirements |
+
 ## User Journeys
 
 ### Journey 1: Maria — The American Dreamer Becomes a Buyer
@@ -249,7 +266,9 @@ The following are explicitly excluded from MVP and will NOT be built:
 
 **Failure scenario:** One morning, sync log shows "❌ API timeout — 0 properties synced." Nico receives an **automated alert** (email/WhatsApp). The site continues serving all existing listings from Supabase — optimized photos and translations intact. No user-facing impact. He contacts the API provider and the next day's sync recovers.
 
-> **Capabilities:** Sync monitoring with failure alerts, lead review + agent reassignment, lifestyle tag management (admin table), SEO monitoring, multi-office visibility. **Resilience pattern:** Supabase DB is the source of truth — API failures don't affect the live site, only halt new data flow.
+**Edge case — Agent departure:** Gustavo announces he's leaving RE/MAX Altitud. Nico opens the per-agent lead history (FR64) — all 47 leads Gustavo handled over 8 months are visible: buyer inquiries, seller listings, CMA requests, shortlist inquiries. Each shows the client's name, contact info, property reference, and source. Nico selects "Bulk Reassign" (FR65) — distributes Gustavo's active leads across Laura and two other agents based on language match and area coverage. The system logs every reassignment (previous agent, new agent, date). He exports Gustavo's full client contact list as CSV and sends a personal WhatsApp to each client introducing their new agent. No client falls through the cracks. No institutional knowledge is lost.
+
+> **Capabilities:** Sync monitoring with failure alerts, lead review + agent reassignment, lifestyle tag management (admin table), SEO monitoring, multi-office visibility, per-agent lead history with full audit trail (FR64), bulk lead reassignment with logging (FR65), CSV export of agent contacts (FR65), shortlist popularity analytics (FR66). **Resilience pattern:** Supabase DB is the source of truth — API failures don't affect the live site, only halt new data flow.
 
 ---
 
@@ -326,6 +345,11 @@ The following are explicitly excluded from MVP and will NOT be built:
 | Agent profile pages (shareable, with listings) | Laura, Sofia, Jennifer | ✅ |
 | Agent recruitment page ("Join Our Team") | Sofia | ✅ |
 | Lead source tracking on all forms | Nico, Laura, Sofia | ✅ |
+| Community pages (hero, facts, listings) | Maria, Hans | ✅ |
+| Shortlist (save/compare/share) | Maria, Hans, Jennifer | ✅ |
+| Smart agent routing from shortlist | Maria, Hans | ✅ |
+| Per-agent lead history + bulk reassignment | Nico | ✅ |
+| Shortlist popularity analytics (admin) | Nico | ✅ |
 | Lead follow-up reminders | Nico | 🟡 Growth |
 | Full German UI + EUR conversion | Hans | 🟡 Phase 2 |
 | Financing guides for foreigners | Hans | 🟡 Phase 2 (Relocation Hub) |
@@ -485,7 +509,7 @@ See **Non-Functional Requirements** section for measurable performance targets (
 - **FR7:** Visitors can paginate or progressively load search results in list/grid view
 - **FR8:** Visitors can view a property listing detail page with photo gallery, YouTube video embeds, description, specs, and area context
 - **FR9:** Visitors can view property area/size in locale-appropriate units (m², acres, hectares)
-- **FR10:** Visitors can view property price in USD with approximate EUR conversion for non-US locales
+- **FR10:** Visitors can view property price in USD with approximate EUR conversion for non-US locales. EUR is prioritized as the primary non-US currency based on European buyer traffic patterns observed in Southern Zone real estate markets; additional currencies (GBP, CAD, BRL) are deferred to Phase 2 based on demand data.
 - **FR11:** Visitors can see ZMT/ownership status on each listing (Titled / Concession / ZMT Restricted)
 - **FR12:** Visitors receive alternative suggestions and a CTA to contact an agent (with the user's search criteria forwarded as context) when a search returns no results
 - **FR13:** Visitors can share a listing URL that loads as a standalone landing page with full context
@@ -498,14 +522,14 @@ See **Non-Functional Requirements** section for measurable performance targets (
 - **FR17:** Visitors can browse dedicated community landing pages (`/areas/[area]/communities/[slug]`) with hero imagery, description, quick facts (elevation, distance to airport, infrastructure, amenities), and available properties filtered to that community
 - **FR18:** Visitors can view a community index page (`/communities`) showing all communities with hero photo, name, tagline, and price range
 - **FR19:** Visitors see a "Featured Communities" section on the homepage with 2-3 spotlight cards linking to community pages, showing community name, one-liner tagline, hero photo, price range, and listing count
-- **FR20:** Each community page displays a mini-map (Mapbox static) showing the community's location within its broader area for geographic context
+- **FR20:** Each community page displays a mini-map (static map image) showing the community's location within its broader area for geographic context
 - **FR21:** Each community page shows lot/property availability with status indicators (Available, Sold, Reserved) — displayed as a sortable list on mobile, with optional master plan/site map view on desktop
 
 ### Shortlist & Agent Representation
 
 - **FR22:** Visitors can save/shortlist properties by tapping a ♡ icon on any PropertyCard or Listing Detail page. Shortlist persists in `localStorage` for anonymous users (Phase 2: persisted to user account). **Cap: 20 properties maximum** — at limit, show "Remove one to add more." The ♡ icon uses `aria-label` ("Save property" / "Remove from saved") and toggles with a visible color change (`#888` outline → `--color-accent` #660000 filled), not just fill, for low-vision accessibility.
 - **FR23:** Visitors can view their shortlist from a persistent icon in the navigation bar, showing saved property count and linking to a **simple comparison page** displaying saved properties with photos, prices, and a mini-map showing all saved locations. Not a feature-dense comparison grid.
-- **FR24:** Visitors can share their shortlist via a "Share my shortlist" button that generates a unique URL (e.g., `remax-altitud.cr/shortlist/abc123`) encoding the saved property IDs. This URL works cross-device and can be sent to family/partners without requiring user accounts.
+- **FR24:** Visitors can share their shortlist via a "Share my shortlist" button that generates a unique URL (e.g., `remax-altitud.cr/shortlist/abc123`) encoding the saved property IDs as a read-only snapshot at time of generation. Recipients see the same properties with photos, prices, and agent CTAs but cannot modify the list. The URL works cross-device and can be sent to family/partners without requiring user accounts.
 - **FR25:** On the second ♡ save, a brief tooltip appears: *"Save more — your agent will show you all of them."* This plants the single-agent representation mental model early, before the selection screen.
 - **FR26:** When a visitor taps **"Ask about these"** (warm CTA, not "Contact about saved properties") from the shortlist, the system applies smart agent routing:
   - **All properties from 1 agent**: WhatsApp fires directly to that agent with all property refs.
@@ -549,7 +573,7 @@ See **Non-Functional Requirements** section for measurable performance targets (
 - **FR47:** The system optimizes API images (WebP, responsive sizes) during sync
 - **FR48:** The system translates new listing content to available languages during sync
 - **FR49:** The system auto-tags listings with lifestyle tags based on configurable attribute rules (e.g., condos in tourist zones → "Rental Potential"), with manual override capability
-- **FR50:** The system auto-tags listings with a community ID by matching property coordinates against defined community geo-fence polygons (PostGIS) during sync, with manual override capability in admin
+- **FR50:** The system auto-tags listings with a community ID by matching property coordinates against defined community geo-fence polygons during sync, with manual override capability in admin
 - **FR51:** The system sends an automated alert to admin when sync fails
 - **FR52:** The site continues serving existing listings from the database when API sync fails
 - **FR53:** The system detects listings removed from the API during sync and handles them gracefully (hides from search, preserves URL for SEO)
@@ -566,14 +590,15 @@ See **Non-Functional Requirements** section for measurable performance targets (
 - **FR61:** Admin can create and manage communities: name, slug, description, quick facts, hero image, and geo-fence polygon (drawn on a map interface)
 - **FR62:** Admin can hide/unhide listings from the website (without affecting API data)
 - **FR63:** Admin can monitor SEO performance via integrated analytics
-- **FR67:** Admin can view a per-agent lead history showing all leads (buyer, seller, investor) ever assigned to that agent — displaying lead date, name, email, phone, lead type (buyer inquiry, seller listing, CMA request, shortlist inquiry), property reference, and source. Filterable by agent and lead type. This enables business continuity when an agent departs the organization.
-- **FR68:** Admin can bulk-reassign all leads from one agent to another (or distribute across multiple agents), with automatic logging of the reassignment (previous agent, new agent, date). Admin can export a CSV of all client contacts (name, email, phone) associated with an agent for manual outreach/notification purposes.
+- **FR64:** Admin can view a per-agent lead history showing all leads (buyer, seller, investor) ever assigned to that agent — displaying lead date, name, email, phone, lead type (buyer inquiry, seller listing, CMA request, shortlist inquiry), property reference, and source. Filterable by agent and lead type. This enables business continuity when an agent departs the organization.
+- **FR65:** Admin can bulk-reassign all leads from one agent to another (or distribute across multiple agents), with automatic logging of the reassignment (previous agent, new agent, date). Admin can export a CSV of all client contacts (name, email, phone) associated with an agent for manual outreach/notification purposes.
+- **FR66:** The system fires an anonymous analytics event when a visitor saves or unsaves a property from their shortlist, capturing property ID, locale, and timestamp. Admin can view per-property shortlist popularity: total saves, saves in the last 30 days, and a "most shortlisted" ranking. Shortlist count is visible on the lead detail view for demand context. No visitor-identifying data is stored.
 
 ### Static Content & Site Pages
 
-- **FR64:** The site displays a Homepage with featured listings (admin-curated or most recent) and office value proposition
-- **FR65:** The site displays About/Offices, Services, Contact, and Join Our Team pages
-- **FR66:** The site maintains full SEO architecture (structured data, sitemaps, meta tags, hreflang, 301 redirects from WordPress)
+- **FR67:** The site displays a Homepage with featured listings (admin-curated or most recent) and office value proposition
+- **FR68:** The site displays About/Offices, Services, Contact, and Join Our Team pages
+- **FR69:** The site maintains full SEO architecture (structured data, sitemaps, meta tags, hreflang, 301 redirects from WordPress)
 
 ## Non-Functional Requirements
 

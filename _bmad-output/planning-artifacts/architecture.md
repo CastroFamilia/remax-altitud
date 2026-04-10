@@ -137,7 +137,7 @@ remax-altitud/
 ├── .env.local                          # Environment variables (never committed)
 ├── .env.example                        # Template for env vars
 ├── next.config.ts                      # Next.js configuration
-├── tailwind.config.ts                  # Tailwind CSS v4 config with design tokens
+├── postcss.config.ts                   # PostCSS config (Tailwind v4 plugin)
 ├── drizzle.config.ts                   # Drizzle ORM configuration
 ├── vercel.json                         # Cron jobs, redirects, headers
 ├── middleware.ts                        # i18n locale detection + redirects
@@ -346,7 +346,7 @@ remax-altitud/
 │   │   └── api.ts                      # RE/MAX API response types
 │   │
 │   └── styles/
-│       └── globals.css                 # Design tokens + Tailwind base
+│       └── globals.css                 # Tailwind v4 CSS-first config: @import, @theme directives, design tokens
 │
 ├── tests/
 │   ├── e2e/                            # Playwright E2E tests
