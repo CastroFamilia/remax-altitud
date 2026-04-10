@@ -34,7 +34,7 @@ workflowType: 'prd'
 
 ## Executive Summary
 
-RE/MAX Altitud is building a multilingual, map-first real estate platform for Costa Rica's Southern Zone — replacing the current WordPress site (English-only, no API sync, Pérez Zeledón office only) with a Next.js application that unifies both the Pérez Zeledón and Dominical offices under one digital experience.
+RE/MAX Altitud is building a multilingual, map-first real estate platform for Costa Rica's Southern Zone — replacing the current WordPress site (English-only, no API sync, Pérez Zeledón office only) with a Next.js application that unifies both RE/MAX Altitud (Pérez Zeledón) and RE/MAX Altitud Cero (Dominical/Uvita) under one digital experience.
 
 The platform serves a single purpose: **convert curiosity into trust and trust into qualified leads for agents** — across buyers, sellers, and investors, in 6 languages.
 
@@ -48,7 +48,7 @@ Costa Rica has no centralized MLS, ~40% of transactions involve international bu
 | **Sell** | List a property with a trusted agency | "List with us" / "Vende tu propiedad" CTAs, seller capture forms, agent assignment |
 | **Invest** | Identify investment opportunities (commercial, land, rental yield) | Investment-aware filters/tags, ROI context on listings, "Investment inquiry" CTA |
 
-The platform replaces a WordPress site serving the Pérez Zeledón market while simultaneously launching the Dominical/Uvita office's first digital presence — expanding lead generation into a coastal market with 6–10% annual appreciation and zero existing online footprint.
+The platform replaces a WordPress site serving the Pérez Zeledón market while simultaneously launching RE/MAX Altitud Cero's (Dominical/Uvita) first digital presence — expanding lead generation into a coastal market with 6–10% annual appreciation and zero existing online footprint.
 
 ### What Makes This Special
 
@@ -73,7 +73,7 @@ The strategic moat deepens in Phase 2 with a full relocation hub ("Move to Costa
 | **Complexity** | Medium-High |
 | **Project Context** | Brownfield — platform migration from WordPress (remax-altitud.cr) to Next.js with SEO continuity |
 | **Existing Site** | www.remax-altitud.cr (Pérez Zeledón office only, English-only WordPress, 15 agents) |
-| **New Capability** | Dominical/Uvita office digital launch, 6-language support, map-first search, three-intent lead funnel |
+| **New Capability** | RE/MAX Altitud Cero (Dominical/Uvita) office digital launch, 6-language support, map-first search, three-intent lead funnel |
 
 ## Success Criteria
 
@@ -93,7 +93,7 @@ The strategic moat deepens in Phase 2 with a full relocation hub ("Move to Costa
 |--------|----------------|-----------------|
 | **Qualified leads per office** | **50+ leads/mo per office** (100+ total) | 75+ leads/mo per office |
 | **Seller lead conversion** | 50–70% from lead → listed property | Maintain 50–70% |
-| **Dominical office scale** | 6–8 agents, 150 exclusive listings | 10+ agents, 200+ listings |
+| **Altitud Cero office scale** | 6–8 agents, 150 exclusive listings | 10+ agents, 200+ listings |
 | **Organic traffic** | 5,000+ sessions/mo (combined) | 10,000+ sessions/mo |
 | **Search rankings** | Top 5 for "Pérez Zeledón real estate" + 10 area keywords | Add Top 5 for Dominical/Uvita keywords |
 | **Non-EN/ES traffic** | 15%+ of sessions | 20%+ of sessions |
@@ -223,21 +223,21 @@ The following are explicitly excluded from MVP and will NOT be built:
 
 **Persona:** Jennifer, 58, American who bought a Dominical villa 5 years ago. Grandkids in Texas — ready to move back. Needs to sell from 3,000 miles away.
 
-**Opening Scene:** Jennifer searches "sell property Dominical Costa Rica RE/MAX." Finds remax-altitud.cr in English. Sees "List with us" in the nav — and the Dominical office listed for the first time.
+**Opening Scene:** Jennifer searches "sell property Dominical Costa Rica RE/MAX." Finds remax-altitud.cr in English. Sees "List with us" in the nav — and the Altitud Cero office listed for the first time.
 
-**Rising Action:** She fills out the seller form: House/Villa, Dominical, approximate value, contact info. Notes she's in Texas. Browses agent profiles — filters by Dominical office. Picks an English-speaking coastal specialist.
+**Rising Action:** She fills out the seller form: House/Villa, Dominical, approximate value, contact info. Notes she's in Texas. Browses agent profiles — filters by Altitud Cero office. Picks an English-speaking coastal specialist.
 
 **Climax:** Agent contacts her via WhatsApp video call. They discuss pricing, photography timeline, the process. Her villa goes live — professionally shot, listed in 6 languages.
 
 **Resolution:** Her agent receives inquiries from a German couple and a Canadian retiree within the first week. Villa sells in 3 months at 95% of asking. The multilingual listing reached buyers who would never have found Jennifer's villa on a local-only, Spanish-only platform.
 
-> **Capabilities:** Seller form for remote owners, Dominical office digital presence (new), agent filtering by office + language, multilingual listing exposure, WhatsApp for remote communication. All buyer inquiries route through the listing agent, never directly to the seller.
+> **Capabilities:** Seller form for remote owners, Altitud Cero office digital presence (new), agent filtering by office + language, multilingual listing exposure, WhatsApp for remote communication. All buyer inquiries route through the listing agent, never directly to the seller.
 
 ---
 
 ### Journey 5: Nico — The Platform Admin
 
-**Persona:** Nico, office owner/admin. Manages both PZ and Dominical offices. Monitors platform health, reviews leads, ensures data quality.
+**Persona:** Nico, office owner/admin. Manages both Altitud (PZ) and Altitud Cero (Dominical/Uvita) offices. Monitors platform health, reviews leads, ensures data quality.
 
 **Opening Scene:** Morning routine: check sync status. Supabase dashboard — sync log: "✅ 247 properties synced, 3 new, 1 updated, 0 errors." Translation batch: "✅ 4 new listings translated." All green.
 
@@ -275,13 +275,13 @@ The following are explicitly excluded from MVP and will NOT be built:
 
 **Opening Scene:** Laura adds her RE/MAX Altitud profile link to her email signature, WhatsApp status, and Instagram bio. A Canadian prospect opens it — sees Laura's photo, RE/MAX badge, "Speaks: English, Spanish," and all 22 of her listings with thumbnails. WhatsApp CTA at the top of her profile.
 
-**Rising Action:** A new lead notification arrives — a buyer named Juan contacted Laura through a listing page. The lead record shows: source (property listing, FR40), property reference, buyer language (Spanish), and the buyer's message. Laura responds via WhatsApp within 30 minutes.
+**Rising Action:** A new lead notification arrives — a buyer named Juan contacted Laura through a listing page. The lead record shows: source (property listing, FR54), property reference, buyer language (Spanish), and the buyer's message. Laura responds via WhatsApp within 30 minutes.
 
 **Climax:** Laura checks her profile page on the site. Her newest listing appeared overnight after the daily sync — photo optimized, description in English and Spanish. She copies the listing URL and shares it to her client WhatsApp group. The standalone URL loads with full gallery, area context, and her contact info as the listing agent.
 
 **Resolution:** Laura's clients tell her the site "looks like the international platforms." She refers a colleague to the "Únete a Nuestro Equipo" page. For the first time, her digital presence matches the RE/MAX brand promise — and it works while she sleeps.
 
-> **Capabilities:** Agent profile pages with listings, photo, languages, and office affiliation (FR24-26). Shareable profile URLs. WhatsApp CTA on profile. Lead routing with source tracking (FR40). Daily-synced listings on agent pages. Standalone listing URLs for sharing (FR13). Professional presentation matching RE/MAX brand standards.
+> **Capabilities:** Agent profile pages with listings, photo, languages, and office affiliation (FR37-39). Shareable profile URLs. WhatsApp CTA on profile. Lead routing with source tracking (FR54). Daily-synced listings on agent pages. Standalone listing URLs for sharing (FR13). Professional presentation matching RE/MAX brand standards.
 
 ---
 
@@ -297,7 +297,7 @@ The following are explicitly excluded from MVP and will NOT be built:
 
 **Resolution:** Nico receives the recruitment inquiry with source tracking. He schedules a call. Sofia joins RE/MAX Altitud two months later — her listings now reach 6 language markets. The website didn't just generate buyer leads — it recruited the talent.
 
-> **Capabilities:** "Join Our Team" page with benefits showcase (FR48), agent profile pages as recruitment proof points (FR24-26), professional brand presentation, recruitment inquiry form with source tracking (FR40), WhatsApp CTA for office contact.
+> **Capabilities:** "Join Our Team" page with benefits showcase (FR61), agent profile pages as recruitment proof points (FR37-39), professional brand presentation, recruitment inquiry form with source tracking (FR54), WhatsApp CTA for office contact.
 
 ---
 
@@ -321,7 +321,7 @@ The following are explicitly excluded from MVP and will NOT be built:
 | Standalone listing URLs (shareable) | Maria, Laura | ✅ |
 | No-results state with alternatives | Maria (edge case) | ✅ |
 | Low-end Android form support | Carlos, Andrés | ✅ (NFR) |
-| Dominical office digital presence | Jennifer, Nico | ✅ |
+| Altitud Cero office digital presence | Jennifer, Nico | ✅ |
 | Full Spanish UX | Carlos, Andrés | ✅ |
 | Agent profile pages (shareable, with listings) | Laura, Sofia, Jennifer | ✅ |
 | Agent recruitment page ("Join Our Team") | Sofia | ✅ |
@@ -419,7 +419,7 @@ See **Non-Functional Requirements** section for measurable performance targets (
 - ✅ Maria (buyer, English) — full map search → listing → WhatsApp
 - ✅ Carlos (seller, Spanish) — full seller form → agent assignment
 - ⚠️ Hans (investor) — partial (English, not German yet), but lifestyle tags + investment filters work
-- ✅ Jennifer (expat seller) — full seller form + Dominical office
+- ✅ Jennifer (expat seller) — full seller form + Altitud Cero office
 - ✅ Nico (admin) — full sync monitoring + lead management + tag admin
 - ✅ Andrés (local buyer, Spanish) — grid-view search → listing → WhatsApp
 - ✅ Laura (active agent) — profile page, lead routing, listing sharing
@@ -505,73 +505,75 @@ See **Non-Functional Requirements** section for measurable performance targets (
 
 - **FR22:** Visitors can save/shortlist properties by tapping a ♡ icon on any PropertyCard or Listing Detail page. Shortlist persists in `localStorage` for anonymous users (Phase 2: persisted to user account). **Cap: 20 properties maximum** — at limit, show "Remove one to add more." The ♡ icon uses `aria-label` ("Save property" / "Remove from saved") and toggles with a visible color change (`#888` outline → `--color-accent` #660000 filled), not just fill, for low-vision accessibility.
 - **FR23:** Visitors can view their shortlist from a persistent icon in the navigation bar, showing saved property count and linking to a **simple comparison page** displaying saved properties with photos, prices, and a mini-map showing all saved locations. Not a feature-dense comparison grid.
-- **FR23b:** Visitors can share their shortlist via a "Share my shortlist" button that generates a unique URL (e.g., `remax-altitud.cr/shortlist/abc123`) encoding the saved property IDs. This URL works cross-device and can be sent to family/partners without requiring user accounts.
-- **FR23c:** On the second ♡ save, a brief tooltip appears: *"Save more — your agent will show you all of them."* This plants the single-agent representation mental model early, before the selection screen.
-- **FR24:** When a visitor taps **"Ask about these"** (warm CTA, not "Contact about saved properties") from the shortlist, the system applies smart agent routing:
+- **FR24:** Visitors can share their shortlist via a "Share my shortlist" button that generates a unique URL (e.g., `remax-altitud.cr/shortlist/abc123`) encoding the saved property IDs. This URL works cross-device and can be sent to family/partners without requiring user accounts.
+- **FR25:** On the second ♡ save, a brief tooltip appears: *"Save more — your agent will show you all of them."* This plants the single-agent representation mental model early, before the selection screen.
+- **FR26:** When a visitor taps **"Ask about these"** (warm CTA, not "Contact about saved properties") from the shortlist, the system applies smart agent routing:
   - **All properties from 1 agent**: WhatsApp fires directly to that agent with all property refs.
   - **Majority (2+) from 1 agent**: System auto-suggests that agent with messaging: *"[Agent] specializes in the areas you're exploring. She can show you all [N] properties."* Primary CTA contacts that agent; secondary CTA allows choosing a different agent.
   - **All properties from different agents (or tie)**: Agent selection screen appears showing agent cards (photo, name, languages, listing count) **auto-sorted by language match** to the user's detected language. Education interstitial: *"🏠 One agent, all your visits — your chosen agent will coordinate visits to all your saved properties, even those listed by other agents."*
-- **FR25:** The pre-populated WhatsApp message includes ALL shortlisted property references (titles + refs) in a single message, regardless of how many properties are saved.
-- **FR26:** The chosen/assigned agent receives the full shortlist context and is responsible for coordinating viewings of properties listed by other agents internally.
+- **FR27:** The pre-populated WhatsApp message includes ALL shortlisted property references (titles + refs) in a single message, regardless of how many properties are saved.
+- **FR28:** The chosen/assigned agent receives the full shortlist context and is responsible for coordinating viewings of properties listed by other agents internally.
 
 ### Multilingual Experience
 
-- **FR16:** The site auto-detects visitor browser language and loads the appropriate locale (EN or ES for MVP)
-- **FR17:** Visitors can manually switch between available languages
-- **FR18:** All listing content (title, description, specs) displays in the selected language
-- **FR19:** All UI elements, navigation, forms, and CTAs display in the selected language
-- **FR20:** Legal/property terms translate consistently via enforced glossary ("Titled Property," "Concession," etc.)
+- **FR29:** The site auto-detects visitor browser language and loads the appropriate locale (EN or ES for MVP)
+- **FR30:** Visitors can manually switch between available languages
+- **FR31:** All listing content (title, description, specs) displays in the selected language
+- **FR32:** All UI elements, navigation, forms, and CTAs display in the selected language
+- **FR33:** Legal/property terms translate consistently via enforced glossary ("Titled Property," "Concession," etc.)
 
 ### Lead Generation — Buyers
 
-- **FR21:** Visitors can contact a listing agent via WhatsApp with a pre-populated message (in EN or ES) referencing the property
-- **FR22:** Visitors can contact a listing agent via a contact form or email as an alternative to WhatsApp
-- **FR23:** The site displays a transparency note about agent languages and WhatsApp translation availability
-- **FR24:** Visitors can view agent profiles with photo, languages spoken, listing count, and office affiliation
-- **FR25:** Visitors can filter agents by office (PZ / Dominical) and language spoken
-- **FR26:** Visitors can view all listings for a specific agent from that agent's profile page
+- **FR34:** Visitors can contact a listing agent via WhatsApp with a pre-populated message (in EN or ES) referencing the property
+- **FR35:** Visitors can contact a listing agent via a contact form or email as an alternative to WhatsApp
+- **FR36:** The site displays a transparency note about agent languages and WhatsApp translation availability
+- **FR37:** Visitors can view agent profiles with photo, languages spoken, listing count, and office affiliation
+- **FR38:** Visitors can filter agents by office (Altitud / Altitud Cero) and language spoken
+- **FR39:** Visitors can view all listings for a specific agent from that agent's profile page
 
 ### Lead Generation — Sellers
 
-- **FR27:** Visitors can submit a "List with us" / "Vende tu propiedad" seller inquiry form
-- **FR28:** Visitors can submit a "Request a Free CMA" form to request a Comparative Market Analysis
-- **FR29:** Seller forms collect: name (required), phone/WhatsApp (required), email (optional), property type, location, approximate size, and comment/message (optional)
-- **FR30:** Seller form submissions are stored and routed to an assigned agent
+- **FR40:** Visitors can submit a "List with us" / "Vende tu propiedad" seller inquiry form
+- **FR41:** Visitors can submit a "Request a Free CMA" form to request a Comparative Market Analysis
+- **FR42:** Seller forms collect: name (required), phone/WhatsApp (required), email (optional), property type, location, approximate size, and comment/message (optional)
+- **FR43:** Seller form submissions are stored and routed to an assigned agent
 
 ### Lead Generation — Investors
 
-- **FR31:** Visitors can discover investment-relevant properties through lifestyle tags ("Investment Property," "Rental Potential," "Commercial")
-- **FR32:** Listings display area appreciation and rental yield context when available. Data is admin-curated static content per area (not sourced from API). Displayed as informational context with disclaimer: "Based on market estimates — consult an agent for current data"
+- **FR44:** Visitors can discover investment-relevant properties through lifestyle tags ("Investment Property," "Rental Potential," "Commercial")
+- **FR45:** Listings display area appreciation and rental yield context when available. Data is admin-curated static content per area (not sourced from API). Displayed as informational context with disclaimer: "Based on market estimates — consult an agent for current data"
 
 ### Data Pipeline & Content Management
 
-- **FR33:** The system syncs property listings from the RE/MAX API daily (two office GUIDs: PZ + Dominical)
-- **FR34:** The system optimizes API images (WebP, responsive sizes) during sync
-- **FR35:** The system translates new listing content to available languages during sync
-- **FR36:** The system auto-tags listings with lifestyle tags based on configurable attribute rules (e.g., condos in tourist zones → "Rental Potential"), with manual override capability
-- **FR37:** The system auto-tags listings with a community ID by matching property coordinates against defined community geo-fence polygons (PostGIS) during sync, with manual override capability in admin
-- **FR38:** The system sends an automated alert to admin when sync fails
-- **FR39:** The site continues serving existing listings from the database when API sync fails
-- **FR40:** The system detects listings removed from the API during sync and handles them gracefully (hides from search, preserves URL for SEO)
-- **FR41:** The system captures lead source (UTM parameters + referrer) on every form submission and WhatsApp click
-- **FR42:** The sync pipeline validates incoming API data before writing to the database — rejecting records with missing required fields or data anomalies, and alerting admin of rejected records
+- **FR46:** The system syncs property listings from the RE/MAX API daily (two office GUIDs: Altitud + Altitud Cero)
+- **FR47:** The system optimizes API images (WebP, responsive sizes) during sync
+- **FR48:** The system translates new listing content to available languages during sync
+- **FR49:** The system auto-tags listings with lifestyle tags based on configurable attribute rules (e.g., condos in tourist zones → "Rental Potential"), with manual override capability
+- **FR50:** The system auto-tags listings with a community ID by matching property coordinates against defined community geo-fence polygons (PostGIS) during sync, with manual override capability in admin
+- **FR51:** The system sends an automated alert to admin when sync fails
+- **FR52:** The site continues serving existing listings from the database when API sync fails
+- **FR53:** The system detects listings removed from the API during sync and handles them gracefully (hides from search, preserves URL for SEO)
+- **FR54:** The system captures lead source (UTM parameters + referrer) on every form submission and WhatsApp click
+- **FR55:** The sync pipeline validates incoming API data before writing to the database — rejecting records with missing required fields or data anomalies, and alerting admin of rejected records
 
 ### Administration & Operations
 
-- **FR43:** Admin can view sync status logs with timestamps (success/failure, counts, errors)
-- **FR44:** Admin can view and manage leads (source, property reference, language, assigned agent, UTM source). **For shortlist leads**: the lead record shows all shortlisted property refs, specifying which properties belong to the chosen/assigned agent and which belong to other agents. Example: "Hans → Agent: Emma • Emma's listings: #123, #456, #789 • Gustavo's listings: #321, #654." This gives the office full visibility into cross-agent interest without triggering agent-to-agent notifications.
-- **FR45:** Admin can reassign leads to different agents
-- **FR46:** Admin can add, edit, or remove lifestyle tags on listings
-- **FR47:** Admin can add, edit, or remove community assignments on listings (auto-populated by geo-fence, manually overridable)
-- **FR48:** Admin can create and manage communities: name, slug, description, quick facts, hero image, and geo-fence polygon (drawn on a map interface)
-- **FR49:** Admin can hide/unhide listings from the website (without affecting API data)
-- **FR50:** Admin can monitor SEO performance via integrated analytics
+- **FR56:** Admin can view sync status logs with timestamps (success/failure, counts, errors)
+- **FR57:** Admin can view and manage leads (source, property reference, language, assigned agent, UTM source). **For shortlist leads**: the lead record shows all shortlisted property refs, specifying which properties belong to the chosen/assigned agent and which belong to other agents. Example: "Hans → Agent: Emma • Emma's listings: #123, #456, #789 • Gustavo's listings: #321, #654." This gives the office full visibility into cross-agent interest without triggering agent-to-agent notifications.
+- **FR58:** Admin can reassign leads to different agents
+- **FR59:** Admin can add, edit, or remove lifestyle tags on listings
+- **FR60:** Admin can add, edit, or remove community assignments on listings (auto-populated by geo-fence, manually overridable)
+- **FR61:** Admin can create and manage communities: name, slug, description, quick facts, hero image, and geo-fence polygon (drawn on a map interface)
+- **FR62:** Admin can hide/unhide listings from the website (without affecting API data)
+- **FR63:** Admin can monitor SEO performance via integrated analytics
+- **FR67:** Admin can view a per-agent lead history showing all leads (buyer, seller, investor) ever assigned to that agent — displaying lead date, name, email, phone, lead type (buyer inquiry, seller listing, CMA request, shortlist inquiry), property reference, and source. Filterable by agent and lead type. This enables business continuity when an agent departs the organization.
+- **FR68:** Admin can bulk-reassign all leads from one agent to another (or distribute across multiple agents), with automatic logging of the reassignment (previous agent, new agent, date). Admin can export a CSV of all client contacts (name, email, phone) associated with an agent for manual outreach/notification purposes.
 
 ### Static Content & Site Pages
 
-- **FR48:** The site displays a Homepage with featured listings (admin-curated or most recent) and office value proposition
-- **FR49:** The site displays About/Offices, Services, Contact, and Join Our Team pages
-- **FR50:** The site maintains full SEO architecture (structured data, sitemaps, meta tags, hreflang, 301 redirects from WordPress)
+- **FR64:** The site displays a Homepage with featured listings (admin-curated or most recent) and office value proposition
+- **FR65:** The site displays About/Offices, Services, Contact, and Join Our Team pages
+- **FR66:** The site maintains full SEO architecture (structured data, sitemaps, meta tags, hreflang, 301 redirects from WordPress)
 
 ## Non-Functional Requirements
 

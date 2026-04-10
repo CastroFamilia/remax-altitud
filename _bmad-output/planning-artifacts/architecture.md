@@ -26,7 +26,7 @@ workflowType: 'architecture'
 
 ### System Purpose
 
-RE/MAX Altitud is a multilingual, map-first real estate platform for Costa Rica's Southern Zone. The system replaces a static WordPress site with a Next.js 15 application that unifies two offices (Pérez Zeledón + Dominical/Uvita), supports 6 languages via AI translation, and generates qualified leads through WhatsApp-first contact flows.
+RE/MAX Altitud is a multilingual, map-first real estate platform for Costa Rica's Southern Zone. The system replaces a static WordPress site with a Next.js 15 application that unifies two offices — RE/MAX Altitud (Pérez Zeledón) and RE/MAX Altitud Cero (Dominical/Uvita) — supports 6 languages via AI translation, and generates qualified leads through WhatsApp-first contact flows.
 
 ### Architecture Philosophy
 
@@ -656,7 +656,7 @@ WHERE ST_Within(p.geo, c.geo_fence)
 │  ├── PostGIS: match property coords → community polygons      │
 │  ├── Auto-assign community_id (new/moved properties)          │
 │  ├── Apply lifestyle tag rules:                               │
-│  │   ├── Condo in Dominical/Uvita → "Rental Potential"       │
+│  │   ├── Condo in Altitud Cero (Dominical/Uvita) → "Rental Potential"│
 │  │   ├── Land > 5000m² → "Investment Property"               │
 │  │   ├── House with "retirement" in description → "Retire"   │
 │  │   └── (configurable rules in constants/lifestyle-tags.ts) │
@@ -758,7 +758,7 @@ export async function searchProperties(filters: SearchFilters) {
 
 **Office GUIDs:**
 - Pérez Zeledón: `{PZ_OFFICE_GUID}` (env var)
-- Dominical/Uvita: `{DOM_OFFICE_GUID}` (env var)
+- RE/MAX Altitud Cero (Dominical/Uvita): `{DOM_OFFICE_GUID}` (env var)
 
 ---
 

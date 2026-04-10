@@ -32,7 +32,7 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 
 | Step | Status | Description |
 |------|--------|-------------|
-| Create PRD<br>`/bmad-bmm-create-prd` | ✅ Done | 50 FRs, 30 NFRs, 8 user journeys |
+| Create PRD<br>`/bmad-bmm-create-prd` | ✅ Done | 68 FRs, 30 NFRs, 8 user journeys |
 | Validate PRD<br>`/bmad-bmm-validate-prd` | ✅ Done | 12-step validation — 5/5 Excellent, 0 warnings |
 | Create UX<br>`/bmad-bmm-create-ux-design` | ✅ Done | 14/14 steps — ~2,590 lines. Personas, journeys, component specs, patterns, responsive strategy, accessibility audit |
 
@@ -41,8 +41,8 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 | Step | Status | Description |
 |------|--------|-------------|
 | Create Architecture<br>`/bmad-bmm-create-architecture` | ✅ Done | 16 sections — system architecture, DB schema, sync pipeline, API design, i18n, frontend, SEO, security, ADRs |
-| Create Epics & Stories<br>`/bmad-bmm-create-epics-and-stories` | ⬜ **Next** | Breakdown into epics and user stories |
-| Check Readiness<br>`/bmad-bmm-check-implementation-readiness` | ⬜ Required | Implementation readiness validation |
+| Create Epics & Stories<br>`/bmad-bmm-create-epics-and-stories` | 🔄 **In Progress** | 8 epics designed, 27/~50 stories written (Epics 1–4 complete) |
+| Check Readiness<br>`/bmad-bmm-check-implementation-readiness` | ⬜ Pending | Implementation readiness validation |
 
 ### Phase 4: Implementation
 
@@ -106,7 +106,21 @@ API docs: [`docs/`](docs/)
 | Market Research | [`_bmad-output/market-research/`](_bmad-output/market-research/) |
 | Technical Research | [`_bmad-output/technical-research/`](_bmad-output/technical-research/) |
 | API Documentation | [`docs/`](docs/) |
+| **Epics & Stories** | [`_bmad-output/planning-artifacts/epics.md`](_bmad-output/planning-artifacts/epics.md) |
 
-## Next Step
+## Current Status
 
-→ **Create Epics & Stories** via `/bmad-bmm-create-epics-and-stories` — break down the architecture into implementable epics and user stories for sprint planning.
+→ **Mid-Epic & Story creation** — 4 of 8 epics fully written with stories:
+
+| Epic | Stories | Status |
+|------|---------|--------|
+| 1. Project Foundation & Design System | 7 stories | ✅ Complete |
+| 2. Data Pipeline & Property Database | 7 stories | ✅ Complete |
+| 3. Property Discovery & Search | 8 stories | ✅ Complete |
+| 4. Listing Detail & Agent Profiles | 5 stories | ✅ Complete |
+| 5. Seller Lead Capture | ~3-5 stories | ⬜ Next |
+| 6. Community Pages & Area Guides | ~5-7 stories | ⬜ Pending |
+| 7. Shortlist & Smart Agent Routing | ~5-7 stories | ⬜ Pending |
+| 8. Administration & Operations | ~5-7 stories | ⬜ Pending |
+
+**Total: 27 stories written** covering 48/68 FRs (71%). Remaining 4 epics cover FR17-FR28, FR40-FR45, FR50, FR56-FR63, FR67-FR68.
