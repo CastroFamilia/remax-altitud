@@ -107,7 +107,7 @@ The strategic moat deepens in Phase 2 with a full relocation hub ("Move to Costa
 | **Data freshness** | Listings updated daily by 7 AM CST | Sync pipeline reliability |
 | **Translation accuracy** | Zero critical errors in legal/financial content | DeepL glossary + human spot-checks |
 | **SEO migration** | Recover 100% of pre-migration organic traffic within 60 days | 301 redirects, sitemap transition, Search Console monitoring |
-| **Uptime** | 99.5%+ availability | Vercel-hosted, edge CDN |
+| **Uptime** | 99.5%+ availability | Coolify-hosted, Docker container with reverse proxy |
 
 ### Measurable Outcomes
 
@@ -396,7 +396,7 @@ Real estate is not a regulated industry requiring compliance frameworks. However
 
 ### Performance & Accessibility
 
-See **Non-Functional Requirements** section for measurable performance targets (NFR1-6) and accessibility standards (NFR21-24). Image optimization via `next/image` with Vercel Image Optimization (zero extra cost). Alt text template: `"Photo {n} of {total} — {property_type} in {location}"` (deterministic, SEO-friendly).
+See **Non-Functional Requirements** section for measurable performance targets (NFR1-6) and accessibility standards (NFR21-24). Image optimization via `next/image` with `sharp` (self-hosted, bundled in Docker image). Alt text template: `"Photo {n} of {total} — {property_type} in {location}"` (deterministic, SEO-friendly).
 
 ### SEO Strategy
 
@@ -419,13 +419,13 @@ See **Non-Functional Requirements** section for measurable performance targets (
 ### Implementation Stack
 
 - **Framework:** Next.js 15 with App Router
-- **Hosting:** Vercel (edge CDN, ISR support, serverless functions)
+- **Hosting:** Coolify (self-hosted Docker, ISR support, long-running processes)
 - **Database:** Supabase with **PostGIS extension enabled** (geospatial queries, spatial indexing)
 - **Maps:** Mapbox GL JS (3D terrain, clustering, interactive pins)
 - **Translation:** DeepL API with domain-specific glossary
-- **Images:** Vercel Image Optimization via `next/image` — no external CDN needed
+- **Images:** `next/image` with `sharp` — self-hosted image optimization in Docker container
 - **Analytics:** Google Analytics 4 + Google Search Console
-- **CI/CD:** Vercel auto-deploy + **Lighthouse CI** (performance gates in build pipeline)
+- **CI/CD:** GitHub Actions CI + Coolify auto-deploy via webhook + **Lighthouse CI** (performance gates in build pipeline)
 
 ## Project Scoping & Phased Development
 

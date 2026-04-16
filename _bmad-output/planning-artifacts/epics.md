@@ -240,9 +240,9 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 | AR16 | Supabase Auth for admin; CRON_SECRET for sync; API_SECRET for revalidation | §10 |
 | AR17 | Lead PII column-level encryption | §10 |
 | AR18 | Zod schema validation on all API route inputs | §10 |
-| AR19 | Sentry + Vercel Analytics + sync_logs monitoring | §11 |
+| AR19 | Sentry + Google Analytics 4 + sync_logs monitoring | §11 |
 | AR20 | CI pipeline: TypeScript → ESLint → Vitest → Lighthouse CI → Build | §12 |
-| AR21 | Vercel Pro deployment with auto-deploy from main | §12 |
+| AR21 | Coolify Docker deployment with auto-deploy from main via webhook | §12 |
 | AR22 | hreflang implementation for all locale variants | §7 |
 | AR23 | Server Actions for search (PostGIS via Drizzle, zero client-side DB) | ADR-5 |
 | AR24 | Drizzle ORM for type-safe DB with raw PostGIS SQL support | ADR-3 |
@@ -402,7 +402,7 @@ Visitors can access a professionally branded, multilingual-ready platform with c
 
 **User Outcome:** Visitors land on a premium, branded RE/MAX Altitud platform with working navigation, language toggle (EN/ES), static pages (Homepage shell, About, Services, Contact, Join), and the full design system. Works on all devices from $150 Android to desktop.
 
-**Implementation Notes:** Establishes Next.js 15 App Router, Supabase connection, Drizzle ORM schema, CI/CD pipeline, Vercel deployment, design token system, and i18n routing. Everything else builds on this.
+**Implementation Notes:** Establishes Next.js 15 App Router, Supabase connection, Drizzle ORM schema, CI/CD pipeline, Coolify Docker deployment, design token system, and i18n routing. Everything else builds on this.
 
 ---
 
@@ -551,9 +551,9 @@ So that all subsequent features can be built on a solid, deployable foundation.
 **When** code is pushed
 **Then** CI runs TypeScript check → ESLint → build verification (AR20)
 
-**Given** Vercel is connected
+**Given** Coolify is connected
 **When** code is merged to main
-**Then** auto-deployment triggers and the site is live (AR21)
+**Then** CI passes and auto-deployment triggers via webhook, site is live (AR21)
 
 **Given** Sentry is configured
 **When** an unhandled error occurs
