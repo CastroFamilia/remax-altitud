@@ -50,9 +50,9 @@ Every architectural decision optimizes for three constraints in this priority or
 | AD-4 | next-intl for i18n | App Router native; type-safe; server component support; per-route loading |
 | AD-5 | Drizzle ORM | Type-safe SQL; lightweight; PostGIS support; git-based migrations |
 | AD-6 | shadcn/ui + Tailwind CSS v4 | Copy-paste components; design token control; tree-shakeable CSS |
-| AD-7 | Vercel (Pro plan) | Native Next.js host; edge CDN; ISR; Cron Jobs; 300s function timeout |
+| AD-7 | Coolify (self-hosted Docker) | Next.js standalone mode; Caddy reverse proxy; TLS; no function timeout limits |
 | AD-8 | DeepL API + GPT-4 translation | DeepL for accuracy + glossary; GPT-4 for creative/SEO content |
-| AD-9 | Vercel Cron + ISR revalidation | Daily sync at 6 AM CST; on-demand revalidation after sync |
+| AD-9 | System Cron + ISR revalidation | Daily sync at 6 AM CST; on-demand revalidation after sync |
 | AD-10 | localStorage for shortlist | No user accounts for MVP; persist shortlist client-side |
 
 ---
@@ -72,12 +72,12 @@ Every architectural decision optimizes for three constraints in this priority or
          │              │           │                │
          ▼              ▼           ▼                ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     VERCEL EDGE NETWORK                              │
+│                     COOLIFY / DOCKER HOST                              │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │  Edge CDN — static assets, ISR pages, image optimization    │    │
+│  │  Caddy Reverse Proxy — TLS, static assets, caching          │    │
 │  └─────────────────────────────────────────────────────────────┘    │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │  Next.js 15 App Router                                      │    │
+│  │  Next.js 15 App Router (Docker standalone)                  │    │
 │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────┐  │    │
 │  │  │   SSG    │ │   ISR    │ │   CSR    │ │  API Routes  │  │    │
 │  │  │ (static  │ │ (listing │ │ (search  │ │  /api/sync   │  │    │
@@ -85,7 +85,7 @@ Every architectural decision optimizes for three constraints in this priority or
 │  │  └──────────┘ └──────────┘ └──────────┘ └──────────────┘  │    │
 │  └─────────────────────────────────────────────────────────────┘    │
 │  ┌─────────────────────────────────────────────────────────────┐    │
-│  │  Vercel Cron — 0 6 * * * (daily sync trigger)              │    │
+│  │  System Cron — 0 6 * * * (daily sync trigger via curl)     │    │
 │  └─────────────────────────────────────────────────────────────┘    │
 └─────────────────────────┬───────────────────────────────────────────┘
                           │
@@ -139,7 +139,8 @@ remax-altitud/
 ├── next.config.ts                      # Next.js configuration
 ├── postcss.config.ts                   # PostCSS config (Tailwind v4 plugin)
 ├── drizzle.config.ts                   # Drizzle ORM configuration
-├── vercel.json                         # Cron jobs, redirects, headers
+├── Dockerfile                          # Multi-stage Docker build for Coolify
+├── .dockerignore                       # Docker build exclusions
 ├── middleware.ts                        # i18n locale detection + redirects
 │
 ├── public/
@@ -184,7 +185,7 @@ remax-altitud/
 │   │   │
 │   │   ├── api/
 │   │   │   ├── sync/
-│   │   │   │   └── route.ts            # Daily sync endpoint (Vercel Cron)
+│   │   │   │   └── route.ts            # Daily sync endpoint (system cron trigger)
 │   │   │   ├── leads/
 │   │   │   │   └── route.ts            # Lead capture endpoint
 │   │   │   ├── shortlist/
@@ -598,7 +599,7 @@ WHERE ST_Within(p.geo, c.geo_fence)
 
 ```
 ┌──────────────┐
-│ Vercel Cron  │  Trigger: 0 6 * * * (6 AM CST daily)
+│ System Cron │  Trigger: 0 6 * * * (6 AM CST daily)
 │ POST /api/sync│
 └──────┬───────┘
        │
@@ -690,11 +691,11 @@ WHERE ST_Within(p.geo, c.geo_fence)
 
 | Constraint | Value | Mitigation |
 |-----------|-------|------------|
-| Vercel Pro function timeout | 300s | Batch processing; parallel API calls |
+| Docker container process | No timeout limit | Long-running sync runs natively; no batching needed |
 | DeepL rate limit | 500K chars/mo (Starter) | Translate only changed content; cache translations |
 | Supabase Storage free tier | 1GB | WebP compression; max 12 images/listing |
 | Expected sync duration | 60-120s (300 listings) | Monitor; alert if >180s |
-| Fallback for timeout | Inngest durable functions | Evaluate if sync exceeds 300s consistently |
+| Fallback for failure | Retry with backoff | Log errors; alert admin; data persists in DB |
 
 ---
 
@@ -704,7 +705,7 @@ WHERE ST_Within(p.geo, c.geo_fence)
 
 | Endpoint | Method | Purpose | Auth |
 |----------|--------|---------|------|
-| `/api/sync` | POST | Daily sync pipeline trigger | Vercel Cron secret |
+| `/api/sync` | POST | Daily sync pipeline trigger | Cron secret |
 | `/api/leads` | POST | Lead capture (all forms + WhatsApp clicks) | None (public) |
 | `/api/shortlist` | POST | Generate shareable shortlist URL | None (public) |
 | `/api/revalidate` | POST | On-demand ISR revalidation | API secret |
@@ -914,7 +915,7 @@ Lazy-loaded on demand:
 ### WordPress 301 Redirect Strategy
 
 ```typescript
-// vercel.json redirects (or Next.js redirects in next.config.ts)
+// Next.js redirects in next.config.ts
 {
   "redirects": [
     { "source": "/property/:id", "destination": "/en/property/:slug", "permanent": true },
@@ -960,7 +961,7 @@ Auto-regenerated after each daily sync via `app/sitemap.ts`.
 |-------|-----------|-------------|
 | **Public visitors** | None | Read all published content; submit forms |
 | **Admin (Nico)** | Supabase Auth (email/password) | Supabase dashboard for DB management |
-| **Vercel Cron** | `CRON_SECRET` env var | Trigger `/api/sync` |
+| **System Cron** | `CRON_SECRET` env var | Trigger `/api/sync` via curl |
 | **API routes** | `API_SECRET` header check | Trigger `/api/revalidate` |
 
 ### Data Security
@@ -969,8 +970,8 @@ Auto-regenerated after each daily sync via `app/sitemap.ts`.
 |---------|---------------|
 | **Lead PII encryption** | Supabase column-level encryption for email, phone |
 | **API keys** | Environment variables; never in client-side code |
-| **HTTPS** | Vercel enforces TLS on all routes |
-| **Rate limiting** | Vercel WAF + custom rate limiting on lead submission |
+| **HTTPS** | Coolify proxy (Caddy/Traefik) enforces TLS on all routes |
+| **Rate limiting** | Custom rate limiting middleware on lead submission |
 | **Input validation** | Zod schemas on all API route inputs |
 | **XSS prevention** | React's default escaping + CSP headers |
 | **CSRF** | SameSite cookies (Supabase Auth default) |
@@ -996,7 +997,7 @@ OPENAI_API_KEY=
 # Maps
 NEXT_PUBLIC_MAPBOX_TOKEN=
 
-# Vercel
+# Security / Cron
 CRON_SECRET=
 API_SECRET=
 
@@ -1014,7 +1015,7 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=
 | Tool | Purpose | Alert Triggers |
 |------|---------|---------------|
 | **Sentry** | Error tracking, performance | Unhandled exceptions; P95 latency >3s |
-| **Vercel Analytics** | Core Web Vitals, page performance | LCP >2.5s; CLS >0.1 |
+| **Google Analytics 4** | Core Web Vitals, page performance | LCP >2.5s; CLS >0.1 |
 | **Google Search Console** | SEO indexing, search performance | Coverage errors; ranking drops |
 | **Supabase Dashboard** | DB metrics, query performance | Storage >80%; slow queries |
 | **Custom sync_logs table** | Sync pipeline monitoring | status='failure'; zero properties synced |
@@ -1037,8 +1038,8 @@ Sync failure → sync_logs entry (status='failure')
 ```
 GitHub (main branch)
   │
-  ├── Push to main → Vercel auto-deploy (production)
-  ├── Push to PR → Vercel preview deployment
+  ├── Push to main → CI passes → Coolify webhook auto-deploy (production)
+  ├── Push to PR → CI checks only (no preview deploy)
   │
   └── CI Pipeline:
       ├── TypeScript compile check
@@ -1052,14 +1053,14 @@ GitHub (main branch)
 
 | Service | Plan | Cost | Notes |
 |---------|------|------|-------|
-| Vercel | Pro | $20/mo | 300s timeout, custom domains, analytics |
+| Coolify + VPS | Self-hosted | ~$10-20/mo | Docker hosting, no function timeout, custom domains |
 | Supabase | Pro | $25/mo | 8GB DB, 100GB storage, daily backups |
 | Mapbox | Free tier | $0 | 50K map loads/mo |
 | DeepL API | Starter | ~€5.49/mo | + usage-based translation |
 | OpenAI API | Pay-as-you-go | ~$5-15/mo | Translation + SEO metadata |
 | Sentry | Free tier | $0 | 5K errors/mo |
 | Domain | remaxaltitud.com | ~$1/mo | Annual billing |
-| **Total** | | **~$55-65/mo** | |
+| **Total** | | **~$45-60/mo** | |
 
 ---
 
@@ -1068,7 +1069,7 @@ GitHub (main branch)
 | # | Risk | Impact | Probability | Mitigation |
 |---|------|--------|-------------|------------|
 | R1 | RE/MAX CCA API downtime | Stale listings (no new sync) | Low | Supabase DB is source of truth; site serves cached data; admin alerted |
-| R2 | Vercel function timeout (>300s) | Sync fails for large batch | Low | Batch processing; parallel API calls; Inngest fallback |
+| R2 | Sync failure for large batch | Sync errors for unusual data volume | Low | Retry with backoff; log + alert admin; no timeout constraint on Coolify |
 | R3 | Translation API rate limits | Untranslated content | Medium | Translate only changed content; queue with backoff; serve original as fallback |
 | R4 | Mapbox cost at scale (>50K loads) | Budget overrun | Low (initially) | Monitor monthly; cache tiles; evaluate Google Maps if needed |
 | R5 | SEO traffic loss during migration | Lost leads (60-day risk) | Medium | Complete 301 redirect map; sitemap transition; SC monitoring; 100% recovery target in 60 days |
@@ -1118,7 +1119,7 @@ GitHub (main branch)
 
 **Decision:** Next.js Server Actions querying Supabase directly via Drizzle.
 
-**Rationale:** Server Actions eliminate the need for a separate API layer. The search query runs server-side (zero client-side DB connection), benefits from Vercel edge caching, and maintains type safety end-to-end. The search page (CSR) calls the Server Action which executes on the server.
+**Rationale:** Server Actions eliminate the need for a separate API layer. The search query runs server-side (zero client-side DB connection), benefits from Next.js built-in caching, and maintains type safety end-to-end. The search page (CSR) calls the Server Action which executes on the server.
 
 ### ADR-6: Soft Delete for Removed Listings
 
