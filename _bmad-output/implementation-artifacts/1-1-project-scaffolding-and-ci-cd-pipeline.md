@@ -7,16 +7,16 @@ Status: review
 ## Story
 
 As a **developer**,
-I want a production-ready Next.js 15 project with Supabase, Drizzle ORM, and automated CI/CD,
+I want a production-ready Next.js 15 project with PostgreSQL, Drizzle ORM, and automated CI/CD,
 So that all subsequent features can be built on a solid, deployable foundation.
 
 ## Acceptance Criteria
 
 1. **Given** a fresh repository **When** `npm run dev` is executed **Then** the Next.js 15 App Router app starts successfully on localhost with zero errors.
 
-2. **Given** the project **When** environment variables are configured **Then** Supabase connection is established and verified via a health check query.
+2. **Given** the project **When** environment variables are configured **Then** PostgreSQL connection is established and verified via a health check query.
 
-3. **Given** Drizzle ORM is configured **When** schema migrations are run **Then** the database schema is created in Supabase (initial migrations table only — entity tables created in Story 2.1).
+3. **Given** Drizzle ORM is configured **When** schema migrations are run **Then** the database schema is created in PostgreSQL (initial migrations table only — entity tables created in Story 2.1).
 
 4. **Given** TypeScript strict mode is enabled **When** `npm run build` is executed **Then** the build completes with zero type errors.
 
@@ -52,8 +52,8 @@ So that all subsequent features can be built on a solid, deployable foundation.
   - [x] Add npm scripts: `db:generate`, `db:migrate`, `db:push`, `db:studio`
   - [x] Verify `npx drizzle-kit generate` runs without errors
 
-- [x] Task 4: Configure Supabase connection (AC: #2)
-  - [x] Create `.env.local` with Supabase vars (from `.env.example`)
+- [x] Task 4: Configure PostgreSQL connection (AC: #2)
+  - [x] Create `.env.local` with PostgreSQL vars (from `.env.example`)
   - [x] Create `.env.example` with all required env var names (no values)
   - [x] Create `src/lib/db/client.ts` using `postgres` driver with `DATABASE_URL`
   - [x] Add health check: a simple query (`SELECT 1`) to verify connectivity
@@ -99,7 +99,7 @@ So that all subsequent features can be built on a solid, deployable foundation.
 
 - **Framework:** Next.js 15 with App Router (AD-1). Use `create-next-app@latest` which defaults to Next.js 15.x with React 19.x
 - **ORM:** Drizzle ORM with `postgres` driver (AD-3, AD-5). NOT Prisma. Drizzle is chosen for raw SQL access needed for PostGIS queries
-- **Database:** Supabase PostgreSQL (AD-2). Use `postgres` package (NOT `@supabase/supabase-js` for ORM queries — Supabase JS client is for auth/storage only in later stories)
+- **Database:** PostgreSQL via Coolify (AD-2). Use `postgres` package for direct connection via Drizzle ORM
 - **CSS:** Tailwind CSS v4 (AD-6). Tailwind v4 uses CSS-first configuration via `@import "tailwindcss"` in `globals.css` — there is NO `tailwind.config.js/ts` file. Design tokens will be defined as `@theme` directives in `globals.css` (Story 1.2)
 - **Components:** shadcn/ui (AD-6). Will be added in Story 1.2 — do NOT install in this story
 - **Deployment:** Coolify self-hosted Docker (AD-7). Connect GitHub repo for auto-deploy via webhook
@@ -169,10 +169,7 @@ Install `@sentry/nextjs` and follow their wizard or manual setup. Key files:
 
 #### Environment Variables (.env.example)
 ```bash
-# Database (Supabase)
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+# Database (PostgreSQL via Coolify)
 DATABASE_URL=
 
 # RE/MAX API

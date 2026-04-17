@@ -3,7 +3,6 @@ import postgres from "postgres";
 
 const connectionString = process.env.DATABASE_URL!;
 
-// Disable prefetch for connection pooling compatibility (Supabase PgBouncer)
-const client = postgres(connectionString, { prepare: false });
+const client = postgres(connectionString);
 
 export const db = drizzle({ client });

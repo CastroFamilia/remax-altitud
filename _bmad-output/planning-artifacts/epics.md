@@ -237,7 +237,7 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 | AR13 | WordPress 301 redirect mapping | §9 |
 | AR14 | Structured data (JSON-LD): RealEstateListing, RealEstateAgent, Place, BreadcrumbList | §9 |
 | AR15 | Per-language XML sitemap generation | §9 |
-| AR16 | Supabase Auth for admin; CRON_SECRET for sync; API_SECRET for revalidation | §10 |
+| AR16 | Custom auth for admin; CRON_SECRET for sync; API_SECRET for revalidation | §10 |
 | AR17 | Lead PII column-level encryption | §10 |
 | AR18 | Zod schema validation on all API route inputs | §10 |
 | AR19 | Sentry + Google Analytics 4 + sync_logs monitoring | §11 |
@@ -402,7 +402,7 @@ Visitors can access a professionally branded, multilingual-ready platform with c
 
 **User Outcome:** Visitors land on a premium, branded RE/MAX Altitud platform with working navigation, language toggle (EN/ES), static pages (Homepage shell, About, Services, Contact, Join), and the full design system. Works on all devices from $150 Android to desktop.
 
-**Implementation Notes:** Establishes Next.js 15 App Router, Supabase connection, Drizzle ORM schema, CI/CD pipeline, Coolify Docker deployment, design token system, and i18n routing. Everything else builds on this.
+**Implementation Notes:** Establishes Next.js 15 App Router, PostgreSQL connection, Drizzle ORM schema, CI/CD pipeline, Coolify Docker deployment, design token system, and i18n routing. Everything else builds on this.
 
 ---
 
@@ -501,7 +501,7 @@ Admin can manage leads, sync operations, listing visibility, lifestyle tags, com
 
 **User Outcome:** Admin (Nico) can view sync logs, manage/reassign leads (with cross-agent shortlist visibility), view per-agent lead history (with dates, contact info, filterable), bulk-reassign leads for agent departures with CSV export, manage lifestyle tags and community geo-fences, hide/unhide listings, and monitor SEO metrics. All via authenticated admin interface.
 
-**Implementation Notes:** Supabase Auth for admin access. Lead PII encryption. Reassignment audit logging. CSV export endpoint. Wraps around all Epics 1-7.
+**Implementation Notes:** Custom auth for admin access. Lead PII encryption. Reassignment audit logging. CSV export endpoint. Wraps around all Epics 1-7.
 
 ---
 
@@ -526,7 +526,7 @@ Visitors can access a professionally branded, multilingual-ready platform with c
 ### Story 1.1: Project Scaffolding & CI/CD Pipeline
 
 As a **developer**,
-I want a production-ready Next.js 15 project with Supabase, Drizzle ORM, and automated CI/CD,
+I want a production-ready Next.js 15 project with PostgreSQL, Drizzle ORM, and automated CI/CD,
 So that all subsequent features can be built on a solid, deployable foundation.
 
 **Acceptance Criteria:**
@@ -537,11 +537,11 @@ So that all subsequent features can be built on a solid, deployable foundation.
 
 **Given** the project
 **When** environment variables are configured
-**Then** Supabase connection is established and verified via a health check
+**Then** PostgreSQL connection is established and verified via a health check
 
 **Given** Drizzle ORM is configured
 **When** schema migrations are run
-**Then** the database schema is created in Supabase (initial migrations table only — other tables created per-story)
+**Then** the database schema is created in PostgreSQL (initial migrations table only — other tables created per-story)
 
 **Given** TypeScript strict mode is enabled
 **When** `npm run build` is executed
@@ -2011,7 +2011,7 @@ So that I get a single point of contact who coordinates all viewings — even fo
 
 ## Epic 8: Administration & Operations
 
-Admin can monitor the platform, manage leads, curate content, and maintain operational oversight via Supabase dashboard and admin-facing features.
+Admin can monitor the platform, manage leads, curate content, and maintain operational oversight via admin dashboard and admin-facing features.
 
 ### Story 8.1: Sync Status Dashboard & Monitoring
 
@@ -2021,7 +2021,7 @@ So that I can monitor data freshness and quickly diagnose sync failures.
 
 **Acceptance Criteria:**
 
-**Given** the admin sync log view (Supabase dashboard or admin page)
+**Given** the admin sync log view (admin dashboard or admin page)
 **When** accessed
 **Then** it displays a chronological list of sync_log records showing: started_at, completed_at, status (success/failure/partial), properties_added, properties_updated, properties_removed, agents_synced, translations_queued, images_optimized, and error_message (FR56)
 
@@ -2071,7 +2071,7 @@ So that I can ensure leads are routed to the right agents and track conversion p
 **Then** all leads ever assigned to that agent are displayed (buyer inquiry, seller listing, CMA request, shortlist inquiry) with: date, name, email, phone, lead type, property reference, and source. Filterable by lead type (FR64)
 
 **And** lead PII is displayed only to authenticated admin users (NFR8)
-**And** the lead management interface operates through Supabase dashboard views/tables for MVP
+**And** the lead management interface operates through admin dashboard views/tables for MVP
 
 ---
 
@@ -2137,7 +2137,7 @@ So that I can curate which properties appear under specific discovery categories
 **Then** it can be added via the `constants/lifestyle-tags.ts` configuration (with auto-tag rules if applicable)
 
 **And** tag changes are reflected on ISR-cached pages after next revalidation
-**And** the tag administration operates through Supabase dashboard for MVP (FR59)
+**And** the tag administration operates through admin dashboard for MVP (FR59)
 
 ---
 
@@ -2237,4 +2237,4 @@ So that I can identify market demand patterns and provide agents with demand int
 
 **And** shortlist analytics events are stored in a lightweight `shortlist_events` table (property_id, locale, action, created_at) — no PII columns
 **And** aggregate counts can be computed via SQL queries on the events table (no pre-computation needed for MVP scale of ~300-400 listings)
-**And** the analytics operates through Supabase dashboard queries/views for MVP
+**And** the analytics operates through admin dashboard queries/views for MVP

@@ -82,15 +82,15 @@ API docs: [`docs/`](docs/)
 - **UI Primitives**: shadcn/ui (Radix-based, copy-pasted, fully owned)
 - **Styling**: Tailwind CSS v4 (CSS-first config via `@theme` directives)
 - **i18n**: next-intl (EN/ES MVP, per-route locale loading)
-- **Database**: Supabase (PostgreSQL + PostGIS)
+- **Database**: PostgreSQL + PostGIS (self-hosted via Coolify)
 - **ORM**: Drizzle ORM (type-safe SQL, PostGIS support, git-based migrations)
 - **Maps**: Mapbox GL JS (3D terrain, clustering, interactive price-bubble pins)
 - **Translation**: DeepL API with domain-specific glossary + GPT-4 for creative/SEO
-- **Images**: Vercel Image Optimization via `next/image` (WebP, LQIP)
-- **Analytics**: Vercel Analytics (cookieless) + GA4 consent mode
-- **Hosting**: Vercel (edge CDN, ISR, serverless functions)
-- **CI/CD**: Vercel auto-deploy + Lighthouse CI (score ≥ 90 gate)
-- **Data sync**: Vercel Cron → RE/MAX CCA API → validate → translate → optimize → Supabase → ISR revalidation
+- **Images**: Next.js Image Optimization via `next/image` (WebP, LQIP)
+- **Analytics**: GA4 consent mode
+- **Hosting**: Coolify (Docker, self-hosted)
+- **CI/CD**: GitHub Actions + Coolify auto-deploy + Lighthouse CI (score ≥ 90 gate)
+- **Data sync**: Docker Cron → RE/MAX CCA API → validate → translate → optimize → PostgreSQL → ISR revalidation
 
 ## Key Documents
 

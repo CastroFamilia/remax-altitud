@@ -45,7 +45,7 @@ Every architectural decision optimizes for three constraints in this priority or
 | # | Decision | Rationale |
 |---|----------|-----------|
 | AD-1 | Next.js 15 App Router | SSG + ISR for SEO; React Server Components for minimal client JS |
-| AD-2 | Supabase (PostgreSQL + PostGIS) | Geospatial queries for map search; built-in auth, storage, real-time |
+| AD-2 | PostgreSQL + PostGIS (self-hosted via Coolify) | Geospatial queries for map search; full control; no vendor lock-in |
 | AD-3 | Mapbox GL JS via react-map-gl | 50K free map loads/mo; 3D terrain; custom styling; superior clustering |
 | AD-4 | next-intl for i18n | App Router native; type-safe; server component support; per-route loading |
 | AD-5 | Drizzle ORM | Type-safe SQL; lightweight; PostGIS support; git-based migrations |
@@ -93,9 +93,9 @@ Every architectural decision optimizes for three constraints in this priority or
 ┌─────────────────────────────────────────────────────────────────────┐
 │                     DATA LAYER                                       │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌─────────────────┐   │
-│  │    Supabase       │  │  Supabase        │  │  Supabase       │   │
-│  │    PostgreSQL     │  │  Storage         │  │  Auth           │   │
-│  │    + PostGIS      │  │  (images)        │  │  (admin only)   │   │
+│  │    PostgreSQL     │  │  Local/Docker    │  │  Custom Auth    │   │
+│  │    + PostGIS      │  │  Storage         │  │  (admin only)   │   │
+│  │    (Coolify)      │  │  (images)        │  │                 │   │
 │  └──────────────────┘  └──────────────────┘  └─────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
                           │
@@ -280,7 +280,7 @@ remax-altitud/
 │   ├── lib/
 │   │   ├── db/
 │   │   │   ├── schema.ts               # Drizzle schema definitions
-│   │   │   ├── client.ts               # Supabase/Drizzle client
+│   │   │   ├── client.ts               # PostgreSQL/Drizzle client
 │   │   │   ├── migrations/             # SQL migrations
 │   │   │   └── queries/
 │   │   │       ├── properties.ts       # Property query functions
@@ -647,7 +647,7 @@ WHERE ST_Within(p.geo, c.geo_fence)
 │  ├── Download from Azure CDN (original API source)            │
 │  ├── Generate sizes: 1200×800, 800×533, 400×267 (WebP)      │
 │  ├── Generate LQIP blur placeholder (20×13px, base64)        │
-│  ├── Upload to Supabase Storage                               │
+│  ├── Upload to local/Docker storage                            │
 │  └── Store optimized URLs + blur hash in images JSONB        │
 └──────┬───────────────────────────────────────────────────────┘
        │
@@ -667,7 +667,7 @@ WHERE ST_Within(p.geo, c.geo_fence)
        ▼
 ┌──────────────────────────────────────────────────────────────┐
 │  STEP 7: UPSERT + HANDLE REMOVALS                             │
-│  ├── Upsert NEW + UPDATED properties to Supabase             │
+│  ├── Upsert NEW + UPDATED properties to PostgreSQL            │
 │  ├── Removed properties: set is_visible = false (soft delete) │
 │  │   └── URL preserved for SEO → serves "No longer available" │
 │  ├── Upsert agents (new/updated)                             │
@@ -693,7 +693,7 @@ WHERE ST_Within(p.geo, c.geo_fence)
 |-----------|-------|------------|
 | Docker container process | No timeout limit | Long-running sync runs natively; no batching needed |
 | DeepL rate limit | 500K chars/mo (Starter) | Translate only changed content; cache translations |
-| Supabase Storage free tier | 1GB | WebP compression; max 12 images/listing |
+| Docker volume storage | Server disk | WebP compression; max 12 images/listing |
 | Expected sync duration | 60-120s (300 listings) | Monitor; alert if >180s |
 | Fallback for failure | Retry with backoff | Log errors; alert admin; data persists in DB |
 
@@ -713,7 +713,7 @@ WHERE ST_Within(p.geo, c.geo_fence)
 
 ### Search Query API (Server Action)
 
-Instead of a REST API endpoint, property search uses a **Next.js Server Action** that queries Supabase directly with PostGIS:
+Instead of a REST API endpoint, property search uses a **Next.js Server Action** that queries PostgreSQL directly with PostGIS:
 
 ```typescript
 // src/lib/db/queries/properties.ts
@@ -960,7 +960,7 @@ Auto-regenerated after each daily sync via `app/sitemap.ts`.
 | Actor | Auth Method | Access Scope |
 |-------|-----------|-------------|
 | **Public visitors** | None | Read all published content; submit forms |
-| **Admin (Nico)** | Supabase Auth (email/password) | Supabase dashboard for DB management |
+| **Admin (Nico)** | Custom auth (email/password) | Direct DB access via Coolify/pgAdmin |
 | **System Cron** | `CRON_SECRET` env var | Trigger `/api/sync` via curl |
 | **API routes** | `API_SECRET` header check | Trigger `/api/revalidate` |
 
@@ -968,21 +968,18 @@ Auto-regenerated after each daily sync via `app/sitemap.ts`.
 
 | Concern | Implementation |
 |---------|---------------|
-| **Lead PII encryption** | Supabase column-level encryption for email, phone |
+| **Lead PII encryption** | PostgreSQL column-level encryption for email, phone |
 | **API keys** | Environment variables; never in client-side code |
 | **HTTPS** | Coolify proxy (Caddy/Traefik) enforces TLS on all routes |
 | **Rate limiting** | Custom rate limiting middleware on lead submission |
 | **Input validation** | Zod schemas on all API route inputs |
 | **XSS prevention** | React's default escaping + CSP headers |
-| **CSRF** | SameSite cookies (Supabase Auth default) |
+| **CSRF** | SameSite cookies + CSRF token validation |
 
 ### Environment Variables
 
 ```
-# Database
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+# Database (PostgreSQL via Coolify)
 DATABASE_URL=
 
 # RE/MAX API
@@ -1017,7 +1014,7 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=
 | **Sentry** | Error tracking, performance | Unhandled exceptions; P95 latency >3s |
 | **Google Analytics 4** | Core Web Vitals, page performance | LCP >2.5s; CLS >0.1 |
 | **Google Search Console** | SEO indexing, search performance | Coverage errors; ranking drops |
-| **Supabase Dashboard** | DB metrics, query performance | Storage >80%; slow queries |
+| **Coolify Dashboard / pgAdmin** | DB metrics, query performance | Storage >80%; slow queries |
 | **Custom sync_logs table** | Sync pipeline monitoring | status='failure'; zero properties synced |
 
 ### Admin Alert Flow
@@ -1054,7 +1051,7 @@ GitHub (main branch)
 | Service | Plan | Cost | Notes |
 |---------|------|------|-------|
 | Coolify + VPS | Self-hosted | ~$10-20/mo | Docker hosting, no function timeout, custom domains |
-| Supabase | Pro | $25/mo | 8GB DB, 100GB storage, daily backups |
+| PostgreSQL (Coolify) | Included in VPS | $0 | Included in Coolify VPS; Docker volume backups |
 | Mapbox | Free tier | $0 | 50K map loads/mo |
 | DeepL API | Starter | ~€5.49/mo | + usage-based translation |
 | OpenAI API | Pay-as-you-go | ~$5-15/mo | Translation + SEO metadata |
@@ -1068,14 +1065,14 @@ GitHub (main branch)
 
 | # | Risk | Impact | Probability | Mitigation |
 |---|------|--------|-------------|------------|
-| R1 | RE/MAX CCA API downtime | Stale listings (no new sync) | Low | Supabase DB is source of truth; site serves cached data; admin alerted |
+| R1 | RE/MAX CCA API downtime | Stale listings (no new sync) | Low | PostgreSQL DB is source of truth; site serves cached data; admin alerted |
 | R2 | Sync failure for large batch | Sync errors for unusual data volume | Low | Retry with backoff; log + alert admin; no timeout constraint on Coolify |
 | R3 | Translation API rate limits | Untranslated content | Medium | Translate only changed content; queue with backoff; serve original as fallback |
 | R4 | Mapbox cost at scale (>50K loads) | Budget overrun | Low (initially) | Monitor monthly; cache tiles; evaluate Google Maps if needed |
 | R5 | SEO traffic loss during migration | Lost leads (60-day risk) | Medium | Complete 301 redirect map; sitemap transition; SC monitoring; 100% recovery target in 60 days |
 | R6 | PostGIS query performance | Slow map search | Low | GiST spatial index; bounding box pre-filter; pagination |
 | R7 | hreflang complexity (Phase 2) | Indexing issues | Medium | Tech spike before Phase 2; automated sitemap generation; SC audits |
-| R8 | Single admin bus factor | Platform knowledge concentration | Medium | Supabase dashboard = standard tooling; architecture documented; onboardable |
+| R8 | Single admin bus factor | Platform knowledge concentration | Medium | Coolify dashboard + pgAdmin = standard tooling; architecture documented; onboardable |
 
 ---
 
@@ -1089,13 +1086,13 @@ GitHub (main branch)
 
 **Rationale:** The search page requires CSR (interactive map + filters). The listing pages need ISR (daily refresh). Next.js handles both rendering strategies natively. Astro would require React islands for interactivity and lacks native ISR.
 
-### ADR-2: Supabase over PlanetScale/Turso
+### ADR-2: Self-hosted PostgreSQL + PostGIS (Coolify) over Supabase/PlanetScale/Turso
 
-**Context:** Three database platforms evaluated for managed PostgreSQL/SQL.
+**Context:** Database platforms evaluated for PostgreSQL/SQL hosting.
 
-**Decision:** Supabase (PostgreSQL + PostGIS).
+**Decision:** Self-hosted PostgreSQL + PostGIS via Coolify Docker.
 
-**Rationale:** PostGIS is required for geospatial queries (map search, geo-fence matching). PlanetScale (MySQL) and Turso (SQLite) lack equivalent spatial extensions. Supabase also provides auth, storage, and auto-generated REST API.
+**Rationale:** PostGIS is required for geospatial queries (map search, geo-fence matching). PlanetScale (MySQL) and Turso (SQLite) lack equivalent spatial extensions. Self-hosting via Coolify eliminates vendor dependency, reduces cost (included in VPS), and gives full control over the database. Supabase's additional features (auth, storage, REST API) are not needed — auth is custom, storage is local, and the ORM layer (Drizzle) handles DB access.
 
 ### ADR-3: Drizzle ORM over Prisma
 
@@ -1117,7 +1114,7 @@ GitHub (main branch)
 
 **Context:** Search queries need to run against PostGIS with complex filters.
 
-**Decision:** Next.js Server Actions querying Supabase directly via Drizzle.
+**Decision:** Next.js Server Actions querying PostgreSQL directly via Drizzle.
 
 **Rationale:** Server Actions eliminate the need for a separate API layer. The search query runs server-side (zero client-side DB connection), benefits from Next.js built-in caching, and maintains type safety end-to-end. The search page (CSR) calls the Server Action which executes on the server.
 
@@ -1137,7 +1134,7 @@ GitHub (main branch)
 
 ```
 1. Project setup (Next.js 15, TypeScript, Tailwind, shadcn/ui)
-2. Database schema (Drizzle + Supabase migrations)
+2. Database schema (Drizzle + PostgreSQL migrations)
 3. i18n setup (next-intl, EN/ES locale routing, middleware)
 4. Design system (tokens, themed shadcn/ui components)
 5. Layout (header, footer, mobile nav, breadcrumbs)
