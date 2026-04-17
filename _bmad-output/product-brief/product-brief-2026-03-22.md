@@ -66,10 +66,10 @@ input_documents:
 | Metric | Target (6 mo.) | What Drives It | How Measured |
 |--------|----------------|----------------|-------------|
 | **Organic traffic** | 5,000+ sessions/mo | SEO-first architecture (ISR pages, hreflang, structured data, area content) | Google Analytics / PostHog |
-| **Lead generation** | 50+ qualified leads/mo | WhatsApp CTAs on every listing/agent, contact forms, "Sell Your Property" CTA | Supabase leads table |
+| **Lead generation** | 50+ qualified leads/mo | WhatsApp CTAs on every listing/agent, contact forms, "Sell Your Property" CTA | PostgreSQL leads table |
 | **Search rankings** | Top 5 for "Pérez Zeledón real estate" + 10 area keywords | Daily-refreshed listing pages, canonical area URLs, localized content | Google Search Console |
 | **Non-EN/ES traffic** | 15%+ of sessions | 6-language AI translation, localized SEO with hreflang, locale-specific meta tags | Analytics locale data |
-| **Mobile performance** | LCP <2.5s, CLS <0.1 | Next.js Server Components, image optimization, Tailwind utility CSS | Vercel Analytics |
+| **Mobile performance** | LCP <2.5s, CLS <0.1 | Next.js Server Components, image optimization, Tailwind utility CSS | Coolify analytics |
 | **Agent inquiries** | 50% of leads via WhatsApp | One-click WhatsApp with pre-populated message on every listing and agent page | UTM tracking |
 | **Page views / session** | 3+ average | Lifestyle tags, area guides, "similar properties" links, cross-linking between listings and areas | Analytics |
 
@@ -151,7 +151,7 @@ input_documents:
 | **WhatsApp CTAs** | Per-listing and per-agent WhatsApp buttons | Must-have |
 | **Contact forms** | Property inquiry + general contact forms | Must-have |
 | **"Sell Your Property" form** | Seller lead capture CTA | Must-have |
-| **Lead storage** | All leads captured in Supabase with source tracking | Must-have |
+| **Lead storage** | All leads captured in PostgreSQL with source tracking | Must-have |
 
 ### 5.6 SEO Architecture
 
@@ -212,18 +212,18 @@ input_documents:
 | **Language** | TypeScript | Type safety, developer experience |
 | **Styling** | Tailwind CSS + shadcn/ui | Utility-first, accessible components, full customization |
 | **i18n** | next-intl | App Router native, type-safe, server component support |
-| **Database** | Supabase (PostgreSQL + PostGIS) | Geospatial queries, auth, storage, real-time |
+| **Database** | PostgreSQL + PostGIS (self-hosted via Coolify) | Geospatial queries, full control, no vendor lock-in |
 | **ORM** | Drizzle ORM | Type-safe, lightweight, PostGIS support |
 | **Maps** | Mapbox GL JS (react-map-gl) | 5x free tier vs Google, custom styles, 3D terrain, draw controls |
 | **Translation** | DeepL API Pro + GPT-4 | DeepL for accuracy, GPT-4 for creative/SEO content |
-| **Hosting** | Vercel (Pro plan) | Native Next.js deployment, Edge CDN, ISR, Cron Jobs |
-| **Monitoring** | Sentry + Vercel Analytics + PostHog | Errors, performance, user behavior |
+| **Hosting** | Coolify (self-hosted Docker) | ISR support, long-running processes, no function timeouts |
+| **Monitoring** | Sentry + Google Analytics 4 + PostHog | Errors, performance, user behavior |
 | **Communication** | WhatsApp Business API links | Primary contact channel in Costa Rica |
 
 ### Data Pipeline
 
 ```
-RE/MAX CCA API  →  Vercel Cron (6 AM daily)  →  Parse + Diff  →  Translate (DeepL/GPT)  →  Supabase  →  ISR Revalidation
+RE/MAX CCA API  →  Docker Cron (6 AM daily)  →  Parse + Diff  →  Translate (DeepL/GPT)  →  PostgreSQL  →  ISR Revalidation
 ```
 
 ### Rendering Strategy
@@ -232,7 +232,7 @@ RE/MAX CCA API  →  Vercel Cron (6 AM daily)  →  Parse + Diff  →  Translate
 - **ISR**: Property listings, Agent profiles, Search results (on-demand revalidation after sync)
 - **CSR**: Interactive map, filters, comparison tool, chatbot (future)
 
-### Estimated Cost: ~$55–70/month (MVP)
+### Estimated Cost: ~$25-45/month (MVP)
 
 ---
 
@@ -260,7 +260,7 @@ RE/MAX CCA API  →  Vercel Cron (6 AM daily)  →  Parse + Diff  →  Translate
 | **AI translation quality** | Misinformation for legal/financial content | Curated glossary (DeepL); human review for legal content; disclaimers |
 | **6-language SEO complexity** | Indexing issues, duplicate content | Strict hreflang; automated sitemaps; Search Console monitoring |
 | **Regional competitors** | Deeper local SEO presence | Long-tail keyword strategy; area-specific content; daily refresh advantage |
-| **Vercel function timeouts** | Sync job failure | Vercel Pro (300s); batch processing; Inngest fallback for large syncs |
+| **Vercel function timeouts** | Sync job failure | Self-hosted Docker on Coolify — no function timeout limits; long-running sync runs natively |
 | **Mapbox cost at scale** | Budget overrun beyond 50K loads | Monitor usage; tile caching; Google Maps fallback option |
 | **Multi-currency accuracy** | Incorrect pricing display | Reliable exchange rate API; "approximate" disclaimers; USD as source of truth |
 
@@ -274,8 +274,8 @@ RE/MAX CCA API  →  Vercel Cron (6 AM daily)  →  Parse + Diff  →  Translate
 - **API is the single data source** — no manual listing entry for MVP
 - **No existing user accounts** — lead capture only, no buyer login for MVP
 - **RE/MAX branding guidelines** — must adhere to global brand standards (balloon logo, colors)
-- **Budget target** — ~$55–70/month operational costs
-- **Vercel Pro required** — for 300s function timeout (sync pipeline)
+- **Budget target** — ~$25-45/month operational costs
+- **Self-hosted Coolify** — Docker-based deployment with no function timeout limits
 
 ### Assumptions
 

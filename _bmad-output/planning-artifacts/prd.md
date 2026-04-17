@@ -256,19 +256,19 @@ The following are explicitly excluded from MVP and will NOT be built:
 
 **Persona:** Nico, office owner/admin. Manages both Altitud (PZ) and Altitud Cero (Dominical/Uvita) offices. Monitors platform health, reviews leads, ensures data quality.
 
-**Opening Scene:** Morning routine: check sync status. Supabase dashboard — sync log: "✅ 247 properties synced, 3 new, 1 updated, 0 errors." Translation batch: "✅ 4 new listings translated." All green.
+**Opening Scene:** Morning routine: check sync status. Admin dashboard — sync log: "✅ 247 properties synced, 3 new, 1 updated, 0 errors." Translation batch: "✅ 4 new listings translated." All green.
 
 **Rising Action:** Leads table — 6 new leads overnight. 3 buyer (2 EN, 1 DE), 2 seller (ES), 1 investment inquiry. Each shows: source, property ref, language, assigned agent. He spots the German lead went to a non-German-speaking agent — reassigns to Emma.
 
-**Climax:** Reviews lifestyle tag accuracy. Sync auto-tagged a new Uvita condo as "Vacation Home" — he adds "Investment Property" in the Supabase admin table. Tag expands the listing's search visibility after next ISR revalidation.
+**Climax:** Reviews lifestyle tag accuracy. Sync auto-tagged a new Uvita condo as "Vacation Home" — he adds "Investment Property" in the admin table. Tag expands the listing's search visibility after next ISR revalidation.
 
 **Resolution:** Google Search Console shows 6 language variants indexing per listing. German query traffic up 12%. He screenshots the graph for the team WhatsApp. He closes the laptop. The platform he designed is doing its job — in six languages, across two offices, while he sleeps. For the first time, the technology is working as hard as his agents.
 
-**Failure scenario:** One morning, sync log shows "❌ API timeout — 0 properties synced." Nico receives an **automated alert** (email/WhatsApp). The site continues serving all existing listings from Supabase — optimized photos and translations intact. No user-facing impact. He contacts the API provider and the next day's sync recovers.
+**Failure scenario:** One morning, sync log shows "❌ API timeout — 0 properties synced." Nico receives an **automated alert** (email/WhatsApp). The site continues serving all existing listings from PostgreSQL — optimized photos and translations intact. No user-facing impact. He contacts the API provider and the next day's sync recovers.
 
 **Edge case — Agent departure:** Gustavo announces he's leaving RE/MAX Altitud. Nico opens the per-agent lead history (FR64) — all 47 leads Gustavo handled over 8 months are visible: buyer inquiries, seller listings, CMA requests, shortlist inquiries. Each shows the client's name, contact info, property reference, and source. Nico selects "Bulk Reassign" (FR65) — distributes Gustavo's active leads across Laura and two other agents based on language match and area coverage. The system logs every reassignment (previous agent, new agent, date). He exports Gustavo's full client contact list as CSV and sends a personal WhatsApp to each client introducing their new agent. No client falls through the cracks. No institutional knowledge is lost.
 
-> **Capabilities:** Sync monitoring with failure alerts, lead review + agent reassignment, lifestyle tag management (admin table), SEO monitoring, multi-office visibility, per-agent lead history with full audit trail (FR64), bulk lead reassignment with logging (FR65), CSV export of agent contacts (FR65), shortlist popularity analytics (FR66). **Resilience pattern:** Supabase DB is the source of truth — API failures don't affect the live site, only halt new data flow.
+> **Capabilities:** Sync monitoring with failure alerts, lead review + agent reassignment, lifestyle tag management (admin table), SEO monitoring, multi-office visibility, per-agent lead history with full audit trail (FR64), bulk lead reassignment with logging (FR65), CSV export of agent contacts (FR65), shortlist popularity analytics (FR66). **Resilience pattern:** PostgreSQL DB is the source of truth — API failures don't affect the live site, only halt new data flow.
 
 ---
 
@@ -336,7 +336,7 @@ The following are explicitly excluded from MVP and will NOT be built:
 | Localized units (m², acres, hectares) | Hans | ✅ |
 | Sync pipeline monitoring + failure alerts | Nico | ✅ |
 | Lead management + agent routing | Nico, Laura | ✅ |
-| Lifestyle tag admin (Supabase) | Nico | ✅ |
+| Lifestyle tag admin (database) | Nico | ✅ |
 | Standalone listing URLs (shareable) | Maria, Laura | ✅ |
 | No-results state with alternatives | Maria (edge case) | ✅ |
 | Low-end Android form support | Carlos, Andrés | ✅ (NFR) |
@@ -354,7 +354,7 @@ The following are explicitly excluded from MVP and will NOT be built:
 | Full German UI + EUR conversion | Hans | 🟡 Phase 2 |
 | Financing guides for foreigners | Hans | 🟡 Phase 2 (Relocation Hub) |
 
-> **Resilience pattern:** Supabase DB is the source of truth for the website. API sync failures don't take the site down — the site continues serving all existing listings with optimized photos and translations. Sync alerts notify admin that new data isn't flowing.
+> **Resilience pattern:** PostgreSQL DB is the source of truth for the website. API sync failures don't take the site down — the site continues serving all existing listings with optimized photos and translations. Sync alerts notify admin that new data isn't flowing.
 
 ## Domain-Specific Requirements
 
@@ -420,7 +420,7 @@ See **Non-Functional Requirements** section for measurable performance targets (
 
 - **Framework:** Next.js 15 with App Router
 - **Hosting:** Coolify (self-hosted Docker, ISR support, long-running processes)
-- **Database:** Supabase with **PostGIS extension enabled** (geospatial queries, spatial indexing)
+- **Database:** PostgreSQL + PostGIS (self-hosted via Coolify) — geospatial queries, spatial indexing
 - **Maps:** Mapbox GL JS (3D terrain, clustering, interactive pins)
 - **Translation:** DeepL API with domain-specific glossary
 - **Images:** `next/image` with `sharp` — self-hosted image optimization in Docker container
@@ -487,12 +487,12 @@ See **Non-Functional Requirements** section for measurable performance targets (
 
 | Risk | Impact | Mitigation |
 |------|--------|-----------|
-| **API sync failure** | Stale listings | Supabase DB resilience — site serves existing data. Admin alerts |
+| **API sync failure** | Stale listings | PostgreSQL DB resilience — site serves existing data. Admin alerts |
 | **SEO traffic loss during migration** | Lost leads | 301 redirect map, sitemap transition, SC monitoring. 100% recovery in 60 days |
 | **Translation quality (Phase 2)** | Bad UX | DeepL glossary + human spot-checks |
 | **Mapbox cost at scale** | Budget | Free tier: 50K loads/month. Monitor + optimize tile loading |
 | **Hreflang complexity** | Delayed i18n | Tech spike before Phase 2 |
-| **Single admin** | Bus factor | Supabase dashboard = standard tooling, onboardable |
+| **Single admin** | Bus factor | Coolify dashboard + pgAdmin = standard tooling, onboardable |
 
 ## Functional Requirements
 

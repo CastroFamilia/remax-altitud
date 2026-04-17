@@ -48,7 +48,7 @@ The platform serves 8 personas organized into **design priority tiers**:
 
 - 👩‍💼 **Laura** (Active Agent) — shareable profile page, lead notifications, professional presence.
 - 👩 **Sofia** (Recruit) — "Join Our Team" page, agent profiles as proof points.
-- 🏢 **Nico** (Admin) — sync monitoring, lead management via Supabase dashboard.
+- 🏢 **Nico** (Admin) — sync monitoring, lead management via admin dashboard.
 - 🇺🇸 **Jennifer** (Expat Seller) — remote seller flow validates the same form Carlos uses.
 
 ### Primary UX Architecture: Two Entry Paths
