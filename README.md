@@ -17,7 +17,7 @@ A complete real estate website for **RE/MAX Altitud** (2 offices in Costa Rica) 
 ## Project Tracking & Progress
 
 This project is actively in the Implementation Phase. To see the live, day-to-day progress of development, check the sprint status files:
-- 📊 **[Live Sprint Status](_bmad-output/sprint-status.yaml)** (Source of truth for what is done, in-progress, and next)
+- 📊 **[Live Sprint Status](_bmad-output/implementation-artifacts/sprint-status.yaml)** (Source of truth for what is done, in-progress, and next)
 - 📝 **[Epics & Stories](_bmad-output/planning-artifacts/epics.md)** (The complete feature backlog)
 
 *Tip: To view a beautiful, human-readable summary of progress at any time, ask the AI to run the `@[/bmad-sprint-status]` workflow!*
