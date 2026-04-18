@@ -14,6 +14,14 @@ A complete real estate website for **RE/MAX Altitud** (2 offices in Costa Rica) 
 - 👤 **Agent profiles** — multilingual mini-sites with WhatsApp integration
 - 🔄 **Background sync** — daily import from RE/MAX CCA API → AI translate → optimize → DB
 
+## Project Tracking & Progress
+
+This project is actively in the Implementation Phase. To see the live, day-to-day progress of development, check the sprint status files:
+- 📊 **[Live Sprint Status](_bmad-output/sprint-status.yaml)** (Source of truth for what is done, in-progress, and next)
+- 📝 **[Epics & Stories](_bmad-output/planning-artifacts/epics.md)** (The complete feature backlog)
+
+*Tip: To view a beautiful, human-readable summary of progress at any time, ask the AI to run the `@[/bmad-sprint-status]` workflow!*
+
 ## BMAD Method Progress
 
 The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)** for structured product development.
