@@ -32,8 +32,8 @@ export default withSentryConfig(nextConfig, {
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
 
-  // Configure sourcemaps
+  // Disable source map upload until SENTRY_AUTH_TOKEN is configured
   sourcemaps: {
-    disable: false,
+    disable: !process.env.SENTRY_AUTH_TOKEN,
   },
 });
