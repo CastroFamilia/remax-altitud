@@ -71,6 +71,7 @@ description: Commit, push, and create a GitHub Pull Request from the current bra
      - Extract the **title** from the first `# Heading` in the walkthrough (strip the `# ` prefix and any trailing ` — Walkthrough` suffix).
      - Build the PR title as: `<Type> : <Title>` (e.g., `Feature : AI Context Enrichment`).
      - Use the **entire walkthrough content** as the PR body.
+     - **Issue Linking**: Ask the user if there is a GitHub Issue number this PR should close/link to (e.g., `#12`). If they provide one, append `Closes #<issue-number>` to the bottom of the PR body.
    - **For release PRs** (`development` → `master`):
      - Run `git log master..development --oneline` to get the list of commits being merged.
      - Build the PR title as: `Release : <date>` (e.g., `Release : 2026-04-16`).
