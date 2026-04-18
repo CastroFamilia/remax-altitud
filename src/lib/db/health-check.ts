@@ -19,7 +19,7 @@ export async function checkDatabaseHealth(): Promise<{
     };
   }
 
-  const client = postgres(connectionString, { prepare: false, max: 1 });
+  const client = postgres(connectionString, { prepare: false, max: 1, connect_timeout: 5 });
 
   try {
     const start = performance.now();
@@ -37,6 +37,6 @@ export async function checkDatabaseHealth(): Promise<{
       error: err instanceof Error ? err.message : "Unknown database error",
     };
   } finally {
-    await client.end();
+    await client.end().catch(() => {});
   }
 }

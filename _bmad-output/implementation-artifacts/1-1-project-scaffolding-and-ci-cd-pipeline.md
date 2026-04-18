@@ -1,6 +1,6 @@
 # Story 1.1: Project Scaffolding & CI/CD Pipeline
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -356,4 +356,28 @@ New files:
 
 Modified files:
 - `.gitignore` — Updated with comprehensive Next.js, env, IDE, and Sentry patterns
+
+### Review Findings
+
+_Code review: 2026-04-17 — Antigravity (Claude Opus 4.6)_
+
+#### Decision Needed
+
+- [x] [Review][Decision] **CI workflow doesn't trigger on `development` branch** — Resolved: option (A) chosen, `development` added to CI triggers. [`.github/workflows/ci.yml:4-7`]
+
+#### Patch
+
+- [x] [Review][Patch] **`prepare: false` missing in DB client** — Fixed: added `{ prepare: false }` per spec. [`src/lib/db/client.ts:6`]
+- [x] [Review][Patch] **Health check connection churn + no timeout** — Fixed: added `connect_timeout: 5` and protected `client.end()` with `.catch()`. [`src/lib/db/health-check.ts:22,40`]
+- [x] [Review][Patch] **Sentry client uses phantom `NEXT_PUBLIC_SENTRY_DSN`** — Fixed: client config now uses `NEXT_PUBLIC_SENTRY_DSN` only, added to `.env.example`. [`sentry.client.config.ts:4`]
+- [x] [Review][Patch] **Undocumented Sentry env vars** — Fixed: added `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` to `.env.example`. [`next.config.ts:29-30`, `.env.example`]
+- [x] [Review][Patch] **`tracesSampleRate: 1.0` in all Sentry configs** — Fixed: environment-conditional sampling (0.1 in production, 1.0 in development). [`sentry.*.config.ts`]
+- [x] [Review][Patch] **Sentry source map upload will fail silently** — Fixed: disabled unless `SENTRY_AUTH_TOKEN` is present. [`next.config.ts:36-38`]
+- [x] [Review][Patch] **`DATABASE_URL!` non-null assertion at module level** — Fixed: explicit guard with descriptive error message. [`src/lib/db/client.ts:4`]
+
+#### Deferred
+
+- [x] [Review][Defer] **Missing CSP header** — No `Content-Security-Policy` header configured. `X-XSS-Protection` is deprecated in modern browsers. CSP is the effective XSS mitigation. [`next.config.ts:11-18`] — deferred, requires design decisions on allowed sources for scripts/styles/images
+- [x] [Review][Defer] **Missing HSTS header** — AC #9 requires HTTPS enforcement. Caddy handles TLS but HSTS header should be added for defense-in-depth. [`next.config.ts:11-18`] — deferred, should be added when Coolify deployment is configured
+- [x] [Review][Defer] **No HEALTHCHECK in Dockerfile** — `/api/health` route exists but Dockerfile doesn't declare `HEALTHCHECK`. Coolify/Docker can't auto-detect container health. [`Dockerfile`] — deferred, add when Coolify deployment is finalized
 
