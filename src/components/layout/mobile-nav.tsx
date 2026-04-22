@@ -12,8 +12,8 @@
  */
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mainNavItems, mobileOnlyItems, type NavItem } from "@/lib/navigation";
@@ -24,6 +24,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/com
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const t = useTranslations("Navigation");
+  const tMobile = useTranslations("MobileNav");
 
   // Close sheet on route change (Next.js client-side navigation)
   useEffect(() => {
@@ -40,7 +42,7 @@ export function MobileNav() {
         size="icon"
         className="size-11 text-white hover:bg-white/10 hover:text-white"
         onClick={() => setOpen(true)}
-        aria-label="Open navigation menu"
+        aria-label={tMobile("openMenu")}
       >
         <Menu className="size-6" />
       </Button>
@@ -50,16 +52,16 @@ export function MobileNav() {
           side="right"
           className="w-full max-w-sm overflow-y-auto bg-background"
           showCloseButton={true}
-          aria-label="Navigation menu"
+          aria-label={tMobile("title")}
         >
           <SheetHeader>
-            <SheetTitle className="text-brand-navy">Menu</SheetTitle>
+            <SheetTitle className="text-brand-navy">{tMobile("title")}</SheetTitle>
           </SheetHeader>
 
-          <nav className="flex flex-1 flex-col px-4" aria-label="Mobile navigation">
+          <nav className="flex flex-1 flex-col px-4" aria-label={tMobile("mobileNav")}>
             <ul className="flex flex-col gap-1">
               {mobileItems.map((item) => (
-                <MobileNavItem key={item.href} item={item} pathname={pathname} />
+                <MobileNavItem key={item.href} item={item} pathname={pathname} t={t} />
               ))}
             </ul>
 
@@ -76,7 +78,7 @@ export function MobileNav() {
               {...(pathname === "/sell" ? { "aria-current": "page" as const } : {})}
             >
               <span aria-hidden="true">🏠</span>
-              Sell Your Property
+              {t("sellYourProperty")}
             </Link>
 
             <hr className="my-3 border-brand-warm" />
@@ -84,7 +86,7 @@ export function MobileNav() {
             {/* Mobile-only items */}
             <ul className="flex flex-col gap-1">
               {mobileOnlyItems.map((item) => (
-                <MobileNavItem key={item.href} item={item} pathname={pathname} />
+                <MobileNavItem key={item.href} item={item} pathname={pathname} t={t} />
               ))}
             </ul>
           </nav>
@@ -109,7 +111,7 @@ function buildMobileItems(items: NavItem[]): NavItem[] {
         if (child.isGroup && child.children) {
           // Add group header + its children inline
           result.push({
-            label: child.label,
+            labelKey: child.labelKey,
             href: child.href,
             icon: "🏘",
           });
@@ -128,7 +130,15 @@ function buildMobileItems(items: NavItem[]): NavItem[] {
   return result;
 }
 
-function MobileNavItem({ item, pathname }: { item: NavItem; pathname: string }) {
+function MobileNavItem({
+  item,
+  pathname,
+  t,
+}: {
+  item: NavItem;
+  pathname: string;
+  t: (key: string) => string;
+}) {
   const isActive = item.activePrefix
     ? pathname.startsWith(item.activePrefix)
     : pathname === item.href;
@@ -149,7 +159,7 @@ function MobileNavItem({ item, pathname }: { item: NavItem; pathname: string }) 
             {item.icon}
           </span>
         )}
-        {item.label}
+        {t(item.labelKey)}
       </Link>
     </li>
   );

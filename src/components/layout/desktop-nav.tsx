@@ -9,8 +9,8 @@
  * Client Component — requires usePathname() for active route detection.
  */
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { mainNavItems, type NavItem } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
@@ -26,19 +26,20 @@ import {
 
 export function DesktopNav() {
   const pathname = usePathname();
+  const t = useTranslations("Navigation");
 
   return (
-    <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+    <nav className="hidden items-center gap-1 md:flex" aria-label={t("mainNav")}>
       <NavigationMenu delayDuration={150} skipDelayDuration={300}>
         <NavigationMenuList>
           {mainNavItems.map((item) => (
             <NavigationMenuItem key={item.href}>
               {item.children ? (
-                <DropdownNavItem item={item} pathname={pathname} />
+                <DropdownNavItem item={item} pathname={pathname} t={t} />
               ) : item.isCta ? (
-                <CtaNavItem item={item} pathname={pathname} />
+                <CtaNavItem item={item} pathname={pathname} t={t} />
               ) : (
-                <SimpleNavItem item={item} pathname={pathname} />
+                <SimpleNavItem item={item} pathname={pathname} t={t} />
               )}
             </NavigationMenuItem>
           ))}
@@ -51,8 +52,10 @@ export function DesktopNav() {
   );
 }
 
+type Translator = ReturnType<typeof useTranslations<"Navigation">>;
+
 /** Regular nav link (no dropdown, no CTA) */
-function SimpleNavItem({ item, pathname }: { item: NavItem; pathname: string }) {
+function SimpleNavItem({ item, pathname, t }: { item: NavItem; pathname: string; t: Translator }) {
   const isActive = item.activePrefix
     ? pathname.startsWith(item.activePrefix)
     : pathname === item.href;
@@ -67,13 +70,13 @@ function SimpleNavItem({ item, pathname }: { item: NavItem; pathname: string }) 
       )}
       {...(isActive ? { "aria-current": "page" as const } : {})}
     >
-      {item.label}
+      {t(item.labelKey)}
     </Link>
   );
 }
 
 /** CTA nav item ("Sell Your Property") — outline accent button */
-function CtaNavItem({ item, pathname }: { item: NavItem; pathname: string }) {
+function CtaNavItem({ item, pathname, t }: { item: NavItem; pathname: string; t: Translator }) {
   const isActive = pathname === item.href;
 
   return (
@@ -86,14 +89,22 @@ function CtaNavItem({ item, pathname }: { item: NavItem; pathname: string }) {
       )}
     >
       <Link href={item.href} {...(isActive ? { "aria-current": "page" as const } : {})}>
-        {item.label}
+        {t(item.labelKey)}
       </Link>
     </Button>
   );
 }
 
 /** Dropdown nav item (Properties, Areas) */
-function DropdownNavItem({ item, pathname }: { item: NavItem; pathname: string }) {
+function DropdownNavItem({
+  item,
+  pathname,
+  t,
+}: {
+  item: NavItem;
+  pathname: string;
+  t: Translator;
+}) {
   const isActive = item.activePrefix
     ? pathname.startsWith(item.activePrefix)
     : pathname === item.href;
@@ -111,7 +122,7 @@ function DropdownNavItem({ item, pathname }: { item: NavItem; pathname: string }
         )}
         {...(isActive ? { "aria-current": "page" as const } : {})}
       >
-        {item.label}
+        {t(item.labelKey)}
       </NavigationMenuTrigger>
       <NavigationMenuContent className="z-50">
         <ul className="grid w-[240px] gap-1 p-2">
@@ -126,7 +137,7 @@ function DropdownNavItem({ item, pathname }: { item: NavItem; pathname: string }
                     pathname === child.href && "bg-muted font-semibold",
                   )}
                 >
-                  {child.label}
+                  {t(child.labelKey)}
                 </Link>
               </NavigationMenuLink>
             </li>
@@ -135,7 +146,7 @@ function DropdownNavItem({ item, pathname }: { item: NavItem; pathname: string }
             <li key={group.href}>
               <hr className="my-1 border-brand-warm" />
               <span className="block px-3 py-1 text-xs font-semibold uppercase tracking-wider text-text-muted">
-                {group.label}
+                {t(group.labelKey)}
               </span>
               <ul className="pl-2">
                 {group.children?.map((subChild) => (
@@ -149,7 +160,7 @@ function DropdownNavItem({ item, pathname }: { item: NavItem; pathname: string }
                           pathname === subChild.href && "bg-muted font-semibold",
                         )}
                       >
-                        {subChild.label}
+                        {t(subChild.labelKey)}
                       </Link>
                     </NavigationMenuLink>
                   </li>

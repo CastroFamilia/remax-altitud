@@ -1,0 +1,77 @@
+{
+  "Navigation": {
+    "properties": "Propiedades",
+    "mountainsPZ": "Montañas (PZ)",
+    "coastDominical": "Costa (Dominical)",
+    "searchAll": "Buscar Todas las Propiedades",
+    "areas": "Zonas",
+    "perezZeledon": "Pérez Zeledón",
+    "dominical": "Dominical",
+    "uvita": "Uvita",
+    "allAreas": "Todas las Zonas",
+    "communities": "Comunidades",
+    "rise": "RISE",
+    "santaElenaHills": "Santa Elena Hills",
+    "allCommunities": "Todas las Comunidades",
+    "sellYourProperty": "Vende tu Propiedad",
+    "about": "Nosotros",
+    "ourTeam": "Nuestro Equipo",
+    "contact": "Contacto",
+    "mainNav": "Navegación principal"
+  },
+  "LanguageToggle": {
+    "switchLanguage": "Cambiar idioma",
+    "currentLanguage": "Español"
+  },
+  "SkipToContent": {
+    "label": "Saltar al contenido"
+  },
+  "Footer": {
+    "quickLinks": "Enlaces Rápidos",
+    "offices": "Nuestras Oficinas",
+    "legal": "Legal",
+    "connect": "Conecta",
+    "menu": "Menú",
+    "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
+    "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
+    "followUs": "Síguenos",
+    "allRightsReserved": "Todos los derechos reservados",
+    "sellWithUs": "Vende con Nosotros",
+    "aboutUs": "Sobre Nosotros",
+    "ourAgents": "Nuestros Agentes",
+    "contactUs": "Contáctanos",
+    "properties": "Propiedades",
+    "areas": "Zonas",
+    "about": "Nosotros",
+    "contact": "Contacto",
+    "joinTeam": "Únete al Equipo",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio",
+    "sitemap": "Mapa del Sitio",
+    "socialFacebook": "Visita RE/MAX Altitud en Facebook",
+    "socialInstagram": "Visita RE/MAX Altitud en Instagram",
+    "socialWhatsApp": "Contacta a RE/MAX Altitud por WhatsApp",
+    "socialEmail": "Envía un correo a RE/MAX Altitud"
+  },
+  "HomePage": {
+    "title": "RE/MAX Altitud",
+    "subtitle": "Zona Sur de Costa Rica — Plataforma de Bienes Raíces",
+    "scaffoldingNote": "Estructura base completa. Contenido próximamente en Historias 1.5–1.7."
+  },
+  "Metadata": {
+    "title": "RE/MAX Altitud — Bienes Raíces Costa Rica",
+    "description": "Descubre propiedades en la Zona Sur de Costa Rica. Búsqueda por mapa, soporte multilingüe y agentes expertos en Pérez Zeledón y Dominical/Uvita."
+  },
+  "MobileNav": {
+    "openMenu": "Abrir menú de navegación",
+    "closeMenu": "Cerrar menú de navegación",
+    "title": "Menú",
+    "mainNav": "Navegación principal",
+    "mobileNav": "Navegación móvil"
+  },
+  "NotFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no pudo ser encontrada.",
+    "backHome": "Volver al inicio"
+  }
+}
