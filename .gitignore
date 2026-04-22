@@ -47,3 +47,7 @@ next-env.d.ts
 
 # Sentry
 .sentryclirc
+
+# BMAD
+.bmad-viewer/
+.agent/settings.local.json

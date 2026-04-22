@@ -372,10 +372,10 @@
 }
 
 @layer components {
-  /* Page container: max-width 1280px with responsive padding */
+  /* Page container: max-width 1400px with responsive padding */
   .container {
     width: 100%;
-    max-width: 1280px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 1rem; /* 16px mobile */
@@ -417,6 +417,20 @@
   }
 
   /* Touch target enforcement (UX-DR7) — interactive controls must be ≥ 44×44px */
+  /* Skip-to-content link (WCAG 2.4.1) — slides in from top on keyboard focus */
+  .skip-to-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: var(--z-skip-link);
+    transform: translateY(-100%);
+    transition: transform var(--duration-fast) var(--ease-smooth);
+  }
+
+  .skip-to-content:focus-visible {
+    transform: translateY(0);
+  }
+
   .touch-target {
     min-width: var(--touch-min);
     min-height: var(--touch-min);
