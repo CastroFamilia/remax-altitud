@@ -1,11 +1,12 @@
-# Task: Debug npm run dev
+# Task: Internationalization (Story 1.4)
 
-- [x] Investigate why `npm run dev` is not working
-    - [x] Run `npm run dev` and capture error
-    - [x] Analyze logs
-    - [x] Fix the issue
-        - [x] Reinstall dependencies to fix `@parcel/watcher` issue
-        - [x] Fix syntax error in `mobile-nav.tsx`
-        - [x] Move middleware to `src/` to enable routing
-        - [x] Fix duplicate `<html>`/`<body>` tags in layouts
-    - [x] Verify fix
+- [x] Implement `next-intl` configuration
+- [x] Refactor routes to `/[locale]`
+- [x] Fix `npm run dev` and build errors
+    - [x] Fix `@parcel/watcher` platform dependency
+    - [x] Fix syntax error in `mobile-nav.tsx`
+    - [x] Move middleware to `src/`
+    - [x] Wrap `LanguageToggle` in `Suspense` for build stability
+- [x] Verify local development and production build
+- [x] Create Pull Request [#62](https://github.com/CastroFamilia/remax-altitud/pull/62)
+- [x] Push all changes to remote
