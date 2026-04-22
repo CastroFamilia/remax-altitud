@@ -12,13 +12,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
+import { Suspense } from "react";
 
 interface LanguageToggleProps {
   /** Visual style variant: header (dark bg nav), dark (footer), light (default) */
   variant?: "light" | "dark" | "header";
 }
 
-export function LanguageToggle({ variant = "header" }: LanguageToggleProps) {
+function LanguageToggleContent({ variant = "header" }: LanguageToggleProps) {
   const locale = useLocale() as Locale;
   const router = useRouter();
   const pathname = usePathname();
@@ -68,5 +69,13 @@ export function LanguageToggle({ variant = "header" }: LanguageToggleProps) {
         );
       })}
     </div>
+  );
+}
+
+export function LanguageToggle(props: LanguageToggleProps) {
+  return (
+    <Suspense fallback={<div className="w-16 h-5" aria-hidden="true" />}>
+      <LanguageToggleContent {...props} />
+    </Suspense>
   );
 }
