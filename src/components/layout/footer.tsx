@@ -5,49 +5,36 @@
  * 4-column grid on desktop, stacked on mobile.
  */
 
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { Globe, Camera, MessageCircle, Mail } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { offices } from "@/lib/constants/offices";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 
 const quickLinks = [
-  { label: "Properties", href: "/search" },
-  { label: "Areas", href: "/areas" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-  { label: "Join Our Team", href: "/careers" },
-];
+  { key: "properties", href: "/search" },
+  { key: "areas", href: "/areas" },
+  { key: "about", href: "/about" },
+  { key: "contact", href: "/contact" },
+  { key: "joinTeam", href: "/careers" },
+] as const;
 
 const socialLinks = [
-  {
-    label: "Visit RE/MAX Altitud on Facebook",
-    href: "https://facebook.com",
-    icon: Globe,
-  },
-  {
-    label: "Visit RE/MAX Altitud on Instagram",
-    href: "https://instagram.com",
-    icon: Camera,
-  },
-  {
-    label: "Contact RE/MAX Altitud via WhatsApp",
-    href: "https://wa.me/50600000000",
-    icon: MessageCircle,
-  },
-  {
-    label: "Email RE/MAX Altitud",
-    href: "mailto:info@remaxaltitud.com",
-    icon: Mail,
-  },
-];
+  { key: "socialFacebook", href: "https://facebook.com", icon: Globe },
+  { key: "socialInstagram", href: "https://instagram.com", icon: Camera },
+  { key: "socialWhatsApp", href: "https://wa.me/50600000000", icon: MessageCircle },
+  { key: "socialEmail", href: "mailto:info@remaxaltitud.com", icon: Mail },
+] as const;
 
 const legalLinks = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms of Service", href: "/terms" },
-  { label: "Sitemap", href: "/sitemap.xml" },
-];
+  { key: "privacy", href: "/privacy" },
+  { key: "terms", href: "/terms" },
+  { key: "sitemap", href: "/sitemap.xml" },
+] as const;
 
-export function Footer() {
+export async function Footer() {
+  const t = await getTranslations("Footer");
+
   return (
     <footer className="bg-brand-dark text-text-on-dark">
       <div className="container py-12 md:py-16">
@@ -55,7 +42,7 @@ export function Footer() {
           {/* Column 1: Quick Links */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand-gold">
-              Quick Links
+              {t("quickLinks")}
             </h3>
             <ul className="flex flex-col gap-2">
               {quickLinks.map((link) => (
@@ -64,7 +51,7 @@ export function Footer() {
                     href={link.href}
                     className="text-sm text-text-on-dark transition-colors duration-[var(--duration-fast)] hover:text-brand-gold"
                   >
-                    {link.label}
+                    {t(link.key)}
                   </Link>
                 </li>
               ))}
@@ -74,7 +61,7 @@ export function Footer() {
           {/* Column 2: Offices */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand-gold">
-              Offices
+              {t("offices")}
             </h3>
             <ul className="flex flex-col gap-4">
               {offices.map((office) => (
@@ -91,18 +78,18 @@ export function Footer() {
           {/* Column 3: Social & Contact */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand-gold">
-              Connect
+              {t("connect")}
             </h3>
             <div className="flex gap-3">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
                   <a
-                    key={social.label}
+                    key={social.key}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={social.label}
+                    aria-label={t(social.key)}
                     className="flex size-11 items-center justify-center rounded-full text-text-on-dark transition-colors duration-[var(--duration-fast)] hover:bg-brand-gold/20 hover:text-brand-gold"
                   >
                     <Icon className="size-5" />
@@ -115,7 +102,7 @@ export function Footer() {
           {/* Column 4: Legal & Language */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand-gold">
-              Legal
+              {t("legal")}
             </h3>
             <ul className="flex flex-col gap-2">
               {legalLinks.map((link) => (
@@ -124,7 +111,7 @@ export function Footer() {
                     href={link.href}
                     className="text-sm text-text-on-dark transition-colors duration-[var(--duration-fast)] hover:text-brand-gold"
                   >
-                    {link.label}
+                    {t(link.key)}
                   </Link>
                 </li>
               ))}
@@ -138,7 +125,7 @@ export function Footer() {
         {/* Gold divider + Copyright */}
         <div className="mt-10 border-t border-brand-gold/40 pt-6 text-center">
           <p className="text-xs text-text-muted">
-            © {new Date().getFullYear()} RE/MAX Altitud. All rights reserved.
+            © {new Date().getFullYear()} RE/MAX Altitud. {t("allRightsReserved")}.
           </p>
         </div>
       </div>

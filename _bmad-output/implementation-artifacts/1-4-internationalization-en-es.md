@@ -1,6 +1,6 @@
 # Story 1.4: Internationalization (EN/ES)
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -36,8 +36,8 @@ So that I can browse comfortably whether I speak English or Spanish.
 
 ### Task 0: Install `next-intl` and configure Next.js plugin (AC: #4, #7, #8)
 
-- [ ] Run `npm install next-intl`
-- [ ] Update `next.config.ts` — wrap existing config with `createNextIntlPlugin`:
+- [x] Run `npm install next-intl`
+- [x] Update `next.config.ts` — wrap existing config with `createNextIntlPlugin`:
   ```typescript
   import createNextIntlPlugin from 'next-intl/plugin';
 
@@ -47,11 +47,11 @@ So that I can browse comfortably whether I speak English or Spanish.
   // export default withNextIntl(withSentryConfig(nextConfig, sentryOptions));
   ```
   **Critical:** `withNextIntl` must wrap the outermost config. Order: `withNextIntl(withSentryConfig(nextConfig, ...))`.
-- [ ] Verify `npm run build` passes after installation
+- [x] Verify `npm run build` passes after installation
 
 ### Task 1: Create routing configuration (AC: #4, #8)
 
-- [ ] Create `src/i18n/routing.ts`:
+- [x] Create `src/i18n/routing.ts`:
   ```typescript
   import { defineRouting } from 'next-intl/routing';
 
@@ -64,11 +64,11 @@ So that I can browse comfortably whether I speak English or Spanish.
   **Design decision:** `localePrefix: 'always'` per AR12 — every URL has `/{locale}/` prefix for SEO clarity and hreflang correctness. No "hidden default" locale.
   [Source: architecture.md#§7 Internationalization Architecture — "URL structure uses `/{locale}/` prefix for all routes"]
 
-- [ ] Export `locales` and `defaultLocale` types for reuse across the codebase
+- [x] Export `locales` and `defaultLocale` types for reuse across the codebase
 
 ### Task 2: Create locale-aware navigation utilities (AC: #4, #2)
 
-- [ ] Create `src/i18n/navigation.ts`:
+- [x] Create `src/i18n/navigation.ts`:
   ```typescript
   import { createNavigation } from 'next-intl/navigation';
   import { routing } from './routing';
@@ -76,12 +76,12 @@ So that I can browse comfortably whether I speak English or Spanish.
   export const { Link, redirect, usePathname, useRouter, getPathname } =
     createNavigation(routing);
   ```
-- [ ] This replaces `next/link` and `next/navigation` imports throughout the app for locale-aware routing
-- [ ] **Migration rule:** All `<Link>` imports in layout components must switch from `next/link` → `@/i18n/navigation`
+- [x] This replaces `next/link` and `next/navigation` imports throughout the app for locale-aware routing
+- [x] **Migration rule:** All `<Link>` imports in layout components must switch from `next/link` → `@/i18n/navigation`
 
 ### Task 3: Create request configuration for server-side i18n (AC: #7)
 
-- [ ] Create `src/i18n/request.ts`:
+- [x] Create `src/i18n/request.ts`:
   ```typescript
   import { getRequestConfig } from 'next-intl/server';
   import { routing } from './routing';
@@ -106,7 +106,7 @@ So that I can browse comfortably whether I speak English or Spanish.
 
 ### Task 4: Create middleware for locale detection + redirects (AC: #1, #6, #8)
 
-- [ ] Create `middleware.ts` at project root (NOT inside `src/`):
+- [x] Create `middleware.ts` at project root (NOT inside `src/`):
   ```typescript
   import createMiddleware from 'next-intl/middleware';
   import { routing } from './src/i18n/routing';
@@ -136,9 +136,9 @@ So that I can browse comfortably whether I speak English or Spanish.
 
 ### Task 5: Restructure app directory for `[locale]` segment (AC: #4, #5, #8)
 
-- [ ] Create `src/app/[locale]/` directory
-- [ ] Move `src/app/page.tsx` → `src/app/[locale]/page.tsx`
-- [ ] Create `src/app/[locale]/layout.tsx` — this becomes the primary layout:
+- [x] Create `src/app/[locale]/` directory
+- [x] Move `src/app/page.tsx` → `src/app/[locale]/page.tsx`
+- [x] Create `src/app/[locale]/layout.tsx` — this becomes the primary layout:
   ```typescript
   import { NextIntlClientProvider } from 'next-intl';
   import { getMessages, setRequestLocale } from 'next-intl/server';
@@ -204,7 +204,7 @@ So that I can browse comfortably whether I speak English or Spanish.
   - `setRequestLocale(locale)` — required for static rendering support in Next.js 15
   - `params` is a Promise in Next.js 15 — must be awaited
 
-- [ ] Update `src/app/layout.tsx` — strip it to a minimal shell (fonts, CSS already handled in `[locale]/layout.tsx`). This file should only contain `{children}` passthrough since `[locale]/layout.tsx` now owns `<html>` and `<body>`:
+- [x] Update `src/app/layout.tsx` — strip it to a minimal shell (fonts, CSS already handled in `[locale]/layout.tsx`). This file should only contain `{children}` passthrough since `[locale]/layout.tsx` now owns `<html>` and `<body>`:
   ```typescript
   // src/app/layout.tsx — minimal root, no <html>/<body> tags
   // The [locale]/layout.tsx handles <html>, <body>, fonts, providers
@@ -214,15 +214,15 @@ So that I can browse comfortably whether I speak English or Spanish.
   ```
   **Warning:** You cannot have TWO `<html>` tags. The root `layout.tsx` must NOT render `<html>` or `<body>` — only the `[locale]/layout.tsx` should.
 
-- [ ] Move `metadata` and `viewport` exports to `src/app/[locale]/layout.tsx` (they belong with the layout that renders `<html>`)
-- [ ] Move existing `src/app/design-system/page.tsx` → `src/app/[locale]/design-system/page.tsx`
-- [ ] Verify the `src/app/api/health/route.ts` stays at `src/app/api/` (NOT inside `[locale]`) — API routes don't need locale prefixing
-- [ ] Verify `src/app/favicon.ico` stays at `src/app/` root
+- [x] Move `metadata` and `viewport` exports to `src/app/[locale]/layout.tsx` (they belong with the layout that renders `<html>`)
+- [x] Move existing `src/app/design-system/page.tsx` → `src/app/[locale]/design-system/page.tsx`
+- [x] Verify the `src/app/api/health/route.ts` stays at `src/app/api/` (NOT inside `[locale]`) — API routes don't need locale prefixing
+- [x] Verify `src/app/favicon.ico` stays at `src/app/` root
 
 ### Task 6: Create EN/ES message files (AC: #3, #7)
 
-- [ ] Delete `src/messages/.gitkeep`
-- [ ] Create `src/messages/en.json` with all current UI strings:
+- [x] Delete `src/messages/.gitkeep`
+- [x] Create `src/messages/en.json` with all current UI strings:
   ```json
   {
     "Navigation": {
@@ -278,7 +278,7 @@ So that I can browse comfortably whether I speak English or Spanish.
     }
   }
   ```
-- [ ] Create `src/messages/es.json` with Spanish translations:
+- [x] Create `src/messages/es.json` with Spanish translations:
   ```json
   {
     "Navigation": {
@@ -342,7 +342,7 @@ So that I can browse comfortably whether I speak English or Spanish.
 
 ### Task 7: Refactor navigation data to use i18n keys (AC: #3)
 
-- [ ] Update `src/lib/navigation.ts` — replace hardcoded English labels with i18n message keys:
+- [x] Update `src/lib/navigation.ts` — replace hardcoded English labels with i18n message keys:
   ```typescript
   export interface NavItem {
     /** i18n message key within "Navigation" namespace */
@@ -357,37 +357,37 @@ So that I can browse comfortably whether I speak English or Spanish.
   ```
   Change `label: "Properties"` → `labelKey: "properties"`, etc. for all items.
 
-- [ ] Update `src/components/layout/desktop-nav.tsx`:
+- [x] Update `src/components/layout/desktop-nav.tsx`:
   - Import `useTranslations` from `next-intl`
   - Import `Link` from `@/i18n/navigation` (replaces `next/link`)
   - Import `usePathname` from `@/i18n/navigation` (replaces `next/navigation`)
   - Use `const t = useTranslations('Navigation');` and render `t(item.labelKey)`
   - All `<Link>` hrefs remain as-is — the locale-aware `Link` auto-prefixes `/{locale}/`
 
-- [ ] Update `src/components/layout/mobile-nav.tsx`:
+- [x] Update `src/components/layout/mobile-nav.tsx`:
   - Same imports as desktop-nav
   - Use `useTranslations('Navigation')` for nav labels
   - Use `useTranslations('MobileNav')` for ARIA labels (open/close menu)
   - Import `Link` from `@/i18n/navigation`
 
-- [ ] Update `src/components/layout/header.tsx`:
+- [x] Update `src/components/layout/header.tsx`:
   - Import `Link` from `@/i18n/navigation` (for logo link)
 
-- [ ] Update `src/components/layout/footer.tsx`:
+- [x] Update `src/components/layout/footer.tsx`:
   - Import `useTranslations` from `next-intl`
   - Use `const t = useTranslations('Footer');` for all footer strings
   - Import `Link` from `@/i18n/navigation`
   - **Note:** Footer is currently a Server Component. `useTranslations` works in both server and client components with next-intl.
 
-- [ ] Update `src/components/layout/logo.tsx`:
+- [x] Update `src/components/layout/logo.tsx`:
   - Import `Link` from `@/i18n/navigation` (replaces `next/link`)
 
-- [ ] Update `src/components/layout/skip-to-content.tsx`:
+- [x] Update `src/components/layout/skip-to-content.tsx`:
   - Use `useTranslations('SkipToContent')` for the link label text
 
 ### Task 8: Activate the Language Toggle component (AC: #2, #10)
 
-- [ ] Rewrite `src/components/layout/language-toggle.tsx`:
+- [x] Rewrite `src/components/layout/language-toggle.tsx`:
   - Remains `'use client'` component
   - Import `useRouter, usePathname` from `@/i18n/navigation`
   - Import `useLocale` from `next-intl`
@@ -427,7 +427,7 @@ So that I can browse comfortably whether I speak English or Spanish.
 
 ### Task 9: Update homepage to use translations (AC: #3)
 
-- [ ] Update `src/app/[locale]/page.tsx`:
+- [x] Update `src/app/[locale]/page.tsx`:
   - Import `useTranslations` from `next-intl`
   - Import `setRequestLocale` from `next-intl/server`
   - Use `const t = useTranslations('HomePage');` for all UI strings
@@ -436,32 +436,32 @@ So that I can browse comfortably whether I speak English or Spanish.
 
 ### Task 10: Handle design-system page locale (AC: #4)
 
-- [ ] Update `src/app/[locale]/design-system/page.tsx`:
+- [x] Update `src/app/[locale]/design-system/page.tsx`:
   - Add `setRequestLocale(locale)` call
   - Accept locale params
   - Minimal changes — this is a dev-only page, but it must work within the `[locale]` segment
 
 ### Task 11: Verify not-found and error handling (AC: #6)
 
-- [ ] Create `src/app/[locale]/not-found.tsx` — handles 404 within locale routes
-- [ ] Ensure visiting `/fr/` (unsupported locale) redirects to `/en/` via middleware (AC: #6)
-- [ ] Ensure visiting `/` (no locale) redirects to `/en/` or `/es/` based on browser language (AC: #1)
+- [x] Create `src/app/[locale]/not-found.tsx` — handles 404 within locale routes
+- [x] Ensure visiting `/fr/` (unsupported locale) redirects to `/en/` via middleware (AC: #6)
+- [x] Ensure visiting `/` (no locale) redirects to `/en/` or `/es/` based on browser language (AC: #1)
 
 ### Task 12: Delete i18n placeholder files (AC: cleanup)
 
-- [ ] Delete `src/lib/i18n/.gitkeep` — the `src/i18n/` directory (NOT `src/lib/i18n/`) now owns i18n configuration
+- [x] Delete `src/lib/i18n/.gitkeep` — the `src/i18n/` directory (NOT `src/lib/i18n/`) now owns i18n configuration
   **Architecture note:** The architecture doc specifies `src/lib/i18n/` for config, request, and navigation files. However, `next-intl` convention and its plugin default expect `src/i18n/request.ts`. We follow the `next-intl` convention (`src/i18n/`) since the plugin auto-discovers this path. If the team prefers `src/lib/i18n/`, pass the custom path to `createNextIntlPlugin('./src/lib/i18n/request.ts')`.
 
 ### Task 13: Build verification and smoke test (AC: #9)
 
-- [ ] Run `npm run build` — zero type errors, zero lint errors
-- [ ] Verify `/en/` renders English homepage with English nav labels
-- [ ] Verify `/es/` renders Spanish homepage with Spanish nav labels
-- [ ] Verify clicking "ES" in language toggle navigates from `/en/` → `/es/` without full reload
-- [ ] Verify `<html lang="es">` is set when on Spanish route
-- [ ] Verify `/` redirects to `/en/` (for English browser) or `/es/` (for Spanish browser)
-- [ ] Verify `/api/health` still works (not affected by locale routing)
-- [ ] Verify design-system page works at `/en/design-system`
+- [x] Run `npm run build` — zero type errors, zero lint errors
+- [x] Verify `/en/` renders English homepage with English nav labels
+- [x] Verify `/es/` renders Spanish homepage with Spanish nav labels
+- [x] Verify clicking "ES" in language toggle navigates from `/en/` → `/es/` without full reload
+- [x] Verify `<html lang="es">` is set when on Spanish route
+- [x] Verify `/` redirects to `/en/` (for English browser) or `/es/` (for Spanish browser)
+- [x] Verify `/api/health` still works (not affected by locale routing)
+- [x] Verify design-system page works at `/en/design-system`
 
 ## Dev Notes
 
@@ -545,10 +545,82 @@ So that I can browse comfortably whether I speak English or Spanish.
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Opus 4.7 (`claude-opus-4-7`) via BMAD dev-story workflow.
 
 ### Debug Log References
 
+- **Unsupported-locale redirect path issue:** Initial layout-level `redirect('/en')` from `next/navigation` and `redirect({ href: '/', locale: 'en' })` from `@/i18n/navigation` both emitted `Location: /en/fr` when hit from `/fr` — Next.js/next-intl rewrote the relative path against the current dynamic segment. Fixed by moving the invalid-locale handler into `middleware.ts` (explicit `NextResponse.redirect` to `/${defaultLocale}`) before next-intl's middleware runs. The layout now falls through to `notFound()` as a safety net only.
+- **Stale `.next/types/validator.ts`:** Typecheck initially failed referencing old `src/app/page.js` / `src/app/design-system/page.js` after moving files under `[locale]/`. Cleared `.next/` + `tsconfig.tsbuildinfo` to regenerate — subsequent `tsc --noEmit` and `npm run build` passed.
+- **Homepage nested `<main>`:** Original `src/app/page.tsx` wrapped content in `<main>`, but `[locale]/layout.tsx` also owns `<main id="main-content">`. Replaced the page's outer wrapper with a `<div>` to avoid invalid nested `<main>` elements (pre-existing issue surfaced by the move).
+
 ### Completion Notes List
 
+- `next-intl@^4.9.1` installed and wrapped via `createNextIntlPlugin` (outermost) around `withSentryConfig` in `next.config.ts`.
+- Routing uses `localePrefix: 'always'` with `locales: ['en', 'es']`, `defaultLocale: 'en'` (AR12).
+- New `src/i18n/{routing,navigation,request}.ts` are the canonical locations; legacy `src/lib/i18n/.gitkeep` removed.
+- `src/messages/en.json` + `src/messages/es.json` carry Navigation, LanguageToggle, SkipToContent, Footer, HomePage, Metadata, MobileNav, and NotFound namespaces. All visible strings (nav labels, footer headings/links, social ARIA labels, `<title>`/meta description, skip link) are translated.
+- `middleware.ts` applies two behaviors: (1) locale-shaped invalid prefixes (`/fr`, `/xx`, …) → redirect to `/${defaultLocale}` before next-intl runs; (2) next-intl's built-in middleware handles `/` → `/{en|es}` via Accept-Language and adds locale prefixes.
+- `src/app/[locale]/layout.tsx` owns `<html lang={locale}>`, fonts, global CSS, `NextIntlClientProvider`, `SkipToContent`, `Header`, `Footer`, and calls `setRequestLocale(locale)` + `generateStaticParams()` for SSG. Metadata is now generated per locale via `generateMetadata()` + `Metadata` namespace.
+- `src/app/layout.tsx` reduced to `return children` passthrough so only `[locale]/layout.tsx` renders `<html>`/`<body>`.
+- `LanguageToggle` is now functional via `router.replace(pathname, { locale })` from `@/i18n/navigation`, producing a soft navigation (no full reload). Active state uses `aria-current="true"`, labels come from `LanguageToggle.switchLanguage`. Appears in header (desktop), mobile sheet footer, and main footer — all three driven by the same component.
+- Navigation data in `src/lib/navigation.ts` switched from hardcoded `label` strings to `labelKey` (within `Navigation` namespace). `DesktopNav`, `MobileNav`, `Header`/`Logo`, `Footer`, and `SkipToContent` now import `Link`/`usePathname` from `@/i18n/navigation` and resolve labels via `useTranslations`/`getTranslations`.
+- `src/app/[locale]/page.tsx` and `src/app/[locale]/design-system/page.tsx` both await `params` and call `setRequestLocale(locale)` for static rendering.
+- `src/app/[locale]/not-found.tsx` added — localized "Page not found" with a `Back to home` link.
+- Build output: 9 static pages (`/en`, `/es`, `/en/design-system`, `/es/design-system`, …), middleware bundle 48.7 kB, `/api/health` unaffected by locale routing.
+- Smoke tests against `next start`:
+  - `/en` → 200, `<html lang="en">`, English nav/footer/metadata.
+  - `/es` → 200, `<html lang="es">`, Spanish nav/footer/metadata, no English leakage.
+  - `/` (no header) → `/en`; `/` with `Accept-Language: es` → `/es`; `/` with `Accept-Language: fr` → `/en` (FR29, AC #1/#6).
+  - `/fr` → 307 → `/en` (lang="en") (AC #6).
+  - `/api/health` → 503 (DB not reachable in this env, but route reachable — confirms middleware matcher excludes API).
+- `npm run lint`, `npm run typecheck`, and `npm run build` all pass with zero warnings/errors.
+
 ### File List
+
+**Added**
+- `middleware.ts`
+- `src/i18n/routing.ts`
+- `src/i18n/navigation.ts`
+- `src/i18n/request.ts`
+- `src/messages/en.json`
+- `src/messages/es.json`
+- `src/app/[locale]/layout.tsx`
+- `src/app/[locale]/not-found.tsx`
+
+**Moved**
+- `src/app/page.tsx` → `src/app/[locale]/page.tsx`
+- `src/app/design-system/page.tsx` → `src/app/[locale]/design-system/page.tsx`
+
+**Modified**
+- `next.config.ts`
+- `package.json` (added `next-intl@^4.9.1`)
+- `package-lock.json`
+- `src/app/layout.tsx`
+- `src/app/[locale]/page.tsx`
+- `src/app/[locale]/design-system/page.tsx`
+- `src/lib/navigation.ts`
+- `src/components/layout/desktop-nav.tsx`
+- `src/components/layout/mobile-nav.tsx`
+- `src/components/layout/footer.tsx`
+- `src/components/layout/logo.tsx`
+- `src/components/layout/skip-to-content.tsx`
+- `src/components/layout/language-toggle.tsx`
+
+**Deleted**
+- `src/lib/i18n/.gitkeep`
+- `src/messages/.gitkeep`
+
+## Change Log
+
+| Date | Change | Author |
+|---|---|---|
+| 2026-04-22 | Implemented Story 1.4 — next-intl integration, `/en` & `/es` locale prefixes, middleware locale detection with invalid-locale fallback, localized nav/footer/metadata/skip-to-content, functional EN/ES language toggle, [locale]-scoped layout owning `<html lang>`. Story status → review. | Amelia (dev agent) |
+
+### Review Findings
+
+- [x] [Review][Dismiss] Rewrite locale-prefixed API requests — Strict approach chosen — Requests like /en/api/health currently 404. Should we rewrite these to /api/health or keep API access strict?
+- [x] [Review][Patch] Incorrect dynamic import path for messages [src/i18n/request.ts:106]
+- [x] [Review][Patch] Missing React import in minimal root layout.tsx [src/app/layout.tsx]
+- [x] [Review][Patch] Language switch drops URL query parameters [src/components/layout/language-toggle.tsx:426]
+- [x] [Review][Patch] useTranslations used in Server Component (Footer) [src/components/layout/footer.tsx:385]
+- [x] [Review][Defer] Inconsistent design token usage in layout [src/app/[locale]/layout.tsx] — deferred, pre-existing

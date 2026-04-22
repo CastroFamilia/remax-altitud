@@ -1,0 +1,77 @@
+{
+  "Navigation": {
+    "properties": "Properties",
+    "mountainsPZ": "Mountains (PZ)",
+    "coastDominical": "Coast (Dominical)",
+    "searchAll": "Search All Properties",
+    "areas": "Areas",
+    "perezZeledon": "Pérez Zeledón",
+    "dominical": "Dominical",
+    "uvita": "Uvita",
+    "allAreas": "All Areas",
+    "communities": "Communities",
+    "rise": "RISE",
+    "santaElenaHills": "Santa Elena Hills",
+    "allCommunities": "All Communities",
+    "sellYourProperty": "Sell Your Property",
+    "about": "About",
+    "ourTeam": "Our Team",
+    "contact": "Contact",
+    "mainNav": "Main navigation"
+  },
+  "LanguageToggle": {
+    "switchLanguage": "Switch language",
+    "currentLanguage": "English"
+  },
+  "SkipToContent": {
+    "label": "Skip to content"
+  },
+  "Footer": {
+    "quickLinks": "Quick Links",
+    "offices": "Our Offices",
+    "legal": "Legal",
+    "connect": "Connect",
+    "menu": "Menu",
+    "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
+    "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
+    "followUs": "Follow Us",
+    "allRightsReserved": "All rights reserved",
+    "sellWithUs": "Sell with Us",
+    "aboutUs": "About Us",
+    "ourAgents": "Our Agents",
+    "contactUs": "Contact Us",
+    "properties": "Properties",
+    "areas": "Areas",
+    "about": "About",
+    "contact": "Contact",
+    "joinTeam": "Join Our Team",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "sitemap": "Sitemap",
+    "socialFacebook": "Visit RE/MAX Altitud on Facebook",
+    "socialInstagram": "Visit RE/MAX Altitud on Instagram",
+    "socialWhatsApp": "Contact RE/MAX Altitud via WhatsApp",
+    "socialEmail": "Email RE/MAX Altitud"
+  },
+  "HomePage": {
+    "title": "RE/MAX Altitud",
+    "subtitle": "Costa Rica's Southern Zone — Real Estate Platform",
+    "scaffoldingNote": "Foundation scaffolding complete. Content coming in Stories 1.5–1.7."
+  },
+  "Metadata": {
+    "title": "RE/MAX Altitud — Costa Rica Real Estate",
+    "description": "Discover properties in Costa Rica's Southern Zone. Map-first search, multilingual support, and expert agents across Pérez Zeledón and Dominical/Uvita."
+  },
+  "MobileNav": {
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
+    "title": "Menu",
+    "mainNav": "Main navigation",
+    "mobileNav": "Mobile navigation"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for could not be found.",
+    "backHome": "Back to home"
+  }
+}

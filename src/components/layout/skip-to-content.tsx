@@ -5,16 +5,19 @@
  * Slides into view on keyboard focus. Must be the first focusable
  * element in the DOM (placed before <Header> in layout.tsx).
  *
- * Server Component — no client JS.
+ * Server Component — uses next-intl server-side translation.
  */
 
-export function SkipToContent() {
+import { getTranslations } from "next-intl/server";
+
+export async function SkipToContent() {
+  const t = await getTranslations("SkipToContent");
   return (
     <a
       href="#main-content"
       className="skip-to-content bg-brand-navy text-text-on-dark px-6 py-3 text-sm font-semibold"
     >
-      Skip to content
+      {t("label")}
     </a>
   );
 }

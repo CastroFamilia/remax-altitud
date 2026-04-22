@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
@@ -167,7 +168,14 @@ function Section({
   );
 }
 
-export default function DesignSystemPage() {
+export default async function DesignSystemPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   if (process.env.NODE_ENV === "production") {
     notFound();
   }

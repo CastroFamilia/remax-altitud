@@ -1,12 +1,12 @@
 /**
  * Navigation data structure — shared between DesktopNav and MobileNav.
- * Labels will become i18n keys in Story 1.4.
+ * Labels resolve through `useTranslations('Navigation')` / `t(labelKey)`.
  */
 
 export interface NavItem {
-  /** Display label (i18n key in Story 1.4) */
-  label: string;
-  /** Route path */
+  /** i18n message key within the "Navigation" namespace */
+  labelKey: string;
+  /** Route path (locale prefix added automatically by `@/i18n/navigation` Link) */
   href: string;
   /** Path prefix to match for active state (e.g., "/areas") */
   activePrefix?: string;
@@ -22,53 +22,53 @@ export interface NavItem {
 
 export const mainNavItems: NavItem[] = [
   {
-    label: "Properties",
+    labelKey: "properties",
     href: "/search",
     activePrefix: "/search",
     icon: "🏠",
     children: [
-      { label: "Mountains (PZ)", href: "/search?region=mountain" },
-      { label: "Coast (Dominical)", href: "/search?region=coast" },
-      { label: "Search All Properties", href: "/search" },
+      { labelKey: "mountainsPZ", href: "/search?region=mountain" },
+      { labelKey: "coastDominical", href: "/search?region=coast" },
+      { labelKey: "searchAll", href: "/search" },
     ],
   },
   {
-    label: "Areas",
+    labelKey: "areas",
     href: "/areas",
     activePrefix: "/areas",
     icon: "📍",
     children: [
-      { label: "Pérez Zeledón", href: "/areas/perez-zeledon" },
-      { label: "Dominical", href: "/areas/dominical" },
-      { label: "Uvita", href: "/areas/uvita" },
-      { label: "All Areas", href: "/areas" },
+      { labelKey: "perezZeledon", href: "/areas/perez-zeledon" },
+      { labelKey: "dominical", href: "/areas/dominical" },
+      { labelKey: "uvita", href: "/areas/uvita" },
+      { labelKey: "allAreas", href: "/areas" },
       // Communities sub-group (rendered after divider in dropdown)
       {
-        label: "Communities",
+        labelKey: "communities",
         href: "/communities",
         isGroup: true,
         children: [
           {
-            label: "RISE",
+            labelKey: "rise",
             href: "/areas/perez-zeledon/communities/rise",
           },
           {
-            label: "Santa Elena Hills",
+            labelKey: "santaElenaHills",
             href: "/areas/perez-zeledon/communities/santa-elena-hills",
           },
-          { label: "All Communities", href: "/communities" },
+          { labelKey: "allCommunities", href: "/communities" },
         ],
       },
     ],
   },
   {
-    label: "Sell Your Property",
+    labelKey: "sellYourProperty",
     href: "/sell",
     isCta: true,
     icon: "🏠",
   },
   {
-    label: "About",
+    labelKey: "about",
     href: "/about",
     icon: "👥",
   },
@@ -77,12 +77,12 @@ export const mainNavItems: NavItem[] = [
 /** Mobile-only items (Our Team, Contact) — not shown in desktop nav */
 export const mobileOnlyItems: NavItem[] = [
   {
-    label: "Our Team",
+    labelKey: "ourTeam",
     href: "/about/team",
     icon: "👥",
   },
   {
-    label: "Contact",
+    labelKey: "contact",
     href: "/contact",
     icon: "📞",
   },
