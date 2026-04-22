@@ -1,7 +1,5 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-
+@plugin "tailwindcss-animate";
 /*
  * @custom-variant dark is injected by shadcn init. Required for shadcn's
  * dark mode component variants to compile. Dark mode is NOT enabled for
