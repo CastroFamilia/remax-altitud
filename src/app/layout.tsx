@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
+import { SkipToContent } from "@/components/layout/skip-to-content";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 
 const montserrat = Montserrat({
   subsets: ["latin", "latin-ext"],
@@ -29,7 +32,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("font-sans", montserrat.variable)}>
-      <body>{children}</body>
+      <body>
+        <SkipToContent />
+        <Header />
+        <main id="main-content">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }
