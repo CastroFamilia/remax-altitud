@@ -18,11 +18,16 @@
   },
   "dependencies": {
     "@sentry/nextjs": "^10.48.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "drizzle-orm": "^0.44.0",
+    "lucide-react": "^1.8.0",
     "next": "15.5.15",
     "postgres": "^3.4.0",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

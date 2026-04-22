@@ -1,0 +1,1142 @@
+diff --git a/package.json b/package.json
+index 6fdd53e..040c783 100644
+--- a/package.json
++++ b/package.json
+@@ -18,11 +18,18 @@
+   },
+   "dependencies": {
+     "@sentry/nextjs": "^10.48.0",
++    "class-variance-authority": "^0.7.1",
++    "clsx": "^2.1.1",
+     "drizzle-orm": "^0.44.0",
++    "lucide-react": "^1.8.0",
+     "next": "15.5.15",
+     "postgres": "^3.4.0",
++    "radix-ui": "^1.4.3",
+     "react": "19.1.0",
+-    "react-dom": "19.1.0"
++    "react-dom": "19.1.0",
++    "shadcn": "^4.4.0",
++    "tailwind-merge": "^3.5.0",
++    "tw-animate-css": "^1.4.0"
+   },
+   "devDependencies": {
+     "@eslint/eslintrc": "^3",
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index 5bdf7bd..351fdc5 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -1,5 +1,14 @@
+ import type { Metadata } from "next";
++import { Montserrat } from "next/font/google";
+ import "@/styles/globals.css";
++import { cn } from "@/lib/utils";
++
++const montserrat = Montserrat({
++  subsets: ["latin", "latin-ext"],
++  weight: ["400", "600", "700", "800"],
++  display: "swap",
++  variable: "--font-montserrat",
++});
+ 
+ export const metadata: Metadata = {
+   title: "RE/MAX Altitud — Costa Rica Real Estate",
+@@ -13,7 +22,7 @@ export default function RootLayout({
+   children: React.ReactNode;
+ }>) {
+   return (
+-    <html lang="en">
++    <html lang="en" className={cn("font-sans", montserrat.variable)}>
+       <body>{children}</body>
+     </html>
+   );
+diff --git a/src/lib/utils/.gitkeep b/src/lib/utils/.gitkeep
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/src/styles/globals.css b/src/styles/globals.css
+index ac2e9b2..8659c64 100644
+--- a/src/styles/globals.css
++++ b/src/styles/globals.css
+@@ -1,32 +1,453 @@
+ @import "tailwindcss";
++@import "tw-animate-css";
++@import "shadcn/tailwind.css";
+ 
+-/* ============================================
+-   RE/MAX Altitud — Design Token Foundation
+-   Story 1.2 will populate full token system.
+-   ============================================ */
++/*
++ * @custom-variant dark is injected by shadcn init. Required for shadcn's
++ * dark mode component variants to compile. Dark mode is NOT enabled for
++ * MVP — no .dark class is applied anywhere in the app.
++ */
++@custom-variant dark (&:is(.dark *));
++
++/* ============================================================
++   RE/MAX Altitud — Design Token Foundation (Story 1.2)
++   Premium Dual-Geography palette: Navy + Burgundy + Gold
++   ============================================================
++
++   NAMING CONVENTION:
++   - shadcn semantic slots use BARE names in :root (--primary,
++     --accent, etc.) and are mapped to Tailwind utilities in
++     @theme inline so `bg-primary`, `text-accent`, etc. resolve
++     to CSS custom properties.
++   - Project branding tokens use --brand-* prefix in :root to
++     avoid collision with shadcn's bare names. They are mapped
++     in @theme inline as --color-brand-* → Tailwind utilities
++     like `bg-brand-navy`, `text-brand-gold`.
++   - Some values (e.g. --primary and --brand-navy both = #000E35)
++     intentionally overlap: one feeds shadcn components, the
++     other feeds custom brand styling.
++   - NEVER define a raw hex value in @theme inline — always
++     reference a :root var.
++   ============================================================ */
+ 
+ @theme inline {
++  /* Font families */
++  --font-sans: var(--font-montserrat), system-ui, sans-serif;
++  --font-heading: var(--font-montserrat), system-ui, sans-serif;
++  --font-display: var(--font-montserrat), system-ui, sans-serif;
++  --font-body: var(--font-montserrat), system-ui, sans-serif;
++  --font-ui: var(--font-montserrat), system-ui, sans-serif;
++  --font-mono: "JetBrains Mono", ui-monospace, monospace;
++
++  /* shadcn semantic slots → Tailwind utilities */
+   --color-background: var(--background);
+   --color-foreground: var(--foreground);
++  --color-primary: var(--primary);
++  --color-primary-foreground: var(--primary-foreground);
++  --color-accent: var(--accent);
++  --color-accent-foreground: var(--accent-foreground);
++  --color-muted: var(--muted);
++  --color-muted-foreground: var(--muted-foreground);
++  --color-card: var(--card);
++  --color-card-foreground: var(--card-foreground);
++  --color-popover: var(--popover);
++  --color-popover-foreground: var(--popover-foreground);
++  --color-secondary: var(--secondary);
++  --color-secondary-foreground: var(--secondary-foreground);
++  --color-destructive: var(--destructive);
++  --color-destructive-foreground: var(--destructive-foreground);
++  --color-border: var(--border);
++  --color-input: var(--input);
++  --color-ring: var(--ring);
++
++  /* Sidebar slots (shadcn default — kept for future sidebar components) */
++  --color-sidebar: var(--sidebar);
++  --color-sidebar-foreground: var(--sidebar-foreground);
++  --color-sidebar-primary: var(--sidebar-primary);
++  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
++  --color-sidebar-accent: var(--sidebar-accent);
++  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
++  --color-sidebar-border: var(--sidebar-border);
++  --color-sidebar-ring: var(--sidebar-ring);
++
++  /* RE/MAX brand tokens → Tailwind utilities (bg-brand-navy, etc.) */
++  --color-brand-navy: var(--brand-navy);
++  --color-brand-navy-light: var(--brand-navy-light);
++  --color-brand-burgundy: var(--brand-burgundy);
++  --color-brand-burgundy-light: var(--brand-burgundy-light);
++  --color-brand-red: var(--brand-red);
++  --color-brand-blue: var(--brand-blue);
++  --color-brand-gold: var(--brand-gold);
++  --color-brand-gold-dark: var(--brand-gold-dark);
++  --color-brand-gold-light: var(--brand-gold-light);
++  --color-brand-gold-muted: var(--brand-gold-muted);
++  --color-brand-crema: var(--brand-crema);
++  --color-brand-warm: var(--brand-warm);
++  --color-brand-dark: var(--brand-dark);
++  --color-brand-whatsapp: var(--brand-whatsapp);
++  --color-brand-whatsapp-icon: var(--brand-whatsapp-icon);
++  --color-brand-mountain: var(--brand-mountain);
++  --color-brand-mountain-accent: var(--brand-mountain-accent);
++  --color-brand-beach: var(--brand-beach);
++  --color-brand-beach-accent: var(--brand-beach-accent);
++
++  /* Balloon mark (for standalone icon usage) */
++  --color-brand-balloon-red: var(--brand-balloon-red);
++  --color-brand-balloon-blue: var(--brand-balloon-blue);
++  --color-brand-balloon-white: var(--brand-balloon-white);
++
++  /* Text tokens */
++  --color-text-primary: var(--color-text-primary-val);
++  --color-text-secondary: var(--color-text-secondary-val);
++  --color-text-muted: var(--color-text-muted-val);
++  --color-text-on-dark: var(--color-text-on-dark-val);
++  --color-text-on-accent: var(--color-text-on-accent-val);
++
++  /* Semantic tokens */
++  --color-success: var(--color-success-val);
++  --color-warning: var(--color-warning-val);
++  --color-error: var(--color-error-val);
++  --color-info: var(--color-info-val);
++
++  /* Radius scale */
++  --radius-sm: 4px;
++  --radius-md: 8px;
++  --radius-lg: 12px;
++  --radius-xl: 16px;
++  --radius-2xl: 20px;
++  --radius-full: 9999px;
++
++  /* Spacing scale (4px base grid) */
++  --spacing-1: 4px;
++  --spacing-2: 8px;
++  --spacing-3: 12px;
++  --spacing-4: 16px;
++  --spacing-5: 20px;
++  --spacing-6: 24px;
++  --spacing-8: 32px;
++  --spacing-10: 40px;
++  --spacing-12: 48px;
++  --spacing-16: 64px;
++  --spacing-24: 96px;
++
++  /* Shadows — 6 levels */
++  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
++  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
++  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
++  --shadow-xl: 0 15px 40px rgba(0, 0, 0, 0.12);
++  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.15);
++  --shadow-cta: 0 5px 15px rgba(102, 0, 0, 0.3);
+ }
+ 
+ :root {
+-  --background: #ffffff;
+-  --foreground: #171717;
++  /* Base radius for shadcn calculations (maps to --radius-lg = 12px) */
++  --radius: 0.75rem;
++
++  /* ── shadcn semantic slots (bare names) → RE/MAX brand ── */
++  --background: #f7f5ee; /* Crema canvas */
++  --foreground: #202020; /* Text primary */
++  --primary: #000e35; /* Azul Oscuro */
++  --primary-foreground: #f8f8f8;
++  --accent: #660000; /* Rojo Oscuro */
++  --accent-foreground: #ffffff;
++  --muted: #efece4; /* Warm neutral */
++  --muted-foreground: #666666;
++  --card: #ffffff;
++  --card-foreground: #202020;
++  --popover: #ffffff;
++  --popover-foreground: #202020;
++  --secondary: #f7f5ee;
++  --secondary-foreground: #000e35;
++  --destructive: #dc2626;
++  --destructive-foreground: #ffffff;
++  --border: #efece4;
++  --input: #efece4;
++  --ring: #0043ff;
++
++  /* Chart slots (shadcn defaults — kept for future dashboard usage) */
++  --chart-1: #000e35;
++  --chart-2: #660000;
++  --chart-3: #c2a661;
++  --chart-4: #183c5a;
++  --chart-5: #233428;
++
++  /* Sidebar slots (shadcn defaults — kept for future sidebar components) */
++  --sidebar: #ffffff;
++  --sidebar-foreground: #202020;
++  --sidebar-primary: #000e35;
++  --sidebar-primary-foreground: #f8f8f8;
++  --sidebar-accent: #efece4;
++  --sidebar-accent-foreground: #000e35;
++  --sidebar-border: #efece4;
++  --sidebar-ring: #0043ff;
++
++  /* ── RE/MAX brand tokens (--brand-* prefix) ── */
++  --brand-navy: #000e35;
++  --brand-navy-light: #0b1e43;
++  --brand-burgundy: #660000;
++  --brand-burgundy-light: #931f2e;
++  --brand-red: #ff1200;
++  --brand-blue: #0043ff;
++  --brand-gold: #c2a661;
++  --brand-gold-dark: #9b8347;
++  --brand-gold-light: #d9c39b;
++  --brand-gold-muted: rgba(194, 166, 97, 0.4);
++  --brand-crema: #f7f5ee;
++  --brand-warm: #efece4;
++  --brand-dark: #0d0d0d;
++  --brand-whatsapp: #128c7e;
++  --brand-whatsapp-icon: #25d366;
++  --brand-mountain: #233428;
++  --brand-mountain-accent: #c2a661;
++  --brand-beach: #183c5a;
++  --brand-beach-accent: #d9c39b;
++
++  /* Balloon mark colors (RE/MAX hot air balloon logo element) */
++  --brand-balloon-red: #cc0000;
++  --brand-balloon-blue: #003da5;
++  --brand-balloon-white: #ffffff;
++
++  /* ── Glass tokens (UX-DR16) ── */
++  --glass-bg: rgba(255, 255, 255, 0.1);
++  --glass-bg-strong: rgba(255, 255, 255, 0.25);
++  --glass-border: rgba(194, 166, 97, 0.4);
++  --glass-blur: 15px;
++
++  /* ── Text tokens ── */
++  --color-text-primary-val: #202020;
++  --color-text-secondary-val: #666666;
++  --color-text-muted-val: #888888;
++  --color-text-on-dark-val: #f8f8f8;
++  --color-text-on-accent-val: #ffffff;
++
++  /* ── Semantic tokens ── */
++  --color-success-val: #16a34a;
++  --color-warning-val: #d97706;
++  --color-error-val: #dc2626;
++  --color-info-val: #2563eb;
++
++  /* ── Responsive type scale (mobile-first; desktop ≥ 768px) ── */
++  --text-hero: 2.5rem;
++  --text-hero-lh: 1.1;
++  --text-hero-weight: 600;
++  --text-h1: 2rem;
++  --text-h1-lh: 1.2;
++  --text-h1-weight: 600;
++  --text-h2: 1.5rem;
++  --text-h2-lh: 1.25;
++  --text-h2-weight: 600;
++  --text-h3: 1.25rem;
++  --text-h3-lh: 1.3;
++  --text-h3-weight: 600;
++  --text-h4: 1.1rem;
++  --text-h4-lh: 1.35;
++  --text-h4-weight: 600;
++  --text-body: 1rem;
++  --text-body-lh: 1.6;
++  --text-body-weight: 400;
++  --text-body-lg: 1.1rem;
++  --text-body-lg-lh: 1.6;
++  --text-body-lg-weight: 400;
++  --text-sm: 0.875rem;
++  --text-sm-lh: 1.5;
++  --text-sm-weight: 400;
++  --text-xs: 0.75rem;
++  --text-xs-lh: 1.4;
++  --text-xs-weight: 600;
++  --text-price: 1.5rem;
++  --text-price-lh: 1.1;
++  --text-price-weight: 800;
++
++  /* ── Transitions (UX-DR18) ──
++     NEVER use `transition: all`; target specific properties. */
++  --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
++  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
++  --duration-fast: 0.2s; /* hover, active states */
++  --duration-normal: 0.3s; /* dropdowns, toggles */
++  --duration-smooth: 0.6s; /* hero, page transitions */
++  --duration-slow: 0.8s; /* map camera */
++  --duration-skeleton: 2s; /* loading shimmer pulse */
++
++  /* ── Z-index scale (overlay stacking per UX spec) ── */
++  --z-content: 1;
++  --z-sticky-cta: 20;
++  --z-sticky-nav: 30;
++  --z-modal: 40;
++  --z-toast: 50;
++  --z-skip-link: 60;
++
++  /* ── Focus indicator tokens (dual-ring pattern, UX-DR24) ── */
++  --focus-ring-color: #0043ff;
++  --focus-ring-width: 2px;
++  --focus-ring-offset: 2px;
++  --focus-ring-offset-color: #ffffff;
++
++  /* ── Touch target minimum (UX-DR7) ── */
++  --touch-min: 44px;
+ }
+ 
+-@media (prefers-color-scheme: dark) {
++/* Desktop type scale (≥ 768px) */
++@media (min-width: 768px) {
+   :root {
+-    --background: #0a0a0a;
+-    --foreground: #ededed;
++    --text-hero: 4rem;
++    --text-h1: 2.8rem;
++    --text-h2: 2rem;
++    --text-h3: 1.5rem;
++    --text-h4: 1.2rem;
++    --text-body-lg: 1.15rem;
++    --text-price: 1.8rem;
++  }
++}
++
++/* Skeleton shimmer — consumed by Story 1.7 loading states */
++@keyframes skeleton-pulse {
++  0%,
++  100% {
++    opacity: 1;
++  }
++  50% {
++    opacity: 0.4;
++  }
++}
++
++@layer base {
++  * {
++    @apply border-border outline-ring/50;
++  }
++
++  html {
++    @apply font-sans;
++  }
++
++  body {
++    background: var(--background);
++    color: var(--foreground);
++    font-family: var(--font-body);
++    font-size: var(--text-body);
++    line-height: var(--text-body-lh);
++    font-weight: var(--text-body-weight);
++    -webkit-font-smoothing: antialiased;
++    -moz-osx-font-smoothing: grayscale;
++  }
++
++  /* Heading defaults — navy on light backgrounds, tight letter-spacing on display sizes */
++  h1,
++  h2,
++  h3,
++  h4,
++  h5,
++  h6 {
++    color: var(--brand-navy);
++    font-family: var(--font-heading);
++    font-weight: 600;
++  }
++
++  h1 {
++    font-size: var(--text-hero);
++    line-height: var(--text-hero-lh);
++    letter-spacing: -0.5px;
++  }
++  h2 {
++    font-size: var(--text-h1);
++    line-height: var(--text-h1-lh);
++    letter-spacing: -0.5px;
++  }
++  h3 {
++    font-size: var(--text-h2);
++    line-height: var(--text-h2-lh);
++  }
++  h4 {
++    font-size: var(--text-h3);
++    line-height: var(--text-h3-lh);
++  }
++  h5 {
++    font-size: var(--text-h4);
++    line-height: var(--text-h4-lh);
++  }
++
++  /* Dual-ring focus indicator (UX-DR24) */
++  :focus-visible {
++    outline: var(--focus-ring-width) solid var(--focus-ring-color);
++    outline-offset: var(--focus-ring-offset);
++    box-shadow: 0 0 0 var(--focus-ring-offset) var(--focus-ring-offset-color);
+   }
+ }
+ 
+-body {
+-  background: var(--background);
+-  color: var(--foreground);
+-  font-family:
+-    system-ui,
+-    -apple-system,
+-    sans-serif;
++@layer components {
++  /* Page container: max-width 1280px with responsive padding */
++  .container {
++    width: 100%;
++    max-width: 1280px;
++    margin-left: auto;
++    margin-right: auto;
++    padding-left: 1rem; /* 16px mobile */
++    padding-right: 1rem;
++  }
++
++  @media (min-width: 768px) {
++    .container {
++      padding-left: 1.5rem; /* 24px tablet */
++      padding-right: 1.5rem;
++    }
++  }
++
++  @media (min-width: 1024px) {
++    .container {
++      padding-left: 2rem; /* 32px desktop */
++      padding-right: 2rem;
++    }
++  }
++
++  /* Readable-text column (long-form content) */
++  .content-text {
++    max-width: 720px;
++  }
++
++  /* Glassmorphism surface utility (UX-DR16) */
++  .glass {
++    background: var(--glass-bg);
++    border: 1px solid var(--glass-border);
++    backdrop-filter: blur(var(--glass-blur));
++    -webkit-backdrop-filter: blur(var(--glass-blur));
++  }
++
++  .glass-strong {
++    background: var(--glass-bg-strong);
++    border: 1px solid var(--glass-border);
++    backdrop-filter: blur(var(--glass-blur));
++    -webkit-backdrop-filter: blur(var(--glass-blur));
++  }
++
++  /* Touch target enforcement (UX-DR7) — interactive controls must be ≥ 44×44px */
++  .touch-target {
++    min-width: var(--touch-min);
++    min-height: var(--touch-min);
++  }
++}
++
++/* Reduced-motion preference (UX-DR18) — flattens durations, disables shimmer */
++@media (prefers-reduced-motion: reduce) {
++  :root {
++    --duration-fast: 0.01s;
++    --duration-normal: 0.01s;
++    --duration-smooth: 0.01s;
++    --duration-slow: 0.01s;
++    --duration-skeleton: 0.01s;
++  }
++
++  *,
++  *::before,
++  *::after {
++    animation-duration: 0.01ms !important;
++    animation-iteration-count: 1 !important;
++    transition-duration: 0.01ms !important;
++    scroll-behavior: auto !important;
++  }
++
++  @keyframes skeleton-pulse {
++    0%,
++    100% {
++      opacity: 1;
++    }
++  }
+ }
+diff --git a/src/app/design-system/page.tsx b/src/app/design-system/page.tsx
+new file mode 100644
+index 0000000..ced355c
+--- /dev/null
++++ b/src/app/design-system/page.tsx
+@@ -0,0 +1,564 @@
++import Image from "next/image";
++import { cn } from "@/lib/utils";
++
++export const metadata = {
++  title: "Design System — RE/MAX Altitud",
++  description: "Token preview page (dev-only).",
++};
++
++type ColorSwatch = {
++  name: string;
++  value: string;
++  bg: string;
++  textClass?: string;
++  note?: string;
++};
++
++const shadcnSwatches: ColorSwatch[] = [
++  { name: "--background", value: "#F7F5EE", bg: "bg-background" },
++  { name: "--foreground", value: "#202020", bg: "bg-foreground", textClass: "text-background" },
++  { name: "--primary", value: "#000E35", bg: "bg-primary", textClass: "text-primary-foreground" },
++  { name: "--accent", value: "#660000", bg: "bg-accent", textClass: "text-accent-foreground" },
++  { name: "--muted", value: "#EFECE4", bg: "bg-muted" },
++  { name: "--card", value: "#FFFFFF", bg: "bg-card" },
++  {
++    name: "--destructive",
++    value: "#DC2626",
++    bg: "bg-destructive",
++    textClass: "text-destructive-foreground",
++  },
++  { name: "--ring", value: "#0043FF", bg: "bg-ring", textClass: "text-white" },
++];
++
++const brandSwatches: ColorSwatch[] = [
++  { name: "--brand-navy", value: "#000E35", bg: "bg-brand-navy", textClass: "text-white" },
++  {
++    name: "--brand-navy-light",
++    value: "#0B1E43",
++    bg: "bg-brand-navy-light",
++    textClass: "text-white",
++  },
++  { name: "--brand-burgundy", value: "#660000", bg: "bg-brand-burgundy", textClass: "text-white" },
++  {
++    name: "--brand-burgundy-light",
++    value: "#931F2E",
++    bg: "bg-brand-burgundy-light",
++    textClass: "text-white",
++  },
++  { name: "--brand-red", value: "#FF1200", bg: "bg-brand-red", textClass: "text-white" },
++  { name: "--brand-blue", value: "#0043FF", bg: "bg-brand-blue", textClass: "text-white" },
++  { name: "--brand-gold", value: "#C2A661", bg: "bg-brand-gold", textClass: "text-brand-navy" },
++  {
++    name: "--brand-gold-dark",
++    value: "#9B8347",
++    bg: "bg-brand-gold-dark",
++    textClass: "text-white",
++  },
++  {
++    name: "--brand-gold-light",
++    value: "#D9C39B",
++    bg: "bg-brand-gold-light",
++    textClass: "text-brand-navy",
++  },
++  { name: "--brand-crema", value: "#F7F5EE", bg: "bg-brand-crema" },
++  { name: "--brand-warm", value: "#EFECE4", bg: "bg-brand-warm" },
++  { name: "--brand-dark", value: "#0D0D0D", bg: "bg-brand-dark", textClass: "text-white" },
++  { name: "--brand-whatsapp", value: "#128C7E", bg: "bg-brand-whatsapp", textClass: "text-white" },
++  {
++    name: "--brand-whatsapp-icon",
++    value: "#25D366",
++    bg: "bg-brand-whatsapp-icon",
++    textClass: "text-brand-dark",
++  },
++];
++
++const mountainSwatches: ColorSwatch[] = [
++  { name: "--brand-mountain", value: "#233428", bg: "bg-brand-mountain", textClass: "text-white" },
++  {
++    name: "--brand-mountain-accent",
++    value: "#C2A661",
++    bg: "bg-brand-mountain-accent",
++    textClass: "text-brand-mountain",
++  },
++];
++
++const beachSwatches: ColorSwatch[] = [
++  { name: "--brand-beach", value: "#183C5A", bg: "bg-brand-beach", textClass: "text-white" },
++  {
++    name: "--brand-beach-accent",
++    value: "#D9C39B",
++    bg: "bg-brand-beach-accent",
++    textClass: "text-brand-beach",
++  },
++];
++
++const spacingSteps: Array<{ name: string; px: number }> = [
++  { name: "1", px: 4 },
++  { name: "2", px: 8 },
++  { name: "3", px: 12 },
++  { name: "4", px: 16 },
++  { name: "5", px: 20 },
++  { name: "6", px: 24 },
++  { name: "8", px: 32 },
++  { name: "10", px: 40 },
++  { name: "12", px: 48 },
++  { name: "16", px: 64 },
++  { name: "24", px: 96 },
++];
++
++const radiusSteps = [
++  { label: "sm · 4px", cls: "rounded-sm" },
++  { label: "md · 8px", cls: "rounded-md" },
++  { label: "lg · 12px", cls: "rounded-lg" },
++  { label: "xl · 16px", cls: "rounded-xl" },
++  { label: "2xl · 20px", cls: "rounded-2xl" },
++  { label: "full · pill", cls: "rounded-full" },
++];
++
++const shadowSteps = [
++  { label: "shadow-sm", cls: "shadow-sm" },
++  { label: "shadow-md", cls: "shadow-md" },
++  { label: "shadow-lg", cls: "shadow-lg" },
++  { label: "shadow-xl", cls: "shadow-xl" },
++  { label: "shadow-glass", cls: "shadow-glass" },
++  { label: "shadow-cta", cls: "shadow-cta" },
++];
++
++function Swatch({ swatch }: { swatch: ColorSwatch }) {
++  return (
++    <div className="overflow-hidden rounded-lg border border-border shadow-sm">
++      <div
++        className={cn(
++          "flex h-24 items-end p-3 font-semibold",
++          swatch.bg,
++          swatch.textClass ?? "text-foreground",
++        )}
++      >
++        {swatch.value}
++      </div>
++      <div className="bg-card p-3">
++        <code className="text-xs text-muted-foreground">{swatch.name}</code>
++        {swatch.note ? <p className="mt-1 text-xs text-muted-foreground">{swatch.note}</p> : null}
++      </div>
++    </div>
++  );
++}
++
++function Section({
++  id,
++  title,
++  description,
++  children,
++}: {
++  id: string;
++  title: string;
++  description?: string;
++  children: React.ReactNode;
++}) {
++  return (
++    <section id={id} className="scroll-mt-24">
++      <header className="mb-6">
++        <h3 className="mb-2 text-brand-navy">{title}</h3>
++        {description ? <p className="text-muted-foreground">{description}</p> : null}
++      </header>
++      {children}
++    </section>
++  );
++}
++
++export default function DesignSystemPage() {
++  return (
++    <main className="bg-background pb-24 text-foreground">
++      {/* Page header */}
++      <div className="border-b border-border bg-brand-crema">
++        <div className="container py-12">
++          <p className="mb-3 text-xs font-semibold uppercase tracking-[1px] text-brand-gold-dark">
++            Dev Only · Story 1.2
++          </p>
++          <h1 className="text-brand-navy">Design System · Token Preview</h1>
++          <p className="mt-4 max-w-[720px] text-muted-foreground">
++            Visual validation of the RE/MAX Altitud design token foundation: colors, typography,
++            spacing, shadows, glassmorphism, and region themes. Removed or gated before production
++            launch.
++          </p>
++        </div>
++      </div>
++
++      <div className="container space-y-24 py-16">
++        {/* Logo showcase */}
++        <Section
++          id="logo"
++          title="Logo"
++          description="Official mark on both dark (designed surface) and cream (readability check) backgrounds."
++        >
++          <div className="grid gap-6 md:grid-cols-2">
++            <div className="flex h-48 items-center justify-center rounded-xl bg-brand-dark shadow-lg">
++              <Image
++                src="/images/brand/logo-remax-altitud.png"
++                alt="RE/MAX Altitud logo on dark background"
++                width={320}
++                height={96}
++                priority
++                className="h-auto w-64"
++              />
++            </div>
++            <div className="flex h-48 items-center justify-center rounded-xl bg-brand-crema shadow-sm ring-1 ring-border">
++              <Image
++                src="/images/brand/logo-remax-altitud.png"
++                alt="RE/MAX Altitud logo on cream background (low-contrast check)"
++                width={320}
++                height={96}
++                className="h-auto w-64"
++              />
++              <span className="sr-only">
++                The logo off-white wordmark has low contrast on cream — a dark-text variant will be
++                added in a later story.
++              </span>
++            </div>
++          </div>
++          <p className="mt-4 text-sm text-muted-foreground">
++            Note: the wordmark is off-white (~#F2EDE3) and designed for dark surfaces (--brand-dark,
++            --brand-navy, --brand-mountain). A dark variant or auto-inverting &lt;Logo&gt; component
++            will land in Story 1.3.
++          </p>
++        </Section>
++
++        {/* shadcn semantic slots */}
++        <Section
++          id="shadcn"
++          title="shadcn Semantic Slots"
++          description="Bare tokens (--primary, --accent, …) consumed by shadcn components."
++        >
++          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
++            {shadcnSwatches.map((s) => (
++              <Swatch key={s.name} swatch={s} />
++            ))}
++          </div>
++        </Section>
++
++        {/* Brand palette */}
++        <Section
++          id="brand"
++          title="RE/MAX Brand Palette"
++          description="--brand-* tokens used directly in custom marketing surfaces."
++        >
++          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
++            {brandSwatches.map((s) => (
++              <Swatch key={s.name} swatch={s} />
++            ))}
++          </div>
++        </Section>
++
++        {/* Region themes */}
++        <Section
++          id="regions"
++          title="Region Themes"
++          description="Mountain (forest green + gold) and Coastal (ocean blue + sand)."
++        >
++          <div className="grid gap-8 md:grid-cols-2">
++            <div className="overflow-hidden rounded-xl shadow-lg">
++              <div className="bg-brand-mountain p-8 text-white">
++                <p className="text-xs font-semibold uppercase tracking-[1px] text-brand-mountain-accent">
++                  Mountain
++                </p>
++                <h3 className="mt-2 text-white">Pérez Zeledón</h3>
++                <p className="mt-2 text-white/80">
++                  Forest green primary with gold accent — used for cloud-forest and highland
++                  properties.
++                </p>
++              </div>
++              <div className="flex gap-2 bg-card p-4">
++                {mountainSwatches.map((s) => (
++                  <span
++                    key={s.name}
++                    className={cn("rounded-md px-3 py-1 text-xs font-semibold", s.bg, s.textClass)}
++                  >
++                    {s.name}
++                  </span>
++                ))}
++              </div>
++            </div>
++
++            <div className="overflow-hidden rounded-xl shadow-lg">
++              <div className="bg-brand-beach p-8 text-white">
++                <p className="text-xs font-semibold uppercase tracking-[1px] text-brand-beach-accent">
++                  Coast
++                </p>
++                <h3 className="mt-2 text-white">Dominical · Uvita</h3>
++                <p className="mt-2 text-white/80">
++                  Ocean blue primary with sand accent — used for beachfront and coastal properties.
++                </p>
++              </div>
++              <div className="flex gap-2 bg-card p-4">
++                {beachSwatches.map((s) => (
++                  <span
++                    key={s.name}
++                    className={cn("rounded-md px-3 py-1 text-xs font-semibold", s.bg, s.textClass)}
++                  >
++                    {s.name}
++                  </span>
++                ))}
++              </div>
++            </div>
++          </div>
++        </Section>
++
++        {/* Typography */}
++        <Section
++          id="typography"
++          title="Typography"
++          description="Montserrat loaded via next/font (400, 600, 700, 800). 16px body minimum."
++        >
++          <div className="space-y-6 rounded-xl bg-card p-8 shadow-md">
++            <div>
++              <p className="mb-1 text-xs uppercase tracking-[1px] text-muted-foreground">
++                Hero · --text-hero
++              </p>
++              <p
++                className="text-brand-navy"
++                style={{
++                  fontSize: "var(--text-hero)",
++                  lineHeight: "var(--text-hero-lh)",
++                  fontWeight: 600,
++                  letterSpacing: "-0.5px",
++                }}
++              >
++                Discover the Southern Zone
++              </p>
++            </div>
++            <div>
++              <p className="mb-1 text-xs uppercase tracking-[1px] text-muted-foreground">
++                H1 · --text-h1
++              </p>
++              <h1 className="!text-[var(--text-h1)] leading-[var(--text-h1-lh)]">
++                Premium properties, carefully curated
++              </h1>
++            </div>
++            <div>
++              <p className="mb-1 text-xs uppercase tracking-[1px] text-muted-foreground">
++                H2 · --text-h2
++              </p>
++              <h2 className="!text-[var(--text-h2)] leading-[var(--text-h2-lh)]">
++                From cloud forest to coastline
++              </h2>
++            </div>
++            <div>
++              <p className="mb-1 text-xs uppercase tracking-[1px] text-muted-foreground">
++                Body · --text-body · 16px minimum
++              </p>
++              <p className="max-w-[720px] text-foreground">
++                A multilingual, map-first search experience for buyers, sellers, and investors
++                exploring Pérez Zeledón, Dominical, and Uvita. Built for clarity on every device
++                from low-end Android to desktop.
++              </p>
++            </div>
++            <div>
++              <p className="mb-1 text-xs uppercase tracking-[1px] text-muted-foreground">
++                Label · --text-xs · uppercase, letter-spacing 1px
++              </p>
++              <span className="text-xs font-semibold uppercase tracking-[1px] text-brand-gold-dark">
++                Featured Listing
++              </span>
++            </div>
++            <div>
++              <p className="mb-1 text-xs uppercase tracking-[1px] text-muted-foreground">
++                Price · --text-price · weight 800, burgundy
++              </p>
++              <span
++                className="text-accent"
++                style={{
++                  fontSize: "var(--text-price)",
++                  fontWeight: 800,
++                  lineHeight: "var(--text-price-lh)",
++                }}
++              >
++                $ 1,250,000
++              </span>
++            </div>
++          </div>
++        </Section>
++
++        {/* Spacing */}
++        <Section
++          id="spacing"
++          title="Spacing · 4px Base Grid"
++          description="--spacing-1 through --spacing-24 (Tailwind utilities p-1, p-4, p-16…)."
++        >
++          <div className="space-y-3 rounded-xl bg-card p-6 shadow-sm">
++            {spacingSteps.map((s) => (
++              <div key={s.name} className="flex items-center gap-4">
++                <code className="w-24 text-xs text-muted-foreground">--spacing-{s.name}</code>
++                <div className="h-4 rounded-sm bg-brand-gold" style={{ width: `${s.px}px` }} />
++                <span className="text-sm text-muted-foreground">{s.px}px</span>
++              </div>
++            ))}
++          </div>
++        </Section>
++
++        {/* Radius */}
++        <Section
++          id="radius"
++          title="Border Radius"
++          description="Six steps from sharp to fully pill."
++        >
++          <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-6">
++            {radiusSteps.map((r) => (
++              <div key={r.label} className="space-y-2 text-center">
++                <div className={cn("mx-auto h-20 w-20 bg-brand-navy shadow-md", r.cls)} />
++                <code className="text-xs text-muted-foreground">{r.label}</code>
++              </div>
++            ))}
++          </div>
++        </Section>
++
++        {/* Shadows */}
++        <Section
++          id="shadows"
++          title="Shadows · 6 Levels"
++          description="--shadow-sm through --shadow-cta. The cta shadow uses burgundy tint."
++        >
++          <div className="grid gap-6 bg-brand-crema p-8 sm:grid-cols-2 md:grid-cols-3">
++            {shadowSteps.map((s) => (
++              <div
++                key={s.label}
++                className={cn(
++                  "flex h-24 items-center justify-center rounded-lg bg-card text-sm font-semibold text-brand-navy",
++                  s.cls,
++                )}
++              >
++                {s.label}
++              </div>
++            ))}
++          </div>
++        </Section>
++
++        {/* Glassmorphism */}
++        <Section
++          id="glass"
++          title="Glassmorphism"
++          description="--glass-bg (.10), --glass-bg-strong (.25), --glass-border (gold α.4), --glass-blur 15px."
++        >
++          <div className="relative overflow-hidden rounded-xl">
++            <div className="absolute inset-0 bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-burgundy" />
++            <div className="relative grid gap-6 p-10 md:grid-cols-2">
++              <div className="glass rounded-xl p-6 text-white">
++                <p className="text-xs font-semibold uppercase tracking-[1px] text-brand-gold">
++                  .glass · subtle
++                </p>
++                <h3 className="mt-2 text-white">Soft frosted surface</h3>
++                <p className="mt-2 text-white/80">Used for hero overlays and map filter pills.</p>
++              </div>
++              <div className="glass-strong rounded-xl p-6 text-white">
++                <p className="text-xs font-semibold uppercase tracking-[1px] text-brand-gold">
++                  .glass-strong · prominent
++                </p>
++                <h3 className="mt-2 text-white">Readable frosted card</h3>
++                <p className="mt-2 text-white/80">Used for modal and floating CTA surfaces.</p>
++              </div>
++            </div>
++          </div>
++        </Section>
++
++        {/* Button variant preview */}
++        <Section
++          id="buttons"
++          title="Button Variants (preview)"
++          description="Button component ships in Story 1.3. This preview validates token/CTA shadow rendering only."
++        >
++          <div className="flex flex-wrap gap-4 rounded-xl bg-card p-6 shadow-sm">
++            <button
++              type="button"
++              className="touch-target rounded-lg bg-accent px-6 py-3 font-semibold text-accent-foreground shadow-cta transition-colors duration-[var(--duration-fast)] ease-[var(--ease-smooth)] hover:bg-brand-burgundy-light"
++              style={{ transitionProperty: "background-color, box-shadow" }}
++            >
++              Primary · Burgundy
++            </button>
++            <button
++              type="button"
++              className="touch-target rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-colors duration-[var(--duration-fast)] ease-[var(--ease-smooth)] hover:bg-brand-navy-light"
++              style={{ transitionProperty: "background-color, box-shadow" }}
++            >
++              Secondary · Navy
++            </button>
++            <button
++              type="button"
++              className="touch-target rounded-lg bg-brand-whatsapp px-6 py-3 font-semibold text-white shadow-md transition-colors duration-[var(--duration-fast)] ease-[var(--ease-smooth)] hover:brightness-110"
++              style={{ transitionProperty: "background-color, box-shadow, filter" }}
++            >
++              WhatsApp
++            </button>
++            <button
++              type="button"
++              className="touch-target rounded-lg border border-brand-gold-dark bg-transparent px-6 py-3 font-semibold text-brand-gold-dark transition-colors duration-[var(--duration-fast)] ease-[var(--ease-smooth)] hover:bg-brand-gold-dark hover:text-white"
++              style={{ transitionProperty: "background-color, color" }}
++            >
++              Outline · Gold
++            </button>
++          </div>
++        </Section>
++
++        {/* Region theme demos — applied full-bleed */}
++        <Section
++          id="region-themes"
++          title="Region Theme Demos"
++          description="Page-level theming example for mountain and coastal destinations."
++        >
++          <div className="grid gap-6 md:grid-cols-2">
++            <article className="overflow-hidden rounded-xl bg-brand-mountain text-white shadow-lg">
++              <div className="p-8">
++                <span className="text-xs font-semibold uppercase tracking-[1px] text-brand-mountain-accent">
++                  Cloud Forest · Mountain
++                </span>
++                <h3 className="mt-3 text-white">Casa Bosque Nuboso</h3>
++                <p className="mt-3 text-white/80">5-bedroom retreat · Pérez Zeledón</p>
++                <p
++                  className="mt-6 text-brand-mountain-accent"
++                  style={{ fontSize: "var(--text-price)", fontWeight: 800 }}
++                >
++                  $ 980,000
++                </p>
++              </div>
++            </article>
++            <article className="overflow-hidden rounded-xl bg-brand-beach text-white shadow-lg">
++              <div className="p-8">
++                <span className="text-xs font-semibold uppercase tracking-[1px] text-brand-beach-accent">
++                  Beachfront · Coast
++                </span>
++                <h3 className="mt-3 text-white">Villa Mar Azul</h3>
++                <p className="mt-3 text-white/80">4-bedroom oceanfront · Uvita</p>
++                <p
++                  className="mt-6 text-brand-beach-accent"
++                  style={{ fontSize: "var(--text-price)", fontWeight: 800 }}
++                >
++                  $ 2,150,000
++                </p>
++              </div>
++            </article>
++          </div>
++        </Section>
++
++        {/* cn() smoke test */}
++        <Section
++          id="utils"
++          title="cn() Smoke Test"
++          description="Verifies @/lib/utils exposes the clsx + tailwind-merge helper."
++        >
++          <div
++            className={cn(
++              "rounded-lg border border-border bg-card p-6 shadow-sm",
++              "text-foreground",
++              // tailwind-merge should dedupe the conflicting padding below:
++              "p-4 p-6",
++            )}
++          >
++            <p className="font-semibold">cn() is wired correctly.</p>
++            <p className="mt-2 text-sm text-muted-foreground">
++              tailwind-merge resolved <code>p-4 p-6</code> to <code>p-6</code>. Conflicting utility
++              classes are deduped and clsx compositions apply as expected.
++            </p>
++          </div>
++        </Section>
++      </div>
++    </main>
++  );
++}
+diff --git a/components.json b/components.json
+new file mode 100644
+index 0000000..c7d2f37
+--- /dev/null
++++ b/components.json
+@@ -0,0 +1,25 @@
++{
++  "$schema": "https://ui.shadcn.com/schema.json",
++  "style": "radix-nova",
++  "rsc": true,
++  "tsx": true,
++  "tailwind": {
++    "config": "",
++    "css": "src/styles/globals.css",
++    "baseColor": "neutral",
++    "cssVariables": true,
++    "prefix": ""
++  },
++  "iconLibrary": "lucide",
++  "rtl": false,
++  "aliases": {
++    "components": "@/components",
++    "utils": "@/lib/utils",
++    "ui": "@/components/ui",
++    "lib": "@/lib",
++    "hooks": "@/hooks"
++  },
++  "menuColor": "default",
++  "menuAccent": "subtle",
++  "registries": {}
++}
+diff --git a/src/lib/utils.ts b/src/lib/utils.ts
+new file mode 100644
+index 0000000..a5ef193
+--- /dev/null
++++ b/src/lib/utils.ts
+@@ -0,0 +1,6 @@
++import { clsx, type ClassValue } from "clsx";
++import { twMerge } from "tailwind-merge";
++
++export function cn(...inputs: ClassValue[]) {
++  return twMerge(clsx(inputs));
++}
