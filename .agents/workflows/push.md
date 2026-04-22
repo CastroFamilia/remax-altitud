@@ -12,10 +12,14 @@ description: Intelligently group uncommitted changes into logical commits and pu
    - Run `git branch --show-current` to get the current branch.
    - If the current branch is `master` or `development`:
      1. Inform the user that pushing directly to `master` or `development` is not allowed.
-     2. Analyze the uncommitted changes to determine an appropriate branch name using the format `<type>/<short-description>` (e.g., `feat/add-price-alerts`, `fix/login-redirect`).
-     3. Propose the branch name to the user.
-     4. Run `git checkout -b <branch-name>` to create and switch to the new feature branch.
-     5. Continue with the next steps on the new branch.
+     2. Attempt to retrieve the current active story name from `_bmad-output/implementation-artifacts/sprint-status.yaml` (e.g., "Story 1.2 — Design System & Token Foundation").
+     3. Analyze the uncommitted changes to determine the appropriate commit `<type>` (e.g., `feat`, `fix`, `chore`).
+     4. Format the branch name:
+        - If the changes are related to a story, format as `<type>/<story-name>` using the story name in kebab-case (e.g., `feat/1-2-design-system-and-token-foundation`).
+        - If the changes are NOT related to a story, fallback to using a short description of the changes as `<type>/<short-description>` (e.g., `fix/login-redirect`).
+     5. Propose the branch name to the user.
+     6. Run `git checkout -b <branch-name>` to create and switch to the new feature branch.
+     7. Continue with the next steps on the new branch.
 
 2. **Analyze repository status**:
    - Run `git status` and `git diff --stat` to identify all uncommitted changes.
