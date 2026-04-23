@@ -56,7 +56,46 @@
   "HomePage": {
     "title": "RE/MAX Altitud",
     "subtitle": "Zona Sur de Costa Rica — Plataforma de Bienes Raíces",
-    "scaffoldingNote": "Estructura base completa. Contenido próximamente en Historias 1.5–1.7."
+    "scaffoldingNote": "Estructura base completa. Contenido próximamente en Historias 1.5–1.7.",
+    "hero": {
+      "mountainsLabel": "Las Montañas",
+      "mountainsRegion": "Pérez Zeledón",
+      "mountainsCta": "Explorar Casas en la Montaña",
+      "mountainsAlt": "Paisaje montañoso nublado de Pérez Zeledón, Costa Rica",
+      "coastLabel": "La Costa",
+      "coastRegion": "Dominical · Uvita",
+      "coastCta": "Explorar Casas en la Playa",
+      "coastAlt": "Costa pacífica prístina cerca de Dominical, Costa Rica",
+      "searchPlaceholder": "Busca propiedades, zonas o estilos de vida…",
+      "searchAriaLabel": "Buscar propiedades (próximamente)",
+      "searchSubmit": "Buscar",
+      "smartToggle": "Búsqueda Inteligente",
+      "traditionalToggle": "Búsqueda Tradicional",
+      "shellNotice": "Búsqueda próximamente"
+    },
+    "featuredProperties": {
+      "heading": "Propiedades Destacadas",
+      "description": "Casas seleccionadas a mano en la Zona Sur de Costa Rica.",
+      "viewAll": "Ver todas las propiedades",
+      "shellNotice": "Propiedades destacadas próximamente"
+    },
+    "featuredCommunities": {
+      "heading": "Comunidades Destacadas",
+      "description": "Desarrollos seleccionados en la montaña y en la costa.",
+      "viewAll": "Ver todas las comunidades",
+      "shellNotice": "Comunidades destacadas próximamente"
+    },
+    "areaHighlights": {
+      "heading": "Explora Nuestras Zonas",
+      "description": "Desde valles montañosos hasta playas del Pacífico.",
+      "viewAll": "Ver todas las zonas",
+      "shellNotice": "Zonas destacadas próximamente"
+    },
+    "sellCta": {
+      "heading": "¿Listo para vender tu propiedad?",
+      "description": "Trabaja con los agentes expertos de RE/MAX Altitud en Pérez Zeledón, Dominical y Uvita.",
+      "cta": "Lista con Nosotros"
+    }
   },
   "Metadata": {
     "title": "RE/MAX Altitud — Bienes Raíces Costa Rica",

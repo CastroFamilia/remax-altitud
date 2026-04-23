@@ -56,7 +56,46 @@
   "HomePage": {
     "title": "RE/MAX Altitud",
     "subtitle": "Costa Rica's Southern Zone — Real Estate Platform",
-    "scaffoldingNote": "Foundation scaffolding complete. Content coming in Stories 1.5–1.7."
+    "scaffoldingNote": "Foundation scaffolding complete. Content coming in Stories 1.5–1.7.",
+    "hero": {
+      "mountainsLabel": "The Mountains",
+      "mountainsRegion": "Pérez Zeledón",
+      "mountainsCta": "Explore Mountain Homes",
+      "mountainsAlt": "Misty mountain landscape of Pérez Zeledón, Costa Rica",
+      "coastLabel": "The Coast",
+      "coastRegion": "Dominical · Uvita",
+      "coastCta": "Explore Beach Homes",
+      "coastAlt": "Pristine Pacific coast beach near Dominical, Costa Rica",
+      "searchPlaceholder": "Search properties, areas, or lifestyles…",
+      "searchAriaLabel": "Search properties (coming soon)",
+      "searchSubmit": "Search",
+      "smartToggle": "Smart Search",
+      "traditionalToggle": "Traditional Search",
+      "shellNotice": "Search coming soon"
+    },
+    "featuredProperties": {
+      "heading": "Featured Properties",
+      "description": "Hand-picked homes across Costa Rica's Southern Zone.",
+      "viewAll": "View all properties",
+      "shellNotice": "Featured properties coming soon"
+    },
+    "featuredCommunities": {
+      "heading": "Featured Communities",
+      "description": "Curated developments in the mountains and on the coast.",
+      "viewAll": "View all communities",
+      "shellNotice": "Featured communities coming soon"
+    },
+    "areaHighlights": {
+      "heading": "Explore Our Areas",
+      "description": "From mountain valleys to Pacific beaches.",
+      "viewAll": "View all areas",
+      "shellNotice": "Area highlights coming soon"
+    },
+    "sellCta": {
+      "heading": "Ready to list your property?",
+      "description": "Partner with RE/MAX Altitud's expert agents across Pérez Zeledón, Dominical, and Uvita.",
+      "cta": "List with Us"
+    }
   },
   "Metadata": {
     "title": "RE/MAX Altitud — Costa Rica Real Estate",

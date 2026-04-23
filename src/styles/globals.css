@@ -438,6 +438,41 @@
   }
 }
 
+@layer utilities {
+  /* Split-hero — Ken Burns slow zoom (UX-DR1, UX-DR18) */
+  @keyframes ken-burns {
+    0% {
+      transform: scale(1) translate(0, 0);
+    }
+    50% {
+      transform: scale(1.08) translate(-1%, -1%);
+    }
+    100% {
+      transform: scale(1) translate(0, 0);
+    }
+  }
+
+  .ken-burns {
+    animation: ken-burns 20s var(--ease-smooth) infinite;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ken-burns {
+      animation: none;
+    }
+  }
+
+  /* Hide scrollbar on horizontal mobile carousels while keeping scroll */
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Reduced-motion preference (UX-DR18) — flattens durations, disables shimmer */
 @media (prefers-reduced-motion: reduce) {
   :root {
