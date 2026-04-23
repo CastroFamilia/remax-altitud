@@ -187,7 +187,7 @@
   --brand-red: #ff1200;
   --brand-blue: #0043ff;
   --brand-gold: #c2a661;
-  --brand-gold-dark: #9b8347;
+  --brand-gold-dark: #8a743e;
   --brand-gold-light: #d9c39b;
   --brand-gold-muted: rgba(194, 166, 97, 0.4);
   --brand-crema: #f7f5ee;
@@ -212,9 +212,10 @@
   --glass-blur: 15px;
 
   /* ── Text tokens ── */
+  /* text-muted is #707070 (not #888888) so that body copy meets WCAG AA 4.5:1 on brand-crema (#f7f5ee). */
   --text-primary: #202020;
   --text-secondary: #666666;
-  --text-muted: #888888;
+  --text-muted: #707070;
   --text-on-dark: #f8f8f8;
   --text-on-accent: #ffffff;
 
