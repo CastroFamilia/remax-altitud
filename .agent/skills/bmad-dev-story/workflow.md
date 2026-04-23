@@ -78,30 +78,22 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
           **What would you like to do?**
           1. Run `create-story` to create next story from epics with comprehensive context
-          2. Run `*validate-create-story` to improve existing stories before development (recommended quality check)
-          3. Specify a particular story file to develop (provide full path)
-          4. Check {{sprint_status}} file to see current sprint status
-
-          💡 **Tip:** Stories in `ready-for-dev` may not have been validated. Consider running `validate-create-story` first for a quality
-          check.
+          2. Specify a particular story file to develop (provide full path)
+          3. Check {{sprint_status}} file to see current sprint status
         </output>
-        <ask>Choose option [1], [2], [3], or [4], or specify story file path:</ask>
+        <ask>Choose option [1], [2], or [3], or specify story file path:</ask>
 
         <check if="user chooses '1'">
           <action>HALT - Run create-story to create next story</action>
         </check>
 
         <check if="user chooses '2'">
-          <action>HALT - Run validate-create-story to improve existing stories</action>
-        </check>
-
-        <check if="user chooses '3'">
           <ask>Provide the story file path to develop:</ask>
           <action>Store user-provided story path as {{story_path}}</action>
           <goto anchor="task_check" />
         </check>
 
-        <check if="user chooses '4'">
+        <check if="user chooses '3'">
           <output>Loading {{sprint_status}} for detailed status review...</output>
           <action>Display detailed sprint status analysis</action>
           <action>HALT - User can review sprint status and provide story path</action>
@@ -126,20 +118,15 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
           **Available Options:**
           1. Run `create-story` to create next story from epics with comprehensive context
-          2. Run `*validate-create-story` to improve existing stories
-          3. Specify which story to develop
+          2. Specify which story to develop
         </output>
-        <ask>What would you like to do? Choose option [1], [2], or [3]:</ask>
+        <ask>What would you like to do? Choose option [1] or [2]:</ask>
 
         <check if="user chooses '1'">
           <action>HALT - Run create-story to create next story</action>
         </check>
 
         <check if="user chooses '2'">
-          <action>HALT - Run validate-create-story to improve existing stories</action>
-        </check>
-
-        <check if="user chooses '3'">
           <ask>It's unclear what story you want developed. Please provide the full path to the story file:</ask>
           <action>Store user-provided story path as {{story_path}}</action>
           <action>Continue with provided story file</action>

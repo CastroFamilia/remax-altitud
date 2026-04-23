@@ -16,7 +16,7 @@ const quickLinks = [
   { key: "areas", href: "/areas" },
   { key: "about", href: "/about" },
   { key: "contact", href: "/contact" },
-  { key: "joinTeam", href: "/careers" },
+  { key: "joinTeam", href: "/join" },
 ] as const;
 
 const socialLinks = [
@@ -124,7 +124,7 @@ export async function Footer() {
 
         {/* Gold divider + Copyright */}
         <div className="mt-10 border-t border-brand-gold/40 pt-6 text-center">
-          <p className="text-xs text-text-muted">
+          <p className="text-xs text-text-on-dark/70">
             © {new Date().getFullYear()} RE/MAX Altitud. {t("allRightsReserved")}.
           </p>
         </div>

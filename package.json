@@ -38,9 +38,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "agent-browser": "^0.26.0",
     "drizzle-kit": "^0.31.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.15",
+    "lighthouse": "^13.1.0",
     "prettier": "^3.5.0",
     "tailwindcss": "^4",
     "typescript": "^5"
