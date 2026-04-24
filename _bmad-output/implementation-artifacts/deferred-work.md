@@ -23,3 +23,6 @@
 - Recruitment form permits submit with zero languages selected [src/components/lead/contact-form.tsx:1301-1303] — spec Task 4 validation rules do not list `languages` as required; if client wants ≥ 1 language, add in a follow-up ticket.
 - OfficeCard hardcodes `AboutPage.office` namespace, limiting cross-page reuse [src/components/layout/office-card.tsx:831] — promote to a shared `Office.*` namespace when a second consumer needs divergent labels.
 - Placeholder office emails + derived WhatsApp numbers reach production [src/lib/constants/offices.ts:17-31, src/messages/en.json:163] — already flagged with top-of-file TODO per spec Task 2; client to confirm before launch.
+
+## Deferred from: code review of 1-7-loading-states-empty-states-and-error-handling (2026-04-23)
+- Both 404 page CTAs ("Back to home" and "Browse properties") point to the same URL (`/`) [src/app/[locale]/not-found.tsx:34,38] — spec-compliant with TODO comment; will resolve in Epic 3 when `/search` route exists.
