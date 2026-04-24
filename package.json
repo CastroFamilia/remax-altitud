@@ -48,8 +48,6 @@
     "typescript": "^5"
   },
   "overrides": {
-    "@sentry/nextjs": {
-      "import-in-the-middle": "3.0.1"
-    }
+    "import-in-the-middle": "3.0.1"
   }
 }
