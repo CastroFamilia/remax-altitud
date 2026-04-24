@@ -51,3 +51,5 @@ next-env.d.ts
 # BMAD
 .bmad-viewer/
 .agent/settings.local.json
+.worktrees/
+_bmad/config.user.yaml
