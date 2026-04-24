@@ -1,12 +1,12 @@
-# Task: Internationalization (Story 1.4)
+# Task: Loading States, Empty States & Error Handling (Story 1.7)
 
-- [x] Implement `next-intl` configuration
-- [x] Refactor routes to `/[locale]`
-- [x] Fix `npm run dev` and build errors
-    - [x] Fix `@parcel/watcher` platform dependency
-    - [x] Fix syntax error in `mobile-nav.tsx`
-    - [x] Move middleware to `src/`
-    - [x] Wrap `LanguageToggle` in `Suspense` for build stability
-- [x] Verify local development and production build
-- [x] Create Pull Request [#62](https://github.com/CastroFamilia/remax-altitud/pull/62)
-- [x] Push all changes to remote
+- [x] Task 1: Install shadcn/ui Skeleton primitive
+- [x] Task 2: Build domain skeleton components
+- [x] Task 3: Upgrade 404 page (not-found.tsx)
+- [x] Task 3b: Create BalloonIcon SVG component
+- [x] Task 3c: Create catch-all route for locale-level 404
+- [x] Task 4: Create global error boundary (error.tsx + global-error.tsx)
+- [x] Task 5: Build reusable EmptyState component
+- [x] Task 6: Create domain-specific empty state wrappers
+- [x] Task 7: Verify Sentry integration
+- [x] Task 8: Final verification (lint, typecheck, build)

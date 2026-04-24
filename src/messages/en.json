@@ -254,7 +254,31 @@
   },
   "NotFound": {
     "title": "Page not found",
-    "description": "The page you are looking for could not be found.",
-    "backHome": "Back to home"
+    "code": "404",
+    "description": "The page you're looking for doesn't exist or has been moved.",
+    "backHome": "Back to home",
+    "browseProperties": "Browse properties"
+  },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "description": "We're sorry — an unexpected error occurred. Please try again or return to the homepage.",
+    "tryAgain": "Try again",
+    "goHome": "Go to homepage"
+  },
+  "EmptyStates": {
+    "noResults": {
+      "title": "No properties found",
+      "description": "No properties match your filters in this area. Try adjusting your search or tell an agent what you're looking for.",
+      "adjustFilters": "Adjust filters",
+      "tellAgent": "Tell an agent",
+      "whatsappMessage": "Hi, I'm looking for a property..."
+    },
+    "listingRemoved": {
+      "title": "This property is no longer available",
+      "description": "It may have been sold or taken off the market. Browse similar properties or contact an agent.",
+      "browseSimilar": "Browse similar",
+      "contactAgent": "Contact an agent",
+      "whatsappMessage": "Hi, I was looking at a property..."
+    }
   }
 }

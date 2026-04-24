@@ -254,7 +254,31 @@
   },
   "NotFound": {
     "title": "Página no encontrada",
-    "description": "La página que buscas no pudo ser encontrada.",
-    "backHome": "Volver al inicio"
+    "code": "404",
+    "description": "La página que buscas no existe o ha sido movida.",
+    "backHome": "Volver al inicio",
+    "browseProperties": "Buscar propiedades"
+  },
+  "ErrorPage": {
+    "title": "Algo salió mal",
+    "description": "Lo sentimos — ocurrió un error inesperado. Inténtalo de nuevo o regresa al inicio.",
+    "tryAgain": "Intentar de nuevo",
+    "goHome": "Ir al inicio"
+  },
+  "EmptyStates": {
+    "noResults": {
+      "title": "No se encontraron propiedades",
+      "description": "No hay propiedades que coincidan con tus filtros en esta zona. Intenta ajustar tu búsqueda o cuéntale a un agente lo que buscas.",
+      "adjustFilters": "Ajustar filtros",
+      "tellAgent": "Habla con un agente",
+      "whatsappMessage": "Hola, estoy buscando una propiedad..."
+    },
+    "listingRemoved": {
+      "title": "Esta propiedad ya no está disponible",
+      "description": "Es posible que se haya vendido o retirado del mercado. Busca propiedades similares o contacta a un agente.",
+      "browseSimilar": "Buscar similares",
+      "contactAgent": "Contactar agente",
+      "whatsappMessage": "Hola, estaba viendo una propiedad..."
+    }
   }
 }
