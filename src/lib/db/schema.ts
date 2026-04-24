@@ -1,12 +1,9 @@
 /**
- * Database Schema Definitions
+ * Database Schema Barrel
  *
- * This file will contain all Drizzle ORM table definitions.
- * Entity schemas (properties, agents, areas, etc.) are defined in Story 2.1.
+ * Single public entry point for all Drizzle table objects, relations, and
+ * inferred row types. Downstream code imports from `@/lib/db/schema` only.
  *
  * @see architecture.md §4 — Database Schema
  */
-
-// Schema definitions will be added in Story 2.1: Database Schema & Drizzle Models
-// Export empty for now so drizzle-kit can reference this file
-export {};
+export * from "./schema/index";
