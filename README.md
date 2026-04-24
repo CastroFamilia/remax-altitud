@@ -119,17 +119,22 @@ API docs: [`docs/`](docs/)
 
 ## Current Status
 
-→ **Planning complete — ready for sprint planning & implementation**
+→ **Implementation in progress** — Epic 1 complete, Epic 2 underway _(sprint snapshot: 2026-04-24)_
 
-| Epic | Stories | FRs | Status |
-|------|---------|-----|--------|
-| 1. Project Foundation & Design System | 7 stories | FR29–FR32, FR67, FR68 | ✅ Complete |
-| 2. Data Pipeline & Property Database | 7 stories | FR46–FR55 | ✅ Complete |
-| 3. Property Discovery & Search | 8 stories | FR1–FR16 | ✅ Complete |
-| 4. Listing Detail & Agent Profiles | 5 stories | FR8, FR13, FR31, FR33–FR39, FR69 | ✅ Complete |
-| 5. Seller Lead Capture | 3 stories | FR40–FR43, FR54 | ✅ Complete |
-| 6. Community Pages & Area Guides | 3 stories | FR17–FR21, FR44–FR45, FR50 | ✅ Complete |
-| 7. Shortlist & Smart Agent Routing | 2 stories | FR22–FR28 | ✅ Complete |
-| 8. Administration & Operations | 7 stories | FR56–FR66 | ✅ Complete |
+| Epic | Stories | FRs | Progress | Status |
+|------|---------|-----|----------|--------|
+| 1. Project Foundation & Design System | 7 | FR29–FR32, FR67, FR68 | 7 / 7 | ✅ Complete |
+| 2. Data Pipeline & Property Database | 7 | FR46–FR55 | 1 / 7 | 🚧 In progress |
+| 3. Property Discovery & Search | 8 | FR1–FR16 | 0 / 8 | ⚪ Backlog |
+| 4. Listing Detail & Agent Profiles | 5 | FR8, FR13, FR31, FR33–FR39, FR69 | 0 / 5 | ⚪ Backlog |
+| 5. Seller Lead Capture | 3 | FR40–FR43, FR54 | 0 / 3 | ⚪ Backlog |
+| 6. Community Pages & Area Guides | 5 | FR17–FR21, FR44–FR45, FR50 | 0 / 5 | ⚪ Backlog |
+| 7. Shortlist & Smart Agent Routing | 4 | FR22–FR28 | 0 / 4 | ⚪ Backlog |
+| 8. Administration & Operations | 7 | FR56–FR66 | 0 / 7 | ⚪ Backlog |
 
-**Total: 38 stories** covering **69/69 FRs (100%)** with BDD acceptance criteria.
+**Implementation:** 8 / 46 stories done (17%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
+
+**Latest shipped:** Story 2.1 — Database Schema & Drizzle Models (PostGIS `geography(Point, 4326)`, split initial migration, Vitest smoke suite, local `postgis/postgis:16-3.4` compose stack).
+**Next up:** Story 2.2 — API Integration & Data Fetching.
+
+_Source of truth for day-to-day status lives in [`_bmad-output/implementation-artifacts/sprint-status.yaml`](_bmad-output/implementation-artifacts/sprint-status.yaml)._
