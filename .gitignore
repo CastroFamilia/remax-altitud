@@ -51,5 +51,6 @@ next-env.d.ts
 # BMAD
 .bmad-viewer/
 .agent/settings.local.json
+.agent/bad-session-state.json
 .worktrees/
 _bmad/config.user.yaml

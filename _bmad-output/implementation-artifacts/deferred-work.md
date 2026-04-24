@@ -26,3 +26,9 @@
 
 ## Deferred from: code review of 1-7-loading-states-empty-states-and-error-handling (2026-04-23)
 - Both 404 page CTAs ("Back to home" and "Browse properties") point to the same URL (`/`) [src/app/[locale]/not-found.tsx:34,38] — spec-compliant with TODO comment; will resolve in Epic 3 when `/search` route exists.
+
+## Deferred from: code review of 2-1-database-schema-and-drizzle-models (2026-04-24)
+- `geographyPoint.toDriver` accepts NaN/Infinity/undefined lng/lat silently [src/lib/db/types/postgis.ts:18-20] — TypeScript already guards at compile time; runtime validation belongs in a query-helper story.
+- vitest does not auto-load `.env.local`, so tests require inline `DATABASE_URL=… npm test` [vitest.config.ts] — minor DX polish; add a setup file when the team wants auto env loading.
+- No down-migration / rollback SQL or documented recovery strategy [src/lib/db/migrations/] — drizzle-kit default; deserves a recovery-strategy note in a future docs pass.
+- `CREATE EXTENSION postgis` requires SUPERUSER on managed Postgres [src/lib/db/migrate.ts:14] — deployment concern for Coolify/managed hosts; belongs in the deploy runbook.
