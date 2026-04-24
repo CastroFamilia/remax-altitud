@@ -1,6 +1,5 @@
 ---
 failed_layers: '' # set at runtime: comma-separated list of layers that failed or returned empty
-gemini_run_id: '' # set at runtime: unix timestamp used as suffix for /tmp prompt + output files
 ---
 
 # Step 2: Review
@@ -8,18 +7,22 @@ gemini_run_id: '' # set at runtime: unix timestamp used as suffix for /tmp promp
 ## RULES
 
 - YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style with the config `{communication_language}`
-- The Blind Hunter receives NO project context — diff only.
-- The Edge Case Hunter receives diff + project root reference.
+- The Blind Hunter receives NO project context — diff only, and must not browse the repo.
+- The Edge Case Hunter receives diff + project root reference (may read files when helpful).
 - The Acceptance Auditor receives diff, spec, and context docs.
-- All three reviewers run via the local `gemini` CLI in parallel — no human-in-the-loop paste step.
+- All three reviewers run as Claude subagents via the `Agent` tool, fired in parallel (single message, multiple Agent tool_use blocks) — no human-in-the-loop paste step, no external LLM CLI.
 
 ## INSTRUCTIONS
 
 1. If `{review_mode}` = `"no-spec"`, tell the user: "Acceptance Auditor skipped — no spec file provided."
 
-2. **Preflight `gemini` availability.** Run a single Bash check: `command -v gemini >/dev/null && gemini --version`. If it fails (command not found, non-zero exit), skip to the **MANUAL FALLBACK** section at the bottom of this step.
+2. **Fire all reviewers in parallel via Agent tool.** In a single assistant message, issue one `Agent` tool_use block per active reviewer (blind-hunter, edge-case-hunter, and — only when `{review_mode}` = `"full"` — acceptance-auditor). Each Agent call:
+   - `subagent_type`: `"general-purpose"`
+   - `description`: short label (e.g., `"Blind Hunter review"`)
+   - `prompt`: the complete prompt text below (instructions + embedded diff + spec/context where applicable)
+   - DO NOT set `run_in_background` — let each call block and return findings directly in the same turn.
 
-3. **Build prompt files.** Set `{gemini_run_id}` to the current unix timestamp. For each active reviewer, write its full prompt (instructions + embedded diff + spec/context where applicable) to `/tmp/bmad-review-<role>-{gemini_run_id}.md` using the Write tool. Roles: `blind-hunter`, `edge-case-hunter`, and (only when `{review_mode}` = `"full"`) `acceptance-auditor`.
+   Keep the three Agent tool_use blocks in a **single** assistant message so they execute concurrently.
 
    ### Blind Hunter prompt (NO project context, diff only)
    ```
@@ -29,6 +32,8 @@ gemini_run_id: '' # set at runtime: unix timestamp used as suffix for /tmp promp
    Use a precise, professional tone — no profanity or personal attacks.
    Find at least ten issues. Output findings as a Markdown list (descriptions only),
    one finding per bullet. Do not include any preamble, summary, or closing text.
+
+   IMPORTANT: Do NOT read any files or browse the project. Review ONLY the diff below.
 
    DIFF:
    <paste full {diff_output} here>
@@ -48,7 +53,8 @@ gemini_run_id: '' # set at runtime: unix timestamp used as suffix for /tmp promp
      - "potential_consequence": what could go wrong, max 15 words
    No markdown wrapping. An empty array [] is valid.
 
-   Project root (for path resolution only — do not browse): <cwd>
+   You may read files from the project for path resolution when helpful.
+   Project root: <cwd>
 
    DIFF:
    <paste full {diff_output} here>
@@ -77,36 +83,23 @@ gemini_run_id: '' # set at runtime: unix timestamp used as suffix for /tmp promp
    <paste full {diff_output} here>
    ```
 
-4. **Fire all reviewers in parallel.** In a single Bash tool-call block, issue one Bash call per active reviewer. Each call must:
-   - Use a 180-second timeout
-   - Pipe the prompt file into `gemini` via stdin
-   - Redirect both stdout and stderr to a per-role output file
-   - Capture the exit code
+3. **Per-reviewer failure handling.** When all Agent calls return:
+   - If an agent errored, returned empty/whitespace-only content, or returned only an obvious error string, append the role to `{failed_layers}` (comma-separated).
+   - Otherwise collect the returned content as that layer's findings.
 
-   Pattern (one call per role, fired in parallel — same tool-use block):
-   ```sh
-   timeout 180 gemini < /tmp/bmad-review-<role>-{gemini_run_id}.md \
-     > /tmp/bmad-review-<role>-{gemini_run_id}.out 2>&1
-   echo "exit=$?"
-   ```
+4. **All-failed guard.** If every active reviewer ended up in `{failed_layers}`, drop to the **MANUAL FALLBACK** section below — do not proceed to triage with zero findings.
 
-5. **Per-reviewer failure handling.** After all calls return, for each role:
-   - If exit code is non-zero, the output file is missing, or the output is empty / whitespace-only / contains only an obvious error string ("error:", "quota", "auth"), append the role to `{failed_layers}` (comma-separated).
-   - Otherwise read the `.out` file and collect its contents as that layer's findings.
-
-6. **All-failed guard.** If every active reviewer ended up in `{failed_layers}`, drop to the **MANUAL FALLBACK** section below — do not proceed to triage with zero findings.
-
-7. **Summarize for the user.** Print one line per active reviewer:
+5. **Summarize for the user.** Print one line per active reviewer:
    `Blind Hunter: <N> findings · Edge Case Hunter: <N> findings · Acceptance Auditor: <N> findings (or "skipped" / "failed")`.
 
-8. Proceed to triage with the collected findings.
+6. Proceed to triage with the collected findings.
 
 
 ## MANUAL FALLBACK
 
-(Only used when `gemini` is unavailable or every reviewer failed.)
+(Only used when every subagent reviewer failed.)
 
-Generate prompt files in `{implementation_artifacts}` — one per active reviewer role using the prompts in instruction 3 — and HALT. Ask the user to run each in a separate session (ideally a different LLM) and paste back the findings. When findings are pasted, resume from instruction 7 and proceed to step 3.
+Write prompt files into `{implementation_artifacts}` — one per active reviewer role using the prompts in instruction 2 — and HALT. Ask the user to run each in a separate session (ideally a different LLM) and paste back the findings. When findings are pasted, resume from instruction 5 and proceed to step 3.
 
 
 ## NEXT
