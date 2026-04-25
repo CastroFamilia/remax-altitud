@@ -1,9 +1,6 @@
 /**
- * ATDD Red-Phase Scaffolds — Story 2.5: Translation Pipeline
+ * Story 2.5: Translation Pipeline — Unit Tests
  * Module: src/lib/sync/translator.ts
- *
- * TDD RED PHASE — all tests are skipped until the module is implemented.
- * To activate: remove `it.skip` → `it` after implementing src/lib/sync/translator.ts
  *
  * Covers:
  *   AC #1 — new listing (empty titleEs/descriptionEs) → DeepL called for both fields
@@ -14,6 +11,10 @@
  *   AC #7 — glossary applied when DEEPL_GLOSSARY_ID is set; omitted when not set
  *   AC #8/batch — translateBatch processes all inputs and returns results + errors arrays
  *   Idempotency — property with non-empty titleEs AND descriptionEs → translated:false, no DeepL call
+ *
+ * translateBatch contract: ALL input items appear in result.results (including errored ones
+ * with translated:false). Callers must filter by translated:true to get successful-only entries.
+ * Errors also appear in result.errors with apiId and message fields.
  *
  * All external I/O is mocked — no real DeepL API calls.
  */
@@ -488,9 +489,12 @@ describe("translateBatch — batch processing (AC #8)", () => {
   );
 
   it(
-    "[P0] given one property fails and one succeeds when translateBatch called then results has 1 entry and errors has 1 entry",
+    "[P0] given one property fails and one succeeds when translateBatch called then errors has 1 entry and 1 successful result",
     async () => {
-      // AC #6 at batch level — error isolation: one failure must not block others
+      // AC #6 at batch level — error isolation: one failure must not block others.
+      // Design note: translateBatch always returns ALL processed items in results (both
+      // successful and errored, with translated:false for errors). Callers must filter
+      // result.results by translated:true to get successful-only entries.
       const networkErr = new Error("DeepL timeout for BATCH-001");
       mockTranslateText
         .mockRejectedValueOnce(networkErr) // BATCH-001 title fails
@@ -514,10 +518,14 @@ describe("translateBatch — batch processing (AC #8)", () => {
         },
       ]);
 
-      // BATCH-001 goes to errors; BATCH-002 goes to results
+      // Both properties appear in results — BATCH-001 with translated:false, BATCH-002 with translated:true
+      expect(result.results).toHaveLength(2);
       const successResults = result.results.filter((r) => r.translated);
       const errorResults = result.errors;
+      // Only BATCH-002 was successfully translated
       expect(successResults).toHaveLength(1);
+      expect(successResults[0].apiId).toBe("BATCH-002");
+      // BATCH-001 reported in errors array
       expect(errorResults).toHaveLength(1);
       expect(errorResults[0].apiId).toBe("BATCH-001");
     },
