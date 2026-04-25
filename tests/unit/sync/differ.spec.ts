@@ -64,6 +64,42 @@ describe("computePropertyHash", () => {
     // Same mutable fields → same hash despite different apiRaw
     expect(computePropertyHash(a)).toBe(computePropertyHash(b));
   });
+
+  it("[P1] produces the same hash regardless of amenities object key order (regression)", () => {
+    // Regression: JSON.stringify preserves insertion order of object keys, so an
+    // unsorted amenities payload would produce a different hash for semantically
+    // identical content. Sorting keys before hashing prevents spurious UPDATED diffs.
+    const amenitiesA = {
+      garage: false,
+      garageCovered: false,
+      garageOpen: false,
+      garageSpaces: 0,
+      maidRoom: false,
+      cooling: false,
+      pool: false,
+      view: true,
+      gated: false,
+      furnished: false,
+    };
+    // Same keys/values, different insertion order
+    const amenitiesB = {
+      furnished: false,
+      gated: false,
+      view: true,
+      pool: false,
+      cooling: false,
+      maidRoom: false,
+      garageSpaces: 0,
+      garageOpen: false,
+      garageCovered: false,
+      garage: false,
+    };
+
+    const a = makeRawProperty({ amenities: amenitiesA });
+    const b = makeRawProperty({ amenities: amenitiesB });
+
+    expect(computePropertyHash(a)).toBe(computePropertyHash(b));
+  });
 });
 
 // ---------------------------------------------------------------------------

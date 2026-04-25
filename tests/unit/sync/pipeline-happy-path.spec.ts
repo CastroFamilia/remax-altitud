@@ -271,4 +271,69 @@ describe("runSyncPipeline — happy path", () => {
       }),
     );
   });
+
+  it("[P0] resolves office UUID from the GUID the record was fetched under, NOT from RawProperty.officeApiId (regression)", async () => {
+    // Regression: parser's `officeApiId` is a numeric RE/MAX OfficeID (e.g. 218),
+    // not a GUID. The pipeline must use the GUID it fetched the record under
+    // to resolve the office UUID — otherwise every record would silently fall
+    // back to an arbitrary office.
+    const syncLog = makeSyncLog();
+    vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+
+    // PZ-fetched record reports a numeric officeApiId — must NOT be used as a key
+    const pzProp = makeRawProperty({ apiId: "P-PZ", officeApiId: 218 });
+    const domProp = makeRawProperty({ apiId: "P-DOM", officeApiId: 235 });
+
+    vi.mocked(fetchPropertiesForOffice)
+      .mockResolvedValueOnce({ records: [pzProp], parseErrors: [] })
+      .mockResolvedValueOnce({ records: [domProp], parseErrors: [] });
+    vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+    vi.mocked(diffProperties).mockReturnValue({
+      new: [pzProp, domProp],
+      updated: [],
+      unchanged: [],
+      removed: [],
+    });
+    vi.mocked(upsertProperty).mockResolvedValue(undefined);
+    vi.mocked(softDeleteProperties).mockResolvedValue(0);
+    vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
+    vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+
+    await runSyncPipeline();
+
+    // Each record was fetched under a different GUID; the upsert should be
+    // called with the office UUID matching the fetch source — exact mapping
+    // confirmed by the officeMap mock (PZ → office-uuid-pz, DOM → office-uuid-dom).
+    const calls = vi.mocked(upsertProperty).mock.calls;
+    expect(calls).toHaveLength(2);
+    const pzCall = calls.find((c) => c[0].apiId === "P-PZ");
+    const domCall = calls.find((c) => c[0].apiId === "P-DOM");
+    expect(pzCall?.[1]).toBe("office-uuid-pz");
+    expect(domCall?.[1]).toBe("office-uuid-dom");
+  });
+
+  it("[P0] throws and marks sync as failure when an office GUID cannot be resolved", async () => {
+    // Regression: silent fallback to an arbitrary office is dangerous —
+    // unknown GUIDs must surface as an explicit error.
+    const syncLog = makeSyncLog();
+    vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+    vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+
+    // Office map is EMPTY — nothing can be resolved
+    vi.mocked(fetchOfficeIdMap).mockResolvedValue(new Map());
+
+    const agent = makeRawAgent();
+    vi.mocked(fetchPropertiesForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+    vi.mocked(fetchAgentsForOffice)
+      .mockResolvedValueOnce({ records: [agent], parseErrors: [] })
+      .mockResolvedValueOnce({ records: [], parseErrors: [] });
+    vi.mocked(diffProperties).mockReturnValue({ new: [], updated: [], unchanged: [], removed: [] });
+
+    await expect(runSyncPipeline()).rejects.toThrow(/Unknown office GUID/);
+
+    expect(updateSyncLog).toHaveBeenCalledWith(
+      syncLog.id,
+      expect.objectContaining({ status: "failure" }),
+    );
+  });
 });

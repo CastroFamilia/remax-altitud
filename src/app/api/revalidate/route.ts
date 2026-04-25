@@ -24,7 +24,11 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     if (Array.isArray(body?.tags)) {
-      tags = body.tags as string[];
+      // Filter to non-empty strings — defensive against malformed payloads
+      // that could otherwise reach `revalidateTag` with non-string values.
+      tags = (body.tags as unknown[]).filter(
+        (t): t is string => typeof t === "string" && t.length > 0,
+      );
     }
   } catch {
     // No body or invalid JSON → use defaults

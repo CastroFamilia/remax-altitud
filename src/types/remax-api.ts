@@ -42,10 +42,15 @@ export type RawAgent = _RawAgent & {
   officeId?: string | null;
 };
 
-/** A parse failure for a single API record, preserving the raw payload for triage. */
+/**
+ * An entry in the `sync_logs.errors` JSONB array — covers Zod parse failures
+ * (`scope: "property" | "agent"`) as well as non-fatal warnings emitted by the
+ * pipeline, e.g. `"lot_size_warning"` for non-standard `LotSizeUnits` (Story
+ * 2.3 AC #12). Warnings are surfaced to operators but do NOT block the upsert.
+ */
 export interface ParseError {
   apiId: string | null;
-  scope: "property" | "agent";
+  scope: "property" | "agent" | "lot_size_warning";
   message: string;
   raw: unknown;
 }

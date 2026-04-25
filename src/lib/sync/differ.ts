@@ -23,12 +23,23 @@ export interface DbPropertySnapshot {
  *
  * Fields included: priceUsd (rounded), titleEn, titleEs, publicRemarksEn,
  * latitude, longitude, bedrooms, bathrooms, lotSizeM2, constructionM2,
- * images (sorted for stability), amenities, apiStatus.
+ * images (sorted for stability), amenities (key-sorted for stability), apiStatus.
  *
  * Fields excluded: apiRaw (minor API additions would cause spurious updates),
  * agentApiId, officeApiId (structural), expirationDate (drives isExpired → REMOVED).
  */
 export function computePropertyHash(raw: RawProperty): string {
+  // Sort amenities keys to guarantee stable hash regardless of object key order.
+  // JSON.stringify preserves insertion order, so unsorted keys would cause
+  // spurious UPDATED diffs whenever upstream object construction varies.
+  const amenitiesSorted: Record<string, unknown> = {};
+  if (raw.amenities && typeof raw.amenities === "object") {
+    const amenitiesObj = raw.amenities as Record<string, unknown>;
+    for (const key of Object.keys(amenitiesObj).sort()) {
+      amenitiesSorted[key] = amenitiesObj[key];
+    }
+  }
+
   const hashPayload = JSON.stringify({
     priceUsd: Math.round(raw.priceUsd),
     titleEn: raw.titleEn,
@@ -41,7 +52,7 @@ export function computePropertyHash(raw: RawProperty): string {
     lotSizeM2: raw.lotSizeM2,
     constructionM2: raw.constructionM2,
     images: [...raw.images].sort(), // sorted for stable hash regardless of API order
-    amenities: raw.amenities,
+    amenities: amenitiesSorted,
     apiStatus: raw.apiStatus,
   });
 

@@ -65,22 +65,50 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       ...domAgentsResult.parseErrors,
     ];
 
-    const allProps = [...pzPropsResult.records, ...domPropsResult.records];
-    const allAgents = [...pzAgentsResult.records, ...domAgentsResult.records];
+    // Track originating office GUID alongside each record. The parser's
+    // `officeApiId` is a numeric RE/MAX OfficeID (e.g. 218, 235) — NOT a GUID —
+    // so we cannot use it as a key into `officeMap` (whose keys are GUIDs).
+    // The fetch source is the canonical office identity.
+    const allProps = [
+      ...pzPropsResult.records.map((r) => ({ raw: r, sourceGuid: pzGuid })),
+      ...domPropsResult.records.map((r) => ({ raw: r, sourceGuid: domGuid })),
+    ];
+    const allAgents = [
+      ...pzAgentsResult.records.map((r) => ({ raw: r, sourceGuid: pzGuid })),
+      ...domAgentsResult.records.map((r) => ({ raw: r, sourceGuid: domGuid })),
+    ];
 
     // Step 3: Load DB snapshot for diff (minimal columns — NFR15 guardrail)
     const dbSnapshot = await fetchPropertySnapshot();
 
-    // Step 4: Diff API vs DB
-    const diff = diffProperties(allProps, dbSnapshot);
+    // Build apiId → originating office GUID map for FK resolution on upsert.
+    const propGuidByApiId = new Map<string, string>(
+      allProps.map((p) => [p.raw.apiId, p.sourceGuid]),
+    );
+
+    // Step 4: Diff API vs DB (operates on raw records)
+    const rawProps = allProps.map((p) => p.raw);
+    const diff = diffProperties(rawProps, dbSnapshot);
 
     // Step 5: Resolve office UUIDs and upsert agents first (needed for agent FK on properties)
     const officeMap = await fetchOfficeIdMap();
 
-    // Upsert agents
-    for (const rawAgent of allAgents) {
-      const officeGuid = String(rawAgent.officeApiId);
-      const officeId = officeMap.get(officeGuid) ?? [...officeMap.values()][0] ?? "";
+    // Helper: resolve office UUID from GUID; throws on unknown GUID rather than
+    // silently misattributing records to an arbitrary office.
+    const resolveOfficeId = (guid: string): string => {
+      const id = officeMap.get(guid);
+      if (!id) {
+        throw new Error(
+          `Unknown office GUID "${guid}" — not present in offices table. Cannot upsert.`,
+        );
+      }
+      return id;
+    };
+
+    // Upsert agents — use the GUID from which the agent was fetched, not the
+    // numeric `officeApiId` field (which is not a GUID).
+    for (const { raw: rawAgent, sourceGuid } of allAgents) {
+      const officeId = resolveOfficeId(sourceGuid);
       await upsertAgent(rawAgent, officeId);
     }
 
@@ -92,8 +120,10 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
     let propertiesUpdated = 0;
 
     for (const raw of diff.new) {
-      const officeGuid = String(raw.officeApiId ?? raw.officeId ?? "");
-      const officeId = officeMap.get(officeGuid) ?? [...officeMap.values()][0] ?? "";
+      // Originating GUID was tracked at fetch time. Default to PZ for safety
+      // (NEW records always come from one of the two fetched batches).
+      const sourceGuid = propGuidByApiId.get(raw.apiId) ?? pzGuid;
+      const officeId = resolveOfficeId(sourceGuid);
       const agentId = raw.agentApiId ? (agentIdMap.get(String(raw.agentApiId)) ?? null) : null;
       const apiHash = computePropertyHash(raw);
       await upsertProperty(raw, officeId, agentId, apiHash);
@@ -101,8 +131,8 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
     }
 
     for (const raw of diff.updated) {
-      const officeGuid = String(raw.officeApiId ?? raw.officeId ?? "");
-      const officeId = officeMap.get(officeGuid) ?? [...officeMap.values()][0] ?? "";
+      const sourceGuid = propGuidByApiId.get(raw.apiId) ?? pzGuid;
+      const officeId = resolveOfficeId(sourceGuid);
       const agentId = raw.agentApiId ? (agentIdMap.get(String(raw.agentApiId)) ?? null) : null;
       const apiHash = computePropertyHash(raw);
       await upsertProperty(raw, officeId, agentId, apiHash);
@@ -121,7 +151,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       .filter((r) => r.lotSizeUnitWarning)
       .map((r) => ({
         apiId: r.apiId,
-        scope: "lot_size_warning" as unknown as "property",
+        scope: "lot_size_warning",
         message: `lotSizeUnitWarning: lot size unit is non-standard for property ${r.apiId}`,
         raw: {},
       }));
@@ -130,7 +160,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
 
     // Determine final status (AC #9, #11)
     const finalStatus: "success" | "partial" = allErrors.length > 0 ? "partial" : "success";
-    const propertiesFetched = allProps.length;
+    const propertiesFetched = rawProps.length;
     const agentsSynced = allAgents.length;
 
     // Step 9: Update sync_log with final status and counts (AC #9)
