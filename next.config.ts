@@ -6,6 +6,13 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // sharp is a native module — opt it out of Server Component bundling so
+  // Next.js uses the native Node.js require() path instead of Webpack bundling.
+  // `serverExternalPackages` is the stable key in Next.js 15+ (was
+  // `experimental.serverComponentsExternalPackages` before v15.0.0).
+  // Note: sharp is also on Next.js's built-in auto-opt-out list, so this is
+  // belt-and-suspenders but explicit is better than implicit.
+  serverExternalPackages: ["sharp"],
 
   async headers() {
     return [

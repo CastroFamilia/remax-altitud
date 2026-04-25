@@ -1,6 +1,7 @@
 import "server-only";
 import { fetchPropertiesForOffice, fetchAgentsForOffice } from "./api-client";
 import { computePropertyHash, diffProperties } from "./differ";
+import { optimizePropertyImages } from "./image-optimizer";
 import { createSyncLog, updateSyncLog } from "@/lib/db/queries/sync-log";
 import {
   upsertProperty,
@@ -8,6 +9,7 @@ import {
   fetchPropertySnapshot,
   fetchOfficeIdMap,
   fetchAgentIdMap,
+  updatePropertyImages,
 } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import type { ParseError } from "@/types/remax-api";
@@ -19,6 +21,7 @@ export interface SyncPipelineResult {
   propertiesUpdated: number;
   propertiesRemoved: number;
   agentsSynced: number;
+  imagesOptimized: number;
   errorCount: number;
   status: "success" | "partial";
 }
@@ -146,17 +149,44 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
     // Step 7: Update agent listing counts after property upserts (AC #8)
     await updateAgentListingCounts();
 
+    // Step 7b: Image optimization — run ONLY on new/updated properties (AC #8, #9, NFR15)
+    let totalImagesOptimized = 0;
+    const imageErrors: ParseError[] = [];
+
+    for (const raw of [...diff.new, ...diff.updated]) {
+      const location = raw.location ?? raw.stateProv ?? "Costa Rica";
+      const result = await optimizePropertyImages(
+        raw.apiId,
+        raw.images,
+        raw.propertyTypeEn,
+        location,
+      );
+      await updatePropertyImages(raw.apiId, result.optimized);
+      // AC #11: count individual variant files written to disk.
+      // result.optimized.length = number of source images successfully encoded.
+      // Each source image produces 3 variant files (400w, 800w, 1600w per Architecture §5).
+      totalImagesOptimized += result.optimized.length * 3;
+      for (const err of result.errors) {
+        imageErrors.push({
+          apiId: err.apiId,
+          scope: "image_error",
+          message: err.error,
+          raw: { url: err.url },
+        });
+      }
+    }
+
     // Step 8: Collect lotSizeUnitWarning errors (AC #12) — do NOT block upsert
     const warningErrors: ParseError[] = [...diff.new, ...diff.updated]
       .filter((r) => r.lotSizeUnitWarning)
       .map((r) => ({
         apiId: r.apiId,
-        scope: "lot_size_warning",
+        scope: "lot_size_warning" as const,
         message: `lotSizeUnitWarning: lot size unit is non-standard for property ${r.apiId}`,
         raw: {},
       }));
 
-    const allErrors: ParseError[] = [...allParseErrors, ...warningErrors];
+    const allErrors: ParseError[] = [...allParseErrors, ...warningErrors, ...imageErrors];
 
     // Determine final status (AC #9, #11)
     const finalStatus: "success" | "partial" = allErrors.length > 0 ? "partial" : "success";
@@ -172,6 +202,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       propertiesUpdated,
       propertiesRemoved,
       agentsSynced,
+      imagesOptimized: totalImagesOptimized,
       errors: allErrors,
     });
 
@@ -205,6 +236,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       propertiesUpdated,
       propertiesRemoved,
       agentsSynced,
+      imagesOptimized: totalImagesOptimized,
       errorCount: allErrors.length,
       status: finalStatus,
     };

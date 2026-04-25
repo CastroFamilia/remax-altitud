@@ -113,6 +113,7 @@ export interface SyncLogShape {
   propertiesUpdated: number;
   propertiesRemoved: number;
   agentsSynced: number;
+  imagesOptimized: number;
   errors: unknown[];
   errorMessage: string | null;
 }
@@ -132,6 +133,7 @@ export function makeSyncLog(overrides: Partial<SyncLogShape> = {}): SyncLogShape
     propertiesUpdated: 0,
     propertiesRemoved: 0,
     agentsSynced: 0,
+    imagesOptimized: 0,
     errors: [],
     errorMessage: null,
     ...overrides,

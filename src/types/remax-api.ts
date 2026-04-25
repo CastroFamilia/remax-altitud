@@ -4,6 +4,8 @@
  * `@/lib/sync/schemas/*` directly.
  */
 
+export type { OptimizedImage } from "./images";
+
 import type { RawProperty as _RawProperty } from "@/lib/sync/schemas/property";
 import type { RawAgent as _RawAgent } from "@/lib/sync/schemas/agent";
 
@@ -47,7 +49,7 @@ export type RawAgent = _RawAgent & {
  */
 export interface ParseError {
   apiId: string | null;
-  scope: "property" | "agent" | "lot_size_warning";
+  scope: "property" | "agent" | "lot_size_warning" | "image_error";
   message: string;
   raw: unknown;
 }
