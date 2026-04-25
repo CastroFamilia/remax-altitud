@@ -114,6 +114,8 @@ export interface SyncLogShape {
   propertiesRemoved: number;
   agentsSynced: number;
   imagesOptimized: number;
+  /** Story 2.5: count of new+updated listings sent to the DeepL translation batch. */
+  translationsQueued?: number;
   errors: unknown[];
   errorMessage: string | null;
 }
@@ -121,6 +123,10 @@ export interface SyncLogShape {
 /**
  * Creates a minimal SyncLog shape with a fixed startedAt timestamp.
  * Uses FIXED_STARTED_AT to keep tests deterministic.
+ *
+ * Story 2.5 added `translationsQueued` to the sync log. Pipeline tests use
+ * `expect.objectContaining({ translationsQueued: N })` so the factory default
+ * (undefined) is intentionally omitted — override via `makeSyncLog({ translationsQueued: 0 })`.
  */
 export function makeSyncLog(overrides: Partial<SyncLogShape> = {}): SyncLogShape {
   return {

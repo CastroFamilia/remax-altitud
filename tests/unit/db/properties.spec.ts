@@ -35,7 +35,7 @@ vi.mock("@/lib/db/client", () => ({
 // Imports — resolved after mocks are hoisted
 // ---------------------------------------------------------------------------
 
-import { updatePropertyImages } from "@/lib/db/queries/properties";
+import { updatePropertyImages, updatePropertyTranslations } from "@/lib/db/queries/properties";
 import type { OptimizedImage } from "@/types/images";
 
 // ---------------------------------------------------------------------------
@@ -154,4 +154,86 @@ describe("updatePropertyImages — JSONB update (AC #4)", () => {
 
     expect(result).toBeUndefined();
   });
+});
+
+// ---------------------------------------------------------------------------
+// Story 2.5 ATDD — updatePropertyTranslations (AC #8, red-phase scaffolds)
+// ---------------------------------------------------------------------------
+
+describe("updatePropertyTranslations — DB update for translated fields (AC #8)", () => {
+  it(
+    "[P0] given apiId, titleEs, and descriptionEs when updatePropertyTranslations called then db.update is called on the properties table",
+    async () => {
+      // AC #8 — translated values are written to properties.title_es and properties.description_es
+      await updatePropertyTranslations("API-001", "Título en español", "Descripción en español");
+
+      expect(mockUpdate).toHaveBeenCalledOnce();
+    },
+  );
+
+  it(
+    "[P0] given apiId='API-001', titleEs='Título ES', descriptionEs='Descripción ES' when called then db.update().set() payload includes titleEs and descriptionEs",
+    async () => {
+      // AC #8 — the set() payload must contain the translated field values
+      await updatePropertyTranslations("API-001", "Título ES", "Descripción ES");
+
+      expect(mockSet).toHaveBeenCalledOnce();
+      const setPayload = mockSet.mock.calls[0][0];
+      expect(setPayload).toMatchObject({
+        titleEs: "Título ES",
+        descriptionEs: "Descripción ES",
+      });
+    },
+  );
+
+  it(
+    "[P0] given any apiId when called then db.update().set().where() is called to scope the update to that apiId",
+    async () => {
+      // AC #8 — the update must be scoped to the specific property row
+      await updatePropertyTranslations("API-001", "Título", "Descripción");
+
+      expect(mockWhere).toHaveBeenCalledOnce();
+    },
+  );
+
+  it(
+    "[P1] given apiId and translated values when called then set() payload includes syncedAt as a Date",
+    async () => {
+      // Follows the same pattern as updatePropertyImages (Story 2.4)
+      await updatePropertyTranslations("API-001", "Título ES", "Descripción ES");
+
+      const setPayload = mockSet.mock.calls[0][0];
+      expect(setPayload.syncedAt).toBeInstanceOf(Date);
+    },
+  );
+
+  it(
+    "[P1] given apiId and translated values when called then set() payload includes updatedAt as a Date",
+    async () => {
+      await updatePropertyTranslations("API-001", "Título ES", "Descripción ES");
+
+      const setPayload = mockSet.mock.calls[0][0];
+      expect(setPayload.updatedAt).toBeInstanceOf(Date);
+    },
+  );
+
+  it(
+    "[P1] given empty descriptionEs when called then set() payload contains descriptionEs as empty string",
+    async () => {
+      // descriptionEs can be empty string (e.g. no English remarks to translate)
+      await updatePropertyTranslations("API-001", "Título ES", "");
+
+      const setPayload = mockSet.mock.calls[0][0];
+      expect(setPayload.descriptionEs).toBe("");
+    },
+  );
+
+  it(
+    "[P2] given updatePropertyTranslations resolves successfully then the function returns void (undefined)",
+    async () => {
+      const result = await updatePropertyTranslations("API-001", "Título ES", "Descripción ES");
+
+      expect(result).toBeUndefined();
+    },
+  );
 });
