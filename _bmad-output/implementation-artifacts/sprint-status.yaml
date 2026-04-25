@@ -59,7 +59,7 @@ development_status:
   2-2-api-integration-and-data-fetching: done
   2-3-sync-pipeline-core: done
   2-4-image-optimization-pipeline: done
-  2-5-translation-pipeline: atdd-done
+  2-5-translation-pipeline: review
   2-6-lifestyle-tag-auto-tagging: backlog
   2-7-sync-monitoring-and-failure-resilience: backlog
   epic-2-retrospective: optional

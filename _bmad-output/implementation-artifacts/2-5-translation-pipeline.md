@@ -1,6 +1,6 @@
 # Story 2.5: Translation Pipeline
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -32,99 +32,63 @@ so that I can understand property details without needing a translator.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Install DeepL SDK (AC: #1, #5, #7)
-  - [ ] Run `npm install deepl-node`.
-  - [ ] Verify `deepl-node` is in `package.json` `dependencies` (runtime dep — needed in Docker image).
-  - [ ] **DO NOT** install `@deepl/translate`, `google-cloud/translate`, `openai` for this story — `deepl-node` is the architecture-mandated choice (AD-8).
-  - [ ] Check `package.json` to confirm `deepl-node` is not already installed before running install.
+- [x] Task 1: Install DeepL SDK (AC: #1, #5, #7)
+  - [x] Run `npm install deepl-node`.
+  - [x] Verify `deepl-node` is in `package.json` `dependencies` (runtime dep — needed in Docker image).
+  - [x] **DO NOT** install `@deepl/translate`, `google-cloud/translate`, `openai` for this story — `deepl-node` is the architecture-mandated choice (AD-8).
+  - [x] Check `package.json` to confirm `deepl-node` is not already installed before running install.
 
-- [ ] Task 2: Create glossary constants (AC: #7)
-  - [ ] Create `src/lib/constants/glossary.ts` (architecture §3 source tree lists this file).
-  - [ ] This file must NOT have `"use client"` or `import "server-only"` — it is a shared constants file.
-  - [ ] Export `TRANSLATION_GLOSSARY: Record<string, string>` mapping EN → ES for legal/property terms:
-    ```ts
-    export const TRANSLATION_GLOSSARY: Record<string, string> = {
-      "Titled Property": "Propiedad Titulada",
-      "Concession": "Concesión",
-      "ZMT Restricted": "Zona Marítimo Terrestre Restringida",
-      "Fee Simple": "Pleno Dominio",
-      "Maritime Zone": "Zona Marítimo Terrestre",
-    };
-    ```
-  - [ ] Note: DeepL glossary creation is async and per-language-pair. For launch (EN→ES only), create one glossary. The glossary ID must be managed via env var `DEEPL_GLOSSARY_ID` — do NOT hardcode it.
+- [x] Task 2: Create glossary constants (AC: #7)
+  - [x] Create `src/lib/constants/glossary.ts` (architecture §3 source tree lists this file).
+  - [x] This file must NOT have `"use client"` or `import "server-only"` — it is a shared constants file.
+  - [x] Export `TRANSLATION_GLOSSARY: Record<string, string>` mapping EN → ES for legal/property terms.
+  - [x] Note: DeepL glossary creation is async and per-language-pair. The glossary ID must be managed via env var `DEEPL_GLOSSARY_ID` — do NOT hardcode it.
 
-- [ ] Task 3: Create `src/lib/sync/translator.ts` (AC: #1–#9)
-  - [ ] Add `import "server-only"` at the very top.
-  - [ ] Import `Translator` from `deepl-node` (named import: `import { Translator } from 'deepl-node'`).
-  - [ ] Initialize translator: `const translator = new Translator(process.env.DEEPL_API_KEY ?? '')`.
-  - [ ] **Preserve-existing check**: Before calling DeepL, check if the field already has content. Only translate if the target field is empty/blank.
-  - [ ] **Glossary**: Pass `{ glossaryId: process.env.DEEPL_GLOSSARY_ID }` to translation calls when the env var is set (omit glossary option if undefined — do NOT pass undefined as glossaryId).
-  - [ ] Export `interface TranslationResult { apiId: string; titleEs: string | null; descriptionEs: string | null; translated: boolean }`.
-  - [ ] Export `interface TranslationError { apiId: string; message: string }`.
-  - [ ] Export `async function translateProperty(raw: { apiId: string; titleEn: string; titleEs: string; publicRemarksEn: string | null; publicRemarksEs: string | null }): Promise<{ result: TranslationResult; error: TranslationError | null }>`.
-    - If `titleEs` is non-empty (after trim), do NOT translate title → `titleEs = titleEs` (preserve).
-    - If `titleEs` is empty, translate `titleEn` → ES via DeepL. On error, log and return `error`.
-    - If `publicRemarksEs` is non-empty (after trim), do NOT translate description.
-    - If `publicRemarksEs` is empty AND `publicRemarksEn` is non-empty, translate → ES.
-    - If `publicRemarksEs` is empty AND `publicRemarksEn` is null/empty, skip description translation (nothing to translate) — set `descriptionEs` to `''`.
-    - Return `{ result: { apiId, titleEs, descriptionEs, translated: true/false }, error: null }`.
-    - On any DeepL error: return `{ result: { apiId, titleEs: null, descriptionEs: null, translated: false }, error: { apiId, message: err.message } }`.
-  - [ ] **Exponential backoff for 429**: Wrap the DeepL call in a retry loop: 3 attempts, delays 2000ms, 4000ms, 8000ms. Check for `429` status in DeepL error (the `deepl-node` SDK throws `QuotaExceededException` for 429 — catch by name or check `err instanceof deepl.QuotaExceededException`). Re-throw on non-429 errors after first attempt.
-  - [ ] Export `async function translateBatch(raws: Array<{ apiId: string; titleEn: string; titleEs: string; publicRemarksEn: string | null; publicRemarksEs: string | null }>): Promise<{ results: TranslationResult[]; errors: TranslationError[] }>`.
-    - Iterate sequentially (not `Promise.all`) to avoid rate-limit burst.
-    - Collect results and errors separately.
-    - Return `{ results, errors }`.
+- [x] Task 3: Create `src/lib/sync/translator.ts` (AC: #1–#9)
+  - [x] Add `import "server-only"` at the very top.
+  - [x] Import `Translator` from `deepl-node` (lazy initialization via `getTranslator()`).
+  - [x] **Preserve-existing check**: Before calling DeepL, check if the field already has content. Only translate if the target field is empty/blank.
+  - [x] **Glossary**: Pass `{ glossaryId: process.env.DEEPL_GLOSSARY_ID }` to translation calls when the env var is set (omit glossary option if undefined — do NOT pass undefined as glossaryId).
+  - [x] Export `interface TranslationResult { apiId: string; titleEs: string | null; descriptionEs: string | null; translated: boolean }`.
+  - [x] Export `interface TranslationError { apiId: string; message: string }`.
+  - [x] Export `async function translateProperty(...)`.
+  - [x] **Exponential backoff for 429**: Wrap the DeepL call in a retry loop: 3 attempts, delays 2000ms, 4000ms, 8000ms. Catch `QuotaExceededError` (actual SDK class name in deepl-node v1.x).
+  - [x] Export `async function translateBatch(...)` with sequential processing.
 
-- [ ] Task 4: Create `updatePropertyTranslations` DB helper (AC: #8)
-  - [ ] In `src/lib/db/queries/properties.ts`, export `async function updatePropertyTranslations(apiId: string, titleEs: string, descriptionEs: string): Promise<void>`.
-  - [ ] Implementation: `await db.update(properties).set({ titleEs, descriptionEs, syncedAt: new Date(), updatedAt: new Date() }).where(eq(properties.apiId, apiId))`.
-  - [ ] Import `"server-only"` is already at top of this file — DO NOT add again.
-  - [ ] Follow same Drizzle update pattern as `updatePropertyImages` already in this file.
+- [x] Task 4: Create `updatePropertyTranslations` DB helper (AC: #8)
+  - [x] In `src/lib/db/queries/properties.ts`, export `async function updatePropertyTranslations(apiId: string, titleEs: string, descriptionEs: string): Promise<void>`.
+  - [x] Follow same Drizzle update pattern as `updatePropertyImages` already in this file.
 
-- [ ] Task 5: Integrate translator into `src/lib/sync/pipeline.ts` (AC: #4, #9)
-  - [ ] Import `translateBatch` from `./translator`.
-  - [ ] Add translation step AFTER property upserts but BEFORE image optimization (Architecture §5: STEP 4 is translate, STEP 5 is images). Insert between Step 6b (property upserts) and Step 7b (image optimization).
-  - [ ] Build the batch input: filter `[...diff.new, ...diff.updated]` to extract `{ apiId, titleEn, titleEs, publicRemarksEn, publicRemarksEs }`.
-  - [ ] Call `translateBatch(batchInput)`.
-  - [ ] For each result where `result.translated === true`, call `updatePropertyTranslations(result.apiId, result.titleEs!, result.descriptionEs ?? '')`.
-  - [ ] Map translation errors to `ParseError` shape: `{ apiId: err.apiId, scope: 'translation_error', message: err.message, raw: {} }` and push to `allErrors`.
-  - [ ] Add `"translation_error"` to the `ParseError.scope` union in `src/types/remax-api.ts`.
-  - [ ] Update `updateSyncLog` call to include `translationsQueued: batchInput.length` (count of listings translation was attempted for).
-  - [ ] Update `SyncPipelineResult` interface to add `translationsQueued: number`.
-  - [ ] **Pipeline ordering constraint**: Translation MUST run after property upserts (rows must exist in DB for FK sanity) and BEFORE image optimization (Architecture §5 Step 4 before Step 5). Do NOT move image optimization before translation.
+- [x] Task 5: Integrate translator into `src/lib/sync/pipeline.ts` (AC: #4, #9)
+  - [x] Import `translateBatch` from `./translator`.
+  - [x] Add translation step AFTER property upserts but BEFORE image optimization (Step 7a).
+  - [x] Build the batch input: filter `[...diff.new, ...diff.updated]`.
+  - [x] Call `translateBatch(batchInput)`.
+  - [x] For each result where `result.translated === true`, call `updatePropertyTranslations(...)`.
+  - [x] Map translation errors to `ParseError` shape with `scope: 'translation_error'`.
+  - [x] Add `"translation_error"` to the `ParseError.scope` union in `src/types/remax-api.ts`.
+  - [x] Update `updateSyncLog` call to include `translationsQueued`.
+  - [x] Update `SyncPipelineResult` interface to add `translationsQueued: number`.
 
-- [ ] Task 6: Tests (AC: #10)
-  - [ ] Create `tests/unit/sync/translator.spec.ts`:
-    - Mock `deepl-node` with `vi.mock('deepl-node', ...)` returning a mock `Translator` class with a `.translateText()` method.
-    - **AC #1 test**: Given `titleEs = ''` and `publicRemarksEs = ''`, when `translateProperty` called, then `Translator.translateText` called for title AND description.
-    - **AC #2 test**: Given `titleEs = 'Casa en la montaña'` (non-empty), when called, then `translateText` NOT called for title (only description if empty).
-    - **AC #3 test**: Given `publicRemarksEs = 'Descripción existente.'` (non-empty), when called, then `translateText` NOT called for description.
-    - **AC #4 skipping (pipeline level)**: Covered in pipeline integration test (see pipeline-happy-path update).
-    - **AC #5 test**: Mock `translateText` to return `QuotaExceededException` on first 2 calls, succeed on 3rd; assert `translateProperty` resolves successfully and `translateText` called 3 times.
-    - **AC #6 test**: Mock `translateText` to throw a non-429 error; assert `translateProperty` returns `{ error: { ... } }` with no crash.
-    - **AC #7 test**: Assert `translateText` is called with `{ glossaryId: 'test-glossary-id' }` option when `DEEPL_GLOSSARY_ID` env var is set; assert glossary option is omitted when env var is not set.
-    - **AC #8/batch test**: `translateBatch` with 2 properties — assert 2 `translateText` calls, result array has 2 entries.
-    - **Idempotency test**: Property with both `titleEs` and `publicRemarksEs` non-empty → `translated: false`, no `translateText` call.
-  - [ ] Update `tests/unit/sync/pipeline-happy-path.spec.ts`:
-    - Add mock: `vi.mock('@/lib/sync/translator', () => ({ translateBatch: vi.fn().mockResolvedValue({ results: [], errors: [] }) }))`.
-    - Assert `translationsQueued: 0` in the `updateSyncLog` call for the happy-path test (0 new/updated = no translations attempted).
-    - Add test variant: 2 new properties → assert `translationsQueued: 2` in sync log.
-  - [ ] Update `tests/unit/sync/pipeline-error-handling.spec.ts`:
-    - Add mock for `translateBatch` same as above to prevent real calls in error-handling tests.
-  - [ ] Update `tests/unit/db/properties.spec.ts`:
-    - Add test for `updatePropertyTranslations('apiId', 'Título ES', 'Descripción ES')` → assert `db.update` called with correct `set` payload including `titleEs`, `descriptionEs`, `syncedAt`, `updatedAt`.
+- [x] Task 6: Tests (AC: #10)
+  - [x] Un-skip all tests in `tests/unit/sync/translator.spec.ts` (ATDD scaffolds activated).
+  - [x] Updated `tests/unit/sync/pipeline-happy-path.spec.ts` with `updatePropertyTranslations` mock.
+  - [x] Updated `tests/unit/sync/pipeline-error-handling.spec.ts` with `updatePropertyTranslations` mock.
+  - [x] Updated `tests/unit/db/properties.spec.ts` (un-skipped `updatePropertyTranslations` tests).
+  - [x] Updated `tests/unit/sync/pipeline-image-integration.spec.ts` with translator mock.
+  - [x] Updated `tests/unit/sync/sync-route.spec.ts` with translator mock.
+  - [x] Added `vi.useFakeTimers()`/`vi.useRealTimers()` + `vi.runAllTimersAsync()` to AC #5 backoff tests.
 
-- [ ] Task 7: Add `DEEPL_API_KEY` and `DEEPL_GLOSSARY_ID` env var references
-  - [ ] Check `.env.example` or `.env.local.example` if present and add `DEEPL_API_KEY=` and `DEEPL_GLOSSARY_ID=` placeholder lines (do NOT add real keys).
-  - [ ] If no `.env.example` exists, add a comment in `translator.ts` documenting required env vars.
-  - [ ] Verify `DEEPL_API_KEY` is NOT committed to git (check `.gitignore` for `.env*`).
+- [x] Task 7: Add `DEEPL_API_KEY` and `DEEPL_GLOSSARY_ID` env var references
+  - [x] Added `DEEPL_GLOSSARY_ID=` placeholder to `.env.example` (DEEPL_API_KEY was already present).
+  - [x] `DEEPL_API_KEY` is NOT committed to git (`.gitignore` covers `.env*`).
 
-- [ ] Task 8: CI verification (AC: #10)
-  - [ ] `npm run typecheck` → 0 errors.
-  - [ ] `npm run lint` → 0 errors.
-  - [ ] `npm run format:check` → pass.
-  - [ ] `npm run build` → pass.
-  - [ ] `npm test` → all green (all previously passing tests + new translator tests).
+- [x] Task 8: CI verification (AC: #10)
+  - [x] `npm run typecheck` → 0 errors.
+  - [x] `npm run lint` → 0 errors.
+  - [x] `npm run format:check` → pass.
+  - [x] `npm run build` → pass.
+  - [x] `npm test` → 151 passed, 3 pre-existing skips, 0 failures.
 
 ## Dev Notes
 
@@ -311,19 +275,44 @@ tests/unit/sync/
 
 ### Agent Model Used
 
-_to be filled by dev agent_
+claude-sonnet-4-6 (Claude Code, 2026-04-25)
 
 ### Debug Log References
 
-_to be filled by dev agent_
+- `QuotaExceededException` from story Dev Notes does not exist in deepl-node v1.x; actual class is `QuotaExceededError`. Fixed in both implementation and test mocks.
+- `new Translator("")` throws at module load time when `DEEPL_API_KEY` is empty. Resolved by using lazy initialization (`getTranslator()` function).
+- AC #5 backoff tests timed out (5s default) due to real `setTimeout` delays. Resolved by adding `vi.useFakeTimers()` / `vi.runAllTimersAsync()` in the AC #5 describe block.
+- `pipeline-image-integration.spec.ts` and `sync-route.spec.ts` lacked translator/image-optimizer mocks; added to prevent real DeepL calls and fix suite failures.
+- `vi.clearAllMocks()` in `beforeEach` cleared the `mockResolvedValue` set in `vi.mock()` factory; fixed by re-setting mock implementation in `beforeEach` for `pipeline-image-integration.spec.ts`.
 
 ### Completion Notes List
 
-_to be filled by dev agent_
+- Installed `deepl-node` v1.x as a runtime dependency.
+- Created `src/lib/constants/glossary.ts` with `TRANSLATION_GLOSSARY` (EN→ES legal/property terms). No `server-only` import — shared constants file.
+- Created `src/lib/sync/translator.ts` with lazy `Translator` init, `translateProperty` (preserve-existing + exponential backoff on 429 via `QuotaExceededError`), and `translateBatch` (sequential processing).
+- Added `updatePropertyTranslations` to `src/lib/db/queries/properties.ts` following `updatePropertyImages` pattern.
+- Extended `ParseError.scope` union in `src/types/remax-api.ts` to include `"translation_error"`.
+- Integrated translation step (Step 7a) into `src/lib/sync/pipeline.ts` between property upserts and image optimization; added `translationsQueued` to `SyncPipelineResult` and `updateSyncLog` call.
+- Un-skipped all ATDD scaffolds in `translator.spec.ts` and `properties.spec.ts`; added fake timer support for backoff tests; added translator mocks to 4 other test files.
+- All 151 tests pass; typecheck, lint, format:check, and build all pass.
 
 ### File List
 
-_to be filled by dev agent_
+- `src/lib/constants/glossary.ts` (NEW)
+- `src/lib/sync/translator.ts` (NEW)
+- `src/lib/db/queries/properties.ts` (EDIT — added `updatePropertyTranslations`)
+- `src/lib/sync/pipeline.ts` (EDIT — translation step, `translationsQueued`)
+- `src/types/remax-api.ts` (EDIT — added `"translation_error"` to `ParseError.scope`)
+- `.env.example` (EDIT — added `DEEPL_GLOSSARY_ID` placeholder)
+- `package.json` (EDIT — added `deepl-node` dependency)
+- `package-lock.json` (EDIT — updated lockfile)
+- `tests/unit/sync/translator.spec.ts` (EDIT — un-skipped all tests, added fake timers, fixed mock names)
+- `tests/unit/sync/pipeline-happy-path.spec.ts` (EDIT — added `updatePropertyTranslations` mock, un-skipped translation tests)
+- `tests/unit/sync/pipeline-error-handling.spec.ts` (EDIT — added `updatePropertyTranslations` mock)
+- `tests/unit/sync/pipeline-image-integration.spec.ts` (EDIT — added translator mock, `updatePropertyTranslations` mock)
+- `tests/unit/sync/sync-route.spec.ts` (EDIT — added translator and image-optimizer mocks, `updatePropertyTranslations` mock)
+- `tests/unit/db/properties.spec.ts` (EDIT — un-skipped `updatePropertyTranslations` tests)
+- `_bmad-output/implementation-artifacts/2-5-translation-pipeline.md` (EDIT — status, tasks, record)
 
 ### Review Findings
 
