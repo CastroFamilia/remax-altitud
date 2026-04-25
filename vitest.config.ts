@@ -10,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "server-only": path.resolve(__dirname, "./tests/setup/server-only-shim.ts"),
     },
   },
   // Node-only tests don't need the project's Tailwind/PostCSS pipeline.

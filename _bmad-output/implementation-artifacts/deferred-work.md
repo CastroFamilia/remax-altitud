@@ -32,3 +32,15 @@
 - vitest does not auto-load `.env.local`, so tests require inline `DATABASE_URL=… npm test` [vitest.config.ts] — minor DX polish; add a setup file when the team wants auto env loading.
 - No down-migration / rollback SQL or documented recovery strategy [src/lib/db/migrations/] — drizzle-kit default; deserves a recovery-strategy note in a future docs pass.
 - `CREATE EXTENSION postgis` requires SUPERUSER on managed Postgres [src/lib/db/migrate.ts:14] — deployment concern for Coolify/managed hosts; belongs in the deploy runbook.
+
+## Deferred from: code review of 2-2-api-integration-and-data-fetching (2026-04-24)
+- Required Y/N fields (`Furnishedyn`, `Garage`, `MaidRoom`, `Cooling`, `PoolPrivate`, `Viewyn`, `GatedCommunity`) are non-nullish; a single null upstream drops the entire record [src/lib/sync/schemas/property.ts] — data-quality hardening belongs with Story 2.3 ingestion.
+- `officeGuid` is not URL-encoded before interpolation into the request path [src/lib/sync/api-client.ts:83, 97] — GUID comes from env and is controlled; defense-in-depth can ride along with a later pass.
+- `Latitude` / `Longitude` are not range-validated to `[-90,90]` / `[-180,180]` [src/lib/sync/schemas/property.ts:86-93] — swapped-lat/lng detection belongs with Story 2.3 geospatial ingestion.
+- `normalizeCostaRicaPhone` accepts `"50600000000"` and other length-valid but prefix-invalid CR numbers [src/lib/sync/utils/phone.ts:13-14] — prefix validation is out of spec scope; revisit in a data-quality pass.
+- `Lang` / `Title` fields are case-sensitive (only literal `"English"`/`"Spanish"`/`"Owner"` recognized) [src/lib/sync/schemas/agent.ts:64-68] — matches the spec's literal mapping, revisit if upstream drifts.
+- `Garage === true` with `GarageSpaces: null` coerces to `garageSpaces: 0`, creating a contradiction [src/lib/sync/schemas/property.ts:205-210] — downstream UI should reconcile.
+- `lastStatus` retains the previous attempt's value when `fetch` rejects before producing a response [src/lib/sync/api-client.ts:33, 38-39] — diagnostic nit only.
+- `response.text()` + `JSON.parse` double-buffers the whole body in memory [src/lib/sync/api-client.ts:45-51] — property feeds are well under any OOM threshold at current scale.
+- `isExpired` parser test depends on the real clock with no `vi.useFakeTimers` [tests/unit/sync/parser.spec.ts] — fixture date is sufficiently in the past to be robust through any CI clock.
+- `extractApiId` mixes property (`ListingId`) and agent (`AssociateID`/`AssociateId`) candidates in one helper [src/lib/sync/parser.ts:97-105] — tight scoping is cleanup, not a correctness issue.
