@@ -162,7 +162,10 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
         location,
       );
       await updatePropertyImages(raw.apiId, result.optimized);
-      totalImagesOptimized += result.optimized.length;
+      // AC #11: count individual variant files written to disk.
+      // result.optimized.length = number of source images successfully encoded.
+      // Each source image produces 3 variant files (400w, 800w, 1600w per Architecture §5).
+      totalImagesOptimized += result.optimized.length * 3;
       for (const err of result.errors) {
         imageErrors.push({
           apiId: err.apiId,

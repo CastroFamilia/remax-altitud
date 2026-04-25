@@ -143,7 +143,11 @@ export async function optimizePropertyImages(
 
       // --- Extract dimensions for aspect-ratio-correct height ---
       const meta = await sharp(buffer).metadata();
-      const aspectRatio = (meta.height ?? 800) / (meta.width ?? 1200);
+      // Guard against zero or undefined width to avoid division-by-zero
+      // (e.g. corrupt image that decodes but reports 0×0 dimensions).
+      const srcWidth = meta.width && meta.width > 0 ? meta.width : 1200;
+      const srcHeight = meta.height ?? 800;
+      const aspectRatio = srcHeight / srcWidth;
       const height = Math.round(SIZES[0] * aspectRatio);
 
       // --- Alt text ---

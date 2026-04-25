@@ -2,13 +2,10 @@
  * ATDD Red-Phase Scaffolds — Story 2.4: Image Optimization Pipeline
  * Module: src/lib/sync/pipeline.ts (image-optimizer integration)
  *
- * TDD RED PHASE — all tests are skipped until the pipeline integration is implemented.
  * Covers AC #8 (skip UNCHANGED), AC #9 (re-process ALL images on UPDATED),
  * AC #11 (imagesOptimized counter in sync_log).
  *
  * All external dependencies are mocked — no live DB or API calls.
- *
- * To activate: change `it.skip` → `it` per task, then verify RED → GREEN.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -73,7 +70,7 @@ import {
 } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import { optimizePropertyImages } from "@/lib/sync/image-optimizer";
-import { makeRawProperty, makeRawAgent, makeSyncLog } from "./factories";
+import { makeRawProperty, makeSyncLog } from "./factories";
 
 // ---------------------------------------------------------------------------
 // Env setup / teardown
@@ -305,20 +302,25 @@ describe("runSyncPipeline — imagesOptimized counter in sync_log (AC #11)", () 
   );
 
   it(
-    "[P0] given optimizer returns 3 variants (1 source × 3 sizes) when pipeline completes then updateSyncLog includes imagesOptimized:3",
+    "[P0] given optimizer returns 1 source image (→ 3 variant files on disk) when pipeline completes then updateSyncLog includes imagesOptimized:3",
     async () => {
       const syncLog = makeSyncLog();
       vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
 
       const newProp = makeRawProperty({ apiId: "NEW-1", images: ["https://cdn.example.com/photo1.jpg"] });
-      const fakeOptimized = Array.from({ length: 3 }, (_, i) => ({
-        src: `/property-images/NEW-1/photo1-${[400, 800, 1600][i]}w.webp`,
-        srcset: "",
-        blurDataUrl: "data:image/webp;base64,abc",
-        width: 400 as const,
-        height: 267,
-        alt: "Photo 1 of 1 — Lot/Land in San Francisco",
-      }));
+      // The real optimizer returns 1 OptimizedImage per source image (not 3).
+      // The pipeline multiplies by 3 (one variant file per size: 400w/800w/1600w)
+      // to get the total variant file count for AC #11.
+      const fakeOptimized = [
+        {
+          src: "/property-images/NEW-1/photo1-0-400w.webp",
+          srcset: "/property-images/NEW-1/photo1-0-400w.webp 400w, /property-images/NEW-1/photo1-0-800w.webp 800w, /property-images/NEW-1/photo1-0-1600w.webp 1600w",
+          blurDataUrl: "data:image/webp;base64,abc",
+          width: 400 as const,
+          height: 267,
+          alt: "Photo 1 of 1 — Lot/Land in San Francisco",
+        },
+      ];
 
       vi.mocked(optimizePropertyImages).mockResolvedValue({ optimized: fakeOptimized, errors: [] });
       vi.mocked(fetchPropertiesForOffice)
@@ -352,16 +354,19 @@ describe("runSyncPipeline — imagesOptimized counter in sync_log (AC #11)", () 
         makeRawProperty({ apiId: "NEW-2", images: ["https://cdn.example.com/p2.jpg"] }),
       ];
 
-      // Each property optimizer call returns 3 optimized variants
+      // Each property optimizer call returns 1 OptimizedImage per source image.
+      // The pipeline multiplies result.optimized.length * 3 for AC #11 variant count.
       vi.mocked(optimizePropertyImages).mockResolvedValue({
-        optimized: Array.from({ length: 3 }, (_, i) => ({
-          src: `/property-images/X/photo-${[400, 800, 1600][i]}w.webp`,
-          srcset: "",
-          blurDataUrl: "data:image/webp;base64,abc",
-          width: 400 as const,
-          height: 267,
-          alt: "Photo 1 of 1 — X in Y",
-        })),
+        optimized: [
+          {
+            src: "/property-images/X/photo-400w.webp",
+            srcset: "/property-images/X/photo-400w.webp 400w, /property-images/X/photo-800w.webp 800w, /property-images/X/photo-1600w.webp 1600w",
+            blurDataUrl: "data:image/webp;base64,abc",
+            width: 400 as const,
+            height: 267,
+            alt: "Photo 1 of 1 — X in Y",
+          },
+        ],
         errors: [],
       });
 
