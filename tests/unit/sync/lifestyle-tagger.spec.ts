@@ -246,19 +246,22 @@ describe("applyLifestyleTags — multiple matching rules → all tags, deduplica
   );
 
   it(
-    "[P1] given a property that triggers the same tag from two rules when called then the tag appears only once",
+    "[P1] given existingTags=['Rental Potential'] and a condo (rule also emits 'Rental Potential') when called then 'Rental Potential' appears only once (deduplication of existing + auto-tag)",
     () => {
-      // AC #5 deduplication — two rules emitting the same tag must not duplicate
-      // We simulate a condo that also happens to have a description triggering Rental Potential
+      // AC #5 deduplication — the Set-based merge must not duplicate a tag that arrives from
+      // both existingTags AND a matching rule. This directly exercises the deduplication path:
+      //   [...new Set([...existingTags, ...newTags])]
+      // The condo rule fires and emits "Rental Potential"; existingTags also contains it.
+      // Result must contain it exactly once.
       const raw = makeRawProperty({
         propertyTypeEn: "Condo",
-        publicRemarksEn: "Ideal rental potential property",
+        publicRemarksEn: "Nice condo listing",
         lotSizeM2: 200,
       });
 
-      const result = applyLifestyleTags(raw, []);
+      const result = applyLifestyleTags(raw, ["Rental Potential"]);
 
-      // Count occurrences — must appear exactly once even if two rules match
+      // Count occurrences — must appear exactly once even though both sources supply it
       const rentalCount = result.filter((t) => t === "Rental Potential").length;
       expect(rentalCount).toBe(1);
     },
