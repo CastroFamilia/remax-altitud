@@ -38,6 +38,9 @@ vi.mock("@/lib/db/queries/properties", () => ({
   fetchAgentIdMap: vi.fn(),
   updatePropertyImages: vi.fn(),
   updatePropertyTranslations: vi.fn(),
+  // Story 2.6 — lifestyle tagging DB helpers
+  fetchPropertyLifestyleTags: vi.fn().mockResolvedValue(new Map()),
+  updatePropertyLifestyleTags: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("@/lib/db/queries/agents", () => ({
@@ -57,6 +60,11 @@ vi.mock("@/lib/sync/image-optimizer", () => ({
 // Story 2.5 — Mock translator to prevent real DeepL calls in pipeline tests (ATDD red phase)
 vi.mock("@/lib/sync/translator", () => ({
   translateBatch: vi.fn().mockResolvedValue({ results: [], errors: [] }),
+}));
+
+// Story 2.6 — Mock lifestyle-tagger to prevent real rule evaluation in pipeline tests
+vi.mock("@/lib/sync/lifestyle-tagger", () => ({
+  tagBatch: vi.fn().mockReturnValue([]),
 }));
 
 // ---------------------------------------------------------------------------
