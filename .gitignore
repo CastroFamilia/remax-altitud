@@ -50,7 +50,11 @@ next-env.d.ts
 
 # BMAD
 .bmad-viewer/
-.agent/settings.local.json
-.agent/bad-session-state.json
+.agents/settings.local.json
+.agents/bad-session-state.json
 .worktrees/
 _bmad/config.user.yaml
+
+# Symlink aliases (canonical dir is .agents/)
+.agent
+.claude
