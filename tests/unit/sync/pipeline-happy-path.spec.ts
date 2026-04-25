@@ -37,6 +37,7 @@ vi.mock("@/lib/db/queries/properties", () => ({
   fetchOfficeIdMap: vi.fn(),
   fetchAgentIdMap: vi.fn(),
   updatePropertyImages: vi.fn(),
+  updatePropertyTranslations: vi.fn(),
 }));
 
 vi.mock("@/lib/db/queries/agents", () => ({
@@ -361,7 +362,7 @@ describe("runSyncPipeline — happy path", () => {
 // ---------------------------------------------------------------------------
 
 describe("runSyncPipeline — translation step (Story 2.5, ATDD red phase)", () => {
-  it.skip(
+  it(
     "[P0] given 0 new/updated properties when pipeline runs then translationsQueued is 0 in the sync log",
     async () => {
       // AC #9 — sync log must record translations_queued count
@@ -387,7 +388,7 @@ describe("runSyncPipeline — translation step (Story 2.5, ATDD red phase)", () 
     },
   );
 
-  it.skip(
+  it(
     "[P0] given 2 new properties when pipeline runs then translateBatch is called with 2 items and translationsQueued is 2",
     async () => {
       // AC #9 — translationsQueued = count of new+updated listings sent to translation
@@ -425,7 +426,7 @@ describe("runSyncPipeline — translation step (Story 2.5, ATDD red phase)", () 
     },
   );
 
-  it.skip(
+  it(
     "[P0] given 1 new and 1 updated property when pipeline runs then translateBatch is called with 2 items",
     async () => {
       // AC #4, AC #9 — both new and updated listings enter the translation queue
@@ -460,7 +461,7 @@ describe("runSyncPipeline — translation step (Story 2.5, ATDD red phase)", () 
     },
   );
 
-  it.skip(
+  it(
     "[P0] given UNCHANGED properties only when pipeline runs then translateBatch is NOT called (NFR15 — zero DeepL calls)",
     async () => {
       // AC #4, NFR15 — incremental processing: unchanged listings skip translation entirely
@@ -493,7 +494,7 @@ describe("runSyncPipeline — translation step (Story 2.5, ATDD red phase)", () 
     },
   );
 
-  it.skip(
+  it(
     "[P1] given translateBatch returns a translation error when pipeline runs then sync log contains the translation_error in errors array",
     async () => {
       // AC #6 — translation error → pipeline continues, error recorded in sync log

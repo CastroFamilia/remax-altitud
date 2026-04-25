@@ -37,6 +37,7 @@ vi.mock("@/lib/db/queries/properties", () => ({
   fetchOfficeIdMap: vi.fn(),
   fetchAgentIdMap: vi.fn(),
   updatePropertyImages: vi.fn(),
+  updatePropertyTranslations: vi.fn(),
 }));
 
 vi.mock("@/lib/db/queries/agents", () => ({

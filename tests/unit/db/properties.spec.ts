@@ -161,7 +161,7 @@ describe("updatePropertyImages — JSONB update (AC #4)", () => {
 // ---------------------------------------------------------------------------
 
 describe("updatePropertyTranslations — DB update for translated fields (AC #8)", () => {
-  it.skip(
+  it(
     "[P0] given apiId, titleEs, and descriptionEs when updatePropertyTranslations called then db.update is called on the properties table",
     async () => {
       // AC #8 — translated values are written to properties.title_es and properties.description_es
@@ -171,7 +171,7 @@ describe("updatePropertyTranslations — DB update for translated fields (AC #8)
     },
   );
 
-  it.skip(
+  it(
     "[P0] given apiId='API-001', titleEs='Título ES', descriptionEs='Descripción ES' when called then db.update().set() payload includes titleEs and descriptionEs",
     async () => {
       // AC #8 — the set() payload must contain the translated field values
@@ -186,7 +186,7 @@ describe("updatePropertyTranslations — DB update for translated fields (AC #8)
     },
   );
 
-  it.skip(
+  it(
     "[P0] given any apiId when called then db.update().set().where() is called to scope the update to that apiId",
     async () => {
       // AC #8 — the update must be scoped to the specific property row
@@ -196,7 +196,7 @@ describe("updatePropertyTranslations — DB update for translated fields (AC #8)
     },
   );
 
-  it.skip(
+  it(
     "[P1] given apiId and translated values when called then set() payload includes syncedAt as a Date",
     async () => {
       // Follows the same pattern as updatePropertyImages (Story 2.4)
@@ -207,7 +207,7 @@ describe("updatePropertyTranslations — DB update for translated fields (AC #8)
     },
   );
 
-  it.skip(
+  it(
     "[P1] given apiId and translated values when called then set() payload includes updatedAt as a Date",
     async () => {
       await updatePropertyTranslations("API-001", "Título ES", "Descripción ES");
@@ -217,7 +217,7 @@ describe("updatePropertyTranslations — DB update for translated fields (AC #8)
     },
   );
 
-  it.skip(
+  it(
     "[P1] given empty descriptionEs when called then set() payload contains descriptionEs as empty string",
     async () => {
       // descriptionEs can be empty string (e.g. no English remarks to translate)
@@ -228,7 +228,7 @@ describe("updatePropertyTranslations — DB update for translated fields (AC #8)
     },
   );
 
-  it.skip(
+  it(
     "[P2] given updatePropertyTranslations resolves successfully then the function returns void (undefined)",
     async () => {
       const result = await updatePropertyTranslations("API-001", "Título ES", "Descripción ES");

@@ -25,13 +25,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // factory runs (hoisted to top of compiled output).
 // ---------------------------------------------------------------------------
 
-const { mockTranslateText, MockTranslator, MockQuotaExceededException } = vi.hoisted(() => {
+const { mockTranslateText, MockTranslator, MockQuotaExceededError } = vi.hoisted(() => {
   const mockTranslateText = vi.fn();
 
-  class MockQuotaExceededException extends Error {
+  class MockQuotaExceededError extends Error {
     constructor(message = "Quota exceeded") {
       super(message);
-      this.name = "QuotaExceededException";
+      this.name = "QuotaExceededError";
     }
   }
 
@@ -39,7 +39,7 @@ const { mockTranslateText, MockTranslator, MockQuotaExceededException } = vi.hoi
     translateText = mockTranslateText;
   }
 
-  return { mockTranslateText, MockTranslator, MockQuotaExceededException };
+  return { mockTranslateText, MockTranslator, MockQuotaExceededError };
 });
 
 // ---------------------------------------------------------------------------
@@ -48,7 +48,7 @@ const { mockTranslateText, MockTranslator, MockQuotaExceededException } = vi.hoi
 
 vi.mock("deepl-node", () => ({
   Translator: MockTranslator,
-  QuotaExceededException: MockQuotaExceededException,
+  QuotaExceededError: MockQuotaExceededError,
 }));
 
 // ---------------------------------------------------------------------------
@@ -97,7 +97,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — new listing (AC #1)", () => {
-  it.skip(
+  it(
     "[P0] given titleEs='' and publicRemarksEs='' when translateProperty called then translateText is called for title AND description",
     async () => {
       // AC #1 — brand-new listing with no Spanish content from API
@@ -123,7 +123,7 @@ describe("translateProperty — new listing (AC #1)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given titleEs='' when called then result.titleEs contains the DeepL translation of titleEn",
     async () => {
       mockTranslateText.mockResolvedValueOnce(makeDeepLResult("Terreno con vista"));
@@ -141,7 +141,7 @@ describe("translateProperty — new listing (AC #1)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given publicRemarksEn=null and publicRemarksEs='' when called then translateText NOT called for description and descriptionEs is empty string",
     async () => {
       // Nothing to translate for description — source text is null
@@ -168,7 +168,7 @@ describe("translateProperty — new listing (AC #1)", () => {
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — preserve API-provided titleEs (AC #2)", () => {
-  it.skip(
+  it(
     "[P0] given titleEs='Casa en la montaña' (non-empty) when translateProperty called then translateText NOT called for title",
     async () => {
       // AC #2 — API already supplied a Spanish title; DeepL must not overwrite it
@@ -191,7 +191,7 @@ describe("translateProperty — preserve API-provided titleEs (AC #2)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given titleEs='Casa en la montaña' when called then result.result.titleEs equals the original API value",
     async () => {
       mockTranslateText.mockResolvedValueOnce(makeDeepLResult("Descripción"));
@@ -214,7 +214,7 @@ describe("translateProperty — preserve API-provided titleEs (AC #2)", () => {
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — preserve API-provided publicRemarksEs (AC #3)", () => {
-  it.skip(
+  it(
     "[P0] given publicRemarksEs='Descripción existente.' (non-empty) when translateProperty called then translateText NOT called for description",
     async () => {
       // AC #3 — API already supplied a Spanish description; DeepL must not overwrite it
@@ -236,7 +236,7 @@ describe("translateProperty — preserve API-provided publicRemarksEs (AC #3)", 
     },
   );
 
-  it.skip(
+  it(
     "[P0] given both titleEs and publicRemarksEs non-empty when called then translateText NOT called at all and translated=false",
     async () => {
       // Idempotency: both fields already have API-provided Spanish — zero DeepL calls
@@ -260,23 +260,36 @@ describe("translateProperty — preserve API-provided publicRemarksEs (AC #3)", 
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => {
-  it.skip(
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it(
     "[P0] given translateText throws QuotaExceededException twice then succeeds on 3rd attempt when called then translateProperty resolves successfully",
     async () => {
       // AC #5 — NFR19: retry 3 times with 2s/4s/8s backoff on 429
-      const quotaErr = new MockQuotaExceededException();
+      const quotaErr = new MockQuotaExceededError();
       mockTranslateText
         .mockRejectedValueOnce(quotaErr) // attempt 1: 429
         .mockRejectedValueOnce(quotaErr) // attempt 2: 429
         .mockResolvedValueOnce(makeDeepLResult("Terreno traducido")); // attempt 3: success
 
-      const result = await translateProperty({
+      const promise = translateProperty({
         apiId: "API-005",
         titleEn: "Land for Sale",
         titleEs: "",
         publicRemarksEn: null,
         publicRemarksEs: null,
       });
+
+      // Advance timers to skip the exponential backoff delays
+      await vi.runAllTimersAsync();
+
+      const result = await promise;
 
       expect(result.error).toBeNull();
       expect(result.result.translated).toBe(true);
@@ -286,20 +299,25 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
     },
   );
 
-  it.skip(
+  it(
     "[P0] given translateText throws QuotaExceededException on all 3 attempts when called then translateProperty returns error without crashing",
     async () => {
       // All 3 attempts exhausted — should return error, not throw
-      const quotaErr = new MockQuotaExceededException("Quota exceeded after 3 attempts");
+      const quotaErr = new MockQuotaExceededError("Quota exceeded after 3 attempts");
       mockTranslateText.mockRejectedValue(quotaErr);
 
-      const result = await translateProperty({
+      const promise = translateProperty({
         apiId: "API-005",
         titleEn: "Land for Sale",
         titleEs: "",
         publicRemarksEn: null,
         publicRemarksEs: null,
       });
+
+      // Advance timers to skip the exponential backoff delays
+      await vi.runAllTimersAsync();
+
+      const result = await promise;
 
       // Should return an error, not throw
       expect(result.error).not.toBeNull();
@@ -314,7 +332,7 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — non-429 DeepL error isolation (AC #6)", () => {
-  it.skip(
+  it(
     "[P0] given translateText throws a non-429 Error when called then translateProperty returns error object without throwing",
     async () => {
       // AC #6 — non-429 errors are isolated per listing; pipeline must continue
@@ -338,7 +356,7 @@ describe("translateProperty — non-429 DeepL error isolation (AC #6)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given translateText throws a non-429 Error when called then the error is NOT re-thrown (no crash)",
     async () => {
       const unexpectedErr = new Error("Unexpected DeepL server error");
@@ -363,7 +381,7 @@ describe("translateProperty — non-429 DeepL error isolation (AC #6)", () => {
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — DeepL glossary integration (AC #7)", () => {
-  it.skip(
+  it(
     "[P0] given DEEPL_GLOSSARY_ID='test-glossary-id' when translateProperty called then translateText receives glossaryId option",
     async () => {
       // AC #7 — FR33: legal/property terms must use the glossary for consistency
@@ -387,7 +405,7 @@ describe("translateProperty — DeepL glossary integration (AC #7)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given DEEPL_GLOSSARY_ID is NOT set when translateProperty called then translateText is called WITHOUT glossaryId option",
     async () => {
       // No glossary env var — glossaryId must be omitted (not passed as undefined)
@@ -410,7 +428,7 @@ describe("translateProperty — DeepL glossary integration (AC #7)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given DEEPL_GLOSSARY_ID set when translating 'Titled Property' then result includes glossary-translated term",
     async () => {
       process.env.DEEPL_GLOSSARY_ID = "test-glossary-id";
@@ -435,7 +453,7 @@ describe("translateProperty — DeepL glossary integration (AC #7)", () => {
 // ---------------------------------------------------------------------------
 
 describe("translateBatch — batch processing (AC #8)", () => {
-  it.skip(
+  it(
     "[P0] given 2 properties with empty Spanish fields when translateBatch called then translateText is called for each and results array has 2 entries",
     async () => {
       // AC #8 — batch mode: processes all inputs, returns results and errors
@@ -469,7 +487,7 @@ describe("translateBatch — batch processing (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given one property fails and one succeeds when translateBatch called then results has 1 entry and errors has 1 entry",
     async () => {
       // AC #6 at batch level — error isolation: one failure must not block others
@@ -505,7 +523,7 @@ describe("translateBatch — batch processing (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given empty array when translateBatch called then returns empty results and errors arrays without calling translateText",
     async () => {
       const result = await translateBatch([]);
@@ -516,7 +534,7 @@ describe("translateBatch — batch processing (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given 2 properties when translateBatch called then they are processed sequentially (not Promise.all)",
     async () => {
       // NFR: sequential processing avoids rate-limit burst — verify call order
@@ -555,7 +573,7 @@ describe("translateBatch — batch processing (AC #8)", () => {
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — idempotency (both fields already have Spanish)", () => {
-  it.skip(
+  it(
     "[P0] given both titleEs and publicRemarksEs non-empty when translateProperty called then returns translated:false and translateText is never called",
     async () => {
       // Idempotency: if both fields are already populated, zero DeepL calls must happen
@@ -581,7 +599,7 @@ describe("translateProperty — idempotency (both fields already have Spanish)",
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — result shape", () => {
-  it.skip(
+  it(
     "[P1] given successful translation when called then result has apiId, titleEs, descriptionEs, and translated fields",
     async () => {
       mockTranslateText
@@ -606,7 +624,7 @@ describe("translateProperty — result shape", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given translateText throws an error when called then error has apiId and message fields",
     async () => {
       mockTranslateText.mockRejectedValue(new Error("API failure"));
