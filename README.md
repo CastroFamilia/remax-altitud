@@ -14,6 +14,14 @@ A complete real estate website for **RE/MAX Altitud** (2 offices in Costa Rica) 
 - 👤 **Agent profiles** — multilingual mini-sites with WhatsApp integration
 - 🔄 **Background sync** — daily import from RE/MAX CCA API → AI translate → optimize → DB
 
+## Project Tracking & Progress
+
+This project is actively in the Implementation Phase. To see the live, day-to-day progress of development, check the sprint status files:
+- 📊 **[Live Sprint Status](_bmad-output/implementation-artifacts/sprint-status.yaml)** (Source of truth for what is done, in-progress, and next)
+- 📝 **[Epics & Stories](_bmad-output/planning-artifacts/epics.md)** (The complete feature backlog)
+
+*Tip: To view a beautiful, human-readable summary of progress at any time, ask the AI to run the `@[/bmad-sprint-status]` workflow!*
+
 ## BMAD Method Progress
 
 The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)** for structured product development.
@@ -44,14 +52,14 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 | Create Epics & Stories<br>`/bmad-bmm-create-epics-and-stories` | ✅ Done | 8 epics, 38 stories, 69/69 FRs covered (100%) |
 | Check Readiness<br>`/bmad-bmm-check-implementation-readiness` | ✅ Done | 6-step assessment passed — all 3 minor findings remediated |
 
-### Phase 4: Implementation
+### Phase 4: Implementation 🚀
 
 | Step | Status | Description |
 |------|--------|-------------|
-| Sprint Planning<br>`/bmad-bmm-sprint-planning` | ⬜ **Next** | Sprint plan for development |
-| Create Story<br>`/bmad-bmm-create-story` | ⬜ Required | Individual story preparation |
-| Dev Story<br>`/bmad-bmm-dev-story` | ⬜ Required | Story implementation |
-| Code Review<br>`/bmad-bmm-code-review` | ⬜ Optional | Code quality review |
+| Sprint Planning<br>`/bmad-sprint-planning` | ✅ Done | Sprint plan generated & tracking active |
+| Create Story<br>`/bmad-create-story` | 🔁 Ongoing | Individual story preparation |
+| Dev Story<br>`/bmad-dev-story` | 🔁 Ongoing | Story implementation |
+| Code Review<br>`/bmad-code-review` | 🔁 Ongoing | Code quality & security review |
 
 ## UX Design Highlights
 
@@ -82,15 +90,15 @@ API docs: [`docs/`](docs/)
 - **UI Primitives**: shadcn/ui (Radix-based, copy-pasted, fully owned)
 - **Styling**: Tailwind CSS v4 (CSS-first config via `@theme` directives)
 - **i18n**: next-intl (EN/ES MVP, per-route locale loading)
-- **Database**: Supabase (PostgreSQL + PostGIS)
+- **Database**: PostgreSQL + PostGIS (self-hosted via Coolify)
 - **ORM**: Drizzle ORM (type-safe SQL, PostGIS support, git-based migrations)
 - **Maps**: Mapbox GL JS (3D terrain, clustering, interactive price-bubble pins)
 - **Translation**: DeepL API with domain-specific glossary + GPT-4 for creative/SEO
-- **Images**: Vercel Image Optimization via `next/image` (WebP, LQIP)
-- **Analytics**: Vercel Analytics (cookieless) + GA4 consent mode
-- **Hosting**: Vercel (edge CDN, ISR, serverless functions)
-- **CI/CD**: Vercel auto-deploy + Lighthouse CI (score ≥ 90 gate)
-- **Data sync**: Vercel Cron → RE/MAX CCA API → validate → translate → optimize → Supabase → ISR revalidation
+- **Images**: Next.js Image Optimization via `next/image` (WebP, LQIP)
+- **Analytics**: GA4 consent mode
+- **Hosting**: Coolify (Docker, self-hosted)
+- **CI/CD**: GitHub Actions + Coolify auto-deploy + Lighthouse CI (score ≥ 90 gate)
+- **Data sync**: Docker Cron → RE/MAX CCA API → validate → translate → optimize → PostgreSQL → ISR revalidation
 
 ## Key Documents
 
@@ -111,17 +119,22 @@ API docs: [`docs/`](docs/)
 
 ## Current Status
 
-→ **Planning complete — ready for sprint planning & implementation**
+→ **Implementation in progress** — Epic 1 complete, Epic 2 underway _(sprint snapshot: 2026-04-24)_
 
-| Epic | Stories | FRs | Status |
-|------|---------|-----|--------|
-| 1. Project Foundation & Design System | 7 stories | FR29–FR32, FR67, FR68 | ✅ Complete |
-| 2. Data Pipeline & Property Database | 7 stories | FR46–FR55 | ✅ Complete |
-| 3. Property Discovery & Search | 8 stories | FR1–FR16 | ✅ Complete |
-| 4. Listing Detail & Agent Profiles | 5 stories | FR8, FR13, FR31, FR33–FR39, FR69 | ✅ Complete |
-| 5. Seller Lead Capture | 3 stories | FR40–FR43, FR54 | ✅ Complete |
-| 6. Community Pages & Area Guides | 3 stories | FR17–FR21, FR44–FR45, FR50 | ✅ Complete |
-| 7. Shortlist & Smart Agent Routing | 2 stories | FR22–FR28 | ✅ Complete |
-| 8. Administration & Operations | 7 stories | FR56–FR66 | ✅ Complete |
+| Epic | Stories | FRs | Progress | Status |
+|------|---------|-----|----------|--------|
+| 1. Project Foundation & Design System | 7 | FR29–FR32, FR67, FR68 | 7 / 7 | ✅ Complete |
+| 2. Data Pipeline & Property Database | 7 | FR46–FR55 | 2 / 7 | 🚧 In progress |
+| 3. Property Discovery & Search | 8 | FR1–FR16 | 0 / 8 | ⚪ Backlog |
+| 4. Listing Detail & Agent Profiles | 5 | FR8, FR13, FR31, FR33–FR39, FR69 | 0 / 5 | ⚪ Backlog |
+| 5. Seller Lead Capture | 3 | FR40–FR43, FR54 | 0 / 3 | ⚪ Backlog |
+| 6. Community Pages & Area Guides | 5 | FR17–FR21, FR44–FR45, FR50 | 0 / 5 | ⚪ Backlog |
+| 7. Shortlist & Smart Agent Routing | 4 | FR22–FR28 | 0 / 4 | ⚪ Backlog |
+| 8. Administration & Operations | 7 | FR56–FR66 | 0 / 7 | ⚪ Backlog |
 
-**Total: 38 stories** covering **69/69 FRs (100%)** with BDD acceptance criteria.
+**Implementation:** 9 / 46 stories done (20%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
+
+**Latest shipped:** Story 2.2 — API Integration & Data Fetching (typed RE/MAX CCA fetch + parse layer with Zod schemas, exponential-backoff retries with `AbortSignal` timeouts, `server-only` enforcement, and 31 fixture-driven Vitest specs).
+**Next up:** Story 2.3 — Sync Pipeline Core.
+
+_Source of truth for day-to-day status lives in [`_bmad-output/implementation-artifacts/sprint-status.yaml`](_bmad-output/implementation-artifacts/sprint-status.yaml)._

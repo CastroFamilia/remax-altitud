@@ -1,0 +1,502 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+/*
+ * @custom-variant dark is injected by shadcn init. Required for shadcn's
+ * dark mode component variants to compile. Dark mode is NOT enabled for
+ * MVP — no .dark class is applied anywhere in the app.
+ */
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   RE/MAX Altitud — Design Token Foundation (Story 1.2)
+   Premium Dual-Geography palette: Navy + Burgundy + Gold
+   ============================================================
+
+   NAMING CONVENTION:
+   - shadcn semantic slots use BARE names in :root (--primary,
+     --accent, etc.) and are mapped to Tailwind utilities in
+     @theme inline so `bg-primary`, `text-accent`, etc. resolve
+     to CSS custom properties.
+   - Project branding tokens use --brand-* prefix in :root to
+     avoid collision with shadcn's bare names. They are mapped
+     in @theme inline as --color-brand-* → Tailwind utilities
+     like `bg-brand-navy`, `text-brand-gold`.
+   - Some values (e.g. --primary and --brand-navy both = #000E35)
+     intentionally overlap: one feeds shadcn components, the
+     other feeds custom brand styling.
+   - NEVER define a raw hex value in @theme inline — always
+     reference a :root var.
+   ============================================================ */
+
+@theme inline {
+  /* Font families */
+  --font-sans: var(--font-montserrat), system-ui, sans-serif;
+  --font-heading: var(--font-montserrat), system-ui, sans-serif;
+  --font-display: var(--font-montserrat), system-ui, sans-serif;
+  --font-body: var(--font-montserrat), system-ui, sans-serif;
+  --font-ui: var(--font-montserrat), system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* shadcn semantic slots → Tailwind utilities */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Sidebar slots (shadcn default — kept for future sidebar components) */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* RE/MAX brand tokens → Tailwind utilities (bg-brand-navy, etc.) */
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-navy-light: var(--brand-navy-light);
+  --color-brand-burgundy: var(--brand-burgundy);
+  --color-brand-burgundy-light: var(--brand-burgundy-light);
+  --color-brand-red: var(--brand-red);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-gold-dark: var(--brand-gold-dark);
+  --color-brand-gold-light: var(--brand-gold-light);
+  --color-brand-gold-muted: var(--brand-gold-muted);
+  --color-brand-crema: var(--brand-crema);
+  --color-brand-warm: var(--brand-warm);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-whatsapp: var(--brand-whatsapp);
+  --color-brand-whatsapp-icon: var(--brand-whatsapp-icon);
+  --color-brand-mountain: var(--brand-mountain);
+  --color-brand-mountain-accent: var(--brand-mountain-accent);
+  --color-brand-beach: var(--brand-beach);
+  --color-brand-beach-accent: var(--brand-beach-accent);
+
+  /* Balloon mark (for standalone icon usage) */
+  --color-brand-balloon-red: var(--brand-balloon-red);
+  --color-brand-balloon-blue: var(--brand-balloon-blue);
+  --color-brand-balloon-white: var(--brand-balloon-white);
+
+  /* Text tokens */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-on-dark: var(--text-on-dark);
+  --color-text-on-accent: var(--text-on-accent);
+
+  /* Semantic tokens */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  /* Radius scale */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+
+  /* Spacing scale (4px base grid) */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-24: 96px;
+
+  /* Shadows — 6 levels */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 15px 40px rgba(0, 0, 0, 0.12);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --shadow-cta: 0 5px 15px rgba(102, 0, 0, 0.3);
+}
+
+:root {
+  /* Base radius for shadcn calculations (maps to --radius-lg = 12px) */
+  --radius: 0.75rem;
+
+  /* ── shadcn semantic slots (bare names) → RE/MAX brand ── */
+  --background: #f7f5ee; /* Crema canvas */
+  --foreground: #202020; /* Text primary */
+  --primary: #000e35; /* Azul Oscuro */
+  --primary-foreground: #f8f8f8;
+  --accent: #660000; /* Rojo Oscuro */
+  --accent-foreground: #ffffff;
+  --muted: #efece4; /* Warm neutral */
+  --muted-foreground: #666666;
+  --card: #ffffff;
+  --card-foreground: #202020;
+  --popover: #ffffff;
+  --popover-foreground: #202020;
+  --secondary: #f7f5ee;
+  --secondary-foreground: #000e35;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #efece4;
+  --input: #efece4;
+  --ring: #0043ff;
+
+  /* Chart slots (shadcn defaults — kept for future dashboard usage) */
+  --chart-1: #000e35;
+  --chart-2: #660000;
+  --chart-3: #c2a661;
+  --chart-4: #183c5a;
+  --chart-5: #233428;
+
+  /* Sidebar slots (shadcn defaults — kept for future sidebar components) */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #202020;
+  --sidebar-primary: #000e35;
+  --sidebar-primary-foreground: #f8f8f8;
+  --sidebar-accent: #efece4;
+  --sidebar-accent-foreground: #000e35;
+  --sidebar-border: #efece4;
+  --sidebar-ring: #0043ff;
+
+  /* ── RE/MAX brand tokens (--brand-* prefix) ── */
+  --brand-navy: #000e35;
+  --brand-navy-light: #0b1e43;
+  --brand-burgundy: #660000;
+  --brand-burgundy-light: #931f2e;
+  --brand-red: #ff1200;
+  --brand-blue: #0043ff;
+  --brand-gold: #c2a661;
+  --brand-gold-dark: #8a743e;
+  --brand-gold-light: #d9c39b;
+  --brand-gold-muted: rgba(194, 166, 97, 0.4);
+  --brand-crema: #f7f5ee;
+  --brand-warm: #efece4;
+  --brand-dark: #0d0d0d;
+  --brand-whatsapp: #128c7e;
+  --brand-whatsapp-icon: #25d366;
+  --brand-mountain: #233428;
+  --brand-mountain-accent: #c2a661;
+  --brand-beach: #183c5a;
+  --brand-beach-accent: #d9c39b;
+
+  /* Balloon mark colors (RE/MAX hot air balloon logo element) */
+  --brand-balloon-red: #cc0000;
+  --brand-balloon-blue: #003da5;
+  --brand-balloon-white: #ffffff;
+
+  /* ── Glass tokens (UX-DR16) ── */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-bg-strong: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(194, 166, 97, 0.4);
+  --glass-blur: 15px;
+
+  /* ── Text tokens ── */
+  /* text-muted is #707070 (not #888888) so that body copy meets WCAG AA 4.5:1 on brand-crema (#f7f5ee). */
+  --text-primary: #202020;
+  --text-secondary: #666666;
+  --text-muted: #707070;
+  --text-on-dark: #f8f8f8;
+  --text-on-accent: #ffffff;
+
+  /* ── Semantic tokens ── */
+  --success: #16a34a;
+  --warning: #d97706;
+  --error: #dc2626;
+  --info: #2563eb;
+
+  /* ── Responsive type scale (mobile-first; desktop ≥ 768px) ── */
+  --text-hero: 2.5rem;
+  --text-hero-lh: 1.1;
+  --text-hero-weight: 600;
+  --text-h1: 2rem;
+  --text-h1-lh: 1.2;
+  --text-h1-weight: 600;
+  --text-h2: 1.5rem;
+  --text-h2-lh: 1.25;
+  --text-h2-weight: 600;
+  --text-h3: 1.25rem;
+  --text-h3-lh: 1.3;
+  --text-h3-weight: 600;
+  --text-h4: 1.1rem;
+  --text-h4-lh: 1.35;
+  --text-h4-weight: 600;
+  --text-body: 1rem;
+  --text-body-lh: 1.6;
+  --text-body-weight: 400;
+  --text-body-lg: 1.1rem;
+  --text-body-lg-lh: 1.6;
+  --text-body-lg-weight: 400;
+  --text-sm: 0.875rem;
+  --text-sm-lh: 1.5;
+  --text-sm-weight: 400;
+  --text-xs: 0.75rem;
+  --text-xs-lh: 1.4;
+  --text-xs-weight: 600;
+  --text-price: 1.5rem;
+  --text-price-lh: 1.1;
+  --text-price-weight: 800;
+
+  /* ── Transitions (UX-DR18) ──
+     NEVER use `transition: all`; target specific properties. */
+  --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 0.2s; /* hover, active states */
+  --duration-normal: 0.3s; /* dropdowns, toggles */
+  --duration-smooth: 0.6s; /* hero, page transitions */
+  --duration-slow: 0.8s; /* map camera */
+  --duration-skeleton: 2s; /* loading shimmer pulse */
+
+  /* ── Z-index scale (overlay stacking per UX spec) ── */
+  --z-content: 1;
+  --z-sticky-cta: 20;
+  --z-sticky-nav: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+  --z-skip-link: 60;
+
+  /* ── Focus indicator tokens (dual-ring pattern, UX-DR24) ── */
+  --focus-ring-color: #0043ff;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-offset-color: #ffffff;
+
+  /* ── Touch target minimum (UX-DR7) ── */
+  --touch-min: 44px;
+}
+
+/* Desktop type scale (≥ 768px) */
+@media (min-width: 768px) {
+  :root {
+    --text-hero: 4rem;
+    --text-h1: 2.8rem;
+    --text-h2: 2rem;
+    --text-h3: 1.5rem;
+    --text-h4: 1.2rem;
+    --text-body-lg: 1.15rem;
+    --text-price: 1.8rem;
+  }
+}
+
+/* Skeleton shimmer — consumed by Story 1.7 loading states */
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: var(--text-body-weight);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Heading defaults — navy on light backgrounds, tight letter-spacing on display sizes */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--brand-navy);
+    font-family: var(--font-heading);
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: var(--text-hero);
+    line-height: var(--text-hero-lh);
+    letter-spacing: -0.5px;
+  }
+  h2 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.5px;
+  }
+  h3 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2-lh);
+  }
+  h4 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3-lh);
+  }
+  h5 {
+    font-size: var(--text-h4);
+    line-height: var(--text-h4-lh);
+  }
+
+  /* Dual-ring focus indicator (UX-DR24) */
+  :focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: 0 0 0 var(--focus-ring-offset) var(--focus-ring-offset-color);
+  }
+}
+
+@layer components {
+  /* Page container: max-width 1400px with responsive padding */
+  .container {
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem; /* 16px mobile */
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      padding-left: 1.5rem; /* 24px tablet */
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem; /* 32px desktop */
+      padding-right: 2rem;
+    }
+  }
+
+  /* Readable-text column (long-form content) */
+  .content-text {
+    max-width: 720px;
+  }
+
+  /* Glassmorphism surface utility (UX-DR16) */
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+  }
+
+  .glass-strong {
+    background: var(--glass-bg-strong);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+  }
+
+  /* Touch target enforcement (UX-DR7) — interactive controls must be ≥ 44×44px */
+  /* Skip-to-content link (WCAG 2.4.1) — slides in from top on keyboard focus */
+  .skip-to-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: var(--z-skip-link);
+    transform: translateY(-100%);
+    transition: transform var(--duration-fast) var(--ease-smooth);
+  }
+
+  .skip-to-content:focus-visible {
+    transform: translateY(0);
+  }
+
+  .touch-target {
+    min-width: var(--touch-min);
+    min-height: var(--touch-min);
+    margin: 8px;
+  }
+}
+
+@layer utilities {
+  /* Split-hero — Ken Burns slow zoom (UX-DR1, UX-DR18) */
+  @keyframes ken-burns {
+    0% {
+      transform: scale(1) translate(0, 0);
+    }
+    50% {
+      transform: scale(1.08) translate(-1%, -1%);
+    }
+    100% {
+      transform: scale(1) translate(0, 0);
+    }
+  }
+
+  .ken-burns {
+    animation: ken-burns 20s var(--ease-smooth) infinite;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ken-burns {
+      animation: none;
+    }
+  }
+
+  /* Hide scrollbar on horizontal mobile carousels while keeping scroll */
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Reduced-motion preference (UX-DR18) — flattens durations, disables shimmer */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01s;
+    --duration-normal: 0.01s;
+    --duration-smooth: 0.01s;
+    --duration-slow: 0.01s;
+    --duration-skeleton: 0.01s;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+    scroll-behavior: auto !important;
+  }
+
+  @keyframes skeleton-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+  }
+}

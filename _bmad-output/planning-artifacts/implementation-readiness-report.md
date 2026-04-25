@@ -379,7 +379,7 @@ The UX specification is exceptionally comprehensive — covering executive summa
 | Epic | Depends On | Independence |
 |------|-----------|--------------|
 | 1 | None | ✅ Fully independent |
-| 2 | Epic 1 (Supabase, Drizzle schema) | ✅ Valid backward dependency |
+| 2 | Epic 1 (PostgreSQL, Drizzle schema) | ✅ Valid backward dependency |
 | 3 | Epic 1 + 2 (framework + data) | ✅ Valid backward dependency |
 | 4 | Epic 1 + 2 + 3 (framework + data + search context) | ✅ Valid backward dependency |
 | 5 | Epic 1 + 2 (framework + data) | ✅ Valid — explicitly parallel with 3/4 |

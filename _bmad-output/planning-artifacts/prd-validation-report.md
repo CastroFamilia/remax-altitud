@@ -190,8 +190,8 @@ overallStatus: Pass (All findings resolved)
 
 **Frontend Frameworks:** 0 violations (Next.js references in Implementation Stack only, not in FRs)
 **Backend Frameworks:** 0 violations
-**Databases:** 0 violations in FRs (Supabase/PostGIS references in journeys and Implementation Stack)
-**Cloud Platforms:** 0 violations in FRs (Vercel references in Implementation Stack only)
+**Databases:** 0 violations in FRs (PostgreSQL/PostGIS references in journeys and Implementation Stack)
+**Cloud Platforms:** 0 violations in FRs (Coolify references in Implementation Stack only)
 **Infrastructure:** 0 violations
 **Libraries:** 0 violations
 

@@ -245,11 +245,11 @@ DeepL for accuracy + glossary; GPT-4 for creative adaptation and SEO metadata.
 
 ---
 
-## 6. Database: Supabase (PostgreSQL)
+## 6. Database: PostgreSQL + PostGIS (Self-Hosted via Coolify)
 
 ### Platform Comparison
 
-| Feature | Supabase | PlanetScale | Turso |
+| Feature | PostgreSQL (self-hosted) | PlanetScale | Turso |
 |---------|----------|-------------|-------|
 | **Engine** | PostgreSQL | MySQL (Vitess) | SQLite (libSQL) |
 | **Geo-spatial** | ✅ PostGIS extension | ❌ Limited | ❌ Limited |
@@ -262,16 +262,16 @@ DeepL for accuracy + glossary; GPT-4 for creative adaptation and SEO metadata.
 | **JSON support** | ✅ JSONB | ✅ JSON | ⚠️ |
 | **REST/GraphQL API** | ✅ Auto-generated | ❌ | ❌ |
 
-### Why Supabase for RE/MAX Altitud
+### Why Self-Hosted PostgreSQL for RE/MAX Altitud
 
 1. **PostGIS** — geospatial queries for map search (distance, bounding box, polygon)
-2. **Built-in auth** — agent portal, saved searches, user preferences
-3. **Object storage** — property images with CDN (supplement Azure CDN from API)
-4. **Real-time** — future live updates for new listings matching saved searches
-5. **Auto-generated REST API** — rapid development for CRUD operations
+2. **Full control** — no vendor lock-in, self-hosted on Coolify VPS
+3. **Cost savings** — included in VPS cost, no separate database bill
+4. **No timeout limits** — long-running sync processes run natively in Docker
+5. **Drizzle ORM** — type-safe PostgreSQL-native ORM handles all DB access
 6. **Full-text search** — multi-language property search via `tsvector`
-7. **Edge functions** — background processing, webhooks
-8. **Open source** — no vendor lock-in, self-hostable if needed
+7. **Docker volumes** — reliable storage with backup strategies
+8. **Open source** — standard PostgreSQL, portable to any hosting
 
 ### Database Schema (Core)
 
@@ -303,19 +303,19 @@ leads (id, name, email, phone, source, intent, language,
        assigned_agent_id, property_id, notes, created_at)
 ```
 
-### Verdict: ✅ Supabase
+### Verdict: ✅ Self-Hosted PostgreSQL + PostGIS
 
-Best "batteries-included" choice — PostGIS for map search, auth, storage, real-time, and open-source.
+Best choice for this project — PostGIS for map search, full control, included in VPS cost, no vendor dependency. Auth is custom, storage is local, ORM layer (Drizzle) handles all DB access.
 
 ---
 
-## 7. Daily Sync Pipeline (Vercel Cron + API)
+## 7. Daily Sync Pipeline (Docker Cron + API)
 
 ### Architecture
 
 ```
 ┌──────────────┐    ┌────────────────┐    ┌──────────────┐
-│ Vercel Cron  │───▶│ /api/sync      │───▶│ RE/MAX CCA   │
+│ Docker Cron  │───▶│ /api/sync      │───▶│ RE/MAX CCA   │
 │ (0 6 * * *)  │    │ (Background)   │    │ API (JSON)   │
 └──────────────┘    └───────┬────────┘    └──────────────┘
                             │
@@ -342,15 +342,10 @@ Best "batteries-included" choice — PostGIS for map search, auth, storage, real
 ### Vercel Cron Configuration
 
 ```json
-// vercel.json
-{
-  "crons": [
-    {
-      "path": "/api/sync",
-      "schedule": "0 6 * * *"
-    }
-  ]
-}
+# Coolify cron configuration
+# Configured via Coolify dashboard or docker-compose
+# Schedule: 0 6 * * * (daily at 6 AM)
+# Command: curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/sync
 ```
 
 ### Sync Logic
@@ -359,20 +354,19 @@ Best "batteries-included" choice — PostGIS for map search, auth, storage, real
 2. **Diff** — Compare API data against DB to identify new, updated, and removed listings
 3. **Translate** — Send only changed content to DeepL/GPT for 4 additional languages
 4. **Optimize** — Download new images from Azure CDN, optimize via Next.js Image, store references
-5. **Upsert** — Insert/update records in Supabase
+5. **Upsert** — Insert/update records in PostgreSQL
 6. **Revalidate** — Call `revalidateTag('properties')` and `revalidateTag('agents')` to invalidate cached pages
 7. **Log** — Record sync results (added, updated, removed counts)
 
 ### Execution Time Considerations
 
-- Vercel Hobby: 10s function timeout (may be insufficient)
-- Vercel Pro: 300s function timeout ✅
-- Alternative: Use Inngest for durable background functions if sync exceeds limits
-- Fallback: Run sync on external service (GitHub Actions, Railway) and hit revalidation webhook
+- Self-hosted Docker on Coolify: No function timeout limits ✅
+- Long-running sync processes run natively as Docker container processes
+- No need for batching or workarounds — sync can take as long as needed
 
-### Verdict: ✅ Vercel Cron + ISR Revalidation
+### Verdict: ✅ Docker Cron + ISR Revalidation
 
-Clean integration with Next.js deployment. Requires **Vercel Pro** plan for extended function timeouts.
+Self-hosted on Coolify eliminates function timeout constraints entirely. No Vercel Pro plan needed.
 
 ---
 
@@ -381,7 +375,7 @@ Clean integration with Next.js deployment. Requires **Vercel Pro** plan for exte
 ### Pipeline
 
 ```
-Azure CDN (API source) → Download → Sharp (resize/compress) → Supabase Storage → Next.js <Image>
+Azure CDN (API source) → Download → Sharp (resize/compress) → Docker Volume Storage → Next.js <Image>
 ```
 
 ### Next.js Image Component Benefits
@@ -389,7 +383,7 @@ Azure CDN (API source) → Download → Sharp (resize/compress) → Supabase Sto
 - **Automatic format** — WebP/AVIF based on browser support
 - **Responsive sizes** — `srcSet` for mobile/tablet/desktop
 - **Lazy loading** — native lazy loading with blur placeholder
-- **CDN delivery** — Vercel Edge Network caches optimized images
+- **CDN delivery** — Coolify reverse proxy caches optimized images
 
 ### Image Sizes for Real Estate
 
@@ -407,27 +401,28 @@ Generate low-quality image placeholders (LQIP) during sync for instant skeleton 
 
 ---
 
-## 9. Deployment & Hosting: Vercel
+## 9. Deployment & Hosting: Coolify (Self-Hosted Docker)
 
-### Why Vercel
+### Why Coolify
 
 | Feature | Benefit |
 |---------|---------|
-| **Next.js native** | Built by the same team — zero-config deployment |
-| **Edge Network** | Global CDN for static assets and ISR pages |
-| **ISR support** | First-class on-demand revalidation |
-| **Cron Jobs** | Built-in scheduled functions |
-| **Analytics** | Real User Monitoring, Web Vitals tracking |
-| **Preview deployments** | Every PR gets a preview URL |
-| **Environment variables** | Secure secret management |
+| **Self-hosted** | Full control over infrastructure, no vendor lock-in |
+| **Docker-based** | Standard containerized deployment |
+| **ISR support** | Next.js standalone mode with on-demand revalidation |
+| **No timeout limits** | Long-running sync processes run natively |
+| **Reverse proxy** | Built-in Caddy/Traefik with automatic TLS |
+| **Preview deployments** | Branch-based deployments via webhooks |
+| **Environment variables** | Secure secret management via dashboard |
 
-### Vercel Pro Plan ($20/month)
+### Coolify VPS (~$10-20/month)
 
-Required for:
-- 300s function execution timeout (sync job)
-- Custom domains
-- Advanced analytics
-- Firewall & DDoS protection
+Includes:
+- Docker hosting for Next.js app
+- PostgreSQL + PostGIS database
+- Custom domains with automatic TLS
+- No function timeout limits
+- Dashboard for monitoring
 
 ### Domain Strategy
 
@@ -451,7 +446,7 @@ remaxaltitud.com/pt/      → Portuguese
 |----------|----------|
 | **Type safety** | ✅ Full TypeScript inference |
 | **Performance** | Lightweight, minimal overhead |
-| **Supabase compat** | ✅ PostgreSQL-native |
+| **PostgreSQL compat** | ✅ PostgreSQL-native |
 | **Migrations** | Git-based migration workflow |
 | **PostGIS** | ✅ Supports spatial types |
 
@@ -471,7 +466,7 @@ remaxaltitud.com/pt/      → Portuguese
 
 | Tool | Purpose |
 |------|---------|
-| **Vercel Analytics** | Core Web Vitals, page performance |
+| **Google Analytics 4** | Core Web Vitals, page performance |
 | **Google Search Console** | SEO indexing, search performance per locale |
 | **PostHog** (or Plausible) | Privacy-friendly user analytics |
 | **Sentry** | Error tracking, performance monitoring |
@@ -495,15 +490,15 @@ remaxaltitud.com/pt/      → Portuguese
 │  Language:     TypeScript                                │
 │  Styling:      Tailwind CSS + shadcn/ui                  │
 │  i18n:         next-intl (6 languages)                   │
-│  Database:     Supabase (PostgreSQL + PostGIS)           │
+│  Database:     PostgreSQL + PostGIS (Coolify)            │
 │  ORM:          Drizzle ORM                               │
 │  Maps:         Mapbox GL JS (react-map-gl)               │
 │  Translation:  DeepL API Pro + GPT-4                     │
-│  Images:       Next.js Image + Supabase Storage          │
-│  Deployment:   Vercel (Pro plan)                         │
-│  Cron / Sync:  Vercel Cron Jobs                          │
-│  Auth:         Supabase Auth                             │
-│  Analytics:    Vercel + Google Search Console + PostHog   │
+│  Images:       Next.js Image + Docker Volume Storage     │
+│  Deployment:   Coolify (self-hosted Docker)               │
+│  Cron / Sync:  Docker Cron Jobs                           │
+│  Auth:         Custom (admin only)                        │
+│  Analytics:    GA4 + Google Search Console + PostHog      │
 │  Monitoring:   Sentry                                    │
 │  Communication: WhatsApp Business API                    │
 │                                                          │
@@ -516,15 +511,15 @@ remaxaltitud.com/pt/      → Portuguese
 
 | Service | Plan | Est. Cost |
 |---------|------|-----------|
-| **Vercel** | Pro | $20/mo |
-| **Supabase** | Pro | $25/mo |
+| **Coolify + VPS** | Self-hosted | ~$10-20/mo |
+| **PostgreSQL** | Included in VPS | $0 |
 | **Mapbox** | Free tier (50K loads) | $0 (initially) |
 | **DeepL API** | Starter | ~€5.49/mo + usage |
 | **OpenAI API** | Pay-as-you-go | ~$5–15/mo (translation volume) |
 | **Domain** | remaxaltitud.com | ~$12/yr |
 | **Sentry** | Free tier | $0 |
 | **PostHog** | Free tier (1M events) | $0 |
-| | **Total (MVP)** | **~$55–70/mo** |
+| | **Total (MVP)** | **~$25-45/mo** |
 
 ---
 
@@ -533,12 +528,12 @@ remaxaltitud.com/pt/      → Portuguese
 | Risk | Impact | Mitigation |
 |------|--------|------------|
 | RE/MAX CCA API downtime | No new data sync | Graceful degradation — serve cached ISR pages; retry logic in sync job |
-| Vercel function timeout | Sync fails for large updates | Batch processing; consider Inngest for durable background functions |
+| Docker container issues | App or DB downtime | Coolify auto-restart policies; Docker health checks; monitoring alerts |
 | Translation quality for legal terms | Misinformation risk | Curated glossary + human review for legal content (visa, ZMT, buying process) |
 | Mapbox cost at scale | Budget overrun | Monitor usage; cache map tiles; consider Google Maps if Mapbox costs spike |
 | 6-language SEO complexity | Indexing issues | Strict hreflang implementation; automated sitemap generation; regular Search Console audits |
 | DeepL language support gaps | Missing language pairs | DeepL supports all 6 target languages (EN, ES, IT, DE, FR, PT) ✅ |
-| Supabase PostGIS complexity | Slow geo queries | Proper spatial indexing (GiST); pagination; bounding box pre-filter |
+| PostGIS query complexity | Slow geo queries | Proper spatial indexing (GiST); pagination; bounding box pre-filter |
 
 ---
 
@@ -550,11 +545,11 @@ remaxaltitud.com/pt/      → Portuguese
 |---------|-------------|------------|
 | Map-first search with pin previews | ✅ Proven pattern with Mapbox | High |
 | 6-language AI translation | ✅ DeepL + GPT pipeline validated | High |
-| SEO-first static pages (daily regen) | ✅ Next.js ISR + Vercel Cron | High |
+| SEO-first static pages (daily regen) | ✅ Next.js ISR + Docker Cron | High |
 | Lifestyle search tags | ✅ Tag-based filtering in PostgreSQL | High |
 | Agent profiles with multilingual bios | ✅ Translation pipeline covers this | High |
 | WhatsApp integration | ✅ Simple URL-based, no API needed for MVP | High |
-| Lead capture | ✅ Supabase for storage, forms for capture | High |
+| Lead capture | ✅ PostgreSQL for storage, forms for capture | High |
 | Mobile-first responsive design | ✅ Tailwind + Next.js Image optimization | High |
 | Smart unit localization | ✅ Client-side conversion based on locale | High |
 | Area comparison tool | ✅ Side-by-side component with DB data | Medium |
