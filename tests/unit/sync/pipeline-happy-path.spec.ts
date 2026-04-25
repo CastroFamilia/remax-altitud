@@ -37,6 +37,7 @@ vi.mock("@/lib/db/queries/properties", () => ({
   fetchOfficeIdMap: vi.fn(),
   fetchAgentIdMap: vi.fn(),
   updatePropertyImages: vi.fn(),
+  updatePropertyTranslations: vi.fn(),
 }));
 
 vi.mock("@/lib/db/queries/agents", () => ({
@@ -51,6 +52,11 @@ vi.mock("@/lib/db/client", () => ({
 // Mock the image optimizer — prevents real sharp/fetch calls in pipeline tests
 vi.mock("@/lib/sync/image-optimizer", () => ({
   optimizePropertyImages: vi.fn().mockResolvedValue({ optimized: [], errors: [] }),
+}));
+
+// Story 2.5 — Mock translator to prevent real DeepL calls in pipeline tests (ATDD red phase)
+vi.mock("@/lib/sync/translator", () => ({
+  translateBatch: vi.fn().mockResolvedValue({ results: [], errors: [] }),
 }));
 
 // ---------------------------------------------------------------------------
@@ -71,6 +77,7 @@ import {
 } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import { optimizePropertyImages } from "@/lib/sync/image-optimizer";
+import { translateBatch } from "@/lib/sync/translator";
 import { makeRawProperty, makeRawAgent, makeSyncLog } from "./factories";
 
 // ---------------------------------------------------------------------------
@@ -108,6 +115,8 @@ beforeEach(() => {
   vi.mocked(fetchAgentIdMap).mockResolvedValue(new Map([["2400", "agent-uuid-1"]]));
   vi.mocked(updatePropertyImages).mockResolvedValue(undefined);
   vi.mocked(optimizePropertyImages).mockResolvedValue({ optimized: [], errors: [] });
+  // Story 2.5 — reset translateBatch mock to default (no translations, no errors)
+  vi.mocked(translateBatch).mockResolvedValue({ results: [], errors: [] });
 
   global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200 } as Response);
 });
@@ -346,4 +355,189 @@ describe("runSyncPipeline — happy path", () => {
       expect.objectContaining({ status: "failure" }),
     );
   });
+});
+
+// ---------------------------------------------------------------------------
+// Story 2.5 ATDD — Translation pipeline integration (red-phase scaffolds)
+// ---------------------------------------------------------------------------
+
+describe("runSyncPipeline — translation step (Story 2.5, ATDD red phase)", () => {
+  it(
+    "[P0] given 0 new/updated properties when pipeline runs then translationsQueued is 0 in the sync log",
+    async () => {
+      // AC #9 — sync log must record translations_queued count
+      // AC #4 — UNCHANGED properties → zero DeepL calls
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+
+      vi.mocked(fetchPropertiesForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+      vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+      vi.mocked(diffProperties).mockReturnValue({ new: [], updated: [], unchanged: [], removed: [] });
+      vi.mocked(softDeleteProperties).mockResolvedValue(0);
+      vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+
+      await runSyncPipeline();
+
+      expect(updateSyncLog).toHaveBeenCalledWith(
+        syncLog.id,
+        expect.objectContaining({ translationsQueued: 0 }),
+      );
+      // translateBatch must NOT be called when there are no new/updated properties
+      expect(translateBatch).not.toHaveBeenCalled();
+    },
+  );
+
+  it(
+    "[P0] given 2 new properties when pipeline runs then translateBatch is called with 2 items and translationsQueued is 2",
+    async () => {
+      // AC #9 — translationsQueued = count of new+updated listings sent to translation
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+
+      const newProps = [
+        makeRawProperty({ apiId: "NEW-1", titleEs: "", publicRemarksEs: "" }),
+        makeRawProperty({ apiId: "NEW-2", titleEs: "", publicRemarksEs: "" }),
+      ];
+
+      vi.mocked(fetchPropertiesForOffice)
+        .mockResolvedValueOnce({ records: newProps, parseErrors: [] })
+        .mockResolvedValueOnce({ records: [], parseErrors: [] });
+      vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+      vi.mocked(diffProperties).mockReturnValue({
+        new: newProps,
+        updated: [],
+        unchanged: [],
+        removed: [],
+      });
+      vi.mocked(upsertProperty).mockResolvedValue(undefined);
+      vi.mocked(softDeleteProperties).mockResolvedValue(0);
+      vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+
+      await runSyncPipeline();
+
+      expect(translateBatch).toHaveBeenCalledOnce();
+      expect(vi.mocked(translateBatch).mock.calls[0][0]).toHaveLength(2);
+      expect(updateSyncLog).toHaveBeenCalledWith(
+        syncLog.id,
+        expect.objectContaining({ translationsQueued: 2 }),
+      );
+    },
+  );
+
+  it(
+    "[P0] given 1 new and 1 updated property when pipeline runs then translateBatch is called with 2 items",
+    async () => {
+      // AC #4, AC #9 — both new and updated listings enter the translation queue
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+
+      const newProp = makeRawProperty({ apiId: "NEW-1" });
+      const updatedProp = makeRawProperty({ apiId: "UPD-1" });
+
+      vi.mocked(fetchPropertiesForOffice)
+        .mockResolvedValueOnce({ records: [newProp, updatedProp], parseErrors: [] })
+        .mockResolvedValueOnce({ records: [], parseErrors: [] });
+      vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+      vi.mocked(diffProperties).mockReturnValue({
+        new: [newProp],
+        updated: [updatedProp],
+        unchanged: [],
+        removed: [],
+      });
+      vi.mocked(upsertProperty).mockResolvedValue(undefined);
+      vi.mocked(softDeleteProperties).mockResolvedValue(0);
+      vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+
+      await runSyncPipeline();
+
+      const batchInput = vi.mocked(translateBatch).mock.calls[0][0];
+      expect(batchInput).toHaveLength(2);
+      const apiIds = batchInput.map((item: { apiId: string }) => item.apiId);
+      expect(apiIds).toContain("NEW-1");
+      expect(apiIds).toContain("UPD-1");
+    },
+  );
+
+  it(
+    "[P0] given UNCHANGED properties only when pipeline runs then translateBatch is NOT called (NFR15 — zero DeepL calls)",
+    async () => {
+      // AC #4, NFR15 — incremental processing: unchanged listings skip translation entirely
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+
+      const unchanged = [
+        makeRawProperty({ apiId: "SAME-1" }),
+        makeRawProperty({ apiId: "SAME-2" }),
+      ];
+
+      vi.mocked(fetchPropertiesForOffice)
+        .mockResolvedValueOnce({ records: unchanged, parseErrors: [] })
+        .mockResolvedValueOnce({ records: [], parseErrors: [] });
+      vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+      vi.mocked(diffProperties).mockReturnValue({
+        new: [],
+        updated: [],
+        unchanged,
+        removed: [],
+      });
+      vi.mocked(softDeleteProperties).mockResolvedValue(0);
+      vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+
+      await runSyncPipeline();
+
+      // Zero DeepL calls for UNCHANGED — enforced by NFR15
+      expect(translateBatch).not.toHaveBeenCalled();
+    },
+  );
+
+  it(
+    "[P1] given translateBatch returns a translation error when pipeline runs then sync log contains the translation_error in errors array",
+    async () => {
+      // AC #6 — translation error → pipeline continues, error recorded in sync log
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+
+      const newProp = makeRawProperty({ apiId: "ERR-PROP-1" });
+
+      vi.mocked(fetchPropertiesForOffice)
+        .mockResolvedValueOnce({ records: [newProp], parseErrors: [] })
+        .mockResolvedValueOnce({ records: [], parseErrors: [] });
+      vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+      vi.mocked(diffProperties).mockReturnValue({
+        new: [newProp],
+        updated: [],
+        unchanged: [],
+        removed: [],
+      });
+      vi.mocked(upsertProperty).mockResolvedValue(undefined);
+      vi.mocked(softDeleteProperties).mockResolvedValue(0);
+      vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+
+      // Simulate translateBatch returning an error for ERR-PROP-1
+      vi.mocked(translateBatch).mockResolvedValue({
+        results: [],
+        errors: [{ apiId: "ERR-PROP-1", message: "DeepL timeout" }],
+      });
+
+      await runSyncPipeline();
+
+      // Pipeline must complete (no throw) and include translation_error in errors
+      expect(updateSyncLog).toHaveBeenCalledWith(
+        syncLog.id,
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            expect.objectContaining({
+              apiId: "ERR-PROP-1",
+              scope: "translation_error",
+            }),
+          ]),
+        }),
+      );
+    },
+  );
 });

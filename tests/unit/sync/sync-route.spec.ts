@@ -35,6 +35,8 @@ vi.mock("@/lib/db/queries/properties", () => ({
   fetchPropertySnapshot: vi.fn(),
   fetchOfficeIdMap: vi.fn(),
   fetchAgentIdMap: vi.fn(),
+  updatePropertyImages: vi.fn(),
+  updatePropertyTranslations: vi.fn(),
 }));
 
 vi.mock("@/lib/db/queries/agents", () => ({
@@ -44,6 +46,15 @@ vi.mock("@/lib/db/queries/agents", () => ({
 
 vi.mock("@/lib/db/client", () => ({
   db: { select: vi.fn() },
+}));
+
+// Story 2.4/2.5 — Mock image optimizer and translator to prevent real calls
+vi.mock("@/lib/sync/image-optimizer", () => ({
+  optimizePropertyImages: vi.fn().mockResolvedValue({ optimized: [], errors: [] }),
+}));
+
+vi.mock("@/lib/sync/translator", () => ({
+  translateBatch: vi.fn().mockResolvedValue({ results: [], errors: [] }),
 }));
 
 // ---------------------------------------------------------------------------

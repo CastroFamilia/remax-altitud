@@ -37,6 +37,7 @@ vi.mock("@/lib/db/queries/properties", () => ({
   fetchOfficeIdMap: vi.fn(),
   fetchAgentIdMap: vi.fn(),
   updatePropertyImages: vi.fn(),
+  updatePropertyTranslations: vi.fn(),
 }));
 
 vi.mock("@/lib/db/queries/agents", () => ({
@@ -51,6 +52,11 @@ vi.mock("@/lib/db/client", () => ({
 // Mock the image optimizer — prevents real sharp/fetch calls in pipeline tests
 vi.mock("@/lib/sync/image-optimizer", () => ({
   optimizePropertyImages: vi.fn().mockResolvedValue({ optimized: [], errors: [] }),
+}));
+
+// Story 2.5 — Mock translator to prevent real DeepL calls in error-handling tests (ATDD red phase)
+vi.mock("@/lib/sync/translator", () => ({
+  translateBatch: vi.fn().mockResolvedValue({ results: [], errors: [] }),
 }));
 
 // ---------------------------------------------------------------------------
@@ -71,6 +77,7 @@ import {
 } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import { optimizePropertyImages } from "@/lib/sync/image-optimizer";
+import { translateBatch } from "@/lib/sync/translator";
 import { makeRawProperty, makeRawAgent, makeSyncLog } from "./factories";
 
 // ---------------------------------------------------------------------------
@@ -108,6 +115,8 @@ beforeEach(() => {
   vi.mocked(fetchAgentIdMap).mockResolvedValue(new Map([["2400", "agent-uuid-1"]]));
   vi.mocked(updatePropertyImages).mockResolvedValue(undefined);
   vi.mocked(optimizePropertyImages).mockResolvedValue({ optimized: [], errors: [] });
+  // Story 2.5 — reset translateBatch mock to safe default for error-handling tests
+  vi.mocked(translateBatch).mockResolvedValue({ results: [], errors: [] });
 
   global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200 } as Response);
 });

@@ -2,6 +2,7 @@ import "server-only";
 import { fetchPropertiesForOffice, fetchAgentsForOffice } from "./api-client";
 import { computePropertyHash, diffProperties } from "./differ";
 import { optimizePropertyImages } from "./image-optimizer";
+import { translateBatch } from "./translator";
 import { createSyncLog, updateSyncLog } from "@/lib/db/queries/sync-log";
 import {
   upsertProperty,
@@ -10,6 +11,7 @@ import {
   fetchOfficeIdMap,
   fetchAgentIdMap,
   updatePropertyImages,
+  updatePropertyTranslations,
 } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import type { ParseError } from "@/types/remax-api";
@@ -22,6 +24,7 @@ export interface SyncPipelineResult {
   propertiesRemoved: number;
   agentsSynced: number;
   imagesOptimized: number;
+  translationsQueued: number;
   errorCount: number;
   status: "success" | "partial";
 }
@@ -149,6 +152,41 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
     // Step 7: Update agent listing counts after property upserts (AC #8)
     await updateAgentListingCounts();
 
+    // Step 7a: Translation — translate ONLY new/updated listings (Architecture §5 Step 4, AC #4, NFR15)
+    let translationsQueued = 0;
+    const translationErrors: ParseError[] = [];
+
+    if (diff.new.length + diff.updated.length > 0) {
+      const batchInput = [...diff.new, ...diff.updated].map((raw) => ({
+        apiId: raw.apiId,
+        titleEn: raw.titleEn,
+        titleEs: raw.titleEs,
+        publicRemarksEn: raw.publicRemarksEn,
+        publicRemarksEs: raw.publicRemarksEs,
+      }));
+      translationsQueued = batchInput.length;
+
+      const { results, errors } = await translateBatch(batchInput);
+
+      for (const result of results) {
+        if (result.translated && result.titleEs) {
+          await updatePropertyTranslations(
+            result.apiId,
+            result.titleEs,
+            result.descriptionEs ?? "",
+          );
+        }
+      }
+      for (const err of errors) {
+        translationErrors.push({
+          apiId: err.apiId,
+          scope: "translation_error",
+          message: err.message,
+          raw: {},
+        });
+      }
+    }
+
     // Step 7b: Image optimization — run ONLY on new/updated properties (AC #8, #9, NFR15)
     let totalImagesOptimized = 0;
     const imageErrors: ParseError[] = [];
@@ -186,7 +224,12 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
         raw: {},
       }));
 
-    const allErrors: ParseError[] = [...allParseErrors, ...warningErrors, ...imageErrors];
+    const allErrors: ParseError[] = [
+      ...allParseErrors,
+      ...warningErrors,
+      ...translationErrors,
+      ...imageErrors,
+    ];
 
     // Determine final status (AC #9, #11)
     const finalStatus: "success" | "partial" = allErrors.length > 0 ? "partial" : "success";
@@ -203,6 +246,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       propertiesRemoved,
       agentsSynced,
       imagesOptimized: totalImagesOptimized,
+      translationsQueued,
       errors: allErrors,
     });
 
@@ -237,6 +281,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       propertiesRemoved,
       agentsSynced,
       imagesOptimized: totalImagesOptimized,
+      translationsQueued,
       errorCount: allErrors.length,
       status: finalStatus,
     };

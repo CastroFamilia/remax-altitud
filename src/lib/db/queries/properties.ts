@@ -203,3 +203,31 @@ export async function updatePropertyImages(apiId: string, images: OptimizedImage
     })
     .where(eq(properties.apiId, apiId));
 }
+
+/**
+ * Writes translated Spanish title and description directly to
+ * `properties.title_es` and `properties.description_es` columns (AC #8, Story 2.5).
+ * Also updates `synced_at` and `updated_at` timestamps.
+ *
+ * Translation values are NOT stored in a separate translations table —
+ * they are written directly to the properties row (Architecture §5 guardrail).
+ *
+ * @param apiId       - The property's `api_id` value
+ * @param titleEs     - Translated Spanish title from DeepL
+ * @param descriptionEs - Translated Spanish description from DeepL (may be empty string)
+ */
+export async function updatePropertyTranslations(
+  apiId: string,
+  titleEs: string,
+  descriptionEs: string,
+): Promise<void> {
+  await db
+    .update(properties)
+    .set({
+      titleEs,
+      descriptionEs,
+      syncedAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.apiId, apiId));
+}
