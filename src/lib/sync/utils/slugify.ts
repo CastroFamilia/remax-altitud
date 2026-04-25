@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * URL-safe slug generator using NFD decomposition + Unicode property escapes.
  * Implements the algorithm specified in Story 2.3 Task 9 / Slug Generation section.

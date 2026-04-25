@@ -4,10 +4,7 @@
  * `@/lib/sync/schemas/*` directly.
  */
 
-import type {
-  RawProperty as _RawProperty,
-  RawPropertyAmenities,
-} from "@/lib/sync/schemas/property";
+import type { RawProperty as _RawProperty } from "@/lib/sync/schemas/property";
 import type { RawAgent as _RawAgent } from "@/lib/sync/schemas/agent";
 
 export type { RawPropertyAmenities } from "@/lib/sync/schemas/property";

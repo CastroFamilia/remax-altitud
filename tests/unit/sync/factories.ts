@@ -6,7 +6,7 @@
  * Use override params to vary specific fields per test.
  */
 
-import type { RawProperty, RawAgent } from "@/lib/sync/parser";
+import type { RawProperty, RawAgent } from "@/types/remax-api";
 
 /** Fixed reference timestamp used in sync-log factories (deterministic). */
 export const FIXED_STARTED_AT = new Date("2026-04-25T12:00:00.000Z");
