@@ -49,7 +49,13 @@ export type RawAgent = _RawAgent & {
  */
 export interface ParseError {
   apiId: string | null;
-  scope: "property" | "agent" | "lot_size_warning" | "image_error" | "translation_error";
+  scope:
+    | "property"
+    | "agent"
+    | "lot_size_warning"
+    | "image_error"
+    | "translation_error"
+    | "tagging_error";
   message: string;
   raw: unknown;
 }

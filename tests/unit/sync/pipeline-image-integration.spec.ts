@@ -81,10 +81,13 @@ import {
   fetchOfficeIdMap,
   fetchAgentIdMap,
   updatePropertyImages,
+  fetchPropertyLifestyleTags,
+  updatePropertyLifestyleTags,
 } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import { optimizePropertyImages } from "@/lib/sync/image-optimizer";
 import { translateBatch } from "@/lib/sync/translator";
+import { tagBatch } from "@/lib/sync/lifestyle-tagger";
 import { makeRawProperty, makeSyncLog } from "./factories";
 
 // ---------------------------------------------------------------------------
@@ -131,6 +134,10 @@ beforeEach(() => {
   vi.mocked(optimizePropertyImages).mockResolvedValue({ optimized: [], errors: [] });
   // Story 2.5 — reset translateBatch mock to safe default after vi.clearAllMocks()
   vi.mocked(translateBatch).mockResolvedValue({ results: [], errors: [] });
+  // Story 2.6 — reset lifestyle tagging mocks after vi.clearAllMocks()
+  vi.mocked(fetchPropertyLifestyleTags).mockResolvedValue(new Map());
+  vi.mocked(updatePropertyLifestyleTags).mockResolvedValue(undefined);
+  vi.mocked(tagBatch).mockReturnValue([]);
 
   global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200 } as Response);
 });

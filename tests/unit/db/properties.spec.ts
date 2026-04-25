@@ -78,10 +78,13 @@ function makeOptimizedImage(overrides: Partial<OptimizedImage> = {}): OptimizedI
 
 beforeEach(() => {
   vi.clearAllMocks();
-  // Re-wire the chain after clearAllMocks resets return values
+  // Re-wire the update chain after clearAllMocks resets return values
   mockSet.mockReturnValue({ where: mockWhere });
   mockUpdate.mockReturnValue({ set: mockSet });
   mockWhere.mockResolvedValue(undefined);
+  // Re-wire the select chain for fetchPropertyLifestyleTags
+  mockFrom.mockResolvedValue([]);
+  mockSelect.mockReturnValue({ from: vi.fn().mockReturnValue({ where: mockFrom }) });
 });
 
 afterEach(() => {
@@ -260,7 +263,7 @@ describe("updatePropertyTranslations — DB update for translated fields (AC #8)
 // ---------------------------------------------------------------------------
 
 describe("fetchPropertyLifestyleTags — batch fetch existing lifestyle tags (AC #7)", () => {
-  it.skip(
+  it(
     "[P0] given apiIds=['API-001', 'API-002'] when fetchPropertyLifestyleTags called then db.select is called to fetch rows",
     async () => {
       // AC #7 — batch fetch: fetches existing lifestyle_tags for all given apiIds in one query
@@ -271,7 +274,7 @@ describe("fetchPropertyLifestyleTags — batch fetch existing lifestyle tags (AC
     },
   );
 
-  it.skip(
+  it(
     "[P0] given apiIds=['API-001'] when fetchPropertyLifestyleTags called then result is a Map with 'API-001' as key",
     async () => {
       // AC #7 — result type: Map<apiId, string[]> for O(1) lookup in pipeline
@@ -290,7 +293,7 @@ describe("fetchPropertyLifestyleTags — batch fetch existing lifestyle tags (AC
     },
   );
 
-  it.skip(
+  it(
     "[P0] given apiIds=[] (empty array) when fetchPropertyLifestyleTags called then returns empty Map without querying DB",
     async () => {
       // AC #7 boundary — guard: if apiIds is empty, return early without DB call
@@ -303,7 +306,7 @@ describe("fetchPropertyLifestyleTags — batch fetch existing lifestyle tags (AC
     },
   );
 
-  it.skip(
+  it(
     "[P1] given apiIds=['API-001'] and DB returns no rows when called then result is an empty Map",
     async () => {
       // fetchPropertyLifestyleTags handles properties not found in DB (returns empty Map)
@@ -318,7 +321,7 @@ describe("fetchPropertyLifestyleTags — batch fetch existing lifestyle tags (AC
     },
   );
 
-  it.skip(
+  it(
     "[P1] given apiIds=['API-001', 'API-002'] and DB returns rows for both when called then Map has 2 entries",
     async () => {
       // fetchPropertyLifestyleTags returns one Map entry per DB row
@@ -344,7 +347,7 @@ describe("fetchPropertyLifestyleTags — batch fetch existing lifestyle tags (AC
 // ---------------------------------------------------------------------------
 
 describe("updatePropertyLifestyleTags — write merged lifestyle tags to DB (AC #7)", () => {
-  it.skip(
+  it(
     "[P0] given apiId and tags array when updatePropertyLifestyleTags called then db.update is called on the properties table",
     async () => {
       // AC #7 — follows same pattern as updatePropertyImages / updatePropertyTranslations
@@ -354,7 +357,7 @@ describe("updatePropertyLifestyleTags — write merged lifestyle tags to DB (AC 
     },
   );
 
-  it.skip(
+  it(
     "[P0] given apiId='API-001' and tags=['Rental Potential'] when called then db.update().set() payload includes lifestyleTags",
     async () => {
       // AC #7 — the set() payload must write the merged tags array to lifestyleTags column
@@ -366,7 +369,7 @@ describe("updatePropertyLifestyleTags — write merged lifestyle tags to DB (AC 
     },
   );
 
-  it.skip(
+  it(
     "[P0] given any apiId when called then db.update().set().where() is called to scope the update to that apiId",
     async () => {
       // AC #7 — scoped to the specific property row
@@ -376,7 +379,7 @@ describe("updatePropertyLifestyleTags — write merged lifestyle tags to DB (AC 
     },
   );
 
-  it.skip(
+  it(
     "[P1] given apiId and tags when called then set() payload includes syncedAt as a Date",
     async () => {
       // Follows updatePropertyImages / updatePropertyTranslations pattern
@@ -387,7 +390,7 @@ describe("updatePropertyLifestyleTags — write merged lifestyle tags to DB (AC 
     },
   );
 
-  it.skip(
+  it(
     "[P1] given apiId and tags when called then set() payload includes updatedAt as a Date",
     async () => {
       await updatePropertyLifestyleTags("API-001", ["Retire"]);
@@ -397,7 +400,7 @@ describe("updatePropertyLifestyleTags — write merged lifestyle tags to DB (AC 
     },
   );
 
-  it.skip(
+  it(
     "[P1] given empty tags array when called then set() payload lifestyleTags is []",
     async () => {
       // updatePropertyLifestyleTags must accept empty array (no tags matched)
@@ -408,7 +411,7 @@ describe("updatePropertyLifestyleTags — write merged lifestyle tags to DB (AC 
     },
   );
 
-  it.skip(
+  it(
     "[P2] given updatePropertyLifestyleTags resolves successfully then the function returns void (undefined)",
     async () => {
       const result = await updatePropertyLifestyleTags("API-001", ["Rental Potential"]);

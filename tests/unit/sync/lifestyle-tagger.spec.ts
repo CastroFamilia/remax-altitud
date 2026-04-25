@@ -29,13 +29,14 @@ import { makeRawProperty } from "./factories";
 // ---------------------------------------------------------------------------
 
 import { applyLifestyleTags, tagBatch } from "@/lib/sync/lifestyle-tagger";
+import { LIFESTYLE_TAG_RULES } from "@/lib/constants/lifestyle-tags";
 
 // ---------------------------------------------------------------------------
 // AC #1 + AC #2 — Condo in tourist zone → "Rental Potential"
 // ---------------------------------------------------------------------------
 
 describe("applyLifestyleTags — Condo → 'Rental Potential' (AC #1, #2)", () => {
-  it.skip(
+  it(
     "[P1] given propertyTypeEn='Condo' when applyLifestyleTags called then result includes 'Rental Potential'",
     () => {
       // AC #2 — condo property type triggers the Rental Potential rule
@@ -48,7 +49,7 @@ describe("applyLifestyleTags — Condo → 'Rental Potential' (AC #1, #2)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P1] given propertyTypeEn='Luxury Condo' (contains 'condo') when called then result includes 'Rental Potential'",
     () => {
       // AC #2 — case-insensitive substring match on 'condo'
@@ -60,7 +61,7 @@ describe("applyLifestyleTags — Condo → 'Rental Potential' (AC #1, #2)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P1] given propertyTypeEn='House' (not a condo) when called then result does NOT include 'Rental Potential'",
     () => {
       // AC #2 negative — non-condo property types must NOT receive this tag
@@ -78,7 +79,7 @@ describe("applyLifestyleTags — Condo → 'Rental Potential' (AC #1, #2)", () =
 // ---------------------------------------------------------------------------
 
 describe("applyLifestyleTags — large lot → 'Investment Property' (AC #1, #3)", () => {
-  it.skip(
+  it(
     "[P1] given propertyTypeEn='Lot/Land' and lotSizeM2=5000 when called then result includes 'Investment Property'",
     () => {
       // AC #3 — lot/land at exactly the threshold (≥ 5000m²)
@@ -90,7 +91,7 @@ describe("applyLifestyleTags — large lot → 'Investment Property' (AC #1, #3)
     },
   );
 
-  it.skip(
+  it(
     "[P1] given propertyTypeEn='Lot/Land' and lotSizeM2=14757 when called then result includes 'Investment Property'",
     () => {
       // AC #3 — lot/land well above threshold
@@ -102,7 +103,7 @@ describe("applyLifestyleTags — large lot → 'Investment Property' (AC #1, #3)
     },
   );
 
-  it.skip(
+  it(
     "[P1] given propertyTypeEn='Lot/Land' and lotSizeM2=4999 when called then result does NOT include 'Investment Property'",
     () => {
       // AC #3 boundary — just below threshold must NOT match
@@ -114,7 +115,7 @@ describe("applyLifestyleTags — large lot → 'Investment Property' (AC #1, #3)
     },
   );
 
-  it.skip(
+  it(
     "[P1] given propertyTypeEn='House' and lotSizeM2=10000 when called then result does NOT include 'Investment Property'",
     () => {
       // AC #3 — large lot but NOT lot/land type: rule must not fire on houses
@@ -126,7 +127,7 @@ describe("applyLifestyleTags — large lot → 'Investment Property' (AC #1, #3)
     },
   );
 
-  it.skip(
+  it(
     "[P1] given propertyTypeEn='Land' (contains 'land') and lotSizeM2=6000 when called then result includes 'Investment Property'",
     () => {
       // AC #3 — 'Land' is a recognized variant (architecture note)
@@ -138,7 +139,7 @@ describe("applyLifestyleTags — large lot → 'Investment Property' (AC #1, #3)
     },
   );
 
-  it.skip(
+  it(
     "[P1] given propertyTypeEn='Lot/Land' and lotSizeM2=null when called then result does NOT include 'Investment Property'",
     () => {
       // AC #3 — null lot size must not throw and must not match
@@ -156,7 +157,7 @@ describe("applyLifestyleTags — large lot → 'Investment Property' (AC #1, #3)
 // ---------------------------------------------------------------------------
 
 describe("applyLifestyleTags — 'retirement' keyword → 'Retire' (AC #1, #4)", () => {
-  it.skip(
+  it(
     "[P1] given publicRemarksEn='Perfect retirement home with mountain views' when called then result includes 'Retire'",
     () => {
       // AC #4 — 'retirement' substring (case-insensitive) in publicRemarksEn
@@ -173,7 +174,7 @@ describe("applyLifestyleTags — 'retirement' keyword → 'Retire' (AC #1, #4)",
     },
   );
 
-  it.skip(
+  it(
     "[P1] given publicRemarksEn='RETIREMENT community near beach' (uppercase) when called then result includes 'Retire'",
     () => {
       // AC #4 — case-insensitive match
@@ -189,7 +190,7 @@ describe("applyLifestyleTags — 'retirement' keyword → 'Retire' (AC #1, #4)",
     },
   );
 
-  it.skip(
+  it(
     "[P1] given publicRemarksEn='Great investment property' (no 'retirement') when called then result does NOT include 'Retire'",
     () => {
       // AC #4 negative — no keyword → no tag
@@ -205,7 +206,7 @@ describe("applyLifestyleTags — 'retirement' keyword → 'Retire' (AC #1, #4)",
     },
   );
 
-  it.skip(
+  it(
     "[P1] given publicRemarksEn=null when called then result does NOT include 'Retire' and no exception thrown",
     () => {
       // AC #4 — null remarks must be handled safely (no crash)
@@ -227,7 +228,7 @@ describe("applyLifestyleTags — 'retirement' keyword → 'Retire' (AC #1, #4)",
 // ---------------------------------------------------------------------------
 
 describe("applyLifestyleTags — multiple matching rules → all tags, deduplicated (AC #5)", () => {
-  it.skip(
+  it(
     "[P1] given a Condo with 'retirement' in description when called then result includes both 'Rental Potential' AND 'Retire'",
     () => {
       // AC #5 — a single property matching multiple rules receives all applicable tags
@@ -244,7 +245,7 @@ describe("applyLifestyleTags — multiple matching rules → all tags, deduplica
     },
   );
 
-  it.skip(
+  it(
     "[P1] given a property that triggers the same tag from two rules when called then the tag appears only once",
     () => {
       // AC #5 deduplication — two rules emitting the same tag must not duplicate
@@ -269,7 +270,7 @@ describe("applyLifestyleTags — multiple matching rules → all tags, deduplica
 // ---------------------------------------------------------------------------
 
 describe("applyLifestyleTags — manual override preservation (AC #7, Risk R-006)", () => {
-  it.skip(
+  it(
     "[P0] given existingTags=['Vacation Home'] (admin-set) when applyLifestyleTags called then 'Vacation Home' is preserved in result",
     () => {
       // AC #7 — FR49: preserve manual overrides — auto-tagging only ADDS tags, never removes
@@ -286,7 +287,7 @@ describe("applyLifestyleTags — manual override preservation (AC #7, Risk R-006
     },
   );
 
-  it.skip(
+  it(
     "[P0] given existingTags=['Vacation Home'] and a condo when called then result contains BOTH 'Vacation Home' AND 'Rental Potential'",
     () => {
       // AC #7 — manual tag preserved AND new auto-tag added (union, not replace)
@@ -303,7 +304,7 @@ describe("applyLifestyleTags — manual override preservation (AC #7, Risk R-006
     },
   );
 
-  it.skip(
+  it(
     "[P0] given existingTags=['Rental Potential'] (already has the auto-tag) when called then 'Rental Potential' appears only once (deduplication)",
     () => {
       // AC #7 + AC #5 — existing tag that also matches a rule must appear only once
@@ -320,7 +321,7 @@ describe("applyLifestyleTags — manual override preservation (AC #7, Risk R-006
     },
   );
 
-  it.skip(
+  it(
     "[P0] given existingTags=['Vacation Home'] and a property matching NO rules when called then result equals ['Vacation Home'] unchanged",
     () => {
       // AC #7 — if no new rules fire, existing tags returned unchanged (no-op)
@@ -336,7 +337,7 @@ describe("applyLifestyleTags — manual override preservation (AC #7, Risk R-006
     },
   );
 
-  it.skip(
+  it(
     "[P1] given existingTags=[] and a property matching no rules when called then result is empty array",
     () => {
       // AC #7 — no existing tags, no matching rules → empty result
@@ -358,14 +359,12 @@ describe("applyLifestyleTags — manual override preservation (AC #7, Risk R-006
 // ---------------------------------------------------------------------------
 
 describe("applyLifestyleTags — rule-driven architecture (AC #6)", () => {
-  it.skip(
+  it(
     "[P1] given LIFESTYLE_TAG_RULES array when examined then each rule has a 'tag' string and a 'match' function",
     () => {
       // AC #6 — rules are data: adding a new rule to lifestyle-tags.ts requires zero other changes
       // This test validates the LIFESTYLE_TAG_RULES export contract
       // We import from constants to verify the architecture (rules live outside lifestyle-tagger.ts)
-      const { LIFESTYLE_TAG_RULES } = require("@/lib/constants/lifestyle-tags");
-
       expect(Array.isArray(LIFESTYLE_TAG_RULES)).toBe(true);
       expect(LIFESTYLE_TAG_RULES.length).toBeGreaterThan(0);
 
@@ -382,7 +381,7 @@ describe("applyLifestyleTags — rule-driven architecture (AC #6)", () => {
 // ---------------------------------------------------------------------------
 
 describe("tagBatch — batch processing contract", () => {
-  it.skip(
+  it(
     "[P0] given empty array when tagBatch called then returns empty array",
     () => {
       // Boundary: empty input → empty output
@@ -392,7 +391,7 @@ describe("tagBatch — batch processing contract", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given batch of 2 properties when tagBatch called then returns one TaggingResult per input",
     () => {
       // tagBatch contract: one result per input item
@@ -409,7 +408,7 @@ describe("tagBatch — batch processing contract", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given a condo property when tagBatch called then result.tagged=true and result.tags includes 'Rental Potential'",
     () => {
       // tagBatch: tagged=true when new tags are added (tags.length > existingTags.length)
@@ -424,7 +423,7 @@ describe("tagBatch — batch processing contract", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given a house matching no rules when tagBatch called then result.tagged=false",
     () => {
       // tagBatch: tagged=false when no new tags are added
@@ -442,7 +441,7 @@ describe("tagBatch — batch processing contract", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given mixed batch (1 matching, 1 not) when tagBatch called then tagged flags reflect each item independently",
     () => {
       // tagBatch: independence of items — one match doesn't affect the other
@@ -464,7 +463,7 @@ describe("tagBatch — batch processing contract", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given property with existingTags=['Vacation Home'] and no new rules match when tagBatch called then tagged=false and tags=['Vacation Home']",
     () => {
       // tagBatch: tagged=false when tags.length equals existingTags.length (no new additions)
@@ -482,7 +481,7 @@ describe("tagBatch — batch processing contract", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given a condo with existingTags=['Vacation Home'] when tagBatch called then tagged=true and tags contains both 'Vacation Home' and 'Rental Potential'",
     () => {
       // tagBatch: tagged=true when new tags are added on top of existing ones
@@ -501,7 +500,7 @@ describe("tagBatch — batch processing contract", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] tagBatch is synchronous — returns a plain array (not a Promise)",
     () => {
       // Architecture: tagBatch must NOT be async (pure rule evaluation, no I/O)
@@ -524,7 +523,7 @@ describe("tagBatch — batch processing contract", () => {
 // ---------------------------------------------------------------------------
 
 describe("tagBatch — TaggingResult shape", () => {
-  it.skip(
+  it(
     "[P1] given any property when tagBatch called then each result has apiId, tags (array), and tagged (boolean) fields",
     () => {
       // Validates TaggingResult interface contract
