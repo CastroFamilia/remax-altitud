@@ -134,7 +134,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe("runSyncPipeline — image optimizer skips UNCHANGED (AC #8, NFR15)", () => {
-  it.skip(
+  it(
     "[P0] given diff returns only UNCHANGED properties when pipeline runs then optimizePropertyImages is never called",
     async () => {
       // THIS TEST WILL FAIL — image optimizer integration not implemented yet
@@ -163,7 +163,7 @@ describe("runSyncPipeline — image optimizer skips UNCHANGED (AC #8, NFR15)", (
 // ---------------------------------------------------------------------------
 
 describe("runSyncPipeline — image optimizer runs on NEW and UPDATED (AC #9)", () => {
-  it.skip(
+  it(
     "[P0] given diff returns 1 NEW property when pipeline runs then optimizePropertyImages is called once",
     async () => {
       const syncLog = makeSyncLog();
@@ -193,7 +193,7 @@ describe("runSyncPipeline — image optimizer runs on NEW and UPDATED (AC #9)", 
     },
   );
 
-  it.skip(
+  it(
     "[P0] given diff returns 1 UPDATED property when pipeline runs then optimizePropertyImages is called once",
     async () => {
       const syncLog = makeSyncLog();
@@ -217,7 +217,7 @@ describe("runSyncPipeline — image optimizer runs on NEW and UPDATED (AC #9)", 
     },
   );
 
-  it.skip(
+  it(
     "[P1] given diff returns 2 NEW + 1 UPDATED when pipeline runs then optimizePropertyImages is called 3 times",
     async () => {
       const syncLog = makeSyncLog();
@@ -243,7 +243,7 @@ describe("runSyncPipeline — image optimizer runs on NEW and UPDATED (AC #9)", 
     },
   );
 
-  it.skip(
+  it(
     "[P1] given optimizer result then updatePropertyImages is called with the apiId and optimized images",
     async () => {
       const syncLog = makeSyncLog();
@@ -285,7 +285,7 @@ describe("runSyncPipeline — image optimizer runs on NEW and UPDATED (AC #9)", 
 // ---------------------------------------------------------------------------
 
 describe("runSyncPipeline — imagesOptimized counter in sync_log (AC #11)", () => {
-  it.skip(
+  it(
     "[P0] given optimizer returns 0 optimized images when pipeline completes then updateSyncLog includes imagesOptimized:0",
     async () => {
       const syncLog = makeSyncLog();
@@ -304,7 +304,7 @@ describe("runSyncPipeline — imagesOptimized counter in sync_log (AC #11)", () 
     },
   );
 
-  it.skip(
+  it(
     "[P0] given optimizer returns 3 variants (1 source × 3 sizes) when pipeline completes then updateSyncLog includes imagesOptimized:3",
     async () => {
       const syncLog = makeSyncLog();
@@ -341,7 +341,7 @@ describe("runSyncPipeline — imagesOptimized counter in sync_log (AC #11)", () 
     },
   );
 
-  it.skip(
+  it(
     "[P1] given 2 NEW properties each with 1 source image (→ 3 variants each) when pipeline completes then updateSyncLog includes imagesOptimized:6",
     async () => {
       const syncLog = makeSyncLog();

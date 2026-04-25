@@ -6,6 +6,9 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  experimental: {
+    serverComponentsExternalPackages: ["sharp"],
+  },
 
   async headers() {
     return [

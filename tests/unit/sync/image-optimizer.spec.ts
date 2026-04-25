@@ -2,33 +2,37 @@
  * ATDD Red-Phase Scaffolds — Story 2.4: Image Optimization Pipeline
  * Module: src/lib/sync/image-optimizer.ts
  *
- * TDD RED PHASE — all tests are skipped until the module is implemented.
  * Covers AC #1–#7, #10 (image download, WebP conversion, variant generation,
  * error handling, empty-image short-circuit) + alt text template.
  *
  * All external I/O is mocked — no disk writes or real network calls.
- *
- * To activate: change `it.skip` → `it` per task, then verify RED → GREEN.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // ---------------------------------------------------------------------------
-// Mock sharp — returns a chainable builder for .resize().webp().toFile() / .toBuffer() / .metadata()
+// Hoisted mock primitives — vi.hoisted() ensures these are available when the
+// vi.mock() factory runs (which is hoisted to the top of the compiled output).
 // ---------------------------------------------------------------------------
 
-const mockToFile = vi.fn().mockResolvedValue(undefined);
-const mockToBuffer = vi.fn().mockResolvedValue(Buffer.from("fake-lqip-webp-bytes"));
-const mockMetadata = vi.fn().mockResolvedValue({ width: 1200, height: 800, format: "jpeg" });
+const { mockToFile, mockToBuffer, mockMetadata, mockWebp, mockResize, mockSharpInstance } =
+  vi.hoisted(() => {
+    const mockToFile = vi.fn().mockResolvedValue(undefined);
+    const mockToBuffer = vi.fn().mockResolvedValue(Buffer.from("fake-lqip-webp-bytes"));
+    const mockMetadata = vi.fn().mockResolvedValue({ width: 1200, height: 800, format: "jpeg" });
+    const mockWebp = vi.fn().mockReturnValue({ toFile: mockToFile, toBuffer: mockToBuffer });
+    const mockResize = vi.fn().mockReturnValue({ webp: mockWebp });
+    const mockSharpInstance = {
+      resize: mockResize,
+      webp: mockWebp,
+      metadata: mockMetadata,
+    };
+    return { mockToFile, mockToBuffer, mockMetadata, mockWebp, mockResize, mockSharpInstance };
+  });
 
-const mockWebp = vi.fn().mockReturnValue({ toFile: mockToFile, toBuffer: mockToBuffer });
-const mockResize = vi.fn().mockReturnValue({ webp: mockWebp });
-
-const mockSharpInstance = {
-  resize: mockResize,
-  webp: mockWebp,
-  metadata: mockMetadata,
-};
+// ---------------------------------------------------------------------------
+// Mock sharp — returns a chainable builder for .resize().webp().toFile() / .toBuffer() / .metadata()
+// ---------------------------------------------------------------------------
 
 vi.mock("sharp", () => ({
   default: vi.fn().mockReturnValue(mockSharpInstance),
@@ -75,13 +79,15 @@ function makeFetchResponse(ok = true, status = 200): Response {
 beforeEach(() => {
   vi.clearAllMocks();
 
-  // Default: sharp().metadata() returns 1200×800
-  mockMetadata.mockResolvedValue({ width: 1200, height: 800 });
-  // Default: toBuffer returns fake LQIP bytes
+  // Re-wire mock chains after clearAllMocks resets all return values
+  mockToFile.mockResolvedValue(undefined);
   mockToBuffer.mockResolvedValue(Buffer.from("fake-lqip"));
-  // Default: resize returns chainable object
-  mockResize.mockReturnValue({ webp: mockWebp });
+  mockMetadata.mockResolvedValue({ width: 1200, height: 800 });
   mockWebp.mockReturnValue({ toFile: mockToFile, toBuffer: mockToBuffer });
+  mockResize.mockReturnValue({ webp: mockWebp });
+
+  // Re-wire the sharp factory itself — clearAllMocks clears mockReturnValue too
+  vi.mocked(sharp).mockReturnValue(mockSharpInstance as unknown as ReturnType<typeof sharp>);
 
   global.fetch = vi.fn().mockResolvedValue(makeFetchResponse());
 });
@@ -95,10 +101,9 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe("optimizePropertyImages — empty images array (AC #10)", () => {
-  it.skip(
+  it(
     "[P0] given rawImageUrls=[] when called then returns {optimized:[], errors:[]} without calling fetch",
     async () => {
-      // THIS TEST WILL FAIL — optimizePropertyImages not implemented yet
       const result = await optimizePropertyImages("API-001", [], "House", "Pérez Zeledón");
 
       expect(result.optimized).toEqual([]);
@@ -115,7 +120,7 @@ describe("optimizePropertyImages — empty images array (AC #10)", () => {
 // ---------------------------------------------------------------------------
 
 describe("optimizePropertyImages — image download (AC #1)", () => {
-  it.skip(
+  it(
     "[P0] given 1 valid image URL when optimizePropertyImages called then fetch is called with that URL",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -127,15 +132,16 @@ describe("optimizePropertyImages — image download (AC #1)", () => {
     },
   );
 
-  it.skip("[P0] given 1 valid image URL when download succeeds then sharp is called with the buffer", async () => {
+  it("[P0] given 1 valid image URL when download succeeds then sharp is called with the buffer", async () => {
     const url = "https://cdn.example.com/photo1.jpg";
 
     await optimizePropertyImages("API-001", [url], "House", "Pérez Zeledón");
 
-    expect(sharp).toHaveBeenCalledOnce();
+    // sharp is called multiple times: 3 variant resizes + 1 LQIP + 1 metadata
+    expect(sharp).toHaveBeenCalled();
   });
 
-  it.skip(
+  it(
     "[P0] given 1 valid URL when called then mkdirSync is called with recursive:true to ensure output dir exists",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -152,7 +158,7 @@ describe("optimizePropertyImages — image download (AC #1)", () => {
 // ---------------------------------------------------------------------------
 
 describe("optimizePropertyImages — 3 WebP variants at correct widths (AC #2)", () => {
-  it.skip(
+  it(
     "[P0] given 1 valid image when generating variants then resize is called exactly 4 times (3 variants + 1 LQIP)",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -164,7 +170,7 @@ describe("optimizePropertyImages — 3 WebP variants at correct widths (AC #2)",
     },
   );
 
-  it.skip(
+  it(
     "[P0] given 1 valid image when generating variants then resize is called for widths 400, 800, and 1600",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -178,7 +184,7 @@ describe("optimizePropertyImages — 3 WebP variants at correct widths (AC #2)",
     },
   );
 
-  it.skip(
+  it(
     "[P0] given 1 valid image when generating variants then all variant resize calls use fit:'inside' and withoutEnlargement:true",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -193,7 +199,7 @@ describe("optimizePropertyImages — 3 WebP variants at correct widths (AC #2)",
     },
   );
 
-  it.skip(
+  it(
     "[P1] given 1 valid image when generating variants then toFile is called 3 times (one per variant width)",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -204,7 +210,7 @@ describe("optimizePropertyImages — 3 WebP variants at correct widths (AC #2)",
     },
   );
 
-  it.skip(
+  it(
     "[P1] given 1 valid image when generating variants then output paths match pattern public/property-images/{apiId}/{base}-{width}w.webp",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -224,7 +230,7 @@ describe("optimizePropertyImages — 3 WebP variants at correct widths (AC #2)",
 // ---------------------------------------------------------------------------
 
 describe("optimizePropertyImages — OptimizedImage shape (AC #5)", () => {
-  it.skip(
+  it(
     "[P0] given 1 valid image when processed then returned OptimizedImage has width:400 and correct src pointing to 400w variant",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -238,7 +244,7 @@ describe("optimizePropertyImages — OptimizedImage shape (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given 1 valid image when processed then returned OptimizedImage has srcset with all 3 width descriptors",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -252,7 +258,7 @@ describe("optimizePropertyImages — OptimizedImage shape (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given 1 valid image when processed then returned OptimizedImage has blurDataUrl as base64 data URI",
     async () => {
       const url = "https://cdn.example.com/photo1.jpg";
@@ -264,7 +270,7 @@ describe("optimizePropertyImages — OptimizedImage shape (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given 1 valid image and 1200×800 source when processed then returned OptimizedImage has correct aspect-ratio height for 400w",
     async () => {
       // source is 1200×800 → aspect = 800/1200 ≈ 0.6667 → height at 400w = Math.round(400 × 0.6667) = 267
@@ -278,7 +284,7 @@ describe("optimizePropertyImages — OptimizedImage shape (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given 2 images, propertyType='House', location='Pérez Zeledón' when processed then first OptimizedImage.alt matches template",
     async () => {
       const urls = [
@@ -299,7 +305,7 @@ describe("optimizePropertyImages — OptimizedImage shape (AC #5)", () => {
 // ---------------------------------------------------------------------------
 
 describe("optimizePropertyImages — pre-encoded URLs (AC #6)", () => {
-  it.skip(
+  it(
     "[P1] given URLs already encoded (no spaces) when called then fetch is called with the URL as-is (no re-encoding)",
     async () => {
       // The pipeline parser calls splitAndEncodeImages() before calling the optimizer.
@@ -319,7 +325,7 @@ describe("optimizePropertyImages — pre-encoded URLs (AC #6)", () => {
 // ---------------------------------------------------------------------------
 
 describe("optimizePropertyImages — download failure handling (AC #7)", () => {
-  it.skip(
+  it(
     "[P0] given fetch returns 404 when called then error is in errors array with apiId/imageIndex/url/error fields",
     async () => {
       const url = "https://cdn.example.com/missing.jpg";
@@ -338,7 +344,7 @@ describe("optimizePropertyImages — download failure handling (AC #7)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given fetch throws a network error when called then error is in errors array and pipeline continues",
     async () => {
       const url = "https://cdn.example.com/broken.jpg";
@@ -352,7 +358,7 @@ describe("optimizePropertyImages — download failure handling (AC #7)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given 2 URLs where first fails and second succeeds when called then optimized has 1 entry and errors has 1 entry",
     async () => {
       const failUrl = "https://cdn.example.com/broken.jpg";
