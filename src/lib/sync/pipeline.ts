@@ -221,12 +221,11 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
     // Step 7c: Lifestyle tagging — ONLY new/updated listings (Architecture §5 Step 6, AC #8, NFR15)
     let tagsQueued = 0;
 
-    if (diff.new.length + diff.updated.length > 0) {
-      const existingTagsMap = await fetchPropertyLifestyleTags(
-        [...diff.new, ...diff.updated].map((r) => r.apiId),
-      );
+    const taggable = [...diff.new, ...diff.updated];
+    if (taggable.length > 0) {
+      const existingTagsMap = await fetchPropertyLifestyleTags(taggable.map((r) => r.apiId));
 
-      const batchInput = [...diff.new, ...diff.updated].map((raw) => ({
+      const batchInput = taggable.map((raw) => ({
         raw,
         existingTags: existingTagsMap.get(raw.apiId) ?? [],
       }));

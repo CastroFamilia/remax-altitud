@@ -44,3 +44,7 @@
 - `response.text()` + `JSON.parse` double-buffers the whole body in memory [src/lib/sync/api-client.ts:45-51] — property feeds are well under any OOM threshold at current scale.
 - `isExpired` parser test depends on the real clock with no `vi.useFakeTimers` [tests/unit/sync/parser.spec.ts] — fixture date is sufficiently in the past to be robust through any CI clock.
 - `extractApiId` mixes property (`ListingId`) and agent (`AssociateID`/`AssociateId`) candidates in one helper [src/lib/sync/parser.ts:97-105] — tight scoping is cleanup, not a correctness issue.
+
+## Deferred from: code review of 2-6-lifestyle-tag-auto-tagging (2026-04-25)
+- AC #2 references "Condo in tourist zone" but the shipped rule fires on any condo (no area/keyword check) [src/lib/constants/lifestyle-tags.ts:42-48] — spec narrative explicitly approves this scope ("Extend in future: add tourist-zone area check once area data is linked"); area data wiring lands in Epic 6 Story 6.5.
+- `fetchPropertyLifestyleTags` queries the DB for just-inserted `diff.new` rows that always return empty tags [src/lib/sync/pipeline.ts:225] — matches the spec's prescribed pseudocode exactly; cost is one indexed `inArray` query per sync; revisit only if profiling identifies the sync as latency-bound.
