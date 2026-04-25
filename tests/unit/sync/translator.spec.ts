@@ -6,9 +6,12 @@
  *   AC #1 — new listing (empty titleEs/descriptionEs) → DeepL called for both fields
  *   AC #2 — listing with API-provided titleEs → title NOT overwritten (DeepL not called for title)
  *   AC #3 — listing with API-provided descriptionEs → description NOT overwritten
- *   AC #5 — exponential backoff on HTTP 429 (QuotaExceededException): 3 attempts, delays 2s/4s/8s
- *   AC #6 — non-429 DeepL error → listing skipped, error returned, no crash
- *   AC #7 — glossary applied when DEEPL_GLOSSARY_ID is set; omitted when not set
+ *   AC #5 — exponential backoff on HTTP 429 (TooManyRequestsError) and transient
+ *           ConnectionError: 3 attempts, delays 2s/4s/8s. QuotaExceededError
+ *           (billing-period exhaustion) is intentionally NOT retried.
+ *   AC #6 — non-transient DeepL error → listing skipped, error returned, no crash
+ *   AC #7 — glossary applied (via `options.glossary` — the deepl-node SDK key)
+ *           when DEEPL_GLOSSARY_ID is set; omitted when not set
  *   AC #8/batch — translateBatch processes all inputs and returns results + errors arrays
  *   Idempotency — property with non-empty titleEs AND descriptionEs → translated:false, no DeepL call
  *
@@ -26,13 +29,39 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // factory runs (hoisted to top of compiled output).
 // ---------------------------------------------------------------------------
 
-const { mockTranslateText, MockTranslator, MockQuotaExceededError } = vi.hoisted(() => {
+const {
+  mockTranslateText,
+  MockTranslator,
+  MockTooManyRequestsError,
+  MockQuotaExceededError,
+  MockConnectionError,
+} = vi.hoisted(() => {
   const mockTranslateText = vi.fn();
 
-  class MockQuotaExceededError extends Error {
+  class MockDeepLError extends Error {
+    error?: Error;
+  }
+
+  class MockTooManyRequestsError extends MockDeepLError {
+    constructor(message = "Too many requests") {
+      super(message);
+      this.name = "TooManyRequestsError";
+    }
+  }
+
+  class MockQuotaExceededError extends MockDeepLError {
     constructor(message = "Quota exceeded") {
       super(message);
       this.name = "QuotaExceededError";
+    }
+  }
+
+  class MockConnectionError extends MockDeepLError {
+    shouldRetry: boolean;
+    constructor(message = "Connection error", shouldRetry = true) {
+      super(message);
+      this.name = "ConnectionError";
+      this.shouldRetry = shouldRetry;
     }
   }
 
@@ -40,7 +69,13 @@ const { mockTranslateText, MockTranslator, MockQuotaExceededError } = vi.hoisted
     translateText = mockTranslateText;
   }
 
-  return { mockTranslateText, MockTranslator, MockQuotaExceededError };
+  return {
+    mockTranslateText,
+    MockTranslator,
+    MockTooManyRequestsError,
+    MockQuotaExceededError,
+    MockConnectionError,
+  };
 });
 
 // ---------------------------------------------------------------------------
@@ -49,7 +84,9 @@ const { mockTranslateText, MockTranslator, MockQuotaExceededError } = vi.hoisted
 
 vi.mock("deepl-node", () => ({
   Translator: MockTranslator,
+  TooManyRequestsError: MockTooManyRequestsError,
   QuotaExceededError: MockQuotaExceededError,
+  ConnectionError: MockConnectionError,
 }));
 
 // ---------------------------------------------------------------------------
@@ -257,7 +294,11 @@ describe("translateProperty — preserve API-provided publicRemarksEs (AC #3)", 
 });
 
 // ---------------------------------------------------------------------------
-// AC #5 — Exponential backoff on 429 (QuotaExceededException)
+// AC #5 — Exponential backoff on transient errors (HTTP 429 rate limit + connection)
+//
+// NOTE: DeepL distinguishes `TooManyRequestsError` (HTTP 429 — rate limit, transient,
+// retried) from `QuotaExceededError` (billing-period quota exhausted, NOT retried).
+// Earlier ATDD tests retried on QuotaExceededError; that was the wrong error class.
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => {
@@ -270,13 +311,13 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
   });
 
   it(
-    "[P0] given translateText throws QuotaExceededException twice then succeeds on 3rd attempt when called then translateProperty resolves successfully",
+    "[P0] given translateText throws TooManyRequestsError twice then succeeds on 3rd attempt when called then translateProperty resolves successfully",
     async () => {
-      // AC #5 — NFR19: retry 3 times with 2s/4s/8s backoff on 429
-      const quotaErr = new MockQuotaExceededError();
+      // AC #5 — NFR19: retry 3 times with 2s/4s/8s backoff on 429 rate limits
+      const rateErr = new MockTooManyRequestsError();
       mockTranslateText
-        .mockRejectedValueOnce(quotaErr) // attempt 1: 429
-        .mockRejectedValueOnce(quotaErr) // attempt 2: 429
+        .mockRejectedValueOnce(rateErr) // attempt 1: 429
+        .mockRejectedValueOnce(rateErr) // attempt 2: 429
         .mockResolvedValueOnce(makeDeepLResult("Terreno traducido")); // attempt 3: success
 
       const promise = translateProperty({
@@ -301,11 +342,11 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
   );
 
   it(
-    "[P0] given translateText throws QuotaExceededException on all 3 attempts when called then translateProperty returns error without crashing",
+    "[P0] given translateText throws TooManyRequestsError on all 3 attempts when called then translateProperty returns error without crashing",
     async () => {
       // All 3 attempts exhausted — should return error, not throw
-      const quotaErr = new MockQuotaExceededError("Quota exceeded after 3 attempts");
-      mockTranslateText.mockRejectedValue(quotaErr);
+      const rateErr = new MockTooManyRequestsError("Rate limited after 3 attempts");
+      mockTranslateText.mockRejectedValue(rateErr);
 
       const promise = translateProperty({
         apiId: "API-005",
@@ -324,6 +365,58 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
       expect(result.error).not.toBeNull();
       expect(result.error?.apiId).toBe("API-005");
       expect(result.result.translated).toBe(false);
+    },
+  );
+
+  it(
+    "[P1] given translateText throws QuotaExceededError when called then translateProperty does NOT retry (billing-period quota is permanent within a sync run)",
+    async () => {
+      // QuotaExceededError indicates the monthly billing quota has been exhausted —
+      // retrying within the same sync run cannot resolve it. Only one attempt is made.
+      const quotaErr = new MockQuotaExceededError();
+      mockTranslateText.mockRejectedValue(quotaErr);
+
+      const promise = translateProperty({
+        apiId: "API-005-Q",
+        titleEn: "Land",
+        titleEs: "",
+        publicRemarksEn: null,
+        publicRemarksEs: null,
+      });
+
+      await vi.runAllTimersAsync();
+      const result = await promise;
+
+      expect(result.error).not.toBeNull();
+      expect(result.result.translated).toBe(false);
+      // No retries — single attempt only
+      expect(mockTranslateText).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it(
+    "[P1] given translateText throws ConnectionError with shouldRetry=true when called then translateProperty retries with backoff",
+    async () => {
+      // Transient connection errors are retried per the deepl-node SDK's shouldRetry flag.
+      const connErr = new MockConnectionError("ECONNRESET", true);
+      mockTranslateText
+        .mockRejectedValueOnce(connErr)
+        .mockResolvedValueOnce(makeDeepLResult("Recuperado"));
+
+      const promise = translateProperty({
+        apiId: "API-005-C",
+        titleEn: "Land",
+        titleEs: "",
+        publicRemarksEn: null,
+        publicRemarksEs: null,
+      });
+
+      await vi.runAllTimersAsync();
+      const result = await promise;
+
+      expect(result.error).toBeNull();
+      expect(result.result.titleEs).toBe("Recuperado");
+      expect(mockTranslateText).toHaveBeenCalledTimes(2);
     },
   );
 });
@@ -383,9 +476,11 @@ describe("translateProperty — non-429 DeepL error isolation (AC #6)", () => {
 
 describe("translateProperty — DeepL glossary integration (AC #7)", () => {
   it(
-    "[P0] given DEEPL_GLOSSARY_ID='test-glossary-id' when translateProperty called then translateText receives glossaryId option",
+    "[P0] given DEEPL_GLOSSARY_ID='test-glossary-id' when translateProperty called then translateText receives the `glossary` option (the key the deepl-node SDK consumes)",
     async () => {
-      // AC #7 — FR33: legal/property terms must use the glossary for consistency
+      // AC #7 — FR33: legal/property terms must use the glossary for consistency.
+      // The deepl-node SDK reads `options.glossary` (not `options.glossaryId`);
+      // using the wrong key silently disables the glossary in production.
       process.env.DEEPL_GLOSSARY_ID = "test-glossary-id";
       mockTranslateText.mockResolvedValue(makeDeepLResult("Propiedad Titulada en venta"));
 
@@ -401,15 +496,18 @@ describe("translateProperty — DeepL glossary integration (AC #7)", () => {
         expect.any(String), // source text
         "en",               // source language
         "es",               // target language
-        expect.objectContaining({ glossaryId: "test-glossary-id" }),
+        expect.objectContaining({ glossary: "test-glossary-id" }),
       );
+      // Defensive — ensure we are not also passing the legacy/wrong key
+      const callArgs = mockTranslateText.mock.calls[0];
+      expect(callArgs[3]).not.toHaveProperty("glossaryId");
     },
   );
 
   it(
-    "[P0] given DEEPL_GLOSSARY_ID is NOT set when translateProperty called then translateText is called WITHOUT glossaryId option",
+    "[P0] given DEEPL_GLOSSARY_ID is NOT set when translateProperty called then translateText is called WITHOUT a glossary option",
     async () => {
-      // No glossary env var — glossaryId must be omitted (not passed as undefined)
+      // No glossary env var — `glossary` must be omitted (not passed as undefined)
       delete process.env.DEEPL_GLOSSARY_ID;
       mockTranslateText.mockResolvedValue(makeDeepLResult("Terreno en venta"));
 
@@ -422,8 +520,9 @@ describe("translateProperty — DeepL glossary integration (AC #7)", () => {
       });
 
       const callArgs = mockTranslateText.mock.calls[0];
-      // The options object (4th arg) must not contain a glossaryId key if env var is unset
+      // The options object (4th arg) must not contain a glossary key if env var is unset
       if (callArgs[3]) {
+        expect(callArgs[3]).not.toHaveProperty("glossary");
         expect(callArgs[3]).not.toHaveProperty("glossaryId");
       }
     },
