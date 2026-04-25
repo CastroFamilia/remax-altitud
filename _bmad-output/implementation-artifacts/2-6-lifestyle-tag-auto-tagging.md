@@ -408,7 +408,15 @@ claude-sonnet-4-6 (Claude Sonnet 4.6)
 
 ### Review Findings
 
-_to be filled by code review agent_
+Code review complete (2026-04-25). Triage: 0 decision-needed, 1 patch (applied), 2 deferred, 3 dismissed as noise. Reviewer: claude-opus-4-7.
+
+- [x] [Review][Patch] Avoid recomputing `[...diff.new, ...diff.updated]` twice in pipeline tagging step [src/lib/sync/pipeline.ts:221-242] — applied: extracted `taggable` constant before fetching existing tags and building batch input.
+- [x] [Review][Defer] AC #2 references "Condo in tourist zone" but rule only checks `propertyTypeEn` for "condo" [src/lib/constants/lifestyle-tags.ts:47] — deferred: spec narrative explicitly approves this scope ("Extend in future: add tourist-zone area check once area data is linked"); area data wiring lands in Epic 6 Story 6.5.
+- [x] [Review][Defer] `fetchPropertyLifestyleTags` queries DB even for `diff.new` rows that were just inserted with empty tags [src/lib/sync/pipeline.ts:225] — deferred: matches spec pseudocode exactly; cost is one indexed query per sync run; revisit if profiling shows a hotspot.
+
+Dismissed (not recorded): (a) `applyLifestyleTags` returns `existingTags` by reference when no rules match — no caller mutates; idiomatic. (b) `tagged` flag false-negative if `existingTags` contains pre-existing duplicates — DB schema cannot produce duplicates. (c) `LIFESTYLE_TAGS` exposes `Vacation Home`/`Commercial` without auto-rules — intentional, supports manual overrides per FR49.
+
+CI snapshot at review time: 195 pass / 3 skipped, lint clean, format:check clean, typecheck has only the pre-existing `deepl-node` errors carried over from Story 2.5 (documented in Task 7).
 
 ## Change Log
 
