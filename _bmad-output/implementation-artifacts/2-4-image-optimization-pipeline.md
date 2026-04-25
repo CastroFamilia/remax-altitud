@@ -248,6 +248,13 @@ tests/unit/sync/
 - Existing images util: `src/lib/sync/utils/images.ts` — `splitAndEncodeImages`, `encodeImageUrl` [Source: codebase]
 - Test design matrix: Story 2.4 P1 and P2 test scenarios [Source: `_bmad-output/test-artifacts/test-design-epic-2.md` lines 170–173, 195–196, 206]
 
+### ATDD Artifacts
+
+- Checklist: `_bmad-output/test-artifacts/atdd-checklist-2-4-image-optimization-pipeline.md`
+- Unit tests (optimizer): `tests/unit/sync/image-optimizer.spec.ts`
+- Unit tests (pipeline integration): `tests/unit/sync/pipeline-image-integration.spec.ts`
+- Unit tests (DB helper): `tests/unit/db/properties.spec.ts`
+
 ## Dev Agent Record
 
 ### Agent Model Used
