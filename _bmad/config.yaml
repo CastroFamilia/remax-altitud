@@ -8,8 +8,8 @@ bad:
   version: 1.2.0
   max_parallel_stories: '1'
   worktree_base_path: .worktrees
-  auto_pr_merge: false
-  run_ci_locally: false
+  auto_pr_merge: true
+  run_ci_locally: true
   wait_timer_seconds: '3600'
   retro_timer_seconds: '600'
   context_compaction_threshold: '80'
