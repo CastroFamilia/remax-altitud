@@ -231,3 +231,42 @@ export async function updatePropertyTranslations(
     })
     .where(eq(properties.apiId, apiId));
 }
+
+/**
+ * Batch-fetches `{ apiId, lifestyleTags }` for all given apiIds in a single query.
+ * Returns a Map<apiId, string[]> for O(1) lookup in the pipeline.
+ * Used to load existing tags BEFORE merging with auto-tagged results (AC #7, FR49).
+ *
+ * @param apiIds - Array of property api_id values to fetch tags for
+ * @returns      Map<apiId, string[]> — empty map if apiIds is empty
+ */
+export async function fetchPropertyLifestyleTags(apiIds: string[]): Promise<Map<string, string[]>> {
+  if (apiIds.length === 0) return new Map();
+
+  const rows = await db
+    .select({ apiId: properties.apiId, lifestyleTags: properties.lifestyleTags })
+    .from(properties)
+    .where(inArray(properties.apiId, apiIds));
+
+  return new Map(rows.map((r) => [r.apiId, r.lifestyleTags ?? []]));
+}
+
+/**
+ * Writes merged lifestyle tags to `properties.lifestyle_tags` (text[] column).
+ * Follows the exact same Drizzle update pattern as updatePropertyImages and
+ * updatePropertyTranslations (Story 2.4 / 2.5).
+ * Also updates `synced_at` and `updated_at` timestamps (AC #7, Story 2.6).
+ *
+ * @param apiId - The property's `api_id` value
+ * @param tags  - Merged deduplicated lifestyle tags array
+ */
+export async function updatePropertyLifestyleTags(apiId: string, tags: string[]): Promise<void> {
+  await db
+    .update(properties)
+    .set({
+      lifestyleTags: tags,
+      syncedAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.apiId, apiId));
+}

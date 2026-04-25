@@ -38,6 +38,9 @@ vi.mock("@/lib/db/queries/properties", () => ({
   fetchAgentIdMap: vi.fn(),
   updatePropertyImages: vi.fn(),
   updatePropertyTranslations: vi.fn(),
+  // Story 2.6 — lifestyle tagging DB helpers
+  fetchPropertyLifestyleTags: vi.fn().mockResolvedValue(new Map()),
+  updatePropertyLifestyleTags: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("@/lib/db/queries/agents", () => ({
@@ -59,6 +62,11 @@ vi.mock("@/lib/sync/translator", () => ({
   translateBatch: vi.fn().mockResolvedValue({ results: [], errors: [] }),
 }));
 
+// Story 2.6 — Mock lifestyle-tagger to prevent real rule evaluation in error-handling tests
+vi.mock("@/lib/sync/lifestyle-tagger", () => ({
+  tagBatch: vi.fn().mockReturnValue([]),
+}));
+
 // ---------------------------------------------------------------------------
 // Imports — resolved after mocks are hoisted
 // ---------------------------------------------------------------------------
@@ -74,10 +82,13 @@ import {
   fetchOfficeIdMap,
   fetchAgentIdMap,
   updatePropertyImages,
+  fetchPropertyLifestyleTags,
+  updatePropertyLifestyleTags,
 } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import { optimizePropertyImages } from "@/lib/sync/image-optimizer";
 import { translateBatch } from "@/lib/sync/translator";
+import { tagBatch } from "@/lib/sync/lifestyle-tagger";
 import { makeRawProperty, makeRawAgent, makeSyncLog } from "./factories";
 
 // ---------------------------------------------------------------------------
@@ -117,6 +128,10 @@ beforeEach(() => {
   vi.mocked(optimizePropertyImages).mockResolvedValue({ optimized: [], errors: [] });
   // Story 2.5 — reset translateBatch mock to safe default for error-handling tests
   vi.mocked(translateBatch).mockResolvedValue({ results: [], errors: [] });
+  // Story 2.6 — reset lifestyle tagging mocks after vi.clearAllMocks()
+  vi.mocked(fetchPropertyLifestyleTags).mockResolvedValue(new Map());
+  vi.mocked(updatePropertyLifestyleTags).mockResolvedValue(undefined);
+  vi.mocked(tagBatch).mockReturnValue([]);
 
   global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200 } as Response);
 });

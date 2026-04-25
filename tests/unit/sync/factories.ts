@@ -116,6 +116,8 @@ export interface SyncLogShape {
   imagesOptimized: number;
   /** Story 2.5: count of new+updated listings sent to the DeepL translation batch. */
   translationsQueued?: number;
+  /** Story 2.6: count of properties for which lifestyle tagging was attempted. */
+  tagsQueued?: number;
   errors: unknown[];
   errorMessage: string | null;
 }

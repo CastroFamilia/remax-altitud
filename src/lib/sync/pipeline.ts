@@ -3,6 +3,7 @@ import { fetchPropertiesForOffice, fetchAgentsForOffice } from "./api-client";
 import { computePropertyHash, diffProperties } from "./differ";
 import { optimizePropertyImages } from "./image-optimizer";
 import { translateBatch } from "./translator";
+import { tagBatch } from "./lifestyle-tagger";
 import { createSyncLog, updateSyncLog } from "@/lib/db/queries/sync-log";
 import {
   upsertProperty,
@@ -12,6 +13,8 @@ import {
   fetchAgentIdMap,
   updatePropertyImages,
   updatePropertyTranslations,
+  fetchPropertyLifestyleTags,
+  updatePropertyLifestyleTags,
 } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import type { ParseError } from "@/types/remax-api";
@@ -25,6 +28,7 @@ export interface SyncPipelineResult {
   agentsSynced: number;
   imagesOptimized: number;
   translationsQueued: number;
+  tagsQueued: number;
   errorCount: number;
   status: "success" | "partial";
 }
@@ -214,6 +218,28 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       }
     }
 
+    // Step 7c: Lifestyle tagging — ONLY new/updated listings (Architecture §5 Step 6, AC #8, NFR15)
+    let tagsQueued = 0;
+
+    const taggable = [...diff.new, ...diff.updated];
+    if (taggable.length > 0) {
+      const existingTagsMap = await fetchPropertyLifestyleTags(taggable.map((r) => r.apiId));
+
+      const batchInput = taggable.map((raw) => ({
+        raw,
+        existingTags: existingTagsMap.get(raw.apiId) ?? [],
+      }));
+      tagsQueued = batchInput.length;
+
+      const taggingResults = tagBatch(batchInput);
+
+      for (const result of taggingResults) {
+        if (result.tagged) {
+          await updatePropertyLifestyleTags(result.apiId, result.tags);
+        }
+      }
+    }
+
     // Step 8: Collect lotSizeUnitWarning errors (AC #12) — do NOT block upsert
     const warningErrors: ParseError[] = [...diff.new, ...diff.updated]
       .filter((r) => r.lotSizeUnitWarning)
@@ -247,6 +273,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       agentsSynced,
       imagesOptimized: totalImagesOptimized,
       translationsQueued,
+      tagsQueued,
       errors: allErrors,
     });
 
@@ -282,6 +309,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       agentsSynced,
       imagesOptimized: totalImagesOptimized,
       translationsQueued,
+      tagsQueued,
       errorCount: allErrors.length,
       status: finalStatus,
     };
