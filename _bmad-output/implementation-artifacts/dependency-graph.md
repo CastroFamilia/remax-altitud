@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-04-25T21:00:00-06:00_
+_Last updated: 2026-04-25T23:45:00-06:00_
 
 ## Stories
 
@@ -15,7 +15,7 @@ _Last updated: 2026-04-25T21:00:00-06:00_
 | 2.1   | 2    | Database Schema & Drizzle Models | done | #78 | #66 | merged | 1.1 | ✅ Yes (done) |
 | 2.2   | 2    | API Integration & Data Fetching | done | #79 | #67 | merged | 2.1 | ✅ Yes (done) |
 | 2.3   | 2    | Sync Pipeline Core | done | #80 | #117 | merged | 2.2 | ✅ Yes (done) |
-| 2.4   | 2    | Image Optimization Pipeline | backlog | #81 | — | — | 2.3 | ✅ Yes |
+| 2.4   | 2    | Image Optimization Pipeline | done | #81 | #118 | merged | 2.3 | ✅ Yes (done) |
 | 2.5   | 2    | Translation Pipeline | backlog | #82 | — | — | 2.3 | ✅ Yes |
 | 2.6   | 2    | Lifestyle Tag Auto-Tagging | backlog | #83 | — | — | 2.3 | ✅ Yes |
 | 2.7   | 2    | Sync Monitoring & Failure Resilience | backlog | #84 | — | — | 2.3 | ✅ Yes |
@@ -103,7 +103,7 @@ _Last updated: 2026-04-25T21:00:00-06:00_
 ## Notes
 
 - Epic 1 is fully complete (all 7 stories done and merged).
-- Epic 2 is in-progress with 2.1, 2.2, and 2.3 done. PR #117 for story 2.3 (Sync Pipeline Core) merged 2026-04-25.
-- Stories 2.4, 2.5, 2.6, and 2.7 all depend on 2.3 and are now unblocked — all four are Ready to Work and can be parallelized.
+- Epic 2 is in-progress. Stories 2.1, 2.2, 2.3, and 2.4 are done and merged. PR #117 for 2.3 merged 2026-04-25; PR #118 for 2.4 merged 2026-04-25.
+- Stories 2.5, 2.6, and 2.7 all depend on 2.3 and are now unblocked — all three are Ready to Work and can be parallelized.
 - Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
-- Current batch: 4 stories ready (2.4, 2.5, 2.6, 2.7). Coordinator should pick based on MAX_PARALLEL_STORIES setting.
+- Current batch: 3 stories ready (2.5, 2.6, 2.7). Coordinator should pick based on MAX_PARALLEL_STORIES setting.
