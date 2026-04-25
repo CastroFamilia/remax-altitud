@@ -20,7 +20,7 @@ const eslintConfig = [
       "next-env.d.ts",
       "_bmad/**",
       "_bmad-output/**",
-      ".agent/**",
+      ".agents/**",
       "*.html",
       "main.js",
       "index.css",
