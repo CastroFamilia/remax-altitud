@@ -10,8 +10,8 @@ description: Commit, push, and create a GitHub Pull Request from the current bra
 
 1. **Get the current branch**:
    - Run `git branch --show-current` to get the source branch name.
-   - If the current branch is `master`, STOP and warn the user — do not create a PR from `master`.
-   - If the current branch is `development`, this is a **release PR** — target must be `master`. Skip to step 3.
+   - If the current branch is `main`, STOP and warn the user — do not create a PR from `main`.
+   - If the current branch is `development`, this is a **release PR** — target must be `main`. Skip to step 3.
 
 2. **Commit and push uncommitted changes**:
    - Run `git status` and `git diff --stat` to identify all uncommitted changes.
@@ -46,7 +46,7 @@ description: Commit, push, and create a GitHub Pull Request from the current bra
    If the build fails, STOP immediately, report the failure to the user, and do NOT proceed to create the PR.
 
 5. **Determine the PR type**:
-   - For **release PRs** (`development` → `master`), the type is always `Release`.
+   - For **release PRs** (`development` → `main`), the type is always `Release`.
    - For feature branch PRs, ask the user (or infer from the branch name). Common types:
      - `Feature` — new functionality
      - `Fix` — bug fix
@@ -72,13 +72,13 @@ description: Commit, push, and create a GitHub Pull Request from the current bra
      - Build the PR title as: `<Type> : <Title>` (e.g., `Feature : AI Context Enrichment`).
      - Use the **entire walkthrough content** as the PR body.
      - **Issue Linking**: Ask the user if there is a GitHub Issue number this PR should close/link to (e.g., `#12`). If they provide one, append `Closes #<issue-number>` to the bottom of the PR body.
-   - **For release PRs** (`development` → `master`):
-     - Run `git log master..development --oneline` to get the list of commits being merged.
+   - **For release PRs** (`development` → `main`):
+     - Run `git log main..development --oneline` to get the list of commits being merged.
      - Build the PR title as: `Release : <date>` (e.g., `Release : 2026-04-16`).
      - Build the PR body from the commit list, formatted as a markdown changelog.
 
 7. **Determine the target branch**:
-   - For **release PRs**: always `master`.
+   - For **release PRs**: always `main`.
    - For feature branch PRs: user-specified or default `development`.
 
 8. **Create the PR**:
@@ -113,5 +113,5 @@ description: Commit, push, and create a GitHub Pull Request from the current bra
 - **Do not** use generic messages like "fixes" or "updates".
 - **Do not** invent new commit types; use strictly the ones listed above.
 - **Do not** push if `git commit` fails.
-- **Do not** create a PR from `master`.
+- **Do not** create a PR from `main`.
 - **Do not** create the PR if the build fails.

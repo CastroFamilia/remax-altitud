@@ -10,8 +10,8 @@ description: Intelligently group uncommitted changes into logical commits and pu
 
 1. **Branch guard — auto-create feature branch if needed**:
    - Run `git branch --show-current` to get the current branch.
-   - If the current branch is `master` or `development`:
-     1. Inform the user that pushing directly to `master` or `development` is not allowed.
+   - If the current branch is `main` or `development`:
+     1. Inform the user that pushing directly to `main` or `development` is not allowed.
      2. Attempt to retrieve the current active story name from `_bmad-output/implementation-artifacts/sprint-status.yaml` (e.g., "Story 1.2 — Design System & Token Foundation").
      3. Analyze the uncommitted changes to determine the appropriate commit `<type>` (e.g., `feat`, `fix`, `chore`).
      4. Format the branch name:
