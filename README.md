@@ -124,7 +124,7 @@ API docs: [`docs/`](docs/)
 | Epic | Stories | FRs | Progress | Status |
 |------|---------|-----|----------|--------|
 | 1. Project Foundation & Design System | 7 | FR29–FR32, FR67, FR68 | 7 / 7 | ✅ Complete |
-| 2. Data Pipeline & Property Database | 7 | FR46–FR55 | 1 / 7 | 🚧 In progress |
+| 2. Data Pipeline & Property Database | 7 | FR46–FR55 | 2 / 7 | 🚧 In progress |
 | 3. Property Discovery & Search | 8 | FR1–FR16 | 0 / 8 | ⚪ Backlog |
 | 4. Listing Detail & Agent Profiles | 5 | FR8, FR13, FR31, FR33–FR39, FR69 | 0 / 5 | ⚪ Backlog |
 | 5. Seller Lead Capture | 3 | FR40–FR43, FR54 | 0 / 3 | ⚪ Backlog |
@@ -132,9 +132,9 @@ API docs: [`docs/`](docs/)
 | 7. Shortlist & Smart Agent Routing | 4 | FR22–FR28 | 0 / 4 | ⚪ Backlog |
 | 8. Administration & Operations | 7 | FR56–FR66 | 0 / 7 | ⚪ Backlog |
 
-**Implementation:** 8 / 46 stories done (17%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
+**Implementation:** 9 / 46 stories done (20%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
 
-**Latest shipped:** Story 2.1 — Database Schema & Drizzle Models (PostGIS `geography(Point, 4326)`, split initial migration, Vitest smoke suite, local `postgis/postgis:16-3.4` compose stack).
-**Next up:** Story 2.2 — API Integration & Data Fetching.
+**Latest shipped:** Story 2.2 — API Integration & Data Fetching (typed RE/MAX CCA fetch + parse layer with Zod schemas, exponential-backoff retries with `AbortSignal` timeouts, `server-only` enforcement, and 31 fixture-driven Vitest specs).
+**Next up:** Story 2.3 — Sync Pipeline Core.
 
 _Source of truth for day-to-day status lives in [`_bmad-output/implementation-artifacts/sprint-status.yaml`](_bmad-output/implementation-artifacts/sprint-status.yaml)._

@@ -56,6 +56,14 @@ description: Intelligently group uncommitted changes into logical commits and pu
 
       Confirm: all files properly formatted.
 
+   4. **Tests**:
+
+      ```bash
+      npm test -- --run
+      ```
+
+      Confirm: all tests pass. DB-gated specs that skip without `DATABASE_URL` are expected and acceptable; any failure (not skip) blocks the push.
+
    If all checks pass, proceed to the next step.
 
 5. **Commit changes**:
@@ -73,7 +81,7 @@ description: Intelligently group uncommitted changes into logical commits and pu
    - Inform the user of:
      - All commits created (with messages).
      - Which branch was pushed.
-     - Verification results (lint ✓, typecheck ✓, format ✓).
+     - Verification results (lint ✓, typecheck ✓, format ✓, tests ✓).
 
 ## Allowed Commit Types
 

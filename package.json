@@ -33,7 +33,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -47,6 +48,7 @@
     "eslint-config-next": "15.5.15",
     "lighthouse": "^13.1.0",
     "prettier": "^3.5.0",
+    "server-only": "^0.0.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5",
