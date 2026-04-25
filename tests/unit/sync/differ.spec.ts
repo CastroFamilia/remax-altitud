@@ -2,78 +2,14 @@
  * ATDD Red-Phase Scaffolds — Story 2.3: Sync Pipeline Core
  * Module: differ.ts
  *
- * TDD RED PHASE — all tests are skipped until the module is implemented.
  * Covers AC #2, #4, #5, #6, #7 + Risk R-001 (diff correctness).
- *
- * To activate: remove `it.skip` → `it` after implementing src/lib/sync/differ.ts
  */
 
 import { describe, expect, it } from "vitest";
 
-// These imports will resolve once src/lib/sync/differ.ts is created.
 import { computePropertyHash, diffProperties } from "@/lib/sync/differ";
 import type { DiffResult } from "@/lib/sync/differ";
-import type { RawProperty } from "@/lib/sync/parser";
-
-// ---------------------------------------------------------------------------
-// Minimal RawProperty factory — only fields relevant to the differ hash.
-// ---------------------------------------------------------------------------
-function makeRawProperty(overrides: Partial<RawProperty> = {}): RawProperty {
-  return {
-    apiId: "113149",
-    apiKey: "400142400001",
-    officeId: "FEA8746D-CC1D-41B8-89F3-D04AC98274AF",
-    officeApiId: 218,
-    agentApiId: "2400",
-    propertyTypeEn: "Lot/Land",
-    propertyTypeEs: "Lote/Terreno",
-    contractTypeEn: "Sale",
-    contractTypeEs: "Venta",
-    titleEn: "Mountain View Land",
-    titleEs: "Terreno con vista",
-    publicRemarksEn: "A great land parcel.",
-    publicRemarksEs: "Un buen terreno.",
-    apiStatus: "Active",
-    priceUsd: 199000,
-    currencyId: 1,
-    currencyListPrice: "199000",
-    stories: 0,
-    latitude: 9.3549572,
-    longitude: -83.6350214,
-    bedrooms: null,
-    bathrooms: null,
-    lotSizeM2: 14757,
-    constructionM2: 0,
-    images: ["https://cdn.example.com/photo1.jpg"],
-    amenities: {
-      garage: false,
-      garageCovered: false,
-      garageOpen: false,
-      garageSpaces: 0,
-      maidRoom: false,
-      cooling: false,
-      pool: false,
-      view: true,
-      gated: false,
-      furnished: false,
-    },
-    slug: null,
-    videoUrl: null,
-    address: "San Francisco, Perez Zeledon",
-    agentFirstName: "Emma",
-    agentLastName: "Bennett",
-    agentId: "2400",
-    expirationDate: null,
-    unparsedAddress: null,
-    country: null,
-    stateProv: null,
-    location: null,
-    isExpired: false,
-    lotSizeUnitWarning: false,
-    apiRaw: {},
-    ...overrides,
-  } as RawProperty;
-}
+import { makeRawProperty } from "./factories";
 
 // ---------------------------------------------------------------------------
 // computePropertyHash

@@ -28,12 +28,15 @@ import { db } from "@/lib/db/client";
 // Helpers
 // ---------------------------------------------------------------------------
 
+/** Fixed reference timestamp — deterministic across all test runs. */
+const FIXED_STARTED_AT = new Date("2026-04-25T12:00:00.000Z");
+
 /** Build a minimal SyncLog-shaped object returned by mocked insert */
 function makeSyncLogRow(overrides: Partial<SyncLog> = {}): SyncLog {
   return {
     id: "uuid-1234",
     status: "running",
-    startedAt: new Date("2026-04-25T12:00:00Z"),
+    startedAt: FIXED_STARTED_AT,
     completedAt: null,
     propertiesFetched: 0,
     propertiesCreated: 0,
