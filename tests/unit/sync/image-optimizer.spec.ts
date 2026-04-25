@@ -223,6 +223,38 @@ describe("optimizePropertyImages — 3 WebP variants at correct widths (AC #2)",
       expect(outPaths.some((p) => p.endsWith("photo1-1600w.webp"))).toBe(true);
     },
   );
+
+  it(
+    "[P1] given 1 valid image when generating LQIP then resize is called with width 20 for the blur placeholder",
+    async () => {
+      const url = "https://cdn.example.com/photo1.jpg";
+
+      await optimizePropertyImages("API-001", [url], "House", "Pérez Zeledón");
+
+      // LQIP resize must use width 20 (LQIP_SIZE constant) — the 4th resize call
+      const resizeWidths = mockResize.mock.calls.map((call) => call[0]);
+      expect(resizeWidths).toContain(20);
+    },
+  );
+
+  it(
+    "[P1] given 1 valid image when generating variants then webp() is called with quality ≤ 85 for all variant encodes",
+    async () => {
+      const url = "https://cdn.example.com/photo1.jpg";
+
+      await optimizePropertyImages("API-001", [url], "House", "Pérez Zeledón");
+
+      // All webp() calls should use quality ≤ 85 (AC #2 — NFR6)
+      // mockWebp is called for each resize chain (3 variants + 1 LQIP = 4 calls)
+      expect(mockWebp).toHaveBeenCalled();
+      for (const call of mockWebp.mock.calls) {
+        const opts = call[0] as { quality?: number } | undefined;
+        if (opts?.quality !== undefined) {
+          expect(opts.quality).toBeLessThanOrEqual(85);
+        }
+      }
+    },
+  );
 });
 
 // ---------------------------------------------------------------------------
