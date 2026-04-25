@@ -1,6 +1,6 @@
 # Story 2.4: Image Optimization Pipeline
 
-Status: review
+Status: done
 
 ## Story
 
@@ -294,3 +294,19 @@ No blocking issues encountered. ATDD scaffolds had two Vitest hoisting bugs (top
 - `tests/unit/sync/pipeline-happy-path.spec.ts` (modified — added mocks)
 - `tests/unit/sync/pipeline-error-handling.spec.ts` (modified — added mocks)
 - `tests/unit/db/properties.spec.ts` (modified — activated, fixed hoisting)
+
+### Review Findings
+
+Code review (2026-04-25) — adversarial review (Blind Hunter / Edge Case Hunter / Acceptance Auditor lenses) against the diff vs `main`. All `patch` findings auto-applied with engineering judgement.
+
+- [x] [Review][Patch] Hung CDN download could stall the entire sync run — added 30s `AbortController` timeout around `fetch(url)` in `image-optimizer.ts` (NFR15 guardrail) [src/lib/sync/image-optimizer.ts:60-83]
+- [x] [Review][Patch] Sharp/metadata exceptions on corrupt or non-image bodies (e.g. CDN returning HTML with status 200) bubbled out and crashed the pipeline — wrapped encode + LQIP + metadata block in try/catch so failures are logged per-image and the loop continues, satisfying AC #7 in the encode-failure case [src/lib/sync/image-optimizer.ts:99-150]
+- [x] [Review][Patch] Filename collision when two source URLs share the same basename (e.g. `.../v1/photo1.jpg` + `.../v2/photo1.jpg`) — variants for image #2 silently overwrote image #1's. Disambiguated filename base by appending the loop index: `{base}-{i}-{width}w.webp` [src/lib/sync/image-optimizer.ts:85-97]
+- [x] [Review][Patch] Magic number `400` in height calculation — replaced with `SIZES[0]` to keep the 400w-anchor invariant in one place [src/lib/sync/image-optimizer.ts:131]
+- [x] [Review][Defer] No concurrency control across image downloads (sequential per property) — out of scope; would need a parallelism budget against Azure CDN rate limits.
+- [x] [Review][Defer] Stale `*.webp` files persist after a property's image URLs change — no cleanup policy; volume could grow unbounded over many syncs. Needs explicit retention strategy decision.
+- [x] [Review][Defer] `mkdirSync` failures (disk full / permissions) crash the optimizer entirely — AC #7 only covers download failure; defensive disk-error handling out of scope for this story.
+- [x] [Review][Defer] `imageErrors` array is unbounded — could bloat `sync_logs.errors` JSONB if many images fail in one run. Acceptable for ~300-listing scale.
+- [x] [Review][Defer] `images as unknown as string[]` cast in `updatePropertyImages` — pre-existing pattern in codebase for Drizzle JSONB columns; replicated rather than refactored.
+
+Test impact: 3 new tests added (sharp encode failure, AbortSignal presence, filename collision disambiguation). Total: 118 passed / 3 skipped (was 115/3).

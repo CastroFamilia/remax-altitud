@@ -128,7 +128,8 @@ describe("optimizePropertyImages — image download (AC #1)", () => {
       await optimizePropertyImages("API-001", [url], "House", "Pérez Zeledón");
 
       expect(global.fetch).toHaveBeenCalledOnce();
-      expect(global.fetch).toHaveBeenCalledWith(url);
+      // fetch is called with (url, { signal }) — assert the URL positionally
+      expect(global.fetch).toHaveBeenCalledWith(url, expect.any(Object));
     },
   );
 
@@ -218,9 +219,10 @@ describe("optimizePropertyImages — 3 WebP variants at correct widths (AC #2)",
       await optimizePropertyImages("API-001", [url], "House", "Pérez Zeledón");
 
       const outPaths = mockToFile.mock.calls.map((call) => call[0] as string);
-      expect(outPaths.some((p) => p.endsWith("photo1-400w.webp"))).toBe(true);
-      expect(outPaths.some((p) => p.endsWith("photo1-800w.webp"))).toBe(true);
-      expect(outPaths.some((p) => p.endsWith("photo1-1600w.webp"))).toBe(true);
+      // Filename format: {base}-{index}-{width}w.webp (index disambiguates same-basename URLs)
+      expect(outPaths.some((p) => p.endsWith("photo1-0-400w.webp"))).toBe(true);
+      expect(outPaths.some((p) => p.endsWith("photo1-0-800w.webp"))).toBe(true);
+      expect(outPaths.some((p) => p.endsWith("photo1-0-1600w.webp"))).toBe(true);
     },
   );
 
@@ -272,7 +274,7 @@ describe("optimizePropertyImages — OptimizedImage shape (AC #5)", () => {
       expect(result.optimized).toHaveLength(1);
       const img = result.optimized[0];
       expect(img.width).toBe(400);
-      expect(img.src).toMatch(/\/property-images\/API-001\/photo1-400w\.webp$/);
+      expect(img.src).toMatch(/\/property-images\/API-001\/photo1-0-400w\.webp$/);
     },
   );
 
@@ -346,8 +348,8 @@ describe("optimizePropertyImages — pre-encoded URLs (AC #6)", () => {
 
       await optimizePropertyImages("API-001", [encodedUrl], "House", "Pérez Zeledón");
 
-      // fetch should receive the already-encoded URL unchanged
-      expect(global.fetch).toHaveBeenCalledWith(encodedUrl);
+      // fetch should receive the already-encoded URL unchanged (with abort signal options)
+      expect(global.fetch).toHaveBeenCalledWith(encodedUrl, expect.any(Object));
     },
   );
 });
@@ -405,6 +407,65 @@ describe("optimizePropertyImages — download failure handling (AC #7)", () => {
       expect(result.errors).toHaveLength(1);
       expect(result.errors[0].url).toBe(failUrl);
       expect(result.optimized).toHaveLength(1);
+    },
+  );
+
+  it(
+    "[P1] given sharp throws on encode (e.g. corrupt image bytes) when processed then error logged and pipeline continues",
+    async () => {
+      const url = "https://cdn.example.com/corrupt.jpg";
+      // Make the first toFile call reject — simulates sharp failing to decode the buffer
+      mockToFile.mockRejectedValueOnce(new Error("Input buffer contains unsupported image format"));
+
+      const result = await optimizePropertyImages("API-001", [url], "House", "Pérez Zeledón");
+
+      expect(result.optimized).toEqual([]);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0]).toMatchObject({
+        apiId: "API-001",
+        imageIndex: 0,
+        url,
+      });
+      expect(result.errors[0].error).toContain("unsupported image format");
+    },
+  );
+
+  it(
+    "[P1] given fetch is called with a URL when invoked then fetch receives an AbortSignal",
+    async () => {
+      const url = "https://cdn.example.com/photo1.jpg";
+
+      await optimizePropertyImages("API-001", [url], "House", "Pérez Zeledón");
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        url,
+        expect.objectContaining({ signal: expect.any(AbortSignal) }),
+      );
+    },
+  );
+});
+
+// ---------------------------------------------------------------------------
+// Filename collision disambiguation (defensive — same-basename URLs)
+// ---------------------------------------------------------------------------
+
+describe("optimizePropertyImages — filename collision disambiguation", () => {
+  it(
+    "[P1] given 2 URLs with identical basename when processed then variant filenames are disambiguated by index",
+    async () => {
+      const urls = [
+        "https://cdn.example.com/v1/photo1.jpg",
+        "https://cdn.example.com/v2/photo1.jpg",
+      ];
+
+      await optimizePropertyImages("API-001", urls, "House", "Pérez Zeledón");
+
+      const outPaths = mockToFile.mock.calls.map((call) => call[0] as string);
+      // Each source image must produce its own set of 3 variant files
+      expect(outPaths.filter((p) => p.endsWith("photo1-0-400w.webp"))).toHaveLength(1);
+      expect(outPaths.filter((p) => p.endsWith("photo1-1-400w.webp"))).toHaveLength(1);
+      // No collisions — total 6 toFile calls (2 images × 3 variants)
+      expect(outPaths).toHaveLength(6);
     },
   );
 });

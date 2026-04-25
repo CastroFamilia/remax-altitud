@@ -10,6 +10,12 @@ const SIZES = [400, 800, 1600] as const;
 /** Width (px) of the Low Quality Image Placeholder (blur hash). */
 const LQIP_SIZE = 20;
 
+/**
+ * Hard timeout for a single source image download (ms). Prevents a single
+ * hung Azure CDN connection from stalling the entire sync run.
+ */
+const FETCH_TIMEOUT_MS = 30_000;
+
 /** Absolute path to the Docker-volume public directory for optimized images. */
 const OUTPUT_BASE_DIR = path.join(process.cwd(), "public", "property-images");
 
@@ -60,7 +66,16 @@ export async function optimizePropertyImages(
     // --- Download ---
     let buffer: Buffer;
     try {
-      const response = await fetch(url);
+      // Wrap fetch in an AbortController so a hung CDN connection cannot
+      // stall the entire sync run (NFR15 guardrail).
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+      let response: Response;
+      try {
+        response = await fetch(url, { signal: controller.signal });
+      } finally {
+        clearTimeout(timeoutId);
+      }
       if (!response.ok) {
         errors.push({
           apiId,
@@ -83,6 +98,9 @@ export async function optimizePropertyImages(
     }
 
     // --- Derive filename base ---
+    // Suffix with the index to avoid collisions when two source URLs share the
+    // same basename (e.g. ".../v1/photo1.jpg" and ".../v2/photo1.jpg") which
+    // would otherwise overwrite each other's variants under the apiId folder.
     let base: string;
     try {
       const pathname = new URL(url).pathname;
@@ -93,48 +111,64 @@ export async function optimizePropertyImages(
     }
     if (!base) {
       base = `image-${i}`;
+    } else {
+      base = `${base}-${i}`;
     }
 
-    // --- Generate 3 responsive WebP variants ---
-    const variants: { width: number; relUrl: string }[] = [];
-    for (const width of SIZES) {
-      const outPath = path.join(dir, `${base}-${width}w.webp`);
-      await sharp(buffer)
-        .resize(width, undefined, { fit: "inside", withoutEnlargement: true })
-        .webp({ quality: 82 })
-        .toFile(outPath);
-      variants.push({
-        width,
-        relUrl: `/property-images/${apiId}/${base}-${width}w.webp`,
+    // --- Encode + write variants + LQIP + metadata ---
+    // Wrapped in a single try/catch so an encode/disk/metadata failure for one
+    // source image is logged as a structured error rather than crashing the
+    // entire sync run (AC #7 — pipeline continues with remaining images).
+    try {
+      // --- Generate 3 responsive WebP variants ---
+      const variants: { width: number; relUrl: string }[] = [];
+      for (const width of SIZES) {
+        const outPath = path.join(dir, `${base}-${width}w.webp`);
+        await sharp(buffer)
+          .resize(width, undefined, { fit: "inside", withoutEnlargement: true })
+          .webp({ quality: 82 })
+          .toFile(outPath);
+        variants.push({
+          width,
+          relUrl: `/property-images/${apiId}/${base}-${width}w.webp`,
+        });
+      }
+
+      // --- Generate LQIP (blur placeholder) ---
+      const lqipBuf = await sharp(buffer)
+        .resize(LQIP_SIZE, undefined, { fit: "inside" })
+        .webp({ quality: 20 })
+        .toBuffer();
+      const blurDataUrl = `data:image/webp;base64,${lqipBuf.toString("base64")}`;
+
+      // --- Extract dimensions for aspect-ratio-correct height ---
+      const meta = await sharp(buffer).metadata();
+      const aspectRatio = (meta.height ?? 800) / (meta.width ?? 1200);
+      const height = Math.round(SIZES[0] * aspectRatio);
+
+      // --- Alt text ---
+      const alt = `Photo ${i + 1} of ${rawImageUrls.length} — ${propertyType} in ${location}`;
+
+      // --- srcset ---
+      const srcset = `${variants[0].relUrl} 400w, ${variants[1].relUrl} 800w, ${variants[2].relUrl} 1600w`;
+
+      optimized.push({
+        src: variants[0].relUrl,
+        srcset,
+        blurDataUrl,
+        width: 400,
+        height,
+        alt,
       });
+    } catch (err: unknown) {
+      errors.push({
+        apiId,
+        imageIndex: i,
+        url,
+        error: err instanceof Error ? err.message : String(err),
+      });
+      continue;
     }
-
-    // --- Generate LQIP (blur placeholder) ---
-    const lqipBuf = await sharp(buffer)
-      .resize(LQIP_SIZE, undefined, { fit: "inside" })
-      .webp({ quality: 20 })
-      .toBuffer();
-    const blurDataUrl = `data:image/webp;base64,${lqipBuf.toString("base64")}`;
-
-    // --- Extract dimensions for aspect-ratio-correct height ---
-    const meta = await sharp(buffer).metadata();
-    const aspectRatio = (meta.height ?? 800) / (meta.width ?? 1200);
-    const height = Math.round(400 * aspectRatio);
-
-    // --- Alt text ---
-    const alt = `Photo ${i + 1} of ${rawImageUrls.length} — ${propertyType} in ${location}`;
-
-    // --- srcset ---
-    const srcset = `${variants[0].relUrl} 400w, ${variants[1].relUrl} 800w, ${variants[2].relUrl} 1600w`;
-
-    optimized.push({
-      src: variants[0].relUrl,
-      srcset,
-      blurDataUrl,
-      width: 400,
-      height,
-      alt,
-    });
   }
 
   return { optimized, errors };
