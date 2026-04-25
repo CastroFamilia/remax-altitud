@@ -58,7 +58,7 @@ afterEach(() => {
 // createSyncLog
 // ---------------------------------------------------------------------------
 describe("createSyncLog", () => {
-  it.skip("[P0] inserts a row with status='running' and returns the created row", async () => {
+  it("[P0] inserts a row with status='running' and returns the created row", async () => {
     // AC #1 — sync_log record created with status "running" BEFORE any API call
     // Risk R-011: sync log must be created at pipeline start
     const row = makeSyncLogRow();
@@ -87,7 +87,7 @@ describe("createSyncLog", () => {
     expect(result.status).toBe("running");
   });
 
-  it.skip("[P0] includes startedAt=now() when inserting", async () => {
+  it("[P0] includes startedAt=now() when inserting", async () => {
     // AC #1 — startedAt must be set to the current time
     const before = new Date();
     const row = makeSyncLogRow({ startedAt: new Date() });
@@ -108,7 +108,7 @@ describe("createSyncLog", () => {
 // updateSyncLog
 // ---------------------------------------------------------------------------
 describe("updateSyncLog", () => {
-  it.skip("[P0] updates the sync_log row to status='success' with counts", async () => {
+  it("[P0] updates the sync_log row to status='success' with counts", async () => {
     // AC #9 — on successful completion, update log with counts
     const mockWhere = vi.fn().mockResolvedValue(undefined);
     const mockSet = vi.fn().mockReturnValue({ where: mockWhere });
@@ -139,7 +139,7 @@ describe("updateSyncLog", () => {
     expect(mockWhere).toHaveBeenCalledOnce();
   });
 
-  it.skip("[P0] updates the sync_log row to status='failure' with errorMessage", async () => {
+  it("[P0] updates the sync_log row to status='failure' with errorMessage", async () => {
     // AC #10 — on uncaught exception, log must record failure
     const mockWhere = vi.fn().mockResolvedValue(undefined);
     const mockSet = vi.fn().mockReturnValue({ where: mockWhere });
@@ -159,7 +159,7 @@ describe("updateSyncLog", () => {
     );
   });
 
-  it.skip("[P1] updates the sync_log row to status='partial' when parse errors occurred", async () => {
+  it("[P1] updates the sync_log row to status='partial' when parse errors occurred", async () => {
     // AC #11 — partial status when some records fail Zod validation but overall run succeeded
     const mockWhere = vi.fn().mockResolvedValue(undefined);
     const mockSet = vi.fn().mockReturnValue({ where: mockWhere });
@@ -184,7 +184,7 @@ describe("updateSyncLog", () => {
     );
   });
 
-  it.skip("[P1] only updates provided fields (partial patch)", async () => {
+  it("[P1] only updates provided fields (partial patch)", async () => {
     // AC #9 — updateSyncLog accepts Partial<NewSyncLog>
     const mockWhere = vi.fn().mockResolvedValue(undefined);
     const mockSet = vi.fn().mockReturnValue({ where: mockWhere });

@@ -23,6 +23,8 @@ function makeRawProperty(overrides: Partial<RawProperty> = {}): RawProperty {
     apiId: "113149",
     apiKey: "400142400001",
     officeId: "FEA8746D-CC1D-41B8-89F3-D04AC98274AF",
+    officeApiId: 218,
+    agentApiId: "2400",
     propertyTypeEn: "Lot/Land",
     propertyTypeEs: "Lote/Terreno",
     contractTypeEn: "Sale",
@@ -33,6 +35,9 @@ function makeRawProperty(overrides: Partial<RawProperty> = {}): RawProperty {
     publicRemarksEs: "Un buen terreno.",
     apiStatus: "Active",
     priceUsd: 199000,
+    currencyId: 1,
+    currencyListPrice: "199000",
+    stories: 0,
     latitude: 9.3549572,
     longitude: -83.6350214,
     bedrooms: null,
@@ -42,12 +47,14 @@ function makeRawProperty(overrides: Partial<RawProperty> = {}): RawProperty {
     images: ["https://cdn.example.com/photo1.jpg"],
     amenities: {
       garage: false,
+      garageCovered: false,
+      garageOpen: false,
       garageSpaces: 0,
       maidRoom: false,
       cooling: false,
       pool: false,
       view: true,
-      gatedCommunity: false,
+      gated: false,
       furnished: false,
     },
     slug: null,
@@ -56,18 +63,23 @@ function makeRawProperty(overrides: Partial<RawProperty> = {}): RawProperty {
     agentFirstName: "Emma",
     agentLastName: "Bennett",
     agentId: "2400",
+    expirationDate: null,
+    unparsedAddress: null,
+    country: null,
+    stateProv: null,
+    location: null,
     isExpired: false,
     lotSizeUnitWarning: false,
     apiRaw: {},
     ...overrides,
-  };
+  } as RawProperty;
 }
 
 // ---------------------------------------------------------------------------
 // computePropertyHash
 // ---------------------------------------------------------------------------
 describe("computePropertyHash", () => {
-  it.skip("[P0] returns the same SHA-256 hash for identical inputs", () => {
+  it("[P0] returns the same SHA-256 hash for identical inputs", () => {
     // AC #2 — deterministic hash for diff tracking
     const raw = makeRawProperty();
     const hash1 = computePropertyHash(raw);
@@ -78,7 +90,7 @@ describe("computePropertyHash", () => {
     expect(hash1).toBe(hash2);
   });
 
-  it.skip("[P0] returns a different hash when priceUsd changes", () => {
+  it("[P0] returns a different hash when priceUsd changes", () => {
     // AC #2, #4 — change detection for UPDATED records
     // Risk R-001: hash must detect changed mutable fields
     const original = makeRawProperty({ priceUsd: 199000 });
@@ -90,26 +102,26 @@ describe("computePropertyHash", () => {
     expect(hashOriginal).not.toBe(hashChanged);
   });
 
-  it.skip("[P1] returns a different hash when titleEn changes", () => {
+  it("[P1] returns a different hash when titleEn changes", () => {
     const a = makeRawProperty({ titleEn: "Mountain View Land" });
     const b = makeRawProperty({ titleEn: "Valley Land" });
     expect(computePropertyHash(a)).not.toBe(computePropertyHash(b));
   });
 
-  it.skip("[P1] returns a different hash when images change", () => {
+  it("[P1] returns a different hash when images change", () => {
     const a = makeRawProperty({ images: ["https://cdn.example.com/photo1.jpg"] });
     const b = makeRawProperty({ images: ["https://cdn.example.com/photo2.jpg"] });
     expect(computePropertyHash(a)).not.toBe(computePropertyHash(b));
   });
 
-  it.skip("[P1] produces the same hash regardless of images array order (sorted for stability)", () => {
+  it("[P1] produces the same hash regardless of images array order (sorted for stability)", () => {
     // Risk R-001: image order must not cause spurious UPDATED diffs
     const a = makeRawProperty({ images: ["photo-A.jpg", "photo-B.jpg"] });
     const b = makeRawProperty({ images: ["photo-B.jpg", "photo-A.jpg"] });
     expect(computePropertyHash(a)).toBe(computePropertyHash(b));
   });
 
-  it.skip("[P2] does NOT include apiRaw in the hash (minor API field additions must not trigger updates)", () => {
+  it("[P2] does NOT include apiRaw in the hash (minor API field additions must not trigger updates)", () => {
     // Risk R-001: apiRaw changes should not trigger spurious UPDATED diffs
     const a = makeRawProperty({ apiRaw: { extra: "field1" } });
     const b = makeRawProperty({ apiRaw: { extra: "field1", newField: "value" } });
@@ -126,7 +138,7 @@ describe("computePropertyHash", () => {
 type DbSnapshot = { apiId: string; apiHash: string | null; isVisible: boolean };
 
 describe("diffProperties", () => {
-  it.skip("[P0] classifies a new API record (not in DB) as NEW", () => {
+  it("[P0] classifies a new API record (not in DB) as NEW", () => {
     // AC #2, #3 — new records must be inserted
     const raw = makeRawProperty({ apiId: "999" });
     const result: DiffResult = diffProperties([raw], []);
@@ -138,7 +150,7 @@ describe("diffProperties", () => {
     expect(result.removed).toHaveLength(0);
   });
 
-  it.skip("[P0] classifies a record with a changed hash as UPDATED", () => {
+  it("[P0] classifies a record with a changed hash as UPDATED", () => {
     // AC #2, #4 — changed fields must trigger an upsert
     // Risk R-001: diff must detect hash changes correctly
     const raw = makeRawProperty({ apiId: "113149", priceUsd: 210000 });
@@ -155,7 +167,7 @@ describe("diffProperties", () => {
     expect(result.unchanged).toHaveLength(0);
   });
 
-  it.skip("[P0] classifies a record with same hash + is_visible=true as UNCHANGED", () => {
+  it("[P0] classifies a record with same hash + is_visible=true as UNCHANGED", () => {
     // AC #4 — unchanged records must NOT produce DB writes (NFR15)
     const raw = makeRawProperty({ apiId: "113149" });
     const hash = computePropertyHash(raw);
@@ -171,7 +183,7 @@ describe("diffProperties", () => {
     expect(result.removed).toHaveLength(0);
   });
 
-  it.skip("[P0] classifies a DB-only record (absent from API) as REMOVED", () => {
+  it("[P0] classifies a DB-only record (absent from API) as REMOVED", () => {
     // AC #6 — listings removed from API → soft-delete (is_visible=false)
     // Risk R-001: removal must be detected by apiId absence
     const dbRecords: DbSnapshot[] = [
@@ -184,7 +196,7 @@ describe("diffProperties", () => {
     expect(result.updated).toHaveLength(0);
   });
 
-  it.skip("[P0] classifies a soft-deleted record (is_visible=false) with same hash as UPDATED (reactivation)", () => {
+  it("[P0] classifies a soft-deleted record (is_visible=false) with same hash as UPDATED (reactivation)", () => {
     // AC #7 — previously soft-deleted listing that reappears must be reactivated
     // Risk R-007: reactivation path
     const raw = makeRawProperty({ apiId: "113149" });
@@ -201,7 +213,7 @@ describe("diffProperties", () => {
     expect(result.unchanged).toHaveLength(0);
   });
 
-  it.skip("[P0] treats an expired property (isExpired=true) as REMOVED even if present in API", () => {
+  it("[P0] treats an expired property (isExpired=true) as REMOVED even if present in API", () => {
     // AC #5 — expired listings flagged by parser → soft-delete
     const raw = makeRawProperty({ apiId: "113149", isExpired: true });
     const hash = computePropertyHash(raw);
@@ -216,7 +228,7 @@ describe("diffProperties", () => {
     expect(result.unchanged).toHaveLength(0);
   });
 
-  it.skip("[P1] handles a mixed batch: NEW, UPDATED, UNCHANGED, and REMOVED simultaneously", () => {
+  it("[P1] handles a mixed batch: NEW, UPDATED, UNCHANGED, and REMOVED simultaneously", () => {
     // AC #2 — full diff scenario covering all four classifications
     const newRaw = makeRawProperty({ apiId: "NEW-1" });
     const unchangedRaw = makeRawProperty({ apiId: "SAME-1" });
@@ -241,7 +253,7 @@ describe("diffProperties", () => {
     expect(result.removed).toContain("GONE-1");
   });
 
-  it.skip("[P1] does not produce a DB write for 300 UNCHANGED records (incremental processing NFR15)", () => {
+  it("[P1] does not produce a DB write for 300 UNCHANGED records (incremental processing NFR15)", () => {
     // AC #4 — zero DB writes for unchanged records (performance requirement)
     const records = Array.from({ length: 300 }, (_, i) => makeRawProperty({ apiId: `ID-${i}` }));
     const dbRecords: DbSnapshot[] = records.map((r) => ({
@@ -258,7 +270,7 @@ describe("diffProperties", () => {
     expect(result.removed).toHaveLength(0);
   });
 
-  it.skip("[P2] handles null apiHash in DB record (first sync after schema change) by treating it as UPDATED", () => {
+  it("[P2] handles null apiHash in DB record (first sync after schema change) by treating it as UPDATED", () => {
     // Edge case: existing record with NULL api_hash should trigger a write to populate hash
     const raw = makeRawProperty({ apiId: "113149" });
 

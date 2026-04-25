@@ -1,5 +1,8 @@
 import "server-only";
 import type { FetchResult, ParseError, RawAgent, RawProperty } from "@/types/remax-api";
+
+// Re-export canonical types so downstream modules can import from this file.
+export type { RawProperty, RawAgent } from "@/types/remax-api";
 import { rawAgentApiSchema } from "./schemas/agent";
 import { rawPropertyApiSchema } from "./schemas/property";
 

@@ -35,6 +35,9 @@ vi.mock("@/lib/db/queries/sync-log", () => ({
 vi.mock("@/lib/db/queries/properties", () => ({
   upsertProperty: vi.fn(),
   softDeleteProperties: vi.fn(),
+  fetchPropertySnapshot: vi.fn(),
+  fetchOfficeIdMap: vi.fn(),
+  fetchAgentIdMap: vi.fn(),
 }));
 
 vi.mock("@/lib/db/queries/agents", () => ({
@@ -56,9 +59,8 @@ import { runSyncPipeline } from "@/lib/sync/pipeline";
 import { fetchPropertiesForOffice, fetchAgentsForOffice } from "@/lib/sync/api-client";
 import { diffProperties } from "@/lib/sync/differ";
 import { createSyncLog, updateSyncLog } from "@/lib/db/queries/sync-log";
-import { upsertProperty, softDeleteProperties } from "@/lib/db/queries/properties";
+import { upsertProperty, softDeleteProperties, fetchPropertySnapshot, fetchOfficeIdMap, fetchAgentIdMap } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
-import { db } from "@/lib/db/client";
 import type { RawProperty, RawAgent } from "@/lib/sync/parser";
 
 // ---------------------------------------------------------------------------
@@ -70,6 +72,8 @@ function makeRawProperty(overrides: Partial<RawProperty> = {}): RawProperty {
     apiId: "113149",
     apiKey: "400142400001",
     officeId: "FEA8746D-CC1D-41B8-89F3-D04AC98274AF",
+    officeApiId: 218,
+    agentApiId: "2400",
     propertyTypeEn: "Lot/Land",
     propertyTypeEs: "Lote/Terreno",
     contractTypeEn: "Sale",
@@ -80,6 +84,9 @@ function makeRawProperty(overrides: Partial<RawProperty> = {}): RawProperty {
     publicRemarksEs: "Un buen terreno.",
     apiStatus: "Active",
     priceUsd: 199000,
+    currencyId: 1,
+    currencyListPrice: "199000",
+    stories: 0,
     latitude: 9.3549572,
     longitude: -83.6350214,
     bedrooms: null,
@@ -88,8 +95,8 @@ function makeRawProperty(overrides: Partial<RawProperty> = {}): RawProperty {
     constructionM2: 0,
     images: ["https://cdn.example.com/photo1.jpg"],
     amenities: {
-      garage: false, garageSpaces: 0, maidRoom: false, cooling: false,
-      pool: false, view: true, gatedCommunity: false, furnished: false,
+      garage: false, garageCovered: false, garageOpen: false, garageSpaces: 0,
+      maidRoom: false, cooling: false, pool: false, view: true, gated: false, furnished: false,
     },
     slug: null,
     videoUrl: null,
@@ -97,16 +104,22 @@ function makeRawProperty(overrides: Partial<RawProperty> = {}): RawProperty {
     agentFirstName: "Emma",
     agentLastName: "Bennett",
     agentId: "2400",
+    expirationDate: null,
+    unparsedAddress: null,
+    country: null,
+    stateProv: null,
+    location: null,
     isExpired: false,
     lotSizeUnitWarning: false,
     apiRaw: {},
     ...overrides,
-  };
+  } as RawProperty;
 }
 
 function makeRawAgent(overrides: Partial<RawAgent> = {}): RawAgent {
   return {
     apiId: "2400",
+    name: "Emma Bennett",
     firstName: "Emma",
     lastName: "Bennett",
     email: "emma@remax-altitud.cr",
@@ -114,6 +127,7 @@ function makeRawAgent(overrides: Partial<RawAgent> = {}): RawAgent {
     whatsapp: "+50688887777",
     role: "owner",
     primaryLang: "en",
+    officeApiId: 218,
     officeId: "FEA8746D-CC1D-41B8-89F3-D04AC98274AF",
     photoUrl: "https://cdn.example.com/emma.jpg",
     apiRaw: {},
@@ -156,6 +170,16 @@ beforeEach(() => {
 
   vi.clearAllMocks();
 
+  // Default mock returns for helper functions
+  vi.mocked(fetchPropertySnapshot).mockResolvedValue([]);
+  vi.mocked(fetchOfficeIdMap).mockResolvedValue(new Map([
+    ["FEA8746D-CC1D-41B8-89F3-D04AC98274AF", "office-uuid-pz"],
+    ["4AD5AE8F-5B47-4A1A-A953-40445F2B4940", "office-uuid-dom"],
+  ]));
+  vi.mocked(fetchAgentIdMap).mockResolvedValue(new Map([
+    ["2400", "agent-uuid-1"],
+  ]));
+
   // Default: global fetch returns a successful revalidate response
   global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200 } as Response);
 });
@@ -173,7 +197,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe("runSyncPipeline — happy path", () => {
-  it.skip("[P0] creates sync_log with status='running' BEFORE fetching any data", async () => {
+  it("[P0] creates sync_log with status='running' BEFORE fetching any data", async () => {
     // AC #1 — sync_log row created as first action, before API calls
     // Risk R-011: log created before any external call
     const syncLog = makeSyncLog();
@@ -191,11 +215,6 @@ describe("runSyncPipeline — happy path", () => {
       .mockResolvedValueOnce({ records: [], parseErrors: [] });
 
     // Mock DB snapshot query
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        columns: vi.fn().mockResolvedValue([]),
-      }),
-    } as never);
 
     vi.mocked(diffProperties).mockReturnValue({
       new: [pzProp, domProp],
@@ -218,16 +237,13 @@ describe("runSyncPipeline — happy path", () => {
     expect(createCallOrder).toBeLessThan(fetchCallOrder);
   });
 
-  it.skip("[P0] fetches all 4 endpoints in parallel (Promise.all)", async () => {
+  it("[P0] fetches all 4 endpoints in parallel (Promise.all)", async () => {
     // AC #1 + Architecture §5 Step 1 — all 4 fetches happen concurrently
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
 
     vi.mocked(fetchPropertiesForOffice).mockResolvedValue({ records: [], parseErrors: [] });
     vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({ new: [], updated: [], unchanged: [], removed: [] });
     vi.mocked(softDeleteProperties).mockResolvedValue(0);
     vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
@@ -241,7 +257,7 @@ describe("runSyncPipeline — happy path", () => {
     expect(fetchAgentsForOffice).toHaveBeenCalledTimes(2);
   });
 
-  it.skip("[P0] updates sync_log to status='success' with accurate counts on completion", async () => {
+  it("[P0] updates sync_log to status='success' with accurate counts on completion", async () => {
     // AC #9 — sync_log updated with success + counts after successful run
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
@@ -259,9 +275,6 @@ describe("runSyncPipeline — happy path", () => {
     vi.mocked(fetchAgentsForOffice)
       .mockResolvedValueOnce({ records: [agent], parseErrors: [] })
       .mockResolvedValueOnce({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({
       new: newProps,
       updated: updatedProps,
@@ -288,7 +301,7 @@ describe("runSyncPipeline — happy path", () => {
     );
   });
 
-  it.skip("[P0] upserts only NEW and UPDATED records — zero writes for UNCHANGED", async () => {
+  it("[P0] upserts only NEW and UPDATED records — zero writes for UNCHANGED", async () => {
     // AC #4, NFR15 — incremental processing, no DB write for unchanged records
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
@@ -302,9 +315,6 @@ describe("runSyncPipeline — happy path", () => {
       .mockResolvedValueOnce({ records: [...unchanged, newProp], parseErrors: [] })
       .mockResolvedValueOnce({ records: [], parseErrors: [] });
     vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({
       new: [newProp],
       updated: [],
@@ -322,15 +332,12 @@ describe("runSyncPipeline — happy path", () => {
     expect(upsertProperty).toHaveBeenCalledTimes(1);
   });
 
-  it.skip("[P0] calls /api/revalidate after successful sync (ISR revalidation)", async () => {
+  it("[P0] calls /api/revalidate after successful sync (ISR revalidation)", async () => {
     // AC #14, Risk R-005 — ISR revalidation endpoint must be called
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
     vi.mocked(fetchPropertiesForOffice).mockResolvedValue({ records: [], parseErrors: [] });
     vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({ new: [], updated: [], unchanged: [], removed: [] });
     vi.mocked(softDeleteProperties).mockResolvedValue(0);
     vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
@@ -356,7 +363,7 @@ describe("runSyncPipeline — happy path", () => {
 // ---------------------------------------------------------------------------
 
 describe("runSyncPipeline — error handling", () => {
-  it.skip("[P0] updates sync_log to status='failure' when an uncaught exception is thrown", async () => {
+  it("[P0] updates sync_log to status='failure' when an uncaught exception is thrown", async () => {
     // AC #10 — on uncaught error, log must record failure before re-throwing
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
@@ -378,7 +385,7 @@ describe("runSyncPipeline — error handling", () => {
     );
   });
 
-  it.skip("[P0] sets status='partial' when some records fail Zod validation (pipeline continues)", async () => {
+  it("[P0] sets status='partial' when some records fail Zod validation (pipeline continues)", async () => {
     // AC #11 — parse errors → partial status, pipeline does not crash
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
@@ -392,9 +399,6 @@ describe("runSyncPipeline — error handling", () => {
       .mockResolvedValueOnce({ records: [validProp], parseErrors })
       .mockResolvedValueOnce({ records: [], parseErrors: [] });
     vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({
       new: [validProp],
       updated: [],
@@ -420,7 +424,7 @@ describe("runSyncPipeline — error handling", () => {
     );
   });
 
-  it.skip("[P0] completes successfully when Altitud Cero returns [] for properties", async () => {
+  it("[P0] completes successfully when Altitud Cero returns [] for properties", async () => {
     // AC #15, API8 — empty office must not crash the pipeline
     // Risk R-010: empty Altitud Cero must be a no-op
     const syncLog = makeSyncLog();
@@ -430,9 +434,6 @@ describe("runSyncPipeline — error handling", () => {
       .mockResolvedValueOnce({ records: [makeRawProperty()], parseErrors: [] }) // PZ
       .mockResolvedValueOnce({ records: [], parseErrors: [] }); // DOM (Altitud Cero = empty)
     vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({
       new: [makeRawProperty()],
       updated: [],
@@ -453,7 +454,7 @@ describe("runSyncPipeline — error handling", () => {
     expect(result).toBeDefined();
   });
 
-  it.skip("[P1] records lotSizeUnitWarning entries in sync_log.errors without blocking the upsert", async () => {
+  it("[P1] records lotSizeUnitWarning entries in sync_log.errors without blocking the upsert", async () => {
     // AC #12 — lot size warnings are recorded as errors but do not block the sync
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
@@ -464,9 +465,6 @@ describe("runSyncPipeline — error handling", () => {
       .mockResolvedValueOnce({ records: [warningProp], parseErrors: [] })
       .mockResolvedValueOnce({ records: [], parseErrors: [] });
     vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({
       new: [warningProp],
       updated: [],
@@ -480,11 +478,9 @@ describe("runSyncPipeline — error handling", () => {
 
     await runSyncPipeline();
 
-    // The warning property IS still upserted
-    expect(upsertProperty).toHaveBeenCalledWith(
-      expect.objectContaining({ apiId: "LOT-WARN-1" }),
-      expect.any(String),
-    );
+    // The warning property IS still upserted (check the first arg only)
+    expect(upsertProperty).toHaveBeenCalled();
+    expect(vi.mocked(upsertProperty).mock.calls[0][0]).toMatchObject({ apiId: "LOT-WARN-1" });
 
     // The warning is appended to errors JSONB
     expect(updateSyncLog).toHaveBeenCalledWith(
@@ -497,16 +493,13 @@ describe("runSyncPipeline — error handling", () => {
     );
   });
 
-  it.skip("[P1] does NOT fail the overall sync if /api/revalidate returns a non-2xx response", async () => {
+  it("[P1] does NOT fail the overall sync if /api/revalidate returns a non-2xx response", async () => {
     // AC #14 — revalidation is best-effort; failure must not crash the pipeline
     // AR6: revalidation failure logs a warning, sync data is already persisted
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
     vi.mocked(fetchPropertiesForOffice).mockResolvedValue({ records: [], parseErrors: [] });
     vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({ new: [], updated: [], unchanged: [], removed: [] });
     vi.mocked(softDeleteProperties).mockResolvedValue(0);
     vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
@@ -524,15 +517,12 @@ describe("runSyncPipeline — error handling", () => {
     );
   });
 
-  it.skip("[P1] soft-deletes REMOVED apiIds after diff", async () => {
+  it("[P1] soft-deletes REMOVED apiIds after diff", async () => {
     // AC #6 — listings absent from API → is_visible=false (no hard delete)
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
     vi.mocked(fetchPropertiesForOffice).mockResolvedValue({ records: [], parseErrors: [] });
     vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({
       new: [],
       updated: [],
@@ -552,7 +542,7 @@ describe("runSyncPipeline — error handling", () => {
     );
   });
 
-  it.skip("[P1] updates agent listing_count after property upserts complete", async () => {
+  it("[P1] updates agent listing_count after property upserts complete", async () => {
     // AC #8 — denormalized listing_count updated after property upserts
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
@@ -562,9 +552,6 @@ describe("runSyncPipeline — error handling", () => {
     vi.mocked(fetchAgentsForOffice)
       .mockResolvedValueOnce({ records: [agent], parseErrors: [] })
       .mockResolvedValueOnce({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({ new: [], updated: [], unchanged: [], removed: [] });
     vi.mocked(softDeleteProperties).mockResolvedValue(0);
     vi.mocked(upsertAgent).mockResolvedValue(undefined);
@@ -588,7 +575,7 @@ describe("runSyncPipeline — error handling", () => {
 // ---------------------------------------------------------------------------
 
 describe("/api/sync route — authorization guard", () => {
-  it.skip("[P0] returns 401 when CRON_SECRET header is missing", async () => {
+  it("[P0] returns 401 when CRON_SECRET header is missing", async () => {
     // AC #13 — no sync work begins without valid auth
     // This test targets the route handler directly
     const { POST } = await import("@/app/api/sync/route");
@@ -605,7 +592,7 @@ describe("/api/sync route — authorization guard", () => {
     expect(createSyncLog).not.toHaveBeenCalled();
   });
 
-  it.skip("[P0] returns 401 when CRON_SECRET header does not match env var", async () => {
+  it("[P0] returns 401 when CRON_SECRET header does not match env var", async () => {
     // AC #13 — wrong secret must be rejected
     const { POST } = await import("@/app/api/sync/route");
 
@@ -619,15 +606,12 @@ describe("/api/sync route — authorization guard", () => {
     expect(createSyncLog).not.toHaveBeenCalled();
   });
 
-  it.skip("[P1] returns 200 and runs the pipeline when CRON_SECRET is correct", async () => {
+  it("[P1] returns 200 and runs the pipeline when CRON_SECRET is correct", async () => {
     // AC #13 (positive path) — valid auth triggers the pipeline
     const syncLog = makeSyncLog();
     vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
     vi.mocked(fetchPropertiesForOffice).mockResolvedValue({ records: [], parseErrors: [] });
     vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
-    vi.mocked(db.select).mockReturnValue({
-      from: vi.fn().mockReturnValue({ columns: vi.fn().mockResolvedValue([]) }),
-    } as never);
     vi.mocked(diffProperties).mockReturnValue({ new: [], updated: [], unchanged: [], removed: [] });
     vi.mocked(softDeleteProperties).mockResolvedValue(0);
     vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);

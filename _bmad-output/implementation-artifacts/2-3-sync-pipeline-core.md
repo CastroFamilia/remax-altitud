@@ -1,6 +1,6 @@
 # Story 2.3: Sync Pipeline Core
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -44,30 +44,30 @@ So that the website always shows current listings without manual intervention.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create `/api/sync` route with auth guard (AC: #1, #13)
-  - [ ] Create `src/app/api/sync/route.ts` — POST handler only.
-  - [ ] Extract `CRON_SECRET` from `process.env`; compare against the `Authorization: Bearer <secret>` header OR a custom `x-cron-secret: <secret>` header (pick one convention and document it in `.env.example`). Return `401` if missing or mismatched.
-  - [ ] On auth success, call `runSyncPipeline()` (Task 4) inside a `try/catch`. Return `200` with a summary JSON on success; `500` with `{ error: message }` on failure.
-  - [ ] The route file must NOT be a Client Component (`"use client"` is forbidden). Add `import "server-only"` is NOT needed on route files (they run server-only by default in App Router), but MUST be present on all `src/lib/sync/**` files.
+- [x] Task 1: Create `/api/sync` route with auth guard (AC: #1, #13)
+  - [x] Create `src/app/api/sync/route.ts` — POST handler only.
+  - [x] Extract `CRON_SECRET` from `process.env`; compare against the `Authorization: Bearer <secret>` header OR a custom `x-cron-secret: <secret>` header (pick one convention and document it in `.env.example`). Return `401` if missing or mismatched.
+  - [x] On auth success, call `runSyncPipeline()` (Task 4) inside a `try/catch`. Return `200` with a summary JSON on success; `500` with `{ error: message }` on failure.
+  - [x] The route file must NOT be a Client Component (`"use client"` is forbidden). Add `import "server-only"` is NOT needed on route files (they run server-only by default in App Router), but MUST be present on all `src/lib/sync/**` files.
 
-- [ ] Task 2: Create sync-log DB helpers (AC: #1, #9, #10, #11)
-  - [ ] Create `src/lib/db/queries/sync-log.ts` (architecture §3 pre-declares this path).
-  - [ ] Export `createSyncLog(): Promise<SyncLog>` — inserts a row with `status = "running"`, `startedAt = new Date()`, all count fields = 0, `errors = []`. Returns the created row (need the `id` for subsequent updates).
-  - [ ] Export `updateSyncLog(id: string, patch: Partial<NewSyncLog>): Promise<void>` — Drizzle `update(syncLogs).set(patch).where(eq(syncLogs.id, id))`.
-  - [ ] Types `SyncLog` and `NewSyncLog` are already exported from `src/lib/db/schema/sync-logs.ts` — import them there; do NOT redefine.
+- [x] Task 2: Create sync-log DB helpers (AC: #1, #9, #10, #11)
+  - [x] Create `src/lib/db/queries/sync-log.ts` (architecture §3 pre-declares this path).
+  - [x] Export `createSyncLog(): Promise<SyncLog>` — inserts a row with `status = "running"`, `startedAt = new Date()`, all count fields = 0, `errors = []`. Returns the created row (need the `id` for subsequent updates).
+  - [x] Export `updateSyncLog(id: string, patch: Partial<NewSyncLog>): Promise<void>` — Drizzle `update(syncLogs).set(patch).where(eq(syncLogs.id, id))`.
+  - [x] Types `SyncLog` and `NewSyncLog` are already exported from `src/lib/db/schema/sync-logs.ts` — import them there; do NOT redefine.
 
-- [ ] Task 3: Create differ module (AC: #2, #4, #5, #6, #7)
-  - [ ] Create `src/lib/sync/differ.ts` (architecture §3 pre-declares this file).
-  - [ ] Add `import "server-only"` at the top.
-  - [ ] Implement `computePropertyHash(raw: RawProperty): string` using Node's built-in `crypto.createHash('sha256')`. Hash a deterministic JSON string of the key mutable fields: `priceUsd`, `titleEn`, `titleEs`, `publicRemarksEn` (= `description_en` in DB), `latitude`, `longitude`, `bedrooms`, `bathrooms`, `lotSizeM2`, `constructionM2`, `images` (sorted for stability), `amenities`, `apiStatus`. Do NOT include `apiRaw` in the hash (it would always change on minor API field additions). Use `JSON.stringify` with a fixed key order (as shown in the Differ Hash Design section) for determinism.
-  - [ ] Implement `diffProperties(apiRecords: RawProperty[], dbRecords: { apiId: string; apiHash: string | null; isVisible: boolean }[]): DiffResult`. `DiffResult = { new: RawProperty[]; updated: RawProperty[]; unchanged: RawProperty[]; removed: string[] /* apiIds */ }`. A record is `REMOVED` if its `apiId` is in `dbRecords` but not in `apiRecords`. A record is `UPDATED` if hashes differ OR `is_visible` was `false` (reactivation). A record is `UNCHANGED` if hashes match AND `is_visible` is already `true`.
-  - [ ] Export `DiffResult` type from this file.
-  - [ ] Expired listings (`RawProperty.isExpired === true`) are appended to the `removed` list even if they appear in the API response (AC #5).
+- [x] Task 3: Create differ module (AC: #2, #4, #5, #6, #7)
+  - [x] Create `src/lib/sync/differ.ts` (architecture §3 pre-declares this file).
+  - [x] Add `import "server-only"` at the top.
+  - [x] Implement `computePropertyHash(raw: RawProperty): string` using Node's built-in `crypto.createHash('sha256')`. Hash a deterministic JSON string of the key mutable fields: `priceUsd`, `titleEn`, `titleEs`, `publicRemarksEn` (= `description_en` in DB), `latitude`, `longitude`, `bedrooms`, `bathrooms`, `lotSizeM2`, `constructionM2`, `images` (sorted for stability), `amenities`, `apiStatus`. Do NOT include `apiRaw` in the hash (it would always change on minor API field additions). Use `JSON.stringify` with a fixed key order (as shown in the Differ Hash Design section) for determinism.
+  - [x] Implement `diffProperties(apiRecords: RawProperty[], dbRecords: { apiId: string; apiHash: string | null; isVisible: boolean }[]): DiffResult`. `DiffResult = { new: RawProperty[]; updated: RawProperty[]; unchanged: RawProperty[]; removed: string[] /* apiIds */ }`. A record is `REMOVED` if its `apiId` is in `dbRecords` but not in `apiRecords`. A record is `UPDATED` if hashes differ OR `is_visible` was `false` (reactivation). A record is `UNCHANGED` if hashes match AND `is_visible` is already `true`.
+  - [x] Export `DiffResult` type from this file.
+  - [x] Expired listings (`RawProperty.isExpired === true`) are appended to the `removed` list even if they appear in the API response (AC #5).
 
-- [ ] Task 4: Create pipeline orchestrator (AC: #1–#15)
-  - [ ] Create `src/lib/sync/pipeline.ts` (architecture §3 pre-declares this file).
-  - [ ] Add `import "server-only"` at the top.
-  - [ ] Export `runSyncPipeline(): Promise<SyncPipelineResult>`. The function:
+- [x] Task 4: Create pipeline orchestrator (AC: #1–#15)
+  - [x] Create `src/lib/sync/pipeline.ts` (architecture §3 pre-declares this file).
+  - [x] Add `import "server-only"` at the top.
+  - [x] Export `runSyncPipeline(): Promise<SyncPipelineResult>`. The function:
     1. Creates a sync_log row (`status: "running"`) via Task 2's `createSyncLog()`.
     2. Fetches all 4 endpoints in parallel: `Promise.all([fetchPropertiesForOffice(pzGuid), fetchPropertiesForOffice(domGuid), fetchAgentsForOffice(pzGuid), fetchAgentsForOffice(domGuid)])`. Collects all `parseErrors` from the four `FetchResult<T>` returns.
     3. Loads current DB property records needed for diff: `SELECT api_id, api_hash, is_visible FROM properties` (only these columns — do not load full rows for 300+ listings).
@@ -78,13 +78,13 @@ So that the website always shows current listings without manual intervention.
     8. Updates the sync_log to `status: "success"` (or `"partial"` if any errors) with all counts and the errors JSONB.
     9. Calls `/api/revalidate` (Task 7).
     10. Returns `SyncPipelineResult` (counts + errors summary).
-  - [ ] Wrap the body in a top-level `try/catch`. On uncaught error: call `updateSyncLog(id, { status: "failure", errorMessage: err.message, completedAt: new Date() })` then re-throw.
-  - [ ] Export `SyncPipelineResult` type (counts + error summary).
+  - [x] Wrap the body in a top-level `try/catch`. On uncaught error: call `updateSyncLog(id, { status: "failure", errorMessage: err.message, completedAt: new Date() })` then re-throw.
+  - [x] Export `SyncPipelineResult` type (counts + error summary).
 
-- [ ] Task 5: Implement property upsert and soft-delete (AC: #3, #4, #6, #7)
-  - [ ] Create `src/lib/db/queries/properties.ts` (architecture §3 pre-declares this path).
-  - [ ] Add `import "server-only"` at the top.
-  - [ ] Export `upsertProperty(raw: RawProperty, officeId: string): Promise<void>`:
+- [x] Task 5: Implement property upsert and soft-delete (AC: #3, #4, #6, #7)
+  - [x] Create `src/lib/db/queries/properties.ts` (architecture §3 pre-declares this path).
+  - [x] Add `import "server-only"` at the top.
+  - [x] Export `upsertProperty(raw: RawProperty, officeId: string): Promise<void>`:
     - Map `RawProperty` → `NewProperty` (Drizzle insert type from `src/lib/db/schema/properties.ts`).
     - `priceUsd`: `Math.round(raw.priceUsd)` — the DB column is `integer`.
     - `geo`: use a raw SQL expression: `` sql`ST_SetSRID(ST_MakePoint(${raw.longitude}, ${raw.latitude}), 4326)::geography` `` (Drizzle `sql` tagged template). Use `null` if either coordinate is `null`.
@@ -101,12 +101,12 @@ So that the website always shows current listings without manual intervention.
     - `lifestyleTags`: `[]` (empty array) — auto-tagging is Story 2.6.
     - Use Drizzle's `insert(properties).values(mapped).onConflictDoUpdate({ target: properties.apiId, set: { ...updatedFields, updatedAt: new Date() } })`.
     - Only include mutable fields in `set` (not `id`, `createdAt`, `officeId`, `slug`).
-  - [ ] Export `softDeleteProperties(apiIds: string[]): Promise<number>` — `UPDATE properties SET is_visible = false, updated_at = now() WHERE api_id = ANY($1) AND is_visible = true`. Return count of affected rows for the sync_log `properties_removed` count. Use `sql` raw expression or Drizzle's `inArray`.
+  - [x] Export `softDeleteProperties(apiIds: string[]): Promise<number>` — `UPDATE properties SET is_visible = false, updated_at = now() WHERE api_id = ANY($1) AND is_visible = true`. Return count of affected rows for the sync_log `properties_removed` count. Use `sql` raw expression or Drizzle's `inArray`.
 
-- [ ] Task 6: Implement agent upsert (AC: #8)
-  - [ ] Create `src/lib/db/queries/agents.ts` (architecture §3 pre-declares this path).
-  - [ ] Add `import "server-only"` at the top.
-  - [ ] Export `upsertAgent(raw: RawAgent, officeId: string): Promise<void>`:
+- [x] Task 6: Implement agent upsert (AC: #8)
+  - [x] Create `src/lib/db/queries/agents.ts` (architecture §3 pre-declares this path).
+  - [x] Add `import "server-only"` at the top.
+  - [x] Export `upsertAgent(raw: RawAgent, officeId: string): Promise<void>`:
     - Map `RawAgent` → `NewAgent`.
     - `slug`: same slugify helper as properties; append `-${raw.apiId}` on conflict.
     - `languages`: `raw.primaryLang ? [raw.primaryLang] : []` — single-element array or empty if null; full multi-language is deferred.
@@ -116,42 +116,42 @@ So that the website always shows current listings without manual intervention.
     - Note: `RawAgent.role` (`"owner" | "associate"`) has NO matching column in `agents` schema (Story 2.1 did not add it). Do NOT fail if role cannot be stored; do NOT attempt to store it — just skip it silently. Do NOT add a `role` column — that requires a schema migration which is out of scope.
     - Note: The `agents` table does NOT have an `api_raw` column (unlike `properties`). Do NOT attempt to store `raw.apiRaw` on agent records — simply omit it.
     - Use `insert(agents).values(mapped).onConflictDoUpdate({ target: agents.apiId, set: {...} })`.
-  - [ ] Export `updateAgentListingCounts(): Promise<void>` — runs a single SQL update: `UPDATE agents SET listing_count = (SELECT count(*) FROM properties WHERE properties.agent_id = agents.id AND properties.is_visible = true)`. The `properties.agent_id` column is the uuid FK referencing `agents.id` (not `api_id`). Execute this after all property upserts complete.
+  - [x] Export `updateAgentListingCounts(): Promise<void>` — runs a single SQL update: `UPDATE agents SET listing_count = (SELECT count(*) FROM properties WHERE properties.agent_id = agents.id AND properties.is_visible = true)`. The `properties.agent_id` column is the uuid FK referencing `agents.id` (not `api_id`). Execute this after all property upserts complete.
 
-- [ ] Task 7: ISR revalidation call (AC: #14)
-  - [ ] In `src/lib/sync/pipeline.ts`, after a successful sync, call the internal revalidate endpoint.
-  - [ ] Use `fetch(new URL('/api/revalidate', process.env.NEXTAUTH_URL ?? 'http://localhost:3000').href, { method: 'POST', headers: { 'x-api-secret': process.env.API_SECRET ?? '' }, body: JSON.stringify({ tags: ['properties', 'agents'] }), cache: 'no-store' })`.
-  - [ ] If the revalidate call fails (non-2xx or throws), log a `console.warn` but do NOT fail the overall sync — the data is already persisted (AR6: revalidation is best-effort).
-  - [ ] Create `src/app/api/revalidate/route.ts` — POST handler that validates `x-api-secret` header against `process.env.API_SECRET`, then calls `revalidateTag('properties')` and `revalidateTag('agents')` from `'next/cache'`. Returns `200` with `{ revalidated: true }`.
+- [x] Task 7: ISR revalidation call (AC: #14)
+  - [x] In `src/lib/sync/pipeline.ts`, after a successful sync, call the internal revalidate endpoint.
+  - [x] Use `fetch(new URL('/api/revalidate', process.env.NEXTAUTH_URL ?? 'http://localhost:3000').href, { method: 'POST', headers: { 'x-api-secret': process.env.API_SECRET ?? '' }, body: JSON.stringify({ tags: ['properties', 'agents'] }), cache: 'no-store' })`.
+  - [x] If the revalidate call fails (non-2xx or throws), log a `console.warn` but do NOT fail the overall sync — the data is already persisted (AR6: revalidation is best-effort).
+  - [x] Create `src/app/api/revalidate/route.ts` — POST handler that validates `x-api-secret` header against `process.env.API_SECRET`, then calls `revalidateTag('properties')` and `revalidateTag('agents')` from `'next/cache'`. Returns `200` with `{ revalidated: true }`.
 
-- [ ] Task 8: Tests (AC: #16)
-  - [ ] Add `tests/unit/sync/differ.spec.ts`:
+- [x] Task 8: Tests (AC: #16)
+  - [x] Add `tests/unit/sync/differ.spec.ts`:
     - `computePropertyHash` returns same hash for identical inputs; different hash when `priceUsd` changes.
     - `diffProperties`: new record → `new[]`; changed hash → `updated[]`; same hash + visible → `unchanged[]`; DB-only apiId → `removed[]`; `is_visible: false` + same hash → `updated[]` (reactivation); `isExpired: true` → `removed[]`.
-  - [ ] Add `tests/unit/sync/pipeline.spec.ts` (integration-style, all DB calls mocked):
+  - [x] Add `tests/unit/sync/pipeline.spec.ts` (integration-style, all DB calls mocked):
     - Happy path: mock fetch (2 properties, 1 agent per office) → assert `createSyncLog` called, `updateSyncLog` called with `status: "success"`, counts match.
     - Parse error path: one Zod-invalid record → `status: "partial"`, error in errors array.
     - Uncaught throw → `updateSyncLog` called with `status: "failure"`.
     - Empty Altitud Cero → sync completes without error.
     - ISR revalidation call verified (spy on `fetch` for revalidate URL).
-  - [ ] Add `tests/unit/db/sync-log.spec.ts` — unit tests for `createSyncLog` and `updateSyncLog` using `vi.mock('@/lib/db/client')`.
-  - [ ] All new tests must run WITHOUT a live database (mock `db` via `vi.mock`). No `process.env.DATABASE_URL` gate needed — these are pure unit tests.
-  - [ ] Retry-path tests (if any): use the existing `__setSleepFnForTests` hook from Story 2.2's `api-client.ts`.
+  - [x] Add `tests/unit/db/sync-log.spec.ts` — unit tests for `createSyncLog` and `updateSyncLog` using `vi.mock('@/lib/db/client')`.
+  - [x] All new tests must run WITHOUT a live database (mock `db` via `vi.mock`). No `process.env.DATABASE_URL` gate needed — these are pure unit tests.
+  - [x] Retry-path tests (if any): use the existing `__setSleepFnForTests` hook from Story 2.2's `api-client.ts`.
 
-- [ ] Task 9: Slug helper (AC: #3)
-  - [ ] Add `slugify(text: string, suffix?: string): string` in `src/lib/sync/utils/slugify.ts`. Use the Unicode property-escape algorithm from the Slug Generation section below (NFD decomposition + `\p{M}` strip). Export `slugify` only — no default export.
-  - [ ] Add `tests/unit/sync/slugify.spec.ts` covering: accented characters (`"Finca Bonita"` → `"finca-bonita"`, `"Árbol"` → `"arbol"`), trailing/leading dashes (`"--hello--"` → `"hello"`), special characters (`"lot (1) A"` → `"lot-1-a"`), suffix appending (`slugify("Test", "456")` → `"test-456"`), empty string → `""`.
+- [x] Task 9: Slug helper (AC: #3)
+  - [x] Add `slugify(text: string, suffix?: string): string` in `src/lib/sync/utils/slugify.ts`. Use the Unicode property-escape algorithm from the Slug Generation section below (NFD decomposition + `\p{M}` strip). Export `slugify` only — no default export.
+  - [x] Add `tests/unit/sync/slugify.spec.ts` covering: accented characters (`"Finca Bonita"` → `"finca-bonita"`, `"Árbol"` → `"arbol"`), trailing/leading dashes (`"--hello--"` → `"hello"`), special characters (`"lot (1) A"` → `"lot-1-a"`), suffix appending (`slugify("Test", "456")` → `"test-456"`), empty string → `""`.
 
-- [ ] Task 10: Env vars + wiring (AC: #13, #14, #16)
-  - [ ] Add to `.env.example`: `CRON_SECRET=` (for `/api/sync` auth), `API_SECRET=` (for `/api/revalidate` auth), `NEXTAUTH_URL=http://localhost:3000` (for self-referencing revalidate call in pipeline).
-  - [ ] Verify all existing `.env.example` entries are preserved (Story 2.2 already added `REMAX_API_BASE_URL`, `PZ_OFFICE_GUID`, `DOM_OFFICE_GUID`, `DATABASE_URL`).
+- [x] Task 10: Env vars + wiring (AC: #13, #14, #16)
+  - [x] Add to `.env.example`: `CRON_SECRET=` (for `/api/sync` auth), `API_SECRET=` (for `/api/revalidate` auth), `NEXTAUTH_URL=http://localhost:3000` (for self-referencing revalidate call in pipeline).
+  - [x] Verify all existing `.env.example` entries are preserved (Story 2.2 already added `REMAX_API_BASE_URL`, `PZ_OFFICE_GUID`, `DOM_OFFICE_GUID`, `DATABASE_URL`).
 
-- [ ] Task 11: CI verification (AC: #16)
-  - [ ] `npm run typecheck` → 0 errors.
-  - [ ] `npm run lint` → 0 errors.
-  - [ ] `npm run format:check` → pass.
-  - [ ] `npm run build` → pass.
-  - [ ] `npm test` → all green (all previously passing 31 sync tests + all new tests pass).
+- [x] Task 11: CI verification (AC: #16)
+  - [x] `npm run typecheck` → 0 errors.
+  - [x] `npm run lint` → 0 errors.
+  - [x] `npm run format:check` → pass.
+  - [x] `npm run build` → pass.
+  - [x] `npm test` → all green (all previously passing 31 sync tests + all new tests pass).
 
 ## Dev Notes
 
@@ -409,4 +409,27 @@ claude-sonnet-4-6 (Claude Code CLI, create-story workflow)
 
 ### Completion Notes List
 
+- Implemented all 11 tasks end-to-end: sync route, differ, pipeline orchestrator, property/agent/sync-log DB queries, slugify helper, API routes.
+- All 46 ATDD test scaffolds activated (it.skip → it); 77 tests passing (3 pre-existing skips from schema.spec.ts).
+- TypeScript check: 0 errors. Lint: 0 errors (1 pre-existing warning in remax-api.ts from Story 2.2). Prettier: clean. Build: passes with dummy DATABASE_URL.
+- CI workflow updated with DATABASE_URL env var for the build step (needed because route handlers now import the DB client eagerly).
+- `force-dynamic` added to both new API routes to prevent static generation.
+- Test factories updated to match actual RawProperty and RawAgent schema shapes (amenities uses `gated` not `gatedCommunity`; `name` field required on RawAgent).
+- `fetchPropertySnapshot`, `fetchOfficeIdMap`, `fetchAgentIdMap` added to properties.ts and mocked in pipeline tests.
+
 ### File List
+
+- src/app/api/sync/route.ts (NEW)
+- src/app/api/revalidate/route.ts (NEW)
+- src/lib/sync/pipeline.ts (NEW)
+- src/lib/sync/differ.ts (already existed, activated by ATDD agent)
+- src/lib/sync/utils/slugify.ts (already existed, activated by ATDD agent)
+- src/lib/db/queries/sync-log.ts (already existed, activated by ATDD agent)
+- src/lib/db/queries/properties.ts (already existed, enhanced with fetchPropertySnapshot/fetchOfficeIdMap/fetchAgentIdMap)
+- src/lib/db/queries/agents.ts (NEW)
+- .env.example (updated: NEXTAUTH_URL added)
+- .github/workflows/ci.yml (updated: DATABASE_URL env for build step)
+- tests/unit/sync/differ.spec.ts (activated: it.skip → it; factory fields corrected)
+- tests/unit/sync/slugify.spec.ts (activated: it.skip → it)
+- tests/unit/sync/pipeline.spec.ts (activated: it.skip → it; mocks updated for fetchPropertySnapshot/fetchOfficeIdMap/fetchAgentIdMap)
+- tests/unit/db/sync-log.spec.ts (activated: it.skip → it)
