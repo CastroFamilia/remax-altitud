@@ -1,12 +1,13 @@
 /**
- * ATDD Red-Phase Scaffolds — Story 2.7: Sync Monitoring & Failure Resilience
+ * Unit tests — Story 2.7: Sync Monitoring & Failure Resilience
  * Module: src/lib/sync/alert.ts
  *
  * Covers AC #1 — automated alert is sent to admin when all 3 retries are exhausted.
  * Covers AC #6 — alert failure must NEVER throw and NEVER crash the sync pipeline.
  *
- * TDD RED PHASE: Tests are written against the expected contract of alert.ts.
- * They will fail (red) until src/lib/sync/alert.ts is implemented.
+ * global.fetch is assigned at module level (before the module under test is
+ * imported) so that alert.ts captures the mock at import time.
+ * vi.clearAllMocks() in beforeEach resets call state between tests.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";

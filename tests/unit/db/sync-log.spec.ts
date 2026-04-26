@@ -1,13 +1,10 @@
 /**
- * ATDD Red-Phase Scaffolds — Story 2.3: Sync Pipeline Core
+ * Unit tests — Story 2.3: Sync Pipeline Core (implemented in Story 2.7)
  * Module: src/lib/db/queries/sync-log.ts
  *
- * TDD RED PHASE — all tests are skipped until the module is implemented.
  * Covers AC #1, #9, #10, #11 (sync_log lifecycle) + Risk R-011.
  *
  * DB calls are mocked via vi.mock — no live DATABASE_URL required.
- *
- * To activate: remove `it.skip` → `it` after implementing src/lib/db/queries/sync-log.ts
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
