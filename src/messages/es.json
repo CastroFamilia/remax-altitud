@@ -281,6 +281,22 @@
       "whatsappMessage": "Hola, estaba viendo una propiedad..."
     }
   },
+  "SearchPage": {
+    "title": "Buscar Propiedades",
+    "description": "Busca casas, terrenos y propiedades comerciales en Costa Rica",
+    "viewToggle": {
+      "split": "Vista dividida",
+      "map": "Solo mapa",
+      "grid": "Solo lista"
+    },
+    "filterBar": {
+      "label": "Filtros",
+      "loading": "Cargando filtros"
+    },
+    "pullUpHandle": {
+      "propertiesCount": "{count} propiedades"
+    }
+  },
   "PropertyUnavailable": {
     "heading": "Esta propiedad ya no está disponible",
     "subtext": "Puede que haya sido vendida o retirada de nuestros listados.",

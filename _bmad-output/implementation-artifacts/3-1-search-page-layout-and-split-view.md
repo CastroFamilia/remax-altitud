@@ -1,6 +1,6 @@
 # Story 3.1: Search Page Layout & Split-View
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -28,119 +28,67 @@ so that I can understand where properties are while browsing details.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create search page route and Server Component shell (AC: #1, #8)
-  - [ ] Create `src/app/[locale]/search/page.tsx` — Server Component wrapper.
-  - [ ] Call `setRequestLocale(locale)` (import from `"next-intl/server"`) — required for all `[locale]/` pages.
-  - [ ] Export `generateMetadata` returning `{ robots: { index: false, follow: false } }` — search is filter-shareable but must NOT be indexed (see Architecture URL Strategy table: "Filter-shareable but not indexed").
-  - [ ] Render `<SearchPageClient />` as the sole child — the server component is just a locale setup + metadata shell.
-  - [ ] Do NOT add `export const dynamic` — search is CSR so SSR/ISR is irrelevant.
+- [x] Task 1: Create search page route and Server Component shell (AC: #1, #8)
+  - [x] Create `src/app/[locale]/search/page.tsx` — Server Component wrapper.
+  - [x] Call `setRequestLocale(locale)` (import from `"next-intl/server"`) — required for all `[locale]/` pages.
+  - [x] Export `generateMetadata` returning `{ robots: { index: false, follow: false } }` — search is filter-shareable but must NOT be indexed (see Architecture URL Strategy table: "Filter-shareable but not indexed").
+  - [x] Render `<SearchPageClient />` as the sole child — the server component is just a locale setup + metadata shell.
+  - [x] Do NOT add `export const dynamic` — search is CSR so SSR/ISR is irrelevant.
 
-- [ ] Task 2: Create `SearchPageClient` Client Component (AC: #1, #7, #8)
-  - [ ] Create `src/components/search/search-page-client.tsx` with `'use client'` directive.
-  - [ ] This component owns all search page state (view mode, etc.) and renders the layout shell.
-  - [ ] Import and render `<SplitViewLayout>` (to be created in Task 3).
-  - [ ] Import and render `<SearchFilterBar>` (stub for Story 3.3 — see Task 5).
-  - [ ] Read `viewMode` from URL params using `useSearchParams()` from `next/navigation`; default to `"split"`.
-  - [ ] Pass `viewMode` as prop to `<SplitViewLayout>`.
+- [x] Task 2: Create `SearchPageClient` Client Component (AC: #1, #7, #8)
+  - [x] Create `src/components/search/search-page-client.tsx` with `'use client'` directive.
+  - [x] This component owns all search page state (view mode, etc.) and renders the layout shell.
+  - [x] Import and render `<SplitViewLayout>` (to be created in Task 3).
+  - [x] Import and render `<SearchFilterBar>` (stub for Story 3.3 — see Task 5).
+  - [x] Read `viewMode` from URL params using `useSearchParams()` from `next/navigation`; default to `"split"`.
+  - [x] Pass `viewMode` as prop to `<SplitViewLayout>`.
 
-- [ ] Task 3: Create `SplitViewLayout` Client Component (AC: #1, #2, #3, #4, #5)
-  - [ ] Create `src/components/search/split-view-layout.tsx` with `'use client'` directive.
-  - [ ] Props: `viewMode: "split" | "map" | "grid"`, `onViewModeChange: (mode: "split" | "map" | "grid") => void`.
-  - [ ] **Desktop (≥1024px) — split mode (default):** Map panel `w-[60%]` fixed (non-scrolling, `h-[calc(100vh-var(--header-height)-3.5rem)]` — subtracts header + filter bar h-14), Grid panel `w-[40%]` scrollable overflow-y-auto. Both panels side-by-side using flex row.
-  - [ ] **Desktop — full map mode:** Map `w-full`, grid `hidden`.
-  - [ ] **Desktop — full grid mode:** Map `hidden`, grid `w-full`.
-  - [ ] **Tablet (768–1023px):** Same 60/40 split; grid panel hidden behind side-panel toggle button (aria-expanded). Toggle button reveals grid as an overlay panel (sliding from right).
-  - [ ] **Mobile (<768px):** Map `w-full h-screen`. Pull-up sheet handle: a 40px tall handle bar at `bottom-0` with `position: fixed`, containing a drag indicator line and property count text (e.g. "24 properties"). No sheet behaviour in this story — the handle is a non-interactive stub, styled and positioned for Story 3.6 to activate. Add `data-testid="pull-up-handle"`.
-  - [ ] Use Tailwind responsive prefixes: `lg:` for ≥1024px, `md:` for 768–1023px, no prefix for mobile-first (<768px).
-  - [ ] Map placeholder: render `<div data-testid="map-placeholder" className="h-full w-full bg-muted" />` — Story 3.2 will replace with `<MapView>`.
-  - [ ] Grid placeholder: render `<SearchResultsSkeleton />` — Story 3.5 replaces with `<PropertyGrid>`.
-  - [ ] Render `<ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />` above the split panels (desktop/tablet only, hidden on mobile). `ViewModeToggle` is created in Task 4.
+- [x] Task 3: Create `SplitViewLayout` Client Component (AC: #1, #2, #3, #4, #5)
+  - [x] Create `src/components/search/split-view-layout.tsx` with `'use client'` directive.
+  - [x] Props: `viewMode: "split" | "map" | "grid"`, `onViewModeChange: (mode: "split" | "map" | "grid") => void`.
+  - [x] **Desktop (≥1024px) — split mode (default):** Map panel `w-[60%]` fixed (non-scrolling, `h-[calc(100vh-var(--header-height)-3.5rem)]` — subtracts header + filter bar h-14), Grid panel `w-[40%]` scrollable overflow-y-auto. Both panels side-by-side using flex row.
+  - [x] **Desktop — full map mode:** Map `w-full`, grid `hidden`.
+  - [x] **Desktop — full grid mode:** Map `hidden`, grid `w-full`.
+  - [x] **Tablet (768–1023px):** Same 60/40 split; grid panel hidden behind side-panel toggle button (aria-expanded). Toggle button reveals grid as an overlay panel (sliding from right).
+  - [x] **Mobile (<768px):** Map `w-full h-screen`. Pull-up sheet handle: a 40px tall handle bar at `bottom-0` with `position: fixed`, containing a drag indicator line and property count text (e.g. "24 properties"). No sheet behaviour in this story — the handle is a non-interactive stub, styled and positioned for Story 3.6 to activate. Add `data-testid="pull-up-handle"`.
+  - [x] Use Tailwind responsive prefixes: `lg:` for ≥1024px, `md:` for 768–1023px, no prefix for mobile-first (<768px).
+  - [x] Map placeholder: render `<div data-testid="map-placeholder" className="h-full w-full bg-muted" />` — Story 3.2 will replace with `<MapView>`.
+  - [x] Grid placeholder: render `<SearchResultsSkeleton />` — Story 3.5 replaces with `<PropertyGrid>`.
+  - [x] Render `<ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />` above the split panels (desktop/tablet only, hidden on mobile). `ViewModeToggle` is created in Task 4.
 
-- [ ] Task 4: Create `ViewModeToggle` UI component (AC: #2, #3)
-  - [ ] Create `src/components/search/view-mode-toggle.tsx` with `'use client'` directive.
-  - [ ] Three segmented buttons: "Split View" (default), "Full Map", "Full Grid".
-  - [ ] Props: `viewMode: "split" | "map" | "grid"`, `onViewModeChange: (mode: "split" | "map" | "grid") => void`. On click, update the URL param `view` via `useRouter` + `useSearchParams` from `next/navigation` (do NOT use `router.push` with full URL rebuild; use `router.replace` to preserve other params), then call `onViewModeChange` to notify parent.
-  - [ ] Pattern for URL param update:
-    ```ts
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("view", newMode);
-    router.replace(`?${params.toString()}`, { scroll: false });
-    ```
-  - [ ] Active state: `bg-brand-navy text-white` for active button, `bg-transparent` for inactive.
-  - [ ] Hidden on mobile (`hidden lg:flex`).
+- [x] Task 4: Create `ViewModeToggle` UI component (AC: #2, #3)
+  - [x] Create `src/components/search/view-mode-toggle.tsx` with `'use client'` directive.
+  - [x] Three segmented buttons: "Split View" (default), "Full Map", "Full Grid".
+  - [x] Props: `viewMode: "split" | "map" | "grid"`, `onViewModeChange: (mode: "split" | "map" | "grid") => void`. On click, update the URL param `view` via `useRouter` + `useSearchParams` from `next/navigation` (do NOT use `router.push` with full URL rebuild; use `router.replace` to preserve other params), then call `onViewModeChange` to notify parent.
+  - [x] Pattern for URL param update implemented as specified.
+  - [x] Active state: `bg-brand-navy text-white` for active button, `bg-transparent` for inactive.
+  - [x] Hidden on mobile (`hidden lg:flex`).
 
-- [ ] Task 5: Create `SearchFilterBar` stub (AC: #6)
-  - [ ] Create `src/components/search/search-filter-bar.tsx` with `'use client'` directive.
-  - [ ] This is a layout stub — Story 3.3 implements the actual filters.
-  - [ ] Render a `<div>` with `position: sticky`, `top: 0`, `z-index: 10` (above content, below modals).
-  - [ ] Height `h-14` (56px), `bg-background`, `border-b border-border`, `flex items-center px-4 gap-3`.
-  - [ ] Placeholder content: a grey rounded bar `w-full h-8 bg-muted rounded animate-pulse` with `aria-label="Filter bar loading"` — Story 3.3 replaces this with actual filter controls.
-  - [ ] On mobile: renders as a `h-12` compact bar with "Filters" button text and filter icon (lucide `SlidersHorizontal`).
+- [x] Task 5: Create `SearchFilterBar` stub (AC: #6)
+  - [x] Create `src/components/search/search-filter-bar.tsx` with `'use client'` directive.
+  - [x] This is a layout stub — Story 3.3 implements the actual filters.
+  - [x] Render a `<div>` with `position: sticky`, `top: 0`, `z-index: 10` (above content, below modals).
+  - [x] Height `h-14` (56px), `bg-background`, `border-b border-border`, `flex items-center px-4 gap-3`.
+  - [x] Placeholder content: a grey rounded bar `w-full h-8 bg-muted rounded animate-pulse` with `aria-label="Filter bar loading"` — Story 3.3 replaces this with actual filter controls.
+  - [x] On mobile: renders as a `h-12` compact bar with "Filters" button text and filter icon (lucide `SlidersHorizontal`).
 
-- [ ] Task 6: Add i18n keys for search page (AC: #1)
-  - [ ] Add to `src/messages/en.json` under a new `"SearchPage"` namespace:
-    ```json
-    "SearchPage": {
-      "title": "Search Properties",
-      "description": "Search homes, land, and commercial properties in Costa Rica",
-      "viewToggle": {
-        "split": "Split View",
-        "map": "Full Map",
-        "grid": "Full Grid"
-      },
-      "filterBar": {
-        "label": "Filters",
-        "loading": "Filter bar loading"
-      },
-      "pullUpHandle": {
-        "propertiesCount": "{count} properties"
-      }
-    }
-    ```
-  - [ ] Add equivalent Spanish keys to `src/messages/es.json`:
-    ```json
-    "SearchPage": {
-      "title": "Buscar Propiedades",
-      "description": "Busca casas, terrenos y propiedades comerciales en Costa Rica",
-      "viewToggle": {
-        "split": "Vista dividida",
-        "map": "Solo mapa",
-        "grid": "Solo lista"
-      },
-      "filterBar": {
-        "label": "Filtros",
-        "loading": "Cargando filtros"
-      },
-      "pullUpHandle": {
-        "propertiesCount": "{count} propiedades"
-      }
-    }
-    ```
+- [x] Task 6: Add i18n keys for search page (AC: #1)
+  - [x] Added to `src/messages/en.json` under `"SearchPage"` namespace with all required keys.
+  - [x] Added equivalent Spanish keys to `src/messages/es.json`.
 
-- [ ] Task 7: Tests (AC: all)
-  - [ ] Create `tests/unit/search/split-view-layout.spec.tsx`:
-    - **Test: desktop split (default)** — renders map panel with `w-[60%]` and grid panel with `w-[40%]` when `viewMode="split"` at `lg` breakpoint.
-    - **Test: full map mode** — grid panel has `hidden` class when `viewMode="map"`.
-    - **Test: full grid mode** — map panel has `hidden` class when `viewMode="grid"`.
-    - **Test: mobile pull-up handle** — element with `data-testid="pull-up-handle"` is present at mobile viewport; handle is not interactive (no onClick handler on stub).
-    - **Test: map placeholder** — `data-testid="map-placeholder"` renders when map panel is visible.
-  - [ ] Create `tests/unit/search/view-mode-toggle.spec.tsx`:
-    - Mock `next/navigation` (`useRouter`, `useSearchParams`).
-    - **Test: default active state** — "Split View" button has active class by default.
-    - **Test: mode switch** — clicking "Full Map" calls router.replace with `view=map` param AND calls `onViewModeChange("map")`.
-    - **Test: preserves existing params** — existing URL params are not dropped when view mode changes.
-  - [ ] Create `tests/unit/search/search-filter-bar.spec.tsx`:
-    - **Test: sticky positioning** — container has `position: sticky` and `top: 0`.
-    - **Test: mobile compact** — renders "Filters" button with `SlidersHorizontal` icon on mobile.
+- [x] Task 7: Tests (AC: all)
+  - [x] Created and activated `tests/unit/search/split-view-layout.spec.tsx` — 9 tests all passing.
+  - [x] Created and activated `tests/unit/search/view-mode-toggle.spec.tsx` — 6 tests all passing.
+  - [x] Created and activated `tests/unit/search/search-filter-bar.spec.tsx` — 6 tests all passing.
+  - [x] Configured `vitest.config.ts` with jsdom environment for `.spec.tsx` files.
+  - [x] Installed `@testing-library/react`, `@testing-library/dom`, `jsdom` dev dependencies.
 
-- [ ] Task 8: CI verification (AC: all)
-  - [ ] `npm run typecheck` → 0 new errors.
-  - [ ] `npm run lint` → 0 errors.
-  - [ ] `npm run format:check` → pass.
-  - [ ] `npm run build` → pass.
-  - [ ] `npm test` → 0 new failures (all new tests pass; existing tests remain green).
+- [x] Task 8: CI verification (AC: all)
+  - [x] `npm run typecheck` → 0 new errors.
+  - [x] `npm run lint` → 0 errors.
+  - [x] `npm run format:check` → pass (pre-existing issue in unrelated sync/route.ts excluded).
+  - [x] `npm run build` → pass (added Suspense boundary for useSearchParams).
+  - [x] `npm test` → 265 pass, 3 skip, 0 failures (21 new component tests all green).
 
 ## Dev Notes
 
@@ -304,11 +252,25 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+- Suspense boundary required: Next.js 15 requires `useSearchParams()` to be wrapped in `<Suspense>`. Added to `page.tsx` wrapping `<SearchPageClient />`.
+- jsdom env: vitest.config.ts uses `environmentMatchGlobs` to apply jsdom only to `tests/unit/search/**/*.spec.tsx`, keeping node env for db/sync tests.
+- JSX transform: Used `esbuild: { jsx: "automatic" }` in vitest config (avoids needing @vitejs/plugin-react which is ESM-only and incompatible with CJS vitest config loading).
+- `@vitejs/plugin-react` ESM conflict: Replaced with `esbuild.jsx: "automatic"` configuration.
+
 ### Completion Notes List
+
+- All 8 tasks completed. 21 new component tests pass (9 SplitViewLayout, 6 ViewModeToggle, 6 SearchFilterBar).
+- Full test suite: 265 pass, 3 skip (pre-existing), 0 failures.
+- typecheck: 0 errors. lint: 0 errors. build: passes.
+- format:check: passes for all new/modified files; `src/app/api/sync/route.ts` has a pre-existing format issue not introduced by this story.
+- New dependencies added: `@testing-library/react`, `@testing-library/dom`, `@testing-library/user-event`, `jsdom` (all devDependencies).
+- `--header-height: 64px` added to `:root` in globals.css.
+- ViewModeToggle uses `useTranslations("SearchPage.viewToggle")` for i18n button labels.
+- SearchFilterBar is mobile-first: base `h-12`, `md:h-14`; mobile compact bar uses `SlidersHorizontal` icon.
 
 ### File List
 
-**New files to create:**
+**New files created:**
 - `src/app/[locale]/search/page.tsx`
 - `src/components/search/search-page-client.tsx`
 - `src/components/search/split-view-layout.tsx`
@@ -317,8 +279,16 @@ claude-sonnet-4-6
 - `tests/unit/search/split-view-layout.spec.tsx`
 - `tests/unit/search/view-mode-toggle.spec.tsx`
 - `tests/unit/search/search-filter-bar.spec.tsx`
+- `tests/setup/jsdom-setup.ts`
 
-**Files to modify:**
-- `src/messages/en.json`
-- `src/messages/es.json`
-- `src/styles/globals.css`
+**Files modified:**
+- `src/messages/en.json` — added `SearchPage` namespace
+- `src/messages/es.json` — added `SearchPage` namespace (Spanish)
+- `src/styles/globals.css` — added `--header-height: 64px` to `:root`
+- `vitest.config.ts` — added jsdom environment for search component tests, esbuild jsx transform
+- `package.json` — added devDependencies for testing
+- `package-lock.json` — updated
+
+### Change Log
+
+- 2026-04-26: Story 3.1 implemented — search page route, split-view layout, view mode toggle, filter bar stub, i18n keys, 21 component tests, jsdom test environment configuration.
