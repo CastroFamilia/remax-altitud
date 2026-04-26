@@ -295,6 +295,10 @@
     },
     "pullUpHandle": {
       "propertiesCount": "{count, plural, one {# property} other {# properties}}"
+    },
+    "sidePanel": {
+      "show": "Show listings",
+      "hide": "Hide listings"
     }
   },
   "PropertyUnavailable": {

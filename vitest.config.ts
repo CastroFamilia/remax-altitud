@@ -21,6 +21,8 @@ export default defineConfig({
       ["tests/unit/search/**/*.spec.tsx", "jsdom"],
       ["tests/unit/search/**/*.test.tsx", "jsdom"],
     ],
+    // Run the jsdom setup file before each jsdom component test
+    setupFiles: ["./tests/setup/jsdom-setup.ts"],
   },
   resolve: {
     alias: {

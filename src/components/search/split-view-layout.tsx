@@ -17,6 +17,7 @@ export function SplitViewLayout({ viewMode, onViewModeChange }: SplitViewLayoutP
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const tPullUp = useTranslations("SearchPage.pullUpHandle");
+  const tSidePanel = useTranslations("SearchPage.sidePanel");
 
   const mapHidden = viewMode === "grid";
   const gridHidden = viewMode === "map";
@@ -73,11 +74,10 @@ export function SplitViewLayout({ viewMode, onViewModeChange }: SplitViewLayoutP
         <button
           type="button"
           aria-expanded={sidePanelOpen}
-          aria-label={sidePanelOpen ? "Hide listings" : "Show listings"}
+          aria-label={sidePanelOpen ? tSidePanel("hide") : tSidePanel("show")}
           className="absolute right-2 top-2 z-20 hidden md:flex lg:hidden items-center justify-center h-10 w-10 rounded-full bg-background shadow-md border border-border"
           onClick={() => setSidePanelOpen((prev) => !prev)}
         >
-          <span className="sr-only">{sidePanelOpen ? "Hide listings" : "Show listings"}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
