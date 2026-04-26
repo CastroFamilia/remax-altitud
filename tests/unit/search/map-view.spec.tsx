@@ -44,7 +44,7 @@ vi.mock("react-map-gl", () => ({
       },
     });
     return (
-      <div data-testid="map-container" aria-label={ariaLabel}>
+      <div data-testid="mapbox-map-stub" aria-label={ariaLabel}>
         {children}
       </div>
     );
@@ -225,8 +225,8 @@ describe("MapView", () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
       render(<MapView properties={[]} locale="en" onBoundsChange={noop} />);
 
-      const container = document.querySelector('[data-testid="map-container"]');
-      expect(container).not.toBeNull();
+      const container = screen.getByTestId("map-container");
+      expect(container).toBeTruthy();
     },
   );
 
@@ -236,8 +236,8 @@ describe("MapView", () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
       render(<MapView properties={[]} locale="en" onBoundsChange={noop} />);
 
-      const container = document.querySelector('[data-testid="map-container"]');
-      expect(container?.getAttribute("aria-label")).toBe("Property locations map");
+      const container = screen.getByTestId("map-container");
+      expect(container.getAttribute("aria-label")).toBe("Property locations map");
     },
   );
 
@@ -252,10 +252,8 @@ describe("MapView", () => {
       render(<MapView properties={[]} locale="en" onBoundsChange={noop} />);
 
       // No price pins or cluster pins should exist
-      const pins = document.querySelectorAll('[data-testid="map-price-pin"]');
-      const clusters = document.querySelectorAll('[data-testid="map-cluster-pin"]');
-      expect(pins).toHaveLength(0);
-      expect(clusters).toHaveLength(0);
+      expect(screen.queryAllByTestId("map-price-pin")).toHaveLength(0);
+      expect(screen.queryAllByTestId("map-cluster-pin")).toHaveLength(0);
     },
   );
 
@@ -267,8 +265,7 @@ describe("MapView", () => {
       render(<MapView properties={[property]} locale="en" onBoundsChange={noop} />);
 
       // Should render exactly one price pin marker (no clustering at zoom=10 with 1 property)
-      const pins = document.querySelectorAll('[data-testid="map-price-pin"]');
-      expect(pins.length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByTestId("map-price-pin").length).toBeGreaterThanOrEqual(1);
     },
   );
 
@@ -280,10 +277,9 @@ describe("MapView", () => {
       render(<MapView properties={[property]} locale="en" onBoundsChange={noop} />);
 
       // The mocked Marker exposes data-lat and data-lng attributes
-      const marker = document.querySelector('[data-testid="map-marker"]');
-      expect(marker).not.toBeNull();
-      expect(marker?.getAttribute("data-lat")).toBe("9.5");
-      expect(marker?.getAttribute("data-lng")).toBe("-83.9");
+      const marker = screen.getByTestId("map-marker");
+      expect(marker.getAttribute("data-lat")).toBe("9.5");
+      expect(marker.getAttribute("data-lng")).toBe("-83.9");
     },
   );
 
@@ -302,15 +298,13 @@ describe("MapView", () => {
       render(<MapView properties={[property]} locale="en" onBoundsChange={noop} />);
 
       // Click the price pin for the property
-      const pin = document.querySelector('[data-testid="map-price-pin"]');
-      expect(pin).not.toBeNull();
-      fireEvent.click(pin!);
+      const pin = screen.getByTestId("map-price-pin");
+      fireEvent.click(pin);
 
       // Popup card should appear with the property's title
-      const popupCard = document.querySelector('[data-testid="map-property-popup-card"]');
-      expect(popupCard).not.toBeNull();
-      expect(popupCard?.getAttribute("data-property-id")).toBe("prop-42");
-      expect(popupCard?.textContent).toContain("Ocean View Lot in Uvita");
+      const popupCard = screen.getByTestId("map-property-popup-card");
+      expect(popupCard.getAttribute("data-property-id")).toBe("prop-42");
+      expect(popupCard.textContent).toContain("Ocean View Lot in Uvita");
     },
   );
 
@@ -321,8 +315,7 @@ describe("MapView", () => {
       const property = makeProperty();
       render(<MapView properties={[property]} locale="en" onBoundsChange={noop} />);
 
-      const popupCard = document.querySelector('[data-testid="map-property-popup-card"]');
-      expect(popupCard).toBeNull();
+      expect(screen.queryByTestId("map-property-popup-card")).toBeNull();
     },
   );
 
@@ -334,17 +327,15 @@ describe("MapView", () => {
       render(<MapView properties={[property]} locale="en" onBoundsChange={noop} />);
 
       // Open popup
-      const pin = document.querySelector('[data-testid="map-price-pin"]');
-      fireEvent.click(pin!);
+      const pin = screen.getByTestId("map-price-pin");
+      fireEvent.click(pin);
 
       // Close via close button
-      const closeButton = document.querySelector('[data-testid="map-popup-close"]');
-      expect(closeButton).not.toBeNull();
-      fireEvent.click(closeButton!);
+      const closeButton = screen.getByTestId("map-popup-close");
+      fireEvent.click(closeButton);
 
       // Popup should be gone
-      const popupCard = document.querySelector('[data-testid="map-property-popup-card"]');
-      expect(popupCard).toBeNull();
+      expect(screen.queryByTestId("map-property-popup-card")).toBeNull();
     },
   );
 

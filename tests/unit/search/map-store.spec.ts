@@ -16,7 +16,7 @@
  *   - Store shape: useMapStore hook with setCenter, setZoom, setBounds actions
  */
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 
 // ---------------------------------------------------------------------------
 // Module under test — imported AFTER any mocks (none needed for pure store)
@@ -29,6 +29,15 @@ import { useMapStore } from "@/store/map-store"; // imported AFTER mocks
 // ---------------------------------------------------------------------------
 
 describe("useMapStore — Zustand map state store (AC #8)", () => {
+  // -------------------------------------------------------------------------
+  // Reset store to initial state before each test.
+  // Zustand stores are singletons — mutations in one test persist to the next
+  // unless explicitly reset. This ensures order-independence and parallel safety.
+  // -------------------------------------------------------------------------
+  beforeEach(() => {
+    useMapStore.setState({ center: { lng: -83.7, lat: 9.38 }, zoom: 10, bounds: null });
+  });
+
   // -------------------------------------------------------------------------
   // Default state
   // -------------------------------------------------------------------------
