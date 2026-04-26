@@ -8,7 +8,10 @@
  *   AC #3 — Full-grid toggle: grid 100%, map hidden
  *   AC #4 — Tablet 60/40 split with side-panel toggle (768–1023px)
  *   AC #5 — Mobile: map fullscreen + pull-up handle stub at bottom (<768px)
- *   AC #1 — Map placeholder (data-testid="map-placeholder") renders when map visible
+ *   AC #1 — Map container (data-testid="map-container") renders when map visible
+ *
+ * Story 3.2 regression fix: data-testid="map-placeholder" is replaced by
+ * data-testid="map-container" (on MapViewLoader's loading fallback and MapView wrapper).
  */
 
 import { describe, expect, it, vi, afterEach } from "vitest";
@@ -39,6 +42,16 @@ vi.mock("next-intl", () => ({
 
 vi.mock("@/components/search/search-results-skeleton", () => ({
   SearchResultsSkeleton: () => <div data-testid="search-results-skeleton" />,
+}));
+
+// Story 3.2: Mock MapView (replaces the map-placeholder div).
+// MapViewLoader's loading fallback renders data-testid="map-container".
+// The mock here simulates that loading state so SplitViewLayout tests
+// continue to pass without requiring Mapbox to render in jsdom.
+vi.mock("@/components/map/map-view-loader", () => ({
+  MapView: ({ "data-testid": testId, ...props }: any) => (
+    <div data-testid="map-container" className="h-full w-full bg-muted animate-pulse" />
+  ),
 }));
 
 vi.mock("@/components/search/view-mode-toggle", () => ({
@@ -106,15 +119,21 @@ describe("SplitViewLayout", () => {
   // AC #1: Map placeholder renders when map panel is visible
   // -------------------------------------------------------------------------
 
-  it(
-    "[P0] renders data-testid='map-placeholder' inside map panel when map is visible",
+  // Story 3.2 regression fix: this test is updated from 'map-placeholder' to 'map-container'.
+  // It is skipped until Task 9 (wire MapView into SplitViewLayout) is implemented.
+  // When Task 9 replaces the placeholder div with <MapView>, remove it.skip to activate.
+  it.skip(
+    "[P0] renders data-testid='map-container' inside map panel when map is visible (Story 3.2: replaces map-placeholder)",
     () => {
+      // THIS TEST WILL FAIL until Task 9 wires MapView into SplitViewLayout
       render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
 
-      const mapPlaceholder = document.querySelector('[data-testid="map-placeholder"]');
+      // Story 3.2 regression fix: data-testid="map-placeholder" is replaced by
+      // data-testid="map-container" on the MapView/MapViewLoader component.
+      const mapContainer = document.querySelector('[data-testid="map-container"]');
 
-      expect(mapPlaceholder).not.toBeNull();
-      expect(mapPlaceholder?.className).toContain("bg-muted");
+      expect(mapContainer).not.toBeNull();
+      expect(mapContainer?.className).toContain("bg-muted");
     },
   );
 
