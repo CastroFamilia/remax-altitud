@@ -281,6 +281,26 @@
       "whatsappMessage": "Hi, I was looking at a property..."
     }
   },
+  "SearchPage": {
+    "title": "Search Properties",
+    "description": "Search homes, land, and commercial properties in Costa Rica",
+    "viewToggle": {
+      "split": "Split View",
+      "map": "Full Map",
+      "grid": "Full Grid"
+    },
+    "filterBar": {
+      "label": "Filters",
+      "loading": "Filter bar loading"
+    },
+    "pullUpHandle": {
+      "propertiesCount": "{count, plural, one {# property} other {# properties}}"
+    },
+    "sidePanel": {
+      "show": "Show listings",
+      "hide": "Hide listings"
+    }
+  },
   "PropertyUnavailable": {
     "heading": "This property is no longer available",
     "subtext": "It may have been sold or removed from our listings.",

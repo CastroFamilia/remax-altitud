@@ -141,6 +141,9 @@
   /* Base radius for shadcn calculations (maps to --radius-lg = 12px) */
   --radius: 0.75rem;
 
+  /* Site header height — used by search split-view layout */
+  --header-height: 64px;
+
   /* ── shadcn semantic slots (bare names) → RE/MAX brand ── */
   --background: #f7f5ee; /* Crema canvas */
   --foreground: #202020; /* Text primary */
