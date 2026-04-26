@@ -17,11 +17,19 @@ export async function sendSyncFailureAlert(errorMessage: string): Promise<void> 
   }
 
   try {
-    await fetch(webhookUrl, {
+    const response = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: `[remax-altitud] Sync failure: ${errorMessage}` }),
     });
+    if (!response.ok) {
+      // Non-2xx from Slack (e.g. 429 rate limit, 403 invalid token) — log but do not throw
+      console.warn(
+        "[sync/alert] Slack webhook returned non-2xx:",
+        response.status,
+        response.statusText,
+      );
+    }
   } catch (err) {
     // Alert delivery failure must not propagate — site resilience takes priority
     console.warn("[sync/alert] Failed to send Slack alert:", err);

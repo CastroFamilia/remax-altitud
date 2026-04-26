@@ -224,4 +224,22 @@ describe("sendSyncFailureAlert — fetch throws (AC #6 resilience)", () => {
       await expect(sendSyncFailureAlert("Sync failure")).resolves.not.toThrow();
     },
   );
+
+  it(
+    "[P1] given fetch returns non-2xx status when sendSyncFailureAlert is called then console.warn is called with the status",
+    async () => {
+      // Non-2xx Slack responses must be logged — consistent with api-client.ts, pipeline.ts, image-optimizer.ts
+      process.env[WEBHOOK_KEY] = "https://hooks.slack.com/services/test/webhook";
+      mockFetch.mockResolvedValue({ ok: false, status: 429, statusText: "Too Many Requests" } as Response);
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      await sendSyncFailureAlert("Sync failure");
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining("[sync/alert]"),
+        expect.anything(),
+        expect.anything(),
+      );
+    },
+  );
 });
