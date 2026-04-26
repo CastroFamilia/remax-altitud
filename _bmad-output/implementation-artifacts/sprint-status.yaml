@@ -61,7 +61,7 @@ development_status:
   2-4-image-optimization-pipeline: done
   2-5-translation-pipeline: done
   2-6-lifestyle-tag-auto-tagging: done
-  2-7-sync-monitoring-and-failure-resilience: ready-for-dev
+  2-7-sync-monitoring-and-failure-resilience: atdd-done
   epic-2-retrospective: optional
 
   # Epic 3: Property Discovery & Search
