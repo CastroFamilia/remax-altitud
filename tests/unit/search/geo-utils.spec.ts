@@ -91,6 +91,13 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
     },
   );
 
+  it(
+    "[P0] returns '$1.0M' for 999_500 (rounding boundary — avoids '$1000K')",
+    () => {
+      expect(formatPriceAbbrev(999_500)).toBe("$1.0M");
+    },
+  );
+
   // -------------------------------------------------------------------------
   // Sub-thousand (< 1,000) — full dollar amount
   // -------------------------------------------------------------------------
