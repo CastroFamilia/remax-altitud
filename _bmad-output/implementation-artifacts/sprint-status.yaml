@@ -66,7 +66,7 @@ development_status:
 
   # Epic 3: Property Discovery & Search
   epic-3: in-progress
-  3-1-search-page-layout-and-split-view: ready-for-dev
+  3-1-search-page-layout-and-split-view: review
   3-2-interactive-map-with-property-pins: backlog
   3-3-search-filters-and-url-state: backlog
   3-4-lifestyle-tags-and-smart-presets: backlog
