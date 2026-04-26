@@ -369,7 +369,7 @@ describe("runSyncPipeline — error handling", () => {
 // ---------------------------------------------------------------------------
 
 describe("runSyncPipeline — sendSyncFailureAlert integration (AC #1, Story 2.7)", () => {
-  it.skip(
+  it(
     "[P0] given pipeline throws an uncaught exception when runSyncPipeline is called then sendSyncFailureAlert is called once",
     async () => {
       // AC #1: When all retries are exhausted (uncaught exception), alert must fire
@@ -386,7 +386,7 @@ describe("runSyncPipeline — sendSyncFailureAlert integration (AC #1, Story 2.7
     },
   );
 
-  it.skip(
+  it(
     "[P0] given pipeline throws when runSyncPipeline is called then sendSyncFailureAlert is called with the error message",
     async () => {
       // AC #1: Alert must include the error message text so admin can diagnose
@@ -404,7 +404,7 @@ describe("runSyncPipeline — sendSyncFailureAlert integration (AC #1, Story 2.7
     },
   );
 
-  it.skip(
+  it(
     "[P0] given pipeline throws when runSyncPipeline is called then updateSyncLog is called BEFORE sendSyncFailureAlert",
     async () => {
       // Architecture: strict catch-block order — persist failure THEN alert THEN re-throw
@@ -422,7 +422,7 @@ describe("runSyncPipeline — sendSyncFailureAlert integration (AC #1, Story 2.7
     },
   );
 
-  it.skip(
+  it(
     "[P1] given pipeline completes successfully when runSyncPipeline is called then sendSyncFailureAlert is NOT called",
     async () => {
       // AC #1: Alert fires only on uncaught exceptions, NOT on success or partial status
@@ -441,7 +441,7 @@ describe("runSyncPipeline — sendSyncFailureAlert integration (AC #1, Story 2.7
     },
   );
 
-  it.skip(
+  it(
     "[P1] given pipeline status is 'partial' (parse errors but no uncaught exception) when runSyncPipeline called then sendSyncFailureAlert is NOT called",
     async () => {
       // AC #1 / Dev Notes: Only uncaught exceptions trigger alerts; partial status does NOT

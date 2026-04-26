@@ -70,7 +70,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe("getPropertyBySlug — fetch property by slug including soft-deleted (AC #3)", () => {
-  it.skip(
+  it(
     "[P0] given a slug when getPropertyBySlug is called then db.select is called",
     async () => {
       // AC #3: Property page must receive the record even when is_visible=false
@@ -80,7 +80,7 @@ describe("getPropertyBySlug — fetch property by slug including soft-deleted (A
     },
   );
 
-  it.skip(
+  it(
     "[P0] given slug='casa-en-perez-zeledon' and DB returns a soft-deleted property when getPropertyBySlug called then it returns the property with isVisible=false",
     async () => {
       // AC #3: The unavailable page MUST receive soft-deleted records (do NOT filter isVisible)
@@ -105,7 +105,7 @@ describe("getPropertyBySlug — fetch property by slug including soft-deleted (A
     },
   );
 
-  it.skip(
+  it(
     "[P0] given slug='visible-property' and DB returns a visible property when getPropertyBySlug called then it returns the property with isVisible=true",
     async () => {
       // getPropertyBySlug returns all properties — the page component decides rendering
@@ -129,7 +129,7 @@ describe("getPropertyBySlug — fetch property by slug including soft-deleted (A
     },
   );
 
-  it.skip(
+  it(
     "[P0] given slug='nonexistent-slug' and DB returns no rows when getPropertyBySlug called then it returns null",
     async () => {
       // AC #3: Property never existed → page calls notFound() (404), not unavailable UI
@@ -141,7 +141,7 @@ describe("getPropertyBySlug — fetch property by slug including soft-deleted (A
     },
   );
 
-  it.skip(
+  it(
     "[P1] given any slug when getPropertyBySlug called then query includes a .limit(1) call",
     async () => {
       // getPropertyBySlug returns at most 1 row (slug is unique)
@@ -157,7 +157,7 @@ describe("getPropertyBySlug — fetch property by slug including soft-deleted (A
 // ---------------------------------------------------------------------------
 
 describe("getSimilarProperties — fetch visible similar properties (AC #3)", () => {
-  it.skip(
+  it(
     "[P0] given areaSlug, excludeSlug when getSimilarProperties is called then db.select is called",
     async () => {
       // AC #3: Similar properties section on the unavailable page
@@ -167,7 +167,7 @@ describe("getSimilarProperties — fetch visible similar properties (AC #3)", ()
     },
   );
 
-  it.skip(
+  it(
     "[P0] given areaSlug='perez-zeledon' and excludeSlug when getSimilarProperties called then query includes .where() to filter isVisible=true",
     async () => {
       // AC #3: Similar properties must only show VISIBLE listings
@@ -177,7 +177,7 @@ describe("getSimilarProperties — fetch visible similar properties (AC #3)", ()
     },
   );
 
-  it.skip(
+  it(
     "[P0] given areaSlug='perez-zeledon' when getSimilarProperties called with 2 matching DB rows then it returns those 2 properties",
     async () => {
       // AC #3: Up to 3 properties with matching areaSlug and isVisible=true
@@ -208,7 +208,7 @@ describe("getSimilarProperties — fetch visible similar properties (AC #3)", ()
     },
   );
 
-  it.skip(
+  it(
     "[P0] given areaSlug=null when getSimilarProperties called then query still runs (no areaSlug filter) and returns visible properties",
     async () => {
       // AC #3: Falls back to any visible property when areaSlug is null
@@ -231,7 +231,7 @@ describe("getSimilarProperties — fetch visible similar properties (AC #3)", ()
     },
   );
 
-  it.skip(
+  it(
     "[P1] given areaSlug and excludeSlug when getSimilarProperties called then query includes .orderBy() (syncedAt DESC)",
     async () => {
       // AC #3: Most recently synced properties shown first (freshest data)
@@ -241,7 +241,7 @@ describe("getSimilarProperties — fetch visible similar properties (AC #3)", ()
     },
   );
 
-  it.skip(
+  it(
     "[P1] given default limit when getSimilarProperties called without limit param then query limits to 3 results",
     async () => {
       // AC #3: Up to 3 similar properties — default limit=3 per story spec
@@ -251,7 +251,7 @@ describe("getSimilarProperties — fetch visible similar properties (AC #3)", ()
     },
   );
 
-  it.skip(
+  it(
     "[P1] given custom limit=1 when getSimilarProperties called then query limits to 1 result",
     async () => {
       // getSimilarProperties accepts a configurable limit parameter
@@ -261,7 +261,7 @@ describe("getSimilarProperties — fetch visible similar properties (AC #3)", ()
     },
   );
 
-  it.skip(
+  it(
     "[P1] given no matching similar properties when getSimilarProperties called then it returns an empty array",
     async () => {
       // AC #3: 'Browse all properties' CTA shown when no similar properties found
@@ -273,7 +273,7 @@ describe("getSimilarProperties — fetch visible similar properties (AC #3)", ()
     },
   );
 
-  it.skip(
+  it(
     "[P2] given getSimilarProperties resolves successfully then the function returns an array (not null/undefined)",
     async () => {
       // Caller depends on array result for .map() rendering in the page component

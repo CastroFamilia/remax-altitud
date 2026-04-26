@@ -50,7 +50,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe("sendSyncFailureAlert — webhook configured (AC #1)", () => {
-  it.skip(
+  it(
     "[P0] given ALERT_SLACK_WEBHOOK is set when sendSyncFailureAlert is called then fetch is called once",
     async () => {
       // AC #1: When all retries are exhausted, an alert must be dispatched
@@ -63,7 +63,7 @@ describe("sendSyncFailureAlert — webhook configured (AC #1)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given ALERT_SLACK_WEBHOOK='https://hooks.slack.com/services/test/webhook' when sendSyncFailureAlert('Network timeout') called then fetch is called with that URL",
     async () => {
       // AC #1: The webhook URL from env must be the fetch target
@@ -80,7 +80,7 @@ describe("sendSyncFailureAlert — webhook configured (AC #1)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given ALERT_SLACK_WEBHOOK is set when sendSyncFailureAlert('API unreachable') called then fetch body contains the error message",
     async () => {
       // AC #1: The alert body must include the error message for admin diagnosis
@@ -95,7 +95,7 @@ describe("sendSyncFailureAlert — webhook configured (AC #1)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given ALERT_SLACK_WEBHOOK is set when sendSyncFailureAlert called then fetch body is JSON with 'remax-altitud' identifier",
     async () => {
       // AC #1: Alert body must identify the source system for admin triage
@@ -110,7 +110,7 @@ describe("sendSyncFailureAlert — webhook configured (AC #1)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given ALERT_SLACK_WEBHOOK is set when sendSyncFailureAlert called then fetch is called with Content-Type application/json header",
     async () => {
       // Slack webhook requires JSON content-type
@@ -130,7 +130,7 @@ describe("sendSyncFailureAlert — webhook configured (AC #1)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] given ALERT_SLACK_WEBHOOK is set when sendSyncFailureAlert resolves then the function returns void (undefined)",
     async () => {
       // Alert function must return void — no result needed by pipeline catch block
@@ -149,7 +149,7 @@ describe("sendSyncFailureAlert — webhook configured (AC #1)", () => {
 // ---------------------------------------------------------------------------
 
 describe("sendSyncFailureAlert — webhook not configured (AC #6)", () => {
-  it.skip(
+  it(
     "[P0] given ALERT_SLACK_WEBHOOK is not set when sendSyncFailureAlert is called then fetch is NOT called",
     async () => {
       // AC #6: No webhook = graceful degradation; must not call fetch (undefined URL)
@@ -161,7 +161,7 @@ describe("sendSyncFailureAlert — webhook not configured (AC #6)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given ALERT_SLACK_WEBHOOK is not set when sendSyncFailureAlert is called then it does NOT throw",
     async () => {
       // AC #6: Alert failure must NEVER crash the sync pipeline
@@ -171,7 +171,7 @@ describe("sendSyncFailureAlert — webhook not configured (AC #6)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given ALERT_SLACK_WEBHOOK is not set when sendSyncFailureAlert is called then it returns void (undefined)",
     async () => {
       delete process.env[WEBHOOK_KEY];
@@ -188,7 +188,7 @@ describe("sendSyncFailureAlert — webhook not configured (AC #6)", () => {
 // ---------------------------------------------------------------------------
 
 describe("sendSyncFailureAlert — fetch throws (AC #6 resilience)", () => {
-  it.skip(
+  it(
     "[P0] given ALERT_SLACK_WEBHOOK is set and fetch rejects when sendSyncFailureAlert is called then it does NOT throw",
     async () => {
       // AC #6: Alert delivery failure must NEVER propagate — site resilience takes priority
@@ -200,7 +200,7 @@ describe("sendSyncFailureAlert — fetch throws (AC #6 resilience)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given fetch rejects when sendSyncFailureAlert is called then it returns void (undefined)",
     async () => {
       // Swallowed error still returns void — pipeline catch block must not be disrupted
@@ -213,7 +213,7 @@ describe("sendSyncFailureAlert — fetch throws (AC #6 resilience)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given fetch returns non-2xx status when sendSyncFailureAlert is called then it does NOT throw",
     async () => {
       // Even a failed Slack response (e.g. 429 rate limit) must not propagate
