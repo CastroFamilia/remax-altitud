@@ -1,5 +1,6 @@
 import "server-only";
 import { fetchPropertiesForOffice, fetchAgentsForOffice } from "./api-client";
+import { sendSyncFailureAlert } from "./alert";
 import { computePropertyHash, diffProperties } from "./differ";
 import { optimizePropertyImages } from "./image-optimizer";
 import { translateBatch } from "./translator";
@@ -321,6 +322,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       errorMessage: message,
       completedAt: new Date(),
     });
+    await sendSyncFailureAlert(message); // AC #1: best-effort alert; swallows its own errors
     throw err;
   }
 }

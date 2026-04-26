@@ -65,6 +65,11 @@ vi.mock("@/lib/sync/lifestyle-tagger", () => ({
   tagBatch: vi.fn().mockReturnValue([]),
 }));
 
+// Story 2.7 — Mock alert module to prevent real HTTP calls in sync-route tests
+vi.mock("@/lib/sync/alert", () => ({
+  sendSyncFailureAlert: vi.fn().mockResolvedValue(undefined),
+}));
+
 // ---------------------------------------------------------------------------
 // Imports — resolved after mocks are hoisted
 // ---------------------------------------------------------------------------

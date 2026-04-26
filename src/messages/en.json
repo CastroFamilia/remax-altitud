@@ -280,5 +280,12 @@
       "contactAgent": "Contact an agent",
       "whatsappMessage": "Hi, I was looking at a property..."
     }
+  },
+  "PropertyUnavailable": {
+    "heading": "This property is no longer available",
+    "subtext": "It may have been sold or removed from our listings.",
+    "similarHeading": "Similar properties you might like",
+    "browseCta": "Browse all properties",
+    "similarCta": "View property"
   }
 }

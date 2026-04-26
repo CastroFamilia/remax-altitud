@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, not } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { slugify } from "@/lib/sync/utils/slugify";
@@ -269,4 +269,59 @@ export async function updatePropertyLifestyleTags(apiId: string, tags: string[])
       updatedAt: new Date(),
     })
     .where(eq(properties.apiId, apiId));
+}
+
+/**
+ * Fetches a single property by its URL slug, including soft-deleted records.
+ * Does NOT filter by `is_visible` — the page component decides rendering based on
+ * the value: isVisible=false → "No longer available" UI; null result → 404.
+ *
+ * AC #3 (FR53, Story 2.7): Removed listings must have a graceful unavailable page.
+ *
+ * @param slug - The property's URL slug
+ * @returns Property record (visible or soft-deleted), or null if never existed
+ */
+export async function getPropertyBySlug(slug: string) {
+  const rows = await db.select().from(properties).where(eq(properties.slug, slug)).limit(1);
+  return rows[0] ?? null;
+}
+
+/**
+ * Fetches up to `limit` visible properties in the same area, excluding the given slug.
+ * Used by the "No longer available" page to display similar properties.
+ *
+ * Filters: isVisible=true, areaSlug match (if provided), excludes the current slug.
+ * Order: syncedAt DESC (most recently synced first).
+ * Returns only display-necessary columns (AC #3, Story 2.7).
+ *
+ * @param areaSlug    - Area slug to match similar properties; falls back to any visible if null
+ * @param excludeSlug - Slug of the unavailable property to exclude from results
+ * @param limit       - Maximum number of results (default 3)
+ */
+export async function getSimilarProperties(
+  areaSlug: string | null,
+  excludeSlug: string,
+  limit = 3,
+) {
+  const whereClause = areaSlug
+    ? and(
+        eq(properties.isVisible, true),
+        eq(properties.areaSlug, areaSlug),
+        not(eq(properties.slug, excludeSlug)),
+      )
+    : and(eq(properties.isVisible, true), not(eq(properties.slug, excludeSlug)));
+
+  return db
+    .select({
+      slug: properties.slug,
+      titleEn: properties.titleEn,
+      titleEs: properties.titleEs,
+      priceUsd: properties.priceUsd,
+      propertyType: properties.propertyType,
+      images: properties.images,
+    })
+    .from(properties)
+    .where(whereClause)
+    .orderBy(desc(properties.syncedAt))
+    .limit(limit);
 }
