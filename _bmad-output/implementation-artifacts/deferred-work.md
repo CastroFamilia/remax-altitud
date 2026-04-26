@@ -48,3 +48,8 @@
 ## Deferred from: code review of 2-6-lifestyle-tag-auto-tagging (2026-04-25)
 - AC #2 references "Condo in tourist zone" but the shipped rule fires on any condo (no area/keyword check) [src/lib/constants/lifestyle-tags.ts:42-48] — spec narrative explicitly approves this scope ("Extend in future: add tourist-zone area check once area data is linked"); area data wiring lands in Epic 6 Story 6.5.
 - `fetchPropertyLifestyleTags` queries the DB for just-inserted `diff.new` rows that always return empty tags [src/lib/sync/pipeline.ts:225] — matches the spec's prescribed pseudocode exactly; cost is one indexed `inArray` query per sync; revisit only if profiling identifies the sync as latency-bound.
+
+## Deferred from: code review of 3-2-interactive-map-with-property-pins (2026-04-26)
+- Duplicate `MapBounds` / `MapProperty` type definitions across 6 files (`src/store/map-store.ts`, `src/lib/map/geo-utils.ts`, `src/components/map/map-view.tsx`, `src/components/search/split-view-layout.tsx`, `src/components/search/search-page-client.tsx`, `src/app/actions/map-actions.ts`) — types are currently consistent; consolidate into a single shared types module in a follow-up.
+- `MapPropertyPopup` uses hardcoded English strings ("View Details", "Close property preview", "Titled", "Concession", "ZMT Restricted", "{n} bed/bath/m²") instead of `useTranslations` even though i18n keys for these were added to `messages/{en,es}.json` in Task 10 — UX polish, low risk; AC #4 doesn't mandate i18n for these labels.
+- `next.config.ts` lacks `images.remotePatterns` for property image hosts — popup uses `unoptimized` as a forward-compatible workaround; revisit when CMS/CDN host(s) for property photos are decided in a later epic.

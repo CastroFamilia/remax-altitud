@@ -299,6 +299,22 @@
     "sidePanel": {
       "show": "Mostrar listados",
       "hide": "Ocultar listados"
+    },
+    "MapView": {
+      "ariaLabel": "Mapa de ubicaciones de propiedades",
+      "loading": "Cargando mapa...",
+      "closePopup": "Cerrar vista previa de propiedad",
+      "viewDetails": "Ver Detalles",
+      "zmtStatus": {
+        "titled": "Titulada",
+        "concession": "Concesión",
+        "zmt_restricted": "Zona Restringida ZMT"
+      },
+      "specs": {
+        "beds": "{count} habitación",
+        "baths": "{count} baño",
+        "lotSize": "{size} m²"
+      }
     }
   },
   "PropertyUnavailable": {

@@ -5,26 +5,55 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
+import { MapView } from "@/components/map/map-view-loader";
+import type { MapBounds } from "@/store/map-store";
 
 type ViewMode = "split" | "map" | "grid";
+
+export type MapProperty = {
+  id: string;
+  slug: string;
+  titleEn: string;
+  titleEs: string;
+  priceUsd: number;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  lotSizeM2: number | null;
+  zmtStatus: string;
+  images: { url: string; alt?: string }[];
+  latitude: number;
+  longitude: number;
+};
 
 interface SplitViewLayoutProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
+  properties?: MapProperty[];
+  locale?: string;
+  propertyCount?: number;
+  onBoundsChange?: (bounds: MapBounds) => void;
 }
 
-export function SplitViewLayout({ viewMode, onViewModeChange }: SplitViewLayoutProps) {
+export function SplitViewLayout({
+  viewMode,
+  onViewModeChange,
+  properties = [],
+  locale = "en",
+  propertyCount,
+  onBoundsChange,
+}: SplitViewLayoutProps) {
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const tPullUp = useTranslations("SearchPage.pullUpHandle");
   const tSidePanel = useTranslations("SearchPage.sidePanel");
-
   const mapHidden = viewMode === "grid";
   const gridHidden = viewMode === "map";
 
-  // Property count is a stub for Story 3.1 — Story 3.5 will pass real results.
-  // Using ICU plural via next-intl so EN/ES strings vary correctly.
-  const stubPropertyCount = 24;
+  const count = propertyCount ?? properties.length;
+
+  function handleBoundsChange(bounds: MapBounds) {
+    onBoundsChange?.(bounds);
+  }
 
   return (
     <div className="relative flex flex-col">
@@ -50,7 +79,7 @@ export function SplitViewLayout({ viewMode, onViewModeChange }: SplitViewLayoutP
             "flex-shrink-0",
           )}
         >
-          <div data-testid="map-placeholder" className="h-full w-full bg-muted" />
+          <MapView properties={properties} locale={locale} onBoundsChange={handleBoundsChange} />
         </div>
 
         {/* Grid panel — hidden on mobile, shown on desktop */}
@@ -106,7 +135,7 @@ export function SplitViewLayout({ viewMode, onViewModeChange }: SplitViewLayoutP
         {/* Drag indicator */}
         <div className="w-10 h-1 bg-muted-foreground/30 rounded-full mb-1" />
         <span className="text-xs text-muted-foreground">
-          {tPullUp("propertiesCount", { count: stubPropertyCount })}
+          {tPullUp("propertiesCount", { count })}
         </span>
       </div>
     </div>
