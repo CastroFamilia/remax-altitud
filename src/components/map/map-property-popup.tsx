@@ -11,6 +11,7 @@
 
 import Image from "next/image";
 import { Popup } from "react-map-gl";
+import { X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 
 interface MapPropertyPopupProps {
@@ -119,9 +120,9 @@ export function MapPropertyPopup({ property, locale, onClose }: MapPropertyPopup
               onClick={onClose}
               aria-label="Close property preview"
               data-testid="map-popup-close"
-              className="text-xs text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground"
             >
-              ✕
+              <X size={14} aria-hidden="true" />
             </button>
           </div>
         </div>

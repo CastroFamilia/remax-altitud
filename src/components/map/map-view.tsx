@@ -13,6 +13,7 @@ import { useState, useMemo, useCallback, useRef } from "react";
 import { Map as MapboxMap, Marker } from "react-map-gl";
 import Supercluster from "supercluster";
 import type { MapRef } from "react-map-gl";
+import type { Map as MapboxGLMap } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { MAPBOX_TOKEN, MAP_STYLE, MAX_BOUNDS } from "@/lib/map/config";
@@ -111,7 +112,7 @@ export function MapView({ properties, locale, onBoundsChange }: MapViewProps) {
     : null;
 
   const handleMapLoad = useCallback(
-    (event: { target: mapboxgl.Map }) => {
+    (event: { target: MapboxGLMap }) => {
       const map = event.target;
 
       // Add Mapbox DEM terrain source for 3D terrain

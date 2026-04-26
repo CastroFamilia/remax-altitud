@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { MapView } from "@/components/map/map-view-loader";
-import { useMapStore } from "@/store/map-store";
 import type { MapBounds } from "@/store/map-store";
 
 type ViewMode = "split" | "map" | "grid";
@@ -47,15 +46,12 @@ export function SplitViewLayout({
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const tPullUp = useTranslations("SearchPage.pullUpHandle");
   const tSidePanel = useTranslations("SearchPage.sidePanel");
-  const { setBounds } = useMapStore();
-
   const mapHidden = viewMode === "grid";
   const gridHidden = viewMode === "map";
 
   const count = propertyCount ?? properties.length;
 
   function handleBoundsChange(bounds: MapBounds) {
-    setBounds(bounds);
     onBoundsChange?.(bounds);
   }
 

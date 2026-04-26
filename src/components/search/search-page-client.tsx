@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 import { SplitViewLayout } from "@/components/search/split-view-layout";
 import { SearchFilterBar } from "@/components/search/search-filter-bar";
@@ -44,7 +44,9 @@ export function SearchPageClient() {
 
   // Refresh properties when map bounds change.
   // Uses a monotonically increasing sequence number to discard stale responses.
-  function handleBoundsChange(bounds: MapBounds) {
+  // Wrapped in useCallback to avoid re-creating on every render, which would
+  // cause SplitViewLayout to re-render unnecessarily (L-3).
+  const handleBoundsChange = useCallback((bounds: MapBounds) => {
     const seq = ++requestSeqRef.current;
     getPropertiesForMap(bounds)
       .then((data) => {
@@ -56,7 +58,7 @@ export function SearchPageClient() {
       .catch((error) => {
         console.error("[search] bounds-change getPropertiesForMap failed", error);
       });
-  }
+  }, []);
 
   return (
     <div className="flex flex-col">
