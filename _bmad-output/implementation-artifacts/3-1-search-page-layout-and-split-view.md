@@ -46,7 +46,7 @@ so that I can understand where properties are while browsing details.
 - [ ] Task 3: Create `SplitViewLayout` Client Component (AC: #1, #2, #3, #4, #5)
   - [ ] Create `src/components/search/split-view-layout.tsx` with `'use client'` directive.
   - [ ] Props: `viewMode: "split" | "map" | "grid"`, `onViewModeChange: (mode: "split" | "map" | "grid") => void`.
-  - [ ] **Desktop (≥1024px) — split mode (default):** Map panel `w-[60%]` fixed (non-scrolling, `h-[calc(100vh-var(--header-height))]`), Grid panel `w-[40%]` scrollable overflow-y-auto. Both panels side-by-side using flex row.
+  - [ ] **Desktop (≥1024px) — split mode (default):** Map panel `w-[60%]` fixed (non-scrolling, `h-[calc(100vh-var(--header-height)-3.5rem)]` — subtracts header + filter bar h-14), Grid panel `w-[40%]` scrollable overflow-y-auto. Both panels side-by-side using flex row.
   - [ ] **Desktop — full map mode:** Map `w-full`, grid `hidden`.
   - [ ] **Desktop — full grid mode:** Map `hidden`, grid `w-full`.
   - [ ] **Tablet (768–1023px):** Same 60/40 split; grid panel hidden behind side-panel toggle button (aria-expanded). Toggle button reveals grid as an overlay panel (sliding from right).
@@ -54,12 +54,12 @@ so that I can understand where properties are while browsing details.
   - [ ] Use Tailwind responsive prefixes: `lg:` for ≥1024px, `md:` for 768–1023px, no prefix for mobile-first (<768px).
   - [ ] Map placeholder: render `<div data-testid="map-placeholder" className="h-full w-full bg-muted" />` — Story 3.2 will replace with `<MapView>`.
   - [ ] Grid placeholder: render `<SearchResultsSkeleton />` — Story 3.5 replaces with `<PropertyGrid>`.
-  - [ ] Toggle buttons: render Full Map / Full Grid / Split toggles in a `<div>` above the split panels (desktop/tablet only). Use `Button` from `@/components/ui/button`, variant `outline`. Conditionally apply `aria-pressed` / active styles.
+  - [ ] Render `<ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />` above the split panels (desktop/tablet only, hidden on mobile). `ViewModeToggle` is created in Task 4.
 
 - [ ] Task 4: Create `ViewModeToggle` UI component (AC: #2, #3)
   - [ ] Create `src/components/search/view-mode-toggle.tsx` with `'use client'` directive.
   - [ ] Three segmented buttons: "Split View" (default), "Full Map", "Full Grid".
-  - [ ] On click, call `onViewModeChange` prop and update the URL param `view` via `useRouter` + `useSearchParams` from `next/navigation` — do NOT use `router.push` with full URL rebuild; use `router.replace` to preserve other params.
+  - [ ] Props: `viewMode: "split" | "map" | "grid"`, `onViewModeChange: (mode: "split" | "map" | "grid") => void`. On click, update the URL param `view` via `useRouter` + `useSearchParams` from `next/navigation` (do NOT use `router.push` with full URL rebuild; use `router.replace` to preserve other params), then call `onViewModeChange` to notify parent.
   - [ ] Pattern for URL param update:
     ```ts
     const router = useRouter();
@@ -129,7 +129,7 @@ so that I can understand where properties are while browsing details.
   - [ ] Create `tests/unit/search/view-mode-toggle.spec.tsx`:
     - Mock `next/navigation` (`useRouter`, `useSearchParams`).
     - **Test: default active state** — "Split View" button has active class by default.
-    - **Test: mode switch** — clicking "Full Map" calls router.replace with `view=map` param.
+    - **Test: mode switch** — clicking "Full Map" calls router.replace with `view=map` param AND calls `onViewModeChange("map")`.
     - **Test: preserves existing params** — existing URL params are not dropped when view mode changes.
   - [ ] Create `tests/unit/search/search-filter-bar.spec.tsx`:
     - **Test: sticky positioning** — container has `position: sticky` and `top: 0`.
@@ -159,7 +159,7 @@ so that I can understand where properties are while browsing details.
 
 **URL params for state (AR10):** View mode, filters, and sort MUST live in URL query params — not React state or localStorage. Use `useSearchParams()` + `router.replace()` with `{ scroll: false }`. This makes searches bookmarkable and shareable (UX-DR21).
 
-**Header height variable:** The split-view map panel height must account for the site header. Use `h-[calc(100vh-var(--header-height))]`. Check `src/styles/globals.css` for `--header-height` — if not yet defined, add `--header-height: 64px` to the `:root` block. Do NOT hardcode `calc(100vh - 64px)` — use the CSS variable so it's easy to update.
+**Header height variable:** The split-view map panel height must account for the site header AND the sticky filter bar. Use `h-[calc(100vh-var(--header-height)-3.5rem)]` (3.5rem = 56px = h-14, the filter bar height). Check `src/styles/globals.css` for `--header-height` — if not yet defined, add `--header-height: 64px` to the `:root` block. Do NOT hardcode pixel values — use the CSS variable so it's easy to update. The UX spec explicitly states the split-view height is "100vh - header - filterbar".
 
 **Mapbox: do NOT install yet** — Mapbox GL JS is Story 3.2. This story creates a `div` placeholder. Do NOT add `mapbox-gl`, `react-map-gl`, or any Mapbox npm package in this story. The architecture states Mapbox must be lazy-loaded (AR25, `dynamic(() => import(), { ssr: false })`). Story 3.2 owns that.
 
@@ -300,3 +300,18 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 ### File List
+
+**New files to create:**
+- `src/app/[locale]/search/page.tsx`
+- `src/components/search/search-page-client.tsx`
+- `src/components/search/split-view-layout.tsx`
+- `src/components/search/view-mode-toggle.tsx`
+- `src/components/search/search-filter-bar.tsx`
+- `tests/unit/search/split-view-layout.spec.tsx`
+- `tests/unit/search/view-mode-toggle.spec.tsx`
+- `tests/unit/search/search-filter-bar.spec.tsx`
+
+**Files to modify:**
+- `src/messages/en.json`
+- `src/messages/es.json`
+- `src/styles/globals.css`
