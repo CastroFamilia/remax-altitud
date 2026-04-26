@@ -2,7 +2,7 @@
  * Story 3.2: Interactive Map with Property Pins
  * Component: src/components/map/map-view.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until MapView is implemented.
+ * TDD RED PHASE — all tests use it() and will FAIL until MapView is implemented.
  *
  * Covers:
  *   AC #1  — Mapbox GL JS loads with 3D terrain (map container renders with data-testid)
@@ -167,7 +167,22 @@ import { MapView } from "@/components/map/map-view"; // imported AFTER mocks
 // Test fixtures
 // ---------------------------------------------------------------------------
 
-const makeProperty = (overrides: Partial<ReturnType<typeof makeProperty>> = {}) => ({
+type TestProperty = {
+  id: string;
+  slug: string;
+  titleEn: string;
+  titleEs: string;
+  priceUsd: number;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  lotSizeM2: number | null;
+  zmtStatus: string;
+  images: { url: string; alt?: string }[];
+  latitude: number;
+  longitude: number;
+};
+
+const makeProperty = (overrides: Partial<TestProperty> = {}): TestProperty => ({
   id: "prop-1",
   slug: "beautiful-farm-perez-zeledon",
   titleEn: "Beautiful Farm in Pérez Zeledón",
@@ -204,7 +219,7 @@ describe("MapView", () => {
   // AC #1: Map container renders (Mapbox GL loads)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders map wrapper with data-testid='map-container' (AC #9, AC #1)",
     () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -215,7 +230,7 @@ describe("MapView", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] map container has aria-label='Property locations map' for accessibility (AC #1)",
     () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -230,7 +245,7 @@ describe("MapView", () => {
   // AC #2: Property pins appear at lat/lon coordinates
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders no markers when properties array is empty (AC #2 — no crash)",
     () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -244,7 +259,7 @@ describe("MapView", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders one MapPricePin Marker when a single property is passed (AC #2)",
     () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -257,7 +272,7 @@ describe("MapView", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] each rendered Marker is positioned at the property's lat/lon coordinates (AC #2)",
     () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -276,7 +291,7 @@ describe("MapView", () => {
   // AC #4: Pin click → preview card overlay (popup)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] clicking a price pin renders MapPropertyPopup with the property's title (AC #4)",
     () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -299,7 +314,7 @@ describe("MapView", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] popup is not rendered before any pin is clicked (AC #4 — default state)",
     () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -311,7 +326,7 @@ describe("MapView", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] clicking the popup close button hides the popup (AC #4)",
     () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -337,7 +352,7 @@ describe("MapView", () => {
   // AC #8: Zustand store is used for map state (center + zoom)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] MapView reads initial center and zoom from the Zustand map store (AC #8)",
     async () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -349,7 +364,7 @@ describe("MapView", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] onBoundsChange callback fires when map moves (AC #5 integration — AC #8)",
     () => {
       // THIS TEST WILL FAIL — MapView component not yet implemented
@@ -378,7 +393,7 @@ describe("MapView", () => {
 // ---------------------------------------------------------------------------
 
 describe("MapView — bundle lazy-load contract (AC #6)", () => {
-  it.skip(
+  it(
     "[P1] MapViewLoader uses next/dynamic with ssr:false so Mapbox is not in main bundle (AC #6, AR25)",
     async () => {
       // THIS TEST WILL FAIL — MapViewLoader not yet implemented

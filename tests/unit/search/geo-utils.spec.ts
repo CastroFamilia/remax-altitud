@@ -2,7 +2,7 @@
  * Story 3.2: Interactive Map with Property Pins
  * Module: src/lib/map/geo-utils.ts
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until geo-utils is implemented.
+ * TDD RED PHASE — all tests use it() and will FAIL until geo-utils is implemented.
  *
  * Covers:
  *   AC #1  — formatPriceAbbrev used in MapPricePin price display
@@ -38,7 +38,7 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
   // Millions threshold (≥ 1,000,000)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] returns '$1.2M' for price 1_200_000 (AC #1, #4 — story example)",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -46,7 +46,7 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P0] returns '$1.0M' for exactly 1_000_000",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -54,7 +54,7 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P0] returns '$2.5M' for price 2_500_000",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -66,7 +66,7 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
   // Thousands threshold (≥ 1,000 and < 1,000,000)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] returns '$250K' for price 250_000 (AC #1, #4 — story example)",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -74,7 +74,7 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P0] returns '$1K' for exactly 1_000",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -82,7 +82,7 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P0] returns '$999K' for 999_000",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -94,7 +94,7 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
   // Sub-thousand (< 1,000) — full dollar amount
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] returns '$500' for price 500 (AC #1, #4 — story example)",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -102,7 +102,7 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P0] returns '$0' for price 0",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -110,7 +110,7 @@ describe("formatPriceAbbrev — price abbreviation utility (AC #1, AC #4)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P0] returns '$999' for price 999",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -145,7 +145,7 @@ describe("boundsFromMapboxEvent — extract MapBounds from ViewStateChangeEvent 
     },
   });
 
-  it.skip(
+  it(
     "[P0] extracts north, south, east, west from the map event's getBounds() (AC #5)",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -161,7 +161,7 @@ describe("boundsFromMapboxEvent — extract MapBounds from ViewStateChangeEvent 
     },
   );
 
-  it.skip(
+  it(
     "[P0] returns a MapBounds object with all four cardinal direction keys (AC #5)",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
@@ -175,7 +175,7 @@ describe("boundsFromMapboxEvent — extract MapBounds from ViewStateChangeEvent 
     },
   );
 
-  it.skip(
+  it(
     "[P0] returns correct values for a tight local viewport (zoomed in near Uvita)",
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented

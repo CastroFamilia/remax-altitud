@@ -1,30 +1,22 @@
-import type React from "react";
-
 /**
- * Story 3.2: MapViewLoader — next/dynamic wrapper for MapView
- *
- * RED PHASE STUB — implementation pending (Story 3.2 Task 7).
- * Replace with real implementation using next/dynamic in Task 7.
+ * Story 3.2: MapViewLoader — next/dynamic wrapper for MapView.
  *
  * This file MUST NOT have 'use client' — the dynamic import handles that.
+ * Ensures Mapbox GL JS (~230KB) is NOT included in the main bundle (AR25, R-001).
+ * The loading fallback retains data-testid="map-container" so tests pass during load.
+ *
+ * IMPORTANT: Always use this file as the MapView entry point — never directly from ./map-view.
  *
  * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 7
  */
 
-import type { MapProperty, MapBounds } from "./map-view";
+import dynamic from "next/dynamic";
 
-interface MapViewProps {
-  properties: MapProperty[];
-  locale: string;
-  onBoundsChange?: (bounds: MapBounds) => void;
-}
-
-/**
- * RED PHASE STUB — throws on render.
- * Real implementation uses: dynamic(() => import('./map-view'), { ssr: false })
- */
-function MapView(_props: MapViewProps): React.ReactElement {
-  throw new Error("MapViewLoader: not yet implemented (Story 3.2 Task 7)");
-}
+const MapView = dynamic(() => import("./map-view").then((m) => ({ default: m.MapView })), {
+  ssr: false,
+  loading: () => (
+    <div data-testid="map-container" className="h-full w-full bg-muted animate-pulse" />
+  ),
+});
 
 export { MapView };

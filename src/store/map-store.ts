@@ -1,16 +1,18 @@
 /**
  * Story 3.2: Zustand map state store
  *
- * RED PHASE STUB — implementation pending (Story 3.2 Task 2).
- * This stub allows test files to be collected and run as skipped (it.skip).
- * Replace this with the real Zustand store in Task 2.
- *
- * IMPORTANT: This file MUST NOT have a 'use client' directive.
- * Zustand stores are plain TypeScript modules — 'use client' belongs
+ * IMPORTANT: This file MUST NOT have the use-client directive.
+ * Zustand stores are plain TypeScript modules — the directive belongs
  * only on React component files that import the store.
+ *
+ * Default center: { lng: -83.70, lat: 9.38 } — geographic midpoint between
+ * Pérez Zeledón and Dominical/Uvita in southern Costa Rica.
+ * Default zoom: 10
  *
  * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 2
  */
+
+import { create } from "zustand";
 
 export type MapBounds = {
   north: number;
@@ -28,23 +30,11 @@ export type MapStore = {
   setBounds: (bounds: MapBounds) => void;
 };
 
-/**
- * Zustand map store hook.
- * Default center: { lng: -83.70, lat: 9.38 } — midpoint Pérez Zeledón / Dominical
- * Default zoom: 10
- *
- * RED PHASE: This is a stub. The real implementation uses zustand's create<MapStore>().
- */
-export const useMapStore = Object.assign(
-  () => {
-    throw new Error("useMapStore: not yet implemented (Story 3.2 Task 2)");
-  },
-  {
-    getState: (): MapStore => {
-      throw new Error("useMapStore.getState: not yet implemented (Story 3.2 Task 2)");
-    },
-  },
-) as unknown as {
-  (): MapStore;
-  getState: () => MapStore;
-};
+export const useMapStore = create<MapStore>()((set) => ({
+  center: { lng: -83.7, lat: 9.38 },
+  zoom: 10,
+  bounds: null,
+  setCenter: (center) => set({ center }),
+  setZoom: (zoom) => set({ zoom }),
+  setBounds: (bounds) => set({ bounds }),
+}));

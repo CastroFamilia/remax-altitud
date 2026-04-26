@@ -2,7 +2,7 @@
  * Story 3.2: Interactive Map with Property Pins
  * Module: src/store/map-store.ts
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until map-store is implemented.
+ * TDD RED PHASE — all tests use it() and will FAIL until map-store is implemented.
  *
  * Covers:
  *   AC #8 — Map state (center, zoom, bounds) managed via Zustand store (AR10)
@@ -33,7 +33,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
   // Default state
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] initial state has center at lng: -83.70, lat: 9.38 (southern Costa Rica midpoint)",
     () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -43,7 +43,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] initial state has zoom: 10",
     () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -53,7 +53,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] initial state has bounds: null",
     () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -67,7 +67,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
   // setCenter action
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] setCenter updates center to new lng/lat values",
     () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -80,7 +80,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] setCenter does not change zoom or bounds",
     () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -100,7 +100,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
   // setZoom action
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] setZoom updates zoom to new value",
     () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -111,7 +111,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] setZoom does not change center or bounds",
     () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -128,7 +128,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
   // setBounds action
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] setBounds updates bounds to the provided MapBounds object",
     () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -141,7 +141,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] setBounds does not change center or zoom",
     () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -160,7 +160,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
   // Store architecture compliance
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] store exports 'useMapStore' named hook (not default export)",
     async () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented
@@ -171,7 +171,7 @@ describe("useMapStore — Zustand map state store (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] store file does NOT contain 'use client' directive (AR10: stores are plain modules)",
     async () => {
       // THIS TEST WILL FAIL — map-store.ts not yet implemented

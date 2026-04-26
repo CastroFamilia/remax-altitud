@@ -1,25 +1,12 @@
 /**
  * Story 3.2: Map geo-utilities
  *
- * RED PHASE STUB — implementation pending (Story 3.2 Task 3).
- * These stubs allow test files to be collected and run as skipped (it.skip).
- * Replace these with real implementations in Task 3.
+ * Pure functions for map bounds extraction and price formatting.
  *
  * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 3
  */
 
-// ViewStateChangeEvent imported from react-map-gl in the real implementation (Task 3).
-// Using a compatible structural type here to avoid import errors in the RED phase stub.
-type ViewStateChangeEvent = {
-  target: {
-    getBounds: () => {
-      getNorth: () => number;
-      getSouth: () => number;
-      getEast: () => number;
-      getWest: () => number;
-    };
-  };
-};
+import type { ViewStateChangeEvent } from "react-map-gl";
 
 export type MapBounds = {
   north: number;
@@ -33,7 +20,16 @@ export type MapBounds = {
  * Uses event.target.getBounds() to get north/south/east/west.
  */
 export function boundsFromMapboxEvent(event: ViewStateChangeEvent): MapBounds {
-  throw new Error("boundsFromMapboxEvent: not yet implemented (Story 3.2 Task 3)");
+  const bounds = event.target.getBounds();
+  if (!bounds) {
+    throw new Error("Map bounds not available");
+  }
+  return {
+    north: bounds.getNorth(),
+    south: bounds.getSouth(),
+    east: bounds.getEast(),
+    west: bounds.getWest(),
+  };
 }
 
 /**
@@ -43,5 +39,11 @@ export function boundsFromMapboxEvent(event: ViewStateChangeEvent): MapBounds {
  *   <1,000     → "$500"
  */
 export function formatPriceAbbrev(price: number): string {
-  throw new Error("formatPriceAbbrev: not yet implemented (Story 3.2 Task 3)");
+  if (price >= 1_000_000) {
+    return `$${(price / 1_000_000).toFixed(1)}M`;
+  }
+  if (price >= 1_000) {
+    return `$${Math.round(price / 1_000)}K`;
+  }
+  return `$${price}`;
 }

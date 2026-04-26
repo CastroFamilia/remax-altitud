@@ -299,6 +299,22 @@
     "sidePanel": {
       "show": "Show listings",
       "hide": "Hide listings"
+    },
+    "MapView": {
+      "ariaLabel": "Property locations map",
+      "loading": "Loading map...",
+      "closePopup": "Close property preview",
+      "viewDetails": "View Details",
+      "zmtStatus": {
+        "titled": "Titled",
+        "concession": "Concession",
+        "zmt_restricted": "ZMT Restricted"
+      },
+      "specs": {
+        "beds": "{count} bed",
+        "baths": "{count} bath",
+        "lotSize": "{size} m²"
+      }
     }
   },
   "PropertyUnavailable": {

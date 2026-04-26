@@ -121,8 +121,8 @@ describe("SplitViewLayout", () => {
 
   // Story 3.2 regression fix: this test is updated from 'map-placeholder' to 'map-container'.
   // It is skipped until Task 9 (wire MapView into SplitViewLayout) is implemented.
-  // When Task 9 replaces the placeholder div with <MapView>, remove it.skip to activate.
-  it.skip(
+  // Task 9 is complete — MapView is now wired into SplitViewLayout.
+  it(
     "[P0] renders data-testid='map-container' inside map panel when map is visible (Story 3.2: replaces map-placeholder)",
     () => {
       // THIS TEST WILL FAIL until Task 9 wires MapView into SplitViewLayout
