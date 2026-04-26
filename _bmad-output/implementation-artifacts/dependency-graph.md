@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-04-25T23:59:00-06:00_
+_Last updated: 2026-04-25T20:30:00-06:00_
 
 ## Stories
 
@@ -19,12 +19,12 @@ _Last updated: 2026-04-25T23:59:00-06:00_
 | 2.5   | 2    | Translation Pipeline | done | #82 | #119 | merged | 2.3 | ✅ Yes (done) |
 | 2.6   | 2    | Lifestyle Tag Auto-Tagging | done | #83 | #120 | merged | 2.3 | ✅ Yes (done) |
 | 2.7   | 2    | Sync Monitoring & Failure Resilience | done | #84 | #121 | merged | 2.3 | ✅ Yes (done) |
-| 3.1   | 3    | Search Page Layout & Split-View | backlog | #85 | — | — | none | ✅ Yes |
-| 3.2   | 3    | Interactive Map with Property Pins | backlog | #86 | — | — | 3.1 | ❌ No (3.1 not merged) |
-| 3.3   | 3    | Search Filters & URL State | backlog | #87 | — | — | 3.1, 3.2 | ❌ No (3.1 not merged) |
+| 3.1   | 3    | Search Page Layout & Split-View | done | #85 | #122 | merged | none | ✅ Yes (done) |
+| 3.2   | 3    | Interactive Map with Property Pins | backlog | #86 | — | — | 3.1 | ✅ Yes |
+| 3.3   | 3    | Search Filters & URL State | backlog | #87 | — | — | 3.1, 3.2 | ❌ No (3.2 not merged) |
 | 3.4   | 3    | Lifestyle Tags & Smart Presets | backlog | #88 | — | — | 3.3 | ❌ No (3.3 not merged) |
-| 3.5   | 3    | Property Cards & Grid View | backlog | #89 | — | — | 3.1 | ❌ No (3.1 not merged) |
-| 3.6   | 3    | Mobile Pull-Up Sheet | backlog | #90 | — | — | 3.1, 3.5 | ❌ No (3.1 not merged) |
+| 3.5   | 3    | Property Cards & Grid View | backlog | #89 | — | — | 3.1 | ✅ Yes |
+| 3.6   | 3    | Mobile Pull-Up Sheet | backlog | #90 | — | — | 3.1, 3.5 | ❌ No (3.5 not merged) |
 | 3.7   | 3    | Unit Conversion & Price Display | backlog | #91 | — | — | 3.5 | ❌ No (3.5 not merged) |
 | 3.8   | 3    | No-Results, Hidden Listings & Near Me | backlog | #92 | — | — | 3.3 | ❌ No (3.3 not merged) |
 | 4.1   | 4    | Listing Detail Page & Photo Gallery | backlog | #93 | — | — | none | ❌ No (epic 3 not complete) |
@@ -105,6 +105,6 @@ _Last updated: 2026-04-25T23:59:00-06:00_
 - Epic 1 is fully complete (all 7 stories done and merged).
 - Epic 2 is fully complete (all 7 stories done and merged). PR #121 for 2.7 merged 2026-04-26.
 - Epic 2 complete: PRs #66, #67, #117, #118, #119, #120, #121 all merged.
-- Epic 3 (Property Discovery & Search) is now the active epic. Story 3.1 is Ready to Work with no dependencies.
+- Epic 3 (Property Discovery & Search) is now the active epic. Story 3.1 merged via PR #122 (2026-04-26).
 - Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
-- Current batch: Story 3.1 is the only story immediately ready. Stories 3.2 and 3.5 become unblocked once 3.1 merges.
+- Current batch: Stories 3.2 and 3.5 are now unblocked (Ready to Work) following 3.1 merge. They can be worked in parallel.
