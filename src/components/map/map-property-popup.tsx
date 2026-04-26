@@ -71,21 +71,18 @@ export function MapPropertyPopup({ property, locale, onClose }: MapPropertyPopup
             `unoptimized` keeps next/image safe with arbitrary remote URLs
             until `images.remotePatterns` is configured for property image
             hosts in next.config.ts. Without `unoptimized`, Next.js will
-            throw at runtime for hosts not on the allowlist. */}
-        {firstImage ? (
-          <div className="relative h-32 w-full">
-            <Image
-              src={firstImage.url}
-              alt={firstImage.alt ?? title}
-              fill
-              className="object-cover"
-              sizes="320px"
-              unoptimized
-            />
-          </div>
-        ) : (
-          <div className="h-32 w-full bg-muted" aria-hidden="true" />
-        )}
+            throw at runtime for hosts not on the allowlist.
+            Falls back to /property-placeholder.svg when url is absent. */}
+        <div className="relative h-32 w-full">
+          <Image
+            src={firstImage?.url || "/property-placeholder.svg"}
+            alt={firstImage?.alt ?? title}
+            fill
+            className="object-cover"
+            sizes="320px"
+            unoptimized
+          />
+        </div>
 
         {/* Card body */}
         <div className="p-3">
