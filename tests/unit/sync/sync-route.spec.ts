@@ -186,3 +186,83 @@ describe("/api/sync route — authorization guard", () => {
     expect(createSyncLog).toHaveBeenCalledOnce();
   });
 });
+
+// ---------------------------------------------------------------------------
+// 500 error response format — must not leak Drizzle query body to clients
+// ---------------------------------------------------------------------------
+
+describe("/api/sync route — 500 error response format", () => {
+  it(
+    "[P0] given pipeline throws a Drizzle-wrapped error when POST is called then response status is 500",
+    async () => {
+      // The pipeline throws; route must return 500 regardless of error shape
+      const pgError = new Error(
+        'duplicate key value violates unique constraint "properties_slug_unique"',
+      );
+      const drizzleError = Object.assign(
+        new Error("Failed query: insert into \"properties\" (" + "a".repeat(5000) + ")"),
+        { cause: pgError },
+      );
+      vi.mocked(createSyncLog).mockRejectedValue(drizzleError);
+
+      const request = new Request("http://localhost:3000/api/sync", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+      });
+
+      const response = await POST(request);
+      expect(response.status).toBe(500);
+    },
+  );
+
+  it(
+    "[P0] given pipeline throws a Drizzle-wrapped error when POST is called then response body contains 'error' key not the full query",
+    async () => {
+      // Security: the full \"Failed query: ...\" string (which embeds raw listing data)
+      // must NOT be returned to the caller — only a terse message.
+      const pgError = new Error('duplicate key value violates unique constraint "properties_slug_unique"');
+      const drizzleError = Object.assign(
+        new Error("Failed query: insert into \"properties\" (" + "SECRET_DATA_XYZ".repeat(100) + ")"),
+        { cause: pgError },
+      );
+      vi.mocked(createSyncLog).mockRejectedValue(drizzleError);
+
+      const request = new Request("http://localhost:3000/api/sync", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+      });
+
+      const response = await POST(request);
+      const body = await response.json() as Record<string, unknown>;
+
+      // Must have an 'error' key
+      expect(body).toHaveProperty("error");
+      // Must NOT leak the huge query body
+      expect(JSON.stringify(body)).not.toContain("SECRET_DATA_XYZ");
+      expect(JSON.stringify(body)).not.toContain("Failed query");
+    },
+  );
+
+  it(
+    "[P1] given pipeline throws a Drizzle-wrapped error when POST is called then response body 'detail' contains the postgres cause message",
+    async () => {
+      // The cause (real PG error) is safe to surface and useful for diagnostics
+      const pgError = new Error('duplicate key value violates unique constraint "properties_slug_unique"');
+      const drizzleError = Object.assign(
+        new Error("Failed query: insert into \"properties\" (...)"),
+        { cause: pgError },
+      );
+      vi.mocked(createSyncLog).mockRejectedValue(drizzleError);
+
+      const request = new Request("http://localhost:3000/api/sync", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+      });
+
+      const response = await POST(request);
+      const body = await response.json() as Record<string, unknown>;
+
+      expect(body.detail).toContain("properties_slug_unique");
+    },
+  );
+});
