@@ -67,6 +67,11 @@ vi.mock("@/lib/sync/lifestyle-tagger", () => ({
   tagBatch: vi.fn().mockReturnValue([]),
 }));
 
+// Story 2.7 — Mock alert module to prevent real HTTP calls in pipeline tests
+vi.mock("@/lib/sync/alert", () => ({
+  sendSyncFailureAlert: vi.fn().mockResolvedValue(undefined),
+}));
+
 // ---------------------------------------------------------------------------
 // Imports — resolved after mocks are hoisted
 // ---------------------------------------------------------------------------
@@ -89,6 +94,7 @@ import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import { optimizePropertyImages } from "@/lib/sync/image-optimizer";
 import { translateBatch } from "@/lib/sync/translator";
 import { tagBatch } from "@/lib/sync/lifestyle-tagger";
+import { sendSyncFailureAlert } from "@/lib/sync/alert";
 import { makeRawProperty, makeRawAgent, makeSyncLog } from "./factories";
 
 // ---------------------------------------------------------------------------
@@ -356,4 +362,115 @@ describe("runSyncPipeline — error handling", () => {
     const countUpdateOrder = vi.mocked(updateAgentListingCounts).mock.invocationCallOrder[0];
     expect(agentUpsertOrder).toBeLessThan(countUpdateOrder);
   });
+});
+
+// ---------------------------------------------------------------------------
+// Story 2.7 ATDD — sendSyncFailureAlert integration (AC #1, RED PHASE)
+// ---------------------------------------------------------------------------
+
+describe("runSyncPipeline — sendSyncFailureAlert integration (AC #1, Story 2.7)", () => {
+  it.skip(
+    "[P0] given pipeline throws an uncaught exception when runSyncPipeline is called then sendSyncFailureAlert is called once",
+    async () => {
+      // AC #1: When all retries are exhausted (uncaught exception), alert must fire
+      // Architecture: updateSyncLog first, then sendSyncFailureAlert, then re-throw
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+      vi.mocked(fetchPropertiesForOffice).mockRejectedValue(new Error("API down"));
+      vi.mocked(fetchAgentsForOffice).mockRejectedValue(new Error("API down"));
+
+      await expect(runSyncPipeline()).rejects.toThrow("API down");
+
+      expect(sendSyncFailureAlert).toHaveBeenCalledOnce();
+    },
+  );
+
+  it.skip(
+    "[P0] given pipeline throws when runSyncPipeline is called then sendSyncFailureAlert is called with the error message",
+    async () => {
+      // AC #1: Alert must include the error message text so admin can diagnose
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+      vi.mocked(fetchPropertiesForOffice).mockRejectedValue(new Error("Connection refused"));
+      vi.mocked(fetchAgentsForOffice).mockRejectedValue(new Error("Connection refused"));
+
+      await expect(runSyncPipeline()).rejects.toThrow();
+
+      expect(sendSyncFailureAlert).toHaveBeenCalledWith(
+        expect.stringContaining("Connection refused"),
+      );
+    },
+  );
+
+  it.skip(
+    "[P0] given pipeline throws when runSyncPipeline is called then updateSyncLog is called BEFORE sendSyncFailureAlert",
+    async () => {
+      // Architecture: strict catch-block order — persist failure THEN alert THEN re-throw
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+      vi.mocked(fetchPropertiesForOffice).mockRejectedValue(new Error("timeout"));
+      vi.mocked(fetchAgentsForOffice).mockRejectedValue(new Error("timeout"));
+
+      await expect(runSyncPipeline()).rejects.toThrow();
+
+      const updateSyncLogOrder = vi.mocked(updateSyncLog).mock.invocationCallOrder[0];
+      const alertOrder = vi.mocked(sendSyncFailureAlert).mock.invocationCallOrder[0];
+      expect(updateSyncLogOrder).toBeLessThan(alertOrder);
+    },
+  );
+
+  it.skip(
+    "[P1] given pipeline completes successfully when runSyncPipeline is called then sendSyncFailureAlert is NOT called",
+    async () => {
+      // AC #1: Alert fires only on uncaught exceptions, NOT on success or partial status
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+      vi.mocked(fetchPropertiesForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+      vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+      vi.mocked(diffProperties).mockReturnValue({ new: [], updated: [], unchanged: [], removed: [] });
+      vi.mocked(softDeleteProperties).mockResolvedValue(0);
+      vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+
+      await runSyncPipeline();
+
+      expect(sendSyncFailureAlert).not.toHaveBeenCalled();
+    },
+  );
+
+  it.skip(
+    "[P1] given pipeline status is 'partial' (parse errors but no uncaught exception) when runSyncPipeline called then sendSyncFailureAlert is NOT called",
+    async () => {
+      // AC #1 / Dev Notes: Only uncaught exceptions trigger alerts; partial status does NOT
+      const syncLog = makeSyncLog();
+      vi.mocked(createSyncLog).mockResolvedValue(syncLog as never);
+
+      const validProp = makeRawProperty({ apiId: "VALID-1" });
+      const parseErrors = [
+        { apiId: "INVALID-1", scope: "property" as const, message: "Invalid ListingId", raw: {} },
+      ];
+
+      vi.mocked(fetchPropertiesForOffice)
+        .mockResolvedValueOnce({ records: [validProp], parseErrors })
+        .mockResolvedValueOnce({ records: [], parseErrors: [] });
+      vi.mocked(fetchAgentsForOffice).mockResolvedValue({ records: [], parseErrors: [] });
+      vi.mocked(diffProperties).mockReturnValue({
+        new: [validProp],
+        updated: [],
+        unchanged: [],
+        removed: [],
+      });
+      vi.mocked(upsertProperty).mockResolvedValue(undefined);
+      vi.mocked(softDeleteProperties).mockResolvedValue(0);
+      vi.mocked(updateAgentListingCounts).mockResolvedValue(undefined);
+      vi.mocked(updateSyncLog).mockResolvedValue(undefined);
+
+      await runSyncPipeline();
+
+      expect(sendSyncFailureAlert).not.toHaveBeenCalled();
+    },
+  );
 });
