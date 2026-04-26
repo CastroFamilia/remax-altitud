@@ -49,7 +49,7 @@ vi.mock("@/components/search/search-results-skeleton", () => ({
 // The mock here simulates that loading state so SplitViewLayout tests
 // continue to pass without requiring Mapbox to render in jsdom.
 vi.mock("@/components/map/map-view-loader", () => ({
-  MapView: ({ "data-testid": testId, ...props }: any) => (
+  MapView: (_props: Record<string, unknown>) => (
     <div data-testid="map-container" className="h-full w-full bg-muted animate-pulse" />
   ),
 }));

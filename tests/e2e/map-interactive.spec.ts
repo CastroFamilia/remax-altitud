@@ -28,6 +28,8 @@
 // @ts-expect-error — @playwright/test not yet installed (Story 3.3 prerequisite)
 import { test, expect } from "@playwright/test";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // ---------------------------------------------------------------------------
 // Test data helpers
 // ---------------------------------------------------------------------------
@@ -110,6 +112,7 @@ test.describe("Story 3.2: Interactive Map E2E (ATDD — RED PHASE)", () => {
       // Capture initial property count shown
       // NOTE: Story 3.5 will add data-testid="property-count" — this assertion
       // uses a placeholder that will need to be updated once grid is implemented.
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const countBefore = await page.getByTestId("property-count").textContent();
 
       // Pan map by dragging (simulate user panning away from default center)

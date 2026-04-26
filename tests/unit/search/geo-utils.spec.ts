@@ -21,7 +21,8 @@
  *     - Extracts north/south/east/west from event.target.getBounds()
  */
 
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import type { ViewStateChangeEvent } from "react-map-gl";
 
 // ---------------------------------------------------------------------------
 // Module under test — imported AFTER mocks (none needed for pure functions)
@@ -150,7 +151,7 @@ describe("boundsFromMapboxEvent — extract MapBounds from ViewStateChangeEvent 
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
       const event = makeMockMapEvent(11, 7, -81, -86);
-      const bounds = boundsFromMapboxEvent(event as any);
+      const bounds = boundsFromMapboxEvent(event as unknown as ViewStateChangeEvent);
 
       expect(bounds).toEqual({
         north: 11,
@@ -166,7 +167,7 @@ describe("boundsFromMapboxEvent — extract MapBounds from ViewStateChangeEvent 
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
       const event = makeMockMapEvent(9.5, 9.0, -83.5, -84.0);
-      const bounds = boundsFromMapboxEvent(event as any);
+      const bounds = boundsFromMapboxEvent(event as unknown as ViewStateChangeEvent);
 
       expect(bounds).toHaveProperty("north");
       expect(bounds).toHaveProperty("south");
@@ -180,7 +181,7 @@ describe("boundsFromMapboxEvent — extract MapBounds from ViewStateChangeEvent 
     () => {
       // THIS TEST WILL FAIL — geo-utils.ts not yet implemented
       const event = makeMockMapEvent(9.16, 9.13, -83.73, -83.77);
-      const bounds = boundsFromMapboxEvent(event as any);
+      const bounds = boundsFromMapboxEvent(event as unknown as ViewStateChangeEvent);
 
       expect(bounds.north).toBeCloseTo(9.16, 5);
       expect(bounds.south).toBeCloseTo(9.13, 5);

@@ -21,6 +21,7 @@
 
 import { describe, expect, it, vi, afterEach } from "vitest";
 import { render, cleanup, fireEvent, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
 
 // ---------------------------------------------------------------------------
 // Module mocks — declared BEFORE any component imports (hoisting pattern)
@@ -30,7 +31,15 @@ import { render, cleanup, fireEvent, screen } from "@testing-library/react";
 // The Map mock calls onLoad so terrain-source setup code runs,
 // renders children so Marker/Popup children are exercised.
 vi.mock("react-map-gl", () => ({
-  Map: ({ children, onLoad, "aria-label": ariaLabel }: any) => {
+  Map: ({
+    children,
+    onLoad,
+    "aria-label": ariaLabel,
+  }: {
+    children?: ReactNode;
+    onLoad?: (event: { target: { addSource: () => void; getBounds: () => { getNorth: () => number; getSouth: () => number; getEast: () => number; getWest: () => number } } }) => void;
+    "aria-label"?: string;
+  }) => {
     // Simulate onLoad firing synchronously so terrain-source code path runs
     onLoad?.({
       target: {
@@ -49,7 +58,15 @@ vi.mock("react-map-gl", () => ({
       </div>
     );
   },
-  Marker: ({ children, longitude, latitude }: any) => (
+  Marker: ({
+    children,
+    longitude,
+    latitude,
+  }: {
+    children?: ReactNode;
+    longitude: number;
+    latitude: number;
+  }) => (
     <div
       data-testid="map-marker"
       data-lng={longitude}
@@ -58,7 +75,15 @@ vi.mock("react-map-gl", () => ({
       {children}
     </div>
   ),
-  Popup: ({ children, longitude, latitude }: any) => (
+  Popup: ({
+    children,
+    longitude,
+    latitude,
+  }: {
+    children?: ReactNode;
+    longitude: number;
+    latitude: number;
+  }) => (
     <div
       data-testid="map-property-popup"
       data-lng={longitude}
@@ -124,7 +149,13 @@ vi.mock("next-intl", () => ({
 
 // Mock MapPropertyPopup to isolate MapView
 vi.mock("@/components/map/map-property-popup", () => ({
-  MapPropertyPopup: ({ property, onClose }: any) => (
+  MapPropertyPopup: ({
+    property,
+    onClose,
+  }: {
+    property: { id: string; titleEn: string };
+    onClose: () => void;
+  }) => (
     <div data-testid="map-property-popup-card" data-property-id={property.id}>
       <span>{property.titleEn}</span>
       <button onClick={onClose} data-testid="map-popup-close">
@@ -136,7 +167,15 @@ vi.mock("@/components/map/map-property-popup", () => ({
 
 // Mock MapPricePin
 vi.mock("@/components/map/map-price-pin", () => ({
-  MapPricePin: ({ price, isSelected, onClick }: any) => (
+  MapPricePin: ({
+    price,
+    isSelected,
+    onClick,
+  }: {
+    price: number;
+    isSelected: boolean;
+    onClick: () => void;
+  }) => (
     <button
       data-testid="map-price-pin"
       data-price={price}
@@ -150,7 +189,13 @@ vi.mock("@/components/map/map-price-pin", () => ({
 
 // Mock MapClusterPin
 vi.mock("@/components/map/map-cluster-pin", () => ({
-  MapClusterPin: ({ count, onClick }: any) => (
+  MapClusterPin: ({
+    count,
+    onClick,
+  }: {
+    count: number;
+    onClick: () => void;
+  }) => (
     <button data-testid="map-cluster-pin" data-count={count} onClick={onClick}>
       {count}
     </button>
