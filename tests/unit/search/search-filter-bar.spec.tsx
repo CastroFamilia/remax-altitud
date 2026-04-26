@@ -59,7 +59,7 @@ describe("SearchFilterBar", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P0] filter bar container has position: sticky and top: 0 (stays fixed during scroll)",
+    "[P0] filter bar container has position: sticky pinned below the header (stays fixed during scroll)",
     () => {
       render(<SearchFilterBar />);
 
@@ -67,9 +67,11 @@ describe("SearchFilterBar", () => {
 
       expect(filterBar).not.toBeNull();
 
-      // sticky + top-0 are the critical positioning classes (AC #6)
+      // sticky + offset are the critical positioning classes (AC #6)
+      // Filter bar sits below the global sticky header, so its `top` must
+      // equal the header height — not `0` — to avoid stacking on top of it.
       expect(filterBar?.className).toContain("sticky");
-      expect(filterBar?.className).toContain("top-0");
+      expect(filterBar?.className).toContain("top-[var(--header-height)]");
 
       // z-index must be above content but below modals (z-10)
       expect(filterBar?.className).toContain("z-10");

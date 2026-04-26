@@ -9,7 +9,7 @@ export function SearchFilterBar() {
   return (
     <div
       data-testid="search-filter-bar"
-      className="sticky top-0 z-10 h-12 md:h-14 bg-background border-b border-border flex items-center px-4 gap-3"
+      className="sticky top-[var(--header-height)] z-10 h-12 md:h-14 bg-background border-b border-border flex items-center px-4 gap-3"
     >
       {/* Mobile compact bar — visible below md breakpoint */}
       <button

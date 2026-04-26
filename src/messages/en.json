@@ -294,7 +294,7 @@
       "loading": "Filter bar loading"
     },
     "pullUpHandle": {
-      "propertiesCount": "{count} properties"
+      "propertiesCount": "{count, plural, one {# property} other {# properties}}"
     }
   },
   "PropertyUnavailable": {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
@@ -15,9 +16,14 @@ interface SplitViewLayoutProps {
 export function SplitViewLayout({ viewMode, onViewModeChange }: SplitViewLayoutProps) {
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
+  const tPullUp = useTranslations("SearchPage.pullUpHandle");
 
   const mapHidden = viewMode === "grid";
   const gridHidden = viewMode === "map";
+
+  // Property count is a stub for Story 3.1 — Story 3.5 will pass real results.
+  // Using ICU plural via next-intl so EN/ES strings vary correctly.
+  const stubPropertyCount = 24;
 
   return (
     <div className="relative flex flex-col">
@@ -34,8 +40,11 @@ export function SplitViewLayout({ viewMode, onViewModeChange }: SplitViewLayoutP
             "w-full",
             // Desktop split / full-map / full-grid
             mapHidden ? "lg:hidden" : gridHidden ? "lg:w-full" : "lg:w-[60%]",
-            // Height: mobile = full screen; desktop = viewport minus header + filter bar
-            "h-screen",
+            // Height:
+            //   Mobile (<md): viewport minus header (var) minus mobile filter bar (h-12 = 3rem)
+            //                  — keeps map flush with filter bar above and pull-up handle below.
+            //   Desktop (≥lg): viewport minus header minus desktop filter bar (h-14 = 3.5rem).
+            "h-[calc(100vh-var(--header-height)-3rem)]",
             "lg:h-[calc(100vh-var(--header-height)-3.5rem)]",
             "flex-shrink-0",
           )}
@@ -96,7 +105,9 @@ export function SplitViewLayout({ viewMode, onViewModeChange }: SplitViewLayoutP
       >
         {/* Drag indicator */}
         <div className="w-10 h-1 bg-muted-foreground/30 rounded-full mb-1" />
-        <span className="text-xs text-muted-foreground">24 properties</span>
+        <span className="text-xs text-muted-foreground">
+          {tPullUp("propertiesCount", { count: stubPropertyCount })}
+        </span>
       </div>
     </div>
   );

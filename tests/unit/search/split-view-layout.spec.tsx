@@ -26,6 +26,17 @@ vi.mock("next/navigation", () => ({
   })),
 }));
 
+// next-intl is used by the pull-up handle for the property count label.
+// Return a stub that mimics ICU-style plural interpolation.
+vi.mock("next-intl", () => ({
+  useTranslations: vi.fn(() => (key: string, values?: Record<string, unknown>) => {
+    if (key === "propertiesCount" && values && "count" in values) {
+      return `${values.count as number} properties`;
+    }
+    return key;
+  }),
+}));
+
 vi.mock("@/components/search/search-results-skeleton", () => ({
   SearchResultsSkeleton: () => <div data-testid="search-results-skeleton" />,
 }));

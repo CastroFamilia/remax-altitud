@@ -294,7 +294,7 @@
       "loading": "Cargando filtros"
     },
     "pullUpHandle": {
-      "propertiesCount": "{count} propiedades"
+      "propertiesCount": "{count, plural, one {# propiedad} other {# propiedades}}"
     }
   },
   "PropertyUnavailable": {
