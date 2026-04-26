@@ -295,6 +295,13 @@ Mobile: map 100% + pull-up handle at bottom
 
 claude-sonnet-4-6
 
+### ATDD Artifacts
+
+- Checklist: `_bmad-output/test-artifacts/atdd-checklist-3-1-search-page-layout-and-split-view.md`
+- Unit tests (RED phase): `tests/unit/search/split-view-layout.spec.tsx`
+- Unit tests (RED phase): `tests/unit/search/view-mode-toggle.spec.tsx`
+- Unit tests (RED phase): `tests/unit/search/search-filter-bar.spec.tsx`
+
 ### Debug Log References
 
 ### Completion Notes List
