@@ -64,6 +64,7 @@ const noop = () => {};
 
 afterEach(() => {
   cleanup();
+  vi.clearAllMocks();
 });
 
 describe("SplitViewLayout", () => {
@@ -72,7 +73,7 @@ describe("SplitViewLayout", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P0] renders map panel with w-[60%] and grid panel with w-[40%] when viewMode='split'",
+    "[P0] renders map panel with lg:w-[60%] and grid panel with lg:w-[40%] when viewMode='split'",
     () => {
       render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
 
@@ -81,8 +82,9 @@ describe("SplitViewLayout", () => {
 
       expect(mapPanel).not.toBeNull();
       expect(gridPanel).not.toBeNull();
-      expect(mapPanel?.className).toContain("w-[60%]");
-      expect(gridPanel?.className).toContain("w-[40%]");
+      // Desktop responsive classes — mobile-first; lg: prefix targets ≥1024px
+      expect(mapPanel?.className).toContain("lg:w-[60%]");
+      expect(gridPanel?.className).toContain("lg:w-[40%]");
 
       // Grid panel must be scrollable
       expect(gridPanel?.className).toContain("overflow-y-auto");
@@ -110,17 +112,23 @@ describe("SplitViewLayout", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P0] hides grid panel (adds 'hidden' class) when viewMode='map'",
+    "[P0] hides grid panel (adds 'lg:hidden' class) and expands map panel to 'lg:w-full' when viewMode='map'",
     () => {
       render(<SplitViewLayout viewMode="map" onViewModeChange={noop} />);
 
       const gridPanel = document.querySelector('[data-testid="grid-panel"]');
 
       expect(gridPanel).not.toBeNull();
-      expect(gridPanel?.className).toContain("hidden");
+      // Grid panel is hidden on desktop when full-map mode is active.
+      // The base 'hidden' class is always present (mobile-first); 'lg:hidden' is what
+      // specifically removes the panel at desktop breakpoint in this mode.
+      expect(gridPanel?.className).toContain("lg:hidden");
+      // Ensure the lg:block override (present in split/grid mode) is NOT applied
+      expect(gridPanel?.className).not.toContain("lg:block");
 
       const mapPanel = document.querySelector('[data-testid="map-panel"]');
-      expect(mapPanel?.className).toContain("w-full");
+      // Map panel must use lg:w-full (not just the base w-full which is always present)
+      expect(mapPanel?.className).toContain("lg:w-full");
     },
   );
 
@@ -129,17 +137,21 @@ describe("SplitViewLayout", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P0] hides map panel (adds 'hidden' class) when viewMode='grid'",
+    "[P0] hides map panel (adds 'lg:hidden' class) and expands grid panel to 'lg:w-full' when viewMode='grid'",
     () => {
       render(<SplitViewLayout viewMode="grid" onViewModeChange={noop} />);
 
       const mapPanel = document.querySelector('[data-testid="map-panel"]');
 
       expect(mapPanel).not.toBeNull();
-      expect(mapPanel?.className).toContain("hidden");
+      // Map panel is hidden on desktop in full-grid mode via lg:hidden.
+      expect(mapPanel?.className).toContain("lg:hidden");
+      // Ensure the desktop-width classes (lg:w-[60%], lg:w-full) are NOT on the map panel
+      expect(mapPanel?.className).not.toContain("lg:w-");
 
       const gridPanel = document.querySelector('[data-testid="grid-panel"]');
-      expect(gridPanel?.className).toContain("w-full");
+      // Grid panel must use lg:w-full (not just a base class)
+      expect(gridPanel?.className).toContain("lg:w-full");
     },
   );
 

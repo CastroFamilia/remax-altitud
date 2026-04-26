@@ -50,6 +50,7 @@ import { SearchFilterBar } from "@/components/search/search-filter-bar";
 
 afterEach(() => {
   cleanup();
+  vi.clearAllMocks();
 });
 
 describe("SearchFilterBar", () => {
