@@ -1,5 +1,5 @@
 # generated: 2026-04-10T12:39:46-03:00
-# last_updated: 2026-04-25T21:00:00-0600
+# last_updated: 2026-04-25T18:00:00-0600
 # project: remax-altitud
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-10T12:39:46-03:00
-last_updated: 2026-04-25T21:00:00-0600
+last_updated: 2026-04-25T18:00:00-0600
 project: remax-altitud
 project_key: NOKEY
 tracking_system: file-system
@@ -65,8 +65,8 @@ development_status:
   epic-2-retrospective: done
 
   # Epic 3: Property Discovery & Search
-  epic-3: backlog
-  3-1-search-page-layout-and-split-view: backlog
+  epic-3: in-progress
+  3-1-search-page-layout-and-split-view: ready-for-dev
   3-2-interactive-map-with-property-pins: backlog
   3-3-search-filters-and-url-state: backlog
   3-4-lifestyle-tags-and-smart-presets: backlog
