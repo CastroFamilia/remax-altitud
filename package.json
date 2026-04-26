@@ -48,7 +48,6 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/sharp": "^0.31.1",
-    "@vitejs/plugin-react": "^6.0.1",
     "agent-browser": "^0.26.0",
     "drizzle-kit": "^0.31.0",
     "eslint": "^9",

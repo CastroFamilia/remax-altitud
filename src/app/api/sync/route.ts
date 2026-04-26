@@ -27,6 +27,9 @@ export async function POST(req: Request) {
     const cause =
       err instanceof Error && err.cause instanceof Error ? err.cause.message : undefined;
     console.error("[sync] Pipeline error:", cause ?? message);
-    return NextResponse.json({ error: "Sync pipeline failed", detail: cause ?? "See server logs" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Sync pipeline failed", detail: cause ?? "See server logs" },
+      { status: 500 },
+    );
   }
 }
