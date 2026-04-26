@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SimplePageLayout } from "@/components/layout/simple-page-layout";
+import { Link } from "@/i18n/navigation";
 import { getPropertyBySlug, getSimilarProperties } from "@/lib/db/queries/properties";
 
 // Force dynamic — property visibility changes after each sync run
@@ -48,8 +49,8 @@ export default async function PropertyPage({
             <ul className="space-y-4">
               {similar.map((p) => (
                 <li key={p.slug}>
-                  <a
-                    href={`/${locale}/property/${p.slug}`}
+                  <Link
+                    href={`/property/${p.slug}`}
                     className="block rounded-lg border border-gray-200 p-4 hover:border-brand-navy hover:bg-gray-50 transition-colors"
                   >
                     <p className="font-semibold text-brand-navy">
@@ -63,19 +64,19 @@ export default async function PropertyPage({
                     <span className="mt-2 inline-block text-sm font-medium text-brand-navy underline">
                       {t("similarCta")}
                     </span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </section>
         ) : (
           <div className="mx-auto max-w-3xl text-center">
-            <a
-              href={`/${locale}/search`}
+            <Link
+              href="/search"
               className="inline-block rounded-lg bg-brand-navy px-6 py-3 font-semibold text-white hover:bg-brand-navy/90 transition-colors"
             >
               {t("browseCta")}
-            </a>
+            </Link>
           </div>
         )}
       </SimplePageLayout>
