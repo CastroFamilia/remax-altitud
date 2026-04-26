@@ -24,6 +24,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const cause =
+      err instanceof Error && err.cause instanceof Error ? err.cause.message : undefined;
+    console.error("[sync] Pipeline error:", cause ?? message);
+    return NextResponse.json({ error: "Sync pipeline failed", detail: cause ?? "See server logs" }, { status: 500 });
   }
 }

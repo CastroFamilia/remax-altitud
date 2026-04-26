@@ -101,11 +101,14 @@ export async function upsertProperty(
       set: mutableSet,
     });
   } catch (err: unknown) {
-    // Slug uniqueness conflict (different listing, same English title) → retry with apiId suffix
+    // Slug uniqueness conflict (different listing, same English title) → retry with apiId suffix.
+    // Drizzle (postgres-js) wraps the postgres error in err.cause, so we must check both
+    // err.message (the "Failed query: ..." wrapper) and err.cause.message (the real PG error).
+    const errMsg = err instanceof Error ? err.message : "";
+    const causeMsg = err instanceof Error && err.cause instanceof Error ? err.cause.message : "";
     const isSlugConflict =
-      err instanceof Error &&
-      err.message.includes("unique") &&
-      err.message.toLowerCase().includes("slug");
+      (errMsg.toLowerCase().includes("slug") || causeMsg.toLowerCase().includes("slug")) &&
+      (errMsg.toLowerCase().includes("unique") || causeMsg.toLowerCase().includes("unique"));
 
     if (isSlugConflict) {
       await db
