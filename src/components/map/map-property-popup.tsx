@@ -66,7 +66,11 @@ export function MapPropertyPopup({ property, locale, onClose }: MapPropertyPopup
         data-testid="map-property-popup"
         className="max-w-xs bg-background border border-border rounded-lg shadow-lg overflow-hidden"
       >
-        {/* Thumbnail */}
+        {/* Thumbnail.
+            `unoptimized` keeps next/image safe with arbitrary remote URLs
+            until `images.remotePatterns` is configured for property image
+            hosts in next.config.ts. Without `unoptimized`, Next.js will
+            throw at runtime for hosts not on the allowlist. */}
         {firstImage ? (
           <div className="relative h-32 w-full">
             <Image
@@ -75,6 +79,7 @@ export function MapPropertyPopup({ property, locale, onClose }: MapPropertyPopup
               fill
               className="object-cover"
               sizes="320px"
+              unoptimized
             />
           </div>
         ) : (
@@ -102,7 +107,9 @@ export function MapPropertyPopup({ property, locale, onClose }: MapPropertyPopup
           {/* Actions row */}
           <div className="flex items-center justify-between mt-3">
             <Link
-              href={`/${locale}/property/${property.slug}`}
+              // next-intl's <Link> automatically prepends the active locale —
+              // pass the path WITHOUT the locale prefix to avoid /en/en/...
+              href={`/property/${property.slug}`}
               className="text-xs font-semibold text-brand-navy hover:underline"
             >
               View Details

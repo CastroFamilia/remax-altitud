@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 import { SplitViewLayout } from "@/components/search/split-view-layout";
 import { SearchFilterBar } from "@/components/search/search-filter-bar";
@@ -21,22 +21,41 @@ export function SearchPageClient() {
 
   const [properties, setProperties] = useState<MapProperty[]>([]);
 
+  // Tracks the most recent bounds-change request so out-of-order responses
+  // from earlier requests cannot overwrite a later one's results.
+  const requestSeqRef = useRef(0);
+
   // Initial load — fetch all visible properties with coordinates
   useEffect(() => {
     let cancelled = false;
-    getPropertiesForMap().then((data) => {
-      if (!cancelled) setProperties(data);
-    });
+    getPropertiesForMap()
+      .then((data) => {
+        if (!cancelled) setProperties(data);
+      })
+      .catch((error) => {
+        // Server Action failure (DB outage, schema mismatch, etc.) — log and
+        // leave the property list empty rather than crashing the page.
+        console.error("[search] initial getPropertiesForMap failed", error);
+      });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // Refresh properties when map bounds change
+  // Refresh properties when map bounds change.
+  // Uses a monotonically increasing sequence number to discard stale responses.
   function handleBoundsChange(bounds: MapBounds) {
-    getPropertiesForMap(bounds).then((data) => {
-      setProperties(data);
-    });
+    const seq = ++requestSeqRef.current;
+    getPropertiesForMap(bounds)
+      .then((data) => {
+        // Drop the response if a newer bounds-change request has been issued.
+        if (seq === requestSeqRef.current) {
+          setProperties(data);
+        }
+      })
+      .catch((error) => {
+        console.error("[search] bounds-change getPropertiesForMap failed", error);
+      });
   }
 
   return (

@@ -1,6 +1,6 @@
 # Story 3.2: Interactive Map with Property Pins
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -482,3 +482,19 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 ### File List
+
+### Review Findings
+
+Code review run 2026-04-26 (claude-opus-4-7). 299 unit tests passing, 0 typecheck errors after fixes.
+
+- [x] [Review][Patch] Locale double-prefix in property popup link [src/components/map/map-property-popup.tsx:105] — next-intl's `<Link>` auto-prepends the active locale; passing `/${locale}/...` produced URLs like `/en/en/property/...`. Fixed: use `/property/${slug}`.
+- [x] [Review][Patch] Server Action lacks bounds validation [src/app/actions/map-actions.ts] — hostile clients could pass NaN/Infinity, out-of-range lat/lng, or inverted envelopes to PostGIS. Added `sanitizeBounds()` that rejects non-finite values, clamps to Earth ranges (-90..90, -180..180), and rejects degenerate envelopes (west>=east or south>=north). Drizzle parameterization already prevents SQL injection.
+- [x] [Review][Patch] `next/image` would throw at runtime for arbitrary remote URLs [src/components/map/map-property-popup.tsx:72] — `images.remotePatterns` is not configured in `next.config.ts`. Added `unoptimized` prop on the popup thumbnail until image hosts are allowlisted globally (lower-risk forward-compatible fix).
+- [x] [Review][Patch] `onMove` triggered Server Action on every animation frame [src/components/map/map-view.tsx] — moved property re-fetch from `onMove` to `onMoveEnd` so the DB query fires once per gesture instead of dozens of times per second. Zustand viewport state and local cluster bounds still update on `onMove` for live UI.
+- [x] [Review][Patch] Race condition in bounds-change refetch [src/components/search/search-page-client.tsx] — concurrent `getPropertiesForMap(bounds)` calls could resolve out of order, letting a stale response overwrite a newer one. Added `requestSeqRef` monotonic counter; only the latest request's response is applied.
+- [x] [Review][Patch] No error handling on Server Action calls [src/components/search/search-page-client.tsx] — DB outage / schema mismatch silently swallowed. Added `.catch` with `console.error` for both initial load and bounds-change refetch.
+- [x] [Review][Patch] Duplicate aria-label on map [src/components/map/map-view.tsx:196] — `aria-label="Property locations map"` was set on both the wrapper `<div>` and the inner `<MapboxMap>`. Removed the inner duplicate.
+- [x] [Review][Defer] Duplicate `MapBounds` / `MapProperty` type definitions across 6 files — deferred, refactor into a single shared types module in a follow-up; types are currently consistent.
+- [x] [Review][Defer] Hardcoded English strings in `map-property-popup.tsx` — i18n keys exist in messages/{en,es}.json but the component isn't using `useTranslations`. Deferred — listed as nice-to-have UX polish; AC #4 doesn't mandate i18n on every label.
+- [x] [Review][Defer] `images.remotePatterns` configuration in `next.config.ts` — punted via `unoptimized` on the popup; deferred until property image hosts are decided in a later story.
+

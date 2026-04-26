@@ -151,6 +151,10 @@ export function MapView({ properties, locale, onBoundsChange }: MapViewProps) {
     [setBounds, onBoundsChange],
   );
 
+  // onMove fires continuously during drag/zoom — keep this cheap.
+  // Update Zustand viewport state and recompute clusters locally, but DO NOT
+  // trigger the property re-fetch here. That work is deferred to onMoveEnd
+  // so we don't fire a Server Action on every animation frame.
   const handleMove = useCallback(
     (event: Parameters<typeof boundsFromMapboxEvent>[0]) => {
       const vs = event.viewState;
@@ -158,12 +162,31 @@ export function MapView({ properties, locale, onBoundsChange }: MapViewProps) {
       setZoom(vs.zoom);
       setCurrentZoom(vs.zoom);
 
-      const bounds = boundsFromMapboxEvent(event);
-      setCurrentBounds([bounds.west, bounds.south, bounds.east, bounds.north]);
-      setBounds(bounds);
-      onBoundsChange?.(bounds);
+      try {
+        const bounds = boundsFromMapboxEvent(event);
+        setCurrentBounds([bounds.west, bounds.south, bounds.east, bounds.north]);
+        setBounds(bounds);
+      } catch {
+        // boundsFromMapboxEvent throws if getBounds() returns null (rare —
+        // can happen briefly during initial style load). Swallow silently;
+        // the next move event will retry.
+      }
     },
-    [setCenter, setZoom, setBounds, onBoundsChange],
+    [setCenter, setZoom, setBounds],
+  );
+
+  // onMoveEnd fires once after the user stops interacting — this is where we
+  // notify the parent (which re-queries the database for the new viewport).
+  const handleMoveEnd = useCallback(
+    (event: Parameters<typeof boundsFromMapboxEvent>[0]) => {
+      try {
+        const bounds = boundsFromMapboxEvent(event);
+        onBoundsChange?.(bounds);
+      } catch {
+        // Same rationale as handleMove — bounds may briefly be unavailable.
+      }
+    },
+    [onBoundsChange],
   );
 
   const handleClusterClick = useCallback(
@@ -193,7 +216,7 @@ export function MapView({ properties, locale, onBoundsChange }: MapViewProps) {
         terrain={{ source: "mapbox-dem", exaggeration: 1.2 }}
         onLoad={handleMapLoad}
         onMove={handleMove}
-        aria-label="Property locations map"
+        onMoveEnd={handleMoveEnd}
       >
         {/* Render clusters and individual pins */}
         {clusters.map((feature) => {
