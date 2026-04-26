@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-04-25T16:30:00-06:00_
+_Last updated: 2026-04-25T23:55:00-06:00_
 
 ## Stories
 
@@ -17,7 +17,7 @@ _Last updated: 2026-04-25T16:30:00-06:00_
 | 2.3   | 2    | Sync Pipeline Core | done | #80 | #117 | merged | 2.2 | ✅ Yes (done) |
 | 2.4   | 2    | Image Optimization Pipeline | done | #81 | #118 | merged | 2.3 | ✅ Yes (done) |
 | 2.5   | 2    | Translation Pipeline | done | #82 | #119 | merged | 2.3 | ✅ Yes (done) |
-| 2.6   | 2    | Lifestyle Tag Auto-Tagging | backlog | #83 | — | — | 2.3 | ✅ Yes |
+| 2.6   | 2    | Lifestyle Tag Auto-Tagging | done | #83 | #120 | merged | 2.3 | ✅ Yes (done) |
 | 2.7   | 2    | Sync Monitoring & Failure Resilience | backlog | #84 | — | — | 2.3 | ✅ Yes |
 | 3.1   | 3    | Search Page Layout & Split-View | backlog | #85 | — | — | none | ❌ No (epic 2 not complete) |
 | 3.2   | 3    | Interactive Map with Property Pins | backlog | #86 | — | — | 3.1 | ❌ No (epic 2 not complete) |
@@ -103,7 +103,7 @@ _Last updated: 2026-04-25T16:30:00-06:00_
 ## Notes
 
 - Epic 1 is fully complete (all 7 stories done and merged).
-- Epic 2 is in-progress. Stories 2.1, 2.2, 2.3, 2.4, and 2.5 are done and merged. PR #117 for 2.3 merged 2026-04-25; PR #118 for 2.4 merged 2026-04-25; PR #119 for 2.5 merged 2026-04-25.
-- Stories 2.6 and 2.7 both depend on 2.3 (already merged) and are now unblocked — both are Ready to Work and can be parallelized.
+- Epic 2 is in-progress. Stories 2.1–2.6 are done and merged. PR #117 for 2.3 merged 2026-04-25; PR #118 for 2.4 merged 2026-04-25; PR #119 for 2.5 merged 2026-04-25; PR #120 for 2.6 merged 2026-04-25.
+- Story 2.7 is the only remaining backlog story in Epic 2. It depends on 2.3 (already merged) and is Ready to Work.
 - Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
-- Current batch: 2 stories ready (2.6, 2.7). Coordinator should pick based on MAX_PARALLEL_STORIES setting.
+- Current batch: 1 story ready (2.7). Once 2.7 is done, Epic 2 will be complete and Epic 3 can begin.
