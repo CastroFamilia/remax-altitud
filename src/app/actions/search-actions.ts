@@ -43,33 +43,41 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
   const lotSizeMin = sanitizeNumber(filters.lotSizeMin);
   const lotSizeMax = sanitizeNumber(filters.lotSizeMax);
 
-  // Build WHERE conditions — always include isVisible=true
-  const conditions = [eq(properties.isVisible, true)];
+  // Normalise inverted ranges defensively — an inverted range can only return
+  // zero rows, which surfaces as a confusing empty state. Swap silently rather
+  // than fail closed.
+  const safePriceMin =
+    priceMin !== undefined && priceMax !== undefined && priceMin > priceMax ? priceMax : priceMin;
+  const safePriceMax =
+    priceMin !== undefined && priceMax !== undefined && priceMin > priceMax ? priceMin : priceMax;
+  const safeLotMin =
+    lotSizeMin !== undefined && lotSizeMax !== undefined && lotSizeMin > lotSizeMax
+      ? lotSizeMax
+      : lotSizeMin;
+  const safeLotMax =
+    lotSizeMin !== undefined && lotSizeMax !== undefined && lotSizeMin > lotSizeMax
+      ? lotSizeMin
+      : lotSizeMax;
 
-  if (filters.type) {
-    conditions.push(eq(properties.propertyType, filters.type));
-  }
-  if (priceMin !== undefined) {
-    conditions.push(gte(properties.priceUsd, priceMin));
-  }
-  if (priceMax !== undefined) {
-    conditions.push(lte(properties.priceUsd, priceMax));
-  }
-  if (bedrooms !== undefined) {
-    conditions.push(gte(properties.bedrooms, bedrooms));
-  }
-  if (bathrooms !== undefined) {
-    conditions.push(gte(properties.bathrooms, bathrooms));
-  }
-  if (lotSizeMin !== undefined) {
-    conditions.push(gte(properties.lotSizeM2, lotSizeMin));
-  }
-  if (lotSizeMax !== undefined) {
-    conditions.push(lte(properties.lotSizeM2, lotSizeMax));
-  }
-  if (filters.areaSlug) {
-    conditions.push(eq(properties.areaSlug, filters.areaSlug));
-  }
+  // Build a per-dimension condition map so we can compose facet WHERE clauses
+  // that exclude the dimension being faceted. Each entry is the SQL filter
+  // that would be applied if that dimension is set.
+  const dimConditions: Record<string, ReturnType<typeof eq> | undefined> = {
+    visible: eq(properties.isVisible, true),
+    type: filters.type ? eq(properties.propertyType, filters.type) : undefined,
+    priceMin: safePriceMin !== undefined ? gte(properties.priceUsd, safePriceMin) : undefined,
+    priceMax: safePriceMax !== undefined ? lte(properties.priceUsd, safePriceMax) : undefined,
+    bedrooms: bedrooms !== undefined ? gte(properties.bedrooms, bedrooms) : undefined,
+    bathrooms: bathrooms !== undefined ? gte(properties.bathrooms, bathrooms) : undefined,
+    lotSizeMin: safeLotMin !== undefined ? gte(properties.lotSizeM2, safeLotMin) : undefined,
+    lotSizeMax: safeLotMax !== undefined ? lte(properties.lotSizeM2, safeLotMax) : undefined,
+    areaSlug: filters.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined,
+  };
+
+  // Compose conditions for the main query — every set dimension applies.
+  const conditions = Object.values(dimConditions).filter(
+    (c): c is NonNullable<typeof c> => c !== undefined,
+  );
 
   // Determine sort order
   let orderByClause;
@@ -128,35 +136,55 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
   }));
 
   // Facets queries — aggregation for filter count display ("Casa (12)") — AC #6
-  // byType: count per property type (for all visible, unfiltered by type)
+  // Each facet dimension is computed with all OTHER dimensions applied so that
+  // the counts reflect what the user would see if they switched that
+  // dimension's value (spec: "current filter set excluding the dimension being
+  // faceted").
+  function facetWhere(excludeKey: string) {
+    const subset = Object.entries(dimConditions)
+      .filter(([k, v]) => k !== excludeKey && v !== undefined)
+      .map(([, v]) => v as NonNullable<typeof v>);
+    return and(...subset);
+  }
+
+  // byType: apply every filter except `type` so user can see counts of other
+  // types matching the rest of their criteria.
   const byTypeRows = await db
     .select({
       value: properties.propertyType,
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(properties)
-    .where(eq(properties.isVisible, true))
+    .where(facetWhere("type"))
     .groupBy(properties.propertyType);
 
-  // byBedrooms: count per bedroom value
+  // byBedrooms: apply every filter except `bedrooms`
   const byBedroomsRows = await db
     .select({
       value: properties.bedrooms,
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(properties)
-    .where(and(eq(properties.isVisible, true), isNotNull(properties.bedrooms)))
+    .where(and(facetWhere("bedrooms"), isNotNull(properties.bedrooms)))
     .groupBy(properties.bedrooms);
 
-  // byBathrooms: count per bathroom value
+  // byBathrooms: apply every filter except `bathrooms`
   const byBathroomsRows = await db
     .select({
       value: properties.bathrooms,
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(properties)
-    .where(and(eq(properties.isVisible, true), isNotNull(properties.bathrooms)))
+    .where(and(facetWhere("bathrooms"), isNotNull(properties.bathrooms)))
     .groupBy(properties.bathrooms);
+
+  // Total count — separate aggregation so `total` reflects the true result
+  // count (not just the page slice). Pagination is Story 3.5.
+  const totalRows = await db
+    .select({ count: sql<number>`cast(count(*) as integer)` })
+    .from(properties)
+    .where(whereClause);
+  const total = totalRows[0]?.count ?? propertyItems.length;
 
   const facets: FilterFacets = {
     byType: byTypeRows
@@ -172,7 +200,7 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
 
   return {
     properties: propertyItems,
-    total: propertyItems.length,
+    total,
     facets,
   };
 }

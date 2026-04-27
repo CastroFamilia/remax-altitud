@@ -335,7 +335,7 @@ test.describe("Story 3.3: Search Filters & URL State E2E (ATDD — RED PHASE)", 
 
   test.skip(
     "[P1] 3.3-E2E-011: tapping 'Filters' button on mobile opens Sheet with all filter controls",
-    async ({ page, context }: any) => {
+    async ({ page }: any) => {
       // THIS TEST WILL FAIL — mobile filter Sheet not yet implemented
       // Emulate mobile viewport
       await page.setViewportSize({ width: 390, height: 844 }); // iPhone 14 Pro

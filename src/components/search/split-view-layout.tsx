@@ -49,9 +49,16 @@ export function SplitViewLayout({
   propertyCount,
   onBoundsChange,
   filterProperties: _filterProperties, // Story 3.5 will use this for property cards
-  facets: _facets, // Story 3.5 will use this for card filter count display
-  isLoading: _isLoading = false, // Story 3.5 will use this to show/hide loading state
+  // facets prop accepted for forward-compat (Story 3.5 reads it for card-level
+  // filter counts). Not consumed yet — kept in the type to avoid breaking the
+  // SearchPageClient call site when Story 3.5 lands.
+  facets: _facets,
+  isLoading: _isLoading = false,
 }: SplitViewLayoutProps) {
+  // Suppress unused-var warnings for forward-compat props; they are part of
+  // the public API surface used by SearchPageClient today.
+  void _facets;
+  void _isLoading;
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const tPullUp = useTranslations("SearchPage.pullUpHandle");

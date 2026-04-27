@@ -14,7 +14,7 @@
  * - clearAll removes all filter params except 'view'
  */
 
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import type { SearchFilters, SortOption } from "@/types/search";
 
@@ -121,12 +121,26 @@ export function useSearchFilters(): UseSearchFiltersReturn {
   // Debounce timers per key
   const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
-  const filters = parseFilters(searchParams);
+  // Memoize the filters object so its reference is stable across renders unless
+  // the underlying URL search params actually change. Without this, every
+  // consumer that depends on `filters` (e.g. effects in SearchPageClient) would
+  // re-run on every render, causing an infinite refetch loop.
+  // We key off the serialized string because Next.js does not guarantee
+  // identity stability of ReadonlyURLSearchParams across renders.
+  const searchParamsString = searchParams.toString();
+  const filters = useMemo(
+    () => parseFilters(new URLSearchParams(searchParamsString)),
+    [searchParamsString],
+  );
 
-  const activeFilterCount = FILTER_KEYS.filter((key) => {
-    const value = filters[key];
-    return value !== undefined && value !== null;
-  }).length;
+  const activeFilterCount = useMemo(
+    () =>
+      FILTER_KEYS.filter((key) => {
+        const value = filters[key];
+        return value !== undefined && value !== null;
+      }).length,
+    [filters],
+  );
 
   /** Write updated URLSearchParams to router without scrolling */
   const commitParams = useCallback(
@@ -137,18 +151,28 @@ export function useSearchFilters(): UseSearchFiltersReturn {
     [pathname, router],
   );
 
+  // Track the most recent committed params in a ref so debounced timers can
+  // compose against the latest URL state — not the snapshot they captured at
+  // schedule time. This prevents the "set min then max within 300ms" race
+  // where the second commit would overwrite the first.
+  const latestParamsRef = useRef<URLSearchParams>(new URLSearchParams(searchParams.toString()));
+  latestParamsRef.current = new URLSearchParams(searchParams.toString());
+
   const setFilter = useCallback(
     <K extends keyof SearchFilters>(key: K, value: SearchFilters[K] | undefined) => {
       const paramKey = PARAM_MAP[key];
 
       const performUpdate = () => {
-        // Build new params by merging into existing
-        const newParams = new URLSearchParams(searchParams.toString());
+        // Compose against the latest known params (instant updates use the
+        // current snapshot; debounced updates use whatever has been committed
+        // since they were scheduled).
+        const newParams = new URLSearchParams(latestParamsRef.current.toString());
         if (value === undefined || value === null) {
           newParams.delete(paramKey);
         } else {
           newParams.set(paramKey, serializeValue(key, value));
         }
+        latestParamsRef.current = newParams;
         commitParams(newParams);
       };
 
@@ -161,7 +185,7 @@ export function useSearchFilters(): UseSearchFiltersReturn {
         performUpdate();
       }
     },
-    [searchParams, commitParams],
+    [commitParams],
   );
 
   const clearFilter = useCallback(

@@ -10,6 +10,7 @@
  * formatPriceAbbrev imported from @/lib/map/geo-utils (Story 3.2, do NOT reimplement).
  */
 
+import { useEffect, useState } from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { formatPriceAbbrev } from "@/lib/map/geo-utils";
 
@@ -30,6 +31,21 @@ export function PriceRangeSlider({
 }: PriceRangeSliderProps) {
   const [minVal, maxVal] = value;
 
+  // Local input strings so the user can type freely (e.g. partial digits)
+  // without each keystroke reformatting. They re-sync whenever the controlled
+  // `value` changes — for example when the URL updates via back/forward
+  // navigation or when another control clamps the range.
+  const [minInput, setMinInput] = useState<string>(String(minVal));
+  const [maxInput, setMaxInput] = useState<string>(String(maxVal));
+
+  useEffect(() => {
+    setMinInput(String(minVal));
+  }, [minVal]);
+
+  useEffect(() => {
+    setMaxInput(String(maxVal));
+  }, [maxVal]);
+
   function handleSliderChange(newValue: number[]) {
     if (newValue.length >= 2) {
       onChange([newValue[0], newValue[1]]);
@@ -41,6 +57,9 @@ export function PriceRangeSlider({
     if (Number.isFinite(parsed)) {
       const clamped = Math.max(min, Math.min(parsed, maxVal));
       onChange([clamped, maxVal]);
+    } else {
+      // Reset to current valid value if user typed garbage
+      setMinInput(String(minVal));
     }
   }
 
@@ -49,6 +68,8 @@ export function PriceRangeSlider({
     if (Number.isFinite(parsed)) {
       const clamped = Math.max(minVal, Math.min(parsed, max));
       onChange([minVal, clamped]);
+    } else {
+      setMaxInput(String(maxVal));
     }
   }
 
@@ -87,7 +108,8 @@ export function PriceRangeSlider({
         <input
           type="number"
           className="w-full rounded border border-border bg-background px-2 py-1 text-sm"
-          defaultValue={minVal}
+          value={minInput}
+          onChange={(e) => setMinInput(e.target.value)}
           min={min}
           max={maxVal}
           step={step}
@@ -98,7 +120,8 @@ export function PriceRangeSlider({
         <input
           type="number"
           className="w-full rounded border border-border bg-background px-2 py-1 text-sm"
-          defaultValue={maxVal}
+          value={maxInput}
+          onChange={(e) => setMaxInput(e.target.value)}
           min={minVal}
           max={max}
           step={step}
