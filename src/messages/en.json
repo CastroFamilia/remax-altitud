@@ -293,6 +293,35 @@
       "label": "Filters",
       "loading": "Filter bar loading"
     },
+    "filters": {
+      "type": "Type",
+      "typeAll": "All Types",
+      "price": "Price",
+      "pricePlaceholder": "$0 – Any",
+      "bedrooms": "Beds",
+      "bedroomsAny": "Any",
+      "bathrooms": "Baths",
+      "bathroomsAny": "Any",
+      "lotSize": "Lot Size",
+      "location": "Location",
+      "locationAll": "All Areas",
+      "sort": "Sort",
+      "sortNewest": "Newest",
+      "sortPriceAsc": "Price ↑",
+      "sortPriceDesc": "Price ↓",
+      "sortRelevance": "Relevance",
+      "clearAll": "Clear all",
+      "activeChip": "{label}: {value}",
+      "dismiss": "Remove {label} filter",
+      "propertyTypes": {
+        "Casa": "House",
+        "Apartamento": "Apartment",
+        "Lote": "Lot",
+        "Terreno": "Land",
+        "Comercial": "Commercial",
+        "Finca": "Farm"
+      }
+    },
     "pullUpHandle": {
       "propertiesCount": "{count, plural, one {# property} other {# properties}}"
     },
