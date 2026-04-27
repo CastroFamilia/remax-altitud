@@ -152,7 +152,9 @@ test.describe("Story 3.3: Search Filters & URL State E2E (ATDD — RED PHASE)", 
       await minInput.fill("150000");
       await minInput.press("Tab"); // trigger blur/update
 
-      // Wait for debounce (300ms) + React re-render
+      // TODO(test-review-3.3): Replace waitForTimeout with smart assertion when activating.
+      // Use: await expect(page).toHaveURL(/price_min=150000/, { timeout: 1000 });
+      // Playwright polls internally — no fixed sleep needed. (test-review advisory)
       await page.waitForTimeout(400);
 
       // URL should have price_min=150000
@@ -303,6 +305,10 @@ test.describe("Story 3.3: Search Filters & URL State E2E (ATDD — RED PHASE)", 
       // THIS TEST WILL FAIL — searchProperties Server Action not yet implemented
       await page.goto(SEARCH_URL_EN);
 
+      // TODO(test-review-3.3): Remove Date.now()/elapsed check when activating.
+      // The waitForSelector timeout: 500 already enforces the NFR — if the element
+      // is not visible within 500ms Playwright throws, which IS the assertion.
+      // The Date.now() wrapper is redundant and environment-sensitive. (test-review advisory)
       const start = Date.now();
 
       // Select a type filter
@@ -311,6 +317,7 @@ test.describe("Story 3.3: Search Filters & URL State E2E (ATDD — RED PHASE)", 
       await page.getByRole("option", { name: /^Casa$/i }).click();
 
       // Wait for result grid to update (SearchResultsSkeleton or result count change)
+      // timeout: 500 enforces NFR5 — Playwright throws if not visible within 500ms
       await page.waitForSelector('[data-testid="search-results-skeleton"], [data-testid="property-count"]', {
         state: "visible",
         timeout: 500,

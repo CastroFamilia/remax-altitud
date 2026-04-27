@@ -99,15 +99,13 @@ import type { SearchFilters, SearchResult } from "@/types/search"; // imported A
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Minimal SearchResult for assertions */
-function isValidSearchResult(result: SearchResult): boolean {
-  return (
-    Array.isArray(result.properties) &&
-    typeof result.total === "number" &&
-    Array.isArray(result.facets.byType) &&
-    Array.isArray(result.facets.byBedrooms) &&
-    Array.isArray(result.facets.byBathrooms)
-  );
+/** Assert that a SearchResult has the expected shape with field-level diagnostics */
+function assertValidSearchResultShape(result: SearchResult): void {
+  expect(Array.isArray(result.properties), "result.properties must be an array").toBe(true);
+  expect(typeof result.total, "result.total must be a number").toBe("number");
+  expect(Array.isArray(result.facets.byType), "result.facets.byType must be an array").toBe(true);
+  expect(Array.isArray(result.facets.byBedrooms), "result.facets.byBedrooms must be an array").toBe(true);
+  expect(Array.isArray(result.facets.byBathrooms), "result.facets.byBathrooms must be an array").toBe(true);
 }
 
 // ---------------------------------------------------------------------------
@@ -160,7 +158,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
 
       const result = await searchProperties({});
 
-      expect(isValidSearchResult(result)).toBe(true);
+      assertValidSearchResultShape(result);
       expect(result.properties).toEqual([]);
       expect(result.total).toBe(0);
     },
