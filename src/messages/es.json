@@ -293,6 +293,35 @@
       "label": "Filtros",
       "loading": "Cargando filtros"
     },
+    "filters": {
+      "type": "Tipo",
+      "typeAll": "Todos los Tipos",
+      "price": "Precio",
+      "pricePlaceholder": "$0 – Cualquiera",
+      "bedrooms": "Habitaciones",
+      "bedroomsAny": "Cualquiera",
+      "bathrooms": "Baños",
+      "bathroomsAny": "Cualquiera",
+      "lotSize": "Tamaño del Lote",
+      "location": "Ubicación",
+      "locationAll": "Todas las Áreas",
+      "sort": "Ordenar",
+      "sortNewest": "Más Reciente",
+      "sortPriceAsc": "Precio ↑",
+      "sortPriceDesc": "Precio ↓",
+      "sortRelevance": "Relevancia",
+      "clearAll": "Borrar todo",
+      "activeChip": "{label}: {value}",
+      "dismiss": "Eliminar filtro {label}",
+      "propertyTypes": {
+        "Casa": "Casa",
+        "Apartamento": "Apartamento",
+        "Lote": "Lote",
+        "Terreno": "Terreno",
+        "Comercial": "Comercial",
+        "Finca": "Finca"
+      }
+    },
     "pullUpHandle": {
       "propertiesCount": "{count, plural, one {# propiedad} other {# propiedades}}"
     },

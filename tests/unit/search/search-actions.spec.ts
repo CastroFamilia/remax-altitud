@@ -2,7 +2,7 @@
  * Story 3.3: Search Filters & URL State
  * Module: src/app/actions/search-actions.ts
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until
+ * TDD RED PHASE — all tests use it() and will FAIL until
  * search-actions.ts is implemented.
  *
  * Covers:
@@ -28,51 +28,65 @@
  *     byBathrooms: { value: number; count: number }[]; }
  */
 
-import { describe, expect, it, vi, afterEach, beforeEach } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 
 // ---------------------------------------------------------------------------
 // Module mocks — declared BEFORE any imports of the module under test
+// vi.mock() is hoisted by Vitest, so use vi.hoisted() to declare mock handles
+// that can be referenced both inside the factory and in tests.
 // ---------------------------------------------------------------------------
 
-// Mock Drizzle DB client to avoid requiring a real PostgreSQL connection
-const mockSelect = vi.fn();
-const mockFrom = vi.fn();
-const mockWhere = vi.fn();
-const mockOrderBy = vi.fn();
-const mockLimit = vi.fn();
-const mockOffset = vi.fn();
-const mockGroupBy = vi.fn();
+// Use vi.hoisted() so that mock handles are available when vi.mock() factory runs
+const { mockSelect, mockFrom, mockWhere, mockOrderBy, mockLimit, mockOffset, mockGroupBy, mockQueryBuilder } =
+  vi.hoisted(() => {
+    const mockOffset = vi.fn();
+    const mockGroupBy = vi.fn();
+    const mockLimit = vi.fn();
+    const mockOrderBy = vi.fn();
+    const mockWhere = vi.fn();
+    const mockFrom = vi.fn();
+    const mockSelect = vi.fn();
 
-const mockQueryBuilder = {
-  select: mockSelect,
-  from: mockFrom,
-  where: mockWhere,
-  orderBy: mockOrderBy,
-  limit: mockLimit,
-  offset: mockOffset,
-  groupBy: mockGroupBy,
-};
+    // The query builder supports two terminal patterns:
+    //   - .limit().offset()  → used by main properties query (returns Promise)
+    //   - .groupBy()         → used by facets + getAvailableAreas queries (returns Promise)
+    // Both must resolve as arrays to allow .filter()/.map() on the result.
+    const mockQueryBuilder: Record<string, unknown> = {
+      from: mockFrom,
+      where: mockWhere,
+      orderBy: mockOrderBy,
+      limit: mockLimit,
+      offset: mockOffset,
+      groupBy: mockGroupBy,
+    };
 
-// Chain all query builder methods to return the same builder (fluent API)
-mockSelect.mockReturnValue(mockQueryBuilder);
-mockFrom.mockReturnValue(mockQueryBuilder);
-mockWhere.mockReturnValue(mockQueryBuilder);
-mockOrderBy.mockReturnValue(mockQueryBuilder);
-mockGroupBy.mockReturnValue(mockQueryBuilder);
-mockLimit.mockReturnValue(mockQueryBuilder);
-mockOffset.mockReturnValue(
-  // Final .offset() resolves the query — return mock results
-  Promise.resolve([])
-);
+    // Chain: each method returns the same builder for fluent API
+    mockFrom.mockReturnValue(mockQueryBuilder);
+    mockWhere.mockReturnValue(mockQueryBuilder);
+    mockOrderBy.mockReturnValue(mockQueryBuilder);
+    mockLimit.mockReturnValue(mockQueryBuilder);
 
+    // offset: terminal for main query — returns a resolved Promise<[]> by default
+    mockOffset.mockReturnValue(Promise.resolve([]));
+
+    // groupBy: terminal for facets/areas queries — returns a resolved Promise<[]> by default
+    mockGroupBy.mockReturnValue(Promise.resolve([]));
+
+    // select returns the builder chain
+    mockSelect.mockReturnValue(mockQueryBuilder);
+
+    return { mockSelect, mockFrom, mockWhere, mockOrderBy, mockLimit, mockOffset, mockGroupBy, mockQueryBuilder };
+  });
+
+// Mock server-only to allow import in test environment
+vi.mock("server-only", () => ({}));
+
+// Mock Drizzle DB client — factory can reference vi.hoisted() variables
 vi.mock("@/lib/db/client", () => ({
   db: {
     select: mockSelect,
   },
 }));
-
-// Mock server-only to allow import in test environment
-vi.mock("server-only", () => ({}));
 
 // ---------------------------------------------------------------------------
 // Module under test — imported AFTER mocks
@@ -102,8 +116,15 @@ function isValidSearchResult(result: SearchResult): boolean {
 
 afterEach(() => {
   vi.clearAllMocks();
-  // Reset mock chain returns
+  // Re-establish mock chain returns after clearAllMocks resets them
+  mockFrom.mockReturnValue(mockQueryBuilder);
+  mockWhere.mockReturnValue(mockQueryBuilder);
+  mockOrderBy.mockReturnValue(mockQueryBuilder);
+  mockLimit.mockReturnValue(mockQueryBuilder);
+  // Terminal methods — return Promises so await resolves to an array
   mockOffset.mockReturnValue(Promise.resolve([]));
+  mockGroupBy.mockReturnValue(Promise.resolve([]));
+  mockSelect.mockReturnValue(mockQueryBuilder);
 });
 
 describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)", () => {
@@ -111,7 +132,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
   // AC #9: File has "use server" directive
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] search-actions.ts has 'use server' directive at top of file (ADR-5 Server Action)",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -131,7 +152,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
   // AC #1: Returns SearchResult shape
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] searchProperties with no filters returns a valid SearchResult shape",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -145,7 +166,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     },
   );
 
-  it.skip(
+  it(
     "[P0] searchProperties with type filter passes type to Drizzle query",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -158,7 +179,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     },
   );
 
-  it.skip(
+  it(
     "[P0] searchProperties with priceMin and priceMax applies both price range conditions",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -171,7 +192,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     },
   );
 
-  it.skip(
+  it(
     "[P0] searchProperties with bedrooms filter applies gte condition for minimum bedrooms",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -183,7 +204,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     },
   );
 
-  it.skip(
+  it(
     "[P0] searchProperties always applies isVisible=true constraint",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -199,7 +220,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
   // AC #6: Returns FilterFacets for count display
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] searchProperties returns facets.byType with value and count fields",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -217,7 +238,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     },
   );
 
-  it.skip(
+  it(
     "[P1] searchProperties returns facets.byBedrooms with value and count fields",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -236,7 +257,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
   // AC #10: Input sanitization (Number.isFinite guard)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] searchProperties ignores NaN price values and does not pass them to Drizzle",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -248,7 +269,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     },
   );
 
-  it.skip(
+  it(
     "[P0] searchProperties ignores Infinity price values and does not pass them to Drizzle",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -258,7 +279,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     },
   );
 
-  it.skip(
+  it(
     "[P0] searchProperties handles negative priceMin without crashing (edge case sanitization)",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -273,7 +294,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
   // Sort order
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] searchProperties with sort='price_asc' applies ascending price order",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -284,7 +305,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     },
   );
 
-  it.skip(
+  it(
     "[P1] searchProperties with sort='price_desc' applies descending price order",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -294,7 +315,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     },
   );
 
-  it.skip(
+  it(
     "[P1] searchProperties with no sort defaults to descending createdAt (newest first)",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -309,7 +330,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
   // Pagination defaults
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] searchProperties applies limit(50) and offset(0) for MVP pagination",
     async () => {
       // THIS TEST WILL FAIL — search-actions.ts not yet implemented
@@ -326,7 +347,7 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
 // ---------------------------------------------------------------------------
 
 describe("getAvailableAreas — fetch distinct area slugs from DB (AC #7)", () => {
-  it.skip(
+  it(
     "[P0] getAvailableAreas returns an array of { slug, label } objects",
     async () => {
       // THIS TEST WILL FAIL — getAvailableAreas not yet implemented
@@ -348,7 +369,7 @@ describe("getAvailableAreas — fetch distinct area slugs from DB (AC #7)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P0] getAvailableAreas excludes null area slugs from results",
     async () => {
       // THIS TEST WILL FAIL — getAvailableAreas not yet implemented
@@ -368,7 +389,7 @@ describe("getAvailableAreas — fetch distinct area slugs from DB (AC #7)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P1] getAvailableAreas only queries isVisible=true properties",
     async () => {
       // THIS TEST WILL FAIL — getAvailableAreas not yet implemented
@@ -379,14 +400,13 @@ describe("getAvailableAreas — fetch distinct area slugs from DB (AC #7)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P1] search-actions.ts exports both searchProperties and getAvailableAreas",
     async () => {
-      // THIS TEST WILL FAIL — search-actions.ts not yet implemented
-      const module = await import("@/app/actions/search-actions");
+      const searchActionsModule = await import("@/app/actions/search-actions");
 
-      expect(typeof module.searchProperties).toBe("function");
-      expect(typeof module.getAvailableAreas).toBe("function");
+      expect(typeof searchActionsModule.searchProperties).toBe("function");
+      expect(typeof searchActionsModule.getAvailableAreas).toBe("function");
     },
   );
 });

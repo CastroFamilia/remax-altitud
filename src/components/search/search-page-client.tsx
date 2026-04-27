@@ -5,7 +5,10 @@ import { useSearchParams, useParams } from "next/navigation";
 import { SplitViewLayout } from "@/components/search/split-view-layout";
 import { SearchFilterBar } from "@/components/search/search-filter-bar";
 import { getPropertiesForMap } from "@/app/actions/map-actions";
+import { searchProperties, getAvailableAreas } from "@/app/actions/search-actions";
+import { useSearchFilters } from "@/hooks/use-search-filters";
 import type { MapProperty } from "@/app/actions/map-actions";
+import type { PropertySearchItem, FilterFacets } from "@/types/search";
 
 type ViewMode = "split" | "map" | "grid";
 
@@ -19,22 +22,38 @@ export function SearchPageClient() {
   const rawView = searchParams.get("view");
   const viewMode: ViewMode = rawView === "map" || rawView === "grid" ? rawView : "split";
 
-  const [properties, setProperties] = useState<MapProperty[]>([]);
+  // Map properties — fetched by map-actions.ts (Story 3.2, unchanged)
+  const [mapProperties, setMapProperties] = useState<MapProperty[]>([]);
 
-  // Tracks the most recent bounds-change request so out-of-order responses
-  // from earlier requests cannot overwrite a later one's results.
+  // Filter search results — fetched by search-actions.ts (Story 3.3)
+  const [filterProperties, setFilterProperties] = useState<PropertySearchItem[]>([]);
+  const [facets, setFacets] = useState<FilterFacets>({
+    byType: [],
+    byBedrooms: [],
+    byBathrooms: [],
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Available areas for the area filter dropdown
+  const [areas, setAreas] = useState<{ slug: string; label: string }[]>([]);
+
+  // Monotonic sequence counters for race condition prevention
+  // Using a single counter is fine since only one fetch at a time is needed
   const requestSeqRef = useRef(0);
+  const filterSeqRef = useRef(0);
 
-  // Initial load — fetch all visible properties with coordinates
+  // Read current filter state from URL (hook reads useSearchParams internally)
+  const { filters } = useSearchFilters();
+
+  // Initial load — fetch all visible properties with coordinates for the map
   useEffect(() => {
     let cancelled = false;
     getPropertiesForMap()
       .then((data) => {
-        if (!cancelled) setProperties(data);
+        if (!cancelled) setMapProperties(data);
       })
       .catch((error) => {
-        // Server Action failure (DB outage, schema mismatch, etc.) — log and
-        // leave the property list empty rather than crashing the page.
+        // Server Action failure — log and leave the property list empty
         console.error("[search] initial getPropertiesForMap failed", error);
       });
     return () => {
@@ -42,17 +61,48 @@ export function SearchPageClient() {
     };
   }, []);
 
-  // Refresh properties when map bounds change.
+  // Initial load — fetch available areas for the location filter
+  useEffect(() => {
+    getAvailableAreas()
+      .then((data) => setAreas(data))
+      .catch((error) => {
+        console.error("[search] getAvailableAreas failed", error);
+      });
+  }, []);
+
+  // Re-fetch filter results when filters change
+  // The useSearchFilters hook reads from useSearchParams, so this effect
+  // reacts whenever any filter URL param changes.
+  useEffect(() => {
+    const seq = ++filterSeqRef.current;
+
+    setIsLoading(true);
+
+    searchProperties(filters)
+      .then((result) => {
+        // Drop stale responses — only use the most recent request's result
+        if (seq === filterSeqRef.current) {
+          setFilterProperties(result.properties);
+          setFacets(result.facets);
+          setIsLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("[search] searchProperties failed", error);
+        if (seq === filterSeqRef.current) {
+          setIsLoading(false);
+        }
+      });
+  }, [filters]);
+
+  // Refresh map properties when map bounds change.
   // Uses a monotonically increasing sequence number to discard stale responses.
-  // Wrapped in useCallback to avoid re-creating on every render, which would
-  // cause SplitViewLayout to re-render unnecessarily (L-3).
   const handleBoundsChange = useCallback((bounds: MapBounds) => {
     const seq = ++requestSeqRef.current;
     getPropertiesForMap(bounds)
       .then((data) => {
-        // Drop the response if a newer bounds-change request has been issued.
         if (seq === requestSeqRef.current) {
-          setProperties(data);
+          setMapProperties(data);
         }
       })
       .catch((error) => {
@@ -62,15 +112,18 @@ export function SearchPageClient() {
 
   return (
     <div className="flex flex-col">
-      <SearchFilterBar />
+      <SearchFilterBar facets={facets} areas={areas} />
       <SplitViewLayout
         viewMode={viewMode}
         onViewModeChange={() => {
           // View mode changes are handled inside SplitViewLayout via ViewModeToggle
         }}
-        properties={properties}
+        properties={mapProperties}
+        filterProperties={filterProperties}
+        facets={facets}
+        isLoading={isLoading}
         locale={locale}
-        propertyCount={properties.length}
+        propertyCount={filterProperties.length || mapProperties.length}
         onBoundsChange={handleBoundsChange}
       />
     </div>

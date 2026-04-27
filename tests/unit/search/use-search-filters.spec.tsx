@@ -2,7 +2,7 @@
  * Story 3.3: Search Filters & URL State
  * Hook: src/hooks/use-search-filters.ts
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until
+ * TDD RED PHASE — all tests use it() and will FAIL until
  * use-search-filters.ts is implemented.
  *
  * Covers:
@@ -25,7 +25,7 @@
  * NOTE: Use .tsx extension — hooks using useSearchParams need React/jsdom context.
  */
 
-import { describe, expect, it, vi, afterEach, beforeEach } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { renderHook, act, cleanup } from "@testing-library/react";
 
 // ---------------------------------------------------------------------------
@@ -77,7 +77,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
   // -------------------------------------------------------------------------
 
   describe("filters — parsed from URL params (AC #8)", () => {
-    it.skip(
+    it(
       "[P0] returns empty filters when URL has no filter params",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -87,7 +87,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] parses 'type' filter from URL param correctly",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -99,7 +99,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] parses 'price_min' and 'price_max' as numbers from URL params",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -113,7 +113,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] parses 'bedrooms' as a number from URL param",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -125,7 +125,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] parses 'bathrooms' as a number from URL param",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -137,7 +137,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] parses 'area' areaSlug from URL param",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -149,7 +149,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P1] parses 'sort' from URL param as SortOption",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -161,7 +161,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P1] ignores non-finite price_min values (guard against NaN)",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -180,7 +180,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
   // -------------------------------------------------------------------------
 
   describe("setFilter — URL write (AC #3, #8)", () => {
-    it.skip(
+    it(
       "[P0] setFilter('type', 'Casa') calls router.replace with type=Casa in URL",
       async () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -195,7 +195,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] setFilter merges new filter value with existing URL params (does NOT wipe other params)",
       async () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -216,7 +216,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] setFilter with undefined value removes that param from URL",
       async () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -233,7 +233,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] setFilter('bedrooms', 3) writes 'bedrooms=3' to URL",
       async () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -254,7 +254,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
   // -------------------------------------------------------------------------
 
   describe("clearFilter and clearAll (AC #5)", () => {
-    it.skip(
+    it(
       "[P0] clearFilter('type') removes only the type param from URL",
       async () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -274,7 +274,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] clearAll removes all filter params except 'view'",
       async () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -305,7 +305,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
   // -------------------------------------------------------------------------
 
   describe("activeFilterCount — excludes view and sort (AC #5)", () => {
-    it.skip(
+    it(
       "[P0] activeFilterCount is 0 when no filters are set",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -315,7 +315,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] activeFilterCount is 1 when only 'type' is set",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -327,7 +327,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] activeFilterCount does NOT count 'view' param (view is not a filter)",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -339,7 +339,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P1] activeFilterCount does NOT count 'sort' param (sort is not a filter chip)",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -351,7 +351,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
       },
     );
 
-    it.skip(
+    it(
       "[P0] activeFilterCount correctly counts multiple filters",
       () => {
         // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented
@@ -372,7 +372,7 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
   // Architecture compliance
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] hook file starts with 'use client' directive (Client Component only)",
     async () => {
       // THIS TEST WILL FAIL — use-search-filters.ts not yet implemented

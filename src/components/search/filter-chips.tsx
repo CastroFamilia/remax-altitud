@@ -4,13 +4,13 @@
  * Story 3.3: Search Filters & URL State
  * Component: FilterChips — active filter chips row with dismiss and clear all.
  *
- * ATDD STUB — This file satisfies module resolution for red-phase test scaffolds.
- * Task 6 of Story 3.3 will replace this stub with the full implementation.
- *
  * Architecture: src/components/search/filter-chips.tsx (§3 directory listing)
  * Design token: bg-brand-blue text-white for chips (--brand-blue: #0043FF)
+ * Tailwind v4 CSS-first: use bg-brand-blue, NOT hex values.
  */
 
+import { useTranslations } from "next-intl";
+import { formatPriceAbbrev } from "@/lib/map/geo-utils";
 import type { SearchFilters } from "@/types/search";
 
 interface FilterChipsProps {
@@ -19,19 +19,140 @@ interface FilterChipsProps {
   onClearAll: () => void;
 }
 
-/**
- * ATDD STUB — Not yet implemented. Story 3.3 Task 6 will implement this.
- *
- * Implementation requirements:
- * - One chip per active filter (excludes 'view' and 'sort')
- * - Chip format: "Type: Casa ×", "Price: $100K–$500K ×"
- * - "Clear all" appears when activeFilterCount >= 2
- * - data-testid="filter-chips" on container
- * - data-testid="clear-all-filters" on "Clear all" button
- * - data-testid="filter-chip" on each chip
- * - data-testid="chip-dismiss" on each × button
- * - bg-brand-blue text-white on chips (Tailwind v4 design token)
- */
-export function FilterChips(_props: FilterChipsProps) {
-  throw new Error("FilterChips: not yet implemented — Story 3.3 Task 6");
+/** Filter keys that generate chips (exclude 'view' and 'sort') */
+const CHIP_KEYS: Array<keyof SearchFilters> = [
+  "type",
+  "priceMin",
+  "priceMax",
+  "bedrooms",
+  "bathrooms",
+  "lotSizeMin",
+  "lotSizeMax",
+  "areaSlug",
+];
+
+interface ChipInfo {
+  key: keyof SearchFilters;
+  label: string;
+  value: string;
+}
+
+export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsProps) {
+  const t = useTranslations("SearchPage");
+
+  // Build the list of active chips
+  const chips: ChipInfo[] = [];
+
+  if (filters.type) {
+    chips.push({
+      key: "type",
+      label: t("filters.type"),
+      value: filters.type,
+    });
+  }
+
+  // Price chip — combine min and max into one chip if either is set
+  if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
+    const minStr = filters.priceMin !== undefined ? formatPriceAbbrev(filters.priceMin) : "$0";
+    const maxStr = filters.priceMax !== undefined ? formatPriceAbbrev(filters.priceMax) : "Any";
+    chips.push({
+      key: "priceMin",
+      label: t("filters.price"),
+      value: `${minStr}–${maxStr}`,
+    });
+  }
+
+  if (filters.bedrooms !== undefined) {
+    chips.push({
+      key: "bedrooms",
+      label: t("filters.bedrooms"),
+      value: `${filters.bedrooms}+`,
+    });
+  }
+
+  if (filters.bathrooms !== undefined) {
+    chips.push({
+      key: "bathrooms",
+      label: t("filters.bathrooms"),
+      value: `${filters.bathrooms}+`,
+    });
+  }
+
+  if (filters.lotSizeMin !== undefined || filters.lotSizeMax !== undefined) {
+    const minStr = filters.lotSizeMin !== undefined ? `${filters.lotSizeMin}m²` : "0";
+    const maxStr = filters.lotSizeMax !== undefined ? `${filters.lotSizeMax}m²` : "Any";
+    chips.push({
+      key: "lotSizeMin",
+      label: t("filters.lotSize"),
+      value: `${minStr}–${maxStr}`,
+    });
+  }
+
+  if (filters.areaSlug) {
+    chips.push({
+      key: "areaSlug",
+      label: t("filters.location"),
+      value: filters.areaSlug,
+    });
+  }
+
+  // Count active filters (same as CHIP_KEYS check)
+  const activeFilterCount = CHIP_KEYS.filter((key) => {
+    const val = filters[key];
+    return val !== undefined && val !== null;
+  }).length;
+
+  if (chips.length === 0) {
+    return null;
+  }
+
+  function handleDismiss(key: keyof SearchFilters) {
+    // If dismissing a price chip, clear both priceMin and priceMax
+    if (key === "priceMin") {
+      onClearFilter("priceMin");
+      onClearFilter("priceMax");
+    } else if (key === "lotSizeMin") {
+      onClearFilter("lotSizeMin");
+      onClearFilter("lotSizeMax");
+    } else {
+      onClearFilter(key);
+    }
+  }
+
+  return (
+    <div data-testid="filter-chips" className="flex flex-wrap items-center gap-2 px-4 py-2">
+      {chips.map((chip) => (
+        <span
+          key={chip.key}
+          data-testid="filter-chip"
+          className="inline-flex items-center gap-1 rounded-full bg-brand-blue px-3 py-1 text-sm font-medium text-white min-h-[2.75rem]"
+        >
+          <span>
+            {chip.label}: {chip.value}
+          </span>
+          <button
+            type="button"
+            data-testid="chip-dismiss"
+            className="ml-1 flex h-5 w-5 items-center justify-center rounded-full hover:bg-white/20"
+            aria-label={t("filters.dismiss", { label: chip.label })}
+            onClick={() => handleDismiss(chip.key)}
+          >
+            ×
+          </button>
+        </span>
+      ))}
+
+      {/* "Clear all" appears when 2+ active filters */}
+      {activeFilterCount >= 2 && (
+        <button
+          type="button"
+          data-testid="clear-all-filters"
+          className="text-sm text-muted-foreground underline hover:text-foreground"
+          onClick={onClearAll}
+        >
+          {t("filters.clearAll")}
+        </button>
+      )}
+    </div>
+  );
 }

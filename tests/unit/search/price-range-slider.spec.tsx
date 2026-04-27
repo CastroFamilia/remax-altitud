@@ -2,7 +2,7 @@
  * Story 3.3: Search Filters & URL State
  * Component: src/components/search/price-range-slider.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until
+ * TDD RED PHASE — all tests use it() and will FAIL until
  * price-range-slider.tsx is implemented.
  *
  * Covers:
@@ -87,7 +87,7 @@ describe("PriceRangeSlider — dual-handle Radix Slider for price range (AC #1, 
   // data-testid presence
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid='price-range-slider' root element",
     () => {
       // THIS TEST WILL FAIL — price-range-slider.tsx not yet implemented
@@ -103,7 +103,7 @@ describe("PriceRangeSlider — dual-handle Radix Slider for price range (AC #1, 
   // AC #1: Display formatted price values
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] displays formatted min price value using formatPriceAbbrev ($250K format)",
     () => {
       // THIS TEST WILL FAIL — price-range-slider.tsx not yet implemented
@@ -115,7 +115,7 @@ describe("PriceRangeSlider — dual-handle Radix Slider for price range (AC #1, 
     },
   );
 
-  it.skip(
+  it(
     "[P0] displays formatted max price value in $M format for values >= 1,000,000",
     () => {
       // THIS TEST WILL FAIL — price-range-slider.tsx not yet implemented
@@ -127,7 +127,7 @@ describe("PriceRangeSlider — dual-handle Radix Slider for price range (AC #1, 
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders two number inputs for min and max price",
     () => {
       // THIS TEST WILL FAIL — price-range-slider.tsx not yet implemented
@@ -144,7 +144,7 @@ describe("PriceRangeSlider — dual-handle Radix Slider for price range (AC #1, 
   // AC #4: onChange called when slider value changes
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] calls onChange when slider value changes (fired by Radix onValueChange)",
     () => {
       // THIS TEST WILL FAIL — price-range-slider.tsx not yet implemented
@@ -166,7 +166,7 @@ describe("PriceRangeSlider — dual-handle Radix Slider for price range (AC #1, 
   // UX-DR7: Touch target size ≥ 44px on slider thumbs
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] slider thumbs have touch target ≥ 44px (UX-DR7 accessibility requirement)",
     () => {
       // THIS TEST WILL FAIL — price-range-slider.tsx not yet implemented
@@ -195,7 +195,7 @@ describe("PriceRangeSlider — dual-handle Radix Slider for price range (AC #1, 
   // AC #1: Default props
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] renders with default min=0, max=5_000_000 when no min/max props provided",
     () => {
       // THIS TEST WILL FAIL — price-range-slider.tsx not yet implemented
@@ -211,7 +211,7 @@ describe("PriceRangeSlider — dual-handle Radix Slider for price range (AC #1, 
   // Architecture compliance
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] PriceRangeSlider is a Client Component (file must start with 'use client')",
     async () => {
       // THIS TEST WILL FAIL — price-range-slider.tsx not yet implemented

@@ -2,7 +2,7 @@
  * Story 3.3: Search Filters & URL State
  * Component: src/components/search/filter-chips.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until
+ * TDD RED PHASE — all tests use it() and will FAIL until
  * filter-chips.tsx is implemented.
  *
  * Covers:
@@ -93,7 +93,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
   // data-testid presence
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid='filter-chips' container element",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -108,7 +108,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
   // AC #5: One chip per active filter
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders one chip for each active filter (excludes view and sort)",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -126,7 +126,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders type chip with label 'Type: Casa ×' (or equivalent translated form)",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -137,7 +137,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders bedrooms chip with minimum beds count display",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -148,7 +148,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders price chip when priceMin is set",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -164,7 +164,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
   // AC #5: Dismiss chip via × button
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] clicking the × button on a chip calls onClearFilter with the correct key",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -187,7 +187,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
   // AC #5: "Clear all" appears only when 2+ active filters
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] 'Clear all' button is NOT rendered when only 1 filter is active",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -198,7 +198,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 'Clear all' button IS rendered when 2 or more filters are active",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -209,7 +209,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] clicking 'Clear all' calls onClearAll callback",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -228,7 +228,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
   // Edge case: no active filters — container renders empty or hidden
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] renders nothing or empty container when no active filters are set",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -242,7 +242,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] view and sort params do NOT generate chips",
     () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented
@@ -257,7 +257,7 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
   // Architecture compliance
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] FilterChips is a Client Component (file must start with 'use client')",
     async () => {
       // THIS TEST WILL FAIL — filter-chips.tsx not yet implemented

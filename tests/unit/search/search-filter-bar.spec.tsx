@@ -72,11 +72,36 @@ vi.mock("@/hooks/use-search-filters", () => ({
   })),
 }));
 
+// Mock Sheet (Radix Dialog) to avoid ResizeObserver dependency in jsdom
+vi.mock("@/components/ui/sheet", () => ({
+  Sheet: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  SheetTrigger: ({ children }: { children?: React.ReactNode; asChild?: boolean }) => <div>{children}</div>,
+  SheetContent: ({ children }: { children?: React.ReactNode }) => <div data-testid="sheet-content">{children}</div>,
+  SheetHeader: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  SheetTitle: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+}));
+
+// Mock PriceRangeSlider to avoid @radix-ui/react-slider ResizeObserver dependency
+vi.mock("@/components/search/price-range-slider", () => ({
+  PriceRangeSlider: ({ value }: { value: [number, number]; onChange: (v: [number, number]) => void }) => (
+    <div data-testid="price-range-slider">{value[0]} – {value[1]}</div>
+  ),
+}));
+
+// Mock FilterChips to keep search-filter-bar tests focused
+vi.mock("@/components/search/filter-chips", () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  FilterChips: ({ filters, onClearFilter, onClearAll }: { filters: unknown; onClearFilter: unknown; onClearAll: unknown }) => (
+    <div data-testid="filter-chips" />
+  ),
+}));
+
 // ---------------------------------------------------------------------------
 // Component under test — imported AFTER mocks
 // ---------------------------------------------------------------------------
 
 import { SearchFilterBar } from "@/components/search/search-filter-bar";
+import { useSearchFilters } from "@/hooks/use-search-filters"; // imported AFTER mocks (for vi.mocked)
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -137,7 +162,7 @@ describe("SearchFilterBar", () => {
   // was REMOVED by Story 3.3 — this test now asserts real filter controls exist.
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] renders Type dropdown control on desktop (data-testid='type-filter' — Story 3.3)",
     () => {
       // THIS TEST WILL FAIL — SearchFilterBar real controls not yet implemented
@@ -214,13 +239,11 @@ describe("SearchFilterBar", () => {
   // Story 3.3: AC #2 — Context-sensitive: land types hide bedrooms & bathrooms
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] hides bedrooms and bathrooms controls when type='Lote' is selected (AC #2 — Story 3.3)",
     () => {
-      // THIS TEST WILL FAIL — SearchFilterBar real controls not yet implemented
       // Re-mock useSearchFilters to return a land-type filter
-      const { useSearchFilters } = require("@/hooks/use-search-filters");
-      (useSearchFilters as ReturnType<typeof vi.fn>).mockReturnValue({
+      vi.mocked(useSearchFilters).mockReturnValue({
         filters: { type: "Lote" },
         setFilter: vi.fn(),
         clearFilter: vi.fn(),
@@ -249,12 +272,10 @@ describe("SearchFilterBar", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] hides bedrooms and bathrooms controls when type='Terreno' is selected (AC #2 — Story 3.3)",
     () => {
-      // THIS TEST WILL FAIL — SearchFilterBar real controls not yet implemented
-      const { useSearchFilters } = require("@/hooks/use-search-filters");
-      (useSearchFilters as ReturnType<typeof vi.fn>).mockReturnValue({
+      vi.mocked(useSearchFilters).mockReturnValue({
         filters: { type: "Terreno" },
         setFilter: vi.fn(),
         clearFilter: vi.fn(),
@@ -277,12 +298,10 @@ describe("SearchFilterBar", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] shows bedrooms and bathrooms controls when type='Casa' is selected (AC #2 — Story 3.3)",
     () => {
-      // THIS TEST WILL FAIL — SearchFilterBar real controls not yet implemented
-      const { useSearchFilters } = require("@/hooks/use-search-filters");
-      (useSearchFilters as ReturnType<typeof vi.fn>).mockReturnValue({
+      vi.mocked(useSearchFilters).mockReturnValue({
         filters: { type: "Casa" },
         setFilter: vi.fn(),
         clearFilter: vi.fn(),
@@ -309,12 +328,10 @@ describe("SearchFilterBar", () => {
   // Story 3.3: AC #5 — Active filter chips row
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders FilterChips row when at least one filter is active (AC #5 — Story 3.3)",
     () => {
-      // THIS TEST WILL FAIL — SearchFilterBar real controls not yet implemented
-      const { useSearchFilters } = require("@/hooks/use-search-filters");
-      (useSearchFilters as ReturnType<typeof vi.fn>).mockReturnValue({
+      vi.mocked(useSearchFilters).mockReturnValue({
         filters: { type: "Casa" },
         setFilter: vi.fn(),
         clearFilter: vi.fn(),
@@ -330,11 +347,19 @@ describe("SearchFilterBar", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] does NOT render FilterChips row when no filters are active (AC #5 — Story 3.3)",
     () => {
-      // THIS TEST WILL FAIL — SearchFilterBar real controls not yet implemented
-      render(<SearchFilterBar />); // useSearchFilters mock returns activeFilterCount: 0
+      // Reset to default factory return (activeFilterCount: 0) in case a previous
+      // test called mockReturnValue. vi.clearAllMocks() preserves mockReturnValue.
+      vi.mocked(useSearchFilters).mockReturnValue({
+        filters: {},
+        setFilter: vi.fn(),
+        clearFilter: vi.fn(),
+        clearAll: vi.fn(),
+        activeFilterCount: 0,
+      });
+      render(<SearchFilterBar />); // useSearchFilters returns activeFilterCount: 0
 
       // FilterChips should not be visible when no filters are active
       const filterChips = document.querySelector('[data-testid="filter-chips"]');
