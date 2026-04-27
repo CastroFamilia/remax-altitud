@@ -16,12 +16,15 @@ import { and, eq, gte, lte, isNotNull, desc, asc, sql } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
 
 /**
- * Sanitize a numeric value — returns undefined if the value is not a finite
- * number, paralleling the sanitizeBounds pattern in map-actions.ts (Story 3.2).
+ * Sanitize a numeric value — returns undefined if the value is not a finite,
+ * non-negative number, paralleling the sanitizeBounds pattern in map-actions.ts
+ * (Story 3.2). Negative values are rejected because all numeric filter
+ * dimensions (price, bedrooms, bathrooms, lot size) must be ≥ 0.
  */
 function sanitizeNumber(value: number | undefined): number | undefined {
   if (value === undefined || value === null) return undefined;
   if (!Number.isFinite(value)) return undefined;
+  if (value < 0) return undefined;
   return value;
 }
 

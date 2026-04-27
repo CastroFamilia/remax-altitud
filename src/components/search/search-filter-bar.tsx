@@ -57,131 +57,130 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
     return facet ? `${type} (${facet.count})` : type;
   }
 
-  /** Render the full set of filter controls (used in both desktop bar and mobile sheet) */
-  function FilterControls() {
-    return (
-      <div className="flex flex-wrap items-center gap-3 w-full">
-        {/* Type dropdown (AC #1) */}
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-muted-foreground">{t("filters.type")}</label>
+  /** The full set of filter controls (used in both desktop bar and mobile sheet).
+   * Defined as a variable (not a nested component) to avoid React re-mounting
+   * it on every render — nested function components lose state every render. */
+  const filterControls = (
+    <div className="flex flex-wrap items-center gap-3 w-full">
+      {/* Type dropdown (AC #1) */}
+      <div className="flex flex-col gap-1">
+        <label className="text-xs font-medium text-muted-foreground">{t("filters.type")}</label>
+        <select
+          data-testid="type-filter"
+          className="rounded border border-border bg-background px-2 py-1 text-sm"
+          value={filters.type ?? ""}
+          onChange={(e) => setFilter("type", e.target.value || undefined)}
+        >
+          <option value="">{t("filters.typeAll")}</option>
+          {PROPERTY_TYPES.map((type) => (
+            <option key={type} value={type}>
+              {typeLabel(type)}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Bedrooms dropdown — hidden for land types (AC #2) */}
+      {!isLandType && (
+        <div data-testid="bedrooms-filter" className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            {t("filters.bedrooms")}
+          </label>
           <select
-            data-testid="type-filter"
             className="rounded border border-border bg-background px-2 py-1 text-sm"
-            value={filters.type ?? ""}
-            onChange={(e) => setFilter("type", e.target.value || undefined)}
+            value={filters.bedrooms?.toString() ?? ""}
+            onChange={(e) =>
+              setFilter("bedrooms", e.target.value ? parseInt(e.target.value, 10) : undefined)
+            }
           >
-            <option value="">{t("filters.typeAll")}</option>
-            {PROPERTY_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {typeLabel(type)}
+            <option value="">{t("filters.bedroomsAny")}</option>
+            {BEDROOM_OPTIONS.map((n) => (
+              <option key={n} value={n}>
+                {n}+
               </option>
             ))}
           </select>
         </div>
+      )}
 
-        {/* Bedrooms dropdown — hidden for land types (AC #2) */}
-        {!isLandType && (
-          <div data-testid="bedrooms-filter" className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-muted-foreground">
-              {t("filters.bedrooms")}
-            </label>
-            <select
-              className="rounded border border-border bg-background px-2 py-1 text-sm"
-              value={filters.bedrooms?.toString() ?? ""}
-              onChange={(e) =>
-                setFilter("bedrooms", e.target.value ? parseInt(e.target.value, 10) : undefined)
-              }
-            >
-              <option value="">{t("filters.bedroomsAny")}</option>
-              {BEDROOM_OPTIONS.map((n) => (
-                <option key={n} value={n}>
-                  {n}+
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Bathrooms dropdown — hidden for land types (AC #2) */}
-        {!isLandType && (
-          <div data-testid="bathrooms-filter" className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-muted-foreground">
-              {t("filters.bathrooms")}
-            </label>
-            <select
-              className="rounded border border-border bg-background px-2 py-1 text-sm"
-              value={filters.bathrooms?.toString() ?? ""}
-              onChange={(e) =>
-                setFilter("bathrooms", e.target.value ? parseInt(e.target.value, 10) : undefined)
-              }
-            >
-              <option value="">{t("filters.bathroomsAny")}</option>
-              {BATHROOM_OPTIONS.map((n) => (
-                <option key={n} value={n}>
-                  {n}+
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Price Range slider (AC #4 — 300ms debounce handled by hook) */}
-        <div className="flex flex-col gap-1 min-w-[200px]">
-          <label className="text-xs font-medium text-muted-foreground">{t("filters.price")}</label>
-          <PriceRangeSlider
-            value={priceValue}
-            onChange={([min, max]) => {
-              setFilter("priceMin", min > 0 ? min : undefined);
-              setFilter("priceMax", max < 5_000_000 ? max : undefined);
-            }}
-          />
-        </div>
-
-        {/* Location dropdown (AC #7 — flat area slugs for MVP) */}
-        {areas.length > 0 && (
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-muted-foreground">
-              {t("filters.location")}
-            </label>
-            <select
-              data-testid="area-filter"
-              className="rounded border border-border bg-background px-2 py-1 text-sm"
-              value={filters.areaSlug ?? ""}
-              onChange={(e) => setFilter("areaSlug", e.target.value || undefined)}
-            >
-              <option value="">{t("filters.locationAll")}</option>
-              {areas.map((area) => (
-                <option key={area.slug} value={area.slug}>
-                  {area.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Sort dropdown */}
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-muted-foreground">{t("filters.sort")}</label>
+      {/* Bathrooms dropdown — hidden for land types (AC #2) */}
+      {!isLandType && (
+        <div data-testid="bathrooms-filter" className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            {t("filters.bathrooms")}
+          </label>
           <select
             className="rounded border border-border bg-background px-2 py-1 text-sm"
-            value={filters.sort ?? ""}
+            value={filters.bathrooms?.toString() ?? ""}
             onChange={(e) =>
-              setFilter(
-                "sort",
-                (e.target.value as "newest" | "price_asc" | "price_desc" | "relevance") ||
-                  undefined,
-              )
+              setFilter("bathrooms", e.target.value ? parseInt(e.target.value, 10) : undefined)
             }
           >
-            <option value="">{t("filters.sortNewest")}</option>
-            <option value="price_asc">{t("filters.sortPriceAsc")}</option>
-            <option value="price_desc">{t("filters.sortPriceDesc")}</option>
-            <option value="relevance">{t("filters.sortRelevance")}</option>
+            <option value="">{t("filters.bathroomsAny")}</option>
+            {BATHROOM_OPTIONS.map((n) => (
+              <option key={n} value={n}>
+                {n}+
+              </option>
+            ))}
           </select>
         </div>
+      )}
+
+      {/* Price Range slider (AC #4 — 300ms debounce handled by hook) */}
+      <div className="flex flex-col gap-1 min-w-[200px]">
+        <label className="text-xs font-medium text-muted-foreground">{t("filters.price")}</label>
+        <PriceRangeSlider
+          value={priceValue}
+          onChange={([min, max]) => {
+            setFilter("priceMin", min > 0 ? min : undefined);
+            setFilter("priceMax", max < 5_000_000 ? max : undefined);
+          }}
+        />
       </div>
-    );
-  }
+
+      {/* Location dropdown (AC #7 — flat area slugs for MVP) */}
+      {areas.length > 0 && (
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            {t("filters.location")}
+          </label>
+          <select
+            data-testid="area-filter"
+            className="rounded border border-border bg-background px-2 py-1 text-sm"
+            value={filters.areaSlug ?? ""}
+            onChange={(e) => setFilter("areaSlug", e.target.value || undefined)}
+          >
+            <option value="">{t("filters.locationAll")}</option>
+            {areas.map((area) => (
+              <option key={area.slug} value={area.slug}>
+                {area.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Sort dropdown */}
+      <div className="flex flex-col gap-1">
+        <label className="text-xs font-medium text-muted-foreground">{t("filters.sort")}</label>
+        <select
+          className="rounded border border-border bg-background px-2 py-1 text-sm"
+          value={filters.sort ?? ""}
+          onChange={(e) =>
+            setFilter(
+              "sort",
+              (e.target.value as "newest" | "price_asc" | "price_desc" | "relevance") || undefined,
+            )
+          }
+        >
+          <option value="">{t("filters.sortNewest")}</option>
+          <option value="price_asc">{t("filters.sortPriceAsc")}</option>
+          <option value="price_desc">{t("filters.sortPriceDesc")}</option>
+          <option value="relevance">{t("filters.sortRelevance")}</option>
+        </select>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -213,15 +212,13 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
               <SheetHeader>
                 <SheetTitle>{t("filterBar.label")}</SheetTitle>
               </SheetHeader>
-              <div className="p-4">
-                <FilterControls />
-              </div>
+              <div className="p-4">{filterControls}</div>
             </SheetContent>
           </Sheet>
 
           {/* Desktop/tablet filter controls — visible at md: and above */}
           <div className="hidden md:flex items-center gap-3 w-full overflow-x-auto">
-            <FilterControls />
+            {filterControls}
           </div>
         </div>
       </div>
