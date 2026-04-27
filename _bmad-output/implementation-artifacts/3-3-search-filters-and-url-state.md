@@ -557,4 +557,14 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+### ATDD Artifacts
+
+- Checklist: `_bmad-output/test-artifacts/atdd-checklist-3-3-search-filters-and-url-state.md`
+- Unit (Hook): `tests/unit/search/use-search-filters.spec.tsx`
+- Unit (Component): `tests/unit/search/filter-chips.spec.tsx`
+- Unit (Component): `tests/unit/search/price-range-slider.spec.tsx`
+- Unit (Server Action): `tests/unit/search/search-actions.spec.ts`
+- Updated: `tests/unit/search/search-filter-bar.spec.tsx`
+- E2E: `tests/e2e/search-filters.spec.ts`
+
 ### File List
