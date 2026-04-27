@@ -1,6 +1,6 @@
 # Story 3.3: Search Filters & URL State
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -32,8 +32,8 @@ so that I only see properties that match my needs.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Define `SearchFilters` type and URL param schema (AC: #1, #2, #8)
-  - [ ] Create `src/types/search.ts` — canonical `SearchFilters` type:
+- [x] Task 1: Define `SearchFilters` type and URL param schema (AC: #1, #2, #8)
+  - [x] Create `src/types/search.ts` — canonical `SearchFilters` type:
     ```ts
     export type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'relevance';
     export interface SearchFilters {
@@ -49,15 +49,15 @@ so that I only see properties that match my needs.
       view?: 'split' | 'map' | 'grid'; // URL param: "view" (already exists in 3.1)
     }
     ```
-  - [ ] Architecture mandates: **Search filters = URL query params** (AR10 / §8 State Management table). Do NOT use Zustand or React state for filter values — they MUST live in the URL.
-  - [ ] URL param names must be short, human-readable, and lowercase (per UX spec §9 SEO — "Clean, semantic URLs").
+  - [x] Architecture mandates: **Search filters = URL query params** (AR10 / §8 State Management table). Do NOT use Zustand or React state for filter values — they MUST live in the URL.
+  - [x] URL param names must be short, human-readable, and lowercase (per UX spec §9 SEO — "Clean, semantic URLs").
 
-- [ ] Task 2: Create `use-search-filters` hook (AC: #3, #4, #8)
-  - [ ] Create `src/hooks/use-search-filters.ts` (architecture mandates this hook at `src/hooks/use-search-params.ts` — use the name `use-search-filters.ts` to match the feature; the architecture hook name is just a guide)
-  - [ ] This hook is the single source of truth for reading and writing search filter URL state
-  - [ ] Use `useSearchParams()` from `next/navigation` to read current filter values
-  - [ ] Use `useRouter()` from `next/navigation` with `router.replace(url, { scroll: false })` to update URL without page reload
-  - [ ] Hook must return:
+- [x] Task 2: Create `use-search-filters` hook (AC: #3, #4, #8)
+  - [x] Create `src/hooks/use-search-filters.ts` (architecture mandates this hook at `src/hooks/use-search-params.ts` — use the name `use-search-filters.ts` to match the feature; the architecture hook name is just a guide)
+  - [x] This hook is the single source of truth for reading and writing search filter URL state
+  - [x] Use `useSearchParams()` from `next/navigation` to read current filter values
+  - [x] Use `useRouter()` from `next/navigation` with `router.replace(url, { scroll: false })` to update URL without page reload
+  - [x] Hook must return:
     ```ts
     interface UseSearchFiltersReturn {
       filters: SearchFilters;
@@ -67,17 +67,17 @@ so that I only see properties that match my needs.
       activeFilterCount: number; // count excluding 'view' and 'sort'
     }
     ```
-  - [ ] `setFilter` must be debounced at 300ms for numeric inputs (price slider, lot size) — use `useCallback` + `useRef` debounce pattern (no external debounce library needed)
-  - [ ] For instant-update filters (type, bedrooms, bathrooms, area, sort), no debounce — update immediately
-  - [ ] When updating URL: merge new filter value into existing params; do NOT wipe other params
-  - [ ] `clearAll` removes all filter params except `view` (view mode is not a filter)
-  - [ ] **Client Component only** — this hook uses `useSearchParams` which requires `'use client'`
+  - [x] `setFilter` must be debounced at 300ms for numeric inputs (price slider, lot size) — use `useCallback` + `useRef` debounce pattern (no external debounce library needed)
+  - [x] For instant-update filters (type, bedrooms, bathrooms, area, sort), no debounce — update immediately
+  - [x] When updating URL: merge new filter value into existing params; do NOT wipe other params
+  - [x] `clearAll` removes all filter params except `view` (view mode is not a filter)
+  - [x] **Client Component only** — this hook uses `useSearchParams` which requires `'use client'`
 
-- [ ] Task 3: Create `searchProperties` Server Action (AC: #9, #1, #2, #6, #10)
-  - [ ] Create `src/app/actions/search-actions.ts` with `"use server"` directive at top
-  - [ ] **DO NOT modify** `src/app/actions/map-actions.ts` (Story 3.2, frozen)
-  - [ ] Export `async function searchProperties(filters: SearchFilters): Promise<SearchResult>`
-  - [ ] `SearchResult` type:
+- [x] Task 3: Create `searchProperties` Server Action (AC: #9, #1, #2, #6, #10)
+  - [x] Create `src/app/actions/search-actions.ts` with `"use server"` directive at top
+  - [x] **DO NOT modify** `src/app/actions/map-actions.ts` (Story 3.2, frozen)
+  - [x] Export `async function searchProperties(filters: SearchFilters): Promise<SearchResult>`
+  - [x] `SearchResult` type:
     ```ts
     export interface PropertySearchItem {
       id: string; slug: string; titleEn: string; titleEs: string;
@@ -98,13 +98,13 @@ so that I only see properties that match my needs.
       byBathrooms: { value: number; count: number }[];
     }
     ```
-  - [ ] Implement query using architecture's `searchProperties` pattern from `architecture.md §6`:
+  - [x] Implement query using architecture's `searchProperties` pattern from `architecture.md §6`:
     ```ts
     // Use Drizzle from: import { db } from "@/lib/db/client"
     // Schema: import { properties } from "@/lib/db/schema"
     // Use: and(), eq(), gte(), lte(), sql, desc(), asc(), isNotNull()
     ```
-  - [ ] Filter conditions to implement (all optional, AND logic):
+  - [x] Filter conditions to implement (all optional, AND logic):
     - `type` → `eq(properties.propertyType, filters.type)`
     - `priceMin` → `gte(properties.priceUsd, filters.priceMin)`
     - `priceMax` → `lte(properties.priceUsd, filters.priceMax)`
@@ -114,19 +114,19 @@ so that I only see properties that match my needs.
     - `lotSizeMax` → `lte(properties.lotSizeM2, filters.lotSizeMax)`
     - `areaSlug` → `eq(properties.areaSlug, filters.areaSlug)`
     - always: `eq(properties.isVisible, true)`
-  - [ ] Sort order: `price_asc` → `asc(properties.priceUsd)`, `price_desc` → `desc(properties.priceUsd)`, default → `desc(properties.createdAt)`
-  - [ ] Pagination: `limit(50).offset(0)` for MVP (pagination Story 3.5)
-  - [ ] **Facets query**: run a second aggregation query to compute counts per type and bedroom/bathroom value for the current filter set (excluding the dimension being faceted). Use Drizzle `sql` for `COUNT(*)` + `GROUP BY`.
-  - [ ] Validate all numeric filter inputs (guard against NaN, Infinity, out-of-range values) before passing to Drizzle. Use `Number.isFinite()` checks — same defensive pattern as `sanitizeBounds` in `map-actions.ts`.
+  - [x] Sort order: `price_asc` → `asc(properties.priceUsd)`, `price_desc` → `desc(properties.priceUsd)`, default → `desc(properties.createdAt)`
+  - [x] Pagination: `limit(50).offset(0)` for MVP (pagination Story 3.5)
+  - [x] **Facets query**: run a second aggregation query to compute counts per type and bedroom/bathroom value for the current filter set (excluding the dimension being faceted). Use Drizzle `sql` for `COUNT(*)` + `GROUP BY`.
+  - [x] Validate all numeric filter inputs (guard against NaN, Infinity, out-of-range values) before passing to Drizzle. Use `Number.isFinite()` checks — same defensive pattern as `sanitizeBounds` in `map-actions.ts`.
 
-- [ ] Task 4: Replace `SearchFilterBar` stub with real filter controls (AC: #1, #2, #3, #4, #5, #6)
-  - [ ] **File to modify**: `src/components/search/search-filter-bar.tsx` (Story 3.1 stub — this story owns it per Story 3.2 scope boundary)
-  - [ ] Keep `'use client'` directive and `data-testid="search-filter-bar"` (existing tests in `search-filter-bar.spec.tsx` assert on these — do NOT break them)
-  - [ ] Keep `sticky top-[var(--header-height)] z-10` positioning classes (existing test assertion)
-  - [ ] Keep `h-12 md:h-14 bg-background border-b border-border` classes (existing test assertion)
-  - [ ] Replace the `animate-pulse` loading placeholder div with real desktop filter controls
-  - [ ] Keep the mobile compact bar (`data-testid="mobile-filters-button"`) as the tap target; it opens a `<Sheet>` (from `src/components/ui/sheet.tsx` — already in the codebase) containing the full filter set on mobile
-  - [ ] Desktop filter bar layout (horizontal, visible `md:flex`):
+- [x] Task 4: Replace `SearchFilterBar` stub with real filter controls (AC: #1, #2, #3, #4, #5, #6)
+  - [x] **File to modify**: `src/components/search/search-filter-bar.tsx` (Story 3.1 stub — this story owns it per Story 3.2 scope boundary)
+  - [x] Keep `'use client'` directive and `data-testid="search-filter-bar"` (existing tests in `search-filter-bar.spec.tsx` assert on these — do NOT break them)
+  - [x] Keep `sticky top-[var(--header-height)] z-10` positioning classes (existing test assertion)
+  - [x] Keep `h-12 md:h-14 bg-background border-b border-border` classes (existing test assertion)
+  - [x] Replace the `animate-pulse` loading placeholder div with real desktop filter controls
+  - [x] Keep the mobile compact bar (`data-testid="mobile-filters-button"`) as the tap target; it opens a `<Sheet>` (from `src/components/ui/sheet.tsx` — already in the codebase) containing the full filter set on mobile
+  - [x] Desktop filter bar layout (horizontal, visible `md:flex`):
     - Type dropdown → `<Select>` from `radix-ui` package (already installed: `"radix-ui": "^1.4.3"`)
     - Price Range → dual-handle slider + min/max inputs (see Task 5 for Slider implementation)
     - Bedrooms dropdown → `<Select>` from `radix-ui`
@@ -134,19 +134,19 @@ so that I only see properties that match my needs.
     - Lot Size range → dual-handle slider (or min/max text inputs for MVP simplicity)
     - Location → hierarchy dropdown (Province → Cantón — Distrito is out of scope for MVP since areaSlug covers it)
     - Sort dropdown → "Newest," "Price ↑," "Price ↓," "Relevance"
-  - [ ] All filter controls use `use-search-filters` hook to read/write URL state
-  - [ ] Context-sensitive: when `type === 'land'` or `type === 'lot'` or type value matching land property types from DB, hide bedrooms and bathrooms controls (AC #2)
-  - [ ] Property types from DB schema: `propertyType` is `text` — real values are from RE/MAX CCA API. Use these known types: `"Casa"`, `"Apartamento"`, `"Lote"`, `"Terreno"`, `"Comercial"`, `"Finca"`. For land-type detection: `['Lote', 'Terreno', 'Finca'].includes(filters.type)`
-  - [ ] Active filter chips row: render below the control row; only visible when `activeFilterCount > 0`
+  - [x] All filter controls use `use-search-filters` hook to read/write URL state
+  - [x] Context-sensitive: when `type === 'land'` or `type === 'lot'` or type value matching land property types from DB, hide bedrooms and bathrooms controls (AC #2)
+  - [x] Property types from DB schema: `propertyType` is `text` — real values are from RE/MAX CCA API. Use these known types: `"Casa"`, `"Apartamento"`, `"Lote"`, `"Terreno"`, `"Comercial"`, `"Finca"`. For land-type detection: `['Lote', 'Terreno', 'Finca'].includes(filters.type)`
+  - [x] Active filter chips row: render below the control row; only visible when `activeFilterCount > 0`
 
-- [ ] Task 5: Implement dual-handle price slider (AC: #4)
-  - [ ] `@radix-ui/react-slider` is installed (as a transitive dependency of `radix-ui`). Confirmed in `node_modules/@radix-ui/react-slider`. Use it:
+- [x] Task 5: Implement dual-handle price slider (AC: #4)
+  - [x] `@radix-ui/react-slider` is installed (as a transitive dependency of `radix-ui`). Confirmed in `node_modules/@radix-ui/react-slider`. Use it:
     ```ts
     import * as Slider from "@radix-ui/react-slider";
     // Do NOT use "radix-ui" named export — the unified package does not re-export subpackages in its dist
     ```
-  - [ ] Create `src/components/search/price-range-slider.tsx` with `'use client'` directive
-  - [ ] Props:
+  - [x] Create `src/components/search/price-range-slider.tsx` with `'use client'` directive
+  - [x] Props:
     ```ts
     interface PriceRangeSliderProps {
       min?: number;       // default 0
@@ -156,16 +156,16 @@ so that I only see properties that match my needs.
       onChange: (value: [number, number]) => void; // called with debounce from parent
     }
     ```
-  - [ ] Render Radix Slider with 2 thumbs + two number inputs (min/max) that sync with slider
-  - [ ] Format displayed prices as `$250K` / `$1.2M` — reuse `formatPriceAbbrev` from `src/lib/map/geo-utils.ts` (Story 3.2, already exists — do NOT reimplement)
-  - [ ] Input fields: formatted display; on blur, parse and call `onChange`
-  - [ ] Touch targets: slider thumbs must be ≥ 44px (UX-DR7). Use `w-[44px] h-[44px]` on the thumb element.
-  - [ ] `data-testid="price-range-slider"` on the root div
+  - [x] Render Radix Slider with 2 thumbs + two number inputs (min/max) that sync with slider
+  - [x] Format displayed prices as `$250K` / `$1.2M` — reuse `formatPriceAbbrev` from `src/lib/map/geo-utils.ts` (Story 3.2, already exists — do NOT reimplement)
+  - [x] Input fields: formatted display; on blur, parse and call `onChange`
+  - [x] Touch targets: slider thumbs must be ≥ 44px (UX-DR7). Use `w-[44px] h-[44px]` on the thumb element.
+  - [x] `data-testid="price-range-slider"` on the root div
 
-- [ ] Task 6: Implement active filter chips (AC: #5)
-  - [ ] Create `src/components/search/filter-chips.tsx` with `'use client'` directive
-  - [ ] Architecture file structure: `src/components/search/filter-chips.tsx` (matches architecture §3 directory listing)
-  - [ ] Props:
+- [x] Task 6: Implement active filter chips (AC: #5)
+  - [x] Create `src/components/search/filter-chips.tsx` with `'use client'` directive
+  - [x] Architecture file structure: `src/components/search/filter-chips.tsx` (matches architecture §3 directory listing)
+  - [x] Props:
     ```ts
     interface FilterChipsProps {
       filters: SearchFilters;
@@ -173,47 +173,47 @@ so that I only see properties that match my needs.
       onClearAll: () => void;
     }
     ```
-  - [ ] Render one chip per active filter (exclude `view` and `sort` from chips)
-  - [ ] Chip format: `"Type: Casa ×"`, `"Price: $100K–$500K ×"`, `"Beds: 3+ ×"`, `"Area: Pérez Zeledón ×"`
-  - [ ] "Clear all" link appears when `activeFilterCount >= 2`
-  - [ ] Chip color: `bg-brand-blue text-white` — use the `--brand-blue` design token (#0043FF) which maps to the Tailwind utility `bg-brand-blue` in `src/styles/globals.css`. The UX spec calls it `--color-blue-bright` but the actual CSS variable registered in `@theme inline` is `--color-brand-blue: var(--brand-blue)` where `--brand-blue: #0043FF`. Use `bg-brand-blue` in className. Do NOT use hex values (Tailwind v4 CSS-first rule).
-  - [ ] `data-testid="filter-chips"` on the chips container
-  - [ ] `data-testid="clear-all-filters"` on the "Clear all" button
+  - [x] Render one chip per active filter (exclude `view` and `sort` from chips)
+  - [x] Chip format: `"Type: Casa ×"`, `"Price: $100K–$500K ×"`, `"Beds: 3+ ×"`, `"Area: Pérez Zeledón ×"`
+  - [x] "Clear all" link appears when `activeFilterCount >= 2`
+  - [x] Chip color: `bg-brand-blue text-white` — use the `--brand-blue` design token (#0043FF) which maps to the Tailwind utility `bg-brand-blue` in `src/styles/globals.css`. The UX spec calls it `--color-blue-bright` but the actual CSS variable registered in `@theme inline` is `--color-brand-blue: var(--brand-blue)` where `--brand-blue: #0043FF`. Use `bg-brand-blue` in className. Do NOT use hex values (Tailwind v4 CSS-first rule).
+  - [x] `data-testid="filter-chips"` on the chips container
+  - [x] `data-testid="clear-all-filters"` on the "Clear all" button
 
-- [ ] Task 7: Wire filters into `SearchPageClient` (AC: #3, #4, #9, #10)
-  - [ ] **File to modify**: `src/components/search/search-page-client.tsx`
-  - [ ] Import and use `useSearchFilters` hook to extract current `SearchFilters` from URL
-  - [ ] Add effect: when `filters` change, call `searchProperties(filters)` Server Action
-  - [ ] Use separate state for `filterProperties: PropertySearchItem[]` (from `search-actions.ts`) vs `mapProperties: MapProperty[]` (from `map-actions.ts` — Story 3.2). The map needs a specific subset shape; search results need a richer shape.
-  - [ ] Pass `filterProperties` and `facets` to `SearchFilterBar` and `SplitViewLayout` as props
-  - [ ] Pass `mapProperties` to `SplitViewLayout` for the map panel (unchanged from Story 3.2)
-  - [ ] **Debounce coordination**: the `use-search-filters` hook handles debounce at URL write time; `SearchPageClient` just reacts to URL changes via `useSearchParams`. The effect dependency is `filters` (stable reference from hook).
-  - [ ] Race condition: use same `requestSeqRef` monotonic counter pattern from Story 3.2 to prevent stale filter responses overwriting newer ones
-  - [ ] On filter change: show `SearchResultsSkeleton` immediately (optimistic UI) while fetching — pass `isLoading` boolean to grid panel
-  - [ ] Error handling: `.catch(console.error)` — same pattern as Story 3.2
+- [x] Task 7: Wire filters into `SearchPageClient` (AC: #3, #4, #9, #10)
+  - [x] **File to modify**: `src/components/search/search-page-client.tsx`
+  - [x] Import and use `useSearchFilters` hook to extract current `SearchFilters` from URL
+  - [x] Add effect: when `filters` change, call `searchProperties(filters)` Server Action
+  - [x] Use separate state for `filterProperties: PropertySearchItem[]` (from `search-actions.ts`) vs `mapProperties: MapProperty[]` (from `map-actions.ts` — Story 3.2). The map needs a specific subset shape; search results need a richer shape.
+  - [x] Pass `filterProperties` and `facets` to `SearchFilterBar` and `SplitViewLayout` as props
+  - [x] Pass `mapProperties` to `SplitViewLayout` for the map panel (unchanged from Story 3.2)
+  - [x] **Debounce coordination**: the `use-search-filters` hook handles debounce at URL write time; `SearchPageClient` just reacts to URL changes via `useSearchParams`. The effect dependency is `filters` (stable reference from hook).
+  - [x] Race condition: use same `requestSeqRef` monotonic counter pattern from Story 3.2 to prevent stale filter responses overwriting newer ones
+  - [x] On filter change: show `SearchResultsSkeleton` immediately (optimistic UI) while fetching — pass `isLoading` boolean to grid panel
+  - [x] Error handling: `.catch(console.error)` — same pattern as Story 3.2
 
-- [ ] Task 8: Update `SplitViewLayout` to accept filter data (AC: #1, #5, #6)
-  - [ ] **File to modify**: `src/components/search/split-view-layout.tsx`
-  - [ ] Add optional props: `filterProperties?: PropertySearchItem[]`, `facets?: FilterFacets`, `isLoading?: boolean`
-  - [ ] Pass `facets` down to `SearchFilterBar` for filter count display ("Casa (12)")
-  - [ ] Pass `isLoading` to grid panel (when true, show `SearchResultsSkeleton`; when false, show grid — Story 3.5 replaces skeleton with real cards)
-  - [ ] `SearchFilterBar` already receives facets and renders counts — pass `facets` as a prop to `SearchFilterBar`
-  - [ ] Do NOT change the map panel — it continues receiving `mapProperties` and `onBoundsChange` (Story 3.2 unchanged)
-  - [ ] Do NOT break `data-testid="map-panel"`, `data-testid="grid-panel"`, `data-testid="pull-up-handle"` (existing tests)
+- [x] Task 8: Update `SplitViewLayout` to accept filter data (AC: #1, #5, #6)
+  - [x] **File to modify**: `src/components/search/split-view-layout.tsx`
+  - [x] Add optional props: `filterProperties?: PropertySearchItem[]`, `facets?: FilterFacets`, `isLoading?: boolean`
+  - [x] Pass `facets` down to `SearchFilterBar` for filter count display ("Casa (12)")
+  - [x] Pass `isLoading` to grid panel (when true, show `SearchResultsSkeleton`; when false, show grid — Story 3.5 replaces skeleton with real cards)
+  - [x] `SearchFilterBar` already receives facets and renders counts — pass `facets` as a prop to `SearchFilterBar`
+  - [x] Do NOT change the map panel — it continues receiving `mapProperties` and `onBoundsChange` (Story 3.2 unchanged)
+  - [x] Do NOT break `data-testid="map-panel"`, `data-testid="grid-panel"`, `data-testid="pull-up-handle"` (existing tests)
 
-- [ ] Task 9: Location hierarchy for area filter (AC: #7)
-  - [ ] The architecture mentions `src/lib/constants/areas.ts` (does NOT exist yet — create it)
-  - [ ] For MVP, the location filter uses the flat `areaSlug` field from the `properties` table (column `area_slug: text`). Full Province → Cantón → Distrito drill-down requires a separate areas table (Epic 6, Story 6.1) — **defer full hierarchy to Epic 6**.
-  - [ ] MVP implementation: fetch distinct `areaSlug` values from the DB and render as a flat dropdown. Create a helper in `search-actions.ts`:
+- [x] Task 9: Location hierarchy for area filter (AC: #7)
+  - [x] The architecture mentions `src/lib/constants/areas.ts` (does NOT exist yet — create it)
+  - [x] For MVP, the location filter uses the flat `areaSlug` field from the `properties` table (column `area_slug: text`). Full Province → Cantón → Distrito drill-down requires a separate areas table (Epic 6, Story 6.1) — **defer full hierarchy to Epic 6**.
+  - [x] MVP implementation: fetch distinct `areaSlug` values from the DB and render as a flat dropdown. Create a helper in `search-actions.ts`:
     ```ts
     export async function getAvailableAreas(): Promise<{ slug: string; label: string }[]>
     // Query: SELECT DISTINCT area_slug FROM properties WHERE is_visible=true AND area_slug IS NOT NULL
     ```
-  - [ ] Display format: capitalize the area slug for the label ("perez-zeledon" → "Pérez Zeledón") — use a mapping constant or title-case the slug with a simple utility
-  - [ ] `data-testid="area-filter"` on the location dropdown
+  - [x] Display format: capitalize the area slug for the label ("perez-zeledon" → "Pérez Zeledón") — use a mapping constant or title-case the slug with a simple utility
+  - [x] `data-testid="area-filter"` on the location dropdown
 
-- [ ] Task 10: Add i18n keys (AC: #1, #5)
-  - [ ] In `src/messages/en.json`, add under `"SearchPage"` key:
+- [x] Task 10: Add i18n keys (AC: #1, #5)
+  - [x] In `src/messages/en.json`, add under `"SearchPage"` key:
     ```json
     "filters": {
       "type": "Type",
@@ -245,38 +245,38 @@ so that I only see properties that match my needs.
       }
     }
     ```
-  - [ ] Add equivalent Spanish keys to `src/messages/es.json` — types in Spanish: Casa, Apartamento, Lote, Terreno, Comercial, Finca (same; Costa Rica uses these terms in Spanish too)
+  - [x] Add equivalent Spanish keys to `src/messages/es.json` — types in Spanish: Casa, Apartamento, Lote, Terreno, Comercial, Finca (same; Costa Rica uses these terms in Spanish too)
 
-- [ ] Task 11: Tests (AC: all)
-  - [ ] **Update** `tests/unit/search/search-filter-bar.spec.tsx`:
+- [x] Task 11: Tests (AC: all)
+  - [x] **Update** `tests/unit/search/search-filter-bar.spec.tsx`:
     - **MUST update** the test at line 104-115 that asserts `aria-label="Filter bar loading"` and `animate-pulse` — these come from the stub placeholder that this story removes. Replace this test assertion with one checking that the Type dropdown control renders (`data-testid="type-filter"` or by role).
     - **Keep** all existing assertions that are still valid: `data-testid="search-filter-bar"`, `sticky`, `top-[var(--header-height)]`, `z-10`, `h-12`, `h-14`, `bg-background`, `border-b`, `border-border`, `data-testid="mobile-filters-button"`, `'use client'` file check.
     - Add new tests: Type dropdown renders; selecting "Lote" hides bedrooms/bathrooms controls (AC #2); active filter chips appear when filter set; "Clear all" appears when 2+ active.
-  - [ ] Create `tests/unit/search/use-search-filters.spec.tsx` (**NOTE: `.tsx` extension, NOT `.ts`** — hooks that use `useSearchParams`/`useRouter` need React context, so jsdom env is required per vitest `environmentMatchGlobs` in `tests/unit/search/**/*.spec.tsx`)
+  - [x] Create `tests/unit/search/use-search-filters.spec.tsx` (**NOTE: `.tsx` extension, NOT `.ts`** — hooks that use `useSearchParams`/`useRouter` need React context, so jsdom env is required per vitest `environmentMatchGlobs` in `tests/unit/search/**/*.spec.tsx`)
     - Use `renderHook` from `@testing-library/react` (already installed)
     - Mock `next/navigation`: `useSearchParams`, `useRouter`
     - Test: `filters` parsed from URL params correctly (type, priceMin, priceMax, bedrooms)
     - Test: `setFilter('type', 'Casa')` calls `router.replace` with correct URL
     - Test: `clearAll()` removes all filter params except `view`
     - Test: `activeFilterCount` correctly counts filters (excludes `view`)
-  - [ ] Create `tests/unit/search/filter-chips.spec.tsx` (Vitest + jsdom)
+  - [x] Create `tests/unit/search/filter-chips.spec.tsx` (Vitest + jsdom)
     - Mock `next/navigation`, `next-intl`
     - Test: renders one chip per active filter
     - Test: "Clear all" visible when 2+ active filters, hidden when 1
     - Test: clicking × on a chip calls `onClearFilter` with correct key
     - Test: `data-testid="filter-chips"` present
-  - [ ] Create `tests/unit/search/price-range-slider.spec.tsx` (Vitest + jsdom)
+  - [x] Create `tests/unit/search/price-range-slider.spec.tsx` (Vitest + jsdom)
     - Mock Radix Slider (vi.mock('@radix-ui/react-slider') or mock via `radix-ui`)
     - Test: renders with `data-testid="price-range-slider"`
     - Test: displays formatted price values ($250K, $1.2M format)
     - Test: calls onChange when value changes
 
-- [ ] Task 12: CI verification (AC: all)
-  - [ ] `npm run typecheck` → 0 new errors
-  - [ ] `npm run lint` → 0 errors
-  - [ ] `npm run format:check` → pass
-  - [ ] `npm run build` → pass
-  - [ ] `npm test` → all existing tests pass + new filter tests pass
+- [x] Task 12: CI verification (AC: all)
+  - [x] `npm run typecheck` → 0 new errors
+  - [x] `npm run lint` → 0 errors
+  - [x] `npm run format:check` → pass
+  - [x] `npm run build` → pass
+  - [x] `npm test` → all existing tests pass + new filter tests pass
 
 ## Dev Notes
 
@@ -414,15 +414,15 @@ From UX spec `§URL state`:
 
 ### Architecture Compliance Checklist
 
-- [ ] `SearchFilters` type is the canonical definition in `src/types/search.ts` — import from there, never redefine
-- [ ] `search-actions.ts` has `"use server"` at top — Server Action
-- [ ] `use-search-filters.ts` is a Client-only hook (uses `useSearchParams`)
-- [ ] `SearchFilterBar` remains `'use client'` with existing sticky positioning
-- [ ] `price-range-slider.tsx` is `'use client'` — interactive DOM
-- [ ] `filter-chips.tsx` is `'use client'` — interactive DOM
-- [ ] Filter values NEVER stored in Zustand (AR10 violation prevention)
-- [ ] `formatPriceAbbrev` imported from `@/lib/map/geo-utils` — NOT reimplemented
-- [ ] Numeric filter inputs sanitized with `Number.isFinite()` before DB query
+- [x] `SearchFilters` type is the canonical definition in `src/types/search.ts` — import from there, never redefine
+- [x] `search-actions.ts` has `"use server"` at top — Server Action
+- [x] `use-search-filters.ts` is a Client-only hook (uses `useSearchParams`)
+- [x] `SearchFilterBar` remains `'use client'` with existing sticky positioning
+- [x] `price-range-slider.tsx` is `'use client'` — interactive DOM
+- [x] `filter-chips.tsx` is `'use client'` — interactive DOM
+- [x] Filter values NEVER stored in Zustand (AR10 violation prevention)
+- [x] `formatPriceAbbrev` imported from `@/lib/map/geo-utils` — NOT reimplemented
+- [x] Numeric filter inputs sanitized with `Number.isFinite()` before DB query
 
 ### Test Patterns — Mandatory (from Stories 3.1 and 3.2 Learnings)
 
@@ -555,7 +555,41 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+(none)
+
 ### Completion Notes List
+
+- All 12 tasks implemented: SearchFilters type, useSearchFilters hook, searchProperties Server Action, PriceRangeSlider, FilterChips, SearchFilterBar (real controls), SearchPageClient wired, SplitViewLayout updated, i18n keys, tests
+- 364 tests passing (all ATDD stubs activated), 0 regressions, typecheck ✓, lint (0 errors) ✓, format ✓, build ✓
+- Used vi.hoisted() to fix vi.mock() factory hoisting issue in search-actions.spec.ts
+- Mocked Sheet and PriceRangeSlider in search-filter-bar tests to avoid jsdom ResizeObserver dependency
+
+### File List
+
+**New files created by this story:**
+- src/hooks/use-search-filters.ts
+- src/app/actions/search-actions.ts
+- src/components/search/price-range-slider.tsx
+- src/components/search/filter-chips.tsx
+
+**Modified files:**
+- src/types/search.ts (from ATDD phase stub → full implementation already existed)
+- src/components/search/search-filter-bar.tsx
+- src/components/search/search-page-client.tsx
+- src/components/search/split-view-layout.tsx
+- src/messages/en.json
+- src/messages/es.json
+- tests/unit/search/search-filter-bar.spec.tsx
+- tests/unit/search/use-search-filters.spec.tsx
+- tests/unit/search/filter-chips.spec.tsx
+- tests/unit/search/price-range-slider.spec.tsx
+- tests/unit/search/search-actions.spec.ts
+- _bmad-output/implementation-artifacts/sprint-status.yaml
+- _bmad-output/implementation-artifacts/3-3-search-filters-and-url-state.md
+
+### Change Log
+
+- 2026-04-26: Story 3.3 implemented — search filters & URL state complete, status → review
 
 ### ATDD Artifacts
 
