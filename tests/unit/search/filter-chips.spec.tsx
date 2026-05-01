@@ -275,3 +275,154 @@ describe("FilterChips — active filter chips row (AC #5)", () => {
     },
   );
 });
+
+// ---------------------------------------------------------------------------
+// Story 3.4 additions: FilterChips renders active lifestyle tag chips (AC #6)
+// ---------------------------------------------------------------------------
+
+describe("FilterChips — Story 3.4: active lifestyle tag chips (AC #6)", () => {
+  // -------------------------------------------------------------------------
+  // AC #6: Active lifestyle tags appear as chips in the active filter display
+  // -------------------------------------------------------------------------
+
+  it(
+    "[P0] renders one chip per active tag in filters.tags array",
+    () => {
+      // THIS TEST WILL FAIL — FilterChips not yet extended to handle tags array
+      const filters: SearchFilters = {
+        tags: ["Investment Property", "Rental Potential"],
+      };
+      renderChips(filters);
+
+      // Two tag chips must be rendered
+      const chips = document.querySelectorAll('[data-testid="filter-chip"]');
+      expect(chips).toHaveLength(2);
+    },
+  );
+
+  it(
+    "[P0] renders tag chip with display label containing 'Investment Property'",
+    () => {
+      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
+      const filters: SearchFilters = {
+        tags: ["Investment Property"],
+      };
+      renderChips(filters);
+
+      const chipsContainer = document.querySelector('[data-testid="filter-chips"]');
+      expect(chipsContainer?.textContent).toContain("Investment Property");
+    },
+  );
+
+  it(
+    "[P0] 'Retire' tag chip displays 'Retirement Paradise' as the display label (TAG_DISPLAY_LABELS)",
+    () => {
+      // THIS TEST WILL FAIL — TAG_DISPLAY_LABELS mapping not yet in FilterChips
+      const filters: SearchFilters = {
+        tags: ["Retire"],
+      };
+      renderChips(filters);
+
+      const chipsContainer = document.querySelector('[data-testid="filter-chips"]');
+      // Must show the display label, not the raw stored value
+      expect(chipsContainer?.textContent).toContain("Retirement Paradise");
+    },
+  );
+
+  it(
+    "[P0] renders both scalar and tag chips when both are active",
+    () => {
+      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
+      const filters: SearchFilters = {
+        type: "Casa",
+        tags: ["Investment Property"],
+      };
+      renderChips(filters);
+
+      // type chip + 1 tag chip = 2 chips total
+      const chips = document.querySelectorAll('[data-testid="filter-chip"]');
+      expect(chips).toHaveLength(2);
+    },
+  );
+
+  it(
+    "[P0] 'Clear all' appears when tags count pushes activeFilterCount to >= 2",
+    () => {
+      // THIS TEST WILL FAIL — activeFilterCount in FilterChips not yet extended for tags
+      const filters: SearchFilters = {
+        tags: ["Investment Property", "Rental Potential"],
+      };
+      renderChips(filters);
+
+      // 2 tags = activeFilterCount = 2 → 'Clear all' must appear
+      const clearAll = document.querySelector('[data-testid="clear-all-filters"]');
+      expect(clearAll).not.toBeNull();
+    },
+  );
+
+  it(
+    "[P0] clicking × on a tag chip calls onClearFilter with 'tags' key (MVP: clears all tags)",
+    () => {
+      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
+      const onClearFilter = vi.fn();
+      const filters: SearchFilters = {
+        tags: ["Investment Property"],
+      };
+      renderChips(filters, onClearFilter);
+
+      const dismissButton = document.querySelector('[data-testid="chip-dismiss"]');
+      expect(dismissButton).not.toBeNull();
+      fireEvent.click(dismissButton!);
+
+      // MVP: clicking × on any tag chip calls onClearFilter('tags') to clear ALL tags
+      expect(onClearFilter).toHaveBeenCalledWith("tags");
+    },
+  );
+
+  it(
+    "[P1] no tag chips render when filters.tags is undefined",
+    () => {
+      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
+      const filters: SearchFilters = {
+        type: "Casa",
+        // tags is intentionally absent
+      };
+      renderChips(filters);
+
+      // Only 1 chip for 'type' — no tag chips
+      const chips = document.querySelectorAll('[data-testid="filter-chip"]');
+      expect(chips).toHaveLength(1);
+    },
+  );
+
+  it(
+    "[P1] no tag chips render when filters.tags is an empty array",
+    () => {
+      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
+      const filters: SearchFilters = {
+        tags: [],
+      };
+      renderChips(filters);
+
+      const chips = document.querySelectorAll('[data-testid="filter-chip"]');
+      expect(chips).toHaveLength(0);
+    },
+  );
+
+  it(
+    "[P1] tag chips have unique React keys (no duplicate key warnings for multiple tags)",
+    () => {
+      // THIS TEST WILL FAIL — ChipInfo reactKey field not yet added to FilterChips
+      // This is verified by rendering multiple tags without React key warnings
+      // Using 2 tags with the same 'key: "tags"' field would cause React key collision
+      const filters: SearchFilters = {
+        tags: ["Investment Property", "Rental Potential", "Vacation Home"],
+      };
+      renderChips(filters);
+
+      // 3 tag chips must render (not deduplicated due to key collision)
+      const chips = document.querySelectorAll('[data-testid="filter-chip"]');
+      expect(chips).toHaveLength(3);
+    },
+  );
+});

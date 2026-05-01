@@ -387,3 +387,259 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
     },
   );
 });
+
+// ---------------------------------------------------------------------------
+// Story 3.4 additions: tags URL param + toggleTag helper
+// ---------------------------------------------------------------------------
+
+describe("useSearchFilters — Story 3.4: tags URL param and toggleTag (AC #2, #3, #6)", () => {
+  // -------------------------------------------------------------------------
+  // Tags URL param parsing (AC #3, #8)
+  // -------------------------------------------------------------------------
+
+  describe("filters.tags — parsed from URL params", () => {
+    it(
+      "[P0] parses 'tags' param as string[] from comma-separated URL value",
+      () => {
+        // THIS TEST WILL FAIL — tags support not yet added to use-search-filters.ts
+        mockSearchParams.set("tags", "Investment Property,Rental Potential");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        expect(result.current.filters.tags).toEqual(["Investment Property", "Rental Potential"]);
+      },
+    );
+
+    it(
+      "[P0] parses single 'tags' value as string[] with one element",
+      () => {
+        // THIS TEST WILL FAIL — tags support not yet added to use-search-filters.ts
+        mockSearchParams.set("tags", "Vacation Home");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        expect(result.current.filters.tags).toEqual(["Vacation Home"]);
+      },
+    );
+
+    it(
+      "[P0] returns undefined for filters.tags when tags param is absent",
+      () => {
+        // THIS TEST WILL FAIL — tags support not yet added to use-search-filters.ts
+        const { result } = renderHook(() => useSearchFilters());
+
+        expect(result.current.filters.tags).toBeUndefined();
+      },
+    );
+
+    it(
+      "[P0] trims whitespace from parsed tag values",
+      () => {
+        // THIS TEST WILL FAIL — tags parsing not yet implemented
+        mockSearchParams.set("tags", " Investment Property , Rental Potential ");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        expect(result.current.filters.tags).toEqual(["Investment Property", "Rental Potential"]);
+      },
+    );
+
+    it(
+      "[P0] filters out empty strings from parsed tags",
+      () => {
+        // THIS TEST WILL FAIL — tags parsing not yet implemented
+        mockSearchParams.set("tags", "Investment Property,,Rental Potential");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        expect(result.current.filters.tags).toEqual(["Investment Property", "Rental Potential"]);
+      },
+    );
+  });
+
+  // -------------------------------------------------------------------------
+  // toggleTag helper (AC #2)
+  // -------------------------------------------------------------------------
+
+  describe("toggleTag — add/remove tag from URL state", () => {
+    it(
+      "[P0] toggleTag adds a new tag to URL when tag is not currently active",
+      async () => {
+        // THIS TEST WILL FAIL — toggleTag not yet added to use-search-filters.ts
+        const { result } = renderHook(() => useSearchFilters());
+
+        await act(async () => {
+          result.current.toggleTag("Investment Property");
+        });
+
+        const params = getLastReplaceUrl();
+        expect(params.get("tags")).toContain("Investment Property");
+      },
+    );
+
+    it(
+      "[P0] toggleTag removes an existing tag from URL when tag is currently active",
+      async () => {
+        // THIS TEST WILL FAIL — toggleTag not yet added to use-search-filters.ts
+        mockSearchParams.set("tags", "Investment Property,Rental Potential");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        await act(async () => {
+          result.current.toggleTag("Investment Property");
+        });
+
+        const params = getLastReplaceUrl();
+        // Investment Property must be removed, Rental Potential must remain
+        expect(params.get("tags")).not.toContain("Investment Property");
+        expect(params.get("tags")).toContain("Rental Potential");
+      },
+    );
+
+    it(
+      "[P0] toggleTag removes the tags param entirely when the last tag is deselected",
+      async () => {
+        // THIS TEST WILL FAIL — toggleTag not yet added to use-search-filters.ts
+        mockSearchParams.set("tags", "Investment Property");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        await act(async () => {
+          result.current.toggleTag("Investment Property");
+        });
+
+        const params = getLastReplaceUrl();
+        // tags param must be absent (not empty string)
+        expect(params.has("tags")).toBe(false);
+      },
+    );
+
+    it(
+      "[P0] toggleTag preserves other URL params when adding a tag",
+      async () => {
+        // THIS TEST WILL FAIL — toggleTag not yet added to use-search-filters.ts
+        mockSearchParams.set("type", "Casa");
+        mockSearchParams.set("bedrooms", "3");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        await act(async () => {
+          result.current.toggleTag("Rental Potential");
+        });
+
+        const params = getLastReplaceUrl();
+        // Other params must be preserved
+        expect(params.get("type")).toBe("Casa");
+        expect(params.get("bedrooms")).toBe("3");
+        expect(params.get("tags")).toContain("Rental Potential");
+      },
+    );
+
+    it(
+      "[P1] toggleTag is exposed on the useSearchFilters return object",
+      () => {
+        // THIS TEST WILL FAIL — toggleTag not yet added to UseSearchFiltersReturn interface
+        const { result } = renderHook(() => useSearchFilters());
+
+        expect(typeof result.current.toggleTag).toBe("function");
+      },
+    );
+  });
+
+  // -------------------------------------------------------------------------
+  // activeFilterCount includes tags count (AC #6)
+  // -------------------------------------------------------------------------
+
+  describe("activeFilterCount — includes individual tag count (AC #6)", () => {
+    it(
+      "[P0] activeFilterCount counts each selected tag individually (2 tags = +2 to count)",
+      () => {
+        // THIS TEST WILL FAIL — activeFilterCount not yet extended for tags
+        mockSearchParams.set("tags", "Investment Property,Rental Potential");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        // 2 tags = activeFilterCount should be 2
+        expect(result.current.activeFilterCount).toBe(2);
+      },
+    );
+
+    it(
+      "[P0] activeFilterCount counts scalar filters + individual tags (type=Casa, 2 tags = 3 total)",
+      () => {
+        // THIS TEST WILL FAIL — activeFilterCount not yet extended for tags
+        mockSearchParams.set("type", "Casa");
+        mockSearchParams.set("tags", "Investment Property,Rental Potential");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        // type (1) + 2 tags = 3
+        expect(result.current.activeFilterCount).toBe(3);
+      },
+    );
+
+    it(
+      "[P0] activeFilterCount is 1 when only one tag is selected",
+      () => {
+        // THIS TEST WILL FAIL — activeFilterCount not yet extended for tags
+        mockSearchParams.set("tags", "Vacation Home");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        expect(result.current.activeFilterCount).toBe(1);
+      },
+    );
+
+    it(
+      "[P1] tags are NOT counted in FILTER_KEYS (do not double-count as a single key + individual)",
+      () => {
+        // THIS TEST WILL FAIL — FILTER_KEYS must exclude 'tags'
+        mockSearchParams.set("tags", "Investment Property");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        // Should be 1 (one tag), not 2 (one key + one tag)
+        expect(result.current.activeFilterCount).toBe(1);
+      },
+    );
+  });
+
+  // -------------------------------------------------------------------------
+  // buildSearchUrl helper (exported from use-search-filters.ts for preset URL generation)
+  // -------------------------------------------------------------------------
+
+  describe("buildSearchUrl — exported URL builder for preset navigation (AC #5)", () => {
+    it(
+      "[P0] buildSearchUrl exports are available from use-search-filters module",
+      async () => {
+        // THIS TEST WILL FAIL — buildSearchUrl not yet exported from use-search-filters.ts
+        const module = await import("@/hooks/use-search-filters");
+        expect(typeof module.buildSearchUrl).toBe("function");
+      },
+    );
+
+    it(
+      "[P1] buildSearchUrl serializes tags array as comma-separated 'tags' param",
+      async () => {
+        // THIS TEST WILL FAIL — buildSearchUrl not yet implemented
+        const { buildSearchUrl } = await import("@/hooks/use-search-filters");
+        const url = buildSearchUrl("/en/search", { tags: ["Retire", "Investment Property"] });
+
+        expect(url).toContain("tags=");
+        expect(url).toContain("Retire");
+        expect(url).toContain("Investment");
+      },
+    );
+
+    it(
+      "[P1] buildSearchUrl serializes areaSlug as 'area' URL param",
+      async () => {
+        // THIS TEST WILL FAIL — buildSearchUrl not yet implemented
+        const { buildSearchUrl } = await import("@/hooks/use-search-filters");
+        const url = buildSearchUrl("/en/search", { areaSlug: "perez-zeledon" });
+
+        expect(url).toContain("area=perez-zeledon");
+      },
+    );
+  });
+});

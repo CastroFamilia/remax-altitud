@@ -23,7 +23,9 @@ export interface UseSearchFiltersReturn {
   setFilter: <K extends keyof SearchFilters>(key: K, value: SearchFilters[K] | undefined) => void;
   clearFilter: (key: keyof SearchFilters) => void;
   clearAll: () => void;
-  activeFilterCount: number; // count excluding 'view' and 'sort'
+  activeFilterCount: number; // count excluding 'view' and 'sort'; each tag counts individually
+  // Story 3.4: toggleTag helper — add/remove a tag from URL state (instant, no debounce)
+  toggleTag: (tag: string) => void;
 }
 
 /** URL param names — short, human-readable, lowercase (UX spec §9 SEO) */
@@ -38,7 +40,30 @@ const PARAM_MAP: Record<keyof SearchFilters, string> = {
   areaSlug: "area",
   sort: "sort",
   view: "view",
+  // Story 3.4: tags — comma-separated string (?tags=Investment+Property,Rental+Potential)
+  tags: "tags",
 };
+
+/**
+ * Story 3.4: Build a search URL from a pathname and filters object.
+ * Exported for use by SmartPresetBar to generate preset navigation URLs.
+ * This prevents serialization divergence between preset URL generation and
+ * filter bar URL writing (single source of truth for URL serialization).
+ *
+ * ATDD STUB — full implementation in Story 3.4 Task 2 (buildSearchUrl).
+ */
+export function buildSearchUrl(pathname: string, filters: SearchFilters): string {
+  // TODO(story-3.4): Implement full URL serialization using PARAM_MAP
+  // This stub ensures tests can import the function in red-phase
+  const params = new URLSearchParams();
+  if (filters.type) params.set("type", filters.type);
+  if (filters.areaSlug) params.set("area", filters.areaSlug);
+  if (filters.tags?.length) params.set("tags", filters.tags.join(","));
+  if (filters.priceMin !== undefined) params.set("price_min", String(filters.priceMin));
+  if (filters.priceMax !== undefined) params.set("price_max", String(filters.priceMax));
+  const qs = params.toString();
+  return qs ? `${pathname}?${qs}` : pathname;
+}
 
 /** Filter keys that count toward activeFilterCount (exclude view and sort) */
 const FILTER_KEYS: Array<keyof SearchFilters> = [
@@ -206,11 +231,25 @@ export function useSearchFilters(): UseSearchFiltersReturn {
     commitParams(newParams);
   }, [searchParams, commitParams]);
 
+  /**
+   * Story 3.4: toggleTag — add/remove a single lifestyle tag from the URL state.
+   * Uses latestParamsRef to avoid stale closure race conditions on rapid clicks.
+   * ATDD STUB — full implementation in Story 3.4 Task 2.
+   */
+  const toggleTag = useCallback(
+    (_tag: string) => {
+      // TODO(story-3.4): Implement toggleTag using latestParamsRef pattern
+      // See story 3-4-lifestyle-tags-and-smart-presets.md Task 2 for spec
+    },
+    [],
+  );
+
   return {
     filters,
     setFilter,
     clearFilter,
     clearAll,
     activeFilterCount,
+    toggleTag,
   };
 }
