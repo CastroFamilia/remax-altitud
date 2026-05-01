@@ -398,14 +398,12 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
       const prevButton = document.querySelector(
         '[data-testid="pagination-prev"]',
       );
-      // Either disabled attribute or not rendered at all on first page
-      if (prevButton) {
-        expect(
-          prevButton.getAttribute("disabled") !== null ||
-          prevButton.getAttribute("aria-disabled") === "true",
-        ).toBe(true);
-      }
-      // OR it simply doesn't render prev on page 1 — both are acceptable
+      // Prev button must be present and in a disabled state on page 1
+      expect(prevButton).not.toBeNull();
+      expect(
+        prevButton!.getAttribute("disabled") !== null ||
+        prevButton!.getAttribute("aria-disabled") === "true",
+      ).toBe(true);
     },
   );
 
@@ -477,13 +475,12 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
       const nextButton = document.querySelector(
         '[data-testid="pagination-next"]',
       );
-      // On last page, next should be disabled or absent
-      if (nextButton) {
-        expect(
-          nextButton.getAttribute("disabled") !== null ||
-          nextButton.getAttribute("aria-disabled") === "true",
-        ).toBe(true);
-      }
+      // Next button must be present and in a disabled state on the last page
+      expect(nextButton).not.toBeNull();
+      expect(
+        nextButton!.getAttribute("disabled") !== null ||
+        nextButton!.getAttribute("aria-disabled") === "true",
+      ).toBe(true);
     },
   );
 
