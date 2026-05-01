@@ -2,7 +2,7 @@
  * Story 3.5: Property Cards & Grid View
  * Component: src/components/property/property-grid.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until
+ * TDD RED PHASE — all tests use it() and will FAIL until
  * property-grid.tsx is implemented.
  *
  * Covers:
@@ -167,7 +167,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
   // data-testid presence
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid='property-grid' on root element",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -184,7 +184,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
   // Responsive grid classes
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] grid has grid-cols-1 class for mobile (default / base)",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -198,7 +198,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] grid has sm:grid-cols-2 class for tablet breakpoint (768px+)",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -211,7 +211,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] grid has lg:grid-cols-3 class for desktop breakpoint (1024px+)",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -228,7 +228,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
   // Loading state
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders SearchResultsSkeleton when isLoading=true",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -243,7 +243,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] does NOT render PropertyCards when isLoading=true",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -264,7 +264,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
   // Property rendering
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders N PropertyCards when given N properties",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -276,7 +276,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders exactly 20 cards (max per page) when more than 20 properties are passed",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -288,7 +288,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] renders second page of cards when page=2 and >20 properties passed",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -312,7 +312,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
   // Empty state
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] renders a no-results message when properties is empty and isLoading is false",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -336,7 +336,7 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
   // Pagination visibility
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] pagination controls are NOT rendered when total <= 20",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -361,7 +361,7 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] pagination controls appear when total > 20",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -382,7 +382,7 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 'Previous' button is disabled on page 1",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -409,7 +409,7 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] clicking 'Next' pagination button calls onPageChange with page + 1",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -434,7 +434,7 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] clicking 'Previous' pagination button calls onPageChange with page - 1",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -459,7 +459,7 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 'Next' button is disabled on the last page",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -487,7 +487,7 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] pagination shows 'Page X of Y' text when total > 20",
     () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
@@ -510,7 +510,7 @@ describe("PropertyGrid — AC #6: pagination controls", () => {
   // Architecture compliance
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] PropertyGrid is a Client Component (file must start with 'use client')",
     async () => {
       // THIS TEST WILL FAIL — property-grid.tsx not yet implemented

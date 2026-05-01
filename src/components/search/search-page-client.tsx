@@ -34,6 +34,10 @@ export function SearchPageClient() {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  // Pagination state — ephemeral UI state, NOT in URL (architecture §8)
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+
   // Available areas for the area filter dropdown
   const [areas, setAreas] = useState<{ slug: string; label: string }[]>([]);
 
@@ -70,20 +74,26 @@ export function SearchPageClient() {
       });
   }, []);
 
-  // Re-fetch filter results when filters change
+  // Re-fetch filter results when filters or page changes
   // The useSearchFilters hook reads from useSearchParams, so this effect
   // reacts whenever any filter URL param changes.
+  useEffect(() => {
+    // Reset page to 1 when filters change (not when page changes)
+    setPage(1);
+  }, [filters]);
+
   useEffect(() => {
     const seq = ++filterSeqRef.current;
 
     setIsLoading(true);
 
-    searchProperties(filters)
+    searchProperties(filters, page)
       .then((result) => {
         // Drop stale responses — only use the most recent request's result
         if (seq === filterSeqRef.current) {
           setFilterProperties(result.properties);
           setFacets(result.facets);
+          setTotal(result.total);
           setIsLoading(false);
         }
       })
@@ -93,7 +103,7 @@ export function SearchPageClient() {
           setIsLoading(false);
         }
       });
-  }, [filters]);
+  }, [filters, page]);
 
   // Refresh map properties when map bounds change.
   // Uses a monotonically increasing sequence number to discard stale responses.
@@ -125,6 +135,9 @@ export function SearchPageClient() {
         locale={locale}
         propertyCount={filterProperties.length || mapProperties.length}
         onBoundsChange={handleBoundsChange}
+        total={total}
+        page={page}
+        onPageChange={setPage}
       />
     </div>
   );

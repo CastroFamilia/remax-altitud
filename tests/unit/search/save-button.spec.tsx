@@ -2,7 +2,7 @@
  * Story 3.5: Property Cards & Grid View
  * Component: src/components/property/save-button.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until
+ * TDD RED PHASE — all tests use it() and will FAIL until
  * save-button.tsx is implemented.
  *
  * Covers:
@@ -72,7 +72,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
   // data-testid presence
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid='save-button' button",
     () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented
@@ -92,7 +92,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
   // Default state: unsaved
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] has aria-label='Save property' in default (unsaved) state",
     () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented
@@ -112,7 +112,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
   // Click: save to localStorage
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] clicking the button saves propertyId to localStorage shortlist",
     () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented
@@ -132,7 +132,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
     },
   );
 
-  it.skip(
+  it(
     "[P0] clicking the button changes aria-label to 'Remove from saved' after saving",
     () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented
@@ -155,7 +155,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
   // Click: remove from localStorage
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] clicking the button again (when saved) removes propertyId from localStorage",
     () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented
@@ -181,7 +181,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
     },
   );
 
-  it.skip(
+  it(
     "[P0] aria-label returns to 'Save property' after unsaving",
     () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented
@@ -205,7 +205,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
   // Pre-seeded state
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] initializes as saved state when propertyId is already in localStorage shortlist",
     () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented
@@ -227,7 +227,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
   // Shortlist full toast
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] shows inline toast message when shortlist is full (20 items) and user tries to save",
     () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented
@@ -252,7 +252,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
     },
   );
 
-  it.skip(
+  it(
     "[P1] does NOT add to shortlist when already at 20 items",
     () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented
@@ -279,7 +279,7 @@ describe("SaveButton — AC #1: save property to localStorage shortlist", () => 
   // Architecture compliance
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] SaveButton is a Client Component (file must start with 'use client')",
     async () => {
       // THIS TEST WILL FAIL — save-button.tsx not yet implemented

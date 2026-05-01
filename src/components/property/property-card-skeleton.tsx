@@ -3,8 +3,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function PropertyCardSkeleton() {
   return (
     <div className="overflow-hidden rounded-lg bg-card" aria-busy="true">
-      {/* Image placeholder — aspect-4/3 */}
-      <Skeleton className="aspect-[4/3] w-full rounded-none" />
+      {/* Image placeholder — aspect-3/2 (matches PropertyCard, prevents CLS) */}
+      <Skeleton className="aspect-[3/2] w-full rounded-none" />
 
       <div className="space-y-3 p-4">
         {/* Title line */}

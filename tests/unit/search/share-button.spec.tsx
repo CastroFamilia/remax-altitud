@@ -2,7 +2,7 @@
  * Story 3.5: Property Cards & Grid View
  * Component: src/components/property/share-button.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until
+ * TDD RED PHASE — all tests use it() and will FAIL until
  * share-button.tsx is implemented.
  *
  * Covers:
@@ -83,7 +83,7 @@ describe("ShareButton — AC #1: share property URL", () => {
   // data-testid presence
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid='share-button' button",
     () => {
       // THIS TEST WILL FAIL — share-button.tsx not yet implemented
@@ -104,7 +104,7 @@ describe("ShareButton — AC #1: share property URL", () => {
   // navigator.share: happy path
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] calls navigator.share with correct URL when navigator.share is available",
     async () => {
       // THIS TEST WILL FAIL — share-button.tsx not yet implemented
@@ -142,7 +142,7 @@ describe("ShareButton — AC #1: share property URL", () => {
   // navigator.clipboard fallback: when navigator.share is NOT available
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] falls back to navigator.clipboard.writeText when navigator.share is undefined",
     async () => {
       // THIS TEST WILL FAIL — share-button.tsx not yet implemented
@@ -182,7 +182,7 @@ describe("ShareButton — AC #1: share property URL", () => {
   // Clipboard fallback: toast notification
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] shows 'Link copied!' inline toast after clipboard fallback",
     async () => {
       // THIS TEST WILL FAIL — share-button.tsx not yet implemented
@@ -222,7 +222,7 @@ describe("ShareButton — AC #1: share property URL", () => {
   // URL construction
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] constructs property URL using locale and slug: /{locale}/property/{slug}",
     async () => {
       // THIS TEST WILL FAIL — share-button.tsx not yet implemented
@@ -258,7 +258,7 @@ describe("ShareButton — AC #1: share property URL", () => {
   // Accessibility
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] button has accessible aria-label for sharing",
     () => {
       // THIS TEST WILL FAIL — share-button.tsx not yet implemented
@@ -281,7 +281,7 @@ describe("ShareButton — AC #1: share property URL", () => {
   // Architecture compliance
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] ShareButton is a Client Component (file must start with 'use client')",
     async () => {
       // THIS TEST WILL FAIL — share-button.tsx not yet implemented

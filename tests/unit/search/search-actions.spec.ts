@@ -329,13 +329,22 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
   // -------------------------------------------------------------------------
 
   it(
-    "[P1] searchProperties applies limit(50) and offset(0) for MVP pagination",
+    "[P1] searchProperties applies limit(20) and offset(0) for page 1 (Story 3.5: pagination)",
     async () => {
-      // THIS TEST WILL FAIL — search-actions.ts not yet implemented
       await searchProperties({});
 
-      expect(mockLimit).toHaveBeenCalledWith(50);
+      expect(mockLimit).toHaveBeenCalledWith(20);
       expect(mockOffset).toHaveBeenCalledWith(0);
+    },
+  );
+
+  it(
+    "[P1] searchProperties applies correct offset for page 2 (Story 3.5: pagination)",
+    async () => {
+      await searchProperties({}, 2);
+
+      expect(mockLimit).toHaveBeenCalledWith(20);
+      expect(mockOffset).toHaveBeenCalledWith(20);
     },
   );
 });

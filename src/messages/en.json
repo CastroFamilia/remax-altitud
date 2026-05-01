@@ -329,6 +329,12 @@
       "show": "Show listings",
       "hide": "Hide listings"
     },
+    "grid": {
+      "page": "Page {page} of {total}",
+      "prev": "Previous",
+      "next": "Next",
+      "showing": "Showing {count} of {total} properties"
+    },
     "MapView": {
       "ariaLabel": "Property locations map",
       "loading": "Loading map...",
@@ -345,6 +351,29 @@
         "lotSize": "{size} m²"
       }
     }
+  },
+  "PropertyCard": {
+    "saveProperty": "Save property",
+    "removeFromSaved": "Remove from saved",
+    "shortlistFull": "Shortlist full (20 max)",
+    "region": {
+      "mountain": "Mountain",
+      "beach": "Beach"
+    },
+    "zmtStatus": {
+      "titled": "Titled Property",
+      "concession": "Concession",
+      "zmt_restricted": "ZMT Restricted"
+    },
+    "specs": {
+      "beds": "{count} bed",
+      "baths": "{count} bath",
+      "lot": "{size}",
+      "built": "{size} built"
+    },
+    "share": "Share property",
+    "viewDetails": "View details",
+    "linkCopied": "Link copied!"
   },
   "PropertyUnavailable": {
     "heading": "This property is no longer available",

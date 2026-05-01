@@ -2,7 +2,7 @@
  * Story 3.5: Property Cards & Grid View
  * Component: src/components/property/property-card.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until
+ * TDD RED PHASE — all tests use it() and will FAIL until
  * property-card.tsx is implemented.
  *
  * Covers:
@@ -223,7 +223,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // data-testid presence
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid='property-card' on root element",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -238,7 +238,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // AC #1: price display
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] displays formatted price (e.g., '$185K') using formatPriceAbbrev",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -250,7 +250,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] displays price with Montserrat bold style (font-bold class) and accent color (text-[--color-accent] class)",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -267,7 +267,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // AC #1: region badge
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] shows 'Mountain' region badge for areaSlug='perez-zeledon'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -278,7 +278,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] shows 'Beach' region badge for areaSlug='dominical'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -289,7 +289,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] region badge for mountain uses bg-brand-mountain class",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -301,7 +301,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] region badge for beach uses bg-brand-beach class",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -313,7 +313,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] no region badge shown when areaSlug is null",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -329,7 +329,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // AC #1: title display
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] displays English title when locale='en'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -340,7 +340,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] displays Spanish title when locale='es'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -351,7 +351,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] title element has line-clamp-2 class",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -367,7 +367,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // AC #1: specs row
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] displays beds count in specs row for residential property",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -378,7 +378,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] displays baths count in specs row for residential property",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -389,7 +389,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] hides beds and baths when propertyType is 'Lote' (land)",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -402,7 +402,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] hides beds and baths when propertyType is 'Terreno' (land)",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -415,7 +415,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] hides beds and baths when propertyType is 'Finca'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -432,7 +432,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // AC #1: ZMT badge
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] ZMT badge shows 'Titled Property' text for zmtStatus='titled'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -443,7 +443,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] ZMT badge uses green classes for zmtStatus='titled'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -456,7 +456,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] ZMT badge shows 'Concession' text for zmtStatus='concession'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -467,7 +467,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] ZMT badge uses amber classes for zmtStatus='concession'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -480,7 +480,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] ZMT badge shows 'ZMT Restricted' text and red classes for zmtStatus='zmt_restricted'",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -499,7 +499,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // AC #1: Save + Share buttons present
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders save button (data-testid='save-button') inside the card",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -510,7 +510,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders share button (data-testid='share-button') inside the card",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -527,7 +527,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // AC #7: Hover animation
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] root element has hover animation classes: hover:translate-y-[-4px] and hover:shadow-lg",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -540,7 +540,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] root element has transition-all duration-200 ease-out classes for smooth animation",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -556,7 +556,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // AC #8: aspect-ratio on image (CLS prevention)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] hero image has aspect-[3/2] class to prevent CLS",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -577,7 +577,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // AC #9: next/image with sizes prop
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] hero image is rendered using next/image (has sizes attribute for responsive loading)",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -591,7 +591,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] image src falls back to /property-placeholder.svg when property has no images",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -607,7 +607,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // Accessibility
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] card has role='article' for accessibility",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -618,7 +618,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] card has aria-label containing property title and price",
     () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented
@@ -635,7 +635,7 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // Architecture compliance
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] PropertyCard is NOT a Client Component (file must NOT start with 'use client')",
     async () => {
       // THIS TEST WILL FAIL — property-card.tsx not yet implemented

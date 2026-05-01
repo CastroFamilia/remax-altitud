@@ -291,7 +291,7 @@ describe("SplitViewLayout", () => {
   // Story 3.5: PropertyGrid renders in grid panel when filterProperties provided
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] (Story 3.5) renders PropertyGrid (not only SearchResultsSkeleton) in grid panel when filterProperties is provided",
     () => {
       // THIS TEST WILL FAIL until Story 3.5 Task 5 (SplitViewLayout update) is implemented
@@ -329,7 +329,7 @@ describe("SplitViewLayout", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] (Story 3.5) does NOT render PropertyGrid when filterProperties is not provided (falls back to SearchResultsSkeleton)",
     () => {
       // THIS TEST WILL FAIL until Story 3.5 Task 5 (SplitViewLayout update) is implemented
