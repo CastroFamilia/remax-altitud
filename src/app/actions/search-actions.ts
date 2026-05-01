@@ -13,6 +13,7 @@
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { and, eq, gte, lte, isNotNull, desc, asc, sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
 
 /**
@@ -77,7 +78,7 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
   // Build a per-dimension condition map so we can compose facet WHERE clauses
   // that exclude the dimension being faceted. Each entry is the SQL filter
   // that would be applied if that dimension is set.
-  const dimConditions: Record<string, ReturnType<typeof eq> | undefined> = {
+  const dimConditions: Record<string, SQL | undefined> = {
     visible: eq(properties.isVisible, true),
     type: filters.type ? eq(properties.propertyType, filters.type) : undefined,
     priceMin: safePriceMin !== undefined ? gte(properties.priceUsd, safePriceMin) : undefined,

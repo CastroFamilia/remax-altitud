@@ -4,9 +4,6 @@
  * Story 3.4: Lifestyle Tags & Smart Presets
  * Component: SmartPresetBar
  *
- * ATDD STUB — This file satisfies module resolution for red-phase test scaffolds.
- * Task 6 of Story 3.4 will replace this stub with the full implementation.
- *
  * Renders a horizontal scrollable row of smart preset buttons.
  * Each button navigates to /[locale]/search with the preset's filters as URL params.
  *

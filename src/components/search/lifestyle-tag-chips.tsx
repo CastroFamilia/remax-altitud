@@ -4,9 +4,6 @@
  * Story 3.4: Lifestyle Tags & Smart Presets
  * Component: LifestyleTagChips
  *
- * ATDD STUB — This file satisfies module resolution for red-phase test scaffolds.
- * Task 4 of Story 3.4 will replace this stub with the full implementation.
- *
  * Renders a horizontal scrollable row of lifestyle tag chips.
  * Each chip toggles an active state and calls onToggle with the tag value.
  *
