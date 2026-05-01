@@ -2,7 +2,7 @@
 
 **GH Issue:** #88
 
-Status: review
+Status: done
 
 ## Story
 
@@ -669,3 +669,13 @@ claude-sonnet-4-6
 
 - 2026-05-01: Story 3.4 created — lifestyle tags & smart presets, status → ready-for-dev
 - 2026-05-01: Story 3.4 implemented — all 11 tasks complete, 423 tests passing, status → review
+- 2026-05-01: Code review applied — i18n wiring fixes, defensive tag sanitisation, button-type hardening; 426 tests passing, status → done
+
+### Review Findings
+
+- [x] [Review][Patch] SmartPresetBar rendered raw `labelKey` instead of translating it [src/components/search/smart-preset-bar.tsx:51] — fixed: now reads `t("presets.{labelKey}")` with safe fallback
+- [x] [Review][Patch] LifestyleTagChips and FilterChips ignored `lifestyleTags.chips.*` i18n keys (Spanish locale showed English labels) [src/components/search/lifestyle-tag-chips.tsx, src/components/search/filter-chips.tsx] — fixed: both now consult `useTranslations("SearchPage")` and fall back to `tagDisplayLabel()`
+- [x] [Review][Patch] Tag/preset buttons missing `type="button"` (would submit ancestor forms) [smart-preset-bar.tsx, lifestyle-tag-chips.tsx] — fixed
+- [x] [Review][Patch] `searchProperties` Server Action did not sanitize `filters.tags` (publicly callable surface, no length cap) [src/app/actions/search-actions.ts] — fixed: trims, drops empties/non-strings, caps at 20 entries
+- [x] [Review][Defer] Add `aria-label` / `role="group"` to LifestyleTagChips container — pre-existing a11y polish, deferred
+- [x] [Review][Defer] `latestParamsRef.current` mutation during render in `useSearchFilters` — pre-existing pattern from Story 3.3, deferred

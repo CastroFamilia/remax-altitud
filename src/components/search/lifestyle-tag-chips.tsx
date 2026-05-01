@@ -21,6 +21,7 @@
  * - Min-height 44px (UX-DR7 touch targets)
  */
 
+import { useTranslations } from "next-intl";
 import { LIFESTYLE_TAGS, tagDisplayLabel } from "@/lib/constants/lifestyle-tags";
 
 interface LifestyleTagChipsProps {
@@ -29,6 +30,20 @@ interface LifestyleTagChipsProps {
 }
 
 export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsProps) {
+  const t = useTranslations("SearchPage");
+
+  /**
+   * Resolve the visible label for a tag.
+   * Try the locale-specific i18n key first; fall back to `tagDisplayLabel`
+   * (which maps "Retire" → "Retirement Paradise") when the translation is
+   * missing — i.e. when `t()` returns the key unchanged.
+   */
+  const chipLabel = (tag: string): string => {
+    const i18nKey = `lifestyleTags.chips.${tag}`;
+    const translated = t(i18nKey);
+    return translated === i18nKey ? tagDisplayLabel(tag) : translated;
+  };
+
   return (
     <div
       data-testid="lifestyle-tag-chips"
@@ -40,6 +55,7 @@ export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsPro
         return (
           <button
             key={tag}
+            type="button"
             data-testid={`lifestyle-tag-chip-${slug}`}
             onClick={() => onToggle(tag)}
             aria-pressed={isActive}
@@ -50,7 +66,7 @@ export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsPro
                 : "border border-border bg-background text-foreground hover:bg-accent",
             ].join(" ")}
           >
-            {tagDisplayLabel(tag)}
+            {chipLabel(tag)}
           </button>
         );
       })}

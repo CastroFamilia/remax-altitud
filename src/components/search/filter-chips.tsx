@@ -105,12 +105,20 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
   }
 
   // Story 3.4: render one chip per active lifestyle tag (AC #6)
+  // Try localized chip label first; fall back to tagDisplayLabel when the key
+  // is missing — keeps display consistent across locales without breaking
+  // tests that mock `t` with an identity function.
+  const chipValueForTag = (tag: string): string => {
+    const i18nKey = `lifestyleTags.chips.${tag}`;
+    const translated = t(i18nKey);
+    return translated === i18nKey ? tagDisplayLabel(tag) : translated;
+  };
   (filters.tags ?? []).forEach((tag) => {
     chips.push({
       key: "tags",
       reactKey: `tags-${tag}`,
       label: t("lifestyleTags.label"),
-      value: tagDisplayLabel(tag),
+      value: chipValueForTag(tag),
     });
   });
 

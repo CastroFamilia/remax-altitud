@@ -46,6 +46,18 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
   const lotSizeMin = sanitizeNumber(filters.lotSizeMin);
   const lotSizeMax = sanitizeNumber(filters.lotSizeMax);
 
+  // Story 3.4: sanitize lifestyle tag array — server actions are publicly
+  // callable, so reject non-string entries, trim whitespace, drop empties,
+  // and cap the array length to bound the SQL parameter size. The hard cap
+  // is set well above the 5 known tags to allow future expansion without
+  // becoming a DoS surface.
+  const MAX_TAGS = 20;
+  const sanitizedTags = filters.tags
+    ?.filter((t): t is string => typeof t === "string")
+    .map((t) => t.trim())
+    .filter((t) => t.length > 0)
+    .slice(0, MAX_TAGS);
+
   // Normalise inverted ranges defensively — an inverted range can only return
   // zero rows, which surfaces as a confusing empty state. Swap silently rather
   // than fail closed.
@@ -77,7 +89,7 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
     areaSlug: filters.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined,
     // Story 3.4: lifestyle tag OR filter using PostgreSQL && (overlap) operator on GIN-indexed array
     // The && operator returns rows where lifestyleTags and the filter array share at least one element
-    tags: filters.tags?.length ? sql`${properties.lifestyleTags} && ${filters.tags}` : undefined,
+    tags: sanitizedTags?.length ? sql`${properties.lifestyleTags} && ${sanitizedTags}` : undefined,
   };
 
   // Compose conditions for the main query — every set dimension applies.
