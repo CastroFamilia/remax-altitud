@@ -613,8 +613,8 @@ describe("useSearchFilters — Story 3.4: tags URL param and toggleTag (AC #2, #
       "[P0] buildSearchUrl exports are available from use-search-filters module",
       async () => {
         // THIS TEST WILL FAIL — buildSearchUrl not yet exported from use-search-filters.ts
-        const module = await import("@/hooks/use-search-filters");
-        expect(typeof module.buildSearchUrl).toBe("function");
+        const hookModule = await import("@/hooks/use-search-filters");
+        expect(typeof hookModule.buildSearchUrl).toBe("function");
       },
     );
 

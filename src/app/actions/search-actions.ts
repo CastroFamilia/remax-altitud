@@ -75,6 +75,9 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
     lotSizeMin: safeLotMin !== undefined ? gte(properties.lotSizeM2, safeLotMin) : undefined,
     lotSizeMax: safeLotMax !== undefined ? lte(properties.lotSizeM2, safeLotMax) : undefined,
     areaSlug: filters.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined,
+    // Story 3.4: lifestyle tag OR filter using PostgreSQL && (overlap) operator on GIN-indexed array
+    // The && operator returns rows where lifestyleTags and the filter array share at least one element
+    tags: filters.tags?.length ? sql`${properties.lifestyleTags} && ${filters.tags}` : undefined,
   };
 
   // Compose conditions for the main query — every set dimension applies.

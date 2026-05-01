@@ -39,6 +39,24 @@ export interface LifestyleTagRule {
  * Architecture §5 Step 6 mandates at least these three rules.
  * Extend by appending new LifestyleTagRule objects — no other changes needed.
  */
+/**
+ * Display label overrides for lifestyle tags.
+ * Maps stored tag values to human-readable display labels.
+ * "Retire" → "Retirement Paradise" (AC #1, Story 3.4)
+ * Import this from lifestyle-tag-chips.tsx and filter-chips.tsx.
+ */
+export const TAG_DISPLAY_LABELS: Record<string, string> = {
+  Retire: "Retirement Paradise",
+};
+
+/**
+ * Returns the display label for a lifestyle tag.
+ * Falls back to the raw tag value if no override exists.
+ */
+export function tagDisplayLabel(tag: string): string {
+  return TAG_DISPLAY_LABELS[tag] ?? tag;
+}
+
 export const LIFESTYLE_TAG_RULES: LifestyleTagRule[] = [
   {
     // AC #2 — Condo in tourist zone → "Rental Potential"

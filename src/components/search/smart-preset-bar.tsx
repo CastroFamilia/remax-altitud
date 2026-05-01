@@ -38,10 +38,7 @@ export function SmartPresetBar({ presets = SEARCH_PRESETS }: SmartPresetBarProps
   };
 
   return (
-    <div
-      data-testid="smart-preset-bar"
-      className="flex gap-2 flex-nowrap overflow-x-auto"
-    >
+    <div data-testid="smart-preset-bar" className="flex gap-2 flex-nowrap overflow-x-auto">
       {presets.map((preset) => (
         <button
           key={preset.id}

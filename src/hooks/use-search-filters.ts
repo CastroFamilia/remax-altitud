@@ -49,18 +49,20 @@ const PARAM_MAP: Record<keyof SearchFilters, string> = {
  * Exported for use by SmartPresetBar to generate preset navigation URLs.
  * This prevents serialization divergence between preset URL generation and
  * filter bar URL writing (single source of truth for URL serialization).
- *
- * ATDD STUB — full implementation in Story 3.4 Task 2 (buildSearchUrl).
  */
 export function buildSearchUrl(pathname: string, filters: SearchFilters): string {
-  // TODO(story-3.4): Implement full URL serialization using PARAM_MAP
-  // This stub ensures tests can import the function in red-phase
   const params = new URLSearchParams();
-  if (filters.type) params.set("type", filters.type);
-  if (filters.areaSlug) params.set("area", filters.areaSlug);
-  if (filters.tags?.length) params.set("tags", filters.tags.join(","));
-  if (filters.priceMin !== undefined) params.set("price_min", String(filters.priceMin));
-  if (filters.priceMax !== undefined) params.set("price_max", String(filters.priceMax));
+  for (const [filterKey, paramKey] of Object.entries(PARAM_MAP) as Array<
+    [keyof SearchFilters, string]
+  >) {
+    const value = filters[filterKey];
+    if (value === undefined || value === null) continue;
+    if (Array.isArray(value)) {
+      if (value.length > 0) params.set(paramKey, value.join(","));
+    } else {
+      params.set(paramKey, String(value));
+    }
+  }
   const qs = params.toString();
   return qs ? `${pathname}?${qs}` : pathname;
 }
@@ -126,6 +128,16 @@ function parseFilters(params: URLSearchParams): SearchFilters {
     filters.view = view;
   }
 
+  // Story 3.4: Parse tags from comma-separated URL param
+  const tagsParam = params.get("tags");
+  if (tagsParam) {
+    const parsed = tagsParam
+      .split(",")
+      .map((t) => decodeURIComponent(t.trim()))
+      .filter(Boolean);
+    if (parsed.length > 0) filters.tags = parsed;
+  }
+
   return filters;
 }
 
@@ -135,6 +147,8 @@ function serializeValue(
   value: SearchFilters[keyof SearchFilters],
 ): string {
   if (value === undefined || value === null) return "";
+  // Story 3.4: handle array values (tags) by joining with comma
+  if (Array.isArray(value)) return value.join(",");
   return String(value);
 }
 
@@ -158,14 +172,16 @@ export function useSearchFilters(): UseSearchFiltersReturn {
     [searchParamsString],
   );
 
-  const activeFilterCount = useMemo(
-    () =>
-      FILTER_KEYS.filter((key) => {
-        const value = filters[key];
-        return value !== undefined && value !== null;
-      }).length,
-    [filters],
-  );
+  const activeFilterCount = useMemo(() => {
+    // Count scalar filter keys (excludes 'view', 'sort', and 'tags')
+    const scalarCount = FILTER_KEYS.filter((key) => {
+      const value = filters[key];
+      return value !== undefined && value !== null;
+    }).length;
+    // Story 3.4: count each selected tag individually (2 tags = +2, not +1)
+    const tagsCount = filters.tags?.length ?? 0;
+    return scalarCount + tagsCount;
+  }, [filters]);
 
   /** Write updated URLSearchParams to router without scrolling */
   const commitParams = useCallback(
@@ -234,14 +250,22 @@ export function useSearchFilters(): UseSearchFiltersReturn {
   /**
    * Story 3.4: toggleTag — add/remove a single lifestyle tag from the URL state.
    * Uses latestParamsRef to avoid stale closure race conditions on rapid clicks.
-   * ATDD STUB — full implementation in Story 3.4 Task 2.
+   * Instant update (no debounce) — toggles are immediate UI feedback.
    */
   const toggleTag = useCallback(
-    (_tag: string) => {
-      // TODO(story-3.4): Implement toggleTag using latestParamsRef pattern
-      // See story 3-4-lifestyle-tags-and-smart-presets.md Task 2 for spec
+    (tag: string) => {
+      // Read from latestParamsRef to get freshest state (avoids stale closure race)
+      const currentTagsParam = latestParamsRef.current.get("tags");
+      const current = currentTagsParam
+        ? currentTagsParam
+            .split(",")
+            .map((t) => decodeURIComponent(t.trim()))
+            .filter(Boolean)
+        : [];
+      const next = current.includes(tag) ? current.filter((t) => t !== tag) : [...current, tag];
+      setFilter("tags", next.length > 0 ? next : undefined);
     },
-    [],
+    [setFilter],
   );
 
   return {

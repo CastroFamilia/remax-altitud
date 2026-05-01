@@ -34,9 +34,10 @@ import { render, cleanup, fireEvent } from "@testing-library/react";
 // ---------------------------------------------------------------------------
 
 const mockPush = vi.fn();
+const mockReplace = vi.fn();
 
 vi.mock("next/navigation", () => ({
-  useRouter: vi.fn(() => ({ push: mockPush, replace: vi.fn() })),
+  useRouter: vi.fn(() => ({ push: mockPush, replace: mockReplace })),
   useSearchParams: vi.fn(() => ({
     toString: vi.fn(() => ""),
     get: vi.fn(() => null),
@@ -254,12 +255,6 @@ describe("SmartPresetBar — smart preset buttons row (AC #4, #5, #7)", () => {
   it(
     "[P0] clicking a preset uses router.push (full navigation), NOT router.replace",
     () => {
-      // THIS TEST WILL FAIL — smart-preset-bar.tsx not yet implemented
-      const mockReplace = vi.fn();
-      // Override the mock to verify push vs replace
-      const { useRouter } = require("next/navigation") as { useRouter: ReturnType<typeof vi.fn> };
-      (useRouter as ReturnType<typeof vi.fn>).mockReturnValue({ push: mockPush, replace: mockReplace });
-
       render(<SmartPresetBar />);
 
       const btn = document.querySelector('[data-testid="preset-mountain-retirement"]');
