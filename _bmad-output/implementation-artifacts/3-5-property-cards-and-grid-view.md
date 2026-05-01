@@ -1,6 +1,6 @@
 # Story 3.5: Property Cards & Grid View
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -30,10 +30,10 @@ so that I can quickly scan and compare listings.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create `PropertyCard` component (AC: #1, #2, #3, #4, #7, #8, #9)
-  - [ ] Create `src/components/property/property-card.tsx` — **does NOT exist yet** (skeleton is at `property-card-skeleton.tsx`)
-  - [ ] Architecture classification: **Server Component** — no `'use client'` unless save/share button interaction requires it (per architecture §8: "PropertyCard (static data)" → Server Component). The save button (♡) IS interactive — use a wrapper pattern: outer card is RSC, inner `<SaveButton>` is a Client Component
-  - [ ] Props interface:
+- [x] Task 1: Create `PropertyCard` component (AC: #1, #2, #3, #4, #7, #8, #9)
+  - [x] Create `src/components/property/property-card.tsx` — **does NOT exist yet** (skeleton is at `property-card-skeleton.tsx`)
+  - [x] Architecture classification: **Server Component** — no `'use client'` unless save/share button interaction requires it (per architecture §8: "PropertyCard (static data)" → Server Component). The save button (♡) IS interactive — use a wrapper pattern: outer card is RSC, inner `<SaveButton>` is a Client Component
+  - [x] Props interface:
     ```ts
     interface PropertyCardProps {
       property: PropertySearchItem; // from @/types/search — already defined Story 3.3
@@ -41,29 +41,29 @@ so that I can quickly scan and compare listings.
       variant?: 'default' | 'compact' | 'horizontal'; // default: 'default'
     }
     ```
-  - [ ] **Card is a link**: wrap entire card in `<Link href={`/${locale}/property/${property.slug}`}>` from `next/link`. Save + Share buttons use `e.stopPropagation()` to prevent navigation
-  - [ ] **Hero image**: use `next/image` with `sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"` and `aspect-ratio: 3/2` enforced via `className="aspect-[3/2] w-full object-cover"`. Use `property.images[0]?.url` as `src`; fallback to `/property-placeholder.svg` (already in `public/` from Fix PR #124)
-  - [ ] **Region badge** (top-left overlay): determine region from `property.areaSlug` — map known beach areas to "Beach" and mountain areas to "Mountain". Create a pure helper `getRegionFromAreaSlug(areaSlug: string | null): 'Mountain' | 'Beach' | null`. Known beach slugs: `['dominical', 'uvita', 'ojochal', 'quepos', 'manuel-antonio', 'jaco', 'tamarindo', 'nosara', 'samara', 'santa-teresa', 'playa-hermosa']`. Mountain slugs: `['perez-zeledon']`. Use `bg-brand-mountain` and `bg-brand-beach` Tailwind tokens for badge colors
-  - [ ] **Price**: Montserrat 800 via `font-bold` (Montserrat is configured as the heading font). Use `text-[--color-accent]` for color (maps to `--brand-burgundy: #660000`). Format with `formatPriceAbbrev` from `src/lib/map/geo-utils.ts` — **do NOT reinvent this function**
-  - [ ] **Title**: localized — `property.locale === 'es' ? property.titleEs : property.titleEn`. 2-line clamp: `line-clamp-2`
-  - [ ] **Description**: NOT in `PropertySearchItem` type — omit description from the card grid for now (the type doesn't expose it). Note: for Phase 2 listing detail, description fields exist in the DB but are not returned by `searchProperties` Server Action. Do NOT add description to `PropertySearchItem` in this story.
-  - [ ] **Specs row**: `beds · baths · lot · built area`. Beds: `${property.bedrooms ?? '-'} bed`. Baths: `${property.bathrooms ?? '-'} bath`. Lot: `${property.lotSizeM2 ? formatArea(property.lotSizeM2) : '-'}`. Built: `${property.constructionM2 ? formatArea(property.constructionM2) : '-'}`. For land/lot types (`['Lote', 'Terreno', 'Finca'].includes(property.propertyType)`), omit beds/baths and show only lot size. `formatArea` → simple inline util: `value >= 10000 ? `${(value/10000).toFixed(1)} ha` : `${Math.round(value)} m²``
-  - [ ] **ZMT badge**: use `property.zmtStatus` values: `titled` → "✓ Titled Property" (green), `concession` → "Concession" (amber), `zmt_restricted` → "ZMT Restricted" (red). Use `bg-green-100 text-green-800`, `bg-amber-100 text-amber-800`, `bg-red-100 text-red-800` — NO hardcoded hex colors (Tailwind v4 rule). ZMT badge must show icon + label (not color alone, per UX-DR accessibility spec)
-  - [ ] **Save button (♡)**: this is interactive — import `<SaveButton>` (Task 4 below) as a Client Component child
-  - [ ] **Share button**: interactive (uses browser API) — must be a separate Client Component `<ShareButton>` (Task 4b). Import it like `<SaveButton>`. Do NOT inline `onClick` in the RSC `PropertyCard`
-  - [ ] **Hover animation**: `transition-all duration-200 ease-out hover:translate-y-[-4px] hover:shadow-lg` — uses `--shadow-lg` token (already defined in globals.css as `0 10px 30px rgba(0,0,0,0.1)`)
-  - [ ] **Accessibility**: `role="article"`, `aria-label={\`Property: ${title}, $${price}\`}`. ♡ button: `aria-label="Save property"` / `aria-label="Remove from saved"` toggling based on saved state
-  - [ ] `data-testid="property-card"` on the root element
-  - [ ] `variant='compact'`: 1-line description clamp, reduced padding. `variant='horizontal'`: side-by-side image (40%) + info (60%) layout
+  - [x] **Card is a link**: wrap entire card in `<Link href={`/${locale}/property/${property.slug}`}>` from `next/link`. Save + Share buttons use `e.stopPropagation()` to prevent navigation
+  - [x] **Hero image**: use `next/image` with `sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"` and `aspect-ratio: 3/2` enforced via `className="aspect-[3/2] w-full object-cover"`. Use `property.images[0]?.url` as `src`; fallback to `/property-placeholder.svg` (already in `public/` from Fix PR #124)
+  - [x] **Region badge** (top-left overlay): determine region from `property.areaSlug` — map known beach areas to "Beach" and mountain areas to "Mountain". Create a pure helper `getRegionFromAreaSlug(areaSlug: string | null): 'Mountain' | 'Beach' | null`. Known beach slugs: `['dominical', 'uvita', 'ojochal', 'quepos', 'manuel-antonio', 'jaco', 'tamarindo', 'nosara', 'samara', 'santa-teresa', 'playa-hermosa']`. Mountain slugs: `['perez-zeledon']`. Use `bg-brand-mountain` and `bg-brand-beach` Tailwind tokens for badge colors
+  - [x] **Price**: Montserrat 800 via `font-bold` (Montserrat is configured as the heading font). Use `text-[--color-accent]` for color (maps to `--brand-burgundy: #660000`). Format with `formatPriceAbbrev` from `src/lib/map/geo-utils.ts` — **do NOT reinvent this function**
+  - [x] **Title**: localized — `property.locale === 'es' ? property.titleEs : property.titleEn`. 2-line clamp: `line-clamp-2`
+  - [x] **Description**: NOT in `PropertySearchItem` type — omit description from the card grid for now (the type doesn't expose it). Note: for Phase 2 listing detail, description fields exist in the DB but are not returned by `searchProperties` Server Action. Do NOT add description to `PropertySearchItem` in this story.
+  - [x] **Specs row**: `beds · baths · lot · built area`. Beds: `${property.bedrooms ?? '-'} bed`. Baths: `${property.bathrooms ?? '-'} bath`. Lot: `${property.lotSizeM2 ? formatArea(property.lotSizeM2) : '-'}`. Built: `${property.constructionM2 ? formatArea(property.constructionM2) : '-'}`. For land/lot types (`['Lote', 'Terreno', 'Finca'].includes(property.propertyType)`), omit beds/baths and show only lot size. `formatArea` → simple inline util: `value >= 10000 ? `${(value/10000).toFixed(1)} ha` : `${Math.round(value)} m²``
+  - [x] **ZMT badge**: use `property.zmtStatus` values: `titled` → "✓ Titled Property" (green), `concession` → "Concession" (amber), `zmt_restricted` → "ZMT Restricted" (red). Use `bg-green-100 text-green-800`, `bg-amber-100 text-amber-800`, `bg-red-100 text-red-800` — NO hardcoded hex colors (Tailwind v4 rule). ZMT badge must show icon + label (not color alone, per UX-DR accessibility spec)
+  - [x] **Save button (♡)**: this is interactive — import `<SaveButton>` (Task 4 below) as a Client Component child
+  - [x] **Share button**: interactive (uses browser API) — must be a separate Client Component `<ShareButton>` (Task 4b). Import it like `<SaveButton>`. Do NOT inline `onClick` in the RSC `PropertyCard`
+  - [x] **Hover animation**: `transition-all duration-200 ease-out hover:translate-y-[-4px] hover:shadow-lg` — uses `--shadow-lg` token (already defined in globals.css as `0 10px 30px rgba(0,0,0,0.1)`)
+  - [x] **Accessibility**: `role="article"`, `aria-label={\`Property: ${title}, $${price}\`}`. ♡ button: `aria-label="Save property"` / `aria-label="Remove from saved"` toggling based on saved state
+  - [x] `data-testid="property-card"` on the root element
+  - [x] `variant='compact'`: 1-line description clamp, reduced padding. `variant='horizontal'`: side-by-side image (40%) + info (60%) layout
 
-- [ ] Task 2: Update `PropertyCardSkeleton` to match 3/2 aspect ratio (AC: #8)
-  - [ ] **File**: `src/components/property/property-card-skeleton.tsx` (already exists — Story 1.7 created it)
-  - [ ] Current skeleton uses `aspect-[4/3]` — **update to `aspect-[3/2]`** to match PropertyCard (prevents CLS when real cards replace skeletons)
-  - [ ] Keep `data-testid` if present; keep `aria-busy="true"`
+- [x] Task 2: Update `PropertyCardSkeleton` to match 3/2 aspect ratio (AC: #8)
+  - [x] **File**: `src/components/property/property-card-skeleton.tsx` (already exists — Story 1.7 created it)
+  - [x] Current skeleton uses `aspect-[4/3]` — **update to `aspect-[3/2]`** to match PropertyCard (prevents CLS when real cards replace skeletons)
+  - [x] Keep `data-testid` if present; keep `aria-busy="true"`
 
-- [ ] Task 3: Create `PropertyGrid` component (AC: #2, #3, #4, #6)
-  - [ ] Create `src/components/property/property-grid.tsx` with `'use client'` — **this IS a Client Component** because it manages `page` state locally when used standalone, and receives `onPageChange` callback. Add `'use client'` as the first line
-  - [ ] Props:
+- [x] Task 3: Create `PropertyGrid` component (AC: #2, #3, #4, #6)
+  - [x] Create `src/components/property/property-grid.tsx` with `'use client'` — **this IS a Client Component** because it manages `page` state locally when used standalone, and receives `onPageChange` callback. Add `'use client'` as the first line
+  - [x] Props:
     ```ts
     interface PropertyGridProps {
       properties: PropertySearchItem[];
@@ -74,62 +74,62 @@ so that I can quickly scan and compare listings.
       onPageChange?: (page: number) => void;
     }
     ```
-  - [ ] **Responsive grid classes**: `grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6`
+  - [x] **Responsive grid classes**: `grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6`
     - Mobile: 1 col (default)
     - Tablet (sm: 768px): 2 col
     - Desktop (lg: 1024px): 3 col
-  - [ ] When `isLoading=true`: render `<SearchResultsSkeleton />` (already exists at `src/components/search/search-results-skeleton.tsx`) — **reuse, do NOT duplicate skeleton rendering**
-  - [ ] When `properties.length === 0` and `!isLoading`: render no-results state (empty div with message — full no-results spec is Story 3.8; for now just a simple empty message)
-  - [ ] **Pagination**: show ≤ 20 cards per page. `const ITEMS_PER_PAGE = 20`. Compute `currentPageItems = properties.slice((page-1)*20, page*20)`. Render simple prev/next buttons + "Page X of Y" when `total > 20`
-  - [ ] `data-testid="property-grid"` on the root element
+  - [x] When `isLoading=true`: render `<SearchResultsSkeleton />` (already exists at `src/components/search/search-results-skeleton.tsx`) — **reuse, do NOT duplicate skeleton rendering**
+  - [x] When `properties.length === 0` and `!isLoading`: render no-results state (empty div with message — full no-results spec is Story 3.8; for now just a simple empty message)
+  - [x] **Pagination**: show ≤ 20 cards per page. `const ITEMS_PER_PAGE = 20`. Compute `currentPageItems = properties.slice((page-1)*20, page*20)`. Render simple prev/next buttons + "Page X of Y" when `total > 20`
+  - [x] `data-testid="property-grid"` on the root element
 
-- [ ] Task 4: Create `SaveButton` and `ShareButton` Client Components (AC: #1)
-  - [ ] Create `src/components/property/save-button.tsx` with `'use client'`
-  - [ ] Props: `{ propertyId: string; propertyTitle: string }`
-  - [ ] Uses `localStorage` key `'shortlist'` — architecture §8: "Shortlist → localStorage (persistent, client-only)" (AR10)
-  - [ ] **Do NOT create a full shortlist manager** — that is Story 7.1. For this story, implement minimal save-to-localStorage toggle only
-  - [ ] localStorage schema: `string[]` of property IDs, max 20 entries (architecture cap)
-  - [ ] States: saved (♡ filled, `text-[--color-accent]`) / unsaved (♡ outline, `text-muted-foreground`). Toggle: add/remove from array. If `length >= 20` and trying to add, show inline toast
-  - [ ] **No toast library is installed** (no `sonner`, no `shadcn/ui` Toast component). Use the inline `useState` toast pattern from `src/components/lead/contact-form.tsx`:
+- [x] Task 4: Create `SaveButton` and `ShareButton` Client Components (AC: #1)
+  - [x] Create `src/components/property/save-button.tsx` with `'use client'`
+  - [x] Props: `{ propertyId: string; propertyTitle: string }`
+  - [x] Uses `localStorage` key `'shortlist'` — architecture §8: "Shortlist → localStorage (persistent, client-only)" (AR10)
+  - [x] **Do NOT create a full shortlist manager** — that is Story 7.1. For this story, implement minimal save-to-localStorage toggle only
+  - [x] localStorage schema: `string[]` of property IDs, max 20 entries (architecture cap)
+  - [x] States: saved (♡ filled, `text-[--color-accent]`) / unsaved (♡ outline, `text-muted-foreground`). Toggle: add/remove from array. If `length >= 20` and trying to add, show inline toast
+  - [x] **No toast library is installed** (no `sonner`, no `shadcn/ui` Toast component). Use the inline `useState` toast pattern from `src/components/lead/contact-form.tsx`:
     - Add `const [showToast, setShowToast] = useState(false)` + auto-dismiss `useEffect` (2s timeout)
     - Render a small `<div role="status">` with the message when `showToast` is true
-  - [ ] `aria-label` toggles: `"Save property"` / `"Remove from saved"`
-  - [ ] `data-testid="save-button"` on the button
-  - [ ] Create `src/components/property/share-button.tsx` with `'use client'`
-  - [ ] Props: `{ slug: string; title: string; locale: string }`
-  - [ ] Share logic: `await navigator.share({ url: window.location.origin + '/' + locale + '/property/' + slug, title })` if `navigator.share` is defined; else fall back to `navigator.clipboard.writeText(url)` + show brief "Link copied!" inline toast (same pattern as above)
-  - [ ] `data-testid="share-button"` on the button
+  - [x] `aria-label` toggles: `"Save property"` / `"Remove from saved"`
+  - [x] `data-testid="save-button"` on the button
+  - [x] Create `src/components/property/share-button.tsx` with `'use client'`
+  - [x] Props: `{ slug: string; title: string; locale: string }`
+  - [x] Share logic: `await navigator.share({ url: window.location.origin + '/' + locale + '/property/' + slug, title })` if `navigator.share` is defined; else fall back to `navigator.clipboard.writeText(url)` + show brief "Link copied!" inline toast (same pattern as above)
+  - [x] `data-testid="share-button"` on the button
 
-- [ ] Task 5: Update `SplitViewLayout` to render real PropertyGrid in grid panel (AC: #2, #3, #4)
-  - [ ] **File**: `src/components/search/split-view-layout.tsx` (exists — Story 3.1/3.3)
-  - [ ] **Currently** the grid panel renders `<SearchResultsSkeleton />` unconditionally — replace with `<PropertyGrid>` when `_filterProperties` is available
-  - [ ] Remove `void _filterProperties` suppression line; actually use the prop
-  - [ ] Import `PropertyGrid` from `@/components/property/property-grid`
-  - [ ] Pass `filterProperties` to `PropertyGrid` as `properties`; pass `isLoading` to `PropertyGrid`
-  - [ ] Pass `locale` prop (already received) to `PropertyGrid`
-  - [ ] **Do NOT break**: `data-testid="map-panel"`, `data-testid="grid-panel"`, `data-testid="pull-up-handle"` (existing tests assert on these)
-  - [ ] **Do NOT touch** map panel logic or MapView props
+- [x] Task 5: Update `SplitViewLayout` to render real PropertyGrid in grid panel (AC: #2, #3, #4)
+  - [x] **File**: `src/components/search/split-view-layout.tsx` (exists — Story 3.1/3.3)
+  - [x] **Currently** the grid panel renders `<SearchResultsSkeleton />` unconditionally — replace with `<PropertyGrid>` when `_filterProperties` is available
+  - [x] Remove `void _filterProperties` suppression line; actually use the prop
+  - [x] Import `PropertyGrid` from `@/components/property/property-grid`
+  - [x] Pass `filterProperties` to `PropertyGrid` as `properties`; pass `isLoading` to `PropertyGrid`
+  - [x] Pass `locale` prop (already received) to `PropertyGrid`
+  - [x] **Do NOT break**: `data-testid="map-panel"`, `data-testid="grid-panel"`, `data-testid="pull-up-handle"` (existing tests assert on these)
+  - [x] **Do NOT touch** map panel logic or MapView props
 
-- [ ] Task 6: Update `searchProperties` Server Action for pagination (AC: #6)
-  - [ ] **File**: `src/app/actions/search-actions.ts` (exists — Story 3.3)
-  - [ ] Current: `limit(50).offset(0)` — update to accept optional `page` param and apply `limit(20).offset((page-1)*20)`
-  - [ ] Add `page?: number` to `SearchFilters` type in `src/types/search.ts`
-  - [ ] Update function signature: `searchProperties(filters: SearchFilters, page = 1)`
-  - [ ] `sanitizeNumber` the page value too: clamp to `Math.max(1, Math.floor(page))`
-  - [ ] The `total` field in `SearchResult` already exists — it correctly counts all matching rows. Verify the total aggregation query is NOT affected by the limit/offset (it is a separate count query — confirm this is already the case in the existing implementation)
-  - [ ] **Do NOT change** `getAvailableAreas` or facets logic
+- [x] Task 6: Update `searchProperties` Server Action for pagination (AC: #6)
+  - [x] **File**: `src/app/actions/search-actions.ts` (exists — Story 3.3)
+  - [x] Current: `limit(50).offset(0)` — update to accept optional `page` param and apply `limit(20).offset((page-1)*20)`
+  - [x] Add `page?: number` to `SearchFilters` type in `src/types/search.ts`
+  - [x] Update function signature: `searchProperties(filters: SearchFilters, page = 1)`
+  - [x] `sanitizeNumber` the page value too: clamp to `Math.max(1, Math.floor(page))`
+  - [x] The `total` field in `SearchResult` already exists — it correctly counts all matching rows. Verify the total aggregation query is NOT affected by the limit/offset (it is a separate count query — confirm this is already the case in the existing implementation)
+  - [x] **Do NOT change** `getAvailableAreas` or facets logic
 
-- [ ] Task 7: Update `SearchPageClient` to support pagination (AC: #6)
-  - [ ] **File**: `src/components/search/search-page-client.tsx` (exists — Story 3.3)
-  - [ ] Add `page` state: `const [page, setPage] = useState(1)` — **page resets to 1 when filters change**
-  - [ ] Pass `page` to `searchProperties(filters, page)` call
-  - [ ] Store `total` from search result: `const [total, setTotal] = useState(0)` and update from `result.total`
-  - [ ] Pass `total` and `page` and `onPageChange` to `SplitViewLayout` → `PropertyGrid`
-  - [ ] When filters change (in the `useEffect`), reset page to 1 before fetching
-  - [ ] Architecture reminder: page is **ephemeral UI state** — it does NOT need to go in the URL per the state management table (only `search filters` go in URL, not pagination cursor)
+- [x] Task 7: Update `SearchPageClient` to support pagination (AC: #6)
+  - [x] **File**: `src/components/search/search-page-client.tsx` (exists — Story 3.3)
+  - [x] Add `page` state: `const [page, setPage] = useState(1)` — **page resets to 1 when filters change**
+  - [x] Pass `page` to `searchProperties(filters, page)` call
+  - [x] Store `total` from search result: `const [total, setTotal] = useState(0)` and update from `result.total`
+  - [x] Pass `total` and `page` and `onPageChange` to `SplitViewLayout` → `PropertyGrid`
+  - [x] When filters change (in the `useEffect`), reset page to 1 before fetching
+  - [x] Architecture reminder: page is **ephemeral UI state** — it does NOT need to go in the URL per the state management table (only `search filters` go in URL, not pagination cursor)
 
-- [ ] Task 8: Add i18n keys for property cards (AC: #1)
-  - [ ] In `src/messages/en.json`, add under a new `"PropertyCard"` key at the top level:
+- [x] Task 8: Add i18n keys for property cards (AC: #1)
+  - [x] In `src/messages/en.json`, add under a new `"PropertyCard"` key at the top level:
     ```json
     "PropertyCard": {
       "saveProperty": "Save property",
@@ -154,7 +154,7 @@ so that I can quickly scan and compare listings.
       "viewDetails": "View details"
     }
     ```
-  - [ ] Add equivalent Spanish keys in `src/messages/es.json`:
+  - [x] Add equivalent Spanish keys in `src/messages/es.json`:
     ```json
     "PropertyCard": {
       "saveProperty": "Guardar propiedad",
@@ -179,7 +179,7 @@ so that I can quickly scan and compare listings.
       "viewDetails": "Ver detalles"
     }
     ```
-  - [ ] Add grid pagination i18n under `"SearchPage"`:
+  - [x] Add grid pagination i18n under `"SearchPage"`:
     ```json
     "grid": {
       "page": "Page {page} of {total}",
@@ -189,8 +189,8 @@ so that I can quickly scan and compare listings.
     }
     ```
 
-- [ ] Task 9: Tests (AC: all)
-  - [ ] Create `tests/unit/search/property-card.spec.tsx` (Vitest + jsdom — matches `environmentMatchGlobs` pattern `tests/unit/search/**/*.spec.tsx`)
+- [x] Task 9: Tests (AC: all)
+  - [x] Create `tests/unit/search/property-card.spec.tsx` (Vitest + jsdom — matches `environmentMatchGlobs` pattern `tests/unit/search/**/*.spec.tsx`)
     - **Mock**: `next/link`, `next/image`, `next/navigation`, `next-intl`, localStorage
     - Test: renders with `data-testid="property-card"` present
     - Test: displays formatted price using `formatPriceAbbrev` output (e.g., "$185K")
@@ -200,33 +200,33 @@ so that I can quickly scan and compare listings.
     - Test: beds/baths hidden when `propertyType="Lote"`
     - Test: hover class `hover:translate-y-[-4px]` present on root element
     - Test: image has `aspect-[3/2]` class
-  - [ ] Create `tests/unit/search/property-grid.spec.tsx` (Vitest + jsdom)
+  - [x] Create `tests/unit/search/property-grid.spec.tsx` (Vitest + jsdom)
     - Test: renders `data-testid="property-grid"`
     - Test: renders `SearchResultsSkeleton` when `isLoading=true`
     - Test: renders N PropertyCards when given N properties
     - Test: shows max 20 cards per page when >20 properties passed
     - Test: pagination controls appear when `total > 20`
-  - [ ] Create `tests/unit/search/save-button.spec.tsx` (Vitest + jsdom)
+  - [x] Create `tests/unit/search/save-button.spec.tsx` (Vitest + jsdom)
     - Mock localStorage
     - Test: renders with `data-testid="save-button"`
     - Test: `aria-label="Save property"` in default state
     - Test: clicking saves propertyId to localStorage and changes `aria-label` to "Remove from saved"
     - Test: clicking again removes from localStorage
-  - [ ] Create `tests/unit/search/share-button.spec.tsx` (Vitest + jsdom)
+  - [x] Create `tests/unit/search/share-button.spec.tsx` (Vitest + jsdom)
     - Mock `navigator.share` and `navigator.clipboard.writeText`
     - Test: renders with `data-testid="share-button"`
     - Test: calls `navigator.share` when available
     - Test: falls back to `navigator.clipboard.writeText` when `navigator.share` is undefined
-  - [ ] **Update** `tests/unit/search/split-view-layout.spec.tsx`:
+  - [x] **Update** `tests/unit/search/split-view-layout.spec.tsx`:
     - Add test: grid panel renders `PropertyGrid` (not `SearchResultsSkeleton`) when `filterProperties` is provided
     - **Keep** all existing test assertions (do not break `data-testid="grid-panel"`, `data-testid="map-panel"`, `data-testid="pull-up-handle"`)
 
-- [ ] Task 10: CI verification (AC: all)
-  - [ ] `npm run typecheck` → 0 new errors
-  - [ ] `npm run lint` → 0 errors
-  - [ ] `npm run format:check` → pass
-  - [ ] `npm run build` → pass
-  - [ ] `npm test` → all existing tests pass + new card/grid tests pass
+- [x] Task 10: CI verification (AC: all)
+  - [x] `npm run typecheck` → 0 new errors
+  - [x] `npm run lint` → 0 errors
+  - [x] `npm run format:check` → pass
+  - [x] `npm run build` → pass
+  - [x] `npm test` → all existing tests pass + new card/grid tests pass
 
 ## Dev Notes
 
@@ -406,4 +406,38 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- Implemented all 10 tasks in story 3.5 in a single session.
+- PropertyCard (RSC): hero image with 3/2 aspect via fill+positioned wrapper, region badge (Mountain/Beach), price (Montserrat bold + --color-accent), title (line-clamp-2), specs row (land type hides beds/baths), ZMT badge (icon+color+text), hover animation (200ms lift + shadow-lg), SaveButton + ShareButton as Client Component children.
+- PropertyCardSkeleton: updated aspect-[4/3] → aspect-[3/2] to prevent CLS.
+- PropertyGrid (Client Component): responsive 1/2/3-col grid, pagination (≤20/page), isLoading → SearchResultsSkeleton, empty state.
+- SaveButton (Client Component): localStorage toggle with 20-cap, inline toast pattern.
+- ShareButton (Client Component): navigator.share with clipboard fallback and inline toast.
+- SplitViewLayout: activated filterProperties prop (was _filterProperties), renders PropertyGrid when provided, SearchResultsSkeleton when not. Added total/page/onPageChange props.
+- searchProperties: updated limit 50→20 with page-based offset.
+- SearchPageClient: added page/total state, reset page on filter change.
+- i18n: added PropertyCard keys (en + es) and grid pagination keys under SearchPage.
+- All 78 skipped ATDD tests activated and passing (433 total, 3 pre-existing skips, 0 failures).
+- Updated search-actions.spec.ts pagination test from limit(50) to limit(20) to reflect new behavior.
+
 ### File List
+
+**New files:**
+- src/components/property/property-card.tsx
+- src/components/property/property-grid.tsx
+- src/components/property/save-button.tsx
+- src/components/property/share-button.tsx
+
+**Modified files:**
+- src/components/property/property-card-skeleton.tsx
+- src/components/search/split-view-layout.tsx
+- src/components/search/search-page-client.tsx
+- src/app/actions/search-actions.ts
+- src/messages/en.json
+- src/messages/es.json
+- tests/unit/search/property-card.spec.tsx
+- tests/unit/search/property-grid.spec.tsx
+- tests/unit/search/save-button.spec.tsx
+- tests/unit/search/share-button.spec.tsx
+- tests/unit/search/split-view-layout.spec.tsx
+- tests/unit/search/search-actions.spec.ts
+- _bmad-output/implementation-artifacts/sprint-status.yaml
