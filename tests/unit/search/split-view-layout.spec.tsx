@@ -12,6 +12,9 @@
  *
  * Story 3.2 regression fix: data-testid="map-placeholder" is replaced by
  * data-testid="map-container" (on MapViewLoader's loading fallback and MapView wrapper).
+ *
+ * Story 3.5 additions:
+ *   — Grid panel renders PropertyGrid (not SearchResultsSkeleton) when filterProperties is provided
  */
 
 import { describe, expect, it, vi, afterEach } from "vitest";
@@ -42,6 +45,24 @@ vi.mock("next-intl", () => ({
 
 vi.mock("@/components/search/search-results-skeleton", () => ({
   SearchResultsSkeleton: () => <div data-testid="search-results-skeleton" />,
+}));
+
+// Story 3.5: Mock PropertyGrid
+vi.mock("@/components/property/property-grid", () => ({
+  PropertyGrid: ({
+    properties,
+    isLoading,
+  }: {
+    properties: unknown[];
+    locale: string;
+    isLoading?: boolean;
+  }) => (
+    <div
+      data-testid="property-grid"
+      data-property-count={properties.length}
+      data-loading={isLoading ? "true" : "false"}
+    />
+  ),
 }));
 
 // Story 3.2: Mock MapView (replaces the map-placeholder div).
@@ -260,6 +281,64 @@ describe("SplitViewLayout", () => {
     "[P2] renders SearchResultsSkeleton inside grid panel as placeholder",
     () => {
       render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
+
+      const skeleton = document.querySelector('[data-testid="search-results-skeleton"]');
+      expect(skeleton).not.toBeNull();
+    },
+  );
+
+  // -------------------------------------------------------------------------
+  // Story 3.5: PropertyGrid renders in grid panel when filterProperties provided
+  // -------------------------------------------------------------------------
+
+  it.skip(
+    "[P0] (Story 3.5) renders PropertyGrid (not only SearchResultsSkeleton) in grid panel when filterProperties is provided",
+    () => {
+      // THIS TEST WILL FAIL until Story 3.5 Task 5 (SplitViewLayout update) is implemented
+      const mockProperties = [
+        {
+          id: "prop-001",
+          slug: "test-property",
+          titleEn: "Test Property",
+          titleEs: "Propiedad de Prueba",
+          priceUsd: 150000,
+          bedrooms: 2,
+          bathrooms: 1,
+          lotSizeM2: 300,
+          constructionM2: 120,
+          zmtStatus: "titled",
+          propertyType: "Casa",
+          areaSlug: "perez-zeledon",
+          images: [],
+          latitude: 9.35,
+          longitude: -83.68,
+        },
+      ];
+
+      render(
+        <SplitViewLayout
+          viewMode="split"
+          onViewModeChange={noop}
+          filterProperties={mockProperties}
+        />,
+      );
+
+      // PropertyGrid must render in the grid panel
+      const propertyGrid = document.querySelector('[data-testid="property-grid"]');
+      expect(propertyGrid).not.toBeNull();
+    },
+  );
+
+  it.skip(
+    "[P1] (Story 3.5) does NOT render PropertyGrid when filterProperties is not provided (falls back to SearchResultsSkeleton)",
+    () => {
+      // THIS TEST WILL FAIL until Story 3.5 Task 5 (SplitViewLayout update) is implemented
+      render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
+
+      // When no filterProperties, should fall back to SearchResultsSkeleton (existing behavior)
+      const propertyGrid = document.querySelector('[data-testid="property-grid"]');
+      // PropertyGrid should NOT render when no properties are passed
+      expect(propertyGrid).toBeNull();
 
       const skeleton = document.querySelector('[data-testid="search-results-skeleton"]');
       expect(skeleton).not.toBeNull();
