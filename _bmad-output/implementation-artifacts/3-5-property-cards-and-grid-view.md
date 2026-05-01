@@ -50,7 +50,7 @@ so that I can quickly scan and compare listings.
   - [ ] **Specs row**: `beds · baths · lot · built area`. Beds: `${property.bedrooms ?? '-'} bed`. Baths: `${property.bathrooms ?? '-'} bath`. Lot: `${property.lotSizeM2 ? formatArea(property.lotSizeM2) : '-'}`. Built: `${property.constructionM2 ? formatArea(property.constructionM2) : '-'}`. For land/lot types (`['Lote', 'Terreno', 'Finca'].includes(property.propertyType)`), omit beds/baths and show only lot size. `formatArea` → simple inline util: `value >= 10000 ? `${(value/10000).toFixed(1)} ha` : `${Math.round(value)} m²``
   - [ ] **ZMT badge**: use `property.zmtStatus` values: `titled` → "✓ Titled Property" (green), `concession` → "Concession" (amber), `zmt_restricted` → "ZMT Restricted" (red). Use `bg-green-100 text-green-800`, `bg-amber-100 text-amber-800`, `bg-red-100 text-red-800` — NO hardcoded hex colors (Tailwind v4 rule). ZMT badge must show icon + label (not color alone, per UX-DR accessibility spec)
   - [ ] **Save button (♡)**: this is interactive — import `<SaveButton>` (Task 4 below) as a Client Component child
-  - [ ] **Share icon**: a plain anchor `<button>` with `onClick={shareProperty}`. For MVP, use Web Share API (`navigator.share`) if available, else copy URL to clipboard. Keep in the card (do NOT defer to Epic 7)
+  - [ ] **Share button**: interactive (uses browser API) — must be a separate Client Component `<ShareButton>` (Task 4b). Import it like `<SaveButton>`. Do NOT inline `onClick` in the RSC `PropertyCard`
   - [ ] **Hover animation**: `transition-all duration-200 ease-out hover:translate-y-[-4px] hover:shadow-lg` — uses `--shadow-lg` token (already defined in globals.css as `0 10px 30px rgba(0,0,0,0.1)`)
   - [ ] **Accessibility**: `role="article"`, `aria-label={\`Property: ${title}, $${price}\`}`. ♡ button: `aria-label="Save property"` / `aria-label="Remove from saved"` toggling based on saved state
   - [ ] `data-testid="property-card"` on the root element
@@ -62,7 +62,7 @@ so that I can quickly scan and compare listings.
   - [ ] Keep `data-testid` if present; keep `aria-busy="true"`
 
 - [ ] Task 3: Create `PropertyGrid` component (AC: #2, #3, #4, #6)
-  - [ ] Create `src/components/property/property-grid.tsx`
+  - [ ] Create `src/components/property/property-grid.tsx` with `'use client'` — **this IS a Client Component** because it manages `page` state locally when used standalone, and receives `onPageChange` callback. Add `'use client'` as the first line
   - [ ] Props:
     ```ts
     interface PropertyGridProps {
@@ -83,16 +83,22 @@ so that I can quickly scan and compare listings.
   - [ ] **Pagination**: show ≤ 20 cards per page. `const ITEMS_PER_PAGE = 20`. Compute `currentPageItems = properties.slice((page-1)*20, page*20)`. Render simple prev/next buttons + "Page X of Y" when `total > 20`
   - [ ] `data-testid="property-grid"` on the root element
 
-- [ ] Task 4: Create `SaveButton` Client Component (AC: #1)
+- [ ] Task 4: Create `SaveButton` and `ShareButton` Client Components (AC: #1)
   - [ ] Create `src/components/property/save-button.tsx` with `'use client'`
   - [ ] Props: `{ propertyId: string; propertyTitle: string }`
   - [ ] Uses `localStorage` key `'shortlist'` — architecture §8: "Shortlist → localStorage (persistent, client-only)" (AR10)
   - [ ] **Do NOT create a full shortlist manager** — that is Story 7.1. For this story, implement minimal save-to-localStorage toggle only
   - [ ] localStorage schema: `string[]` of property IDs, max 20 entries (architecture cap)
-  - [ ] States: saved (♡ filled, `text-[--color-accent]`) / unsaved (♡ outline, `text-muted-foreground`). Toggle: add/remove from array. If `length >= 20` and trying to add, show toast: "Shortlist full (20 max)"
-  - [ ] Import Toast: use `sonner` (check if installed) OR the existing `src/components/ui/toast.tsx`. Prefer whatever is already used in the project — check `package.json` for toast library
+  - [ ] States: saved (♡ filled, `text-[--color-accent]`) / unsaved (♡ outline, `text-muted-foreground`). Toggle: add/remove from array. If `length >= 20` and trying to add, show inline toast
+  - [ ] **No toast library is installed** (no `sonner`, no `shadcn/ui` Toast component). Use the inline `useState` toast pattern from `src/components/lead/contact-form.tsx`:
+    - Add `const [showToast, setShowToast] = useState(false)` + auto-dismiss `useEffect` (2s timeout)
+    - Render a small `<div role="status">` with the message when `showToast` is true
   - [ ] `aria-label` toggles: `"Save property"` / `"Remove from saved"`
   - [ ] `data-testid="save-button"` on the button
+  - [ ] Create `src/components/property/share-button.tsx` with `'use client'`
+  - [ ] Props: `{ slug: string; title: string; locale: string }`
+  - [ ] Share logic: `await navigator.share({ url: window.location.origin + '/' + locale + '/property/' + slug, title })` if `navigator.share` is defined; else fall back to `navigator.clipboard.writeText(url)` + show brief "Link copied!" inline toast (same pattern as above)
+  - [ ] `data-testid="share-button"` on the button
 
 - [ ] Task 5: Update `SplitViewLayout` to render real PropertyGrid in grid panel (AC: #2, #3, #4)
   - [ ] **File**: `src/components/search/split-view-layout.tsx` (exists — Story 3.1/3.3)
@@ -206,6 +212,11 @@ so that I can quickly scan and compare listings.
     - Test: `aria-label="Save property"` in default state
     - Test: clicking saves propertyId to localStorage and changes `aria-label` to "Remove from saved"
     - Test: clicking again removes from localStorage
+  - [ ] Create `tests/unit/search/share-button.spec.tsx` (Vitest + jsdom)
+    - Mock `navigator.share` and `navigator.clipboard.writeText`
+    - Test: renders with `data-testid="share-button"`
+    - Test: calls `navigator.share` when available
+    - Test: falls back to `navigator.clipboard.writeText` when `navigator.share` is undefined
   - [ ] **Update** `tests/unit/search/split-view-layout.spec.tsx`:
     - Add test: grid panel renders `PropertyGrid` (not `SearchResultsSkeleton`) when `filterProperties` is provided
     - **Keep** all existing test assertions (do not break `data-testid="grid-panel"`, `data-testid="map-panel"`, `data-testid="pull-up-handle"`)
@@ -245,6 +256,10 @@ The `PropertySearchItem` type in `src/types/search.ts` was established in Story 
 
 Only add `page` parameter for pagination. Do NOT change the SELECT columns, facet logic, or `getAvailableAreas`. The `total` count is already a separate aggregation query — adding `LIMIT/OFFSET` to the main query does NOT affect the `total` field.
 
+**AC #5 (sort) is already fully implemented in Story 3.3 — no new work needed:**
+
+The `sort` parameter is already in `SearchFilters` (`src/types/search.ts`), already serialized to URL params by `useSearchFilters` hook, and already applied in `searchProperties` Server Action. The `SearchFilterBar` already renders the sort dropdown (Story 3.3 Task 4). AC #5 is verified, not implemented, in this story. DO NOT re-implement sort logic.
+
 **`formatPriceAbbrev` is already in `src/lib/map/geo-utils.ts` (Story 3.2):**
 
 Do NOT create a new price formatting function. Import from `@/lib/map/geo-utils`. This function handles `$185K`, `$1.2M`, `$500` formats correctly.
@@ -277,9 +292,10 @@ The `_filterProperties` and `_facets` props are already accepted (but suppressed
 
 **Files to CREATE (do not exist):**
 ```
-src/components/property/property-card.tsx       ← New: main PropertyCard component
-src/components/property/property-grid.tsx        ← New: grid layout + pagination
+src/components/property/property-card.tsx       ← New: main PropertyCard component (RSC)
+src/components/property/property-grid.tsx        ← New: Client Component grid layout + pagination
 src/components/property/save-button.tsx          ← New: Client Component for ♡ save
+src/components/property/share-button.tsx         ← New: Client Component for share
 tests/unit/search/property-card.spec.tsx         ← New: PropertyCard unit tests
 tests/unit/search/property-grid.spec.tsx         ← New: PropertyGrid unit tests
 tests/unit/search/save-button.spec.tsx           ← New: SaveButton unit tests
@@ -374,6 +390,7 @@ Key patterns from Story 3.3 that carry forward:
 - Design tokens: `src/styles/globals.css` — all `--color-brand-*`, `--shadow-*` tokens
 - `formatPriceAbbrev`: `src/lib/map/geo-utils.ts` line 44
 - Image placeholder: `public/property-placeholder.svg` (added PR #124)
+- Inline toast pattern (no external toast lib): `src/components/lead/contact-form.tsx` lines 13-21
 - PropertyCardSkeleton: `src/components/property/property-card-skeleton.tsx`
 - SearchResultsSkeleton: `src/components/search/search-results-skeleton.tsx`
 - SplitViewLayout forward-compat stubs: `src/components/search/split-view-layout.tsx` lines 51-61
