@@ -42,6 +42,7 @@ export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsPro
             key={tag}
             data-testid={`lifestyle-tag-chip-${slug}`}
             onClick={() => onToggle(tag)}
+            aria-pressed={isActive}
             className={[
               "min-h-[44px] px-3 py-1 rounded-full text-sm font-medium transition-colors",
               isActive

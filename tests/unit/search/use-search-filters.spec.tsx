@@ -298,6 +298,29 @@ describe("useSearchFilters — URL filter state hook (AC #3, #4, #5, #8)", () =>
         expect(params.get("view")).toBe("split");
       },
     );
+
+    it(
+      "[P0] clearAll removes 'tags' param (Story 3.4 — tags are filters, not UI state)",
+      async () => {
+        // Regression guard: tags must be cleared by clearAll, not preserved like 'view'
+        mockSearchParams.set("type", "Casa");
+        mockSearchParams.set("tags", "Investment Property,Rental Potential");
+        mockSearchParams.set("view", "split");
+
+        const { result } = renderHook(() => useSearchFilters());
+
+        await act(async () => {
+          result.current.clearAll();
+        });
+
+        const params = getLastReplaceUrl();
+        // Tags must be cleared (they are filters, not UI state)
+        expect(params.has("tags")).toBe(false);
+        expect(params.has("type")).toBe(false);
+        // 'view' MUST be preserved (AR10)
+        expect(params.get("view")).toBe("split");
+      },
+    );
   });
 
   // -------------------------------------------------------------------------

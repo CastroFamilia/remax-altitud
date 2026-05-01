@@ -233,6 +233,37 @@ describe("LifestyleTagChips — lifestyle tag chip row (AC #1, #2, #3, #6)", () 
   );
 
   // -------------------------------------------------------------------------
+  // AC #2: Active state via aria-pressed (accessible + resilient selector)
+  // -------------------------------------------------------------------------
+
+  it(
+    "[P0] active chip has aria-pressed='true' (accessible active state)",
+    () => {
+      renderChips(["Investment Property"]);
+
+      const activeChip = document.querySelector(
+        '[data-testid="lifestyle-tag-chip-investment-property"]',
+      );
+      expect(activeChip).not.toBeNull();
+      // aria-pressed is a more resilient active state signal than CSS class
+      expect(activeChip?.getAttribute("aria-pressed")).toBe("true");
+    },
+  );
+
+  it(
+    "[P0] inactive chip has aria-pressed='false'",
+    () => {
+      renderChips([]);
+
+      const chip = document.querySelector(
+        '[data-testid="lifestyle-tag-chip-investment-property"]',
+      );
+      expect(chip).not.toBeNull();
+      expect(chip?.getAttribute("aria-pressed")).toBe("false");
+    },
+  );
+
+  // -------------------------------------------------------------------------
   // AC #2: Clicking a chip calls onToggle with the correct tag value
   // -------------------------------------------------------------------------
 

@@ -52,6 +52,8 @@ vi.mock("next-intl", () => ({
       "filters.location": "Location",
       "filters.clearAll": "Clear all",
       "filters.dismiss": "Remove filter",
+      // Story 3.4: lifestyle tag chips appear with "Tag" label in FilterChips row
+      "lifestyleTags.label": "Tag",
     };
     if (values && "label" in values && "value" in values) {
       return `${String(values.label)}: ${String(values.value)} ×`;
