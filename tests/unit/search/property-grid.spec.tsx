@@ -74,13 +74,24 @@ vi.mock("next/image", () => ({
 vi.mock("next-intl", () => ({
   useTranslations: vi.fn(
     () => (key: string, values?: Record<string, unknown>) => {
+      // Mirror the real keys used by PropertyGrid so that consumers asserting
+      // on text content (e.g., "Page 1 of 3", "Previous", "Next", empty
+      // state) receive readable strings.
+      const templates: Record<string, string> = {
+        page: "Page {page} of {total}",
+        prev: "Previous",
+        next: "Next",
+        showing: "Showing {count} of {total} properties",
+        empty: "No properties found",
+      };
+      const template = templates[key] ?? key;
       if (values) {
-        return key
+        return template
           .replace("{page}", String(values.page))
           .replace("{total}", String(values.total))
           .replace("{count}", String(values.count));
       }
-      return key;
+      return template;
     },
   ),
 }));

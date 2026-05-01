@@ -1,6 +1,6 @@
 # Story 3.5: Property Cards & Grid View
 
-Status: review
+Status: done
 
 ## Story
 
@@ -429,15 +429,29 @@ claude-sonnet-4-6
 
 **Modified files:**
 - src/components/property/property-card-skeleton.tsx
+- src/components/property/save-button.tsx (code review fix: cross-instance sync + visible toast)
+- src/components/property/share-button.tsx (code review fix: i18n linkCopied + visible toast)
+- src/components/property/property-grid.tsx (code review fix: i18n strings, totalPages min 1)
 - src/components/search/split-view-layout.tsx
-- src/components/search/search-page-client.tsx
+- src/components/search/search-page-client.tsx (code review fix: merged page-reset effect to prevent double fetch)
 - src/app/actions/search-actions.ts
-- src/messages/en.json
-- src/messages/es.json
+- src/messages/en.json (code review fix: added grid.empty key)
+- src/messages/es.json (code review fix: added grid.empty key)
 - tests/unit/search/property-card.spec.tsx
-- tests/unit/search/property-grid.spec.tsx
+- tests/unit/search/property-grid.spec.tsx (code review fix: i18n mock returns interpolated templates)
 - tests/unit/search/save-button.spec.tsx
 - tests/unit/search/share-button.spec.tsx
 - tests/unit/search/split-view-layout.spec.tsx
 - tests/unit/search/search-actions.spec.ts
 - _bmad-output/implementation-artifacts/sprint-status.yaml
+
+### Review Findings
+
+- [x] [Review][Patch] PropertyGrid hardcodes UI strings (Previous/Next/Page/empty) — bypasses i18n keys defined in `SearchPage.grid` [src/components/property/property-grid.tsx:54,69,73,84]
+- [x] [Review][Patch] ShareButton hardcodes "Link copied!" — `linkCopied` key exists in messages but unused; Spanish users see English [src/components/property/share-button.tsx:60]
+- [x] [Review][Patch] SaveButton shortlist-full toast is sr-only — users hitting the 20-cap get no visible feedback; spec required visible inline toast [src/components/property/save-button.tsx:88-92]
+- [x] [Review][Patch] PropertyCard renders SaveButton twice with independent local state — clicking one button does not update the other (each instance only reads localStorage once on mount) [src/components/property/property-card.tsx:181-189]
+- [x] [Review][Patch] SearchPageClient triggers two `searchProperties` requests when filters change — separate page-reset and fetch effects both run with the old page before the page state settles [src/components/search/search-page-client.tsx:80-106]
+- [x] [Review][Defer] SaveButton `propertyTitle` prop is declared but unused — kept for forward compatibility (toast personalization in Story 7.1) [src/components/property/save-button.tsx:8] — deferred, low priority
+- [x] [Review][Defer] ShareButton silent when neither `navigator.share` nor `navigator.clipboard` is available — older browsers get no feedback [src/components/property/share-button.tsx:25-45] — deferred, edge browser support
+- [x] [Review][Defer] Empty-string image URL not explicitly guarded — relies on `?? "/property-placeholder.svg"` which only fires for null/undefined [src/components/property/property-card.tsx:81] — deferred, data integrity belongs upstream

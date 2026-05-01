@@ -74,20 +74,30 @@ export function SearchPageClient() {
       });
   }, []);
 
-  // Re-fetch filter results when filters or page changes
+  // Track the previous filter snapshot so a filter-change can reset page to 1
+  // without firing a second fetch from a separate effect (avoids double fetch
+  // and the brief stale-page request that the old two-effect pattern caused).
+  const prevFiltersRef = useRef(filters);
+
+  // Re-fetch filter results when filters or page changes.
   // The useSearchFilters hook reads from useSearchParams, so this effect
   // reacts whenever any filter URL param changes.
   useEffect(() => {
-    // Reset page to 1 when filters change (not when page changes)
-    setPage(1);
-  }, [filters]);
+    const filtersChanged = prevFiltersRef.current !== filters;
+    prevFiltersRef.current = filters;
 
-  useEffect(() => {
+    // When filters change, reset the page state to 1 and use 1 for THIS
+    // fetch (state update is async — using page directly here would still
+    // hit the server with the old page number).
+    const effectivePage = filtersChanged ? 1 : page;
+    if (filtersChanged && page !== 1) {
+      setPage(1);
+    }
+
     const seq = ++filterSeqRef.current;
-
     setIsLoading(true);
 
-    searchProperties(filters, page)
+    searchProperties(filters, effectivePage)
       .then((result) => {
         // Drop stale responses — only use the most recent request's result
         if (seq === filterSeqRef.current) {

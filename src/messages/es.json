@@ -333,7 +333,8 @@
       "page": "Página {page} de {total}",
       "prev": "Anterior",
       "next": "Siguiente",
-      "showing": "Mostrando {count} de {total} propiedades"
+      "showing": "Mostrando {count} de {total} propiedades",
+      "empty": "No se encontraron propiedades"
     },
     "MapView": {
       "ariaLabel": "Mapa de ubicaciones de propiedades",

@@ -45,7 +45,7 @@ export function ShareButton({ slug, title, locale }: ShareButtonProps) {
   }
 
   return (
-    <>
+    <span className="relative inline-flex">
       <button
         type="button"
         data-testid="share-button"
@@ -56,10 +56,14 @@ export function ShareButton({ slug, title, locale }: ShareButtonProps) {
         ↗
       </button>
       {showToast && (
-        <div role="status" className="sr-only">
-          Link copied!
+        <div
+          role="status"
+          aria-live="polite"
+          className="absolute bottom-full right-0 mb-1 whitespace-nowrap rounded bg-foreground px-2 py-1 text-xs text-background shadow-md"
+        >
+          {t("linkCopied")}
         </div>
       )}
-    </>
+    </span>
   );
 }

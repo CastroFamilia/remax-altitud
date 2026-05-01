@@ -11,6 +11,11 @@ interface SaveButtonProps {
 const SHORTLIST_KEY = "shortlist";
 const MAX_SHORTLIST = 20;
 const TOAST_DISMISS_MS = 2000;
+// Cross-instance sync event: dispatched whenever ANY SaveButton mutates the
+// shortlist. The native `storage` event only fires across tabs/windows, so
+// we need a same-window broadcast to keep duplicate SaveButtons (e.g., the
+// top-right + footer copies on a PropertyCard) in lockstep.
+const SHORTLIST_EVENT = "shortlist-change";
 
 function getShortlist(): string[] {
   try {
@@ -29,6 +34,10 @@ function setShortlist(list: string[]): void {
   } catch {
     // localStorage unavailable — silent failure
   }
+  // Notify other in-page SaveButton instances
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(SHORTLIST_EVENT));
+  }
 }
 
 export function SaveButton({ propertyId }: SaveButtonProps) {
@@ -36,10 +45,23 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  // Initialize from localStorage on mount
+  // Initialize + subscribe to cross-instance updates (same window) and
+  // cross-tab updates (storage event).
   useEffect(() => {
-    const shortlist = getShortlist();
-    setIsSaved(shortlist.includes(propertyId));
+    function sync() {
+      const shortlist = getShortlist();
+      setIsSaved(shortlist.includes(propertyId));
+    }
+
+    sync();
+
+    if (typeof window === "undefined") return;
+    window.addEventListener(SHORTLIST_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(SHORTLIST_EVENT, sync);
+      window.removeEventListener("storage", sync);
+    };
   }, [propertyId]);
 
   // Auto-dismiss toast
@@ -73,7 +95,7 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
   }
 
   return (
-    <>
+    <span className="relative inline-flex">
       <button
         type="button"
         data-testid="save-button"
@@ -86,10 +108,14 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
         {isSaved ? "♥" : "♡"}
       </button>
       {showToast && (
-        <div role="status" className="sr-only">
+        <div
+          role="status"
+          aria-live="polite"
+          className="absolute bottom-full right-0 mb-1 whitespace-nowrap rounded bg-foreground px-2 py-1 text-xs text-background shadow-md"
+        >
           {t("shortlistFull")}
         </div>
       )}
-    </>
+    </span>
   );
 }

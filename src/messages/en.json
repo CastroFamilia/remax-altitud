@@ -333,7 +333,8 @@
       "page": "Page {page} of {total}",
       "prev": "Previous",
       "next": "Next",
-      "showing": "Showing {count} of {total} properties"
+      "showing": "Showing {count} of {total} properties",
+      "empty": "No properties found"
     },
     "MapView": {
       "ariaLabel": "Property locations map",

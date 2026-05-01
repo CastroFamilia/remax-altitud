@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
 import { PropertyCard } from "@/components/property/property-card";
 import type { PropertySearchItem } from "@/types/search";
@@ -23,12 +24,14 @@ export function PropertyGrid({
   page = 1,
   onPageChange,
 }: PropertyGridProps) {
+  const tGrid = useTranslations("SearchPage.grid");
+
   if (isLoading) {
     return <SearchResultsSkeleton />;
   }
 
   const totalCount = total ?? properties.length;
-  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(totalCount / ITEMS_PER_PAGE));
   const showPagination = totalCount > ITEMS_PER_PAGE;
 
   // Compute current page slice
@@ -51,7 +54,7 @@ export function PropertyGrid({
       {/* Empty state */}
       {currentPageItems.length === 0 && (
         <div className="col-span-full py-12 text-center text-muted-foreground">
-          No properties found
+          {tGrid("empty")}
         </div>
       )}
 
@@ -66,11 +69,11 @@ export function PropertyGrid({
             onClick={() => !isFirstPage && onPageChange?.(page - 1)}
             className="rounded px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:bg-muted"
           >
-            Previous
+            {tGrid("prev")}
           </button>
 
           <span className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
+            {tGrid("page", { page, total: totalPages })}
           </span>
 
           <button
@@ -81,7 +84,7 @@ export function PropertyGrid({
             onClick={() => !isLastPage && onPageChange?.(page + 1)}
             className="rounded px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:bg-muted"
           >
-            Next
+            {tGrid("next")}
           </button>
         </div>
       )}

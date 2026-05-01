@@ -53,3 +53,8 @@
 - Duplicate `MapBounds` / `MapProperty` type definitions across 6 files (`src/store/map-store.ts`, `src/lib/map/geo-utils.ts`, `src/components/map/map-view.tsx`, `src/components/search/split-view-layout.tsx`, `src/components/search/search-page-client.tsx`, `src/app/actions/map-actions.ts`) — types are currently consistent; consolidate into a single shared types module in a follow-up.
 - `MapPropertyPopup` uses hardcoded English strings ("View Details", "Close property preview", "Titled", "Concession", "ZMT Restricted", "{n} bed/bath/m²") instead of `useTranslations` even though i18n keys for these were added to `messages/{en,es}.json` in Task 10 — UX polish, low risk; AC #4 doesn't mandate i18n for these labels.
 - `next.config.ts` lacks `images.remotePatterns` for property image hosts — popup uses `unoptimized` as a forward-compatible workaround; revisit when CMS/CDN host(s) for property photos are decided in a later epic.
+
+## Deferred from: code review of story-3.5 (2026-05-01)
+- `SaveButton.propertyTitle` prop is declared but unused — kept for forward compatibility (toast personalization in Story 7.1) [src/components/property/save-button.tsx:8].
+- `ShareButton` is silent when neither `navigator.share` nor `navigator.clipboard` is available — older browsers (and most desktop Firefox without MDN flags) get no feedback after clicking the share icon [src/components/property/share-button.tsx:25-45].
+- Empty-string image URL is not explicitly guarded — `property.images[0]?.url ?? "/property-placeholder.svg"` only catches `null`/`undefined`. An empty string slips through to `next/image` and would throw [src/components/property/property-card.tsx:81]; data integrity belongs upstream in the sync pipeline.
