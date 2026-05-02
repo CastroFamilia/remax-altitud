@@ -427,5 +427,47 @@
     "label": "Cambiar unidades de área",
     "metric": "m²",
     "imperial": "ft²"
+  },
+  "PropertyGallery": {
+    "openLightbox": "Ver todas las fotos",
+    "closeLightbox": "Cerrar visor de fotos",
+    "photoCount": "Foto {current} de {total}",
+    "nextPhoto": "Foto siguiente",
+    "prevPhoto": "Foto anterior",
+    "videoTitle": "Video tour de la propiedad",
+    "noPhotos": "No hay fotos disponibles",
+    "thumbnailStripLabel": "Fotos de {title}"
+  },
+  "ListingDetail": {
+    "description": "Descripción",
+    "features": "Características y Amenidades",
+    "specs": {
+      "price": "Precio",
+      "bedrooms": "{count} hab.",
+      "bathrooms": "{count} baños",
+      "lotSize": "Terreno",
+      "builtArea": "Construcción",
+      "zmtStatus": "Tenencia"
+    },
+    "zmtStatus": {
+      "titled": "Propiedad Titulada",
+      "concession": "Concesión",
+      "zmt_restricted": "Zona Marítimo Terrestre Restringida"
+    },
+    "noAgentAssigned": "Contactar RE/MAX Altitud",
+    "agentSection": "Agente a cargo"
+  },
+  "StickySpecsBar": {
+    "price": "Precio",
+    "beds": "{count} hab.",
+    "baths": "{count} baños",
+    "lot": "Terreno",
+    "built": "Construido",
+    "toggleUnits": "Cambiar unidades de área",
+    "zmtStatus": {
+      "titled": "Propiedad Titulada",
+      "concession": "Concesión",
+      "zmt_restricted": "Zona Marítimo Terrestre Restringida"
+    }
   }
 }

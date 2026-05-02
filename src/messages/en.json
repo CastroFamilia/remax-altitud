@@ -427,5 +427,47 @@
     "label": "Toggle area units",
     "metric": "m²",
     "imperial": "ft²"
+  },
+  "PropertyGallery": {
+    "openLightbox": "View all photos",
+    "closeLightbox": "Close photo viewer",
+    "photoCount": "Photo {current} of {total}",
+    "nextPhoto": "Next photo",
+    "prevPhoto": "Previous photo",
+    "videoTitle": "Property video tour",
+    "noPhotos": "No photos available",
+    "thumbnailStripLabel": "{title} photos"
+  },
+  "ListingDetail": {
+    "description": "Description",
+    "features": "Features & Amenities",
+    "specs": {
+      "price": "Asking Price",
+      "bedrooms": "{count} bed",
+      "bathrooms": "{count} bath",
+      "lotSize": "Lot",
+      "builtArea": "Built",
+      "zmtStatus": "Ownership"
+    },
+    "zmtStatus": {
+      "titled": "Titled Property",
+      "concession": "Concession",
+      "zmt_restricted": "ZMT Restricted"
+    },
+    "noAgentAssigned": "Contact RE/MAX Altitud",
+    "agentSection": "Listing Agent"
+  },
+  "StickySpecsBar": {
+    "price": "Asking Price",
+    "beds": "{count} bed",
+    "baths": "{count} bath",
+    "lot": "Lot",
+    "built": "Built",
+    "toggleUnits": "Toggle area units",
+    "zmtStatus": {
+      "titled": "Titled Property",
+      "concession": "Concession",
+      "zmt_restricted": "ZMT Restricted"
+    }
   }
 }

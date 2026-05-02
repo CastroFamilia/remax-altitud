@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-02T14:00:00-06:00_
+_Last updated: 2026-05-02T18:45:00-06:00_
 
 ## Stories
 
@@ -24,14 +24,14 @@ _Last updated: 2026-05-02T14:00:00-06:00_
 | 3.3   | 3    | Search Filters & URL State | done | #87 | #125 | merged | 3.1, 3.2 | ✅ Yes (done) |
 | 3.4   | 3    | Lifestyle Tags & Smart Presets | done | #88 | #126 | merged | 3.3 | ✅ Yes (done) |
 | 3.5   | 3    | Property Cards & Grid View | done | #89 | #127 | merged | 3.1 | ✅ Yes (done) |
-| 3.6   | 3    | Mobile Pull-Up Sheet | backlog | #90 | — | — | 3.1, 3.5 | ✅ Yes |
-| 3.7   | 3    | Unit Conversion & Price Display | backlog | #91 | — | — | 3.5 | ✅ Yes |
-| 3.8   | 3    | No-Results, Hidden Listings & Near Me | backlog | #92 | — | — | 3.3 | ✅ Yes |
-| 4.1   | 4    | Listing Detail Page & Photo Gallery | backlog | #93 | — | — | none | ❌ No (epic 3 not complete) |
-| 4.2   | 4    | Agent Card & Contact CTAs | backlog | #94 | — | — | 4.1 | ❌ No (epic 3 not complete) |
-| 4.3   | 4    | Agent Profile Pages | backlog | #95 | — | — | 4.2 | ❌ No (epic 3 not complete) |
-| 4.4   | 4    | SEO Architecture & WordPress Redirects | backlog | #96 | — | — | 4.1 | ❌ No (epic 3 not complete) |
-| 4.5   | 4    | Similar Properties & Cross-Linking | backlog | #97 | — | — | 4.1, 4.3 | ❌ No (epic 3 not complete) |
+| 3.6   | 3    | Mobile Pull-Up Sheet | done | #90 | #128 | merged | 3.1, 3.5 | ✅ Yes (done) |
+| 3.7   | 3    | Unit Conversion & Price Display | done | #91 | #129 | merged | 3.5 | ✅ Yes (done) |
+| 3.8   | 3    | No-Results, Hidden Listings & Near Me | done | #92 | #130 | merged | 3.3 | ✅ Yes (done) |
+| 4.1   | 4    | Listing Detail Page & Photo Gallery | backlog | #93 | — | — | none | ✅ Yes |
+| 4.2   | 4    | Agent Card & Contact CTAs | backlog | #94 | — | — | 4.1 | ❌ No (4.1 not merged) |
+| 4.3   | 4    | Agent Profile Pages | backlog | #95 | — | — | 4.2 | ❌ No (4.2 not merged) |
+| 4.4   | 4    | SEO Architecture & WordPress Redirects | backlog | #96 | — | — | 4.1 | ❌ No (4.1 not merged) |
+| 4.5   | 4    | Similar Properties & Cross-Linking | backlog | #97 | — | — | 4.1, 4.3 | ❌ No (4.1 not merged) |
 | 5.1   | 5    | Seller Landing Page & List With Us Form | backlog | #98 | — | — | none | ❌ No (epic 4 not complete) |
 | 5.2   | 5    | CMA Request Form | backlog | #99 | — | — | 5.1 | ❌ No (epic 4 not complete) |
 | 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | backlog | #100 | — | — | 5.1 | ❌ No (epic 4 not complete) |
@@ -105,7 +105,8 @@ _Last updated: 2026-05-02T14:00:00-06:00_
 - Epic 1 is fully complete (all 7 stories done and merged).
 - Epic 2 is fully complete (all 7 stories done and merged). PR #121 for 2.7 merged 2026-04-26.
 - Epic 2 complete: PRs #66, #67, #117, #118, #119, #120, #121 all merged.
-- Epic 3 (Property Discovery & Search) is the active epic. Stories 3.1–3.5 are done and merged (PRs #122, #123, #125, #126, #127).
+- Epic 3 is fully complete (all 8 stories done and merged). PRs #122, #123, #125, #126, #127, #128, #129, #130 all merged.
+- Epic 4 (Listing Detail & Agent Profiles) is now the active epic. Story 4.1 is Ready to Work; 4.2–4.5 depend on 4.1.
 - Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
-- Updated 2026-05-02: PRs #126 (3.4) and #127 (3.5) confirmed merged. Stories 3.6, 3.7, and 3.8 are all now Ready to Work.
+- Updated 2026-05-02 (batch 2): PRs #128 (3.6), #129 (3.7), #130 (3.8) confirmed merged. Epic 3 marked done. Epic 4 stories now unblocked (4.1 Ready to Work).
 - No open PRs. No stale worktrees.

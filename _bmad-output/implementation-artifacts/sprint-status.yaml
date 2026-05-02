@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-10T12:39:46-03:00
-last_updated: 2026-05-02T12:10:00-0600
+last_updated: 2026-05-02T20:00:00-0600
 project: remax-altitud
 project_key: NOKEY
 tracking_system: file-system
@@ -65,7 +65,7 @@ development_status:
   epic-2-retrospective: done
 
   # Epic 3: Property Discovery & Search
-  epic-3: in-progress
+  epic-3: done
   3-1-search-page-layout-and-split-view: done
   3-2-interactive-map-with-property-pins: done
   3-3-search-filters-and-url-state: done
@@ -73,12 +73,12 @@ development_status:
   3-5-property-cards-and-grid-view: done
   3-6-mobile-pull-up-sheet: done
   3-7-unit-conversion-and-price-display: done
-  3-8-no-results-hidden-listings-and-near-me: review
-  epic-3-retrospective: optional
+  3-8-no-results-hidden-listings-and-near-me: done
+  epic-3-retrospective: done
 
   # Epic 4: Listing Detail & Agent Profiles
-  epic-4: backlog
-  4-1-listing-detail-page-and-photo-gallery: backlog
+  epic-4: in-progress
+  4-1-listing-detail-page-and-photo-gallery: review
   4-2-agent-card-and-contact-ctas: backlog
   4-3-agent-profile-pages: backlog
   4-4-seo-architecture-and-wordpress-redirects: backlog

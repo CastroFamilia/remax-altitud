@@ -3,21 +3,55 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SimplePageLayout } from "@/components/layout/simple-page-layout";
 import { Link } from "@/i18n/navigation";
-import { getPropertyBySlug, getSimilarProperties } from "@/lib/db/queries/properties";
+import {
+  getPropertyBySlug,
+  getSimilarProperties,
+  getAllPropertySlugs,
+} from "@/lib/db/queries/properties";
+import { getAgentById } from "@/lib/db/queries/agents";
+import { ListingDetailLayout } from "@/components/listing/listing-detail-layout";
+import type { OptimizedImage } from "@/types/images";
 
-// Force dynamic — property visibility changes after each sync run
-export const dynamic = "force-dynamic";
+// Story 4.1 Task 1: Replace force-dynamic with ISR (NFR25, 4.1-UNIT-002)
+// Revalidate every 24 hours — the sync pipeline's revalidateTag('properties') call
+// also triggers on-demand revalidation after each daily sync.
+export const revalidate = 86400; // 24 hours
+
+/**
+ * SSG build-time generation — calls getAllPropertySlugs at build time.
+ * Wrapped in try/catch so the build continues if the DB is unavailable
+ * (pages generated on-demand via ISR fallback).
+ */
+export async function generateStaticParams() {
+  try {
+    const slugs = await getAllPropertySlugs();
+    return slugs.map((slug) => ({ slug }));
+  } catch {
+    return []; // Build continues; pages generated on-demand via ISR
+  }
+}
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const property = await getPropertyBySlug(slug);
-  if (!property || property.isVisible) return {};
-  // Soft-deleted: suppress from search engines
-  return { robots: { index: false, follow: false } };
+  if (!property) return {};
+  if (!property.isVisible) return { robots: { index: false, follow: false } };
+  const title = locale === "es" ? property.titleEs : property.titleEn;
+  const description = locale === "es" ? property.descriptionEs : property.descriptionEn;
+  const images = (property.images as unknown as OptimizedImage[]) ?? [];
+  return {
+    title: `${title} | RE/MAX Altitud`,
+    description: description.slice(0, 160),
+    openGraph: {
+      title,
+      description: description.slice(0, 160),
+      images: images[0] ? [{ url: images[0].src }] : [],
+    },
+  };
 }
 
 export default async function PropertyPage({
@@ -89,6 +123,9 @@ export default async function PropertyPage({
     );
   }
 
-  // TODO Story 4.1: Full listing detail page
-  notFound(); // Placeholder — visible properties have no detail page yet
+  // Fetch associated agent (if agentId is set)
+  const agent = property.agentId ? await getAgentById(property.agentId) : null;
+
+  // Visible property → full listing detail page (Story 4.1)
+  return <ListingDetailLayout property={property} agent={agent} locale={locale} />;
 }

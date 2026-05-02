@@ -275,6 +275,20 @@ export async function updatePropertyLifestyleTags(apiId: string, tags: string[])
 }
 
 /**
+ * Fetches all slugs for visible properties.
+ * Used by `generateStaticParams` for SSG build-time generation (Story 4.1, Task 1).
+ *
+ * AC #10, NFR25 — called at build time; returns all visible property slugs.
+ */
+export async function getAllPropertySlugs(): Promise<string[]> {
+  const rows = await db
+    .select({ slug: properties.slug })
+    .from(properties)
+    .where(eq(properties.isVisible, true));
+  return rows.map((r) => r.slug);
+}
+
+/**
  * Fetches a single property by its URL slug, including soft-deleted records.
  * Does NOT filter by `is_visible` — the page component decides rendering based on
  * the value: isVisible=false → "No longer available" UI; null result → 404.
