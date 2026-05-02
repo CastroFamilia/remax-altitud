@@ -20,6 +20,8 @@ export default defineConfig({
     environmentMatchGlobs: [
       ["tests/unit/search/**/*.spec.tsx", "jsdom"],
       ["tests/unit/search/**/*.test.tsx", "jsdom"],
+      ["tests/unit/listing/**/*.spec.tsx", "jsdom"],
+      ["tests/unit/listing/**/*.test.tsx", "jsdom"],
     ],
     // jsdom-setup.ts guards itself — safe to include globally
     setupFiles: ["./tests/setup/jsdom-setup.ts"],

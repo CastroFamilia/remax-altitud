@@ -1,0 +1,209 @@
+/**
+ * Story 4.1: Listing Detail Page & Photo Gallery
+ * Tests: ISR revalidation constant + getAllPropertySlugs query
+ *
+ * TDD RED PHASE — tests use it.skip() and will FAIL until:
+ *   - page.tsx is updated with revalidate = 86400 (removes force-dynamic)
+ *   - getAllPropertySlugs query is added to properties.ts
+ *   - getAgentById query is added to agents.ts
+ *
+ * How to activate (for the dev implementing Story 4.1):
+ *   1. Implement the relevant task (Task 1 for revalidate, Task 3 for queries)
+ *   2. Remove it.skip() from the applicable test
+ *   3. Run: npm test -- --grep "Listing Detail Page"
+ *   4. Verify the test FAILS before implementation, then passes after
+ *   5. Commit passing tests
+ *
+ * Covers:
+ *   4.1-UNIT-002 — Listing detail page has ISR revalidate = 86400 (daily) (AC #10, NFR25)
+ *   AC #10      — getAllPropertySlugs returns string array for generateStaticParams
+ *
+ * Environment: node (no JSX — .spec.ts runs in node environment by default)
+ *
+ * Architecture notes:
+ *   - page.tsx currently has export const dynamic = "force-dynamic" which MUST be replaced
+ *     with export const revalidate = 86400
+ *   - getAllPropertySlugs is a new query in src/lib/db/queries/properties.ts
+ *   - getAgentById is a new query in src/lib/db/queries/agents.ts
+ */
+
+import { vi, describe, it, expect } from "vitest";
+
+// ---------------------------------------------------------------------------
+// Module mocks — declared BEFORE any imports of the module under test
+// ---------------------------------------------------------------------------
+
+// Mock drizzle db to avoid real DB calls
+vi.mock("@/lib/db", () => ({
+  db: {
+    select: vi.fn(() => ({
+      from: vi.fn(() => ({
+        where: vi.fn(() =>
+          Promise.resolve([
+            { slug: "beautiful-mountain-home" },
+            { slug: "ocean-view-retreat" },
+            { slug: "jungle-bungalow-perez-zeledon" },
+          ]),
+        ),
+        limit: vi.fn(() => Promise.resolve([])),
+      })),
+    })),
+  },
+}));
+
+// Mock server-only to avoid server-only import error in test environment
+vi.mock("server-only", () => ({}));
+
+// Mock next/cache for the revalidateTag function used in the sync pipeline
+vi.mock("next/cache", () => ({
+  revalidateTag: vi.fn(),
+  unstable_cache: vi.fn((fn: () => unknown) => fn),
+}));
+
+// Mock next/headers — required by some server components
+vi.mock("next/headers", () => ({
+  cookies: vi.fn(() => ({ get: vi.fn(() => null) })),
+  headers: vi.fn(() => ({ get: vi.fn(() => null) })),
+}));
+
+// Mock next/navigation — required by pages
+vi.mock("next/navigation", () => ({
+  notFound: vi.fn(),
+  redirect: vi.fn(),
+  useRouter: vi.fn(),
+  useSearchParams: vi.fn(),
+  usePathname: vi.fn(() => "/en/property/test"),
+}));
+
+// Mock next-intl server
+vi.mock("next-intl/server", () => ({
+  getTranslations: vi.fn(
+    () =>
+      async (key: string) =>
+        key,
+  ),
+  getLocale: vi.fn(async () => "en"),
+}));
+
+// Mock next/dynamic to avoid issues with lazy-loaded components
+vi.mock("next/dynamic", () => ({
+  default: () => () => null,
+}));
+
+// Mock PropertyGallery to avoid component resolution errors in page module
+vi.mock("@/components/listing/property-gallery", () => ({
+  PropertyGallery: () => null,
+  default: () => null,
+}));
+
+// Mock ListingDetailLayout to avoid component resolution errors in page module
+vi.mock("@/components/listing/listing-detail-layout", () => ({
+  ListingDetailLayout: () => null,
+  default: () => null,
+}));
+
+// ---------------------------------------------------------------------------
+// Tests — ISR revalidation constant (4.1-UNIT-002)
+// ---------------------------------------------------------------------------
+
+describe("Listing Detail Page — ISR revalidation (Story 4.1 — TDD RED PHASE)", () => {
+  it.skip(
+    "[P2] 4.1-UNIT-002: page exports revalidate = 86400 (daily ISR revalidation, NFR25)",
+    async () => {
+      // THIS TEST WILL FAIL — page.tsx still has force-dynamic, not revalidate = 86400
+      // Remove it.skip() after Task 1 is implemented
+      const pageModule = (await import(
+        "@/app/[locale]/property/[slug]/page"
+      )) as Record<string, unknown>;
+
+      // The page must export revalidate = 86400
+      // This confirms SSG/ISR is configured (not force-dynamic)
+      expect(pageModule["revalidate"]).toBe(86400);
+    },
+  );
+
+  it.skip(
+    "[P2] page does NOT export dynamic = 'force-dynamic' (must be removed per Task 1)",
+    async () => {
+      // THIS TEST WILL FAIL — page.tsx still has force-dynamic
+      // Remove it.skip() after Task 1 is implemented
+      const pageModule = (await import(
+        "@/app/[locale]/property/[slug]/page"
+      )) as Record<string, unknown>;
+
+      // force-dynamic must be removed — its presence means ISR is disabled
+      expect(pageModule["dynamic"]).not.toBe("force-dynamic");
+    },
+  );
+});
+
+// ---------------------------------------------------------------------------
+// Tests — getAllPropertySlugs query
+// ---------------------------------------------------------------------------
+
+describe("getAllPropertySlugs query (Story 4.1 — TDD RED PHASE)", () => {
+  it.skip(
+    "[P2] getAllPropertySlugs is exported from properties.ts and returns string array",
+    async () => {
+      // THIS TEST WILL FAIL — getAllPropertySlugs not yet added to properties.ts
+      // Remove it.skip() after Task 3 is implemented
+      const propertiesModule = (await import(
+        "@/lib/db/queries/properties"
+      )) as Record<string, unknown>;
+
+      const getAllPropertySlugs = propertiesModule[
+        "getAllPropertySlugs"
+      ] as () => Promise<string[]>;
+      expect(getAllPropertySlugs).toBeDefined();
+      expect(typeof getAllPropertySlugs).toBe("function");
+
+      const slugs = await getAllPropertySlugs();
+      expect(Array.isArray(slugs)).toBe(true);
+      expect(slugs.length).toBeGreaterThan(0);
+      slugs.forEach((slug) => {
+        expect(typeof slug).toBe("string");
+        expect(slug.length).toBeGreaterThan(0);
+      });
+    },
+  );
+
+  it.skip(
+    "[P2] getAllPropertySlugs returns only slugs for visible properties",
+    async () => {
+      // THIS TEST WILL FAIL — getAllPropertySlugs not yet added to properties.ts
+      // Remove it.skip() after Task 3 is implemented
+      const propertiesModule = (await import(
+        "@/lib/db/queries/properties"
+      )) as Record<string, unknown>;
+
+      const getAllPropertySlugs = propertiesModule[
+        "getAllPropertySlugs"
+      ] as () => Promise<string[]>;
+
+      const slugs = await getAllPropertySlugs();
+      // Based on db mock: should include the 3 seeded slugs
+      expect(slugs).toContain("beautiful-mountain-home");
+    },
+  );
+});
+
+// ---------------------------------------------------------------------------
+// Tests — getAgentById query
+// ---------------------------------------------------------------------------
+
+describe("getAgentById query (Story 4.1 — TDD RED PHASE)", () => {
+  it.skip(
+    "[P2] getAgentById is exported from agents.ts",
+    async () => {
+      // THIS TEST WILL FAIL — getAgentById not yet added to agents.ts
+      // Remove it.skip() after Task 3 is implemented
+      const agentsModule = (await import(
+        "@/lib/db/queries/agents"
+      )) as Record<string, unknown>;
+
+      const getAgentById = agentsModule["getAgentById"];
+      expect(getAgentById).toBeDefined();
+      expect(typeof getAgentById).toBe("function");
+    },
+  );
+});
