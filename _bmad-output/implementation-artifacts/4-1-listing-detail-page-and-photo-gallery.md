@@ -718,4 +718,28 @@ Implemented Story 4.1 in the following order:
 
 ## Review Findings
 
-_To be filled in during code review step._
+**Reviewer:** Claude (Step 5 code review, autonomous)
+**Date:** 2026-05-02
+**Mode:** Inline adversarial review (Blind Hunter, Edge Case Hunter, Acceptance Auditor lenses)
+
+### Critical issues (fixed in-review)
+
+**C1. `StickySpecsBar` referenced non-existent i18n keys (runtime breakage)**
+- File: `src/components/listing/sticky-specs-bar.tsx:118`
+- Code calls `t(\`zmtStatus.${zmtStatus}\`)` against the `StickySpecsBar` namespace, but `zmtStatus.titled`, `zmtStatus.concession`, `zmtStatus.zmt_restricted` were only defined under the `ListingDetail` namespace in `en.json` / `es.json`.
+- Impact: `next-intl` would throw `MISSING_MESSAGE` (or fall back to the raw key) every time the sticky specs bar rendered — guaranteed runtime failure on every property page.
+- Fix: Added `StickySpecsBar.zmtStatus.{titled,concession,zmt_restricted}` keys to both `src/messages/en.json` and `src/messages/es.json`, mirroring the `ListingDetail.zmtStatus.*` translations (which preserve the FR33 glossary for "Propiedad Titulada" and "Concesión").
+
+### Deferred (acceptable, follow-up)
+
+- Thumbnail buttons use `role="listitem"` directly on `<button>` elements inside a `role="list"` container — works in practice but is non-canonical ARIA. Consider `<ul><li><button/></li></ul>` in a maintenance pass.
+- `getAllPropertySlugs` returns an unbounded slug list at build time. Fine at current scale; revisit if listing count grows past a few thousand.
+- Specs grid in `ListingDetailLayout` (Server Component) hardcodes `"metric"` for area display; the unit toggle in `StickySpecsBar` (Client Component) handles user preference reactively. Matches the spec's pre-render guidance.
+
+### Verification
+
+- `npm run typecheck` — 0 errors
+- `npm run lint` — 0 errors (5 pre-existing warnings in test mock code)
+- `npm run format:check` — clean
+- `npm test` — 614 passed, 3 skipped (E2E scaffolds, by design), 0 failures
+

@@ -461,6 +461,11 @@
     "baths": "{count} baños",
     "lot": "Terreno",
     "built": "Construido",
-    "toggleUnits": "Cambiar unidades de área"
+    "toggleUnits": "Cambiar unidades de área",
+    "zmtStatus": {
+      "titled": "Propiedad Titulada",
+      "concession": "Concesión",
+      "zmt_restricted": "Zona Marítimo Terrestre Restringida"
+    }
   }
 }

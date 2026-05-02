@@ -461,6 +461,11 @@
     "baths": "{count} bath",
     "lot": "Lot",
     "built": "Built",
-    "toggleUnits": "Toggle area units"
+    "toggleUnits": "Toggle area units",
+    "zmtStatus": {
+      "titled": "Titled Property",
+      "concession": "Concession",
+      "zmt_restricted": "ZMT Restricted"
+    }
   }
 }
