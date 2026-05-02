@@ -65,7 +65,7 @@ development_status:
   epic-2-retrospective: done
 
   # Epic 3: Property Discovery & Search
-  epic-3: in-progress
+  epic-3: done
   3-1-search-page-layout-and-split-view: done
   3-2-interactive-map-with-property-pins: done
   3-3-search-filters-and-url-state: done
