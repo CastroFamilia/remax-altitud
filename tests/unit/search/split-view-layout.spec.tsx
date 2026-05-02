@@ -73,6 +73,15 @@ vi.mock("@/components/map/map-view-loader", () => ({
   MapView: () => <div data-testid="map-container" className="h-full w-full bg-muted animate-pulse" />,
 }));
 
+// Story 3.6: Mock MapPullUpSheet. The mock emits data-testid="pull-up-handle"
+// so that existing split-view-layout tests asserting that testid continue passing
+// after the inline stub is moved into MapPullUpSheet.
+vi.mock("@/components/map/map-pull-up-sheet", () => ({
+  MapPullUpSheet: ({ propertyCount }: { propertyCount: number }) => (
+    <div data-testid="pull-up-handle" data-count={propertyCount} />
+  ),
+}));
+
 vi.mock("@/components/search/view-mode-toggle", () => ({
   ViewModeToggle: ({
     viewMode,
