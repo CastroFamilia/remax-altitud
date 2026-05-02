@@ -13,6 +13,7 @@
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { and, eq, gte, lte, isNotNull, desc, asc, sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
 
 /**
@@ -46,6 +47,18 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
   const lotSizeMin = sanitizeNumber(filters.lotSizeMin);
   const lotSizeMax = sanitizeNumber(filters.lotSizeMax);
 
+  // Story 3.4: sanitize lifestyle tag array — server actions are publicly
+  // callable, so reject non-string entries, trim whitespace, drop empties,
+  // and cap the array length to bound the SQL parameter size. The hard cap
+  // is set well above the 5 known tags to allow future expansion without
+  // becoming a DoS surface.
+  const MAX_TAGS = 20;
+  const sanitizedTags = filters.tags
+    ?.filter((t): t is string => typeof t === "string")
+    .map((t) => t.trim())
+    .filter((t) => t.length > 0)
+    .slice(0, MAX_TAGS);
+
   // Normalise inverted ranges defensively — an inverted range can only return
   // zero rows, which surfaces as a confusing empty state. Swap silently rather
   // than fail closed.
@@ -65,7 +78,7 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
   // Build a per-dimension condition map so we can compose facet WHERE clauses
   // that exclude the dimension being faceted. Each entry is the SQL filter
   // that would be applied if that dimension is set.
-  const dimConditions: Record<string, ReturnType<typeof eq> | undefined> = {
+  const dimConditions: Record<string, SQL | undefined> = {
     visible: eq(properties.isVisible, true),
     type: filters.type ? eq(properties.propertyType, filters.type) : undefined,
     priceMin: safePriceMin !== undefined ? gte(properties.priceUsd, safePriceMin) : undefined,
@@ -75,6 +88,9 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
     lotSizeMin: safeLotMin !== undefined ? gte(properties.lotSizeM2, safeLotMin) : undefined,
     lotSizeMax: safeLotMax !== undefined ? lte(properties.lotSizeM2, safeLotMax) : undefined,
     areaSlug: filters.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined,
+    // Story 3.4: lifestyle tag OR filter using PostgreSQL && (overlap) operator on GIN-indexed array
+    // The && operator returns rows where lifestyleTags and the filter array share at least one element
+    tags: sanitizedTags?.length ? sql`${properties.lifestyleTags} && ${sanitizedTags}` : undefined,
   };
 
   // Compose conditions for the main query — every set dimension applies.

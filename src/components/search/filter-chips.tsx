@@ -11,6 +11,7 @@
 
 import { useTranslations } from "next-intl";
 import { formatPriceAbbrev } from "@/lib/map/geo-utils";
+import { tagDisplayLabel } from "@/lib/constants/lifestyle-tags";
 import type { SearchFilters } from "@/types/search";
 
 interface FilterChipsProps {
@@ -33,6 +34,7 @@ const CHIP_KEYS: Array<keyof SearchFilters> = [
 
 interface ChipInfo {
   key: keyof SearchFilters;
+  reactKey: string; // unique key for React rendering (tag chips share key: "tags")
   label: string;
   value: string;
 }
@@ -46,6 +48,7 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
   if (filters.type) {
     chips.push({
       key: "type",
+      reactKey: "type",
       label: t("filters.type"),
       value: filters.type,
     });
@@ -57,6 +60,7 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
     const maxStr = filters.priceMax !== undefined ? formatPriceAbbrev(filters.priceMax) : "Any";
     chips.push({
       key: "priceMin",
+      reactKey: "priceMin",
       label: t("filters.price"),
       value: `${minStr}–${maxStr}`,
     });
@@ -65,6 +69,7 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
   if (filters.bedrooms !== undefined) {
     chips.push({
       key: "bedrooms",
+      reactKey: "bedrooms",
       label: t("filters.bedrooms"),
       value: `${filters.bedrooms}+`,
     });
@@ -73,6 +78,7 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
   if (filters.bathrooms !== undefined) {
     chips.push({
       key: "bathrooms",
+      reactKey: "bathrooms",
       label: t("filters.bathrooms"),
       value: `${filters.bathrooms}+`,
     });
@@ -83,6 +89,7 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
     const maxStr = filters.lotSizeMax !== undefined ? `${filters.lotSizeMax}m²` : "Any";
     chips.push({
       key: "lotSizeMin",
+      reactKey: "lotSizeMin",
       label: t("filters.lotSize"),
       value: `${minStr}–${maxStr}`,
     });
@@ -91,16 +98,36 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
   if (filters.areaSlug) {
     chips.push({
       key: "areaSlug",
+      reactKey: "areaSlug",
       label: t("filters.location"),
       value: filters.areaSlug,
     });
   }
 
-  // Count active filters (same as CHIP_KEYS check)
-  const activeFilterCount = CHIP_KEYS.filter((key) => {
-    const val = filters[key];
-    return val !== undefined && val !== null;
-  }).length;
+  // Story 3.4: render one chip per active lifestyle tag (AC #6)
+  // Try localized chip label first; fall back to tagDisplayLabel when the key
+  // is missing — keeps display consistent across locales without breaking
+  // tests that mock `t` with an identity function.
+  const chipValueForTag = (tag: string): string => {
+    const i18nKey = `lifestyleTags.chips.${tag}`;
+    const translated = t(i18nKey);
+    return translated === i18nKey ? tagDisplayLabel(tag) : translated;
+  };
+  (filters.tags ?? []).forEach((tag) => {
+    chips.push({
+      key: "tags",
+      reactKey: `tags-${tag}`,
+      label: t("lifestyleTags.label"),
+      value: chipValueForTag(tag),
+    });
+  });
+
+  // Count active filters: scalar keys + individual tag count (Story 3.4)
+  const activeFilterCount =
+    CHIP_KEYS.filter((key) => {
+      const val = filters[key];
+      return val !== undefined && val !== null;
+    }).length + (filters.tags?.length ?? 0);
 
   if (chips.length === 0) {
     return null;
@@ -123,7 +150,7 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
     <div data-testid="filter-chips" className="flex flex-wrap items-center gap-2 px-4 py-2">
       {chips.map((chip) => (
         <span
-          key={chip.key}
+          key={chip.reactKey}
           data-testid="filter-chip"
           className="inline-flex items-center gap-1 rounded-full bg-brand-blue px-3 py-1 text-sm font-medium text-white min-h-[2.75rem]"
         >

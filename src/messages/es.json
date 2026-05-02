@@ -329,6 +329,23 @@
       "show": "Mostrar listados",
       "hide": "Ocultar listados"
     },
+    "lifestyleTags": {
+      "label": "Estilo de vida",
+      "chips": {
+        "Rental Potential": "Potencial de renta",
+        "Investment Property": "Propiedad de inversión",
+        "Vacation Home": "Casa vacacional",
+        "Retire": "Paraíso de retiro",
+        "Commercial": "Comercial"
+      }
+    },
+    "presets": {
+      "label": "Búsquedas rápidas",
+      "mountainRetirement": "Casas de retiro en la montaña",
+      "beachInvestment": "Terrenos de inversión en la playa",
+      "rentalPotential": "Propiedades para renta",
+      "vacationHome": "Casas vacacionales"
+    },
     "MapView": {
       "ariaLabel": "Mapa de ubicaciones de propiedades",
       "loading": "Cargando mapa...",

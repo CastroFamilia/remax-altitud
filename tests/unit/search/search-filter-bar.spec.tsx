@@ -62,12 +62,14 @@ vi.mock("next-intl", () => ({
 }));
 
 // Mock useSearchFilters hook used by the real filter bar implementation
+// Story 3.4: toggleTag added to the mock return to match extended UseSearchFiltersReturn interface
 vi.mock("@/hooks/use-search-filters", () => ({
   useSearchFilters: vi.fn(() => ({
     filters: {},
     setFilter: vi.fn(),
     clearFilter: vi.fn(),
     clearAll: vi.fn(),
+    toggleTag: vi.fn(),
     activeFilterCount: 0,
   })),
 }));
@@ -93,6 +95,15 @@ vi.mock("@/components/search/filter-chips", () => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   FilterChips: ({ filters, onClearFilter, onClearAll }: { filters: unknown; onClearFilter: unknown; onClearAll: unknown }) => (
     <div data-testid="filter-chips" />
+  ),
+}));
+
+// Story 3.4: Mock LifestyleTagChips (same hoisting pattern as FilterChips mock above)
+// MUST be declared before SearchFilterBar import (vi.mock hoisting rule)
+vi.mock("@/components/search/lifestyle-tag-chips", () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  LifestyleTagChips: ({ activeTags, onToggle }: { activeTags: string[]; onToggle: (tag: string) => void }) => (
+    <div data-testid="lifestyle-tag-chips" />
   ),
 }));
 
@@ -248,6 +259,7 @@ describe("SearchFilterBar", () => {
         setFilter: vi.fn(),
         clearFilter: vi.fn(),
         clearAll: vi.fn(),
+        toggleTag: vi.fn(),
         activeFilterCount: 1,
       });
 
@@ -280,6 +292,7 @@ describe("SearchFilterBar", () => {
         setFilter: vi.fn(),
         clearFilter: vi.fn(),
         clearAll: vi.fn(),
+        toggleTag: vi.fn(),
         activeFilterCount: 1,
       });
 
@@ -306,6 +319,7 @@ describe("SearchFilterBar", () => {
         setFilter: vi.fn(),
         clearFilter: vi.fn(),
         clearAll: vi.fn(),
+        toggleTag: vi.fn(),
         activeFilterCount: 1,
       });
 
@@ -336,6 +350,7 @@ describe("SearchFilterBar", () => {
         setFilter: vi.fn(),
         clearFilter: vi.fn(),
         clearAll: vi.fn(),
+        toggleTag: vi.fn(),
         activeFilterCount: 1,
       });
 
@@ -357,6 +372,7 @@ describe("SearchFilterBar", () => {
         setFilter: vi.fn(),
         clearFilter: vi.fn(),
         clearAll: vi.fn(),
+        toggleTag: vi.fn(),
         activeFilterCount: 0,
       });
       render(<SearchFilterBar />); // useSearchFilters returns activeFilterCount: 0
@@ -366,6 +382,43 @@ describe("SearchFilterBar", () => {
       const isHiddenOrAbsent =
         filterChips === null || filterChips.className.includes("hidden");
       expect(isHiddenOrAbsent).toBe(true);
+    },
+  );
+
+  // -------------------------------------------------------------------------
+  // Story 3.4: LifestyleTagChips integration in SearchFilterBar (AC #1, #2, #3)
+  // -------------------------------------------------------------------------
+
+  it(
+    "[P0] renders LifestyleTagChips section in the filter bar (Story 3.4 — AC #1)",
+    () => {
+      // THIS TEST WILL FAIL — LifestyleTagChips not yet integrated into SearchFilterBar
+      render(<SearchFilterBar />);
+
+      // LifestyleTagChips must be present in the filter bar
+      const tagsSection = document.querySelector('[data-testid="lifestyle-tag-chips"]');
+      expect(tagsSection).not.toBeNull();
+    },
+  );
+
+  it(
+    "[P0] passes filters.tags as activeTags to LifestyleTagChips (Story 3.4 — AC #2)",
+    () => {
+      // THIS TEST WILL FAIL — LifestyleTagChips not yet integrated into SearchFilterBar
+      vi.mocked(useSearchFilters).mockReturnValue({
+        filters: { tags: ["Investment Property"] },
+        setFilter: vi.fn(),
+        clearFilter: vi.fn(),
+        clearAll: vi.fn(),
+        toggleTag: vi.fn(),
+        activeFilterCount: 1,
+      });
+
+      render(<SearchFilterBar />);
+
+      // LifestyleTagChips should be rendered (mocked as stub)
+      const tagsSection = document.querySelector('[data-testid="lifestyle-tag-chips"]');
+      expect(tagsSection).not.toBeNull();
     },
   );
 });
