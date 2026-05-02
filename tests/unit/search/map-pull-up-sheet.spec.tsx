@@ -2,11 +2,6 @@
  * Story 3.6: Mobile Pull-Up Sheet
  * Component: src/components/map/map-pull-up-sheet.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until:
- *   1. MapPullUpSheet component is created (src/components/map/map-pull-up-sheet.tsx)
- *   2. @use-gesture/react is installed (npm install @use-gesture/react)
- *   3. i18n keys pullUpSheet.* are added to en.json / es.json
- *
  * Covers:
  *   AC #1 — Mobile viewport (<768px): pull-up sheet handle appears at bottom
  *   AC #2 — Peeked state (15vh): shows handle bar + "{N} properties in view" count only
@@ -15,12 +10,6 @@
  *   AC #5 — Drag snap animation to nearest point with spring physics (300ms, cubic-bezier)
  *   AC #6 — Pull-to-refresh disabled via overscroll-behavior: none
  *   AC #7 — ARIA: role="region", aria-label="Property list", aria-expanded toggling
- *
- * Activation instructions for the dev implementing Story 3.6:
- *   1. Remove it.skip from the test you are implementing
- *   2. Run: npx vitest run tests/unit/search/map-pull-up-sheet.spec.tsx
- *   3. Verify the test FAILS before implementation, then passes after
- *   4. Commit passing tests
  */
 
 import { describe, expect, it, vi, afterEach } from "vitest";
@@ -142,7 +131,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P0] renders data-testid='pull-up-sheet' root element in peeked state by default",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       render(
         <MapPullUpSheet
           properties={mockProperties}
@@ -164,7 +152,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P0] renders data-testid='pull-up-handle' drag handle bar",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       render(
         <MapPullUpSheet
           properties={mockProperties}
@@ -187,7 +174,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P0] peeked state: shows property count label and does NOT render PropertyCard",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       render(
         <MapPullUpSheet
           properties={mockProperties}
@@ -214,7 +200,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P0] has role='region' and aria-label='Property list'",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       render(
         <MapPullUpSheet
           properties={mockProperties}
@@ -236,7 +221,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P0] has aria-expanded='false' in peeked state; has aria-expanded='true' when initialState='half'",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       const { unmount } = render(
         <MapPullUpSheet
           properties={mockProperties}
@@ -271,7 +255,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P1] full state (initialState='full'): renders PropertyCards for all properties",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       render(
         <MapPullUpSheet
           properties={mockProperties}
@@ -299,7 +282,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P1] full state (initialState='full'): renders SearchResultsSkeleton when isLoading=true",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       render(
         <MapPullUpSheet
           properties={[]}
@@ -326,7 +308,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P1] full state (initialState='full'): renders close button; clicking it updates data-state to 'peeked'",
     async () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       const user = userEvent.setup();
 
       render(
@@ -362,7 +343,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P2] half state (initialState='half'): renders up to 3 PropertyCards in horizontal scroll container",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       render(
         <MapPullUpSheet
           properties={mockProperties}
@@ -393,7 +373,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P2] applies height based on snap state and overscroll-behavior: none on scroll container",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       render(
         <MapPullUpSheet
           properties={mockProperties}
@@ -423,7 +402,6 @@ describe("MapPullUpSheet", () => {
   it(
     "[P2] root element has 'lg:hidden' class (renders only on mobile, hidden on desktop)",
     () => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       render(
         <MapPullUpSheet
           properties={mockProperties}

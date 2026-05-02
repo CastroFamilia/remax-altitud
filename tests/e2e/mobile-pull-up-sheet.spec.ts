@@ -1,14 +1,14 @@
 /**
  * Story 3.6: Mobile Pull-Up Sheet — E2E Test Scaffolds
  *
- * TDD RED PHASE — all tests use test.skip() and will FAIL until:
- *   1. MapPullUpSheet component is implemented (src/components/map/map-pull-up-sheet.tsx)
- *   2. @use-gesture/react is installed (npm install @use-gesture/react)
- *   3. SplitViewLayout updated to use MapPullUpSheet (Task 3)
- *   4. overscroll-behavior: none is applied to search page root (Task 4)
- *   5. i18n keys pullUpSheet.* added to en.json / es.json (Task 5)
- *   6. Playwright framework is configured with a valid playwright.config.ts
- *   7. Staging/local environment with DB seeded with properties
+ * E2E SCAFFOLDS — all tests use test.skip() awaiting Playwright setup:
+ *   [DONE] MapPullUpSheet component implemented (src/components/map/map-pull-up-sheet.tsx)
+ *   [DONE] @use-gesture/react installed
+ *   [DONE] SplitViewLayout updated to use MapPullUpSheet
+ *   [DONE] overscroll-behavior: none applied to search page root
+ *   [DONE] i18n keys pullUpSheet.* added to en.json / es.json
+ *   [TODO] Playwright framework configured with a valid playwright.config.ts
+ *   [TODO] Staging/local environment with DB seeded with properties
  *
  * These E2E tests correspond to the acceptance criteria for Story 3.6:
  *   3.6-E2E-001 — Pull-up sheet peeked state shows handle + property count (AC #1, #2, P0)
