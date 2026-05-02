@@ -408,8 +408,10 @@ test.describe("Story 3.7: Unit Conversion & Price Display E2E (ATDD — RED PHAS
       const unitToggle = page.getByTestId("unit-toggle");
       await unitToggle.click();
 
-      // Wait for re-render
-      await page.waitForTimeout(300);
+      // Wait for UI to re-render with new unit system — wait for the first card's
+      // specs to change from imperial to metric (avoids fragile hard-coded timeout)
+      const firstSpecs = page.getByTestId("property-card").first().getByTestId("property-specs");
+      await expect(firstSpecs).toContainText(/m²|ha/);
 
       // Collect all specs text after toggle
       const specsTextAfter: string[] = [];

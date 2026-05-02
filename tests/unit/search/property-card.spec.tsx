@@ -3,6 +3,12 @@
  * Updated: Story 3.7: Unit Conversion & Price Display (regression + new tests)
  * Component: src/components/property/property-card.tsx
  *
+ * NOTE ON FILE SIZE: This file intentionally combines story 3.5 and 3.7 test
+ * suites for a single component (PropertyCard). Splitting would require
+ * duplicating all mocks and fixtures. The combined 764-line size is justified
+ * by the shared mock infrastructure. New story-specific tests are clearly
+ * separated in their own describe blocks at the bottom of this file.
+ *
  * TDD RED PHASE — all tests use it() and will FAIL until
  * property-card.tsx is implemented.
  *
