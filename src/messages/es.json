@@ -325,6 +325,11 @@
     "pullUpHandle": {
       "propertiesCount": "{count, plural, one {# propiedad} other {# propiedades}}"
     },
+    "pullUpSheet": {
+      "regionLabel": "Lista de propiedades",
+      "close": "Volver al mapa",
+      "closeLabel": "Cerrar lista de propiedades y volver al mapa"
+    },
     "sidePanel": {
       "show": "Mostrar listados",
       "hide": "Ocultar listados"

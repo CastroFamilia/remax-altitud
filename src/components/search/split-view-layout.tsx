@@ -7,6 +7,7 @@ import { SearchResultsSkeleton } from "@/components/search/search-results-skelet
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { MapView } from "@/components/map/map-view-loader";
 import { PropertyGrid } from "@/components/property/property-grid";
+import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets } from "@/types/search";
 
@@ -70,7 +71,6 @@ export function SplitViewLayout({
   void _facets;
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
-  const tPullUp = useTranslations("SearchPage.pullUpHandle");
   const tSidePanel = useTranslations("SearchPage.sidePanel");
   const mapHidden = viewMode === "grid";
   const gridHidden = viewMode === "map";
@@ -165,17 +165,13 @@ export function SplitViewLayout({
         </button>
       </div>
 
-      {/* Mobile pull-up handle stub — Story 3.6 activates full sheet behaviour */}
-      <div
-        data-testid="pull-up-handle"
-        className="fixed bottom-0 left-0 right-0 z-30 flex flex-col items-center justify-center h-10 bg-background border-t border-border rounded-t-2xl shadow-lg lg:hidden"
-      >
-        {/* Drag indicator */}
-        <div className="w-10 h-1 bg-muted-foreground/30 rounded-full mb-1" />
-        <span className="text-xs text-muted-foreground">
-          {tPullUp("propertiesCount", { count })}
-        </span>
-      </div>
+      {/* Mobile pull-up sheet — Story 3.6 */}
+      <MapPullUpSheet
+        properties={filterProperties ?? []}
+        locale={locale}
+        propertyCount={count}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

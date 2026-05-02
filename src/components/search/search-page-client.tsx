@@ -131,7 +131,7 @@ export function SearchPageClient() {
   }, []);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overscroll-none">
       <SearchFilterBar facets={facets} areas={areas} />
       <SplitViewLayout
         viewMode={viewMode}
