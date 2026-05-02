@@ -336,6 +336,23 @@
       "showing": "Showing {count} of {total} properties",
       "empty": "No properties found"
     },
+    "lifestyleTags": {
+      "label": "Lifestyle",
+      "chips": {
+        "Rental Potential": "Rental Potential",
+        "Investment Property": "Investment Property",
+        "Vacation Home": "Vacation Home",
+        "Retire": "Retirement Paradise",
+        "Commercial": "Commercial"
+      }
+    },
+    "presets": {
+      "label": "Quick Searches",
+      "mountainRetirement": "Mountain Retirement Homes",
+      "beachInvestment": "Beach Investment Land",
+      "rentalPotential": "Rental Income Properties",
+      "vacationHome": "Vacation Homes"
+    },
     "MapView": {
       "ariaLabel": "Property locations map",
       "loading": "Loading map...",

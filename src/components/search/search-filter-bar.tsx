@@ -23,6 +23,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchFilters } from "@/hooks/use-search-filters";
 import { FilterChips } from "@/components/search/filter-chips";
+import { LifestyleTagChips } from "@/components/search/lifestyle-tag-chips";
 import { PriceRangeSlider } from "@/components/search/price-range-slider";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { FilterFacets } from "@/types/search";
@@ -42,7 +43,8 @@ interface SearchFilterBarProps {
 
 export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
   const t = useTranslations("SearchPage");
-  const { filters, setFilter, clearFilter, clearAll, activeFilterCount } = useSearchFilters();
+  const { filters, setFilter, clearFilter, clearAll, activeFilterCount, toggleTag } =
+    useSearchFilters();
 
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
 
@@ -62,6 +64,8 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
    * it on every render — nested function components lose state every render. */
   const filterControls = (
     <div className="flex flex-wrap items-center gap-3 w-full">
+      {/* Story 3.4: Lifestyle tag chips (AC #1, #2, #3) */}
+      <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
       {/* Type dropdown (AC #1) */}
       <div className="flex flex-col gap-1">
         <label className="text-xs font-medium text-muted-foreground">{t("filters.type")}</label>

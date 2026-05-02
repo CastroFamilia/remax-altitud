@@ -54,6 +54,10 @@
 - `MapPropertyPopup` uses hardcoded English strings ("View Details", "Close property preview", "Titled", "Concession", "ZMT Restricted", "{n} bed/bath/m²") instead of `useTranslations` even though i18n keys for these were added to `messages/{en,es}.json` in Task 10 — UX polish, low risk; AC #4 doesn't mandate i18n for these labels.
 - `next.config.ts` lacks `images.remotePatterns` for property image hosts — popup uses `unoptimized` as a forward-compatible workaround; revisit when CMS/CDN host(s) for property photos are decided in a later epic.
 
+## Deferred from: code review of 3-4-lifestyle-tags-and-smart-presets (2026-05-01)
+- `LifestyleTagChips` container lacks `role="group"` / `aria-label` for the tag row — minor a11y polish; AC #1 only requires the chips to render, not a labelled group.
+- `latestParamsRef.current` is reassigned during render in `useSearchFilters` — pre-existing pattern from Story 3.3, works in practice; revisit if/when concurrent rendering surfaces issues.
+
 ## Deferred from: code review of story-3.5 (2026-05-01)
 - `SaveButton.propertyTitle` prop is declared but unused — kept for forward compatibility (toast personalization in Story 7.1) [src/components/property/save-button.tsx:8].
 - `ShareButton` is silent when neither `navigator.share` nor `navigator.clipboard` is available — older browsers (and most desktop Firefox without MDN flags) get no feedback after clicking the share icon [src/components/property/share-button.tsx:25-45].

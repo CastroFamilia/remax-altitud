@@ -23,7 +23,9 @@ export interface UseSearchFiltersReturn {
   setFilter: <K extends keyof SearchFilters>(key: K, value: SearchFilters[K] | undefined) => void;
   clearFilter: (key: keyof SearchFilters) => void;
   clearAll: () => void;
-  activeFilterCount: number; // count excluding 'view' and 'sort'
+  activeFilterCount: number; // count excluding 'view' and 'sort'; each tag counts individually
+  // Story 3.4: toggleTag helper — add/remove a tag from URL state (instant, no debounce)
+  toggleTag: (tag: string) => void;
 }
 
 /** URL param names — short, human-readable, lowercase (UX spec §9 SEO) */
@@ -38,7 +40,32 @@ const PARAM_MAP: Record<keyof SearchFilters, string> = {
   areaSlug: "area",
   sort: "sort",
   view: "view",
+  // Story 3.4: tags — comma-separated string (?tags=Investment+Property,Rental+Potential)
+  tags: "tags",
 };
+
+/**
+ * Story 3.4: Build a search URL from a pathname and filters object.
+ * Exported for use by SmartPresetBar to generate preset navigation URLs.
+ * This prevents serialization divergence between preset URL generation and
+ * filter bar URL writing (single source of truth for URL serialization).
+ */
+export function buildSearchUrl(pathname: string, filters: SearchFilters): string {
+  const params = new URLSearchParams();
+  for (const [filterKey, paramKey] of Object.entries(PARAM_MAP) as Array<
+    [keyof SearchFilters, string]
+  >) {
+    const value = filters[filterKey];
+    if (value === undefined || value === null) continue;
+    if (Array.isArray(value)) {
+      if (value.length > 0) params.set(paramKey, value.join(","));
+    } else {
+      params.set(paramKey, String(value));
+    }
+  }
+  const qs = params.toString();
+  return qs ? `${pathname}?${qs}` : pathname;
+}
 
 /** Filter keys that count toward activeFilterCount (exclude view and sort) */
 const FILTER_KEYS: Array<keyof SearchFilters> = [
@@ -101,6 +128,16 @@ function parseFilters(params: URLSearchParams): SearchFilters {
     filters.view = view;
   }
 
+  // Story 3.4: Parse tags from comma-separated URL param
+  const tagsParam = params.get("tags");
+  if (tagsParam) {
+    const parsed = tagsParam
+      .split(",")
+      .map((t) => decodeURIComponent(t.trim()))
+      .filter(Boolean);
+    if (parsed.length > 0) filters.tags = parsed;
+  }
+
   return filters;
 }
 
@@ -110,6 +147,8 @@ function serializeValue(
   value: SearchFilters[keyof SearchFilters],
 ): string {
   if (value === undefined || value === null) return "";
+  // Story 3.4: handle array values (tags) by joining with comma
+  if (Array.isArray(value)) return value.join(",");
   return String(value);
 }
 
@@ -133,14 +172,16 @@ export function useSearchFilters(): UseSearchFiltersReturn {
     [searchParamsString],
   );
 
-  const activeFilterCount = useMemo(
-    () =>
-      FILTER_KEYS.filter((key) => {
-        const value = filters[key];
-        return value !== undefined && value !== null;
-      }).length,
-    [filters],
-  );
+  const activeFilterCount = useMemo(() => {
+    // Count scalar filter keys (excludes 'view', 'sort', and 'tags')
+    const scalarCount = FILTER_KEYS.filter((key) => {
+      const value = filters[key];
+      return value !== undefined && value !== null;
+    }).length;
+    // Story 3.4: count each selected tag individually (2 tags = +2, not +1)
+    const tagsCount = filters.tags?.length ?? 0;
+    return scalarCount + tagsCount;
+  }, [filters]);
 
   /** Write updated URLSearchParams to router without scrolling */
   const commitParams = useCallback(
@@ -206,11 +247,33 @@ export function useSearchFilters(): UseSearchFiltersReturn {
     commitParams(newParams);
   }, [searchParams, commitParams]);
 
+  /**
+   * Story 3.4: toggleTag — add/remove a single lifestyle tag from the URL state.
+   * Uses latestParamsRef to avoid stale closure race conditions on rapid clicks.
+   * Instant update (no debounce) — toggles are immediate UI feedback.
+   */
+  const toggleTag = useCallback(
+    (tag: string) => {
+      // Read from latestParamsRef to get freshest state (avoids stale closure race)
+      const currentTagsParam = latestParamsRef.current.get("tags");
+      const current = currentTagsParam
+        ? currentTagsParam
+            .split(",")
+            .map((t) => decodeURIComponent(t.trim()))
+            .filter(Boolean)
+        : [];
+      const next = current.includes(tag) ? current.filter((t) => t !== tag) : [...current, tag];
+      setFilter("tags", next.length > 0 ? next : undefined);
+    },
+    [setFilter],
+  );
+
   return {
     filters,
     setFilter,
     clearFilter,
     clearAll,
     activeFilterCount,
+    toggleTag,
   };
 }

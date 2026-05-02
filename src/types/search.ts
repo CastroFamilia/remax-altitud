@@ -2,9 +2,6 @@
  * Story 3.3: Search Filters & URL State
  * Canonical types for search filters, results, and facets.
  *
- * ATDD STUB — This file satisfies module resolution for red-phase test scaffolds.
- * Task 1 of Story 3.3 will replace this stub with the full implementation.
- *
  * Architecture mandate (AR10): Search filters MUST live in URL query params.
  * Do NOT store SearchFilters in Zustand or React state.
  */
@@ -22,6 +19,8 @@ export interface SearchFilters {
   areaSlug?: string;
   sort?: SortOption;
   view?: "split" | "map" | "grid";
+  // Story 3.4: Lifestyle tags — comma-separated in URL (?tags=Investment+Property,Rental+Potential)
+  tags?: string[];
 }
 
 export interface PropertySearchItem {
