@@ -396,6 +396,54 @@ describe("MapPullUpSheet", () => {
   );
 
   // -------------------------------------------------------------------------
+  // AC #6: half state carousel also has overscroll-behavior: none
+  // -------------------------------------------------------------------------
+
+  it(
+    "[P2] half state: horizontal carousel container has overscroll-behavior: none",
+    () => {
+      render(
+        <MapPullUpSheet
+          properties={mockProperties}
+          locale="en"
+          propertyCount={mockProperties.length}
+          initialState="half"
+        />,
+      );
+
+      const carousel = document.querySelector(".overflow-x-auto") as HTMLElement | null;
+      expect(carousel).not.toBeNull();
+      expect(carousel?.style.overscrollBehavior).toBe("none");
+    },
+  );
+
+  // -------------------------------------------------------------------------
+  // AC #4: half state renders skeleton when isLoading=true
+  // -------------------------------------------------------------------------
+
+  it(
+    "[P2] half state (initialState='half'): renders SearchResultsSkeleton when isLoading=true",
+    () => {
+      render(
+        <MapPullUpSheet
+          properties={[]}
+          locale="en"
+          propertyCount={0}
+          initialState="half"
+          isLoading={true}
+        />,
+      );
+
+      const skeleton = document.querySelector('[data-testid="search-results-skeleton"]');
+      expect(skeleton).not.toBeNull();
+
+      // No PropertyCards while loading
+      const cards = document.querySelectorAll('[data-testid="property-card"]');
+      expect(cards.length).toBe(0);
+    },
+  );
+
+  // -------------------------------------------------------------------------
   // AC #1: lg:hidden — sheet is only visible on mobile (CSS class check)
   // -------------------------------------------------------------------------
 

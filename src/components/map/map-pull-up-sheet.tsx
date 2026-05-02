@@ -92,12 +92,19 @@ export function MapPullUpSheet({
       {state !== "peeked" && (
         <div className="flex-1 overflow-hidden">
           {state === "half" && (
-            <div className="flex gap-3 overflow-x-auto px-3 pb-2 snap-x snap-mandatory">
-              {properties.slice(0, 3).map((p) => (
-                <div key={p.id} className="snap-start flex-shrink-0 w-[280px]">
-                  <PropertyCard property={p} locale={locale} variant="compact" />
-                </div>
-              ))}
+            <div
+              className="flex gap-3 overflow-x-auto px-3 pb-2 snap-x snap-mandatory"
+              style={{ overscrollBehavior: "none" }}
+            >
+              {isLoading ? (
+                <SearchResultsSkeleton />
+              ) : (
+                properties.slice(0, 3).map((p) => (
+                  <div key={p.id} className="snap-start flex-shrink-0 w-[280px]">
+                    <PropertyCard property={p} locale={locale} variant="compact" />
+                  </div>
+                ))
+              )}
             </div>
           )}
           {state === "full" && (
