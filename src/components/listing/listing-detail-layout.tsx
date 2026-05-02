@@ -159,6 +159,9 @@ export async function ListingDetailLayout({ property, agent, locale }: ListingDe
             </h2>
             <div className="prose prose-gray max-w-none">
               {description.split("\n").map((paragraph, i) => (
+                // Using index as key is safe here: the list is derived from a
+                // static string split — order never changes and items are never
+                // reordered, inserted, or removed independently.
                 <p key={i} className="mb-4 text-text-body leading-relaxed">
                   {paragraph}
                 </p>

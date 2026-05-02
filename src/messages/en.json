@@ -434,7 +434,9 @@
     "photoCount": "Photo {current} of {total}",
     "nextPhoto": "Next photo",
     "prevPhoto": "Previous photo",
-    "videoTitle": "Property video tour"
+    "videoTitle": "Property video tour",
+    "noPhotos": "No photos available",
+    "thumbnailStripLabel": "{title} photos"
   },
   "ListingDetail": {
     "description": "Description",

@@ -70,7 +70,7 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
         className="relative w-full h-[60vh] bg-gray-200 flex items-center justify-center"
         aria-label={propertyTitle}
       >
-        <span className="text-gray-500">No photos available</span>
+        <span className="text-gray-500">{t("noPhotos")}</span>
       </div>
     );
   }
@@ -120,7 +120,7 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
         data-testid="gallery-thumbnail-strip"
         className="flex gap-2 overflow-x-auto py-2 px-1"
         role="list"
-        aria-label={`${propertyTitle} photos`}
+        aria-label={t("thumbnailStripLabel", { title: propertyTitle })}
       >
         {images.map((image, index) => (
           <button
@@ -133,7 +133,7 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
                 ? "border-brand-navy ring-2 ring-brand-navy ring-offset-1"
                 : "border-transparent hover:border-gray-400"
             }`}
-            aria-label={`Photo ${index + 1} of ${total}`}
+            aria-label={t("photoCount", { current: index + 1, total })}
             aria-current={index === activeIndex ? "true" : undefined}
           >
             <Image
