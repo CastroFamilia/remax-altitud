@@ -1,6 +1,6 @@
 # Story 3.6: Mobile Pull-Up Sheet
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -26,15 +26,15 @@ so that I can see the map and listings without switching views.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Install `@use-gesture/react` dependency (AC: #3, #4, #5)
-  - [ ] Run `npm install @use-gesture/react` in the worktree — **this package is NOT yet installed** (architecture §10 lists it at ~5KB, preferred over framer-motion ~32KB)
-  - [ ] Pin version to `^10.x` (architecture: `@use-gesture/react | 10.x | package.json exact version`)
-  - [ ] Verify `package.json` reflects the new dependency after install
+- [x] Task 1: Install `@use-gesture/react` dependency (AC: #3, #4, #5)
+  - [x] Run `npm install @use-gesture/react` in the worktree — **this package is NOT yet installed** (architecture §10 lists it at ~5KB, preferred over framer-motion ~32KB)
+  - [x] Pin version to `^10.x` (architecture: `@use-gesture/react | 10.x | package.json exact version`)
+  - [x] Verify `package.json` reflects the new dependency after install
 
-- [ ] Task 2: Create `MapPullUpSheet` Client Component (AC: #1, #2, #3, #4, #5, #6, #7)
-  - [ ] Create `src/components/map/map-pull-up-sheet.tsx` — **this file does NOT exist yet** (stub handle is currently inline in `split-view-layout.tsx` lines 168-178)
-  - [ ] Add `'use client'` as the first line — this IS a Client Component (gesture tracking, state)
-  - [ ] Props interface:
+- [x] Task 2: Create `MapPullUpSheet` Client Component (AC: #1, #2, #3, #4, #5, #6, #7)
+  - [x] Create `src/components/map/map-pull-up-sheet.tsx` — **this file does NOT exist yet** (stub handle is currently inline in `split-view-layout.tsx` lines 168-178)
+  - [x] Add `'use client'` as the first line — this IS a Client Component (gesture tracking, state)
+  - [x] Props interface:
     ```ts
     interface MapPullUpSheetProps {
       properties: PropertySearchItem[];
@@ -44,14 +44,14 @@ so that I can see the map and listings without switching views.
       initialState?: 'peeked' | 'half' | 'full'; // for unit test control only; defaults to 'peeked'
     }
     ```
-  - [ ] Import `PropertySearchItem` from `@/types/search`
-  - [ ] Import `useTranslations` from `next-intl`
-  - [ ] **Three snap states** managed via `useState<'peeked' | 'half' | 'full'>`:
+  - [x] Import `PropertySearchItem` from `@/types/search`
+  - [x] Import `useTranslations` from `next-intl`
+  - [x] **Three snap states** managed via `useState<'peeked' | 'half' | 'full'>`:
     - `peeked` = 15vh (default on mount)
     - `half` = 50vh
     - `full` = 85vh
-  - [ ] **Height management**: use a `div` with `style={{ height: sheetHeight }}` where `sheetHeight` maps state to `'15vh'`, `'50vh'`, `'85vh'`. Add CSS transition: `transition: height 300ms cubic-bezier(0.32, 0.72, 0, 1)` for snap animation (UX-DR22 spring physics approximation)
-  - [ ] **Drag gesture via `@use-gesture/react`**:
+  - [x] **Height management**: use a `div` with `style={{ height: sheetHeight }}` where `sheetHeight` maps state to `'15vh'`, `'50vh'`, `'85vh'`. Add CSS transition: `transition: height 300ms cubic-bezier(0.32, 0.72, 0, 1)` for snap animation (UX-DR22 spring physics approximation)
+  - [x] **Drag gesture via `@use-gesture/react`**:
     ```ts
     import { useDrag } from '@use-gesture/react';
     const bind = useDrag(({ movement: [, my], last }) => {
@@ -69,7 +69,7 @@ so that I can see the map and listings without switching views.
       // else: insufficient drag → snap back to current state (no change)
     }, { axis: 'y' });
     ```
-  - [ ] **Peeked state content**: drag handle bar + property count label only
+  - [x] **Peeked state content**: drag handle bar + property count label only
     ```tsx
     {/* Drag handle */}
     <div aria-hidden="true" className="mx-auto w-10 h-1 rounded-full bg-muted-foreground/30 my-2 flex-shrink-0" />
@@ -78,7 +78,7 @@ so that I can see the map and listings without switching views.
       {t('pullUpHandle.propertiesCount', { count: propertyCount })}
     </span>
     ```
-  - [ ] **Half state content** (50vh): drag handle + count + horizontal scroll carousel of PropertyCards
+  - [x] **Half state content** (50vh): drag handle + count + horizontal scroll carousel of PropertyCards
     ```tsx
     {state !== 'peeked' && (
       <div className="flex-1 overflow-hidden">
@@ -103,7 +103,7 @@ so that I can see the map and listings without switching views.
       </div>
     )}
     ```
-  - [ ] **Full state close button**: renders a button at the top-right corner that sets state back to `'peeked'`
+  - [x] **Full state close button**: renders a button at the top-right corner that sets state back to `'peeked'`
     ```tsx
     {state === 'full' && (
       <button
@@ -116,7 +116,7 @@ so that I can see the map and listings without switching views.
       </button>
     )}
     ```
-  - [ ] **ARIA attributes** (AC #7):
+  - [x] **ARIA attributes** (AC #7):
     ```tsx
     <section
       role="region"
@@ -128,20 +128,20 @@ so that I can see the map and listings without switching views.
     >
     ```
     - Note: `aria-expanded` must be the string `"true"` / `"false"` (not a boolean) to avoid TypeScript type errors on the `section` element. WAI-ARIA allows `aria-expanded` on elements with `role="region"` as a state descriptor — the epics spec explicitly requires it.
-  - [ ] **`initialState` prop for testability** (critical for unit tests): add an optional `initialState?: 'peeked' | 'half' | 'full'` prop and use it in `useState`:
+  - [x] **`initialState` prop for testability** (critical for unit tests): add an optional `initialState?: 'peeked' | 'half' | 'full'` prop and use it in `useState`:
     ```ts
     const [state, setState] = useState<'peeked' | 'half' | 'full'>(initialState ?? 'peeked');
     ```
     This lets unit tests directly set the sheet to `'half'` or `'full'` without simulating drag gestures (which are mocked). Include this prop in the interface and in Task 6 test setup.
-  - [ ] **`overscroll-behavior: none`** (AC #6): add `style={{ overscrollBehavior: 'none' }}` on the scroll container inside the full state. Also add `touch-none` on the drag handle zone (prevent native scroll conflict during drag)
-  - [ ] **Position**: `fixed bottom-0 left-0 right-0 z-30 bg-background border-t border-border rounded-t-2xl shadow-lg lg:hidden flex flex-col`
-  - [ ] `data-testid="pull-up-sheet"` on root element; `data-testid="pull-up-handle"` on the drag handle bar div (keep this testid — existing tests in `split-view-layout.spec.tsx` assert on `pull-up-handle`)
+  - [x] **`overscroll-behavior: none`** (AC #6): add `style={{ overscrollBehavior: 'none' }}` on the scroll container inside the full state. Also add `touch-none` on the drag handle zone (prevent native scroll conflict during drag)
+  - [x] **Position**: `fixed bottom-0 left-0 right-0 z-30 bg-background border-t border-border rounded-t-2xl shadow-lg lg:hidden flex flex-col`
+  - [x] `data-testid="pull-up-sheet"` on root element; `data-testid="pull-up-handle"` on the drag handle bar div (keep this testid — existing tests in `split-view-layout.spec.tsx` assert on `pull-up-handle`)
 
-- [ ] Task 3: Update `SplitViewLayout` to use `MapPullUpSheet` (AC: #1–#7)
-  - [ ] **File**: `src/components/search/split-view-layout.tsx` (exists — Story 3.1/3.3/3.5)
-  - [ ] Remove the **inline pull-up handle stub** (lines 168-178 — `data-testid="pull-up-handle"` fixed div)
-  - [ ] Import `MapPullUpSheet` from `@/components/map/map-pull-up-sheet`
-  - [ ] Replace inline stub with `<MapPullUpSheet>`:
+- [x] Task 3: Update `SplitViewLayout` to use `MapPullUpSheet` (AC: #1–#7)
+  - [x] **File**: `src/components/search/split-view-layout.tsx` (exists — Story 3.1/3.3/3.5)
+  - [x] Remove the **inline pull-up handle stub** (lines 168-178 — `data-testid="pull-up-handle"` fixed div)
+  - [x] Import `MapPullUpSheet` from `@/components/map/map-pull-up-sheet`
+  - [x] Replace inline stub with `<MapPullUpSheet>`:
     ```tsx
     <MapPullUpSheet
       properties={filterProperties ?? []}
@@ -150,19 +150,19 @@ so that I can see the map and listings without switching views.
       isLoading={isLoading}
     />
     ```
-  - [ ] The `MapPullUpSheet` component itself is `lg:hidden` — renders only on mobile, invisible on ≥1024px
-  - [ ] **DO NOT BREAK** existing `data-testid` values: `map-panel`, `grid-panel` — these are asserted in `split-view-layout.spec.tsx`
-  - [ ] **DO NOT touch** map panel logic, MapView props, or tablet side-panel toggle
-  - [ ] `filterProperties` prop already exists on `SplitViewLayout` — pass it through to `MapPullUpSheet`
+  - [x] The `MapPullUpSheet` component itself is `lg:hidden` — renders only on mobile, invisible on ≥1024px
+  - [x] **DO NOT BREAK** existing `data-testid` values: `map-panel`, `grid-panel` — these are asserted in `split-view-layout.spec.tsx`
+  - [x] **DO NOT touch** map panel logic, MapView props, or tablet side-panel toggle
+  - [x] `filterProperties` prop already exists on `SplitViewLayout` — pass it through to `MapPullUpSheet`
 
-- [ ] Task 4: Add `overscroll-behavior: none` to search page (AC: #6)
-  - [ ] **File**: `src/app/[locale]/search/page.tsx` (exists)
-  - [ ] Add a wrapper `<div style={{ overscrollBehavior: 'none' }}>` around `<SearchPageClient />` OR add className `overscroll-none` (Tailwind utility available in v4)
-  - [ ] Alternative: add to `src/components/search/search-page-client.tsx` outermost `<div>` — add `className="flex flex-col overscroll-none"` (replaces `"flex flex-col"`)
-  - [ ] **Prefer** the `search-page-client.tsx` approach (co-located with scroll behavior) — add `overscroll-none` to the root `<div className="flex flex-col">` → `<div className="flex flex-col overscroll-none">`
+- [x] Task 4: Add `overscroll-behavior: none` to search page (AC: #6)
+  - [x] **File**: `src/app/[locale]/search/page.tsx` (exists)
+  - [x] Add a wrapper `<div style={{ overscrollBehavior: 'none' }}>` around `<SearchPageClient />` OR add className `overscroll-none` (Tailwind utility available in v4)
+  - [x] Alternative: add to `src/components/search/search-page-client.tsx` outermost `<div>` — add `className="flex flex-col overscroll-none"` (replaces `"flex flex-col"`)
+  - [x] **Prefer** the `search-page-client.tsx` approach (co-located with scroll behavior) — add `overscroll-none` to the root `<div className="flex flex-col">` → `<div className="flex flex-col overscroll-none">`
 
-- [ ] Task 5: Add i18n keys for `MapPullUpSheet` (AC: #2, #4, #7)
-  - [ ] **File**: `src/messages/en.json` — add under `"SearchPage"`:
+- [x] Task 5: Add i18n keys for `MapPullUpSheet` (AC: #2, #4, #7)
+  - [x] **File**: `src/messages/en.json` — add under `"SearchPage"`:
     ```json
     "pullUpSheet": {
       "regionLabel": "Property list",
@@ -170,7 +170,7 @@ so that I can see the map and listings without switching views.
       "closeLabel": "Close property list and return to map"
     }
     ```
-  - [ ] **File**: `src/messages/es.json` — add equivalent under `"SearchPage"`:
+  - [x] **File**: `src/messages/es.json` — add equivalent under `"SearchPage"`:
     ```json
     "pullUpSheet": {
       "regionLabel": "Lista de propiedades",
@@ -178,11 +178,11 @@ so that I can see the map and listings without switching views.
       "closeLabel": "Cerrar lista de propiedades y volver al mapa"
     }
     ```
-  - [ ] Note: `pullUpHandle.propertiesCount` already exists in both locale files — **do NOT re-add it**
+  - [x] Note: `pullUpHandle.propertiesCount` already exists in both locale files — **do NOT re-add it**
 
-- [ ] Task 6: Unit tests for `MapPullUpSheet` (AC: all)
-  - [ ] Create `tests/unit/search/map-pull-up-sheet.spec.tsx` (Vitest + jsdom — `environmentMatchGlobs` rule already covers `tests/unit/search/**/*.spec.tsx`)
-  - [ ] **Mocks needed**:
+- [x] Task 6: Unit tests for `MapPullUpSheet` (AC: all)
+  - [x] Create `tests/unit/search/map-pull-up-sheet.spec.tsx` (Vitest + jsdom — `environmentMatchGlobs` rule already covers `tests/unit/search/**/*.spec.tsx`)
+  - [x] **Mocks needed**:
     ```ts
     vi.mock('next-intl', () => ({
       useTranslations: vi.fn(() => (key: string, vals?: Record<string,unknown>) => {
@@ -204,7 +204,7 @@ so that I can see the map and listings without switching views.
       SearchResultsSkeleton: () => <div data-testid="search-results-skeleton" />,
     }));
     ```
-  - [ ] Tests to write:
+  - [x] Tests to write:
     - `[P0]` renders `data-testid="pull-up-sheet"` in peeked state by default
     - `[P0]` renders `data-testid="pull-up-handle"` (drag handle bar)
     - `[P0]` peeked state: shows property count label, does NOT show PropertyCard
@@ -215,12 +215,12 @@ so that I can see the map and listings without switching views.
     - `[P1]` full state (`initialState="full"`): renders `SearchResultsSkeleton` when `isLoading=true`
     - `[P1]` full state (`initialState="full"`): renders close button; clicking it updates `data-state` to `"peeked"`
     - `[P2]` half state (`initialState="half"`): renders up to 3 PropertyCards in horizontal scroll container
-  - [ ] **Note on state testing**: use `data-state={state}` on the root element (already specified in Task 2). Use `initialState` prop to put the component in the desired state for each test. Use `@testing-library/user-event` `userEvent.click()` for close button test.
-  - [ ] **Note on `@use-gesture/react` types**: the package ships its own TypeScript definitions — no `@types/use-gesture` needed.
+  - [x] **Note on state testing**: use `data-state={state}` on the root element (already specified in Task 2). Use `initialState` prop to put the component in the desired state for each test. Use `@testing-library/user-event` `userEvent.click()` for close button test.
+  - [x] **Note on `@use-gesture/react` types**: the package ships its own TypeScript definitions — no `@types/use-gesture` needed.
 
-- [ ] Task 7: Update `split-view-layout.spec.tsx` (AC: regression protection)
-  - [ ] **File**: `tests/unit/search/split-view-layout.spec.tsx` (exists — Story 3.1/3.5)
-  - [ ] Add mock for `@/components/map/map-pull-up-sheet`:
+- [x] Task 7: Update `split-view-layout.spec.tsx` (AC: regression protection)
+  - [x] **File**: `tests/unit/search/split-view-layout.spec.tsx` (exists — Story 3.1/3.5)
+  - [x] Add mock for `@/components/map/map-pull-up-sheet`:
     ```ts
     vi.mock('@/components/map/map-pull-up-sheet', () => ({
       MapPullUpSheet: ({ propertyCount }: { propertyCount: number }) => (
@@ -228,15 +228,15 @@ so that I can see the map and listings without switching views.
       ),
     }));
     ```
-  - [ ] **KEEP ALL EXISTING TESTS** — they must all continue passing
-  - [ ] The existing test `[P0] renders data-testid='pull-up-handle' element` will continue passing since the mock emits `data-testid="pull-up-handle"` — verify this test still passes with the mock in place
+  - [x] **KEEP ALL EXISTING TESTS** — they must all continue passing
+  - [x] The existing test `[P0] renders data-testid='pull-up-handle' element` will continue passing since the mock emits `data-testid="pull-up-handle"` — verify this test still passes with the mock in place
 
-- [ ] Task 8: CI verification (AC: all)
-  - [ ] `npm run typecheck` → 0 new errors
-  - [ ] `npm run lint` → 0 errors
-  - [ ] `npm run format:check` → pass
-  - [ ] `npm run build` → pass
-  - [ ] `npm test` → all existing tests pass + new `map-pull-up-sheet.spec.tsx` tests pass
+- [x] Task 8: CI verification (AC: all)
+  - [x] `npm run typecheck` → 0 new errors
+  - [x] `npm run lint` → 0 errors (2 pre-existing warnings only)
+  - [x] `npm run format:check` → pass
+  - [x] `npm run build` → pass
+  - [x] `npm test` → all existing tests pass + new `map-pull-up-sheet.spec.tsx` tests pass (506 total, 11 new)
 
 ## Dev Notes
 
@@ -393,4 +393,22 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- Installed `@use-gesture/react@^10.3.1` — package was absent before this story.
+- Created `src/components/map/map-pull-up-sheet.tsx`: `'use client'` component with 3-state snap (peeked/half/full), `useDrag` gesture binding, CSS height transition (300ms cubic-bezier), ARIA region attributes, and `initialState` prop for testability.
+- Updated `src/components/search/split-view-layout.tsx`: removed inline stub div, imported and rendered `<MapPullUpSheet>` with `filterProperties`, `locale`, `propertyCount`, `isLoading`.
+- Updated `src/components/search/search-page-client.tsx`: added `overscroll-none` Tailwind class to root div (AC #6).
+- Added `pullUpSheet.*` i18n keys to both `en.json` and `es.json` (3 keys each: `regionLabel`, `close`, `closeLabel`).
+- Unskipped and fixed all 11 unit tests in `tests/unit/search/map-pull-up-sheet.spec.tsx`; corrected image type in mock data from `string[]` to `{ url: string }[]`.
+- Confirmed `split-view-layout.spec.tsx` mock for `MapPullUpSheet` was already present (ATDD pre-written); all 11 tests continue passing.
+- All 506 unit tests pass (11 new). `typecheck`, `lint`, `format:check`, and `build` all pass cleanly.
+
 ### File List
+
+- `src/components/map/map-pull-up-sheet.tsx` (CREATED)
+- `src/components/search/split-view-layout.tsx` (MODIFIED)
+- `src/components/search/search-page-client.tsx` (MODIFIED)
+- `src/messages/en.json` (MODIFIED)
+- `src/messages/es.json` (MODIFIED)
+- `tests/unit/search/map-pull-up-sheet.spec.tsx` (MODIFIED — unskipped all tests)
+- `package.json` (MODIFIED — added `@use-gesture/react@^10.3.1`)
+- `package-lock.json` (MODIFIED — lock file updated)

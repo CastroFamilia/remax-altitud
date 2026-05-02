@@ -24,7 +24,7 @@
  */
 
 import { describe, expect, it, vi, afterEach } from "vitest";
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import { render, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 // ---------------------------------------------------------------------------
@@ -65,7 +65,6 @@ vi.mock("@/components/search/search-results-skeleton", () => ({
 // Component under test — imported AFTER mocks
 // ---------------------------------------------------------------------------
 
-// @ts-expect-error — MapPullUpSheet does not exist yet (TDD red phase)
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
 
 // ---------------------------------------------------------------------------
@@ -86,7 +85,7 @@ const mockProperties = [
     zmtStatus: "titled",
     propertyType: "Casa",
     areaSlug: "perez-zeledon",
-    images: ["https://example.com/img1.jpg"],
+    images: [{ url: "https://example.com/img1.jpg", alt: "Villa" }],
     latitude: 9.35,
     longitude: -83.68,
   },
@@ -140,7 +139,7 @@ describe("MapPullUpSheet", () => {
   // AC #1 / AC #2: Default peeked state — root element presence
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid='pull-up-sheet' root element in peeked state by default",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -162,7 +161,7 @@ describe("MapPullUpSheet", () => {
   // AC #2: Drag handle bar
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid='pull-up-handle' drag handle bar",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -185,7 +184,7 @@ describe("MapPullUpSheet", () => {
   // AC #2: Peeked state content — count label, no PropertyCard
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] peeked state: shows property count label and does NOT render PropertyCard",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -212,7 +211,7 @@ describe("MapPullUpSheet", () => {
   // AC #7: ARIA — role, aria-label
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] has role='region' and aria-label='Property list'",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -234,7 +233,7 @@ describe("MapPullUpSheet", () => {
   // AC #7: ARIA — aria-expanded in peeked state is "false"
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] has aria-expanded='false' in peeked state; has aria-expanded='true' when initialState='half'",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -269,7 +268,7 @@ describe("MapPullUpSheet", () => {
   // AC #4: Full state — renders PropertyCards for all properties
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] full state (initialState='full'): renders PropertyCards for all properties",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -297,7 +296,7 @@ describe("MapPullUpSheet", () => {
   // AC #4: Full state — renders SearchResultsSkeleton when loading
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] full state (initialState='full'): renders SearchResultsSkeleton when isLoading=true",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -324,7 +323,7 @@ describe("MapPullUpSheet", () => {
   // AC #4: Full state — close button returns sheet to peeked
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] full state (initialState='full'): renders close button; clicking it updates data-state to 'peeked'",
     async () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -360,7 +359,7 @@ describe("MapPullUpSheet", () => {
   // AC #3: Half state — renders up to 3 PropertyCards in horizontal scroll container
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P2] half state (initialState='half'): renders up to 3 PropertyCards in horizontal scroll container",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -391,7 +390,7 @@ describe("MapPullUpSheet", () => {
   // AC #5 / AC #6: Height transitions and overscroll
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P2] applies height based on snap state and overscroll-behavior: none on scroll container",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
@@ -421,7 +420,7 @@ describe("MapPullUpSheet", () => {
   // AC #1: lg:hidden — sheet is only visible on mobile (CSS class check)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P2] root element has 'lg:hidden' class (renders only on mobile, hidden on desktop)",
     () => {
       // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
