@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { MapView } from "@/components/map/map-view-loader";
+import { PropertyGrid } from "@/components/property/property-grid";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets } from "@/types/search";
 
@@ -39,6 +40,12 @@ interface SplitViewLayoutProps {
   facets?: FilterFacets;
   /** Whether a filter search is in flight (Story 3.3) */
   isLoading?: boolean;
+  /** Total result count for pagination (Story 3.5) */
+  total?: number;
+  /** Current page for pagination (Story 3.5) */
+  page?: number;
+  /** Page change callback for pagination (Story 3.5) */
+  onPageChange?: (page: number) => void;
 }
 
 export function SplitViewLayout({
@@ -48,17 +55,19 @@ export function SplitViewLayout({
   locale = "en",
   propertyCount,
   onBoundsChange,
-  filterProperties: _filterProperties, // Story 3.5 will use this for property cards
+  filterProperties,
   // facets prop accepted for forward-compat (Story 3.5 reads it for card-level
   // filter counts). Not consumed yet — kept in the type to avoid breaking the
   // SearchPageClient call site when Story 3.5 lands.
   facets: _facets,
-  isLoading: _isLoading = false,
+  isLoading = false,
+  total,
+  page,
+  onPageChange,
 }: SplitViewLayoutProps) {
   // Suppress unused-var warnings for forward-compat props; they are part of
   // the public API surface used by SearchPageClient today.
   void _facets;
-  void _isLoading;
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const tPullUp = useTranslations("SearchPage.pullUpHandle");
@@ -66,7 +75,7 @@ export function SplitViewLayout({
   const mapHidden = viewMode === "grid";
   const gridHidden = viewMode === "map";
 
-  const count = propertyCount ?? _filterProperties?.length ?? properties.length;
+  const count = propertyCount ?? filterProperties?.length ?? properties.length;
 
   function handleBoundsChange(bounds: MapBounds) {
     onBoundsChange?.(bounds);
@@ -113,8 +122,19 @@ export function SplitViewLayout({
             "lg:h-[calc(100vh-var(--header-height)-3.5rem)]",
           )}
         >
-          {/* Show skeleton — Story 3.5 replaces with real cards using _filterProperties */}
-          <SearchResultsSkeleton />
+          {/* Story 3.5: render PropertyGrid when filterProperties provided, else skeleton */}
+          {filterProperties ? (
+            <PropertyGrid
+              properties={filterProperties}
+              locale={locale}
+              isLoading={isLoading}
+              total={total}
+              page={page}
+              onPageChange={onPageChange}
+            />
+          ) : (
+            <SearchResultsSkeleton />
+          )}
         </div>
 
         {/* Tablet side-panel toggle button (md: range) */}

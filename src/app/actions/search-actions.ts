@@ -38,7 +38,10 @@ function sanitizeNumber(value: number | undefined): number | undefined {
  *
  * AC: #1, #2, #6, #9, #10
  */
-export async function searchProperties(filters: SearchFilters): Promise<SearchResult> {
+export async function searchProperties(filters: SearchFilters, page = 1): Promise<SearchResult> {
+  // Sanitize page parameter — clamp to >= 1
+  const safePage = Math.max(1, Math.floor(sanitizeNumber(page) ?? 1));
+
   // Sanitize all numeric inputs (guard against NaN, Infinity — ADR-5 compliance)
   const priceMin = sanitizeNumber(filters.priceMin);
   const priceMax = sanitizeNumber(filters.priceMax);
@@ -111,7 +114,7 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
 
   const whereClause = and(...conditions);
 
-  // Main properties query — limit 50, offset 0 for MVP (pagination: Story 3.5)
+  // Main properties query — limit 20 per page with offset for pagination (Story 3.5)
   const rows = await db
     .select({
       id: properties.id,
@@ -133,8 +136,8 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
     .from(properties)
     .where(whereClause)
     .orderBy(orderByClause)
-    .limit(50)
-    .offset(0);
+    .limit(20)
+    .offset((safePage - 1) * 20);
 
   const propertyItems: PropertySearchItem[] = rows.map((row) => ({
     id: row.id,

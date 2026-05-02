@@ -329,6 +329,13 @@
       "show": "Mostrar listados",
       "hide": "Ocultar listados"
     },
+    "grid": {
+      "page": "Página {page} de {total}",
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "showing": "Mostrando {count} de {total} propiedades",
+      "empty": "No se encontraron propiedades"
+    },
     "lifestyleTags": {
       "label": "Estilo de vida",
       "chips": {
@@ -362,6 +369,29 @@
         "lotSize": "{size} m²"
       }
     }
+  },
+  "PropertyCard": {
+    "saveProperty": "Guardar propiedad",
+    "removeFromSaved": "Quitar de guardados",
+    "shortlistFull": "Lista llena (máx. 20)",
+    "region": {
+      "mountain": "Montaña",
+      "beach": "Playa"
+    },
+    "zmtStatus": {
+      "titled": "Propiedad Titulada",
+      "concession": "Concesión",
+      "zmt_restricted": "Restringida ZMT"
+    },
+    "specs": {
+      "beds": "{count} hab.",
+      "baths": "{count} baño",
+      "lot": "{size}",
+      "built": "{size} construido"
+    },
+    "share": "Compartir propiedad",
+    "viewDetails": "Ver detalles",
+    "linkCopied": "¡Enlace copiado!"
   },
   "PropertyUnavailable": {
     "heading": "Esta propiedad ya no está disponible",
