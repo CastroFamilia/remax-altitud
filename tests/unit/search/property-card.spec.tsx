@@ -1,5 +1,6 @@
 /**
  * Story 3.5: Property Cards & Grid View
+ * Updated: Story 3.7: Unit Conversion & Price Display (regression + new tests)
  * Component: src/components/property/property-card.tsx
  *
  * TDD RED PHASE — all tests use it() and will FAIL until
@@ -10,6 +11,8 @@
  *   AC #7  — Hover animation: 200ms lift with shadow-lg on desktop
  *   AC #8  — card images use aspect-ratio: 3/2 to prevent CLS
  *   AC #9  — card images use next/image with sizes prop
+ *   Story 3.7 regression:
+ *   AC #5  — Price shows USD primary + approximate EUR for non-US locales (FR10)
  *
  * Environment: jsdom (React component — .spec.tsx → jsdom via vitest.config.mts)
  *
@@ -18,12 +21,14 @@
  *     property: PropertySearchItem;
  *     locale: string;
  *     variant?: 'default' | 'compact' | 'horizontal';
+ *     unitSystem?: UnitSystem;   // NEW in Story 3.7 — defaults to 'metric'
  *   }
  *
  * Architecture notes:
  *   - PropertyCard is a Server Component (RSC) — no 'use client'
  *   - SaveButton and ShareButton are Client Component children
  *   - data-testid="property-card" on root element
+ *   - Story 3.7: formatPriceAbbrev replaced by formatUSD from @/lib/utils/currency
  */
 
 import { describe, expect, it, vi, afterEach, beforeEach } from "vitest";
@@ -110,6 +115,26 @@ vi.mock("next-intl", () => ({
         .replace("{size}", String(values.size ?? ""));
     };
   }),
+}));
+
+// ---------------------------------------------------------------------------
+// Story 3.7: Mocks for new utility imports
+// ---------------------------------------------------------------------------
+
+// Mock @/lib/utils/units — new in Story 3.7 (file doesn't exist yet)
+vi.mock("@/lib/utils/units", () => ({
+  convertArea: vi.fn((m2: number) => `${m2} m²`),
+  detectDefaultUnitSystem: vi.fn(() => "metric"),
+  SQFT_PER_M2: 10.7639,
+  M2_PER_ACRE: 4046.86,
+  M2_PER_HA: 10000,
+}));
+
+// Mock @/lib/utils/currency — new in Story 3.7 (file doesn't exist yet)
+vi.mock("@/lib/utils/currency", () => ({
+  formatUSD: vi.fn((price: number) => `$${price.toLocaleString("en-US")}`),
+  formatEUR: vi.fn((price: number) => `€${Math.round(price * 0.92).toLocaleString("en-US")}`),
+  isNonUSLocale: vi.fn(() => false),
 }));
 
 // Mock SaveButton and ShareButton as simple stubs
@@ -671,6 +696,70 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
       const src = fs.readFileSync(filePath, "utf8");
       // Server Component — must NOT start with 'use client'
       expect(src.trimStart()).not.toMatch(/^['"]use client['"]/);
+    },
+  );
+});
+
+// ---------------------------------------------------------------------------
+// Story 3.7 Regression Tests: Unit System & Currency Display (AC #5)
+// ---------------------------------------------------------------------------
+
+// Import the mocked functions to allow overriding per test
+import { isNonUSLocale } from "@/lib/utils/currency";
+
+describe("PropertyCard — Story 3.7: Currency & Unit Display", () => {
+  // -------------------------------------------------------------------------
+  // AC #5: EUR price display for non-US locales
+  // -------------------------------------------------------------------------
+
+  it(
+    "[P0] renders data-testid='property-price-eur' when locale is non-US (e.g., 'de') and isNonUSLocale returns true",
+    () => {
+      // THIS TEST WILL FAIL — property-card.tsx not yet updated for Story 3.7
+      // Override isNonUSLocale to return true for this test
+      vi.mocked(isNonUSLocale).mockReturnValue(true);
+
+      render(<PropertyCard property={mockPropertyMountain} locale="de" />);
+
+      const eurPrice = document.querySelector('[data-testid="property-price-eur"]');
+      expect(eurPrice).not.toBeNull();
+    },
+  );
+
+  it(
+    "[P0] does NOT render data-testid='property-price-eur' when locale is 'en' (isNonUSLocale returns false)",
+    () => {
+      // THIS TEST WILL FAIL — property-card.tsx not yet updated for Story 3.7
+      // isNonUSLocale returns false (default mock)
+      vi.mocked(isNonUSLocale).mockReturnValue(false);
+
+      render(<PropertyCard property={mockPropertyMountain} locale="en" />);
+
+      const eurPrice = document.querySelector('[data-testid="property-price-eur"]');
+      expect(eurPrice).toBeNull();
+    },
+  );
+
+  it(
+    "[P1] accepts optional unitSystem prop without errors (Story 3.7 new prop)",
+    () => {
+      // THIS TEST WILL FAIL — property-card.tsx not yet updated for Story 3.7
+      // Should render without errors when unitSystem='imperial' is passed
+      render(<PropertyCard property={mockPropertyMountain} locale="en" unitSystem="imperial" />);
+
+      const card = document.querySelector('[data-testid="property-card"]');
+      expect(card).not.toBeNull();
+    },
+  );
+
+  it(
+    "[P1] renders without errors when unitSystem prop is omitted (defaults to metric)",
+    () => {
+      // Regression: existing behavior must not break when unitSystem not provided
+      render(<PropertyCard property={mockPropertyMountain} locale="en" />);
+
+      const card = document.querySelector('[data-testid="property-card"]');
+      expect(card).not.toBeNull();
     },
   );
 });
