@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-02T00:00:00-06:00_
+_Last updated: 2026-05-02T14:00:00-06:00_
 
 ## Stories
 
@@ -24,8 +24,8 @@ _Last updated: 2026-05-02T00:00:00-06:00_
 | 3.3   | 3    | Search Filters & URL State | done | #87 | #125 | merged | 3.1, 3.2 | ✅ Yes (done) |
 | 3.4   | 3    | Lifestyle Tags & Smart Presets | done | #88 | #126 | merged | 3.3 | ✅ Yes (done) |
 | 3.5   | 3    | Property Cards & Grid View | done | #89 | #127 | merged | 3.1 | ✅ Yes (done) |
-| 3.6   | 3    | Mobile Pull-Up Sheet | backlog | #90 | — | — | 3.1, 3.5 | ❌ No (3.5 not merged) |
-| 3.7   | 3    | Unit Conversion & Price Display | backlog | #91 | — | — | 3.5 | ❌ No (3.5 not merged) |
+| 3.6   | 3    | Mobile Pull-Up Sheet | backlog | #90 | — | — | 3.1, 3.5 | ✅ Yes |
+| 3.7   | 3    | Unit Conversion & Price Display | backlog | #91 | — | — | 3.5 | ✅ Yes |
 | 3.8   | 3    | No-Results, Hidden Listings & Near Me | backlog | #92 | — | — | 3.3 | ✅ Yes |
 | 4.1   | 4    | Listing Detail Page & Photo Gallery | backlog | #93 | — | — | none | ❌ No (epic 3 not complete) |
 | 4.2   | 4    | Agent Card & Contact CTAs | backlog | #94 | — | — | 4.1 | ❌ No (epic 3 not complete) |
@@ -105,6 +105,7 @@ _Last updated: 2026-05-02T00:00:00-06:00_
 - Epic 1 is fully complete (all 7 stories done and merged).
 - Epic 2 is fully complete (all 7 stories done and merged). PR #121 for 2.7 merged 2026-04-26.
 - Epic 2 complete: PRs #66, #67, #117, #118, #119, #120, #121 all merged.
-- Epic 3 (Property Discovery & Search) is the active epic. Stories 3.1 (PR #122), 3.2 (PR #123), and 3.3 (PR #125) are done and merged.
+- Epic 3 (Property Discovery & Search) is the active epic. Stories 3.1–3.5 are done and merged (PRs #122, #123, #125, #126, #127).
 - Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
-- Batch 2 (2026-05-02): Story 3.4 (PR #126) and Story 3.5 (PR #127) are merged. Stories 3.6 and 3.7 are now unblocked. Story 3.8 was unblocked earlier and remains Ready to Work.
+- Updated 2026-05-02: PRs #126 (3.4) and #127 (3.5) confirmed merged. Stories 3.6, 3.7, and 3.8 are all now Ready to Work.
+- No open PRs. No stale worktrees.
