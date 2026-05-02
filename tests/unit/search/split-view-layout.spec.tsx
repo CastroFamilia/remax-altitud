@@ -18,7 +18,7 @@
  */
 
 import { describe, expect, it, vi, afterEach } from "vitest";
-import { render, cleanup } from "@testing-library/react";
+import { render, cleanup, act } from "@testing-library/react";
 
 // ---------------------------------------------------------------------------
 // Module mocks — declared before any imports of the module under test
@@ -392,9 +392,12 @@ describe("SplitViewLayout", () => {
       // Verify no fallback banner initially
       expect(document.querySelector('[data-testid="near-me-fallback-message"]')).toBeNull();
 
-      // Invoke the fallback callback captured from the mock
+      // Invoke the fallback callback captured from the mock.
+      // Wrap in act() because calling it triggers a setState inside SplitViewLayout.
       expect(capturedOnLocationFallback).not.toBeNull();
-      capturedOnLocationFallback!({ lat: 9.3725, lng: -83.7011 }, "Location unavailable — showing properties near our Pérez Zeledón office");
+      act(() => {
+        capturedOnLocationFallback!({ lat: 9.3725, lng: -83.7011 }, "Location unavailable — showing properties near our Pérez Zeledón office");
+      });
 
       // Force re-render to reflect state update
       rerender(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);

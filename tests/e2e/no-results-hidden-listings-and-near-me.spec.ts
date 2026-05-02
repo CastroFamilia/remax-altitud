@@ -164,7 +164,7 @@ test.describe("Story 3.8: No-Results, Hidden Listings & Near Me E2E (ATDD — RE
 
   test.skip(
     "[P0] 3.8-E2E-004: Near Me granted → map flies to user coords + radius overlay shown",
-    async ({ page, context }: any) => {
+    async ({ page }: any) => {
       // THIS TEST WILL FAIL — NearMeButton + MapView flyToTarget not yet implemented
       await page.setViewportSize(DESKTOP_VIEWPORT);
 
@@ -183,7 +183,8 @@ test.describe("Story 3.8: No-Results, Hidden Listings & Near Me E2E (ATDD — RE
                   heading: null,
                   speed: null,
                 },
-                timestamp: Date.now(),
+                // Fixed timestamp for determinism — tests must not assert on this value
+                timestamp: 1_700_000_000_000,
               } as GeolocationPosition);
             },
           },
