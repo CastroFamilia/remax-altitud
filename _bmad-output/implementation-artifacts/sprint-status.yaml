@@ -78,7 +78,7 @@ development_status:
 
   # Epic 4: Listing Detail & Agent Profiles
   epic-4: in-progress
-  4-1-listing-detail-page-and-photo-gallery: ready-for-dev
+  4-1-listing-detail-page-and-photo-gallery: review
   4-2-agent-card-and-contact-ctas: backlog
   4-3-agent-profile-pages: backlog
   4-4-seo-architecture-and-wordpress-redirects: backlog

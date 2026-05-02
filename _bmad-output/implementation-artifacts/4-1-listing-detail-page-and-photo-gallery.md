@@ -1,6 +1,6 @@
 # Story 4.1: Listing Detail Page & Photo Gallery
 
-**Status:** ready-for-dev
+**Status:** review
 **GH Issue:** #93
 **Epic:** 4 — Listing Detail & Agent Profiles
 **Story Key:** 4-1-listing-detail-page-and-photo-gallery
@@ -46,13 +46,13 @@ so that I can decide if this property is worth contacting an agent about.
 
 **CRITICAL:** This must be done BEFORE implementing the gallery. Story 3.2 left `unoptimized` as a workaround (see deferred-work.md). Without `remotePatterns`, `next/image` will throw an error for any external image URL. The gallery hero with LQIP/priority cannot function without this fix.
 
-- [ ] **File:** `next.config.ts` (MODIFY — exists)
-- [ ] **Current state:** No `images` key exists in `nextConfig`. Story 3.2 used `unoptimized` prop on `<Image>` components as a workaround.
-- [ ] **Action:** Add `images.remotePatterns` to `nextConfig`. Property image sources come from two places:
+- [x] **File:** `next.config.ts` (MODIFY — exists)
+- [x] **Current state:** No `images` key exists in `nextConfig`. Story 3.2 used `unoptimized` prop on `<Image>` components as a workaround.
+- [x] **Action:** Add `images.remotePatterns` to `nextConfig`. Property image sources come from two places:
   - The Azure CDN used by the RE/MAX CCA API (original photo source)
   - The local Docker volume (`/property-images/...`) served at `/property-images/` by Next.js from `public/` or by direct serving — note that **locally-served optimized images** at `/property-images/...` are relative paths and do NOT need `remotePatterns` (they're same-origin static files)
   - If the API photos use Azure CDN, the CDN hostname must be added. Check `src/lib/sync/image-optimizer.ts` to confirm the source URLs used.
-- [ ] **Minimum viable config** (adjust hostnames based on actual CDN discovery):
+- [x] **Minimum viable config** (adjust hostnames based on actual CDN discovery):
   ```typescript
   images: {
     remotePatterns: [
@@ -67,10 +67,10 @@ so that I can decide if this property is worth contacting an agent about.
     ],
   },
   ```
-- [ ] **IMPORTANT:** Check `src/lib/sync/image-optimizer.ts` — specifically the `downloadImage` function — to identify the actual source URL pattern. Adjust `remotePatterns` to match exactly.
-- [ ] **IMPORTANT:** If property images are stored locally as WebP files at relative paths (e.g., `/property-images/...`), no `remotePatterns` entry is needed for those — only for external CDN URLs.
-- [ ] **Remove** any `unoptimized` props from components that will use `next/image` properly with this fix (the gallery hero images are the primary target).
-- [ ] **Test:** `npm run build` must pass after adding `remotePatterns`.
+- [x] **IMPORTANT:** Check `src/lib/sync/image-optimizer.ts` — specifically the `downloadImage` function — to identify the actual source URL pattern. Adjust `remotePatterns` to match exactly.
+- [x] **IMPORTANT:** If property images are stored locally as WebP files at relative paths (e.g., `/property-images/...`), no `remotePatterns` entry is needed for those — only for external CDN URLs.
+- [x] **Remove** any `unoptimized` props from components that will use `next/image` properly with this fix (the gallery hero images are the primary target).
+- [x] **Test:** `npm run build` must pass after adding `remotePatterns`.
 
 ---
 
@@ -78,19 +78,19 @@ so that I can decide if this property is worth contacting an agent about.
 
 ### Task 1: Update `src/app/[locale]/property/[slug]/page.tsx` for full listing detail (AC: #7, #8, #9, #10)
 
-- [ ] **File:** `src/app/[locale]/property/[slug]/page.tsx` (MODIFY — exists; currently has `notFound()` placeholder for visible properties at line 93)
-- [ ] **CRITICAL:** The file currently has `export const dynamic = "force-dynamic"` which defeats ISR/SSG. **Remove this** and replace with ISR revalidation:
+- [x] **File:** `src/app/[locale]/property/[slug]/page.tsx` (MODIFY — exists; currently has `notFound()` placeholder for visible properties at line 93)
+- [x] **CRITICAL:** The file currently has `export const dynamic = "force-dynamic"` which defeats ISR/SSG. **Remove this** and replace with ISR revalidation:
   ```typescript
   export const revalidate = 86400; // 24 hours — daily sync revalidation (NFR25, 4.1-UNIT-002)
   ```
-- [ ] **CRITICAL:** Also add `generateStaticParams` for SSG build-time generation:
+- [x] **CRITICAL:** Also add `generateStaticParams` for SSG build-time generation:
   ```typescript
   export async function generateStaticParams() {
     const slugs = await getAllPropertySlugs(); // NEW query — see Task 3
     return slugs.map((slug) => ({ slug }));
   }
   ```
-- [ ] **Update `generateMetadata`:** The current implementation only handles soft-deleted properties. Add full metadata for visible listings:
+- [x] **Update `generateMetadata`:** The current implementation only handles soft-deleted properties. Add full metadata for visible listings:
   ```typescript
   export async function generateMetadata({
     params,
@@ -116,18 +116,18 @@ so that I can decide if this property is worth contacting an agent about.
     };
   }
   ```
-- [ ] **Replace the `notFound()` placeholder** (line 93: `// TODO Story 4.1: Full listing detail page`) with the full `ListingDetailLayout` component (Task 4).
-- [ ] Import `OptimizedImage` from `@/types/images`
-- [ ] Import `Agent` from `@/lib/db/schema/agents`
-- [ ] Fetch associated agent for the property (if `property.agentId` is set): `const agent = property.agentId ? await getAgentById(property.agentId) : null;` — see Task 3 for new query
-- [ ] Pass `property`, `agent`, and `locale` to `<ListingDetailLayout>`
+- [x] **Replace the `notFound()` placeholder** (line 93: `// TODO Story 4.1: Full listing detail page`) with the full `ListingDetailLayout` component (Task 4).
+- [x] Import `OptimizedImage` from `@/types/images`
+- [x] Import `Agent` from `@/lib/db/schema/agents`
+- [x] Fetch associated agent for the property (if `property.agentId` is set): `const agent = property.agentId ? await getAgentById(property.agentId) : null;` — see Task 3 for new query
+- [x] Pass `property`, `agent`, and `locale` to `<ListingDetailLayout>`
 
 ### Task 2: Create `src/components/listing/property-gallery.tsx` — Hero gallery with lightbox (AC: #1, #2, #3, #4, #5)
 
-- [ ] Create directory `src/components/listing/` if it does not exist
-- [ ] Create the file at EXACTLY `src/components/listing/property-gallery.tsx`
-- [ ] Add `'use client'` as first line — **PropertyGallery is a Client Component** (gesture/keyboard interaction, lightbox state, fullscreen toggle). This is specified in the architecture's Client/Server split table.
-- [ ] **CRITICAL — Lazy-Loading (R-002):** `PropertyGallery` must be lazy-loaded via `next/dynamic` from `src/app/[locale]/property/[slug]/page.tsx` or from `ListingDetailLayout`. Do NOT import it statically:
+- [x] Create directory `src/components/listing/` if it does not exist
+- [x] Create the file at EXACTLY `src/components/listing/property-gallery.tsx`
+- [x] Add `'use client'` as first line — **PropertyGallery is a Client Component** (gesture/keyboard interaction, lightbox state, fullscreen toggle). This is specified in the architecture's Client/Server split table.
+- [x] **CRITICAL — Lazy-Loading (R-002):** `PropertyGallery` must be lazy-loaded via `next/dynamic` from `src/app/[locale]/property/[slug]/page.tsx` or from `ListingDetailLayout`. Do NOT import it statically:
   ```typescript
   // In the parent (page.tsx or listing-detail-layout.tsx):
   const PropertyGallery = dynamic(
@@ -136,7 +136,7 @@ so that I can decide if this property is worth contacting an agent about.
   );
   ```
   This keeps the ~25KB gallery chunk OUT of the initial SSG page bundle (Architecture performance budget, R-002, 4.1-UNIT-001).
-- [ ] **Props interface:**
+- [x] **Props interface:**
   ```typescript
   interface PropertyGalleryProps {
     images: OptimizedImage[];
@@ -144,23 +144,23 @@ so that I can decide if this property is worth contacting an agent about.
     propertyTitle: string; // for ARIA labels
   }
   ```
-- [ ] **Hero image (first image):** Full-width, 60vh height, using `next/image` with:
+- [x] **Hero image (first image):** Full-width, 60vh height, using `next/image` with:
   - `priority` prop on the FIRST image only (LCP optimization, R-005, 4.1-E2E-002)
   - `sizes="100vw"` for hero
   - `blurDataURL={image.blurDataUrl}` + `placeholder="blur"` for LQIP (4.1-COMP-002, R-005)
   - `data-testid="gallery-hero"` on the hero container div
-- [ ] **Thumbnail strip** below the hero: horizontal row of thumbnail images:
+- [x] **Thumbnail strip** below the hero: horizontal row of thumbnail images:
   - `data-testid="gallery-thumbnail-strip"` on the strip container
   - Clicking a thumbnail changes the active hero image (local `useState` for `activeIndex`)
   - Active thumbnail gets a visible border/ring styling
   - Lazy-load thumbnails (no `priority` prop, standard lazy)
-- [ ] **Photo count overlay:** absolute-positioned overlay on the hero showing "1 / {total}":
+- [x] **Photo count overlay:** absolute-positioned overlay on the hero showing "1 / {total}":
   - `data-testid="gallery-photo-count"` on this overlay
   - Updates as active image changes
-- [ ] **Fullscreen button:** button that opens the lightbox:
+- [x] **Fullscreen button:** button that opens the lightbox:
   - `aria-label={t("openLightbox")}`
   - On click: sets `lightboxOpen = true`, shows `data-testid="gallery-lightbox"` overlay
-- [ ] **Lightbox implementation:**
+- [x] **Lightbox implementation:**
   - `data-testid="gallery-lightbox"` on the lightbox overlay (full-screen Dialog or div)
   - Use Radix UI `<Dialog>` from `@radix-ui/react-dialog` — confirmed available at `node_modules/@radix-ui/react-dialog`. Import: `import * as Dialog from '@radix-ui/react-dialog'`. Use `<Dialog.Root>`, `<Dialog.Portal>`, `<Dialog.Overlay>`, `<Dialog.Content>` for accessibility (focus trap, Escape close).
   - Show current image full-screen with navigation arrows
@@ -181,19 +181,19 @@ so that I can decide if this property is worth contacting an agent about.
   - **Touch/swipe navigation (mobile, R-008):** Use `@use-gesture/react` (`useSwipeable` pattern with `useDrag` — already installed from Story 3.6). Do NOT install a new swipe library.
   - **Focus trap:** Radix Dialog handles this natively.
   - Close button with `aria-label={t("closeLightbox")}`
-- [ ] **YouTube video embed (AC: #5):** If `youtubeUrl` is provided:
+- [x] **YouTube video embed (AC: #5):** If `youtubeUrl` is provided:
   - Extract the video ID from the URL (regex: `/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/`)
   - Render `<iframe>` with `src="https://www.youtube.com/embed/{videoId}"` after the thumbnail strip
   - Required attributes: `title={t("videoTitle")}`, `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"`, `allowFullScreen`
   - Wrap in a `aspect-video` div (Tailwind class)
   - `data-testid="gallery-video-embed"` on the iframe wrapper
-- [ ] **i18n:** Use `useTranslations('PropertyGallery')` — add new namespace (see Task 8)
-- [ ] **DO NOT use** a third-party lightbox library (e.g., `react-image-lightbox`, `yet-another-react-lightbox`). Use Radix Dialog + manual arrow/swipe navigation as described.
+- [x] **i18n:** Use `useTranslations('PropertyGallery')` — add new namespace (see Task 8)
+- [x] **DO NOT use** a third-party lightbox library (e.g., `react-image-lightbox`, `yet-another-react-lightbox`). Use Radix Dialog + manual arrow/swipe navigation as described.
 
 ### Task 3: Add `getAllPropertySlugs` and `getAgentById` queries (AC: #10, ISR prereq)
 
-- [ ] **File:** `src/lib/db/queries/properties.ts` (MODIFY — exists)
-- [ ] Add `getAllPropertySlugs` for SSG `generateStaticParams`:
+- [x] **File:** `src/lib/db/queries/properties.ts` (MODIFY — exists)
+- [x] Add `getAllPropertySlugs` for SSG `generateStaticParams`:
   ```typescript
   export async function getAllPropertySlugs(): Promise<string[]> {
     const rows = await db
@@ -203,8 +203,8 @@ so that I can decide if this property is worth contacting an agent about.
     return rows.map(r => r.slug);
   }
   ```
-- [ ] **File:** `src/lib/db/queries/agents.ts` (MODIFY — exists)
-- [ ] Add `getAgentById`:
+- [x] **File:** `src/lib/db/queries/agents.ts` (MODIFY — exists)
+- [x] Add `getAgentById`:
   ```typescript
   export async function getAgentById(id: string) {
     const rows = await db.select().from(agents).where(eq(agents.id, id)).limit(1);
@@ -215,10 +215,10 @@ so that I can decide if this property is worth contacting an agent about.
 
 ### Task 4: Create `src/components/listing/listing-detail-layout.tsx` — Full page layout (AC: #1, #6, #7, #8, #9)
 
-- [ ] Create the file at EXACTLY `src/components/listing/listing-detail-layout.tsx`
-- [ ] This is a **Server Component** — no `'use client'` directive. Layout, description, specs display are all static data.
-- [ ] **IMPORTANT:** `PropertyGallery` is a Client Component imported via `next/dynamic` — see Task 2. This is how a Server Component renders a lazy-loaded Client Component.
-- [ ] **Props interface:**
+- [x] Create the file at EXACTLY `src/components/listing/listing-detail-layout.tsx`
+- [x] This is a **Server Component** — no `'use client'` directive. Layout, description, specs display are all static data.
+- [x] **IMPORTANT:** `PropertyGallery` is a Client Component imported via `next/dynamic` — see Task 2. This is how a Server Component renders a lazy-loaded Client Component.
+- [x] **Props interface:**
   ```typescript
   interface ListingDetailLayoutProps {
     property: Property; // from @/lib/db/schema/properties (Drizzle inferred type)
@@ -226,7 +226,7 @@ so that I can decide if this property is worth contacting an agent about.
     locale: string;
   }
   ```
-- [ ] **Page composition** (from UX spec §3 listing detail):
+- [x] **Page composition** (from UX spec §3 listing detail):
   ```
   <article>
     1. PropertyGallery (lazy-loaded client component)
@@ -238,22 +238,22 @@ so that I can decide if this property is worth contacting an agent about.
     7. <!-- Similar Properties: Story 4.5 adds this; leave TODO comment -->
   </article>
   ```
-- [ ] **Title:** Use `locale === 'es' ? property.titleEs : property.titleEn`
-- [ ] **Description:** Use `locale === 'es' ? property.descriptionEs : property.descriptionEn`
-- [ ] **ZMT badge:** Reuse the `ZMT_VISUAL` pattern from `property-card.tsx` — import `getRegionFromAreaSlug` from there. The ZMT display in listing detail should be more prominent than in cards.
-- [ ] **i18n:** Use `getTranslations('ListingDetail')` (server component — use the async `getTranslations` not `useTranslations`). Add new namespace (see Task 8).
-- [ ] **Unit system:** The listing detail page respects `unitSystem` for area display. Since this is a Server Component, it cannot use `useLocaleUnits` directly. Options:
+- [x] **Title:** Use `locale === 'es' ? property.titleEs : property.titleEn`
+- [x] **Description:** Use `locale === 'es' ? property.descriptionEs : property.descriptionEn`
+- [x] **ZMT badge:** Reuse the `ZMT_VISUAL` pattern from `property-card.tsx` — import `getRegionFromAreaSlug` from there. The ZMT display in listing detail should be more prominent than in cards.
+- [x] **i18n:** Use `getTranslations('ListingDetail')` (server component — use the async `getTranslations` not `useTranslations`). Add new namespace (see Task 8).
+- [x] **Unit system:** The listing detail page respects `unitSystem` for area display. Since this is a Server Component, it cannot use `useLocaleUnits` directly. Options:
   - Default to `'metric'` for SSG (consistent pre-render)
   - The unit toggle in the sticky bar is a Client Component that hydrates and switches units client-side
   - Import `convertArea` from `@/lib/utils/units` and pass `'metric'` as default
-- [ ] **`data-testid` values (from Epic 4 test design contract — DO NOT rename these):**
+- [x] **`data-testid` values (from Epic 4 test design contract — DO NOT rename these):**
   - `data-testid="sticky-specs-bar"` on the sticky specs bar container
 
 ### Task 5: Create `src/components/listing/sticky-specs-bar.tsx` — Sticky price/specs on scroll (AC: #6)
 
-- [ ] Create the file at EXACTLY `src/components/listing/sticky-specs-bar.tsx`
-- [ ] Add `'use client'` — this component uses `useLocaleUnits` for unit toggle state
-- [ ] **Props interface:**
+- [x] Create the file at EXACTLY `src/components/listing/sticky-specs-bar.tsx`
+- [x] Add `'use client'` — this component uses `useLocaleUnits` for unit toggle state
+- [x] **Props interface:**
   ```typescript
   interface StickySpecsBarProps {
     priceUsd: number;
@@ -265,15 +265,15 @@ so that I can decide if this property is worth contacting an agent about.
     locale: string;
   }
   ```
-- [ ] **Sticky behavior:** Use `position: sticky; top: 0` (CSS, via Tailwind `sticky top-0`). This requires the parent to have a defined height flow — it will "stick" below the gallery as user scrolls.
-- [ ] **Content:** price (`formatUSD(priceUsd, locale)`), beds/baths (if available), lot + built area using `convertArea` from `useLocaleUnits`, ZMT badge
-- [ ] Import `useLocaleUnits` from `@/hooks/use-locale-units` for unit toggle
-- [ ] Import `formatUSD` from `@/lib/utils/currency`
-- [ ] Import `convertArea` from `@/lib/utils/units` (or use the one from `useLocaleUnits` return)
-- [ ] Import `UnitToggle` from `@/components/layout/unit-toggle` — render it inline in the bar so user can toggle m²/ft² while reading the listing
-- [ ] `data-testid="sticky-specs-bar"` on root element
-- [ ] **i18n:** Use `useTranslations('StickySpecsBar')` — add namespace in Task 8
-- [ ] **SSR safety:** `StickySpecsBar` uses `useLocaleUnits` which reads `localStorage`. Follow the established pattern: initialize with `defaultSystem`, reconcile in `useEffect` (code review patch from Story 3.7).
+- [x] **Sticky behavior:** Use `position: sticky; top: 0` (CSS, via Tailwind `sticky top-0`). This requires the parent to have a defined height flow — it will "stick" below the gallery as user scrolls.
+- [x] **Content:** price (`formatUSD(priceUsd, locale)`), beds/baths (if available), lot + built area using `convertArea` from `useLocaleUnits`, ZMT badge
+- [x] Import `useLocaleUnits` from `@/hooks/use-locale-units` for unit toggle
+- [x] Import `formatUSD` from `@/lib/utils/currency`
+- [x] Import `convertArea` from `@/lib/utils/units` (or use the one from `useLocaleUnits` return)
+- [x] Import `UnitToggle` from `@/components/layout/unit-toggle` — render it inline in the bar so user can toggle m²/ft² while reading the listing
+- [x] `data-testid="sticky-specs-bar"` on root element
+- [x] **i18n:** Use `useTranslations('StickySpecsBar')` — add namespace in Task 8
+- [x] **SSR safety:** `StickySpecsBar` uses `useLocaleUnits` which reads `localStorage`. Follow the established pattern: initialize with `defaultSystem`, reconcile in `useEffect` (code review patch from Story 3.7).
 
 ### Task 6: Update `getSimilarProperties` query to support full gallery cards (AC: dependency for future Task, no-op in 4.1 scope)
 
@@ -281,10 +281,10 @@ so that I can decide if this property is worth contacting an agent about.
 
 ### Task 7: Add `getPropertyBySlug` full-data query enrichment (AC: #7)
 
-- [ ] **File:** `src/lib/db/queries/properties.ts` (MODIFY)
-- [ ] The existing `getPropertyBySlug` returns `properties.*` which includes all fields. **No schema change needed.**
-- [ ] **VERIFY** that `getPropertyBySlug` returns `agentId` (it does — `properties.agentId` is in the select). If it does, Task 1 can use `property.agentId` directly.
-- [ ] Add a new `getListingDetailProperty` query that does a JOIN to also return agent data (optional — only if the dev finds it cleaner than two separate queries):
+- [x] **File:** `src/lib/db/queries/properties.ts` (MODIFY)
+- [x] The existing `getPropertyBySlug` returns `properties.*` which includes all fields. **No schema change needed.**
+- [x] **VERIFY** that `getPropertyBySlug` returns `agentId` (it does — `properties.agentId` is in the select). If it does, Task 1 can use `property.agentId` directly.
+- [x] Add a new `getListingDetailProperty` query that does a JOIN to also return agent data (optional — only if the dev finds it cleaner than two separate queries):
   ```typescript
   // OPTIONAL: single query with agent join
   // If you prefer two queries (getPropertyBySlug + getAgentById), that is also acceptable.
@@ -292,7 +292,7 @@ so that I can decide if this property is worth contacting an agent about.
 
 ### Task 8: Add i18n keys for new components (AC: #7, #8)
 
-- [ ] **File:** `src/messages/en.json` — add new namespaces:
+- [x] **File:** `src/messages/en.json` — add new namespaces:
   ```json
   "PropertyGallery": {
     "openLightbox": "View all photos",
@@ -330,7 +330,7 @@ so that I can decide if this property is worth contacting an agent about.
     "toggleUnits": "Toggle area units"
   }
   ```
-- [ ] **File:** `src/messages/es.json` — add equivalent Spanish translations:
+- [x] **File:** `src/messages/es.json` — add equivalent Spanish translations:
   ```json
   "PropertyGallery": {
     "openLightbox": "Ver todas las fotos",
@@ -368,20 +368,20 @@ so that I can decide if this property is worth contacting an agent about.
     "toggleUnits": "Cambiar unidades de área"
   }
   ```
-- [ ] **IMPORTANT re: legal terms (AC: #8):** The glossary (`src/lib/constants/glossary.ts`) defines `"Titled Property" → "Propiedad Titulada"` and `"Concession" → "Concesión"`. The ZMT status i18n keys above already use these exact translations. **No additional glossary wiring is needed** — the translations ARE the glossary values. This satisfies FR33.
-- [ ] **DO NOT re-add** existing keys (`PropertyCard.*`, `PropertyUnavailable.*`, `UnitToggle.*`) — they already exist.
+- [x] **IMPORTANT re: legal terms (AC: #8):** The glossary (`src/lib/constants/glossary.ts`) defines `"Titled Property" → "Propiedad Titulada"` and `"Concession" → "Concesión"`. The ZMT status i18n keys above already use these exact translations. **No additional glossary wiring is needed** — the translations ARE the glossary values. This satisfies FR33.
+- [x] **DO NOT re-add** existing keys (`PropertyCard.*`, `PropertyUnavailable.*`, `UnitToggle.*`) — they already exist.
 
 ### Task 9: Unit tests for `PropertyGallery` (AC: #1, #2, #4)
 
-- [ ] **FIRST:** Update `vitest.config.mts` to add jsdom for the new listing tests directory. The current `environmentMatchGlobs` only covers `tests/unit/search/**/*.spec.tsx`. Add:
+- [x] **FIRST:** Update `vitest.config.mts` to add jsdom for the new listing tests directory. The current `environmentMatchGlobs` only covers `tests/unit/search/**/*.spec.tsx`. Add:
   ```typescript
   ["tests/unit/listing/**/*.spec.tsx", "jsdom"],
   ["tests/unit/listing/**/*.test.tsx", "jsdom"],
   ```
   **Without this, `PropertyGallery` and `StickySpecsBar` component tests will run in the wrong (node) environment and fail on DOM APIs.**
-- [ ] Create `tests/unit/listing/property-gallery.spec.tsx` (Vitest + jsdom — after adding the glob above)
-- [ ] **CRITICAL — vi.mock hoisting pattern** (learned in Epic 3): ALL `vi.mock()` calls MUST appear BEFORE the component import. Add the comment `// imported AFTER mocks` after mock declarations.
-- [ ] **Required mocks:**
+- [x] Create `tests/unit/listing/property-gallery.spec.tsx` (Vitest + jsdom — after adding the glob above)
+- [x] **CRITICAL — vi.mock hoisting pattern** (learned in Epic 3): ALL `vi.mock()` calls MUST appear BEFORE the component import. Add the comment `// imported AFTER mocks` after mock declarations.
+- [x] **Required mocks:**
   ```typescript
   vi.mock('next/dynamic', () => ({
     default: (fn: () => Promise<{ default: React.ComponentType }>) => {
@@ -423,7 +423,7 @@ so that I can decide if this property is worth contacting an agent about.
   import { render, screen, fireEvent } from '@testing-library/react';
   import { PropertyGallery } from '@/components/listing/property-gallery';
   ```
-- [ ] **Test fixture:**
+- [x] **Test fixture:**
   ```typescript
   const mockImages: OptimizedImage[] = [
     {
@@ -452,7 +452,7 @@ so that I can decide if this property is worth contacting an agent about.
     },
   ];
   ```
-- [ ] **Tests to write:**
+- [x] **Tests to write:**
   - `[P0]` renders `data-testid="gallery-hero"` element
   - `[P0]` renders `data-testid="gallery-thumbnail-strip"` element
   - `[P0]` renders `data-testid="gallery-photo-count"` with "1 / 3" (or equivalent photoCount key)
@@ -469,8 +469,8 @@ so that I can decide if this property is worth contacting an agent about.
 
 ### Task 10: Unit tests for `StickySpecsBar` (AC: #6)
 
-- [ ] Create `tests/unit/listing/sticky-specs-bar.spec.tsx` (jsdom applies after the vitest.config.mts update in Task 9)
-- [ ] **Required mocks (hoisted before imports):**
+- [x] Create `tests/unit/listing/sticky-specs-bar.spec.tsx` (jsdom applies after the vitest.config.mts update in Task 9)
+- [x] **Required mocks (hoisted before imports):**
   ```typescript
   vi.mock('next-intl', () => ({
     useTranslations: vi.fn(() => (key: string, values?: Record<string, unknown>) =>
@@ -496,7 +496,7 @@ so that I can decide if this property is worth contacting an agent about.
     UnitToggle: () => <div data-testid="unit-toggle" />,
   }));
   ```
-- [ ] **Tests to write:**
+- [x] **Tests to write:**
   - `[P0]` renders `data-testid="sticky-specs-bar"` element
   - `[P0]` displays price (USD formatted)
   - `[P0]` displays bedroom count when provided
@@ -509,18 +509,18 @@ so that I can decide if this property is worth contacting an agent about.
 
 ### Task 11: Unit tests for listing detail page query (AC: #10 ISR revalidation — 4.1-UNIT-002)
 
-- [ ] Create `tests/unit/listing/listing-detail-page.spec.ts` (`.ts`, not `.tsx` — tests the revalidation constant, no JSX)
-- [ ] **Tests to write:**
+- [x] Create `tests/unit/listing/listing-detail-page.spec.ts` (`.ts`, not `.tsx` — tests the revalidation constant, no JSX)
+- [x] **Tests to write:**
   - `[P2]` `revalidate` export equals `86400` (4.1-UNIT-002): import the page module and assert `revalidate === 86400`
   - `[P2]` `getAllPropertySlugs` returns an array of strings (mock the db)
 
 ### Task 12: CI verification (AC: all)
 
-- [ ] `npm run typecheck` → 0 new errors
-- [ ] `npm run lint` → 0 errors
-- [ ] `npm run format:check` → pass
-- [ ] `npm run build` → pass (SSG generation with `getAllPropertySlugs` runs at build time — if DB is not available, use empty array fallback or `try/catch`)
-- [ ] `npm test` → all existing tests pass (583+ baseline) + new listing tests pass
+- [x] `npm run typecheck` → 0 new errors
+- [x] `npm run lint` → 0 errors
+- [x] `npm run format:check` → pass
+- [x] `npm run build` → pass (SSG generation with `getAllPropertySlugs` runs at build time — if DB is not available, use empty array fallback or `try/catch`)
+- [x] `npm test` → all existing tests pass (583+ baseline) + new listing tests pass
 
 ---
 
@@ -666,6 +666,53 @@ If local, Task 0 may be a no-op for the gallery itself, but still add `remotePat
 - Unit tests (PropertyGallery): `tests/unit/listing/property-gallery.spec.tsx`
 - Unit tests (StickySpecsBar): `tests/unit/listing/sticky-specs-bar.spec.tsx`
 - Unit tests (Page/Queries): `tests/unit/listing/listing-detail-page.spec.ts`
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+
+Implemented Story 4.1 in the following order:
+1. Task 0: Added `images.remotePatterns` to `next.config.ts` for Azure CDN
+2. Task 3: Added `getAllPropertySlugs` to `properties.ts` and `getAgentById` to `agents.ts`
+3. Task 8: Added `PropertyGallery`, `ListingDetail`, and `StickySpecsBar` i18n namespaces
+4. Task 2: Implemented `PropertyGallery` client component with hero, thumbnails, lightbox, swipe/keyboard nav, and YouTube embed
+5. Task 5: Implemented `StickySpecsBar` client component with sticky positioning, unit toggle
+6. Task 4: Implemented `ListingDetailLayout` server component; created `PropertyGalleryLoader` to handle `next/dynamic ssr:false` from Client Component context (Turbopack constraint)
+7. Task 1: Updated `page.tsx` with ISR (revalidate=86400), generateStaticParams, full generateMetadata, and ListingDetailLayout
+8. Tasks 9-12: Activated ATDD tests (removed stubs and it.skip), fixed mock paths (db/client vs db), added navigation mocks
+
+**Key technical decision:** Turbopack (used in `next build --turbopack`) does not allow `next/dynamic` with `ssr: false` in Server Components. Created `PropertyGalleryLoader` as a thin Client Component wrapper (pattern mirrors `MapViewLoader` from Story 3.2).
+
+### Completion Notes
+
+- All 11 Acceptance Criteria satisfied
+- 614 unit tests pass, 3 E2E scaffolds remain skipped (Playwright not installed — by design)
+- Build passes with property page correctly generated as SSG (●) with generateStaticParams
+- typecheck: 0 errors; lint: 0 errors (4 warnings, all pre-existing or in test files); format: clean
+- `data-testid` contract honored: gallery-hero, gallery-thumbnail-strip, gallery-lightbox, gallery-photo-count, sticky-specs-bar
+
+### File List
+
+- `next.config.ts` — MODIFIED: Added images.remotePatterns for Azure CDN
+- `src/app/[locale]/property/[slug]/page.tsx` — MODIFIED: ISR, generateStaticParams, generateMetadata, ListingDetailLayout
+- `src/components/listing/property-gallery.tsx` — MODIFIED (stub→impl): Full gallery with hero, thumbnails, lightbox, swipe, keyboard, YouTube
+- `src/components/listing/property-gallery-loader.tsx` — CREATED: Client Component wrapper for lazy-loading PropertyGallery
+- `src/components/listing/listing-detail-layout.tsx` — MODIFIED (stub→impl): Server Component page composition
+- `src/components/listing/sticky-specs-bar.tsx` — MODIFIED (stub→impl): Client Component with sticky, price, area, ZMT, unit toggle
+- `src/lib/db/queries/properties.ts` — MODIFIED: Added getAllPropertySlugs
+- `src/lib/db/queries/agents.ts` — MODIFIED: Added getAgentById, added eq import
+- `src/messages/en.json` — MODIFIED: Added PropertyGallery, ListingDetail, StickySpecsBar namespaces
+- `src/messages/es.json` — MODIFIED: Added PropertyGallery, ListingDetail, StickySpecsBar namespaces (Spanish)
+- `tests/unit/listing/property-gallery.spec.tsx` — MODIFIED: Removed red-phase stub, activated tests
+- `tests/unit/listing/sticky-specs-bar.spec.tsx` — MODIFIED: Removed red-phase stub, activated tests
+- `tests/unit/listing/listing-detail-page.spec.ts` — MODIFIED: Fixed db mock path, added navigation mocks, activated tests
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` — MODIFIED: Status updated to review
+
+### Change Log
+
+- 2026-05-02: Story 4.1 implementation complete — listing detail page with hero gallery, lightbox, sticky specs bar, ISR/SSG routing, i18n (Date: 2026-05-02)
 
 ---
 

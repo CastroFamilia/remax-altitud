@@ -1,5 +1,5 @@
 import "server-only";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { agents } from "@/lib/db/schema/agents";
 import { slugify } from "@/lib/sync/utils/slugify";
@@ -71,6 +71,20 @@ export async function upsertAgent(raw: RawAgent, officeId: string): Promise<void
       throw err;
     }
   }
+}
+
+/**
+ * Fetches a single agent by their UUID.
+ * Used by the listing detail page to resolve the property's assigned agent.
+ * Returns null if no agent with that ID exists.
+ *
+ * Story 4.1, Task 3.
+ *
+ * @param id - Agent UUID (not api_id)
+ */
+export async function getAgentById(id: string) {
+  const rows = await db.select().from(agents).where(eq(agents.id, id)).limit(1);
+  return rows[0] ?? null;
 }
 
 /**

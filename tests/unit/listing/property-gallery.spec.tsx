@@ -44,15 +44,6 @@
 
 import { vi, describe, it, expect, afterEach } from "vitest";
 
-// RED PHASE STUB — remove this mock when implementing property-gallery.tsx
-// This stub allows the test file to compile and run in red-phase.
-// When removed, the real component implementation will be imported instead.
-vi.mock("@/components/listing/property-gallery", () => ({
-  // Stub: returns null — all tests that depend on real behavior will FAIL (red phase)
-  PropertyGallery: () => null,
-  default: () => null,
-}));
-
 vi.mock("next/dynamic", () => ({
   default: (
     _fn: () => Promise<{ default: React.ComponentType }>,
@@ -201,7 +192,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   // P0: Core gallery structure
   // ---------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid=gallery-hero element",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -216,7 +207,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders data-testid=gallery-thumbnail-strip element",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -231,7 +222,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders data-testid=gallery-photo-count showing '1 / 3' initially",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -250,7 +241,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders first image with priority prop for LCP optimization (R-005)",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -272,7 +263,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] lightbox is NOT visible initially (gallery-lightbox not in DOM)",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -293,7 +284,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   // P1: Lightbox interaction
   // ---------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] clicking fullscreen button opens lightbox (gallery-lightbox becomes visible)",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -317,7 +308,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] pressing ArrowRight in open lightbox advances image index",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -347,7 +338,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] pressing ArrowLeft in open lightbox retreats image index",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -375,7 +366,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] YouTube embed renders data-testid=gallery-video-embed when youtubeUrl provided",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -397,7 +388,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] no video embed renders when youtubeUrl is null",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -414,7 +405,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] no video embed renders when youtubeUrl is undefined (not provided)",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -434,7 +425,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   // P2: LQIP blur and thumbnail interaction (4.1-COMP-001, 4.1-COMP-002)
   // ---------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P2] 4.1-COMP-002: first image has blur placeholder (blurDataURL passed to next/image)",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -457,7 +448,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.1-COMP-001: clicking a thumbnail changes active index and updates photo count to '2 / 3'",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
@@ -484,7 +475,7 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] renders active thumbnail indicator on current image",
     () => {
       // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate

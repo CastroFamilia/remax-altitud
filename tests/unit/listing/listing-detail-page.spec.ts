@@ -34,7 +34,8 @@ import { vi, describe, it, expect } from "vitest";
 // ---------------------------------------------------------------------------
 
 // Mock drizzle db to avoid real DB calls
-vi.mock("@/lib/db", () => ({
+// Note: properties.ts and agents.ts import from "@/lib/db/client" (not "@/lib/db")
+vi.mock("@/lib/db/client", () => ({
   db: {
     select: vi.fn(() => ({
       from: vi.fn(() => ({
@@ -66,13 +67,36 @@ vi.mock("next/headers", () => ({
   headers: vi.fn(() => ({ get: vi.fn(() => null) })),
 }));
 
-// Mock next/navigation — required by pages
+// Mock next/navigation — required by pages and next-intl internals
 vi.mock("next/navigation", () => ({
   notFound: vi.fn(),
   redirect: vi.fn(),
-  useRouter: vi.fn(),
-  useSearchParams: vi.fn(),
+  useRouter: vi.fn(() => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() })),
+  useSearchParams: vi.fn(() => new URLSearchParams()),
   usePathname: vi.fn(() => "/en/property/test"),
+  useParams: vi.fn(() => ({ locale: "en" })),
+  useSelectedLayoutSegment: vi.fn(() => null),
+  useSelectedLayoutSegments: vi.fn(() => []),
+}));
+
+// Mock @/i18n/navigation to avoid next-intl internals that import next/navigation
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({ children }: { children: unknown }) => children,
+  redirect: vi.fn(),
+  usePathname: vi.fn(() => "/en/property/test"),
+  useRouter: vi.fn(() => ({ push: vi.fn() })),
+  getPathname: vi.fn(() => "/en/property/test"),
+}));
+
+// Mock next-intl/navigation to prevent ESM resolution issues
+vi.mock("next-intl/navigation", () => ({
+  createNavigation: vi.fn(() => ({
+    Link: ({ children }: { children: unknown }) => children,
+    redirect: vi.fn(),
+    usePathname: vi.fn(),
+    useRouter: vi.fn(),
+    getPathname: vi.fn(),
+  })),
 }));
 
 // Mock next-intl server
@@ -90,9 +114,14 @@ vi.mock("next/dynamic", () => ({
   default: () => () => null,
 }));
 
-// Mock PropertyGallery to avoid component resolution errors in page module
+// Mock PropertyGallery and its loader to avoid component resolution errors in page module
 vi.mock("@/components/listing/property-gallery", () => ({
   PropertyGallery: () => null,
+  default: () => null,
+}));
+
+vi.mock("@/components/listing/property-gallery-loader", () => ({
+  PropertyGalleryLoader: () => null,
   default: () => null,
 }));
 
@@ -107,7 +136,7 @@ vi.mock("@/components/listing/listing-detail-layout", () => ({
 // ---------------------------------------------------------------------------
 
 describe("Listing Detail Page — ISR revalidation (Story 4.1 — TDD RED PHASE)", () => {
-  it.skip(
+  it(
     "[P2] 4.1-UNIT-002: page exports revalidate = 86400 (daily ISR revalidation, NFR25)",
     async () => {
       // THIS TEST WILL FAIL — page.tsx still has force-dynamic, not revalidate = 86400
@@ -122,7 +151,7 @@ describe("Listing Detail Page — ISR revalidation (Story 4.1 — TDD RED PHASE)
     },
   );
 
-  it.skip(
+  it(
     "[P2] page does NOT export dynamic = 'force-dynamic' (must be removed per Task 1)",
     async () => {
       // THIS TEST WILL FAIL — page.tsx still has force-dynamic
@@ -142,7 +171,7 @@ describe("Listing Detail Page — ISR revalidation (Story 4.1 — TDD RED PHASE)
 // ---------------------------------------------------------------------------
 
 describe("getAllPropertySlugs query (Story 4.1 — TDD RED PHASE)", () => {
-  it.skip(
+  it(
     "[P2] getAllPropertySlugs is exported from properties.ts and returns string array",
     async () => {
       // THIS TEST WILL FAIL — getAllPropertySlugs not yet added to properties.ts
@@ -167,7 +196,7 @@ describe("getAllPropertySlugs query (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] getAllPropertySlugs returns only slugs for visible properties",
     async () => {
       // THIS TEST WILL FAIL — getAllPropertySlugs not yet added to properties.ts
@@ -192,7 +221,7 @@ describe("getAllPropertySlugs query (Story 4.1 — TDD RED PHASE)", () => {
 // ---------------------------------------------------------------------------
 
 describe("getAgentById query (Story 4.1 — TDD RED PHASE)", () => {
-  it.skip(
+  it(
     "[P2] getAgentById is exported from agents.ts",
     async () => {
       // THIS TEST WILL FAIL — getAgentById not yet added to agents.ts

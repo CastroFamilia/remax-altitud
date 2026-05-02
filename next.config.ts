@@ -6,6 +6,23 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // images.remotePatterns — Task 0, Story 4.1
+  // Property images are stored locally as WebP files at relative /property-images/... paths
+  // and do NOT need remotePatterns (same-origin static files).
+  // Azure CDN entries are added here in case any component references original CDN URLs
+  // (e.g., map popups from Story 3.2, agent photos from the RE/MAX CCA API).
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.azurefd.net", // Azure Front Door CDN — RE/MAX CCA API photos
+      },
+      {
+        protocol: "https",
+        hostname: "*.blob.core.windows.net", // Azure Blob Storage fallback
+      },
+    ],
+  },
   // sharp is a native module — opt it out of Server Component bundling so
   // Next.js uses the native Node.js require() path instead of Webpack bundling.
   // `serverExternalPackages` is the stable key in Next.js 15+ (was

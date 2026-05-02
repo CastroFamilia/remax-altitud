@@ -41,15 +41,6 @@
 
 import { vi, describe, it, expect, afterEach } from "vitest";
 
-// RED PHASE STUB — remove this mock when implementing sticky-specs-bar.tsx
-// This stub allows the test file to compile and run in red-phase.
-// When removed, the real component implementation will be imported instead.
-vi.mock("@/components/listing/sticky-specs-bar", () => ({
-  // Stub: returns null — all tests that depend on real behavior will FAIL (red phase)
-  StickySpecsBar: () => null,
-  default: () => null,
-}));
-
 vi.mock("next-intl", () => ({
   useTranslations: vi.fn(
     () => (key: string, values?: Record<string, unknown>) =>
@@ -95,7 +86,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   // P0: Core content rendering
   // ---------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] renders data-testid=sticky-specs-bar element",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
@@ -115,7 +106,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] displays USD formatted price",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
@@ -138,7 +129,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] displays bedroom count when provided",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
@@ -160,7 +151,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] displays bathroom count when provided",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
@@ -182,7 +173,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] renders ZMT status text",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
@@ -208,7 +199,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   // P1: Area display and unit toggle
   // ---------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] renders lot size using convertArea when lotSizeM2 is provided",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
@@ -230,7 +221,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] renders built area using convertArea when constructionM2 is provided",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
@@ -252,7 +243,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] renders UnitToggle component",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
@@ -277,7 +268,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   // P2: Null handling
   // ---------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P2] does not render bedroom spec when bedrooms is null",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
@@ -299,7 +290,7 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] renders correctly when lot size and built area are null",
     () => {
       // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
