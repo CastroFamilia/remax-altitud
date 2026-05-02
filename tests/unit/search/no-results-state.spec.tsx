@@ -78,13 +78,13 @@ describe("NoResultsState — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] AC #1: renders root element with data-testid
   // -------------------------------------------------------------------------
 
-  it.skip("[P0] renders data-testid='no-results-state' element", () => {
+  it("[P0] renders data-testid='no-results-state' element", () => {
     // THIS TEST WILL FAIL — no-results-state.tsx does not yet have data-testid
     const { getByTestId } = render(<NoResultsState filters={{}} />);
     expect(getByTestId("no-results-state")).toBeTruthy();
   });
 
-  it.skip("[P0] renders with empty filters {} without throwing", () => {
+  it("[P0] renders with empty filters {} without throwing", () => {
     // THIS TEST WILL FAIL — NoResultsState does not yet accept a filters prop
     expect(() => render(<NoResultsState filters={{}} />)).not.toThrow();
   });
@@ -93,7 +93,7 @@ describe("NoResultsState — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] AC #2: WhatsApp CTA with correct href
   // -------------------------------------------------------------------------
 
-  it.skip("[P0] WhatsApp href contains wa.me when filters are empty", () => {
+  it("[P0] WhatsApp href contains wa.me when filters are empty", () => {
     // THIS TEST WILL FAIL — WhatsApp href not yet dynamically built from filters
     const { getByTestId } = render(<NoResultsState filters={{}} />);
     const ctaAnchor = getByTestId("no-results-whatsapp-cta");
@@ -101,7 +101,7 @@ describe("NoResultsState — Story 3.8 ATDD (RED PHASE)", () => {
     expect(href).toContain("wa.me");
   });
 
-  it.skip("[P0] WhatsApp href contains filter criteria when type is set", () => {
+  it("[P0] WhatsApp href contains filter criteria when type is set", () => {
     // THIS TEST WILL FAIL — filters prop not yet accepted
     const { getByTestId } = render(<NoResultsState filters={{ type: "Casa" }} />);
     const ctaAnchor = getByTestId("no-results-whatsapp-cta");
@@ -110,7 +110,7 @@ describe("NoResultsState — Story 3.8 ATDD (RED PHASE)", () => {
     expect(decodeURIComponent(href)).toContain("Casa");
   });
 
-  it.skip("[P0] WhatsApp href contains price when priceMin is set", () => {
+  it("[P0] WhatsApp href contains price when priceMin is set", () => {
     // THIS TEST WILL FAIL — filters prop not yet accepted
     const { getByTestId } = render(
       <NoResultsState filters={{ priceMin: 150000 }} />,
@@ -121,7 +121,7 @@ describe("NoResultsState — Story 3.8 ATDD (RED PHASE)", () => {
     expect(decodeURIComponent(href)).toContain("150");
   });
 
-  it.skip("[P0] forwards multiple filter criteria — type + bedrooms + area", () => {
+  it("[P0] forwards multiple filter criteria — type + bedrooms + area", () => {
     // THIS TEST WILL FAIL — filters prop not yet accepted
     const { getByTestId } = render(
       <NoResultsState
@@ -140,7 +140,7 @@ describe("NoResultsState — Story 3.8 ATDD (RED PHASE)", () => {
   // [P1] AC #1, #2: secondary action anchor has correct data-testid
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] renders data-testid='no-results-whatsapp-cta' on secondary action anchor",
     () => {
       // THIS TEST WILL FAIL — data-testid not yet present on anchor

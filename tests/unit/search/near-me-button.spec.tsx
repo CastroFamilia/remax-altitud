@@ -88,7 +88,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] Rendering
   // -------------------------------------------------------------------------
 
-  it.skip("[P0] renders data-testid='near-me-button' element", () => {
+  it("[P0] renders data-testid='near-me-button' element", () => {
     // THIS TEST WILL FAIL — NearMeButton does not yet exist
     const { getByTestId } = render(
       <NearMeButton
@@ -99,7 +99,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
     expect(getByTestId("near-me-button")).toBeTruthy();
   });
 
-  it.skip("[P0] button is enabled when status is 'idle'", () => {
+  it("[P0] button is enabled when status is 'idle'", () => {
     // THIS TEST WILL FAIL — NearMeButton does not yet exist
     vi.mocked(useGeolocation).mockReturnValue({
       status: "idle",
@@ -118,7 +118,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
     expect(btn.disabled).toBe(false);
   });
 
-  it.skip("[P0] button is disabled when status is 'loading'", () => {
+  it("[P0] button is disabled when status is 'loading'", () => {
     // THIS TEST WILL FAIL — NearMeButton does not yet exist
     vi.mocked(useGeolocation).mockReturnValue({
       status: "loading",
@@ -141,7 +141,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] AC #4: click triggers requestLocation
   // -------------------------------------------------------------------------
 
-  it.skip("[P0] clicking button calls requestLocation", () => {
+  it("[P0] clicking button calls requestLocation", () => {
     // THIS TEST WILL FAIL — NearMeButton does not yet exist
     vi.mocked(useGeolocation).mockReturnValue({
       status: "idle",
@@ -164,7 +164,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] AC #5: onLocationSuccess called when status transitions to 'success'
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] onLocationSuccess is called when status transitions to 'success' with coords",
     () => {
       // THIS TEST WILL FAIL — NearMeButton does not yet exist
@@ -195,7 +195,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] AC #6: onLocationFallback called when status transitions to 'denied'
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] onLocationFallback is called when status transitions to 'denied' with fallbackCoords",
     () => {
       // THIS TEST WILL FAIL — NearMeButton does not yet exist

@@ -1,6 +1,6 @@
 # Story 3.8: No-Results, Hidden Listings & Near Me
 
-**Status:** ready-for-dev
+**Status:** review
 **GH Issue:** #92
 **Epic:** 3 — Property Discovery & Search
 **Story Key:** 3-8-no-results-hidden-listings-and-near-me
@@ -35,11 +35,11 @@ so that I'm never stuck at a dead end and can discover nearby properties.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Upgrade `NoResultsState` to forward search criteria into WhatsApp CTA (AC: #1, #2)
-  - [ ] **File**: `src/components/property/no-results-state.tsx` (MODIFY — exists with basic WhatsApp stub)
-  - [ ] **Critical:** Currently uses a static `t("whatsappMessage")` string. Must be upgraded to accept and forward live search filters from URL state into the WhatsApp message.
-  - [ ] Add a `filters` prop (type `SearchFilters` from `@/types/search`): `interface NoResultsStateProps { filters: SearchFilters; }`
-  - [ ] Build a human-readable summary of active filters for the WhatsApp message:
+- [x] Task 1: Upgrade `NoResultsState` to forward search criteria into WhatsApp CTA (AC: #1, #2)
+  - [x] **File**: `src/components/property/no-results-state.tsx` (MODIFY — exists with basic WhatsApp stub)
+  - [x] **Critical:** Currently uses a static `t("whatsappMessage")` string. Must be upgraded to accept and forward live search filters from URL state into the WhatsApp message.
+  - [x] Add a `filters` prop (type `SearchFilters` from `@/types/search`): `interface NoResultsStateProps { filters: SearchFilters; }`
+  - [x] Build a human-readable summary of active filters for the WhatsApp message:
     ```ts
     function buildSearchCriteriaSummary(filters: SearchFilters): string {
       const parts: string[] = [];
@@ -53,21 +53,21 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       return parts.length ? parts.join(', ') : 'any property';
     }
     ```
-  - [ ] Build the WhatsApp message dynamically:
+  - [x] Build the WhatsApp message dynamically:
     ```ts
     const criteria = buildSearchCriteriaSummary(filters);
     const whatsAppHref = buildWhatsAppUrl(offices[0], `Hi, I'm looking for: ${criteria}`);
     ```
-  - [ ] Add `data-testid="no-results-state"` on the root element of `EmptyState` wrapper
-  - [ ] Add `data-testid="no-results-whatsapp-cta"` on the secondary action anchor (EmptyState's secondaryAction.label element)
-  - [ ] **DO NOT change** the `EmptyState` component itself — use it as-is
-  - [ ] **DO NOT change** the `EmptyState`'s `primaryAction` (adjust filters / browse) — keep it pointing to `/search`
+  - [x] Add `data-testid="no-results-state"` on the root element of `EmptyState` wrapper
+  - [x] Add `data-testid="no-results-whatsapp-cta"` on the secondary action anchor (EmptyState's secondaryAction.label element)
+  - [x] **DO NOT change** the `EmptyState` component itself — use it as-is
+  - [x] **DO NOT change** the `EmptyState`'s `primaryAction` (adjust filters / browse) — keep it pointing to `/search`
 
-- [ ] Task 2: Wire `NoResultsState` into `PropertyGrid` and render it when zero results (AC: #1, #2)
-  - [ ] **File**: `src/components/property/property-grid.tsx` (MODIFY — exists from Story 3.5)
-  - [ ] Add `filters?: SearchFilters` prop to `PropertyGridProps`
-  - [ ] Import `NoResultsState` from `@/components/property/no-results-state`
-  - [ ] Replace the existing plain empty state text (`tGrid("empty")`) with `<NoResultsState filters={filters ?? {}} />` when `currentPageItems.length === 0 && !isLoading`:
+- [x] Task 2: Wire `NoResultsState` into `PropertyGrid` and render it when zero results (AC: #1, #2)
+  - [x] **File**: `src/components/property/property-grid.tsx` (MODIFY — exists from Story 3.5)
+  - [x] Add `filters?: SearchFilters` prop to `PropertyGridProps`
+  - [x] Import `NoResultsState` from `@/components/property/no-results-state`
+  - [x] Replace the existing plain empty state text (`tGrid("empty")`) with `<NoResultsState filters={filters ?? {}} />` when `currentPageItems.length === 0 && !isLoading`:
     ```tsx
     {currentPageItems.length === 0 && !isLoading && (
       <div className="col-span-full">
@@ -75,28 +75,28 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       </div>
     )}
     ```
-  - [ ] **Remove** the old `{tGrid("empty")}` div (it's replaced by `NoResultsState`)
-  - [ ] Pass `filters` through from `SplitViewLayout` → `PropertyGrid`
+  - [x] **Remove** the old `{tGrid("empty")}` div (it's replaced by `NoResultsState`)
+  - [x] Pass `filters` through from `SplitViewLayout` → `PropertyGrid`
 
-- [ ] Task 3: Pass `filters` from `SplitViewLayout` to `PropertyGrid` (AC: #1, #2)
-  - [ ] **File**: `src/components/search/split-view-layout.tsx` (MODIFY — exists from Stories 3.1–3.7)
-  - [ ] Add `filters?: SearchFilters` to `SplitViewLayoutProps`
-  - [ ] Import `SearchFilters` from `@/types/search`
-  - [ ] Pass `filters={filterProperties !== undefined ? (filters ?? {}) : undefined}` to `<PropertyGrid filters={filters} />`
-  - [ ] In `SearchPageClient`, import `useSearchFilters` and pass `filters` prop to `SplitViewLayout`
+- [x] Task 3: Pass `filters` from `SplitViewLayout` to `PropertyGrid` (AC: #1, #2)
+  - [x] **File**: `src/components/search/split-view-layout.tsx` (MODIFY — exists from Stories 3.1–3.7)
+  - [x] Add `filters?: SearchFilters` to `SplitViewLayoutProps`
+  - [x] Import `SearchFilters` from `@/types/search`
+  - [x] Pass `filters={filterProperties !== undefined ? (filters ?? {}) : undefined}` to `<PropertyGrid filters={filters} />`
+  - [x] In `SearchPageClient`, import `useSearchFilters` and pass `filters` prop to `SplitViewLayout`
 
-- [ ] Task 4: Pass `filters` from `SearchPageClient` to `SplitViewLayout` (AC: #1, #2)
-  - [ ] **File**: `src/components/search/search-page-client.tsx` (MODIFY — exists)
-  - [ ] The `filters` const already exists via `const { filters } = useSearchFilters();`
-  - [ ] Add `filters={filters}` prop to `<SplitViewLayout>` JSX
-  - [ ] Import `SearchFilters` type is not needed directly — it's typed via SplitViewLayout props
+- [x] Task 4: Pass `filters` from `SearchPageClient` to `SplitViewLayout` (AC: #1, #2)
+  - [x] **File**: `src/components/search/search-page-client.tsx` (MODIFY — exists)
+  - [x] The `filters` const already exists via `const { filters } = useSearchFilters();`
+  - [x] Add `filters={filters}` prop to `<SplitViewLayout>` JSX
+  - [x] Import `SearchFilters` type is not needed directly — it's typed via SplitViewLayout props
 
-- [ ] Task 5: Upgrade `ListingRemovedState` with a proper similar-properties display (AC: #3)
-  - [ ] **File**: `src/components/property/listing-removed-state.tsx` (MODIFY — exists with basic stub)
-  - [ ] **Currently:** uses a static `EmptyState` with basic CTA pointing to `/`
-  - [ ] **New behavior:** The property detail page (`src/app/[locale]/property/[slug]/page.tsx`) already renders the "no longer available" page with similar properties. The `ListingRemovedState` component is a simpler standalone widget. Review whether both are needed.
-  - [ ] **IMPORTANT**: The property detail page (`/property/[slug]/page.tsx`) **already fully implements** the hidden listing flow (soft delete → `getSimilarProperties` → renders cards with links). The `listing-removed-state.tsx` component is a **separate fallback** used elsewhere. Do NOT duplicate the logic — verify the page works, add `data-testid="listing-removed-state"` for testing if missing.
-  - [ ] Verify the property detail page (`src/app/[locale]/property/[slug]/page.tsx`) has `data-testid="listing-unavailable-page"` on its root container. **IMPORTANT**: `SimplePageLayout` does NOT accept a `data-testid` prop (it has no `data-*` forwarding). Wrap the `SimplePageLayout` call in a `<div>`:
+- [x] Task 5: Upgrade `ListingRemovedState` with a proper similar-properties display (AC: #3)
+  - [x] **File**: `src/components/property/listing-removed-state.tsx` (MODIFY — exists with basic stub)
+  - [x] **Currently:** uses a static `EmptyState` with basic CTA pointing to `/`
+  - [x] **New behavior:** The property detail page (`src/app/[locale]/property/[slug]/page.tsx`) already renders the "no longer available" page with similar properties. The `ListingRemovedState` component is a simpler standalone widget. Review whether both are needed.
+  - [x] **IMPORTANT**: The property detail page (`/property/[slug]/page.tsx`) **already fully implements** the hidden listing flow (soft delete → `getSimilarProperties` → renders cards with links). The `listing-removed-state.tsx` component is a **separate fallback** used elsewhere. Do NOT duplicate the logic — verify the page works, add `data-testid="listing-removed-state"` for testing if missing.
+  - [x] Verify the property detail page (`src/app/[locale]/property/[slug]/page.tsx`) has `data-testid="listing-unavailable-page"` on its root container. **IMPORTANT**: `SimplePageLayout` does NOT accept a `data-testid` prop (it has no `data-*` forwarding). Wrap the `SimplePageLayout` call in a `<div>`:
     ```tsx
     <div data-testid="listing-unavailable-page">
       <SimplePageLayout pageTitle={t("heading")} intro={t("subtext")}>
@@ -104,15 +104,15 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       </SimplePageLayout>
     </div>
     ```
-  - [ ] Add `data-testid="similar-properties-list"` on the `<ul>` of similar properties in the page
-  - [ ] Add `data-testid="agent-cta"` on the WhatsApp CTA link in the listing-removed page (if present); or on the browse-all button fallback
-  - [ ] Update `ListingRemovedState.tsx` to add `data-testid="listing-removed-state"` on the `<EmptyState>` wrapper (for unit testing)
+  - [x] Add `data-testid="similar-properties-list"` on the `<ul>` of similar properties in the page
+  - [x] Add `data-testid="agent-cta"` on the WhatsApp CTA link in the listing-removed page (if present); or on the browse-all button fallback
+  - [x] Update `ListingRemovedState.tsx` to add `data-testid="listing-removed-state"` on the `<EmptyState>` wrapper (for unit testing)
 
-- [ ] Task 6: Create `src/hooks/use-geolocation.ts` — Browser Geolocation API hook (AC: #4, #5, #6)
-  - [ ] Create the file at EXACTLY `src/hooks/use-geolocation.ts` — **this file does NOT exist yet** (architecture §3 specifies it)
-  - [ ] Add `'use client'` — this hook uses browser `navigator.geolocation` (client-only)
-  - [ ] Import offices coordinates from `@/lib/constants/offices-geo` (create this new const file, see Task 7 below)
-  - [ ] Define `GeolocationState` type:
+- [x] Task 6: Create `src/hooks/use-geolocation.ts` — Browser Geolocation API hook (AC: #4, #5, #6)
+  - [x] Create the file at EXACTLY `src/hooks/use-geolocation.ts` — **this file does NOT exist yet** (architecture §3 specifies it)
+  - [x] Add `'use client'` — this hook uses browser `navigator.geolocation` (client-only)
+  - [x] Import offices coordinates from `@/lib/constants/offices-geo` (create this new const file, see Task 7 below)
+  - [x] Define `GeolocationState` type:
     ```ts
     export type GeolocationStatus = 'idle' | 'loading' | 'success' | 'denied' | 'error';
 
@@ -125,7 +125,7 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       fallbackMessage: string | null;
     }
     ```
-  - [ ] Implement `useGeolocation()` hook:
+  - [x] Implement `useGeolocation()` hook:
     ```ts
     export function useGeolocation() {
       const [state, setState] = useState<GeolocationState>({
@@ -181,12 +181,12 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       return { ...state, requestLocation };
     }
     ```
-  - [ ] **CRITICAL**: R-007 mitigation — the `errorCallback` MUST be provided (prevents unhandled rejection on permission denied). The error type must be `GeolocationPositionError` (not generic `Error`).
-  - [ ] Export: `GeolocationStatus`, `GeolocationState`, `useGeolocation`
+  - [x] **CRITICAL**: R-007 mitigation — the `errorCallback` MUST be provided (prevents unhandled rejection on permission denied). The error type must be `GeolocationPositionError` (not generic `Error`).
+  - [x] Export: `GeolocationStatus`, `GeolocationState`, `useGeolocation`
 
-- [ ] Task 7: Create `src/lib/constants/offices-geo.ts` — Office lat/lng for geolocation fallback (AC: #6)
-  - [ ] Create `src/lib/constants/offices-geo.ts` — **new file** (not in architecture spec but needed to avoid circular imports)
-  - [ ] Export office fallback coordinates (sourced from Google Maps for RE/MAX Altitud offices):
+- [x] Task 7: Create `src/lib/constants/offices-geo.ts` — Office lat/lng for geolocation fallback (AC: #6)
+  - [x] Create `src/lib/constants/offices-geo.ts` — **new file** (not in architecture spec but needed to avoid circular imports)
+  - [x] Export office fallback coordinates (sourced from Google Maps for RE/MAX Altitud offices):
     ```ts
     /** Pérez Zeledón office — RE/MAX Altitud main office, San Isidro de El General */
     export const OFFICE_PZ_COORDS = { lat: 9.3725, lng: -83.7011 };
@@ -208,13 +208,13 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       return distPZ <= distDOM ? OFFICE_PZ_COORDS : OFFICE_DOMINICAL_COORDS;
     }
     ```
-  - [ ] Import `OFFICE_PZ_COORDS` in `use-geolocation.ts` for the fallback
+  - [x] Import `OFFICE_PZ_COORDS` in `use-geolocation.ts` for the fallback
 
-- [ ] Task 8: Create `src/components/search/near-me-button.tsx` — NearMe Client Component (AC: #4, #5, #6)
-  - [ ] Create the file at EXACTLY `src/components/search/near-me-button.tsx` — **this file does NOT exist yet** (architecture §3 specifies it at `src/components/search/near-me-button.tsx`)
-  - [ ] Add `'use client'` as first line
-  - [ ] Architecture §8: `NearMeButton` is explicitly listed as a Client Component (Geolocation API)
-  - [ ] Props:
+- [x] Task 8: Create `src/components/search/near-me-button.tsx` — NearMe Client Component (AC: #4, #5, #6)
+  - [x] Create the file at EXACTLY `src/components/search/near-me-button.tsx` — **this file does NOT exist yet** (architecture §3 specifies it at `src/components/search/near-me-button.tsx`)
+  - [x] Add `'use client'` as first line
+  - [x] Architecture §8: `NearMeButton` is explicitly listed as a Client Component (Geolocation API)
+  - [x] Props:
     ```ts
     interface NearMeButtonProps {
       onLocationSuccess: (coords: { lat: number; lng: number }) => void;
@@ -222,9 +222,9 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       className?: string;
     }
     ```
-  - [ ] Use `useGeolocation()` hook internally
-  - [ ] Use `useTranslations('NearMe')` for i18n
-  - [ ] Render a button that triggers `requestLocation()` on click:
+  - [x] Use `useGeolocation()` hook internally
+  - [x] Use `useTranslations('NearMe')` for i18n
+  - [x] Render a button that triggers `requestLocation()` on click:
     ```tsx
     <button
       type="button"
@@ -243,9 +243,9 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       {status === 'loading' ? t('loading') : t('label')}
     </button>
     ```
-  - [ ] Import `MapPin` from `lucide-react`
-  - [ ] In `handleClick`: call `requestLocation()`. When `status` changes to `'success'` → call `onLocationSuccess(coords!)`. When `status` changes to `'denied'` or `'error'` → call `onLocationFallback(fallbackCoords!, fallbackMessage!)`.
-  - [ ] Use a `useEffect` to watch `status` changes and trigger the callbacks:
+  - [x] Import `MapPin` from `lucide-react`
+  - [x] In `handleClick`: call `requestLocation()`. When `status` changes to `'success'` → call `onLocationSuccess(coords!)`. When `status` changes to `'denied'` or `'error'` → call `onLocationFallback(fallbackCoords!, fallbackMessage!)`.
+  - [x] Use a `useEffect` to watch `status` changes and trigger the callbacks:
     ```ts
     useEffect(() => {
       if (status === 'success' && coords) {
@@ -255,13 +255,13 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       }
     }, [status, coords, fallbackCoords, fallbackMessage, onLocationSuccess, onLocationFallback]);
     ```
-  - [ ] Add `data-testid="near-me-button"` on root button element
-  - [ ] Export `NearMeButton`
+  - [x] Add `data-testid="near-me-button"` on root button element
+  - [x] Export `NearMeButton`
 
-- [ ] Task 9: Add `flyToLocation` capability to MapView and integrate NearMeButton (AC: #4, #5, #6)
-  - [ ] **File**: `src/components/map/map-view.tsx` (MODIFY — frozen in Story 3.2 BUT story 3.8 must extend it)
-  - [ ] **CRITICAL**: The MapView `mapRef.current?.flyTo(...)` API already exists (used by cluster expand at line 196). Use the same pattern.
-  - [ ] Add a `flyToTarget` prop to `MapViewProps`:
+- [x] Task 9: Add `flyToLocation` capability to MapView and integrate NearMeButton (AC: #4, #5, #6)
+  - [x] **File**: `src/components/map/map-view.tsx` (MODIFY — frozen in Story 3.2 BUT story 3.8 must extend it)
+  - [x] **CRITICAL**: The MapView `mapRef.current?.flyTo(...)` API already exists (used by cluster expand at line 196). Use the same pattern.
+  - [x] Add a `flyToTarget` prop to `MapViewProps`:
     ```ts
     interface MapViewProps {
       properties: MapProperty[];
@@ -271,7 +271,7 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       flyToTarget?: { lat: number; lng: number; zoom?: number } | null;
     }
     ```
-  - [ ] Add a `useEffect` in `MapView` to react to `flyToTarget` changes:
+  - [x] Add a `useEffect` in `MapView` to react to `flyToTarget` changes:
     ```ts
     useEffect(() => {
       if (flyToTarget && mapRef.current) {
@@ -283,15 +283,15 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       }
     }, [flyToTarget]);
     ```
-  - [ ] **DO NOT change** any existing MapView behavior — add only the new prop and its effect
-  - [ ] Also update `MapViewLoader` (if it wraps MapView props) to forward `flyToTarget`
+  - [x] **DO NOT change** any existing MapView behavior — add only the new prop and its effect
+  - [x] Also update `MapViewLoader` (if it wraps MapView props) to forward `flyToTarget`
 
-- [ ] Task 10: Add `flyToTarget` support to `SplitViewLayout` and render `NearMeButton` in filter bar (AC: #4, #5, #6)
-  - [ ] **File**: `src/components/search/split-view-layout.tsx` (MODIFY)
-  - [ ] Add state: `const [flyToTarget, setFlyToTarget] = useState<{ lat: number; lng: number; zoom?: number } | null>(null);`
-  - [ ] Add `fallbackMessage` state: `const [nearMeFallbackMessage, setNearMeFallbackMessage] = useState<string | null>(null);`
-  - [ ] Pass `flyToTarget={flyToTarget}` to `<MapView>` (via `MapViewLoader`)
-  - [ ] Import and render `<NearMeButton>` in the filter bar area (next to `UnitToggle`):
+- [x] Task 10: Add `flyToTarget` support to `SplitViewLayout` and render `NearMeButton` in filter bar (AC: #4, #5, #6)
+  - [x] **File**: `src/components/search/split-view-layout.tsx` (MODIFY)
+  - [x] Add state: `const [flyToTarget, setFlyToTarget] = useState<{ lat: number; lng: number; zoom?: number } | null>(null);`
+  - [x] Add `fallbackMessage` state: `const [nearMeFallbackMessage, setNearMeFallbackMessage] = useState<string | null>(null);`
+  - [x] Pass `flyToTarget={flyToTarget}` to `<MapView>` (via `MapViewLoader`)
+  - [x] Import and render `<NearMeButton>` in the filter bar area (next to `UnitToggle`):
     ```tsx
     <NearMeButton
       onLocationSuccess={(coords) => {
@@ -304,7 +304,7 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       }}
     />
     ```
-  - [ ] Render the fallback message as a non-blocking notification banner when `nearMeFallbackMessage` is set:
+  - [x] Render the fallback message as a non-blocking notification banner when `nearMeFallbackMessage` is set:
     ```tsx
     {nearMeFallbackMessage && (
       <div
@@ -325,26 +325,26 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       </div>
     )}
     ```
-  - [ ] **NearMeButton placement**: The UX spec (`ux-design-specification.md` line 1191) shows the Near Me button in the filter bar: `"Horizontal row: Type, Price, Beds, Baths, Lifestyle chips, Near Me"`. Place `<NearMeButton>` inside `SearchFilterBar` (the filter bar component) rather than in `SplitViewLayout` if it fits the architecture better — see Task 11.
+  - [x] **NearMeButton placement**: The UX spec (`ux-design-specification.md` line 1191) shows the Near Me button in the filter bar: `"Horizontal row: Type, Price, Beds, Baths, Lifestyle chips, Near Me"`. Place `<NearMeButton>` inside `SearchFilterBar` (the filter bar component) rather than in `SplitViewLayout` if it fits the architecture better — see Task 11.
 
-- [ ] Task 11: Add `NearMeButton` to `SearchFilterBar` (AC: #4, #5, #6)
-  - [ ] **File**: `src/components/search/search-filter-bar.tsx` (MODIFY — exists from Story 3.3)
-  - [ ] The UX spec shows Near Me in the filter bar row (line 1191). This is the correct location.
-  - [ ] Add `onNearMeSuccess?: (coords: { lat: number; lng: number }) => void` and `onNearMeFallback?: (coords: { lat: number; lng: number }, message: string) => void` props to `SearchFilterBarProps`
-  - [ ] Import and render `<NearMeButton>` at the end of the filter chips row (after lifestyle tags)
-  - [ ] If callbacks are not provided from parent, the button can still work — `SplitViewLayout` passes the callbacks down through `SearchFilterBar`
-  - [ ] Alternatively (simpler approach): place `NearMeButton` directly in `SplitViewLayout` alongside the filter bar area, passing `flyToTarget` state setter as the callback. Pick the cleaner approach that requires fewer prop-drilling hops.
-  - [ ] **Architecture note**: `SearchFilterBar` is already `'use client'` — NearMeButton can be rendered inside it.
+- [x] Task 11: Add `NearMeButton` to `SearchFilterBar` (AC: #4, #5, #6)
+  - [x] **File**: `src/components/search/search-filter-bar.tsx` (MODIFY — exists from Story 3.3)
+  - [x] The UX spec shows Near Me in the filter bar row (line 1191). This is the correct location.
+  - [x] Add `onNearMeSuccess?: (coords: { lat: number; lng: number }) => void` and `onNearMeFallback?: (coords: { lat: number; lng: number }, message: string) => void` props to `SearchFilterBarProps`
+  - [x] Import and render `<NearMeButton>` at the end of the filter chips row (after lifestyle tags)
+  - [x] If callbacks are not provided from parent, the button can still work — `SplitViewLayout` passes the callbacks down through `SearchFilterBar`
+  - [x] Alternatively (simpler approach): place `NearMeButton` directly in `SplitViewLayout` alongside the filter bar area, passing `flyToTarget` state setter as the callback. Pick the cleaner approach that requires fewer prop-drilling hops.
+  - [x] **Architecture note**: `SearchFilterBar` is already `'use client'` — NearMeButton can be rendered inside it.
 
-- [ ] Task 12: Verify `MapViewLoader` forwards `flyToTarget` prop transparently (AC: #5, #6)
-  - [ ] **File**: `src/components/map/map-view-loader.tsx` (READ-ONLY — likely no changes needed)
-  - [ ] **IMPORTANT**: `MapViewLoader` uses `next/dynamic` to lazily import `MapView` and re-exports it as `export { MapView }`. It has NO separate props interface — it transparently forwards ALL props to the underlying `MapView`.
-  - [ ] Because `MapViewLoader` re-exports the dynamically-loaded `MapView`, adding `flyToTarget` to `MapViewProps` (Task 9) is sufficient — no changes to `map-view-loader.tsx` are required.
-  - [ ] Verify this by reading `map-view-loader.tsx`: if it uses `ComponentProps<typeof OriginalMapView>` or re-exports via `dynamic(() => ...)`, the type flows automatically.
-  - [ ] **Only change `map-view-loader.tsx` if** it has an explicit props interface that needs updating. Current implementation: no interface = no change needed.
+- [x] Task 12: Verify `MapViewLoader` forwards `flyToTarget` prop transparently (AC: #5, #6)
+  - [x] **File**: `src/components/map/map-view-loader.tsx` (READ-ONLY — likely no changes needed)
+  - [x] **IMPORTANT**: `MapViewLoader` uses `next/dynamic` to lazily import `MapView` and re-exports it as `export { MapView }`. It has NO separate props interface — it transparently forwards ALL props to the underlying `MapView`.
+  - [x] Because `MapViewLoader` re-exports the dynamically-loaded `MapView`, adding `flyToTarget` to `MapViewProps` (Task 9) is sufficient — no changes to `map-view-loader.tsx` are required.
+  - [x] Verify this by reading `map-view-loader.tsx`: if it uses `ComponentProps<typeof OriginalMapView>` or re-exports via `dynamic(() => ...)`, the type flows automatically.
+  - [x] **Only change `map-view-loader.tsx` if** it has an explicit props interface that needs updating. Current implementation: no interface = no change needed.
 
-- [ ] Task 13: Add i18n keys for `NearMeButton` and related messages (AC: #4, #5, #6)
-  - [ ] **File**: `src/messages/en.json` — add new `"NearMe"` namespace at top level:
+- [x] Task 13: Add i18n keys for `NearMeButton` and related messages (AC: #4, #5, #6)
+  - [x] **File**: `src/messages/en.json` — add new `"NearMe"` namespace at top level:
     ```json
     "NearMe": {
       "label": "Near Me",
@@ -353,7 +353,7 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       "fallbackDismiss": "Dismiss"
     }
     ```
-  - [ ] **File**: `src/messages/es.json` — add equivalent:
+  - [x] **File**: `src/messages/es.json` — add equivalent:
     ```json
     "NearMe": {
       "label": "Cerca de mí",
@@ -362,12 +362,12 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       "fallbackDismiss": "Cerrar"
     }
     ```
-  - [ ] **DO NOT modify** existing `EmptyStates` i18n keys — they already exist and are in use
-  - [ ] **Update** `EmptyStates.noResults.whatsappMessage` to be more specific — it will be built dynamically in code (not from i18n), so the static key becomes a prefix/template base only
+  - [x] **DO NOT modify** existing `EmptyStates` i18n keys — they already exist and are in use
+  - [x] **Update** `EmptyStates.noResults.whatsappMessage` to be more specific — it will be built dynamically in code (not from i18n), so the static key becomes a prefix/template base only
 
-- [ ] Task 14: Unit tests for `NoResultsState` (AC: #1, #2)
-  - [ ] Create `tests/unit/search/no-results-state.spec.tsx` (Vitest + jsdom — `environmentMatchGlobs` covers `tests/unit/search/**/*.spec.tsx`)
-  - [ ] Mocks needed:
+- [x] Task 14: Unit tests for `NoResultsState` (AC: #1, #2)
+  - [x] Create `tests/unit/search/no-results-state.spec.tsx` (Vitest + jsdom — `environmentMatchGlobs` covers `tests/unit/search/**/*.spec.tsx`)
+  - [x] Mocks needed:
     ```ts
     // imported AFTER mocks
     vi.mock('next-intl', () => ({
@@ -380,7 +380,7 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       ),
     }));
     ```
-  - [ ] Tests to write:
+  - [x] Tests to write:
     - `[P0]` renders `data-testid="no-results-state"` element
     - `[P0]` renders with empty filters `{}` without throwing
     - `[P0]` WhatsApp href contains `wa.me` when filters are empty
@@ -389,9 +389,9 @@ so that I'm never stuck at a dead end and can discover nearby properties.
     - `[P0]` forwards multiple filter criteria (type + bedrooms + area)
     - `[P1]` renders with `data-testid="no-results-whatsapp-cta"` on secondary action anchor
 
-- [ ] Task 15: Unit tests for `useGeolocation` hook (AC: #4, #5, #6 — test design 3.8-E2E-001)
-  - [ ] Create `tests/unit/search/use-geolocation.spec.tsx` (Vitest + jsdom)
-  - [ ] Mock `navigator.geolocation` using `vi.stubGlobal`:
+- [x] Task 15: Unit tests for `useGeolocation` hook (AC: #4, #5, #6 — test design 3.8-E2E-001)
+  - [x] Create `tests/unit/search/use-geolocation.spec.tsx` (Vitest + jsdom)
+  - [x] Mock `navigator.geolocation` using `vi.stubGlobal`:
     ```ts
     function mockGeolocationSuccess(lat: number, lng: number) {
       vi.stubGlobal('navigator', {
@@ -412,7 +412,7 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       });
     }
     ```
-  - [ ] Tests to write:
+  - [x] Tests to write:
     - `[P0]` initial state is `{ status: 'idle', coords: null, fallbackCoords: null }`
     - `[P0]` after `requestLocation()` with success: `status === 'success'`, `coords.lat` and `coords.lng` match
     - `[P0]` after `requestLocation()` with PERMISSION_DENIED: `status === 'denied'`, `fallbackCoords` is non-null (nearest office)
@@ -420,9 +420,9 @@ so that I'm never stuck at a dead end and can discover nearby properties.
     - `[P0]` `fallbackMessage` is non-null when denied
     - `[P1]` navigator.geolocation not available → `status === 'error'` with fallback coords (R-007 guard)
 
-- [ ] Task 16: Unit tests for `NearMeButton` component (AC: #4, #5, #6)
-  - [ ] Create `tests/unit/search/near-me-button.spec.tsx` (Vitest + jsdom)
-  - [ ] Mocks needed:
+- [x] Task 16: Unit tests for `NearMeButton` component (AC: #4, #5, #6)
+  - [x] Create `tests/unit/search/near-me-button.spec.tsx` (Vitest + jsdom)
+  - [x] Mocks needed:
     ```ts
     // imported AFTER mocks
     vi.mock('next-intl', () => ({
@@ -438,7 +438,7 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       })),
     }));
     ```
-  - [ ] Tests to write:
+  - [x] Tests to write:
     - `[P0]` renders `data-testid="near-me-button"` element
     - `[P0]` button is enabled when status is 'idle'
     - `[P0]` button is disabled when status is 'loading'
@@ -446,9 +446,9 @@ so that I'm never stuck at a dead end and can discover nearby properties.
     - `[P0]` `onLocationSuccess` is called when status transitions to 'success' with coords
     - `[P0]` `onLocationFallback` is called when status transitions to 'denied' with fallbackCoords
 
-- [ ] Task 17: Update `property-grid.spec.tsx` for new `NoResultsState` behavior (AC: regression)
-  - [ ] **File**: `tests/unit/search/property-grid.spec.tsx` (MODIFY — exists from Story 3.5)
-  - [ ] Add mock for `NoResultsState`:
+- [x] Task 17: Update `property-grid.spec.tsx` for new `NoResultsState` behavior (AC: regression)
+  - [x] **File**: `tests/unit/search/property-grid.spec.tsx` (MODIFY — exists from Story 3.5)
+  - [x] Add mock for `NoResultsState`:
     ```ts
     vi.mock('@/components/property/no-results-state', () => ({
       NoResultsState: ({ filters }: { filters: object }) => (
@@ -456,16 +456,16 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       ),
     }));
     ```
-  - [ ] Add test: when `properties=[]` and `isLoading=false`, `data-testid="no-results-state"` is rendered (replacing old `tGrid("empty")` text assertion)
-  - [ ] Update/remove any test that asserts on the old empty state text `tGrid("empty")`
-  - [ ] **KEEP ALL EXISTING TESTS** — they must continue passing
+  - [x] Add test: when `properties=[]` and `isLoading=false`, `data-testid="no-results-state"` is rendered (replacing old `tGrid("empty")` text assertion)
+  - [x] Update/remove any test that asserts on the old empty state text `tGrid("empty")`
+  - [x] **KEEP ALL EXISTING TESTS** — they must continue passing
 
-- [ ] Task 18: CI verification (AC: all)
-  - [ ] `npm run typecheck` → 0 new errors
-  - [ ] `npm run lint` → 0 errors
-  - [ ] `npm run format:check` → pass
-  - [ ] `npm run build` → pass
-  - [ ] `npm test` → all existing tests pass + new unit tests pass
+- [x] Task 18: CI verification (AC: all)
+  - [x] `npm run typecheck` → 0 new errors
+  - [x] `npm run lint` → 0 errors
+  - [x] `npm run format:check` → pass
+  - [x] `npm run build` → pass
+  - [x] `npm test` → all existing tests pass + new unit tests pass
 
 ---
 
@@ -728,16 +728,45 @@ Key patterns from Story 3.7 that carry forward:
 
 ### Agent Model Used
 
-_to be filled by dev agent_
+claude-sonnet-4-6
 
 ### Debug Log References
 
-_to be filled by dev agent_
+No debug issues. ATDD tests were pre-existing in RED phase (all `it.skip`). Implementation followed test specs. NoResultsState required custom layout (not using EmptyState) to add data-testid on the WhatsApp anchor without modifying EmptyState component.
 
 ### Completion Notes List
 
-_to be filled by dev agent_
+- Task 1: Upgraded NoResultsState with filters prop, buildSearchCriteriaSummary() helper, dynamic WhatsApp href, data-testids on root and WhatsApp anchor
+- Task 2: PropertyGrid now renders NoResultsState when empty (replaces tGrid("empty") text)
+- Task 3: SplitViewLayout passes filters prop to PropertyGrid
+- Task 4: SearchPageClient passes filters={filters} to SplitViewLayout
+- Task 5: Added data-testids to property slug page (listing-unavailable-page, similar-properties-list, agent-cta) and ListingRemovedState wrapper
+- Task 6: Created use-geolocation.ts hook with R-007 errorCallback compliance
+- Task 7: Created offices-geo.ts with OFFICE_PZ_COORDS, OFFICE_DOMINICAL_COORDS, getNearestOfficeCoords()
+- Task 8: Created near-me-button.tsx Client Component
+- Task 9: Added flyToTarget prop + useEffect to MapView
+- Task 10: Added flyToTarget/nearMeFallbackMessage state + NearMeButton + fallback banner to SplitViewLayout
+- Task 11: NearMeButton placed in SplitViewLayout (Option 2, cleaner per story recommendation)
+- Task 12: MapViewLoader confirmed transparent — no changes needed
+- Task 13: Added NearMe namespace to en.json and es.json
+- Tasks 14-17: Activated ATDD tests by removing it.skip; 20 new tests pass
+- Task 18: typecheck 0 errors, lint 0 errors, format pass, build pass, 583 tests pass
 
 ### File List
 
-_to be filled by dev agent_
+- src/components/property/no-results-state.tsx
+- src/components/property/listing-removed-state.tsx
+- src/components/property/property-grid.tsx
+- src/components/search/split-view-layout.tsx
+- src/components/search/search-page-client.tsx
+- src/components/map/map-view.tsx
+- src/app/[locale]/property/[slug]/page.tsx
+- src/messages/en.json
+- src/messages/es.json
+- src/hooks/use-geolocation.ts (NEW)
+- src/lib/constants/offices-geo.ts (NEW)
+- src/components/search/near-me-button.tsx (NEW)
+- tests/unit/search/no-results-state.spec.tsx
+- tests/unit/search/use-geolocation.spec.tsx
+- tests/unit/search/near-me-button.spec.tsx
+- tests/unit/search/property-grid.spec.tsx

@@ -148,6 +148,7 @@ export function SearchPageClient() {
         total={total}
         page={page}
         onPageChange={setPage}
+        filters={filters}
       />
     </div>
   );

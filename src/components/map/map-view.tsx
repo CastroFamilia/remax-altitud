@@ -9,7 +9,7 @@
  * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 6
  */
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Map as MapboxMap, Marker } from "react-map-gl";
 import Supercluster from "supercluster";
 import type { MapRef } from "react-map-gl";
@@ -49,6 +49,8 @@ interface MapViewProps {
   properties: MapProperty[];
   locale: string;
   onBoundsChange?: (bounds: MapBounds) => void;
+  /** Story 3.8: When set, map flies to these coordinates with given zoom */
+  flyToTarget?: { lat: number; lng: number; zoom?: number } | null;
 }
 
 type ClusterFeature = GeoJSON.Feature<
@@ -72,7 +74,7 @@ type PointFeature = GeoJSON.Feature<
 // Stable world bbox for initial cluster rendering before map bounds are known
 const INITIAL_BBOX: [number, number, number, number] = [-180, -85, 180, 85];
 
-export function MapView({ properties, locale, onBoundsChange }: MapViewProps) {
+export function MapView({ properties, locale, onBoundsChange, flyToTarget }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const { center, zoom, setCenter, setZoom, setBounds } = useMapStore();
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
@@ -197,6 +199,17 @@ export function MapView({ properties, locale, onBoundsChange }: MapViewProps) {
     },
     [supercluster],
   );
+
+  // Story 3.8: Fly to target when flyToTarget prop changes (Near Me feature)
+  useEffect(() => {
+    if (flyToTarget && mapRef.current) {
+      mapRef.current.flyTo({
+        center: [flyToTarget.lng, flyToTarget.lat],
+        zoom: flyToTarget.zoom ?? 13,
+        duration: 800, // 800ms per UX spec §Animation (Map fly-to = 800ms ease-in-out)
+      });
+    }
+  }, [flyToTarget]);
 
   return (
     <div

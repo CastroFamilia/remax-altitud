@@ -147,7 +147,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] Initial state
   // -------------------------------------------------------------------------
 
-  it.skip("[P0] initial state has status='idle', coords=null, fallbackCoords=null", () => {
+  it("[P0] initial state has status='idle', coords=null, fallbackCoords=null", () => {
     // THIS TEST WILL FAIL — hook does not yet exist
     const { result } = renderHook(() => useGeolocation());
     expect(result.current.status).toBe("idle");
@@ -156,7 +156,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
     expect(result.current.fallbackMessage).toBeNull();
   });
 
-  it.skip("[P0] exposes requestLocation function", () => {
+  it("[P0] exposes requestLocation function", () => {
     // THIS TEST WILL FAIL — hook does not yet exist
     const { result } = renderHook(() => useGeolocation());
     expect(typeof result.current.requestLocation).toBe("function");
@@ -166,7 +166,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] AC #5: Success path
   // -------------------------------------------------------------------------
 
-  it.skip("[P0] requestLocation with success → status='success', coords match", async () => {
+  it("[P0] requestLocation with success → status='success', coords match", async () => {
     // THIS TEST WILL FAIL — hook does not yet exist
     mockGeolocationSuccess(9.3725, -83.7011);
     const { result } = renderHook(() => useGeolocation());
@@ -186,7 +186,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] AC #6: Permission denied path (R-007)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] requestLocation with PERMISSION_DENIED → status='denied', fallbackCoords non-null",
     async () => {
       // THIS TEST WILL FAIL — hook does not yet exist
@@ -205,7 +205,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] requestLocation with PERMISSION_DENIED → fallbackMessage is non-null",
     async () => {
       // THIS TEST WILL FAIL — hook does not yet exist
@@ -225,7 +225,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
   // [P0] Error code 2 (POSITION_UNAVAILABLE)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] requestLocation with POSITION_UNAVAILABLE (code 2) → status='error', fallbackCoords non-null",
     async () => {
       // THIS TEST WILL FAIL — hook does not yet exist
@@ -245,7 +245,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
   // [P1] R-007: navigator.geolocation not supported (guard)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P1] when navigator.geolocation is not available → status='error' with fallback coords (R-007)",
     async () => {
       // THIS TEST WILL FAIL — hook does not yet exist

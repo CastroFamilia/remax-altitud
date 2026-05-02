@@ -281,6 +281,12 @@
       "whatsappMessage": "Hi, I was looking at a property..."
     }
   },
+  "NearMe": {
+    "label": "Near Me",
+    "loading": "Locating...",
+    "fallbackMessage": "Location unavailable — showing properties near our Pérez Zeledón office",
+    "fallbackDismiss": "Dismiss"
+  },
   "SearchPage": {
     "title": "Search Properties",
     "description": "Search homes, land, and commercial properties in Costa Rica",

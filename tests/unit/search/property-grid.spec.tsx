@@ -355,7 +355,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
   // Story 3.8 addition: NoResultsState replaces old empty text (AC #1, #2)
   // -------------------------------------------------------------------------
 
-  it.skip(
+  it(
     "[P0] Story 3.8: renders NoResultsState (data-testid='no-results-state') when properties=[] and isLoading=false",
     () => {
       // THIS TEST WILL FAIL — PropertyGrid does not yet render NoResultsState
@@ -373,7 +373,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] Story 3.8: passes filters prop through to NoResultsState",
     () => {
       // THIS TEST WILL FAIL — PropertyGrid does not yet accept/pass a filters prop
