@@ -40,46 +40,52 @@ export default async function PropertyPage({
     const t = await getTranslations({ locale, namespace: "PropertyUnavailable" });
 
     return (
-      <SimplePageLayout pageTitle={t("heading")} intro={t("subtext")}>
-        {similar.length > 0 ? (
-          <section aria-labelledby="similar-heading" className="mx-auto max-w-3xl">
-            <h2 id="similar-heading" className="mb-6 text-xl font-bold text-brand-navy md:text-2xl">
-              {t("similarHeading")}
-            </h2>
-            <ul className="space-y-4">
-              {similar.map((p) => (
-                <li key={p.slug}>
-                  <Link
-                    href={`/property/${p.slug}`}
-                    className="block rounded-lg border border-gray-200 p-4 hover:border-brand-navy hover:bg-gray-50 transition-colors"
-                  >
-                    <p className="font-semibold text-brand-navy">
-                      {locale === "es" ? p.titleEs : p.titleEn}
-                    </p>
-                    {p.priceUsd != null && (
-                      <p className="mt-1 text-sm text-text-muted">
-                        ${p.priceUsd.toLocaleString("en-US")}
+      <div data-testid="listing-unavailable-page">
+        <SimplePageLayout pageTitle={t("heading")} intro={t("subtext")}>
+          {similar.length > 0 ? (
+            <section aria-labelledby="similar-heading" className="mx-auto max-w-3xl">
+              <h2
+                id="similar-heading"
+                className="mb-6 text-xl font-bold text-brand-navy md:text-2xl"
+              >
+                {t("similarHeading")}
+              </h2>
+              <ul data-testid="similar-properties-list" className="space-y-4">
+                {similar.map((p) => (
+                  <li key={p.slug}>
+                    <Link
+                      href={`/property/${p.slug}`}
+                      className="block rounded-lg border border-gray-200 p-4 hover:border-brand-navy hover:bg-gray-50 transition-colors"
+                    >
+                      <p className="font-semibold text-brand-navy">
+                        {locale === "es" ? p.titleEs : p.titleEn}
                       </p>
-                    )}
-                    <span className="mt-2 inline-block text-sm font-medium text-brand-navy underline">
-                      {t("similarCta")}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : (
-          <div className="mx-auto max-w-3xl text-center">
-            <Link
-              href="/search"
-              className="inline-block rounded-lg bg-brand-navy px-6 py-3 font-semibold text-white hover:bg-brand-navy/90 transition-colors"
-            >
-              {t("browseCta")}
-            </Link>
-          </div>
-        )}
-      </SimplePageLayout>
+                      {p.priceUsd != null && (
+                        <p className="mt-1 text-sm text-text-muted">
+                          ${p.priceUsd.toLocaleString("en-US")}
+                        </p>
+                      )}
+                      <span className="mt-2 inline-block text-sm font-medium text-brand-navy underline">
+                        {t("similarCta")}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : (
+            <div className="mx-auto max-w-3xl text-center">
+              <Link
+                href="/search"
+                data-testid="agent-cta"
+                className="inline-block rounded-lg bg-brand-navy px-6 py-3 font-semibold text-white hover:bg-brand-navy/90 transition-colors"
+              >
+                {t("browseCta")}
+              </Link>
+            </div>
+          )}
+        </SimplePageLayout>
+      </div>
     );
   }
 

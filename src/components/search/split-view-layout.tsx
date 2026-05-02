@@ -9,9 +9,10 @@ import { MapView } from "@/components/map/map-view-loader";
 import { PropertyGrid } from "@/components/property/property-grid";
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
 import { UnitToggle } from "@/components/layout/unit-toggle";
+import { NearMeButton } from "@/components/search/near-me-button";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
-import type { PropertySearchItem, FilterFacets } from "@/types/search";
+import type { PropertySearchItem, FilterFacets, SearchFilters } from "@/types/search";
 
 type ViewMode = "split" | "map" | "grid";
 
@@ -49,6 +50,8 @@ interface SplitViewLayoutProps {
   page?: number;
   /** Page change callback for pagination (Story 3.5) */
   onPageChange?: (page: number) => void;
+  /** Story 3.8: Active search filters to forward to PropertyGrid for NoResultsState */
+  filters?: SearchFilters;
 }
 
 export function SplitViewLayout({
@@ -67,6 +70,7 @@ export function SplitViewLayout({
   total,
   page,
   onPageChange,
+  filters,
 }: SplitViewLayoutProps) {
   // Suppress unused-var warnings for forward-compat props; they are part of
   // the public API surface used by SearchPageClient today.
@@ -75,7 +79,15 @@ export function SplitViewLayout({
   const { unitSystem } = useLocaleUnits(locale);
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
+  // Story 3.8: Near Me — fly-to target and fallback message
+  const [flyToTarget, setFlyToTarget] = useState<{
+    lat: number;
+    lng: number;
+    zoom?: number;
+  } | null>(null);
+  const [nearMeFallbackMessage, setNearMeFallbackMessage] = useState<string | null>(null);
   const tSidePanel = useTranslations("SearchPage.sidePanel");
+  const tNearMe = useTranslations("NearMe");
   const mapHidden = viewMode === "grid";
   const gridHidden = viewMode === "map";
 
@@ -93,10 +105,40 @@ export function SplitViewLayout({
           inner border-b only extends to its content width). */}
       <div className="hidden lg:flex items-center justify-between border-b border-border bg-background">
         <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
-        <div className="flex items-center px-4 py-2">
+        <div className="flex items-center gap-2 px-4 py-2">
+          <NearMeButton
+            onLocationSuccess={(coords) => {
+              setFlyToTarget({ ...coords, zoom: 13 });
+              setNearMeFallbackMessage(null);
+            }}
+            onLocationFallback={(coords, message) => {
+              setFlyToTarget({ ...coords, zoom: 11 });
+              setNearMeFallbackMessage(message);
+            }}
+          />
           <UnitToggle locale={locale} />
         </div>
       </div>
+
+      {/* Story 3.8: Near Me fallback notification banner */}
+      {nearMeFallbackMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          data-testid="near-me-fallback-message"
+          className="flex items-center justify-between bg-amber-50 border border-amber-200 text-amber-800 text-sm px-4 py-2"
+        >
+          <span>{nearMeFallbackMessage}</span>
+          <button
+            type="button"
+            aria-label={tNearMe("fallbackDismiss")}
+            onClick={() => setNearMeFallbackMessage(null)}
+            className="ml-4 text-amber-600 hover:text-amber-800"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Split-view container */}
       <div className="relative flex flex-row">
@@ -117,7 +159,12 @@ export function SplitViewLayout({
             "flex-shrink-0",
           )}
         >
-          <MapView properties={properties} locale={locale} onBoundsChange={handleBoundsChange} />
+          <MapView
+            properties={properties}
+            locale={locale}
+            onBoundsChange={handleBoundsChange}
+            flyToTarget={flyToTarget}
+          />
         </div>
 
         {/* Grid panel — hidden on mobile, shown on desktop */}
@@ -144,6 +191,7 @@ export function SplitViewLayout({
               page={page}
               onPageChange={onPageChange}
               unitSystem={unitSystem}
+              filters={filters}
             />
           ) : (
             <SearchResultsSkeleton />

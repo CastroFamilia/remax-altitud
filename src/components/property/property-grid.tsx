@@ -3,7 +3,8 @@
 import { useTranslations } from "next-intl";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
 import { PropertyCard } from "@/components/property/property-card";
-import type { PropertySearchItem } from "@/types/search";
+import { NoResultsState } from "@/components/property/no-results-state";
+import type { PropertySearchItem, SearchFilters } from "@/types/search";
 import type { UnitSystem } from "@/lib/utils/units";
 
 const ITEMS_PER_PAGE = 20;
@@ -16,6 +17,8 @@ interface PropertyGridProps {
   page?: number;
   onPageChange?: (page: number) => void;
   unitSystem?: UnitSystem;
+  /** Story 3.8: Active search filters to forward to NoResultsState */
+  filters?: SearchFilters;
 }
 
 export function PropertyGrid({
@@ -26,6 +29,7 @@ export function PropertyGrid({
   page = 1,
   onPageChange,
   unitSystem,
+  filters,
 }: PropertyGridProps) {
   const tGrid = useTranslations("SearchPage.grid");
 
@@ -59,10 +63,10 @@ export function PropertyGrid({
         />
       ))}
 
-      {/* Empty state */}
-      {currentPageItems.length === 0 && (
-        <div className="col-span-full py-12 text-center text-muted-foreground">
-          {tGrid("empty")}
+      {/* Empty state — Story 3.8: render NoResultsState with active filters */}
+      {currentPageItems.length === 0 && !isLoading && (
+        <div className="col-span-full">
+          <NoResultsState filters={filters ?? {}} />
         </div>
       )}
 
