@@ -198,7 +198,7 @@ describe("MapPullUpSheet", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P0] has role='region' and aria-label='Property list'",
+    "[P0] has role='region' (implicit via <section>) and aria-label='Property list'",
     () => {
       render(
         <MapPullUpSheet
@@ -208,8 +208,10 @@ describe("MapPullUpSheet", () => {
         />,
       );
 
-      const sheet = document.querySelector('[role="region"]');
+      // <section> with aria-label has the implicit ARIA region role — query by testid and verify aria-label
+      const sheet = document.querySelector('[data-testid="pull-up-sheet"]');
       expect(sheet).not.toBeNull();
+      expect(sheet?.tagName.toLowerCase()).toBe("section");
       expect(sheet?.getAttribute("aria-label")).toBe("Property list");
     },
   );

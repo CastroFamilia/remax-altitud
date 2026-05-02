@@ -54,7 +54,6 @@ test.describe("Story 3.6: Mobile Pull-Up Sheet E2E (ATDD — RED PHASE)", () => 
   test.skip(
     "[P0] 3.6-E2E-001: pull-up sheet appears at bottom with handle and property count in peeked state on mobile",
     async ({ page }: any) => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       await page.setViewportSize(MOBILE_VIEWPORT);
       await page.goto(SEARCH_URL_EN);
 
@@ -86,7 +85,6 @@ test.describe("Story 3.6: Mobile Pull-Up Sheet E2E (ATDD — RED PHASE)", () => 
   test.skip(
     "[P0] 3.6-E2E-002: dragging pull-up handle up significantly snaps sheet to half state (50vh)",
     async ({ page }: any) => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       // Risk R-006: pull-up drag may conflict with iOS Safari native scroll
       await page.setViewportSize(MOBILE_VIEWPORT);
       await page.goto(SEARCH_URL_EN);
@@ -126,7 +124,6 @@ test.describe("Story 3.6: Mobile Pull-Up Sheet E2E (ATDD — RED PHASE)", () => 
   test.skip(
     "[P0] 3.6-E2E-003: dragging pull-up handle up from half state snaps sheet to full state (85vh)",
     async ({ page }: any) => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       await page.setViewportSize(MOBILE_VIEWPORT);
       await page.goto(SEARCH_URL_EN);
 
@@ -178,7 +175,6 @@ test.describe("Story 3.6: Mobile Pull-Up Sheet E2E (ATDD — RED PHASE)", () => 
   test.skip(
     "[P0] 3.6-E2E-004: pull-up sheet has role='region', aria-label='Property list', aria-expanded toggling",
     async ({ page }: any) => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       await page.setViewportSize(MOBILE_VIEWPORT);
       await page.goto(SEARCH_URL_EN);
 
@@ -211,7 +207,6 @@ test.describe("Story 3.6: Mobile Pull-Up Sheet E2E (ATDD — RED PHASE)", () => 
   test.skip(
     "[P1] 3.6-E2E-005: pull-to-refresh is disabled on search page (overscroll-behavior: none)",
     async ({ page }: any) => {
-      // THIS TEST WILL FAIL — overscroll-behavior: none not yet applied
       await page.setViewportSize(MOBILE_VIEWPORT);
       await page.goto(SEARCH_URL_EN);
 
@@ -236,7 +231,6 @@ test.describe("Story 3.6: Mobile Pull-Up Sheet E2E (ATDD — RED PHASE)", () => 
   test.skip(
     "[P1] 3.6-E2E-006: releasing sheet between snap points animates to nearest snap point",
     async ({ page }: any) => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       // Tests the spring physics snap behavior when drag is insufficient to advance state
       await page.setViewportSize(MOBILE_VIEWPORT);
       await page.goto(SEARCH_URL_EN);
@@ -268,7 +262,6 @@ test.describe("Story 3.6: Mobile Pull-Up Sheet E2E (ATDD — RED PHASE)", () => 
   test.skip(
     "[P1] 3.6-E2E-007: clicking close button in full state returns sheet to peeked",
     async ({ page }: any) => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       await page.setViewportSize(MOBILE_VIEWPORT);
       await page.goto(SEARCH_URL_EN);
 
@@ -308,7 +301,6 @@ test.describe("Story 3.6: Mobile Pull-Up Sheet E2E (ATDD — RED PHASE)", () => 
   test.skip(
     "[P1] 3.6-E2E-008: pull-up sheet is not visible on desktop viewport (lg:hidden CSS class)",
     async ({ page }: any) => {
-      // THIS TEST WILL FAIL — MapPullUpSheet not yet implemented
       await page.setViewportSize(DESKTOP_VIEWPORT);
       await page.goto(SEARCH_URL_EN);
 

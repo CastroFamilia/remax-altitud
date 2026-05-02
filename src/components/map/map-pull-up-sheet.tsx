@@ -50,8 +50,8 @@ export function MapPullUpSheet({
   const sheetHeight = snapHeights[state];
 
   return (
+    // eslint-disable-next-line jsx-a11y/role-supports-aria-props -- UX-DR25 explicitly requires aria-expanded on this region landmark to communicate sheet state to assistive technologies
     <section
-      role="region"
       aria-label={t("pullUpSheet.regionLabel")}
       aria-expanded={state !== "peeked" ? "true" : "false"}
       data-testid="pull-up-sheet"
