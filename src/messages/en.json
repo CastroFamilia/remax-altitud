@@ -271,7 +271,16 @@
       "description": "No properties match your filters in this area. Try adjusting your search or tell an agent what you're looking for.",
       "adjustFilters": "Adjust filters",
       "tellAgent": "Tell an agent",
-      "whatsappMessage": "Hi, I'm looking for a property..."
+      "whatsappMessage": "Hi, I'm looking for a property...",
+      "whatsappIntro": "Hi, I'm looking for:",
+      "whatsappAnyProperty": "any property",
+      "criteriaType": "Type",
+      "criteriaMinPrice": "Min price",
+      "criteriaMaxPrice": "Max price",
+      "criteriaBedrooms": "Bedrooms",
+      "criteriaBathrooms": "Bathrooms",
+      "criteriaArea": "Area",
+      "criteriaTags": "Tags"
     },
     "listingRemoved": {
       "title": "This property is no longer available",
@@ -285,6 +294,9 @@
     "label": "Near Me",
     "loading": "Locating...",
     "fallbackMessage": "Location unavailable — showing properties near our Pérez Zeledón office",
+    "fallbackDenied": "Location unavailable — showing properties near our Pérez Zeledón office",
+    "fallbackError": "Location error — showing properties near our office",
+    "fallbackUnsupported": "Location not supported — showing properties near our office",
     "fallbackDismiss": "Dismiss"
   },
   "SearchPage": {

@@ -5,13 +5,16 @@ import { OFFICE_PZ_COORDS } from "@/lib/constants/offices-geo";
 
 export type GeolocationStatus = "idle" | "loading" | "success" | "denied" | "error";
 
+/** Identifies WHY a fallback was triggered so consumers can localize messaging. */
+export type GeolocationFallbackReason = "denied" | "error" | "unsupported";
+
 export interface GeolocationState {
   status: GeolocationStatus;
   coords: { lat: number; lng: number } | null;
-  /** Set when denied — nearest office coordinates as fallback */
+  /** Set when denied/unsupported/error — nearest office coordinates as fallback */
   fallbackCoords: { lat: number; lng: number } | null;
-  /** Human-readable notification message for denied/error case */
-  fallbackMessage: string | null;
+  /** Reason for fallback — consumers map this to a localized user-facing message */
+  fallbackReason: GeolocationFallbackReason | null;
 }
 
 export function useGeolocation() {
@@ -19,7 +22,7 @@ export function useGeolocation() {
     status: "idle",
     coords: null,
     fallbackCoords: null,
-    fallbackMessage: null,
+    fallbackReason: null,
   });
 
   const requestLocation = useCallback(() => {
@@ -29,7 +32,7 @@ export function useGeolocation() {
         status: "error",
         coords: null,
         fallbackCoords: OFFICE_PZ_COORDS,
-        fallbackMessage: "Location not supported — showing properties near our office.",
+        fallbackReason: "unsupported",
       });
       return;
     }
@@ -42,7 +45,7 @@ export function useGeolocation() {
           status: "success",
           coords: { lat: position.coords.latitude, lng: position.coords.longitude },
           fallbackCoords: null,
-          fallbackMessage: null,
+          fallbackReason: null,
         });
       },
       (error: GeolocationPositionError) => {
@@ -52,9 +55,7 @@ export function useGeolocation() {
           status: isDenied ? "denied" : "error",
           coords: null,
           fallbackCoords: OFFICE_PZ_COORDS,
-          fallbackMessage: isDenied
-            ? "Location unavailable — showing properties near our Pérez Zeledón office"
-            : "Location error — showing properties near our office",
+          fallbackReason: isDenied ? "denied" : "error",
         });
       },
       {

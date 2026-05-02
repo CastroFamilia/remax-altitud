@@ -10,25 +10,26 @@ export interface NoResultsStateProps {
   filters: SearchFilters;
 }
 
-function buildSearchCriteriaSummary(filters: SearchFilters): string {
+function buildSearchCriteriaSummary(filters: SearchFilters, t: (key: string) => string): string {
   const parts: string[] = [];
-  if (filters.type) parts.push(`Type: ${filters.type}`);
+  if (filters.type) parts.push(`${t("criteriaType")}: ${filters.type}`);
   if (filters.priceMin !== undefined)
-    parts.push(`Min price: $${filters.priceMin.toLocaleString("en-US")}`);
+    parts.push(`${t("criteriaMinPrice")}: $${filters.priceMin.toLocaleString("en-US")}`);
   if (filters.priceMax !== undefined)
-    parts.push(`Max price: $${filters.priceMax.toLocaleString("en-US")}`);
-  if (filters.bedrooms !== undefined) parts.push(`Bedrooms: ${filters.bedrooms}+`);
-  if (filters.bathrooms !== undefined) parts.push(`Bathrooms: ${filters.bathrooms}+`);
-  if (filters.areaSlug) parts.push(`Area: ${filters.areaSlug}`);
-  if (filters.tags?.length) parts.push(`Tags: ${filters.tags.join(", ")}`);
-  return parts.length ? parts.join(", ") : "any property";
+    parts.push(`${t("criteriaMaxPrice")}: $${filters.priceMax.toLocaleString("en-US")}`);
+  if (filters.bedrooms !== undefined) parts.push(`${t("criteriaBedrooms")}: ${filters.bedrooms}+`);
+  if (filters.bathrooms !== undefined)
+    parts.push(`${t("criteriaBathrooms")}: ${filters.bathrooms}+`);
+  if (filters.areaSlug) parts.push(`${t("criteriaArea")}: ${filters.areaSlug}`);
+  if (filters.tags?.length) parts.push(`${t("criteriaTags")}: ${filters.tags.join(", ")}`);
+  return parts.length ? parts.join(", ") : t("whatsappAnyProperty");
 }
 
 export function NoResultsState({ filters }: NoResultsStateProps) {
   const t = useTranslations("EmptyStates.noResults");
 
-  const criteria = buildSearchCriteriaSummary(filters);
-  const whatsAppHref = buildWhatsAppUrl(offices[0], `Hi, I'm looking for: ${criteria}`);
+  const criteria = buildSearchCriteriaSummary(filters, t);
+  const whatsAppHref = buildWhatsAppUrl(offices[0], `${t("whatsappIntro")} ${criteria}`);
 
   return (
     <section

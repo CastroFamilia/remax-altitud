@@ -23,7 +23,7 @@
  *     status: GeolocationStatus;
  *     coords: { lat: number; lng: number } | null;
  *     fallbackCoords: { lat: number; lng: number } | null;
- *     fallbackMessage: string | null;
+ *     fallbackReason: 'denied' | 'error' | 'unsupported' | null;
  *   }
  *   export function useGeolocation(): GeolocationState & { requestLocation: () => void }
  *
@@ -154,7 +154,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
     expect(result.current.status).toBe("idle");
     expect(result.current.coords).toBeNull();
     expect(result.current.fallbackCoords).toBeNull();
-    expect(result.current.fallbackMessage).toBeNull();
+    expect(result.current.fallbackReason).toBeNull();
   });
 
   it("[P0] exposes requestLocation function", () => {
@@ -180,7 +180,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
     expect(result.current.coords?.lat).toBe(9.3725);
     expect(result.current.coords?.lng).toBe(-83.7011);
     expect(result.current.fallbackCoords).toBeNull();
-    expect(result.current.fallbackMessage).toBeNull();
+    expect(result.current.fallbackReason).toBeNull();
   });
 
   // -------------------------------------------------------------------------
@@ -207,7 +207,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
   );
 
   it(
-    "[P0] requestLocation with PERMISSION_DENIED → fallbackMessage is non-null",
+    "[P0] requestLocation with PERMISSION_DENIED → fallbackReason='denied'",
     async () => {
       // THIS TEST WILL FAIL — hook does not yet exist
       mockGeolocationDenied();
@@ -217,8 +217,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
         result.current.requestLocation();
       });
 
-      expect(result.current.fallbackMessage).toBeTruthy();
-      expect(typeof result.current.fallbackMessage).toBe("string");
+      expect(result.current.fallbackReason).toBe("denied");
     },
   );
 
@@ -259,7 +258,7 @@ describe("useGeolocation — Story 3.8 ATDD (RED PHASE)", () => {
 
       expect(result.current.status).toBe("error");
       expect(result.current.fallbackCoords).not.toBeNull();
-      expect(result.current.fallbackMessage).toBeTruthy();
+      expect(result.current.fallbackReason).toBe("unsupported");
     },
   );
 });

@@ -271,7 +271,16 @@
       "description": "No hay propiedades que coincidan con tus filtros en esta zona. Intenta ajustar tu búsqueda o cuéntale a un agente lo que buscas.",
       "adjustFilters": "Ajustar filtros",
       "tellAgent": "Habla con un agente",
-      "whatsappMessage": "Hola, estoy buscando una propiedad..."
+      "whatsappMessage": "Hola, estoy buscando una propiedad...",
+      "whatsappIntro": "Hola, estoy buscando:",
+      "whatsappAnyProperty": "cualquier propiedad",
+      "criteriaType": "Tipo",
+      "criteriaMinPrice": "Precio mínimo",
+      "criteriaMaxPrice": "Precio máximo",
+      "criteriaBedrooms": "Habitaciones",
+      "criteriaBathrooms": "Baños",
+      "criteriaArea": "Zona",
+      "criteriaTags": "Etiquetas"
     },
     "listingRemoved": {
       "title": "Esta propiedad ya no está disponible",
@@ -285,6 +294,9 @@
     "label": "Cerca de mí",
     "loading": "Localizando...",
     "fallbackMessage": "Ubicación no disponible — mostrando propiedades cerca de nuestra oficina en Pérez Zeledón",
+    "fallbackDenied": "Ubicación no disponible — mostrando propiedades cerca de nuestra oficina en Pérez Zeledón",
+    "fallbackError": "Error de ubicación — mostrando propiedades cerca de nuestra oficina",
+    "fallbackUnsupported": "Ubicación no compatible — mostrando propiedades cerca de nuestra oficina",
     "fallbackDismiss": "Cerrar"
   },
   "SearchPage": {

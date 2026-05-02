@@ -52,7 +52,7 @@ vi.mock("@/hooks/use-geolocation", () => ({
     status: "idle" as const,
     coords: null,
     fallbackCoords: null,
-    fallbackMessage: null,
+    fallbackReason: null,
     requestLocation: mockRequestLocation,
   })),
 }));
@@ -105,7 +105,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
       status: "idle",
       coords: null,
       fallbackCoords: null,
-      fallbackMessage: null,
+      fallbackReason: null,
       requestLocation: mockRequestLocation,
     });
     const { getByTestId } = render(
@@ -124,7 +124,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
       status: "loading",
       coords: null,
       fallbackCoords: null,
-      fallbackMessage: null,
+      fallbackReason: null,
       requestLocation: mockRequestLocation,
     });
     const { getByTestId } = render(
@@ -147,7 +147,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
       status: "idle",
       coords: null,
       fallbackCoords: null,
-      fallbackMessage: null,
+      fallbackReason: null,
       requestLocation: mockRequestLocation,
     });
     const { getByTestId } = render(
@@ -175,7 +175,7 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
         status: "success",
         coords: successCoords,
         fallbackCoords: null,
-        fallbackMessage: null,
+        fallbackReason: null,
         requestLocation: mockRequestLocation,
       });
 
@@ -201,13 +201,12 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
       // THIS TEST WILL FAIL — NearMeButton does not yet exist
       const onFallback = vi.fn();
       const fallbackCoords = { lat: 9.3725, lng: -83.7011 };
-      const fallbackMessage = "Location unavailable — showing properties near our Pérez Zeledón office";
 
       vi.mocked(useGeolocation).mockReturnValue({
         status: "denied",
         coords: null,
         fallbackCoords: fallbackCoords,
-        fallbackMessage: fallbackMessage,
+        fallbackReason: "denied",
         requestLocation: mockRequestLocation,
       });
 
@@ -218,8 +217,10 @@ describe("NearMeButton — Story 3.8 ATDD (RED PHASE)", () => {
         />,
       );
 
-      // The useEffect watching status should have called onFallback
-      expect(onFallback).toHaveBeenCalledWith(fallbackCoords, fallbackMessage);
+      // The useEffect watching status should have called onFallback with a
+      // localized message — the next-intl mock returns the key verbatim, so
+      // we assert on the i18n key for the denied reason.
+      expect(onFallback).toHaveBeenCalledWith(fallbackCoords, "fallbackDenied");
     },
   );
 });

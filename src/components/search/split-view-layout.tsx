@@ -87,6 +87,7 @@ export function SplitViewLayout({
   } | null>(null);
   const [nearMeFallbackMessage, setNearMeFallbackMessage] = useState<string | null>(null);
   const tSidePanel = useTranslations("SearchPage.sidePanel");
+  const tNearMe = useTranslations("NearMe");
   const mapHidden = viewMode === "grid";
   const gridHidden = viewMode === "map";
 
@@ -130,7 +131,7 @@ export function SplitViewLayout({
           <span>{nearMeFallbackMessage}</span>
           <button
             type="button"
-            aria-label="Dismiss"
+            aria-label={tNearMe("fallbackDismiss")}
             onClick={() => setNearMeFallbackMessage(null)}
             className="ml-4 text-amber-600 hover:text-amber-800"
           >
