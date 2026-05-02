@@ -6,6 +6,7 @@ import { useDrag } from "@use-gesture/react";
 import { PropertyCard } from "@/components/property/property-card";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
 import type { PropertySearchItem } from "@/types/search";
+import type { UnitSystem } from "@/lib/utils/units";
 
 interface MapPullUpSheetProps {
   properties: PropertySearchItem[];
@@ -13,6 +14,7 @@ interface MapPullUpSheetProps {
   propertyCount: number; // total visible count for the handle label
   isLoading?: boolean;
   initialState?: "peeked" | "half" | "full"; // for unit test control only; defaults to 'peeked'
+  unitSystem?: UnitSystem;
 }
 
 const snapHeights: Record<"peeked" | "half" | "full", string> = {
@@ -27,6 +29,7 @@ export function MapPullUpSheet({
   propertyCount,
   isLoading = false,
   initialState,
+  unitSystem,
 }: MapPullUpSheetProps) {
   const t = useTranslations("SearchPage");
   const [state, setState] = useState<"peeked" | "half" | "full">(initialState ?? "peeked");
@@ -101,7 +104,12 @@ export function MapPullUpSheet({
               ) : (
                 properties.slice(0, 3).map((p) => (
                   <div key={p.id} className="snap-start flex-shrink-0 w-[280px]">
-                    <PropertyCard property={p} locale={locale} variant="compact" />
+                    <PropertyCard
+                      property={p}
+                      locale={locale}
+                      variant="compact"
+                      unitSystem={unitSystem}
+                    />
                   </div>
                 ))
               )}
@@ -117,7 +125,7 @@ export function MapPullUpSheet({
               ) : (
                 properties.map((p) => (
                   <div key={p.id} className="mb-3">
-                    <PropertyCard property={p} locale={locale} />
+                    <PropertyCard property={p} locale={locale} unitSystem={unitSystem} />
                   </div>
                 ))
               )}

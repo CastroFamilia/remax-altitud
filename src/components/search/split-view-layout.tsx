@@ -8,6 +8,7 @@ import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { MapView } from "@/components/map/map-view-loader";
 import { PropertyGrid } from "@/components/property/property-grid";
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
+import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets } from "@/types/search";
 
@@ -69,6 +70,8 @@ export function SplitViewLayout({
   // Suppress unused-var warnings for forward-compat props; they are part of
   // the public API surface used by SearchPageClient today.
   void _facets;
+  // Unit preference (localStorage-persisted)
+  const { unitSystem } = useLocaleUnits(locale);
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const tSidePanel = useTranslations("SearchPage.sidePanel");
@@ -131,6 +134,7 @@ export function SplitViewLayout({
               total={total}
               page={page}
               onPageChange={onPageChange}
+              unitSystem={unitSystem}
             />
           ) : (
             <SearchResultsSkeleton />
@@ -171,6 +175,7 @@ export function SplitViewLayout({
         locale={locale}
         propertyCount={count}
         isLoading={isLoading}
+        unitSystem={unitSystem}
       />
     </div>
   );

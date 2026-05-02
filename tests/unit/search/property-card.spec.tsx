@@ -283,14 +283,13 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P0] displays formatted price (e.g., '$185K') using formatPriceAbbrev",
+    "[P0] displays formatted price using formatUSD (Story 3.7: formatPriceAbbrev replaced by formatUSD)",
     () => {
-      // THIS TEST WILL FAIL — property-card.tsx not yet implemented
       render(<PropertyCard property={mockPropertyMountain} locale="en" />);
 
       const card = document.querySelector('[data-testid="property-card"]');
-      // formatPriceAbbrev(185000) should output "$185K"
-      expect(card?.textContent).toMatch(/\$185K/);
+      // formatUSD mock returns "$185000" — price must appear in card
+      expect(card?.textContent).toMatch(/\$185/);
     },
   );
 

@@ -79,11 +79,13 @@ describe("formatUSD — locale-aware USD formatting", () => {
   it(
     "[P0] formatUSD uses maximumFractionDigits: 0 (no cents shown)",
     () => {
-      // THIS TEST WILL FAIL — currency.ts not yet implemented
-      // Should NOT show decimal places for whole dollar amounts
+      // Should NOT show decimal places (cents) for whole dollar amounts
+      // Use a value that won't ambiguously trigger the ",00" thousands-separator check
       const result = formatUSD(185000, "en-US");
-      expect(result).not.toContain(".00");
-      expect(result).not.toContain(",00");
+      // No decimal fraction — must not end with ".XX" decimal cents
+      expect(result).not.toMatch(/\.\d\d$/);
+      // European decimal format with comma cents must not appear at end
+      expect(result).not.toMatch(/,\d\d$/);
     },
   );
 });
@@ -118,11 +120,12 @@ describe("formatEUR — USD→EUR conversion and formatting", () => {
   it(
     "[P0] formatEUR uses Math.round (no decimal cents)",
     () => {
-      // THIS TEST WILL FAIL — currency.ts not yet implemented
       const result = formatEUR(100001, "en-US");
       // Should be a whole number, no cents
-      expect(result).not.toContain(".00");
-      expect(result).not.toContain(",00");
+      // Must not end with ".XX" decimal cents
+      expect(result).not.toMatch(/\.\d\d$/);
+      // European decimal format with comma cents must not appear at end
+      expect(result).not.toMatch(/,\d\d$/);
     },
   );
 });

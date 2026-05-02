@@ -404,5 +404,10 @@
     "similarHeading": "Propiedades similares que podrían interesarte",
     "browseCta": "Ver todas las propiedades",
     "similarCta": "Ver propiedad"
+  },
+  "UnitToggle": {
+    "label": "Cambiar unidades de área",
+    "metric": "m²",
+    "imperial": "ft²"
   }
 }

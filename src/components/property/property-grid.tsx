@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
 import { PropertyCard } from "@/components/property/property-card";
 import type { PropertySearchItem } from "@/types/search";
+import type { UnitSystem } from "@/lib/utils/units";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -14,6 +15,7 @@ interface PropertyGridProps {
   total?: number;
   page?: number;
   onPageChange?: (page: number) => void;
+  unitSystem?: UnitSystem;
 }
 
 export function PropertyGrid({
@@ -23,6 +25,7 @@ export function PropertyGrid({
   total,
   page = 1,
   onPageChange,
+  unitSystem,
 }: PropertyGridProps) {
   const tGrid = useTranslations("SearchPage.grid");
 
@@ -48,7 +51,12 @@ export function PropertyGrid({
       className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6"
     >
       {currentPageItems.map((property) => (
-        <PropertyCard key={property.id} property={property} locale={locale} />
+        <PropertyCard
+          key={property.id}
+          property={property}
+          locale={locale}
+          unitSystem={unitSystem}
+        />
       ))}
 
       {/* Empty state */}

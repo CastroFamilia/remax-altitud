@@ -3,13 +3,15 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { SaveButton } from "@/components/property/save-button";
 import { ShareButton } from "@/components/property/share-button";
-import { formatPriceAbbrev } from "@/lib/map/geo-utils";
+import { convertArea, type UnitSystem } from "@/lib/utils/units";
+import { formatUSD, formatEUR, isNonUSLocale } from "@/lib/utils/currency";
 import type { PropertySearchItem } from "@/types/search";
 
 interface PropertyCardProps {
   property: PropertySearchItem;
   locale: string;
   variant?: "default" | "compact" | "horizontal";
+  unitSystem?: UnitSystem;
 }
 
 const BEACH_SLUGS = new Set([
@@ -41,17 +43,6 @@ export function getRegionFromAreaSlug(areaSlug: string | null): "Mountain" | "Be
   return null;
 }
 
-/**
- * Format area in human-friendly units.
- * >= 10,000 m² → ha; otherwise m²
- */
-function formatArea(value: number): string {
-  if (value >= 10000) {
-    return `${(value / 10000).toFixed(1)} ha`;
-  }
-  return `${Math.round(value)} m²`;
-}
-
 // ZMT badge visual config (classes + icon only; labels resolved via i18n)
 const ZMT_VISUAL: Record<string, { classes: string; icon: string }> = {
   titled: {
@@ -73,10 +64,15 @@ const ZMT_VISUAL: Record<string, { classes: string; icon: string }> = {
  * Architecture §8: PropertyCard (static data) → Server Component.
  * SaveButton and ShareButton are Client Component children.
  */
-export function PropertyCard({ property, locale, variant = "default" }: PropertyCardProps) {
+export function PropertyCard({
+  property,
+  locale,
+  variant = "default",
+  unitSystem,
+}: PropertyCardProps) {
   const t = useTranslations("PropertyCard");
   const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
-  const price = formatPriceAbbrev(property.priceUsd);
+  const activeUnitSystem = unitSystem ?? "metric";
   const imageSrc = property.images[0]?.url ?? "/property-placeholder.svg";
   const imageAlt = property.images[0]?.alt ?? title;
   const region = getRegionFromAreaSlug(property.areaSlug);
@@ -86,10 +82,12 @@ export function PropertyCard({ property, locale, variant = "default" }: Property
   const isHorizontal = variant === "horizontal";
   const isCompact = variant === "compact";
 
+  const usdPrice = formatUSD(property.priceUsd, locale);
+
   return (
     <article
       data-testid="property-card"
-      aria-label={`Property: ${title}, ${price}`}
+      aria-label={`Property: ${title}, ${usdPrice}`}
       className={`group relative overflow-hidden rounded-lg bg-card shadow-sm transition-all duration-200 ease-out hover:translate-y-[-4px] hover:shadow-lg ${isHorizontal ? "flex flex-row" : ""}`}
     >
       {/* Card link wraps image + body */}
@@ -127,8 +125,13 @@ export function PropertyCard({ property, locale, variant = "default" }: Property
         >
           {/* Price */}
           <p data-testid="property-price" className="font-bold text-xl text-[--color-accent]">
-            {price}
+            {usdPrice}
           </p>
+          {isNonUSLocale(locale) && (
+            <p data-testid="property-price-eur" className="text-xs text-muted-foreground">
+              ≈ {formatEUR(property.priceUsd, locale)}
+            </p>
+          )}
 
           {/* Title */}
           <h3
@@ -154,12 +157,18 @@ export function PropertyCard({ property, locale, variant = "default" }: Property
               </>
             )}
             {property.lotSizeM2 !== null && (
-              <span>{t("specs.lot", { size: formatArea(property.lotSizeM2) })}</span>
+              <span>
+                {t("specs.lot", { size: convertArea(property.lotSizeM2, activeUnitSystem) })}
+              </span>
             )}
             {property.constructionM2 !== null && (
               <>
                 <span>·</span>
-                <span>{t("specs.built", { size: formatArea(property.constructionM2) })}</span>
+                <span>
+                  {t("specs.built", {
+                    size: convertArea(property.constructionM2, activeUnitSystem),
+                  })}
+                </span>
               </>
             )}
           </div>

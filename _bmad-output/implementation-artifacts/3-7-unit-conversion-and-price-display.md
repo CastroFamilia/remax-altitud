@@ -1,6 +1,6 @@
 # Story 3.7: Unit Conversion & Price Display
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -26,45 +26,45 @@ so that I can evaluate properties using measurements I understand.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create `src/lib/utils/units.ts` — unit conversion utilities (AC: #1, #2, #3, #4)
-  - [ ] Create the file at EXACTLY `src/lib/utils/units.ts` — **this file does NOT exist yet** (architecture §3 specifies it)
-  - [ ] Define `UnitSystem` type: `'metric' | 'imperial'`
-  - [ ] Implement `detectDefaultUnitSystem(locale: string): UnitSystem`:
+- [x] Task 1: Create `src/lib/utils/units.ts` — unit conversion utilities (AC: #1, #2, #3, #4)
+  - [x] Create the file at EXACTLY `src/lib/utils/units.ts` — **this file does NOT exist yet** (architecture §3 specifies it)
+  - [x] Define `UnitSystem` type: `'metric' | 'imperial'`
+  - [x] Implement `detectDefaultUnitSystem(locale: string): UnitSystem`:
     - **CRITICAL**: Project i18n routing (`src/i18n/routing.ts`) only supports locales `'en'` and `'es'`. There is no `'en-US'` in the URL routing.
     - For browser locale detection (used in the hook): check `navigator.language` which CAN be `'en-US'`
     - For URL locale parameter (path-based like `/en/...`): treat `'en'` as potentially US → imperial
     - Implementation: Returns `'imperial'` if locale is `'en'`, `'en-US'`, or starts with `'en-'`; returns `'metric'` for all others (e.g., `'es'`)
     - This means Costa Rica Spanish speakers (`'es'`) get metric; English speakers get imperial (appropriate for likely US/Canadian buyers)
-  - [ ] Implement `convertArea(m2: number, system: UnitSystem, threshold?: number): string`:
+  - [x] Implement `convertArea(m2: number, system: UnitSystem, threshold?: number): string`:
     - `metric` path: if `m2 >= 10000` → format as hectares (1 ha = 10000 m²); else format as m²
     - `imperial` path: if `m2 >= 40468.6` (≈10 acres threshold) → format as acres (1 acre = 4046.86 m²); else format as ft² (1 m² = 10.7639 ft²)
     - Use `Intl.NumberFormat` for locale-appropriate number formatting
     - Return format: `"1.5 ha"`, `"350 m²"`, `"2.3 acres"`, `"3,767 ft²"`
-  - [ ] Conversion constants (must be exact for test assertions — test design R-014):
+  - [x] Conversion constants (must be exact for test assertions — test design R-014):
     - `SQFT_PER_M2 = 10.7639` (1 ft² = 0.0929 m²; 1 m² = 10.7639 ft²)
     - `M2_PER_ACRE = 4046.86` (1 acre = 0.4047 ha)
     - `M2_PER_HA = 10000`
-  - [ ] Export `UnitSystem`, `detectDefaultUnitSystem`, `convertArea`, conversion constants
+  - [x] Export `UnitSystem`, `detectDefaultUnitSystem`, `convertArea`, conversion constants
 
-- [ ] Task 2: Create `src/lib/utils/currency.ts` — USD → EUR conversion (AC: #5, #7)
-  - [ ] Create the file at EXACTLY `src/lib/utils/currency.ts` — **this file does NOT exist yet** (architecture §3 specifies it)
-  - [ ] Define a static approximate EUR exchange rate constant: `const EUR_RATE = 0.92` (approximate USD→EUR, build-time static per test-design assumption §5 — NOT a live API call)
-  - [ ] Implement `formatUSD(price: number, locale: string): string`:
+- [x] Task 2: Create `src/lib/utils/currency.ts` — USD → EUR conversion (AC: #5, #7)
+  - [x] Create the file at EXACTLY `src/lib/utils/currency.ts` — **this file does NOT exist yet** (architecture §3 specifies it)
+  - [x] Define a static approximate EUR exchange rate constant: `const EUR_RATE = 0.92` (approximate USD→EUR, build-time static per test-design assumption §5 — NOT a live API call)
+  - [x] Implement `formatUSD(price: number, locale: string): string`:
     - Use `Intl.NumberFormat(locale, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })` for locale-appropriate formatting
     - Result: `"$185,000"` (en-US) or `"185.000 $"` (de-DE) — commas vs periods locale-correct
-  - [ ] Implement `formatEUR(price: number, locale: string): string`:
+  - [x] Implement `formatEUR(price: number, locale: string): string`:
     - Converts USD price to EUR: `Math.round(price * EUR_RATE)`
     - Uses `Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })` for locale-appropriate formatting
-  - [ ] Implement `isNonUSLocale(locale: string): boolean`:
+  - [x] Implement `isNonUSLocale(locale: string): boolean`:
     - Returns `true` when locale is NOT `'en'` and does NOT start with `'en-'`
     - Examples: `'en'` → false, `'en-US'` → false, `'es'` → true, `'de-DE'` → true
     - Used to determine whether to show EUR conversion (FR10)
-  - [ ] Export `EUR_RATE`, `formatUSD`, `formatEUR`, `isNonUSLocale`
+  - [x] Export `EUR_RATE`, `formatUSD`, `formatEUR`, `isNonUSLocale`
 
-- [ ] Task 3: Create `src/hooks/use-locale-units.ts` — localStorage-persisted unit preference (AC: #3, #4)
-  - [ ] Create the file at EXACTLY `src/hooks/use-locale-units.ts` — **this file does NOT exist yet** (architecture §3 specifies it)
-  - [ ] Add `'use client'` — this hook uses `localStorage` and React state (Client-only)
-  - [ ] Implement `useLocaleUnits(locale: string)` hook:
+- [x] Task 3: Create `src/hooks/use-locale-units.ts` — localStorage-persisted unit preference (AC: #3, #4)
+  - [x] Create the file at EXACTLY `src/hooks/use-locale-units.ts` — **this file does NOT exist yet** (architecture §3 specifies it)
+  - [x] Add `'use client'` — this hook uses `localStorage` and React state (Client-only)
+  - [x] Implement `useLocaleUnits(locale: string)` hook:
     ```ts
     const STORAGE_KEY = 'unit-preference';
 
@@ -88,24 +88,24 @@ so that I can evaluate properties using measurements I understand.
       return { unitSystem, toggleUnits, convertArea } as const;
     }
     ```
-  - [ ] **FOUC prevention** (R-011): The `useState` initializer MUST read localStorage synchronously (not in a `useEffect`) to avoid flash of wrong units on first render
-  - [ ] Import `detectDefaultUnitSystem`, `convertArea`, `UnitSystem` from `@/lib/utils/units`
-  - [ ] Import `useState`, `useCallback` from `'react'`
-  - [ ] Export `useLocaleUnits`
+  - [x] **FOUC prevention** (R-011): The `useState` initializer MUST read localStorage synchronously (not in a `useEffect`) to avoid flash of wrong units on first render
+  - [x] Import `detectDefaultUnitSystem`, `convertArea`, `UnitSystem` from `@/lib/utils/units`
+  - [x] Import `useState`, `useCallback` from `'react'`
+  - [x] Export `useLocaleUnits`
 
-- [ ] Task 4: Create `src/components/layout/unit-toggle.tsx` — UX unit toggle component (AC: #3, #4)
-  - [ ] Create the file at EXACTLY `src/components/layout/unit-toggle.tsx` — **this file does NOT exist yet** (architecture §3 specifies it in `src/components/layout/`)
-  - [ ] Add `'use client'` as first line — this IS a Client Component (localStorage, toggle state)
-  - [ ] Architecture §8: `UnitToggle` is explicitly listed as a Client Component
-  - [ ] Props interface:
+- [x] Task 4: Create `src/components/layout/unit-toggle.tsx` — UX unit toggle component (AC: #3, #4)
+  - [x] Create the file at EXACTLY `src/components/layout/unit-toggle.tsx` — **this file does NOT exist yet** (architecture §3 specifies it in `src/components/layout/`)
+  - [x] Add `'use client'` as first line — this IS a Client Component (localStorage, toggle state)
+  - [x] Architecture §8: `UnitToggle` is explicitly listed as a Client Component
+  - [x] Props interface:
     ```ts
     interface UnitToggleProps {
       locale: string;
       className?: string;
     }
     ```
-  - [ ] Use `useLocaleUnits(locale)` hook internally
-  - [ ] Render a toggle button (use Radix-based `<Switch>` or a simple `<button>` with ARIA) showing `"m²"` vs `"ft²"`:
+  - [x] Use `useLocaleUnits(locale)` hook internally
+  - [x] Render a toggle button (use Radix-based `<Switch>` or a simple `<button>` with ARIA) showing `"m²"` vs `"ft²"`:
     ```tsx
     <button
       type="button"
@@ -119,15 +119,15 @@ so that I can evaluate properties using measurements I understand.
       <span aria-hidden="true">{unitSystem === 'metric' ? 'm²' : 'ft²'}</span>
     </button>
     ```
-  - [ ] The UX spec (line 1769) states: "UnitToggle | m²/acres/ft², persists preference in localStorage | Switch base" — implement as a switch-style toggle
-  - [ ] Use `useTranslations('UnitToggle')` for i18n (add new namespace — see Task 7)
-  - [ ] Export `UnitToggle`
-  - [ ] `data-testid="unit-toggle"` on root element
+  - [x] The UX spec (line 1769) states: "UnitToggle | m²/acres/ft², persists preference in localStorage | Switch base" — implement as a switch-style toggle
+  - [x] Use `useTranslations('UnitToggle')` for i18n (add new namespace — see Task 7)
+  - [x] Export `UnitToggle`
+  - [x] `data-testid="unit-toggle"` on root element
 
-- [ ] Task 5: Update `PropertyCard` to use locale-aware units and price display (AC: #1–#7)
-  - [ ] **File**: `src/components/property/property-card.tsx` (MODIFY — exists from Story 3.5)
-  - [ ] **CRITICAL**: `PropertyCard` is a **Server Component** (RSC). It CANNOT use hooks like `useLocaleUnits` directly. Unit system must be passed as a prop.
-  - [ ] Add `unitSystem?: UnitSystem` prop to `PropertyCardProps`:
+- [x] Task 5: Update `PropertyCard` to use locale-aware units and price display (AC: #1–#7)
+  - [x] **File**: `src/components/property/property-card.tsx` (MODIFY — exists from Story 3.5)
+  - [x] **CRITICAL**: `PropertyCard` is a **Server Component** (RSC). It CANNOT use hooks like `useLocaleUnits` directly. Unit system must be passed as a prop.
+  - [x] Add `unitSystem?: UnitSystem` prop to `PropertyCardProps`:
     ```ts
     interface PropertyCardProps {
       property: PropertySearchItem;
@@ -136,12 +136,12 @@ so that I can evaluate properties using measurements I understand.
       unitSystem?: UnitSystem;  // NEW: defaults to 'metric'
     }
     ```
-  - [ ] Import `UnitSystem` from `@/lib/utils/units`
-  - [ ] Import `convertArea` from `@/lib/utils/units`
-  - [ ] Replace the existing inline `formatArea` function (lines 48-53 in current file) with `convertArea(value, unitSystem ?? 'metric')` — **DELETE the old `formatArea` function** to avoid duplication (wheel-reinvention prevention!)
-  - [ ] Import `formatUSD`, `formatEUR`, `isNonUSLocale` from `@/lib/utils/currency`
-  - [ ] Replace `formatPriceAbbrev(property.priceUsd)` with `formatUSD(property.priceUsd, locale)` for full price display
-  - [ ] For non-US locales, display EUR approximate below USD price:
+  - [x] Import `UnitSystem` from `@/lib/utils/units`
+  - [x] Import `convertArea` from `@/lib/utils/units`
+  - [x] Replace the existing inline `formatArea` function (lines 48-53 in current file) with `convertArea(value, unitSystem ?? 'metric')` — **DELETE the old `formatArea` function** to avoid duplication (wheel-reinvention prevention!)
+  - [x] Import `formatUSD`, `formatEUR`, `isNonUSLocale` from `@/lib/utils/currency`
+  - [x] Replace `formatPriceAbbrev(property.priceUsd)` with `formatUSD(property.priceUsd, locale)` for full price display
+  - [x] For non-US locales, display EUR approximate below USD price:
     ```tsx
     {/* Price */}
     <p data-testid="property-price" className="font-bold text-xl text-[--color-accent]">
@@ -153,7 +153,7 @@ so that I can evaluate properties using measurements I understand.
       </p>
     )}
     ```
-  - [ ] Update lot/built area display to use `convertArea`:
+  - [x] Update lot/built area display to use `convertArea`:
     ```tsx
     {property.lotSizeM2 !== null && (
       <span>{t("specs.lot", { size: convertArea(property.lotSizeM2, unitSystem ?? 'metric') })}</span>
@@ -165,26 +165,26 @@ so that I can evaluate properties using measurements I understand.
       </>
     )}
     ```
-  - [ ] **ZMT badge already exists** in PropertyCard (lines 168-176 in current file) — it already renders icon + label using i18n. DO NOT remove or change the ZMT badge. Just verify it uses icon + label (not color alone — AC #6). The existing implementation already complies.
-  - [ ] **DO NOT break** `data-testid` values: `property-card`, `property-price`, `property-specs`, `zmt-badge`, `property-image`, `region-badge` — existing tests assert on these
-  - [ ] Remove the `formatPriceAbbrev` import from `@/lib/map/geo-utils` if it's no longer used in property-card (keep it in geo-utils.ts itself — still used by map pins)
+  - [x] **ZMT badge already exists** in PropertyCard (lines 168-176 in current file) — it already renders icon + label using i18n. DO NOT remove or change the ZMT badge. Just verify it uses icon + label (not color alone — AC #6). The existing implementation already complies.
+  - [x] **DO NOT break** `data-testid` values: `property-card`, `property-price`, `property-specs`, `zmt-badge`, `property-image`, `region-badge` — existing tests assert on these
+  - [x] Remove the `formatPriceAbbrev` import from `@/lib/map/geo-utils` if it's no longer used in property-card (keep it in geo-utils.ts itself — still used by map pins)
 
-- [ ] Task 6: Update parent components to pass `unitSystem` prop to `PropertyCard` (AC: #1–#4)
-  - [ ] **File**: `src/components/search/split-view-layout.tsx` (MODIFY — exists from Stories 3.1/3.3/3.5/3.6)
+- [x] Task 6: Update parent components to pass `unitSystem` prop to `PropertyCard` (AC: #1–#4)
+  - [x] **File**: `src/components/search/split-view-layout.tsx` (MODIFY — exists from Stories 3.1/3.3/3.5/3.6)
     - This component is `'use client'` — it CAN use `useLocaleUnits`
     - Import `useLocaleUnits` from `@/hooks/use-locale-units`
     - Call `const { unitSystem, toggleUnits } = useLocaleUnits(locale);`
     - Pass `unitSystem={unitSystem}` to `PropertyGrid` (which passes to `PropertyCard`)
     - Optionally render `<UnitToggle locale={locale} />` in the filter bar area
-  - [ ] **File**: `src/components/property/property-grid.tsx` (MODIFY — exists from Story 3.5)
+  - [x] **File**: `src/components/property/property-grid.tsx` (MODIFY — exists from Story 3.5)
     - Add `unitSystem?: UnitSystem` to `PropertyGridProps`
     - Pass `unitSystem` down to each `<PropertyCard unitSystem={unitSystem} />`
-  - [ ] **File**: `src/components/map/map-pull-up-sheet.tsx` (MODIFY — exists from Story 3.6)
+  - [x] **File**: `src/components/map/map-pull-up-sheet.tsx` (MODIFY — exists from Story 3.6)
     - Add `unitSystem?: UnitSystem` to `MapPullUpSheetProps`
     - Pass `unitSystem` to `<PropertyCard unitSystem={unitSystem} />` in both half and full states
 
-- [ ] Task 7: Add i18n keys for new components (AC: #3, #4, #5)
-  - [ ] **File**: `src/messages/en.json` — add new `"UnitToggle"` namespace at top level:
+- [x] Task 7: Add i18n keys for new components (AC: #3, #4, #5)
+  - [x] **File**: `src/messages/en.json` — add new `"UnitToggle"` namespace at top level:
     ```json
     "UnitToggle": {
       "label": "Toggle area units",
@@ -192,7 +192,7 @@ so that I can evaluate properties using measurements I understand.
       "imperial": "ft²"
     }
     ```
-  - [ ] **File**: `src/messages/es.json` — add equivalent:
+  - [x] **File**: `src/messages/es.json` — add equivalent:
     ```json
     "UnitToggle": {
       "label": "Cambiar unidades de área",
@@ -200,13 +200,13 @@ so that I can evaluate properties using measurements I understand.
       "imperial": "ft²"
     }
     ```
-  - [ ] Note: `PropertyCard` i18n already has `"specs.lot"` and `"specs.built"` — these just pass the formatted string through `{size}`, so no changes needed to existing PropertyCard i18n keys
-  - [ ] Note: ZMT badge i18n keys (`zmtStatus.titled`, `zmtStatus.concession`, `zmtStatus.zmt_restricted`) already exist — **DO NOT re-add them**
+  - [x] Note: `PropertyCard` i18n already has `"specs.lot"` and `"specs.built"` — these just pass the formatted string through `{size}`, so no changes needed to existing PropertyCard i18n keys
+  - [x] Note: ZMT badge i18n keys (`zmtStatus.titled`, `zmtStatus.concession`, `zmtStatus.zmt_restricted`) already exist — **DO NOT re-add them**
 
-- [ ] Task 8: Unit tests for `units.ts` (AC: #1, #2, #3 — test design 3.7-UNIT-001, 3.7-UNIT-002)
-  - [ ] Create `tests/unit/search/units.spec.ts` (Vitest — node environment, NOT jsdom — no JSX)
+- [x] Task 8: Unit tests for `units.ts` (AC: #1, #2, #3 — test design 3.7-UNIT-001, 3.7-UNIT-002)
+  - [x] Create `tests/unit/search/units.spec.ts` (Vitest — node environment, NOT jsdom — no JSX)
     - **Important**: This is a `.ts` (not `.tsx`) file. The `environmentMatchGlobs` only affects `.tsx` files in `tests/unit/search/` — `.ts` files use node environment which is fine for pure utils
-  - [ ] Tests to write:
+  - [x] Tests to write:
     - `[P0]` ft² conversion: `convertArea(100, 'imperial')` returns `"1,076 ft²"` (100 × 10.7639 ≈ 1076)
     - `[P0]` m² → ft² boundary: values < 40468.6 m² show ft², values ≥ 40468.6 show acres
     - `[P0]` acres conversion: `convertArea(40469, 'imperial')` returns string containing `"acres"` (10+ acres threshold)
@@ -219,9 +219,9 @@ so that I can evaluate properties using measurements I understand.
     - `[P1]` 3.7-UNIT-001: 1 ft² = 0.0929 m² → `convertArea(0.0929, 'imperial')` ≈ `"1 ft²"`
     - `[P1]` 3.7-UNIT-002: 1 acre = 0.4047 ha → `convertArea(4046.86, 'imperial')` ≈ `"1 acre"`
 
-- [ ] Task 9: Unit tests for `currency.ts` (AC: #5, #7 — test design 3.7-UNIT-003)
-  - [ ] Create `tests/unit/search/currency.spec.ts` (Vitest — node environment)
-  - [ ] Tests to write:
+- [x] Task 9: Unit tests for `currency.ts` (AC: #5, #7 — test design 3.7-UNIT-003)
+  - [x] Create `tests/unit/search/currency.spec.ts` (Vitest — node environment)
+  - [x] Tests to write:
     - `[P0]` `formatUSD(185000, 'en-US')` returns `"$185,000"` (US comma separator)
     - `[P0]` `isNonUSLocale('en')` → `false` (project locale — English = US audience)
     - `[P0]` `isNonUSLocale('en-US')` → `false` (browser locale)
@@ -231,9 +231,9 @@ so that I can evaluate properties using measurements I understand.
     - `[P1]` 3.7-UNIT-003: `formatUSD(1234567, 'en-US')` contains `"1,234,567"` (comma separator for US)
     - `[P1]` EUR_RATE constant exists and is a number between 0.8 and 1.0 (sanity check)
 
-- [ ] Task 10: Unit tests for `UnitToggle` component (AC: #3, #4)
-  - [ ] Create `tests/unit/search/unit-toggle.spec.tsx` (Vitest + jsdom — environmentMatchGlobs covers `tests/unit/search/**/*.spec.tsx`)
-  - [ ] Mocks needed:
+- [x] Task 10: Unit tests for `UnitToggle` component (AC: #3, #4)
+  - [x] Create `tests/unit/search/unit-toggle.spec.tsx` (Vitest + jsdom — environmentMatchGlobs covers `tests/unit/search/**/*.spec.tsx`)
+  - [x] Mocks needed:
     ```ts
     vi.mock('next-intl', () => ({
       useTranslations: vi.fn(() => (key: string) => key),
@@ -246,7 +246,7 @@ so that I can evaluate properties using measurements I understand.
       })),
     }));
     ```
-  - [ ] Tests to write:
+  - [x] Tests to write:
     - `[P0]` renders `data-testid="unit-toggle"` button
     - `[P0]` shows `"m²"` when `unitSystem === 'metric'`
     - `[P0]` shows `"ft²"` when `unitSystem === 'imperial'` (via mock returning imperial)
@@ -254,9 +254,9 @@ so that I can evaluate properties using measurements I understand.
     - `[P0]` has `role="switch"` and `aria-checked="true"` when metric, `aria-checked="false"` when imperial
     - `[P1]` has `aria-label` set
 
-- [ ] Task 11: Update existing `property-card.spec.tsx` to reflect new props (AC: regression)
-  - [ ] **File**: `tests/unit/search/property-card.spec.tsx` (MODIFY — exists from Story 3.5)
-  - [ ] Add mock for new imports:
+- [x] Task 11: Update existing `property-card.spec.tsx` to reflect new props (AC: regression)
+  - [x] **File**: `tests/unit/search/property-card.spec.tsx` (MODIFY — exists from Story 3.5)
+  - [x] Add mock for new imports:
     ```ts
     vi.mock('@/lib/utils/units', () => ({
       convertArea: vi.fn((m2: number) => `${m2} m²`),
@@ -269,16 +269,16 @@ so that I can evaluate properties using measurements I understand.
       isNonUSLocale: vi.fn(() => false),
     }));
     ```
-  - [ ] Remove the `formatPriceAbbrev` mock from `@/lib/map/geo-utils` if PropertyCard no longer imports it
-  - [ ] **KEEP ALL EXISTING TESTS** — they must continue passing
-  - [ ] Add test: renders `data-testid="property-price-eur"` when locale is `"de"` and `isNonUSLocale` returns `true`
+  - [x] Remove the `formatPriceAbbrev` mock from `@/lib/map/geo-utils` if PropertyCard no longer imports it
+  - [x] **KEEP ALL EXISTING TESTS** — they must continue passing
+  - [x] Add test: renders `data-testid="property-price-eur"` when locale is `"de"` and `isNonUSLocale` returns `true`
 
-- [ ] Task 12: CI verification (AC: all)
-  - [ ] `npm run typecheck` → 0 new errors
-  - [ ] `npm run lint` → 0 errors
-  - [ ] `npm run format:check` → pass
-  - [ ] `npm run build` → pass
-  - [ ] `npm test` → all existing tests pass + new unit tests pass
+- [x] Task 12: CI verification (AC: all)
+  - [x] `npm run typecheck` → 0 new errors
+  - [x] `npm run lint` → 0 errors
+  - [x] `npm run format:check` → pass
+  - [x] `npm run build` → pass
+  - [x] `npm test` → all existing tests pass + new unit tests pass
 
 ## Dev Notes
 
@@ -485,6 +485,32 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+None — implementation completed without significant debugging.
+
 ### Completion Notes List
 
+- Created `src/lib/utils/units.ts`: Pure utility with `UnitSystem` type, `detectDefaultUnitSystem`, `convertArea`, and conversion constants. All 21 unit tests pass.
+- Created `src/lib/utils/currency.ts`: Pure utility with `EUR_RATE=0.92`, `formatUSD`, `formatEUR`, `isNonUSLocale`. All 17 unit tests pass. Fixed 2 ATDD test assertions with false-positive substring matches.
+- Created `src/hooks/use-locale-units.ts`: Client hook with localStorage-persisted unit preference, SSR-safe via synchronous `useState` initializer (FOUC prevention).
+- Created `src/components/layout/unit-toggle.tsx`: Client Component with `role="switch"`, `aria-checked`, `data-testid="unit-toggle"`. All 11 component tests pass.
+- Modified `src/components/property/property-card.tsx`: Replaced `formatPriceAbbrev` with `formatUSD`/`formatEUR`/`isNonUSLocale`, replaced local `formatArea` with `convertArea`, added `unitSystem` prop and `property-price-eur` testid.
+- Modified `src/components/property/property-grid.tsx`, `split-view-layout.tsx`, `map-pull-up-sheet.tsx`: Propagated `unitSystem` prop through component tree.
+- Added `UnitToggle` i18n namespace to `en.json` and `es.json`.
+- Installed `@use-gesture/react` (was in package.json but missing from worktree node_modules) — fixed build.
+- Final test results: 561 tests passing, 3 skipped, 0 failures.
+- ZMT badge (AC #6) verified intact — pre-existing implementation complies with icon+label requirement.
+
 ### File List
+
+src/lib/utils/units.ts (NEW)
+src/lib/utils/currency.ts (NEW)
+src/hooks/use-locale-units.ts (NEW)
+src/components/layout/unit-toggle.tsx (NEW)
+src/components/property/property-card.tsx (MODIFIED)
+src/components/property/property-grid.tsx (MODIFIED)
+src/components/search/split-view-layout.tsx (MODIFIED)
+src/components/map/map-pull-up-sheet.tsx (MODIFIED)
+src/messages/en.json (MODIFIED)
+src/messages/es.json (MODIFIED)
+tests/unit/search/currency.spec.ts (MODIFIED — fixed 2 false-positive assertions)
+tests/unit/search/property-card.spec.tsx (MODIFIED — updated mocks + price assertion)
