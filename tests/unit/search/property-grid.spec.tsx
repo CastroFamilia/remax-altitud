@@ -127,6 +127,16 @@ vi.mock("@/components/property/share-button", () => ({
   ),
 }));
 
+// Story 3.8 addition: mock NoResultsState so PropertyGrid tests remain
+// independent of the NoResultsState implementation.
+vi.mock("@/components/property/no-results-state", () => ({
+  NoResultsState: ({ filters }: { filters: object }) => (
+    <div data-testid="no-results-state">
+      no-results: {JSON.stringify(filters)}
+    </div>
+  ),
+}));
+
 // ---------------------------------------------------------------------------
 // Component under test — imported AFTER mocks
 // ---------------------------------------------------------------------------
@@ -338,6 +348,48 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
       const grid = document.querySelector('[data-testid="property-grid"]');
       expect(grid).not.toBeNull();
       // Grid container should still be present even when empty
+    },
+  );
+
+  // -------------------------------------------------------------------------
+  // Story 3.8 addition: NoResultsState replaces old empty text (AC #1, #2)
+  // -------------------------------------------------------------------------
+
+  it.skip(
+    "[P0] Story 3.8: renders NoResultsState (data-testid='no-results-state') when properties=[] and isLoading=false",
+    () => {
+      // THIS TEST WILL FAIL — PropertyGrid does not yet render NoResultsState
+      // (currently renders tGrid("empty") plain text)
+      render(
+        <PropertyGrid properties={[]} locale="en" isLoading={false} />,
+      );
+
+      const noResults = document.querySelector('[data-testid="no-results-state"]');
+      expect(noResults).not.toBeNull();
+
+      // Old empty text must NOT appear (replaced by NoResultsState)
+      const grid = document.querySelector('[data-testid="property-grid"]');
+      expect(grid?.textContent).not.toContain("No properties found");
+    },
+  );
+
+  it.skip(
+    "[P0] Story 3.8: passes filters prop through to NoResultsState",
+    () => {
+      // THIS TEST WILL FAIL — PropertyGrid does not yet accept/pass a filters prop
+      render(
+        <PropertyGrid
+          properties={[]}
+          locale="en"
+          isLoading={false}
+          filters={{ type: "Casa" }}
+        />,
+      );
+
+      const noResults = document.querySelector('[data-testid="no-results-state"]');
+      expect(noResults).not.toBeNull();
+      // The mock renders the stringified filters — verify they were forwarded
+      expect(noResults?.textContent).toContain("Casa");
     },
   );
 });
