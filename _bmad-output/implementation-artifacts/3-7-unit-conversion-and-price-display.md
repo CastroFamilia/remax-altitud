@@ -1,6 +1,6 @@
 # Story 3.7: Unit Conversion & Price Display
 
-Status: review
+Status: done
 
 ## Story
 
@@ -279,6 +279,38 @@ so that I can evaluate properties using measurements I understand.
   - [x] `npm run format:check` → pass
   - [x] `npm run build` → pass
   - [x] `npm test` → all existing tests pass + new unit tests pass
+
+### Review Findings
+
+Code review run 2026-05-02 (full mode, 3 layers — Blind Hunter, Edge Case Hunter, Acceptance Auditor). All findings auto-accepted and applied per BAD pipeline.
+
+Patches applied:
+
+- [x] [Review][Patch] Fix SSR/CSR hydration mismatch in useLocaleUnits — initial state now uses defaultSystem; localStorage reconciled in a useEffect after mount [src/hooks/use-locale-units.ts]
+- [x] [Review][Patch] Wrap localStorage.getItem in try/catch to survive Safari private mode and disabled storage [src/hooks/use-locale-units.ts]
+- [x] [Review][Patch] Wrap localStorage.setItem in try/catch to survive quota / disabled storage errors [src/hooks/use-locale-units.ts]
+- [x] [Review][Patch] convertArea now accepts optional locale parameter and uses Intl in the metric m² path for thousand-separator consistency [src/lib/utils/units.ts]
+- [x] [Review][Patch] convertArea and currency formatters guard against NaN/Infinity input — return "—" placeholder [src/lib/utils/units.ts, src/lib/utils/currency.ts]
+- [x] [Review][Patch] Intl.NumberFormat construction wrapped in try/catch (safeFormatter / safeCurrencyFormatter) — falls back to en-US on malformed locale tags [src/lib/utils/units.ts, src/lib/utils/currency.ts]
+- [x] [Review][Patch] Mount UnitToggle in SplitViewLayout (right of ViewModeToggle) — fulfils AC #3 "given a unit toggle on property specs, when clicked …" with a real user-facing control [src/components/search/split-view-layout.tsx]
+- [x] [Review][Patch] Add default styling to UnitToggle (border, padding, focus ring) so it remains visible and accessible without a className override [src/components/layout/unit-toggle.tsx]
+
+Deferred (logged in deferred-work.md):
+
+- [x] [Review][Defer] Cross-tab localStorage sync (storage event listener) — nice-to-have, not in AC #4 — deferred, follow-up
+- [x] [Review][Defer] PropertyCard aria-label hardcoded "Property:" prefix — pre-existing from Story 3.5
+- [x] [Review][Defer] PropertyCard aria-label omits EUR conversion for screen-reader users — minor a11y; pre-existing pattern
+- [x] [Review][Defer] E2E tests are scaffolds (test.skip) pending Playwright framework activation — deferred, depends on E2E infrastructure
+- [x] [Review][Defer] EUR_RATE static constant has no auto-update mechanism — accepted by spec ("approximate"), but no refresh path
+
+Dismissed as noise (not recorded): EUR_RATE staleness vs spec, isNonUSLocale en-AU/en-GB false-positive (spec accepts), aria-checked boolean handling, unused metric/imperial i18n keys (declared per spec), brittle filesystem 'use client' check in unit-toggle.spec.tsx, weak aria-label length assertion, loose toBeCloseTo for EUR_RATE, mock fidelity in property-card.spec.tsx, .x5 toFixed rounding precision, formatPriceAbbrev → formatUSD width regression (intentional per spec).
+
+Verification after patches:
+- `npm run typecheck` → pass (0 errors)
+- `npm run lint` → 0 errors (1 pre-existing warning unrelated to story)
+- `npm run format:check` → pass
+- `npm run build` → pass
+- `npx vitest run` → 561 passed / 3 skipped / 0 failures (matches baseline)
 
 ## Dev Notes
 

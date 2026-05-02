@@ -8,6 +8,7 @@ import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { MapView } from "@/components/map/map-view-loader";
 import { PropertyGrid } from "@/components/property/property-grid";
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
+import { UnitToggle } from "@/components/layout/unit-toggle";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets } from "@/types/search";
@@ -86,8 +87,15 @@ export function SplitViewLayout({
 
   return (
     <div className="relative flex flex-col">
-      {/* View mode toggle — desktop/tablet only, hidden on mobile */}
-      <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+      {/* View mode + unit toggle row — desktop/tablet only, hidden on mobile.
+          ViewModeToggle's own container already provides border-b/bg-background;
+          this flex row aligns the unit toggle on the right of the same band. */}
+      <div className="hidden lg:flex items-center justify-between">
+        <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+        <div className="flex items-center px-4 py-2 border-b border-border bg-background">
+          <UnitToggle locale={locale} />
+        </div>
+      </div>
 
       {/* Split-view container */}
       <div className="relative flex flex-row">

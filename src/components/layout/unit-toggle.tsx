@@ -1,12 +1,19 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 
 interface UnitToggleProps {
   locale: string;
   className?: string;
 }
+
+const DEFAULT_TOGGLE_CLASS =
+  "inline-flex h-8 min-w-[3.5rem] items-center justify-center rounded-md " +
+  "border border-border bg-background px-3 text-xs font-medium " +
+  "text-foreground transition-colors hover:bg-muted " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 /**
  * UnitToggle — Client Component (uses localStorage + React state).
@@ -31,7 +38,7 @@ export function UnitToggle({ locale, className }: UnitToggleProps) {
       aria-label={t("label")}
       onClick={toggleUnits}
       data-testid="unit-toggle"
-      className={className}
+      className={cn(DEFAULT_TOGGLE_CLASS, className)}
     >
       <span aria-hidden="true">{isMetric ? "m²" : "ft²"}</span>
     </button>

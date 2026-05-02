@@ -15,6 +15,23 @@
 export const EUR_RATE = 0.92;
 
 /**
+ * Safely build a currency Intl.NumberFormat. Falls back to 'en-US' on a
+ * malformed locale tag (Intl throws RangeError on invalid BCP-47 input).
+ */
+function safeCurrencyFormatter(locale: string, currency: "USD" | "EUR"): Intl.NumberFormat {
+  const opts: Intl.NumberFormatOptions = {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  };
+  try {
+    return new Intl.NumberFormat(locale, opts);
+  } catch {
+    return new Intl.NumberFormat("en-US", opts);
+  }
+}
+
+/**
  * Format a USD price for the given locale using Intl.NumberFormat.
  *
  * Examples:
@@ -22,11 +39,8 @@ export const EUR_RATE = 0.92;
  *   formatUSD(185000, 'de-DE') → "185.000 $"
  */
 export function formatUSD(price: number, locale: string): string {
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(price);
+  if (!Number.isFinite(price)) return "—";
+  return safeCurrencyFormatter(locale, "USD").format(price);
 }
 
 /**
@@ -36,12 +50,9 @@ export function formatUSD(price: number, locale: string): string {
  *   formatEUR(185000, 'en-US') → "€170,200"
  */
 export function formatEUR(price: number, locale: string): string {
+  if (!Number.isFinite(price)) return "—";
   const eur = Math.round(price * EUR_RATE);
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 0,
-  }).format(eur);
+  return safeCurrencyFormatter(locale, "EUR").format(eur);
 }
 
 /**
