@@ -81,16 +81,35 @@ vi.mock("next/image", () => ({
 }));
 
 vi.mock("next-intl", () => ({
-  useTranslations: vi.fn(
-    () => (key: string, values?: Record<string, unknown>) => {
-      if (values) {
-        return key
-          .replace("{count}", String(values.count))
-          .replace("{size}", String(values.size));
-      }
-      return key;
-    },
-  ),
+  useTranslations: vi.fn(() => {
+    // Simulate next-intl message resolution for PropertyCard namespace.
+    // Keys that embed interpolation values use the actual message template so
+    // that tests asserting on rendered text (e.g. /3.*bed/i) continue to pass.
+    const messages: Record<string, string> = {
+      "region.mountain": "Mountain",
+      "region.beach": "Beach",
+      "zmtStatus.titled": "Titled Property",
+      "zmtStatus.concession": "Concession",
+      "zmtStatus.zmt_restricted": "ZMT Restricted",
+      "specs.beds": "{count} bed",
+      "specs.baths": "{count} bath",
+      "specs.lot": "{size}",
+      "specs.built": "{size} built",
+      saveProperty: "Save property",
+      removeFromSaved: "Remove from saved",
+      shortlistFull: "Shortlist full (20 max)",
+      share: "Share property",
+      viewDetails: "View details",
+      linkCopied: "Link copied!",
+    };
+    return (key: string, values?: Record<string, unknown>) => {
+      const template = messages[key] ?? key;
+      if (!values) return template;
+      return template
+        .replace("{count}", String(values.count ?? ""))
+        .replace("{size}", String(values.size ?? ""));
+    };
+  }),
 }));
 
 // Mock SaveButton and ShareButton as simple stubs
@@ -608,12 +627,13 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P1] card has role='article' for accessibility",
+    "[P1] card root element is an <article> for semantic accessibility",
     () => {
-      // THIS TEST WILL FAIL — property-card.tsx not yet implemented
       render(<PropertyCard property={mockPropertyMountain} locale="en" />);
 
-      const card = document.querySelector('[role="article"]');
+      // <article> has implicit ARIA role="article" — no explicit attribute needed.
+      // Querying by element tag + data-testid is more correct than [role="article"].
+      const card = document.querySelector('article[data-testid="property-card"]');
       expect(card).not.toBeNull();
     },
   );

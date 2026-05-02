@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { SaveButton } from "@/components/property/save-button";
 import { ShareButton } from "@/components/property/share-button";
 import { formatPriceAbbrev } from "@/lib/map/geo-utils";
@@ -51,20 +52,17 @@ function formatArea(value: number): string {
   return `${Math.round(value)} m²`;
 }
 
-// ZMT badge config
-const ZMT_CONFIG: Record<string, { label: string; classes: string; icon: string }> = {
+// ZMT badge visual config (classes + icon only; labels resolved via i18n)
+const ZMT_VISUAL: Record<string, { classes: string; icon: string }> = {
   titled: {
-    label: "Titled Property",
     classes: "bg-green-100 text-green-800",
     icon: "✓",
   },
   concession: {
-    label: "Concession",
     classes: "bg-amber-100 text-amber-800",
     icon: "◑",
   },
   zmt_restricted: {
-    label: "ZMT Restricted",
     classes: "bg-red-100 text-red-800",
     icon: "⚠",
   },
@@ -76,13 +74,14 @@ const ZMT_CONFIG: Record<string, { label: string; classes: string; icon: string 
  * SaveButton and ShareButton are Client Component children.
  */
 export function PropertyCard({ property, locale, variant = "default" }: PropertyCardProps) {
+  const t = useTranslations("PropertyCard");
   const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
   const price = formatPriceAbbrev(property.priceUsd);
   const imageSrc = property.images[0]?.url ?? "/property-placeholder.svg";
   const imageAlt = property.images[0]?.alt ?? title;
   const region = getRegionFromAreaSlug(property.areaSlug);
   const isLand = LAND_TYPES.has(property.propertyType);
-  const zmtConfig = property.zmtStatus ? ZMT_CONFIG[property.zmtStatus] : null;
+  const zmtVisual = property.zmtStatus ? ZMT_VISUAL[property.zmtStatus] : null;
 
   const isHorizontal = variant === "horizontal";
   const isCompact = variant === "compact";
@@ -90,7 +89,6 @@ export function PropertyCard({ property, locale, variant = "default" }: Property
   return (
     <article
       data-testid="property-card"
-      role="article"
       aria-label={`Property: ${title}, ${price}`}
       className={`group relative overflow-hidden rounded-lg bg-card shadow-sm transition-all duration-200 ease-out hover:translate-y-[-4px] hover:shadow-lg ${isHorizontal ? "flex flex-row" : ""}`}
     >
@@ -118,14 +116,14 @@ export function PropertyCard({ property, locale, variant = "default" }: Property
               data-testid="region-badge"
               className={`absolute left-2 top-2 rounded px-2 py-0.5 text-xs font-semibold text-white ${region === "Mountain" ? "bg-brand-mountain" : "bg-brand-beach"}`}
             >
-              {region}
+              {t(`region.${region === "Mountain" ? "mountain" : "beach"}`)}
             </span>
           )}
         </div>
 
         {/* Card body */}
         <div
-          className={`flex flex-col gap-2 p-4 ${isHorizontal ? "w-[60%]" : ""} ${isCompact ? "p-3" : ""}`}
+          className={`flex flex-col gap-2 ${isCompact ? "p-3" : "p-4"} ${isHorizontal ? "w-[60%]" : ""}`}
         >
           {/* Price */}
           <p data-testid="property-price" className="font-bold text-xl text-[--color-accent]">
@@ -147,31 +145,33 @@ export function PropertyCard({ property, locale, variant = "default" }: Property
           >
             {!isLand && (
               <>
-                <span>{property.bedrooms ?? "-"} bed</span>
+                <span>{t("specs.beds", { count: property.bedrooms ?? "-" })}</span>
                 <span>·</span>
-                <span>{property.bathrooms ?? "-"} bath</span>
+                <span>{t("specs.baths", { count: property.bathrooms ?? "-" })}</span>
                 {(property.lotSizeM2 !== null || property.constructionM2 !== null) && (
                   <span>·</span>
                 )}
               </>
             )}
-            {property.lotSizeM2 !== null && <span>{formatArea(property.lotSizeM2)}</span>}
+            {property.lotSizeM2 !== null && (
+              <span>{t("specs.lot", { size: formatArea(property.lotSizeM2) })}</span>
+            )}
             {property.constructionM2 !== null && (
               <>
                 <span>·</span>
-                <span>{formatArea(property.constructionM2)} built</span>
+                <span>{t("specs.built", { size: formatArea(property.constructionM2) })}</span>
               </>
             )}
           </div>
 
           {/* ZMT badge */}
-          {zmtConfig && (
+          {zmtVisual && property.zmtStatus && (
             <span
               data-testid="zmt-badge"
-              className={`inline-flex w-fit items-center gap-1 rounded px-2 py-0.5 text-xs font-medium ${zmtConfig.classes}`}
+              className={`inline-flex w-fit items-center gap-1 rounded px-2 py-0.5 text-xs font-medium ${zmtVisual.classes}`}
             >
-              <span aria-hidden="true">{zmtConfig.icon}</span>
-              {zmtConfig.label}
+              <span aria-hidden="true">{zmtVisual.icon}</span>
+              {t(`zmtStatus.${property.zmtStatus as "titled" | "concession" | "zmt_restricted"}`)}
             </span>
           )}
         </div>
