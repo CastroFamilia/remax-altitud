@@ -1,15 +1,12 @@
 /**
- * Story 4.1: Listing Detail Page & Photo Gallery — E2E Test Scaffolds
+ * Story 4.1: Listing Detail Page & Photo Gallery — E2E Tests
  *
- * TDD RED PHASE — all tests use test.skip() and will FAIL until:
- *   1. PropertyGallery component is implemented (src/components/listing/property-gallery.tsx)
- *   2. ListingDetailLayout component is implemented (src/components/listing/listing-detail-layout.tsx)
- *   3. StickySpecsBar component is implemented (src/components/listing/sticky-specs-bar.tsx)
- *   4. page.tsx updated with SSG/ISR (revalidate = 86400, generateStaticParams)
- *   5. Playwright framework is configured with a valid playwright.config.ts
- *   6. Staging/local environment with DB seeded with property + agent data
+ * All tests are test.skip() until Playwright is configured and DB is seeded.
+ * Prerequisites:
+ *   - Playwright framework configured (playwright.config.ts)
+ *   - Staging/local environment with DB seeded (beautiful-mountain-home, property-with-video slugs)
  *
- * These E2E tests correspond to the acceptance criteria for Story 4.1:
+ * Acceptance criteria covered:
  *   4.1-E2E-001 — Hero gallery renders full-width at 60vh with photo count overlay (AC #1, P0)
  *   4.1-E2E-002 — First 3 gallery images load within 1s on throttled 4G (AC #3, P0)
  *   4.1-E2E-003 — LQIP blur placeholder transitions to sharp image (AC #4, P0)
@@ -20,12 +17,6 @@
  *   4.1-E2E-008 — YouTube video embed is present and playable (AC #5, P1)
  *   4.1-E2E-009 — Listing title and description render in Spanish for ES locale (AC #7, P1)
  *   4.1-E2E-010 — Legal terms render using glossary translations in ES (AC #8, P1)
- *
- * Activation instructions for the dev implementing Story 4.1:
- *   1. Remove test.skip from the test you are implementing
- *   2. Run: npx playwright test tests/e2e/listing-detail-page-and-photo-gallery.spec.ts
- *   3. Verify the test FAILS before implementation, then passes after
- *   4. Commit passing tests
  */
 
 // NOTE: Playwright is not yet installed — this import will fail until
@@ -50,12 +41,11 @@ const MOBILE_VIEWPORT = { width: 375, height: 812 };
 // ---------------------------------------------------------------------------
 
 test.describe(
-  "Story 4.1: Listing Detail Page & Photo Gallery E2E (ATDD — RED PHASE)",
+  "Story 4.1: Listing Detail Page & Photo Gallery E2E",
   () => {
     test.skip(
       "[P0] 4.1-E2E-001: hero gallery renders with gallery-hero testid, thumbnail strip, and photo count overlay",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -78,7 +68,6 @@ test.describe(
     test.skip(
       "[P0] 4.1-E2E-001b: hero gallery container fills full-width at approximately 60vh height",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -103,7 +92,6 @@ test.describe(
     test.skip(
       "[P0] 4.1-E2E-002: first image has priority attribute for LCP optimization",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery not yet implemented
         // Note: Full throttled 4G test runs in CI/nightly; this version tests priority prop
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
@@ -127,7 +115,6 @@ test.describe(
     test.skip(
       "[P0] 4.1-E2E-003: LQIP blur placeholder is applied (blurDataURL passed to next/image)",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -166,7 +153,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-004: clicking fullscreen button opens lightbox with photo count",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery lightbox not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -199,7 +185,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-005: pressing ArrowRight in lightbox advances to next image",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery keyboard nav not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -227,7 +212,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-005b: pressing ArrowLeft in lightbox retreats to previous image",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery keyboard nav not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -256,7 +240,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-006: swiping left in mobile lightbox advances to next image",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery swipe nav not yet implemented
         await page.setViewportSize(MOBILE_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -295,7 +278,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-007: sticky specs bar shows price, beds, baths, ZMT after scrolling past gallery",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — StickySpecsBar not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -317,7 +299,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-007b: sticky specs bar has sticky CSS positioning",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — StickySpecsBar not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -342,7 +323,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-008: YouTube video embed renders with correct src and allow attributes",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery video embed not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_WITH_VIDEO);
 
@@ -370,7 +350,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-008b: no video embed renders when property has no YouTube URL",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN); // property without video
 
@@ -389,7 +368,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-009: listing title and description render in Spanish for /es/ locale",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — i18n listing detail not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_ES);
 
@@ -420,7 +398,6 @@ test.describe(
     test.skip(
       "[P1] 4.1-E2E-010: legal terms use glossary translations in Spanish locale",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — i18n listing detail not yet implemented
         // Seed property must have zmtStatus: "titled" for "Propiedad Titulada" to appear
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_ES);
@@ -445,7 +422,6 @@ test.describe(
     test.skip(
       "[P2] clicking a thumbnail changes the active hero image and updates photo count",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery thumbnail interaction not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 
@@ -454,25 +430,21 @@ test.describe(
         const thumbnailStrip = page.getByTestId("gallery-thumbnail-strip");
         await expect(thumbnailStrip).toBeVisible();
 
-        // Click the second thumbnail
+        // Click the second thumbnail — seed data must have ≥2 images
         const thumbnails = thumbnailStrip.locator("img");
-        const thumbnailCount = await thumbnails.count();
+        await expect(thumbnails).toHaveCount({ minimum: 2 } as unknown as number);
 
-        if (thumbnailCount >= 2) {
-          await thumbnails.nth(1).click();
+        await thumbnails.nth(1).click();
 
-          // Photo count should update to "2 / N"
-          const photoCount = page.getByTestId("gallery-photo-count");
-          const updatedCount = await photoCount.textContent();
-          expect(updatedCount).toMatch(/2\s*\/\s*\d+/);
-        }
+        // Photo count should update to "2 / N"
+        const photoCount = page.getByTestId("gallery-photo-count");
+        await expect(photoCount).toHaveText(/2\s*\/\s*\d+/);
       },
     );
 
     test.skip(
       "[P2] pressing Escape closes the lightbox",
       async ({ page }: any) => {
-        // THIS TEST WILL FAIL — PropertyGallery lightbox not yet implemented
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(LISTING_URL_EN);
 

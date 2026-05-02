@@ -2,17 +2,6 @@
  * Story 4.1: Listing Detail Page & Photo Gallery
  * Component: src/components/listing/property-gallery.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until:
- *   property-gallery.tsx is implemented with actual behavior replacing the stubs below.
- *
- * How to activate (for the dev implementing Story 4.1):
- *   1. Implement src/components/listing/property-gallery.tsx
- *   2. Remove the vi.mock('@/components/listing/property-gallery') stub below
- *   3. Remove it.skip() from the test you are implementing
- *   4. Run: npm test -- --grep "PropertyGallery"
- *   5. Verify the test FAILS before full implementation, then passes after
- *   6. Commit passing tests
- *
  * Covers:
  *   AC #1  — Hero gallery fills full-width at 60vh; thumbnail strip; photo count overlay
  *   AC #2  — Lightbox opens on fullscreen click; arrow key & swipe navigation
@@ -74,6 +63,8 @@ vi.mock("next/image", () => ({
     placeholder,
     blurDataURL,
     className,
+    fill,
+    sizes,
     ...props
   }: {
     src: string;
@@ -83,6 +74,8 @@ vi.mock("next/image", () => ({
     placeholder?: string;
     blurDataURL?: string;
     className?: string;
+    fill?: boolean;
+    sizes?: string;
     [key: string]: unknown;
   }) => (
     <img
@@ -93,6 +86,7 @@ vi.mock("next/image", () => ({
       data-placeholder={placeholder}
       data-blur-data-url={blurDataURL ? "has-blur" : undefined}
       className={className}
+      {...(fill ? { "data-fill": "true" } : {})}
       {...props}
     />
   ),
@@ -183,7 +177,7 @@ const PROPERTY_TITLE = "Beautiful Mountain Home in Pérez Zeledón";
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
+describe("PropertyGallery (Story 4.1)", () => {
   afterEach(() => {
     cleanup();
   });
@@ -195,7 +189,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] renders data-testid=gallery-hero element",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -210,7 +203,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] renders data-testid=gallery-thumbnail-strip element",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -225,7 +217,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] renders data-testid=gallery-photo-count showing '1 / 3' initially",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -244,7 +235,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] renders first image with priority prop for LCP optimization (R-005)",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -266,7 +256,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] lightbox is NOT visible initially (gallery-lightbox not in DOM)",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -287,7 +276,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P1] clicking fullscreen button opens lightbox (gallery-lightbox becomes visible)",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -311,7 +299,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P1] pressing ArrowRight in open lightbox advances image index",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -341,7 +328,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P1] pressing ArrowLeft in open lightbox retreats image index",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -369,7 +355,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P1] YouTube embed renders data-testid=gallery-video-embed when youtubeUrl provided",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -391,7 +376,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P1] no video embed renders when youtubeUrl is null",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -408,7 +392,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P1] no video embed renders when youtubeUrl is undefined (not provided)",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -428,7 +411,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P2] 4.1-COMP-002: first image has blur placeholder (blurDataURL passed to next/image)",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -451,7 +433,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P2] 4.1-COMP-001: clicking a thumbnail changes active index and updates photo count to '2 / 3'",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
@@ -478,7 +459,6 @@ describe("PropertyGallery (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P2] renders active thumbnail indicator on current image",
     () => {
-      // THIS TEST WILL FAIL — PropertyGallery stub returns null; remove stub to activate
       render(
         <PropertyGallery
           images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}

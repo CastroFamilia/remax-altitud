@@ -2,29 +2,11 @@
  * Story 4.1: Listing Detail Page & Photo Gallery
  * Tests: ISR revalidation constant + getAllPropertySlugs query
  *
- * TDD RED PHASE — tests use it.skip() and will FAIL until:
- *   - page.tsx is updated with revalidate = 86400 (removes force-dynamic)
- *   - getAllPropertySlugs query is added to properties.ts
- *   - getAgentById query is added to agents.ts
- *
- * How to activate (for the dev implementing Story 4.1):
- *   1. Implement the relevant task (Task 1 for revalidate, Task 3 for queries)
- *   2. Remove it.skip() from the applicable test
- *   3. Run: npm test -- --grep "Listing Detail Page"
- *   4. Verify the test FAILS before implementation, then passes after
- *   5. Commit passing tests
- *
  * Covers:
  *   4.1-UNIT-002 — Listing detail page has ISR revalidate = 86400 (daily) (AC #10, NFR25)
  *   AC #10      — getAllPropertySlugs returns string array for generateStaticParams
  *
  * Environment: node (no JSX — .spec.ts runs in node environment by default)
- *
- * Architecture notes:
- *   - page.tsx currently has export const dynamic = "force-dynamic" which MUST be replaced
- *     with export const revalidate = 86400
- *   - getAllPropertySlugs is a new query in src/lib/db/queries/properties.ts
- *   - getAgentById is a new query in src/lib/db/queries/agents.ts
  */
 
 import { vi, describe, it, expect } from "vitest";
@@ -135,12 +117,10 @@ vi.mock("@/components/listing/listing-detail-layout", () => ({
 // Tests — ISR revalidation constant (4.1-UNIT-002)
 // ---------------------------------------------------------------------------
 
-describe("Listing Detail Page — ISR revalidation (Story 4.1 — TDD RED PHASE)", () => {
+describe("Listing Detail Page — ISR revalidation (Story 4.1)", () => {
   it(
     "[P2] 4.1-UNIT-002: page exports revalidate = 86400 (daily ISR revalidation, NFR25)",
     async () => {
-      // THIS TEST WILL FAIL — page.tsx still has force-dynamic, not revalidate = 86400
-      // Remove it.skip() after Task 1 is implemented
       const pageModule = (await import(
         "@/app/[locale]/property/[slug]/page"
       )) as Record<string, unknown>;
@@ -154,8 +134,6 @@ describe("Listing Detail Page — ISR revalidation (Story 4.1 — TDD RED PHASE)
   it(
     "[P2] page does NOT export dynamic = 'force-dynamic' (must be removed per Task 1)",
     async () => {
-      // THIS TEST WILL FAIL — page.tsx still has force-dynamic
-      // Remove it.skip() after Task 1 is implemented
       const pageModule = (await import(
         "@/app/[locale]/property/[slug]/page"
       )) as Record<string, unknown>;
@@ -170,12 +148,10 @@ describe("Listing Detail Page — ISR revalidation (Story 4.1 — TDD RED PHASE)
 // Tests — getAllPropertySlugs query
 // ---------------------------------------------------------------------------
 
-describe("getAllPropertySlugs query (Story 4.1 — TDD RED PHASE)", () => {
+describe("getAllPropertySlugs query (Story 4.1)", () => {
   it(
     "[P2] getAllPropertySlugs is exported from properties.ts and returns string array",
     async () => {
-      // THIS TEST WILL FAIL — getAllPropertySlugs not yet added to properties.ts
-      // Remove it.skip() after Task 3 is implemented
       const propertiesModule = (await import(
         "@/lib/db/queries/properties"
       )) as Record<string, unknown>;
@@ -199,8 +175,6 @@ describe("getAllPropertySlugs query (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P2] getAllPropertySlugs returns only slugs for visible properties",
     async () => {
-      // THIS TEST WILL FAIL — getAllPropertySlugs not yet added to properties.ts
-      // Remove it.skip() after Task 3 is implemented
       const propertiesModule = (await import(
         "@/lib/db/queries/properties"
       )) as Record<string, unknown>;
@@ -220,12 +194,10 @@ describe("getAllPropertySlugs query (Story 4.1 — TDD RED PHASE)", () => {
 // Tests — getAgentById query
 // ---------------------------------------------------------------------------
 
-describe("getAgentById query (Story 4.1 — TDD RED PHASE)", () => {
+describe("getAgentById query (Story 4.1)", () => {
   it(
     "[P2] getAgentById is exported from agents.ts",
     async () => {
-      // THIS TEST WILL FAIL — getAgentById not yet added to agents.ts
-      // Remove it.skip() after Task 3 is implemented
       const agentsModule = (await import(
         "@/lib/db/queries/agents"
       )) as Record<string, unknown>;

@@ -2,17 +2,6 @@
  * Story 4.1: Listing Detail Page & Photo Gallery
  * Component: src/components/listing/sticky-specs-bar.tsx
  *
- * TDD RED PHASE — all tests use it.skip() and will FAIL until:
- *   sticky-specs-bar.tsx is implemented with actual behavior replacing the stubs below.
- *
- * How to activate (for the dev implementing Story 4.1 Task 5):
- *   1. Implement src/components/listing/sticky-specs-bar.tsx
- *   2. Remove the vi.mock('@/components/listing/sticky-specs-bar') stub below
- *   3. Remove it.skip() from the test you are implementing
- *   4. Run: npm test -- --grep "StickySpecsBar"
- *   5. Verify the test FAILS before full implementation, then passes after
- *   6. Commit passing tests
- *
  * Covers:
  *   AC #6  — Price + specs bar shows price, beds/baths, lot + built area, ZMT badge
  *
@@ -77,7 +66,7 @@ import { StickySpecsBar } from "@/components/listing/sticky-specs-bar"; // impor
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
+describe("StickySpecsBar (Story 4.1)", () => {
   afterEach(() => {
     cleanup();
   });
@@ -89,7 +78,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] renders data-testid=sticky-specs-bar element",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
@@ -109,7 +97,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] displays USD formatted price",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
@@ -132,7 +119,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] displays bedroom count when provided",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
@@ -154,7 +140,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] displays bathroom count when provided",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
@@ -176,7 +161,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P0] renders ZMT status text",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
@@ -202,7 +186,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P1] renders lot size using convertArea when lotSizeM2 is provided",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
@@ -224,7 +207,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P1] renders built area using convertArea when constructionM2 is provided",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
@@ -246,7 +228,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P1] renders UnitToggle component",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
@@ -271,7 +252,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P2] does not render bedroom spec when bedrooms is null",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
@@ -293,7 +273,6 @@ describe("StickySpecsBar (Story 4.1 — TDD RED PHASE)", () => {
   it(
     "[P2] renders correctly when lot size and built area are null",
     () => {
-      // THIS TEST WILL FAIL — StickySpecsBar stub returns null; remove stub to activate
       render(
         <StickySpecsBar
           priceUsd={185000}
