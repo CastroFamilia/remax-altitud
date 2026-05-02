@@ -8,6 +8,8 @@ import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { MapView } from "@/components/map/map-view-loader";
 import { PropertyGrid } from "@/components/property/property-grid";
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
+import { UnitToggle } from "@/components/layout/unit-toggle";
+import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets } from "@/types/search";
 
@@ -69,6 +71,8 @@ export function SplitViewLayout({
   // Suppress unused-var warnings for forward-compat props; they are part of
   // the public API surface used by SearchPageClient today.
   void _facets;
+  // Unit preference (localStorage-persisted)
+  const { unitSystem } = useLocaleUnits(locale);
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const tSidePanel = useTranslations("SearchPage.sidePanel");
@@ -83,8 +87,16 @@ export function SplitViewLayout({
 
   return (
     <div className="relative flex flex-col">
-      {/* View mode toggle — desktop/tablet only, hidden on mobile */}
-      <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+      {/* View mode + unit toggle row — desktop/tablet only, hidden on mobile.
+          The outer wrapper provides the full-width border-b and bg-background so
+          the bottom border spans the entire toolbar width (ViewModeToggle's own
+          inner border-b only extends to its content width). */}
+      <div className="hidden lg:flex items-center justify-between border-b border-border bg-background">
+        <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+        <div className="flex items-center px-4 py-2">
+          <UnitToggle locale={locale} />
+        </div>
+      </div>
 
       {/* Split-view container */}
       <div className="relative flex flex-row">
@@ -131,6 +143,7 @@ export function SplitViewLayout({
               total={total}
               page={page}
               onPageChange={onPageChange}
+              unitSystem={unitSystem}
             />
           ) : (
             <SearchResultsSkeleton />
@@ -171,6 +184,7 @@ export function SplitViewLayout({
         locale={locale}
         propertyCount={count}
         isLoading={isLoading}
+        unitSystem={unitSystem}
       />
     </div>
   );

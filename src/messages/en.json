@@ -404,5 +404,10 @@
     "similarHeading": "Similar properties you might like",
     "browseCta": "Browse all properties",
     "similarCta": "View property"
+  },
+  "UnitToggle": {
+    "label": "Toggle area units",
+    "metric": "m²",
+    "imperial": "ft²"
   }
 }
