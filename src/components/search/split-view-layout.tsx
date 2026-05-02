@@ -88,11 +88,12 @@ export function SplitViewLayout({
   return (
     <div className="relative flex flex-col">
       {/* View mode + unit toggle row — desktop/tablet only, hidden on mobile.
-          ViewModeToggle's own container already provides border-b/bg-background;
-          this flex row aligns the unit toggle on the right of the same band. */}
-      <div className="hidden lg:flex items-center justify-between">
+          The outer wrapper provides the full-width border-b and bg-background so
+          the bottom border spans the entire toolbar width (ViewModeToggle's own
+          inner border-b only extends to its content width). */}
+      <div className="hidden lg:flex items-center justify-between border-b border-border bg-background">
         <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
-        <div className="flex items-center px-4 py-2 border-b border-border bg-background">
+        <div className="flex items-center px-4 py-2">
           <UnitToggle locale={locale} />
         </div>
       </div>
