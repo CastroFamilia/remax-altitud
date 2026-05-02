@@ -72,7 +72,8 @@ function mockGeolocationSuccess(lat: number, lng: number) {
             heading: null,
             speed: null,
           },
-          timestamp: Date.now(),
+          // Fixed timestamp for determinism — tests must not assert on this value
+          timestamp: 1_700_000_000_000,
         } as GeolocationPosition),
       ),
     },

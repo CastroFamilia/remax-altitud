@@ -200,11 +200,13 @@ test.describe("Story 3.8: No-Results, Hidden Listings & Near Me E2E (ATDD — RE
       // Click Near Me button
       await nearMeBtn.click();
 
-      // Fallback message must NOT appear on success
+      // Fallback message must NOT appear on success.
+      // Use count() to check presence without throwing — avoids catch-for-flow-control.
       const fallbackMsg = page.getByTestId("near-me-fallback-message");
-      await expect(fallbackMsg).not.toBeVisible({ timeout: 2000 }).catch(() => {
-        /* not present is also acceptable */
-      });
+      const fallbackCount = await fallbackMsg.count();
+      if (fallbackCount > 0) {
+        await expect(fallbackMsg).not.toBeVisible({ timeout: 2000 });
+      }
 
       // Map must have updated (we can verify the map container is still present and
       // no error state appeared). Exact fly-to verification is hard in Playwright

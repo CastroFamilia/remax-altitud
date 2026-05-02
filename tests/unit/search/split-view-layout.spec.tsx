@@ -98,6 +98,22 @@ vi.mock("@/components/search/view-mode-toggle", () => ({
   ),
 }));
 
+// Story 3.8: Mock NearMeButton so split-view-layout tests don't depend on
+// browser Geolocation API or useGeolocation hook internals.
+let capturedOnLocationFallback: ((coords: { lat: number; lng: number }, message: string) => void) | null = null;
+vi.mock("@/components/search/near-me-button", () => ({
+  NearMeButton: ({
+    onLocationFallback,
+  }: {
+    onLocationSuccess: (coords: { lat: number; lng: number }) => void;
+    onLocationFallback: (coords: { lat: number; lng: number }, message: string) => void;
+    className?: string;
+  }) => {
+    capturedOnLocationFallback = onLocationFallback;
+    return <button data-testid="near-me-button" />;
+  },
+}));
+
 // ---------------------------------------------------------------------------
 // Component under test — imported AFTER mocks
 // ---------------------------------------------------------------------------
@@ -351,6 +367,41 @@ describe("SplitViewLayout", () => {
 
       const skeleton = document.querySelector('[data-testid="search-results-skeleton"]');
       expect(skeleton).not.toBeNull();
+    },
+  );
+
+  // -------------------------------------------------------------------------
+  // Story 3.8: NearMeButton + fallback message banner
+  // -------------------------------------------------------------------------
+
+  it(
+    "[P0] (Story 3.8) renders data-testid='near-me-button' in the toolbar",
+    () => {
+      render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
+
+      const nearMeBtn = document.querySelector('[data-testid="near-me-button"]');
+      expect(nearMeBtn).not.toBeNull();
+    },
+  );
+
+  it(
+    "[P0] (Story 3.8) renders data-testid='near-me-fallback-message' banner when NearMeButton triggers fallback",
+    () => {
+      const { rerender } = render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
+
+      // Verify no fallback banner initially
+      expect(document.querySelector('[data-testid="near-me-fallback-message"]')).toBeNull();
+
+      // Invoke the fallback callback captured from the mock
+      expect(capturedOnLocationFallback).not.toBeNull();
+      capturedOnLocationFallback!({ lat: 9.3725, lng: -83.7011 }, "Location unavailable — showing properties near our Pérez Zeledón office");
+
+      // Force re-render to reflect state update
+      rerender(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
+
+      const banner = document.querySelector('[data-testid="near-me-fallback-message"]');
+      expect(banner).not.toBeNull();
+      expect(banner?.textContent).toContain("Location unavailable");
     },
   );
 });
