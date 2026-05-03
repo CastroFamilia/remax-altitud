@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-10T12:39:46-03:00
-last_updated: 2026-05-03T14:00:00-0600
+last_updated: 2026-05-03T17:00:00-0600
 project: remax-altitud
 project_key: NOKEY
 tracking_system: file-system
@@ -81,7 +81,7 @@ development_status:
   4-1-listing-detail-page-and-photo-gallery: done
   4-2-agent-card-and-contact-ctas: done
   4-3-agent-profile-pages: done
-  4-4-seo-architecture-and-wordpress-redirects: review
+  4-4-seo-architecture-and-wordpress-redirects: done
   4-5-similar-properties-and-cross-linking: ready-for-dev
   epic-4-retrospective: optional
 
