@@ -202,6 +202,18 @@ describe("Story 4.2: AgentCard component", () => {
     expect(whatsappCta).toBeNull();
   });
 
+  it("[P1] 4.2-COMP-011b: Email CTA renders as disabled span when agent.email is null", () => {
+    const agentWithoutEmail = { ...mockAgent, email: null };
+    render(<AgentCard {...defaultProps} agent={agentWithoutEmail} />);
+
+    // data-testid is still present (disabled state) but must NOT be a link
+    const emailCta = screen.getByTestId("agent-email-cta");
+    expect(emailCta).toBeTruthy();
+    expect(emailCta.tagName.toLowerCase()).not.toBe("a");
+    expect(emailCta.getAttribute("aria-disabled")).toBe("true");
+    expect(emailCta.getAttribute("href")).toBeNull();
+  });
+
   // [P2] Edge cases
 
   it("[P2] 4.2-COMP-012: uses placeholder image path when both photoOptimizedUrl and photoUrl are null", () => {

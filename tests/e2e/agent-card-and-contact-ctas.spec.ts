@@ -256,12 +256,15 @@ test.describe("Story 4.2: Agent Card & Contact CTAs E2E", () => {
       // Now scroll back to top so agent card is in viewport
       await page.evaluate(() => window.scrollTo(0, 0));
 
-      // Wait for IntersectionObserver to fire and hide the bar
-      await page.waitForTimeout(500);
-
-      // Agent card is now visible, sticky bar should be hidden (translate-y-full)
+      // Wait for IntersectionObserver to fire and update the DOM (deterministic wait)
       const agentCard = page.getByTestId("agent-card");
       await expect(agentCard).toBeVisible();
+
+      // Wait for the sticky bar to gain translate-y-full (IntersectionObserver fired)
+      await page.waitForFunction(() => {
+        const bar = document.querySelector('[data-testid="sticky-mobile-cta"]');
+        return bar?.classList.contains("translate-y-full") ?? false;
+      }, { timeout: 3000 });
 
       // The sticky bar should now be off-screen (hidden via translate-y-full class)
       const stickyBarClass = await stickyBar.getAttribute("class");
