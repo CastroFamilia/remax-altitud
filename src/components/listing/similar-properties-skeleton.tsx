@@ -4,12 +4,21 @@
  * Loading skeleton for the SimilarProperties carousel.
  * Shown as fallback while SimilarPropertiesData fetches from the DB.
  *
+ * Accepts an optional translated `ariaLabel` so the loading announcement is
+ * locale-correct. Falls back to English for callers that haven't been migrated.
+ *
  * Story 4.5, Task 4 | AC #8
  */
 
-export function SimilarPropertiesSkeleton() {
+interface SimilarPropertiesSkeletonProps {
+  ariaLabel?: string;
+}
+
+export function SimilarPropertiesSkeleton({
+  ariaLabel = "Loading similar properties",
+}: SimilarPropertiesSkeletonProps = {}) {
   return (
-    <section aria-label="Loading similar properties" data-testid="similar-properties-skeleton">
+    <section aria-label={ariaLabel} data-testid="similar-properties-skeleton">
       <div className="mb-4 h-7 w-48 animate-pulse rounded bg-gray-200" /> {/* heading skeleton */}
       <div className="flex gap-4 overflow-x-hidden pb-4">
         {Array.from({ length: 4 }).map((_, i) => (

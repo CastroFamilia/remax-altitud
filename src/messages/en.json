@@ -526,7 +526,8 @@
   "Breadcrumbs": {
     "home": "Home",
     "search": "Search",
-    "agents": "Agents"
+    "agents": "Agents",
+    "ariaLabel": "Breadcrumb"
   },
   "AgentAreaServed": {
     "name": "Southern Zone, Costa Rica"
@@ -535,6 +536,7 @@
     "heading": "Similar Properties",
     "browseCta": "Browse all properties",
     "carouselAriaLabel": "Similar properties carousel",
-    "keyboardHint": "Use arrow keys or swipe to browse similar properties"
+    "keyboardHint": "Use arrow keys or swipe to browse similar properties",
+    "loadingAriaLabel": "Loading similar properties"
   }
 }

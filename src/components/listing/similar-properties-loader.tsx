@@ -11,6 +11,7 @@
  */
 
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { SimilarProperties } from "./similar-properties";
 import { SimilarPropertiesSkeleton } from "./similar-properties-skeleton";
 import { getSimilarPropertiesRanked } from "@/lib/db/queries/properties";
@@ -46,9 +47,10 @@ async function SimilarPropertiesData({
   );
 }
 
-export function SimilarPropertiesLoader(props: SimilarPropertiesLoaderProps) {
+export async function SimilarPropertiesLoader(props: SimilarPropertiesLoaderProps) {
+  const t = await getTranslations({ locale: props.locale, namespace: "SimilarProperties" });
   return (
-    <Suspense fallback={<SimilarPropertiesSkeleton />}>
+    <Suspense fallback={<SimilarPropertiesSkeleton ariaLabel={t("loadingAriaLabel")} />}>
       <SimilarPropertiesData {...props} />
     </Suspense>
   );

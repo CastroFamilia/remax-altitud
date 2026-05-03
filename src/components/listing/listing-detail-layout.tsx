@@ -84,6 +84,7 @@ export async function ListingDetailLayout({
             { label: title },
           ]}
           locale={locale}
+          ariaLabel={tBreadcrumbs("ariaLabel")}
         />
 
         {/* Hero Gallery — lazy-loaded Client Component via PropertyGalleryLoader (ssr: false) */}

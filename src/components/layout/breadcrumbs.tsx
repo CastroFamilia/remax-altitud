@@ -18,12 +18,21 @@ interface BreadcrumbItem {
 interface BreadcrumbsProps {
   items: BreadcrumbItem[];
   locale: string; // reserved for future i18n use — not actively used in component body
+  /**
+   * Translated aria-label for the nav landmark (e.g. "Breadcrumb" / "Migas de pan").
+   * Optional — defaults to "Breadcrumb" for back-compat with callers that have not
+   * yet passed a translated value.
+   */
+  ariaLabel?: string;
 }
 
-export function Breadcrumbs({ items }: BreadcrumbsProps): React.ReactElement {
+export function Breadcrumbs({
+  items,
+  ariaLabel = "Breadcrumb",
+}: BreadcrumbsProps): React.ReactElement {
   return (
     <nav
-      aria-label="Breadcrumb"
+      aria-label={ariaLabel}
       data-testid="breadcrumbs"
       className="px-4 py-2 md:px-0"
     >
