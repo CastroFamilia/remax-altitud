@@ -455,7 +455,33 @@
       "zmt_restricted": "Zona Marítimo Terrestre Restringida"
     },
     "noAgentAssigned": "Contactar RE/MAX Altitud",
-    "agentSection": "Agente a cargo"
+    "agentSection": "Agente a cargo",
+    "unknownOffice": "RE/MAX Altitud"
+  },
+  "AgentCard": {
+    "agentCardLabel": "Agente a cargo: {name}",
+    "agentPhotoAlt": "Foto de {name}",
+    "listings": "propiedades",
+    "contactAgent": "Contactar Agente",
+    "whatsapp": "WhatsApp",
+    "email": "Correo",
+    "emailSubject": "Consulta: {title} — Ref {ref}",
+    "emailBody": "Hola, me interesa la propiedad {title} (Ref: {ref}).",
+    "transparencyNote": "Este agente puede usar la traducción integrada de WhatsApp para conversaciones multilingües.",
+    "noWhatsApp": "WhatsApp no disponible",
+    "language": {
+      "en": "Inglés",
+      "es": "Español",
+      "de": "Alemán",
+      "fr": "Francés",
+      "it": "Italiano",
+      "pt": "Portugués"
+    }
+  },
+  "StickyMobileCTA": {
+    "stickyCtaLabel": "Contactar agente",
+    "whatsapp": "WhatsApp",
+    "email": "Correo"
   },
   "StickySpecsBar": {
     "price": "Precio",

@@ -9,6 +9,7 @@ import {
   getAllPropertySlugs,
 } from "@/lib/db/queries/properties";
 import { getAgentById } from "@/lib/db/queries/agents";
+import { getOfficeById } from "@/lib/db/queries/offices";
 import { ListingDetailLayout } from "@/components/listing/listing-detail-layout";
 import type { OptimizedImage } from "@/types/images";
 
@@ -126,6 +127,16 @@ export default async function PropertyPage({
   // Fetch associated agent (if agentId is set)
   const agent = property.agentId ? await getAgentById(property.agentId) : null;
 
+  // Fetch associated office name (Story 4.2, Task 5b)
+  const office = agent?.officeId ? await getOfficeById(agent.officeId) : null;
+
   // Visible property → full listing detail page (Story 4.1)
-  return <ListingDetailLayout property={property} agent={agent} locale={locale} />;
+  return (
+    <ListingDetailLayout
+      property={property}
+      agent={agent}
+      locale={locale}
+      officeName={office?.name}
+    />
+  );
 }

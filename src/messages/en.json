@@ -455,7 +455,33 @@
       "zmt_restricted": "ZMT Restricted"
     },
     "noAgentAssigned": "Contact RE/MAX Altitud",
-    "agentSection": "Listing Agent"
+    "agentSection": "Listing Agent",
+    "unknownOffice": "RE/MAX Altitud"
+  },
+  "AgentCard": {
+    "agentCardLabel": "Listing agent: {name}",
+    "agentPhotoAlt": "Photo of {name}",
+    "listings": "listings",
+    "contactAgent": "Contact Agent",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "emailSubject": "Inquiry: {title} — Ref {ref}",
+    "emailBody": "Hello, I'm interested in {title} (Ref: {ref}).",
+    "transparencyNote": "This agent may use WhatsApp's built-in translation for multilingual conversations.",
+    "noWhatsApp": "WhatsApp not available",
+    "language": {
+      "en": "English",
+      "es": "Spanish",
+      "de": "German",
+      "fr": "French",
+      "it": "Italian",
+      "pt": "Portuguese"
+    }
+  },
+  "StickyMobileCTA": {
+    "stickyCtaLabel": "Contact agent",
+    "whatsapp": "WhatsApp",
+    "email": "Email"
   },
   "StickySpecsBar": {
     "price": "Asking Price",
