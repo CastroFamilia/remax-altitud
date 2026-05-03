@@ -27,11 +27,18 @@ export default async function AgentsIndexPage({ params }: { params: Promise<{ lo
 
   const t = await getTranslations({ locale, namespace: "AgentProfile" });
 
-  // Fetch all active agents and offices in parallel
-  const [allAgents, allOffices] = await Promise.all([getAllAgents(), getAllOffices()]);
-
-  // Build officeId → officeName map for the Client Component
-  const officeMap = Object.fromEntries(allOffices.map((o) => [o.id, o.name]));
+  // Fetch all active agents and offices in parallel.
+  // Wrapped in try/catch so SSG build continues if DB is unavailable —
+  // pages are generated on-demand via ISR fallback (same pattern as generateStaticParams).
+  let allAgents: Awaited<ReturnType<typeof getAllAgents>> = [];
+  let officeMap: Record<string, string> = {};
+  try {
+    const [agents, allOffices] = await Promise.all([getAllAgents(), getAllOffices()]);
+    allAgents = agents;
+    officeMap = Object.fromEntries(allOffices.map((o) => [o.id, o.name]));
+  } catch {
+    // DB unavailable at build time — render empty shell; ISR will populate on first request.
+  }
 
   return (
     <SimplePageLayout pageTitle={t("indexPageTitle")} intro={t("indexPageDescription")}>
