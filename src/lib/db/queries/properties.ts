@@ -310,25 +310,23 @@ export async function getPropertyBySlug(slug: string) {
  * PropertySearchItem expects images: { url: string; alt?: string }[].
  * So we must map src → url.
  */
-function mapRowToPropertySearchItem(
-  row: {
-    id: string;
-    slug: string;
-    titleEn: string;
-    titleEs: string;
-    priceUsd: number;
-    bedrooms: number | null;
-    bathrooms: number | null;
-    lotSizeM2: number | null;
-    constructionM2: number | null;
-    zmtStatus: string | null;
-    propertyType: string;
-    areaSlug: string | null;
-    images: unknown;
-    latitude: number | null;
-    longitude: number | null;
-  },
-): PropertySearchItem {
+function mapRowToPropertySearchItem(row: {
+  id: string;
+  slug: string;
+  titleEn: string;
+  titleEs: string;
+  priceUsd: number;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  lotSizeM2: number | null;
+  constructionM2: number | null;
+  zmtStatus: string | null;
+  propertyType: string;
+  areaSlug: string | null;
+  images: unknown;
+  latitude: number | null;
+  longitude: number | null;
+}): PropertySearchItem {
   const rawImages = (row.images as { src: string; alt?: string }[] | null) ?? [];
   return {
     id: row.id,

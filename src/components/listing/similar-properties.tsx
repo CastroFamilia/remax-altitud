@@ -49,10 +49,7 @@ export async function SimilarProperties({
   // Carousel layout — CSS snap (no JS carousel library) (AC: #5)
   return (
     <section aria-labelledby="similar-heading" data-testid="similar-properties-carousel">
-      <h2
-        id="similar-heading"
-        className="mb-4 text-xl font-bold text-brand-navy md:text-2xl"
-      >
+      <h2 id="similar-heading" className="mb-4 text-xl font-bold text-brand-navy md:text-2xl">
         {t("heading")}
       </h2>
       <div
@@ -62,11 +59,7 @@ export async function SimilarProperties({
         aria-label={t("carouselAriaLabel")}
       >
         {filteredProperties.map((property) => (
-          <div
-            key={property.slug}
-            role="listitem"
-            className="snap-start shrink-0 w-72 md:w-80"
-          >
+          <div key={property.slug} role="listitem" className="snap-start shrink-0 w-72 md:w-80">
             <PropertyCard property={property} locale={locale} variant="compact" />
           </div>
         ))}

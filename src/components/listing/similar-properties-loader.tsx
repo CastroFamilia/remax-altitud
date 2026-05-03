@@ -39,11 +39,7 @@ async function SimilarPropertiesData({
     limit: 4,
   });
   return (
-    <SimilarProperties
-      properties={properties}
-      locale={locale}
-      currentPropertySlug={currentSlug}
-    />
+    <SimilarProperties properties={properties} locale={locale} currentPropertySlug={currentSlug} />
   );
 }
 

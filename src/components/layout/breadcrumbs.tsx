@@ -31,11 +31,7 @@ export function Breadcrumbs({
   ariaLabel = "Breadcrumb",
 }: BreadcrumbsProps): React.ReactElement {
   return (
-    <nav
-      aria-label={ariaLabel}
-      data-testid="breadcrumbs"
-      className="px-4 py-2 md:px-0"
-    >
+    <nav aria-label={ariaLabel} data-testid="breadcrumbs" className="px-4 py-2 md:px-0">
       <ol className="flex flex-wrap items-center gap-1 text-sm text-text-muted">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -56,9 +52,7 @@ export function Breadcrumbs({
               ) : (
                 <span
                   aria-current={isLast ? "page" : undefined}
-                  className={
-                    isLast ? "text-brand-navy font-medium truncate max-w-[20rem]" : ""
-                  }
+                  className={isLast ? "text-brand-navy font-medium truncate max-w-[20rem]" : ""}
                 >
                   {item.label}
                 </span>
