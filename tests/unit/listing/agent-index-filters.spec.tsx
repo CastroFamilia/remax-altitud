@@ -325,4 +325,51 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
     // Previous office results (Emma) must NOT still be showing
     expect(screen.queryByText("Emma Smith")).toBeNull();
   });
+
+  // [P1] Edge case — explicit "Clear filters" button restores list (no-match → all)
+  // Closes coverage gap surfaced in test review: the clearFilters button click was not asserted.
+  it("[P1] 4.3-COMP-021: clicking the 'Clear filters' button from no-match state restores the full list", async () => {
+    const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
+    render(
+      <AgentIndexFilters
+        agents={mockAgents}
+        locale="en"
+        officeMap={mockOfficeMap}
+      />,
+    );
+
+    // Force a no-match state: office-dom + en (Gustavo only speaks es)
+    fireEvent.change(screen.getByTestId("agent-office-filter"), {
+      target: { value: "office-dom" },
+    });
+    fireEvent.change(screen.getByTestId("agent-language-filter"), {
+      target: { value: "en" },
+    });
+    expect(screen.getByTestId("agent-no-match")).toBeTruthy();
+
+    // Click the "Clear filters" button rendered inside the no-match panel
+    const clearButton = screen.getByRole("button", { name: /clearFilters/ });
+    fireEvent.click(clearButton);
+
+    // Full list restored
+    expect(screen.queryByTestId("agent-no-match")).toBeNull();
+    expect(screen.getAllByTestId("agent-index-card")).toHaveLength(2);
+  });
+
+  // [P2] Defensive — passing zero agents must not crash (R-010 parallel for index page)
+  it("[P2] 4.3-COMP-022: renders no-match empty state when agents prop is an empty array", async () => {
+    const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
+    render(
+      <AgentIndexFilters
+        agents={[]}
+        locale="en"
+        officeMap={mockOfficeMap}
+      />,
+    );
+
+    // No cards
+    expect(screen.queryAllByTestId("agent-index-card")).toHaveLength(0);
+    // No-match empty state visible by default (filteredAgents.length === 0)
+    expect(screen.getByTestId("agent-no-match")).toBeTruthy();
+  });
 });

@@ -295,4 +295,44 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
     const hero = screen.getByTestId("agent-profile-hero");
     expect(hero.getAttribute("aria-labelledby")).toBe("agent-name-heading");
   });
+
+  // [P0] AC #1 explicit office display (gap closure from test-review)
+  it("[P0] 4.3-COMP-011: renders office name passed via props (AC #1 — office display)", async () => {
+    const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
+    render(
+      await (AgentProfileHero as unknown as (props: {
+        agent: typeof mockAgent;
+        officeName: string;
+        locale: string;
+      }) => Promise<React.ReactElement>)({
+        agent: mockAgent,
+        officeName: "RE/MAX Altitud Cero",
+        locale: "en",
+      }),
+    );
+    // The office name is required content per AC #1; assert it is rendered
+    expect(screen.getByText("RE/MAX Altitud Cero")).toBeTruthy();
+  });
+
+  // [P0] AC #1 — explicit assertion that contact CTAs are wired into the hero.
+  // Without this, the hero could silently drop the AgentProfileCTAs render and tests would still pass.
+  it("[P0] 4.3-COMP-012: renders the AgentProfileCTAs subtree (AC #1 — WhatsApp + Email CTAs present)", async () => {
+    const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
+    render(
+      await (AgentProfileHero as unknown as (props: {
+        agent: typeof mockAgent;
+        officeName: string;
+        locale: string;
+      }) => Promise<React.ReactElement>)({
+        agent: mockAgent,
+        officeName: "RE/MAX Altitud",
+        locale: "en",
+      }),
+    );
+    // The mocked AgentProfileCTAs renders <div data-testid="agent-profile-ctas-mock">{agentName}</div>
+    const ctas = screen.getByTestId("agent-profile-ctas-mock");
+    expect(ctas).toBeTruthy();
+    // Verifies the parent passes the agent name into the CTAs (prop wiring contract)
+    expect(ctas.textContent).toContain("Emma Smith");
+  });
 });
