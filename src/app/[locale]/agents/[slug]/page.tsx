@@ -8,10 +8,7 @@ import { getOfficeById } from "@/lib/db/queries/offices";
 import { AgentProfileHero } from "@/components/agent/agent-profile-hero";
 import { AgentListingsGrid } from "@/components/agent/agent-listings-grid";
 import type { PropertySearchItem } from "@/types/search";
-import {
-  generateAgentJsonLd,
-  generateBreadcrumbJsonLd,
-} from "@/lib/seo/structured-data";
+import { generateAgentJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/structured-data";
 import { buildAlternatesMetadata, generateCanonicalUrl } from "@/lib/seo/metadata";
 import { SITE_ORIGIN } from "@/lib/seo/constants";
 
@@ -102,10 +99,12 @@ export default async function AgentProfilePage({
   const officeName = office?.name ?? "RE/MAX Altitud";
 
   // Story 4.4 Task 8: JSON-LD structured data for RealEstateAgent + BreadcrumbList (AC #2, #4, #5)
-  const agentJsonLd = generateAgentJsonLd(agent, locale);
+  const tBreadcrumbs = await getTranslations({ locale, namespace: "Breadcrumbs" });
+  const tAreaServed = await getTranslations({ locale, namespace: "AgentAreaServed" });
+  const agentJsonLd = generateAgentJsonLd(agent, locale, tAreaServed("name"));
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
-    { position: 1, name: "Home", href: `${SITE_ORIGIN}/${locale}` },
-    { position: 2, name: "Agents", href: `${SITE_ORIGIN}/${locale}/agents` },
+    { position: 1, name: tBreadcrumbs("home"), href: `${SITE_ORIGIN}/${locale}` },
+    { position: 2, name: tBreadcrumbs("agents"), href: `${SITE_ORIGIN}/${locale}/agents` },
     { position: 3, name: agent.name, href: `${SITE_ORIGIN}/${locale}/agents/${agent.slug}` },
   ]);
 

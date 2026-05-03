@@ -12,10 +12,7 @@ import { getAgentById } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 import { ListingDetailLayout } from "@/components/listing/listing-detail-layout";
 import type { OptimizedImage } from "@/types/images";
-import {
-  generateListingJsonLd,
-  generateBreadcrumbJsonLd,
-} from "@/lib/seo/structured-data";
+import { generateListingJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/structured-data";
 import { buildAlternatesMetadata, generateCanonicalUrl } from "@/lib/seo/metadata";
 import { SITE_ORIGIN } from "@/lib/seo/constants";
 
@@ -144,10 +141,11 @@ export default async function PropertyPage({
 
   // Story 4.4 Task 7: JSON-LD structured data for RealEstateListing + BreadcrumbList (AC #1, #4)
   const title = locale === "es" ? property.titleEs : property.titleEn;
+  const tBreadcrumbs = await getTranslations({ locale, namespace: "Breadcrumbs" });
   const listingJsonLd = generateListingJsonLd(property, locale);
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
-    { position: 1, name: "Home", href: `${SITE_ORIGIN}/${locale}` },
-    { position: 2, name: "Search", href: `${SITE_ORIGIN}/${locale}/search` },
+    { position: 1, name: tBreadcrumbs("home"), href: `${SITE_ORIGIN}/${locale}` },
+    { position: 2, name: tBreadcrumbs("search"), href: `${SITE_ORIGIN}/${locale}/search` },
     {
       position: 3,
       name: title,

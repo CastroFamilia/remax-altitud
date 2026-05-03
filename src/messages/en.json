@@ -522,5 +522,13 @@
       "concession": "Concession",
       "zmt_restricted": "ZMT Restricted"
     }
+  },
+  "Breadcrumbs": {
+    "home": "Home",
+    "search": "Search",
+    "agents": "Agents"
+  },
+  "AgentAreaServed": {
+    "name": "Southern Zone, Costa Rica"
   }
 }

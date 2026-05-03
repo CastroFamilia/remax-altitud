@@ -24,8 +24,7 @@ interface BreadcrumbItem {
  */
 export function generateListingJsonLd(property: Property, locale: string): object {
   const title = locale === "es" ? property.titleEs : property.titleEn;
-  const description =
-    locale === "es" ? property.descriptionEs : property.descriptionEn;
+  const description = locale === "es" ? property.descriptionEs : property.descriptionEn;
   const images = (property.images as unknown as { src: string }[]) ?? [];
 
   return {
@@ -65,8 +64,17 @@ export function generateListingJsonLd(property: Property, locale: string): objec
 /**
  * Generates RealEstateAgent JSON-LD structured data for an agent profile.
  * Required fields: @type, name, image, telephone, areaServed (AC #2, 4.4-UNIT-002)
+ *
+ * `areaServedName` is the localized region label (e.g. "Southern Zone, Costa Rica"
+ * for EN, "Zona Sur, Costa Rica" for ES). Defaults to the EN label so callers
+ * that omit it remain backwards-compatible, but page integrations should pass
+ * the translation from the `AgentAreaServed.name` namespace.
  */
-export function generateAgentJsonLd(agent: Agent, locale: string): object {
+export function generateAgentJsonLd(
+  agent: Agent,
+  locale: string,
+  areaServedName: string = "Southern Zone, Costa Rica",
+): object {
   const bio = locale === "es" ? agent.bioEs : agent.bioEn;
 
   return {
@@ -80,7 +88,7 @@ export function generateAgentJsonLd(agent: Agent, locale: string): object {
     email: agent.email ?? undefined,
     areaServed: {
       "@type": "Place",
-      name: "Southern Zone, Costa Rica",
+      name: areaServedName,
       addressCountry: "CR",
     },
   };

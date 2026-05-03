@@ -18,9 +18,7 @@ import { SITE_ORIGIN, LOCALES } from "@/lib/seo/constants";
  *   { hrefLang: 'en', href: '…/en/property/…' } and
  *   { hrefLang: 'es', href: '…/es/property/…' } entries.
  */
-export function generateAlternateLanguages(
-  path: string,
-): { hrefLang: string; href: string }[] {
+export function generateAlternateLanguages(path: string): { hrefLang: string; href: string }[] {
   // Phase 2: add it, de, fr, pt
   return LOCALES.map((locale) => ({
     hrefLang: locale,
@@ -47,15 +45,10 @@ export function generateCanonicalUrl(locale: string, path: string): string {
  *     ...buildAlternatesMetadata(path),
  *   }
  */
-export function buildAlternatesMetadata(
-  path: string,
-): { languages: Record<string, string> } {
+export function buildAlternatesMetadata(path: string): { languages: Record<string, string> } {
   return {
     languages: Object.fromEntries(
-      generateAlternateLanguages(path).map(({ hrefLang, href }) => [
-        hrefLang,
-        href,
-      ]),
+      generateAlternateLanguages(path).map(({ hrefLang, href }) => [hrefLang, href]),
     ),
   };
 }

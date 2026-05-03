@@ -522,5 +522,13 @@
       "concession": "Concesión",
       "zmt_restricted": "Zona Marítimo Terrestre Restringida"
     }
+  },
+  "Breadcrumbs": {
+    "home": "Inicio",
+    "search": "Buscar",
+    "agents": "Agentes"
+  },
+  "AgentAreaServed": {
+    "name": "Zona Sur, Costa Rica"
   }
 }
