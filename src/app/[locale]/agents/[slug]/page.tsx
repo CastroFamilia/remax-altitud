@@ -8,6 +8,13 @@ import { getOfficeById } from "@/lib/db/queries/offices";
 import { AgentProfileHero } from "@/components/agent/agent-profile-hero";
 import { AgentListingsGrid } from "@/components/agent/agent-listings-grid";
 import type { PropertySearchItem } from "@/types/search";
+import {
+  generateAgentJsonLd,
+  generateBreadcrumbJsonLd,
+  serializeJsonLd,
+} from "@/lib/seo/structured-data";
+import { buildAlternatesMetadata, generateCanonicalUrl } from "@/lib/seo/metadata";
+import { SITE_ORIGIN } from "@/lib/seo/constants";
 
 // Story 4.3 Task 5: ISR — revalidate every 24 hours.
 // on-demand revalidation via revalidateTag('agents') from the sync pipeline.
@@ -40,10 +47,16 @@ export async function generateMetadata({
   return {
     title: `${agent.name} | RE/MAX Altitud`,
     description: bio.slice(0, 160) || t("defaultMetaDescription", { name: agent.name }),
+    alternates: {
+      canonical: generateCanonicalUrl(locale, `/agents/${slug}`),
+      ...buildAlternatesMetadata(`/agents/${slug}`),
+    },
     openGraph: {
       title: `${agent.name} | RE/MAX Altitud`,
       description: bio.slice(0, 160) || t("defaultMetaDescription", { name: agent.name }),
       images: agent.photoOptimizedUrl ? [{ url: agent.photoOptimizedUrl }] : [],
+      type: "profile",
+      url: generateCanonicalUrl(locale, `/agents/${slug}`),
     },
   };
 }
@@ -89,14 +102,36 @@ export default async function AgentProfilePage({
 
   const officeName = office?.name ?? "RE/MAX Altitud";
 
+  // Story 4.4 Task 8: JSON-LD structured data for RealEstateAgent + BreadcrumbList (AC #2, #4, #5)
+  const tBreadcrumbs = await getTranslations({ locale, namespace: "Breadcrumbs" });
+  const tAreaServed = await getTranslations({ locale, namespace: "AgentAreaServed" });
+  const agentJsonLd = generateAgentJsonLd(agent, locale, tAreaServed("name"));
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { position: 1, name: tBreadcrumbs("home"), href: `${SITE_ORIGIN}/${locale}` },
+    { position: 2, name: tBreadcrumbs("agents"), href: `${SITE_ORIGIN}/${locale}/agents` },
+    { position: 3, name: agent.name, href: `${SITE_ORIGIN}/${locale}/agents/${agent.slug}` },
+  ]);
+
   return (
-    <div className="container py-8 md:py-12">
-      <AgentProfileHero agent={agent} officeName={officeName} locale={locale} />
-      <AgentListingsGrid
-        properties={agentProperties as unknown as PropertySearchItem[]}
-        locale={locale}
-        agentName={agent.name}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(agentJsonLd) }}
+        data-testid="agent-jsonld"
       />
-    </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+        data-testid="breadcrumb-jsonld"
+      />
+      <div className="container py-8 md:py-12">
+        <AgentProfileHero agent={agent} officeName={officeName} locale={locale} />
+        <AgentListingsGrid
+          properties={agentProperties as unknown as PropertySearchItem[]}
+          locale={locale}
+          agentName={agent.name}
+        />
+      </div>
+    </>
   );
 }

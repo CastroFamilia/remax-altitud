@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-02T21:00:00-06:00_
+_Last updated: 2026-05-03T12:00:00-06:00_
 
 ## Stories
 
@@ -29,9 +29,9 @@ _Last updated: 2026-05-02T21:00:00-06:00_
 | 3.8   | 3    | No-Results, Hidden Listings & Near Me | done | #92 | #130 | merged | 3.3 | ✅ Yes (done) |
 | 4.1   | 4    | Listing Detail Page & Photo Gallery | done | #93 | #131 | merged | none | ✅ Yes (done) |
 | 4.2   | 4    | Agent Card & Contact CTAs | done | #94 | #132 | merged | 4.1 | ✅ Yes (done) |
-| 4.3   | 4    | Agent Profile Pages | backlog | #95 | — | — | 4.2 | ✅ Yes |
-| 4.4   | 4    | SEO Architecture & WordPress Redirects | backlog | #96 | — | — | 4.1 | ✅ Yes |
-| 4.5   | 4    | Similar Properties & Cross-Linking | backlog | #97 | — | — | 4.1, 4.3 | ❌ No (4.3 not merged) |
+| 4.3   | 4    | Agent Profile Pages | done | #95 | #133 | merged | 4.2 | ✅ Yes (done) |
+| 4.4   | 4    | SEO Architecture & WordPress Redirects | ready-for-dev | #96 | — | — | 4.1 | ✅ Yes |
+| 4.5   | 4    | Similar Properties & Cross-Linking | ready-for-dev | #97 | — | — | 4.1, 4.3 | ✅ Yes (4.3 merged) |
 | 5.1   | 5    | Seller Landing Page & List With Us Form | backlog | #98 | — | — | none | ❌ No (epic 4 not complete) |
 | 5.2   | 5    | CMA Request Form | backlog | #99 | — | — | 5.1 | ❌ No (epic 4 not complete) |
 | 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | backlog | #100 | — | — | 5.1 | ❌ No (epic 4 not complete) |
@@ -110,4 +110,5 @@ _Last updated: 2026-05-02T21:00:00-06:00_
 - Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
 - Updated 2026-05-02 (batch 2): PRs #128 (3.6), #129 (3.7), #130 (3.8) confirmed merged. Epic 3 marked done. Epic 4 stories now unblocked (4.1 Ready to Work).
 - Updated 2026-05-02 (batch 4): PR #131 (4.1) merged 2026-05-02. PR #132 (4.2) merged 2026-05-03. Stories 4.3 and 4.4 are now unblocked (Ready to Work). Story 4.5 still blocked on 4.3 not merged.
+- Updated 2026-05-03 (batch 5): PR #133 (4.3) merged 2026-05-03. Story 4.3 marked done. Story 4.5 now unblocked (both 4.1 and 4.3 merged). Next story: 4.4 (SEO Architecture & WordPress Redirects, GH #96).
 - No open PRs. No stale worktrees.

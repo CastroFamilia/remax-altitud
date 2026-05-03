@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 import createNextIntlPlugin from "next-intl/plugin";
+import { staticRedirects } from "./src/lib/seo/redirects";
 
 const withNextIntl = createNextIntlPlugin();
 
@@ -46,6 +47,15 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+
+  // Task 5 (Story 4.4): WordPress static URL redirects — edge-level, < 10ms
+  // Uses static import at top of file (./src/lib/seo/redirects) — Next.js 15
+  // transpiles next.config.ts including its imports. Static import is simpler
+  // and more reliable than dynamic import for config-time use.
+  // Performance (NFR26): matched at CDN/proxy layer before Node.js handles request.
+  async redirects() {
+    return staticRedirects;
   },
 };
 
