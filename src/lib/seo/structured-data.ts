@@ -19,6 +19,36 @@ interface BreadcrumbItem {
 }
 
 /**
+ * Serialize a JSON-LD object for safe injection into an inline
+ * <script type="application/ld+json"> tag.
+ *
+ * `JSON.stringify` alone does NOT escape `<`, `>`, or `&`, so a description
+ * containing the literal substring `</script>` (or `<!--`, or `<![CDATA[`)
+ * would allow the inline script to break out of its tag — even though the
+ * source values originate from the RE/MAX CCA sync, property/agent text is
+ * arbitrary free-form content.
+ *
+ * This helper escapes the dangerous HTML/JSON-script characters and the JS
+ * line-terminator code points (U+2028, U+2029) as Unicode escapes. The
+ * result is still valid JSON (parsers map `\u003c` back to `<`), but the
+ * raw HTML cannot terminate the script tag or be parsed by the browser as
+ * markup.
+ */
+const ESCAPES: Record<string, string> = {
+  "<": "\\u003c",
+  ">": "\\u003e",
+  "&": "\\u0026",
+  "\u2028": "\\u2028",
+  "\u2029": "\\u2029",
+};
+
+const ESCAPE_PATTERN = /[<>&\u2028\u2029]/g;
+
+export function serializeJsonLd(value: object): string {
+  return JSON.stringify(value).replace(ESCAPE_PATTERN, (ch) => ESCAPES[ch]);
+}
+
+/**
  * Generates RealEstateListing JSON-LD structured data for a property listing.
  * Required fields: @type, price, address, geo, image, description (AC #1, 4.4-UNIT-001)
  */

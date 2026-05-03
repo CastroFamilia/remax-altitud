@@ -12,7 +12,11 @@ import { getAgentById } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 import { ListingDetailLayout } from "@/components/listing/listing-detail-layout";
 import type { OptimizedImage } from "@/types/images";
-import { generateListingJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/structured-data";
+import {
+  generateListingJsonLd,
+  generateBreadcrumbJsonLd,
+  serializeJsonLd,
+} from "@/lib/seo/structured-data";
 import { buildAlternatesMetadata, generateCanonicalUrl } from "@/lib/seo/metadata";
 import { SITE_ORIGIN } from "@/lib/seo/constants";
 
@@ -158,12 +162,12 @@ export default async function PropertyPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(listingJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(listingJsonLd) }}
         data-testid="listing-jsonld"
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
         data-testid="breadcrumb-jsonld"
       />
       <ListingDetailLayout

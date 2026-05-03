@@ -8,7 +8,11 @@ import { getOfficeById } from "@/lib/db/queries/offices";
 import { AgentProfileHero } from "@/components/agent/agent-profile-hero";
 import { AgentListingsGrid } from "@/components/agent/agent-listings-grid";
 import type { PropertySearchItem } from "@/types/search";
-import { generateAgentJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/structured-data";
+import {
+  generateAgentJsonLd,
+  generateBreadcrumbJsonLd,
+  serializeJsonLd,
+} from "@/lib/seo/structured-data";
 import { buildAlternatesMetadata, generateCanonicalUrl } from "@/lib/seo/metadata";
 import { SITE_ORIGIN } from "@/lib/seo/constants";
 
@@ -112,12 +116,12 @@ export default async function AgentProfilePage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(agentJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(agentJsonLd) }}
         data-testid="agent-jsonld"
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
         data-testid="breadcrumb-jsonld"
       />
       <div className="container py-8 md:py-12">

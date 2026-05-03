@@ -44,6 +44,7 @@ import {
   generateAgentJsonLd,
   generateBreadcrumbJsonLd,
   generatePlaceJsonLd,
+  serializeJsonLd,
 } from "@/lib/seo/structured-data";
 
 // ---------------------------------------------------------------------------
@@ -492,4 +493,42 @@ describe("generatePlaceJsonLd (AC #3 — Place schema for area pages)", () => {
       expect(result["url"]).toBe("https://remax-altitud.cr/en/areas/perez-zeledon");
     },
   );
+});
+
+// ---------------------------------------------------------------------------
+// serializeJsonLd — XSS hardening for inline <script type="application/ld+json">
+// ---------------------------------------------------------------------------
+
+describe("serializeJsonLd (XSS hardening for inline JSON-LD scripts)", () => {
+  it("[P0] escapes '</script>' in string values so the inline script cannot break out", () => {
+    const value = { description: "evil </script><script>alert(1)</script>" };
+    const out = serializeJsonLd(value);
+    expect(out).not.toContain("</script>");
+    expect(out).not.toContain("</");
+    expect(out).toContain("\\u003c/script\\u003e");
+    // Round-trips back to the original via JSON.parse
+    expect(JSON.parse(out)).toEqual(value);
+  });
+
+  it("[P1] escapes '<', '>', and '&' as Unicode escapes", () => {
+    const out = serializeJsonLd({ html: "<a href=\"x\">&amp;</a>" });
+    expect(out).not.toMatch(/[<>&]/);
+    expect(out).toContain("\\u003c");
+    expect(out).toContain("\\u003e");
+    expect(out).toContain("\\u0026");
+  });
+
+  it("[P1] escapes U+2028 and U+2029 (JS string-literal terminators)", () => {
+    const out = serializeJsonLd({ s: "line break ok" });
+    expect(out).not.toContain(" ");
+    expect(out).not.toContain(" ");
+    expect(out).toContain("\\u2028");
+    expect(out).toContain("\\u2029");
+  });
+
+  it("[P2] result is still valid JSON parseable back to the source object", () => {
+    const value = { name: "Casa & Jardín </script>", count: 3, list: ["<a>", "b"] };
+    const parsed = JSON.parse(serializeJsonLd(value));
+    expect(parsed).toEqual(value);
+  });
 });
