@@ -2,8 +2,8 @@
  * Story 4.3: Agent Profile Pages — ATDD Red-Phase Scaffold
  * Module: src/lib/db/queries/agents.ts (new functions added in Task 1)
  *
- * TDD Phase: RED — all tests are test.skip() until the query functions are implemented.
- * Remove test.skip() per test when implementing to verify green phase.
+ * TDD Phase: RED — all tests are test() until the query functions are implemented.
+ * Remove test() per test when implementing to verify green phase.
  *
  * Covers:
  *   AC #6  — Agent pages are SSG/ISR (NFR25) — getAllAgentSlugs powers generateStaticParams
@@ -19,7 +19,7 @@
  * NOTE: This file is .ts (not .tsx) — node environment, pure function tests, no JSX.
  */
 
-import { afterEach, beforeEach, describe, expect, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // ---------------------------------------------------------------------------
 // Hoisted mock primitives for Drizzle query builder chain
@@ -93,7 +93,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe("getAgentBySlug (ATDD Red Phase)", () => {
-  test.skip("[P0] 4.3-DB-001: calls db.select and filters by agents.slug with limit(1)", async () => {
+  it("[P0] 4.3-DB-001: calls db.select and filters by agents.slug with limit(1)", async () => {
     // THIS TEST WILL FAIL — getAgentBySlug not yet implemented
     const { getAgentBySlug } = await import("@/lib/db/queries/agents");
     await getAgentBySlug("emma-smith");
@@ -104,7 +104,7 @@ describe("getAgentBySlug (ATDD Red Phase)", () => {
     expect(mockLimit).toHaveBeenCalledWith(1);
   });
 
-  test.skip("[P0] 4.3-DB-002: returns null when no agent row is found for the given slug", async () => {
+  it("[P0] 4.3-DB-002: returns null when no agent row is found for the given slug", async () => {
     // THIS TEST WILL FAIL — getAgentBySlug not yet implemented
     mockLimit.mockResolvedValueOnce([]); // empty result
 
@@ -114,7 +114,7 @@ describe("getAgentBySlug (ATDD Red Phase)", () => {
     expect(result).toBeNull();
   });
 
-  test.skip("[P0] 4.3-DB-003: returns the first agent row when found", async () => {
+  it("[P0] 4.3-DB-003: returns the first agent row when found", async () => {
     // THIS TEST WILL FAIL — getAgentBySlug not yet implemented
     const agentRow = {
       id: "agent-uuid-1",
@@ -136,7 +136,7 @@ describe("getAgentBySlug (ATDD Red Phase)", () => {
 // ---------------------------------------------------------------------------
 
 describe("getAllAgentSlugs (ATDD Red Phase)", () => {
-  test.skip("[P0] 4.3-DB-004: returns array of slug strings for all active agents", async () => {
+  it("[P0] 4.3-DB-004: returns array of slug strings for all active agents", async () => {
     // THIS TEST WILL FAIL — getAllAgentSlugs not yet implemented
     mockWhere.mockResolvedValueOnce([{ slug: "emma-smith" }, { slug: "gustavo-valverde" }]);
 
@@ -148,7 +148,7 @@ describe("getAllAgentSlugs (ATDD Red Phase)", () => {
     expect(result).toContain("gustavo-valverde");
   });
 
-  test.skip("[P0] 4.3-DB-005: filters by isActive=true (does not include inactive agents)", async () => {
+  it("[P0] 4.3-DB-005: filters by isActive=true (does not include inactive agents)", async () => {
     // THIS TEST WILL FAIL — getAllAgentSlugs not yet implemented
     // Only active agents should be returned (for SSG generateStaticParams)
     mockWhere.mockResolvedValueOnce([{ slug: "emma-smith" }]);
@@ -160,7 +160,7 @@ describe("getAllAgentSlugs (ATDD Red Phase)", () => {
     expect(mockWhere).toHaveBeenCalledOnce();
   });
 
-  test.skip("[P1] 4.3-DB-006: returns empty array when no active agents exist", async () => {
+  it("[P1] 4.3-DB-006: returns empty array when no active agents exist", async () => {
     // THIS TEST WILL FAIL — getAllAgentSlugs not yet implemented
     mockWhere.mockResolvedValueOnce([]);
 
@@ -176,7 +176,7 @@ describe("getAllAgentSlugs (ATDD Red Phase)", () => {
 // ---------------------------------------------------------------------------
 
 describe("getAllAgents (ATDD Red Phase)", () => {
-  test.skip("[P1] 4.3-DB-007: calls db.select and orders by listingCount descending", async () => {
+  it("[P1] 4.3-DB-007: calls db.select and orders by listingCount descending", async () => {
     // THIS TEST WILL FAIL — getAllAgents not yet implemented
     mockWhere.mockReturnValueOnce({ orderBy: mockOrderBy });
     mockOrderBy.mockResolvedValueOnce([]);
@@ -189,7 +189,7 @@ describe("getAllAgents (ATDD Red Phase)", () => {
     expect(mockOrderBy).toHaveBeenCalledOnce();
   });
 
-  test.skip("[P1] 4.3-DB-008: returns agents array ordered by listingCount desc", async () => {
+  it("[P1] 4.3-DB-008: returns agents array ordered by listingCount desc", async () => {
     // THIS TEST WILL FAIL — getAllAgents not yet implemented
     const agents = [
       { id: "a1", name: "Emma Smith", listingCount: 12 },
@@ -212,7 +212,7 @@ describe("getAllAgents (ATDD Red Phase)", () => {
 // ---------------------------------------------------------------------------
 
 describe("getPropertiesByAgentId (ATDD Red Phase)", () => {
-  test.skip("[P1] 4.3-DB-009: filters properties by agentId AND isVisible=true", async () => {
+  it("[P1] 4.3-DB-009: filters properties by agentId AND isVisible=true", async () => {
     // THIS TEST WILL FAIL — getPropertiesByAgentId not yet implemented
     // Must use and(eq(properties.agentId, agentId), eq(properties.isVisible, true))
     mockWhere.mockReturnValueOnce({ orderBy: mockOrderBy });
@@ -226,7 +226,7 @@ describe("getPropertiesByAgentId (ATDD Red Phase)", () => {
     // We verify it was called — the exact args depend on drizzle eq/and internals
   });
 
-  test.skip("[P1] 4.3-DB-010: returns properties ordered by syncedAt descending", async () => {
+  it("[P1] 4.3-DB-010: returns properties ordered by syncedAt descending", async () => {
     // THIS TEST WILL FAIL — getPropertiesByAgentId not yet implemented
     const properties = [
       { id: "p1", slug: "mountain-home", agentId: "agent-uuid-1", isVisible: true },
@@ -241,7 +241,7 @@ describe("getPropertiesByAgentId (ATDD Red Phase)", () => {
     expect(result).toEqual(properties);
   });
 
-  test.skip("[P1] 4.3-DB-011: returns empty array when agent has no visible properties", async () => {
+  it("[P1] 4.3-DB-011: returns empty array when agent has no visible properties", async () => {
     // THIS TEST WILL FAIL — getPropertiesByAgentId not yet implemented
     mockWhere.mockReturnValueOnce({ orderBy: mockOrderBy });
     mockOrderBy.mockResolvedValueOnce([]);

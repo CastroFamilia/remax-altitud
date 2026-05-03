@@ -2,8 +2,8 @@
  * Story 4.3: Agent Profile Pages — ATDD Red-Phase Scaffold
  * Component: src/components/agent/agent-index-filters.tsx
  *
- * TDD Phase: RED — all tests are test.skip() until the component is implemented.
- * Remove test.skip() per test when implementing to verify green phase.
+ * TDD Phase: RED — all tests are test() until the component is implemented.
+ * Remove test() per test when implementing to verify green phase.
  *
  * Covers:
  *   AC #3  — Agents can be filtered by office (Altitud / Altitud Cero) and language
@@ -139,7 +139,7 @@ afterEach(() => {
 describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
   // [P0] Core rendering
 
-  test.skip("[P0] 4.3-COMP-011: renders data-testid='agent-index-list' element", async () => {
+  it("[P0] 4.3-COMP-011: renders data-testid='agent-index-list' element", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
     render(
@@ -153,7 +153,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
     expect(list).toBeTruthy();
   });
 
-  test.skip("[P0] 4.3-COMP-012: renders all agents by default (no filter applied)", async () => {
+  it("[P0] 4.3-COMP-012: renders all agents by default (no filter applied)", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
     render(
@@ -167,7 +167,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
     expect(cards).toHaveLength(2);
   });
 
-  test.skip("[P0] 4.3-COMP-013: renders data-testid='agent-office-filter' control", async () => {
+  it("[P0] 4.3-COMP-013: renders data-testid='agent-office-filter' control", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
     render(
@@ -181,7 +181,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
     expect(officeFilter).toBeTruthy();
   });
 
-  test.skip("[P0] 4.3-COMP-014: renders data-testid='agent-language-filter' control", async () => {
+  it("[P0] 4.3-COMP-014: renders data-testid='agent-language-filter' control", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
     render(
@@ -197,7 +197,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
 
   // [P1] Filter behavior
 
-  test.skip("[P1] 4.3-COMP-015: filters to one agent when office 'office-pz' is selected", async () => {
+  it("[P1] 4.3-COMP-015: filters to one agent when office 'office-pz' is selected", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
     render(
@@ -216,7 +216,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
     expect(screen.getByText("Emma Smith")).toBeTruthy();
   });
 
-  test.skip("[P1] 4.3-COMP-016: filters to English-speaking agents when language filter 'en' selected", async () => {
+  it("[P1] 4.3-COMP-016: filters to English-speaking agents when language filter 'en' selected", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
     render(
@@ -235,7 +235,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
     expect(screen.getByText("Emma Smith")).toBeTruthy();
   });
 
-  test.skip("[P1] 4.3-COMP-017: shows data-testid='agent-no-match' when no agents match combined filters", async () => {
+  it("[P1] 4.3-COMP-017: shows data-testid='agent-no-match' when no agents match combined filters", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
     render(
@@ -257,7 +257,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
     expect(noMatch).toBeTruthy();
   });
 
-  test.skip("[P1] 4.3-COMP-018: clearing filters (selecting 'all') restores full agent list", async () => {
+  it("[P1] 4.3-COMP-018: clearing filters (selecting 'all') restores full agent list", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
     render(
@@ -284,7 +284,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
 
   // [P2] Edge cases and agent card rendering
 
-  test.skip("[P2] 4.3-COMP-019: renders data-testid='agent-index-card' for each visible agent", async () => {
+  it("[P2] 4.3-COMP-019: renders data-testid='agent-index-card' for each visible agent", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");
     render(
@@ -298,7 +298,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
     expect(cards).toHaveLength(2);
   });
 
-  test.skip("[P2] 4.3-COMP-020: filter state resets correctly when switching between offices (R-013)", async () => {
+  it("[P2] 4.3-COMP-020: filter state resets correctly when switching between offices (R-013)", async () => {
     // THIS TEST WILL FAIL — AgentIndexFilters not yet implemented
     // Verifies R-013: filter state not cleared on second office selection is NOT a bug
     const { AgentIndexFilters } = await import("@/components/agent/agent-index-filters");

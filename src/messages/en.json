@@ -478,6 +478,33 @@
       "pt": "Portuguese"
     }
   },
+  "AgentProfile": {
+    "listings": "listings",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "generalInquiryEn": "Hi {name}, I'd like to learn more about your properties.",
+    "noListings": "{name} has no active listings at this time.",
+    "listingsHeading": "{name}'s Listings",
+    "noAgentsMatch": "No agents match your filters.",
+    "clearFilters": "Clear filters",
+    "indexPageTitle": "Meet Our Agents",
+    "indexPageDescription": "Browse RE/MAX Altitud agents — find an agent who speaks your language and knows your area.",
+    "filterByOffice": "Filter by office",
+    "filterByLanguage": "Filter by language",
+    "allOffices": "All offices",
+    "allLanguages": "All languages",
+    "defaultMetaDescription": "View {name}'s listings and contact information at RE/MAX Altitud.",
+    "agentNoLongerActive": "This agent is no longer active.",
+    "backToAgents": "Browse all agents",
+    "language": {
+      "en": "English",
+      "es": "Spanish",
+      "de": "German",
+      "fr": "French",
+      "it": "Italian",
+      "pt": "Portuguese"
+    }
+  },
   "StickyMobileCTA": {
     "stickyCtaLabel": "Contact agent",
     "whatsapp": "WhatsApp",

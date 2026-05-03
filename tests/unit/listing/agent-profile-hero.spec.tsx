@@ -2,8 +2,8 @@
  * Story 4.3: Agent Profile Pages — ATDD Red-Phase Scaffold
  * Component: src/components/agent/agent-profile-hero.tsx
  *
- * TDD Phase: RED — all tests are test.skip() until the component is implemented.
- * Remove test.skip() per test when implementing to verify green phase.
+ * TDD Phase: RED — all tests are test() until the component is implemented.
+ * Remove test() per test when implementing to verify green phase.
  *
  * Covers:
  *   AC #1  — Agent profile page displays photo, name, bio (bilingual), languages, office,
@@ -104,7 +104,7 @@ afterEach(() => {
 describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
   // [P0] Core rendering
 
-  test.skip("[P0] 4.3-COMP-001: renders data-testid='agent-profile-hero' root element", async () => {
+  it("[P0] 4.3-COMP-001: renders data-testid='agent-profile-hero' root element", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
     const { container } = render(
@@ -123,7 +123,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
     expect(hero).toBeTruthy();
   });
 
-  test.skip("[P0] 4.3-COMP-002: renders agent name as h1 heading", async () => {
+  it("[P0] 4.3-COMP-002: renders agent name as h1 heading", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
     render(
@@ -143,7 +143,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
     expect(heading.textContent).toContain("Emma Smith");
   });
 
-  test.skip("[P0] 4.3-COMP-003: renders data-testid='agent-profile-photo' with photoOptimizedUrl", async () => {
+  it("[P0] 4.3-COMP-003: renders data-testid='agent-profile-photo' with photoOptimizedUrl", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
     render(
@@ -162,7 +162,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
     expect(photo.getAttribute("src")).toBe("/agent-photos/emma-400w.webp");
   });
 
-  test.skip("[P0] 4.3-COMP-004: renders data-testid='agent-profile-languages' element", async () => {
+  it("[P0] 4.3-COMP-004: renders data-testid='agent-profile-languages' element", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
     render(
@@ -180,7 +180,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
     expect(languages).toBeTruthy();
   });
 
-  test.skip("[P0] 4.3-COMP-005: renders data-testid='agent-profile-listing-count' with count", async () => {
+  it("[P0] 4.3-COMP-005: renders data-testid='agent-profile-listing-count' with count", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
     render(
@@ -202,7 +202,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
 
   // [P1] Locale and bio behavior
 
-  test.skip("[P1] 4.3-COMP-006: renders English bio (bioEn) when locale is 'en'", async () => {
+  it("[P1] 4.3-COMP-006: renders English bio (bioEn) when locale is 'en'", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
     render(
@@ -219,7 +219,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
     expect(screen.getByText("Mountain specialist with 10 years experience.")).toBeTruthy();
   });
 
-  test.skip("[P1] 4.3-COMP-007: renders Spanish bio (bioEs) when locale is 'es'", async () => {
+  it("[P1] 4.3-COMP-007: renders Spanish bio (bioEs) when locale is 'es'", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
     render(
@@ -238,7 +238,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
     ).toBeTruthy();
   });
 
-  test.skip("[P1] 4.3-COMP-008: does NOT render bio paragraph when bioEn is empty string", async () => {
+  it("[P1] 4.3-COMP-008: does NOT render bio paragraph when bioEn is empty string", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const agentNoBio = { ...mockAgent, bioEn: "", bioEs: "" };
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
@@ -259,7 +259,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
 
   // [P2] Edge cases
 
-  test.skip("[P2] 4.3-COMP-009: uses placeholder image when both photoOptimizedUrl and photoUrl are null", async () => {
+  it("[P2] 4.3-COMP-009: uses placeholder image when both photoOptimizedUrl and photoUrl are null", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const agentNoPhoto = { ...mockAgent, photoUrl: null, photoOptimizedUrl: null };
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
@@ -278,7 +278,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
     expect(photo.getAttribute("src")).toBe("/images/agent-placeholder.svg");
   });
 
-  test.skip("[P2] 4.3-COMP-010: root section has aria-labelledby attribute pointing to agent name heading", async () => {
+  it("[P2] 4.3-COMP-010: root section has aria-labelledby attribute pointing to agent name heading", async () => {
     // THIS TEST WILL FAIL — AgentProfileHero not yet implemented
     const { AgentProfileHero } = await import("@/components/agent/agent-profile-hero");
     render(
