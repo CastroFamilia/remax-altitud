@@ -81,7 +81,7 @@ development_status:
   4-1-listing-detail-page-and-photo-gallery: done
   4-2-agent-card-and-contact-ctas: done
   4-3-agent-profile-pages: done
-  4-4-seo-architecture-and-wordpress-redirects: ready-for-dev
+  4-4-seo-architecture-and-wordpress-redirects: atdd-done
   4-5-similar-properties-and-cross-linking: ready-for-dev
   epic-4-retrospective: optional
 
