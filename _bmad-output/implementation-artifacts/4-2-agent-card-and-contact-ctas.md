@@ -1,6 +1,6 @@
 # Story 4.2: Agent Card & Contact CTAs
 
-**Status:** ready-for-dev
+**Status:** review
 **GH Issue:** #94
 **Epic:** 4 — Listing Detail & Agent Profiles
 **Story Key:** 4-2-agent-card-and-contact-ctas
@@ -42,9 +42,9 @@ so that I can ask questions or schedule a viewing with one tap.
 
 ### Task 1: Create `src/lib/utils/whatsapp.ts` — WhatsApp message builder utility (AC: #2, #3)
 
-- [ ] Create the file at EXACTLY `src/lib/utils/whatsapp.ts` (architecture §3 specifies this location)
-- [ ] **CRITICAL:** This utility must NOT be a Client Component — it is a pure function library. No `'use client'`. It can be called from both Server and Client Components.
-- [ ] **Function: `buildWhatsAppMessage`:**
+- [x] Create the file at EXACTLY `src/lib/utils/whatsapp.ts` (architecture §3 specifies this location)
+- [x] **CRITICAL:** This utility must NOT be a Client Component — it is a pure function library. No `'use client'`. It can be called from both Server and Client Components.
+- [x] **Function: `buildWhatsAppMessage`:**
   ```typescript
   interface WhatsAppMessageOptions {
     agentName: string;
@@ -60,21 +60,21 @@ so that I can ask questions or schedule a viewing with one tap.
     return `Hi ${opts.agentName}, I'm interested in "${opts.propertyTitle}" (Ref: ${opts.propertyRef}).`;
   }
   ```
-- [ ] **Function: `buildWhatsAppUrl`:**
+- [x] **Function: `buildWhatsAppUrl`:**
   ```typescript
   export function buildWhatsAppUrl(whatsapp: string, message: string): string {
     // whatsapp is E.164 digits only (e.g. "50627710000")
     return `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`;
   }
   ```
-- [ ] **IMPORTANT:** `src/lib/constants/offices.ts` already has a `buildWhatsAppUrl` function for office-level contact. The NEW utility in `src/lib/utils/whatsapp.ts` is for property-specific agent contact with message builder logic. Do NOT delete or modify the one in `offices.ts` — it serves a different purpose (office fallback).
-- [ ] Export both functions as named exports.
+- [x] **IMPORTANT:** `src/lib/constants/offices.ts` already has a `buildWhatsAppUrl` function for office-level contact. The NEW utility in `src/lib/utils/whatsapp.ts` is for property-specific agent contact with message builder logic. Do NOT delete or modify the one in `offices.ts` — it serves a different purpose (office fallback).
+- [x] Export both functions as named exports.
 
 ### Task 2: Create `src/lib/utils/utm.ts` — UTM parameter extractor (AC: #8)
 
-- [ ] Create the file at EXACTLY `src/lib/utils/utm.ts` (architecture §3 specifies this location)
-- [ ] **CRITICAL:** This is a browser-side utility — do NOT add `import "server-only"`. UTM extraction runs in the browser when tracking WhatsApp clicks.
-- [ ] **Function: `extractUtmParams`:**
+- [x] Create the file at EXACTLY `src/lib/utils/utm.ts` (architecture §3 specifies this location)
+- [x] **CRITICAL:** This is a browser-side utility — do NOT add `import "server-only"`. UTM extraction runs in the browser when tracking WhatsApp clicks.
+- [x] **Function: `extractUtmParams`:**
   ```typescript
   export interface UtmParams {
     source?: string;
@@ -97,14 +97,14 @@ so that I can ask questions or schedule a viewing with one tap.
     };
   }
   ```
-- [ ] Export as named export.
+- [x] Export as named export.
 
 ### Task 3: Create `src/components/agent/agent-card.tsx` — Agent identity + contact display (AC: #1, #2, #3, #4, #5, #9)
 
-- [ ] Create directory `src/components/agent/` if it does not exist
-- [ ] Create the file at EXACTLY `src/components/agent/agent-card.tsx`
-- [ ] **This is a Client Component** — add `'use client'` as first line. It builds WhatsApp URLs with browser-side message context and tracks clicks.
-- [ ] **Props interface:**
+- [x] Create directory `src/components/agent/` if it does not exist
+- [x] Create the file at EXACTLY `src/components/agent/agent-card.tsx`
+- [x] **This is a Client Component** — add `'use client'` as first line. It builds WhatsApp URLs with browser-side message context and tracks clicks.
+- [x] **Props interface:**
   ```typescript
   import type { Agent } from "@/lib/db/schema/agents";
 
@@ -116,7 +116,7 @@ so that I can ask questions or schedule a viewing with one tap.
     variant?: "default" | "compact"; // default = listing detail sidebar; compact = future use
   }
   ```
-- [ ] **Layout (default variant — UX spec §AgentCard anatomy):**
+- [x] **Layout (default variant — UX spec §AgentCard anatomy):**
   ```
   <article role="article" aria-label="{t('agentCardLabel', { name: agent.name })}">
     <img src={photoUrl} alt={t('agentPhotoAlt', { name: agent.name })} />
@@ -133,9 +133,9 @@ so that I can ask questions or schedule a viewing with one tap.
     </div>
   </article>
   ```
-- [ ] **Photo:** Use `next/image` with `src={agent.photoOptimizedUrl ?? agent.photoUrl ?? '/images/agent-placeholder.jpg'}`. If photo is null/undefined, use a placeholder image at `/images/agent-placeholder.jpg` (create a simple SVG fallback — see Task 6). Sizes: `"80px"` (sidebar). Add `data-testid="agent-photo"`.
-- [ ] **Languages display:** Map `agent.languages` array to human-readable labels using `t('language.{lang}')` keys (add in Task 7). Example: `['en', 'es']` → "English, Spanish". Add `data-testid="agent-languages"`.
-- [ ] **Office affiliation:** Resolve office name by `agent.officeId`. Since `AgentCard` is passed an `Agent` object (which has `officeId` UUID), you need a way to resolve the name. **Use a lookup constants approach** — pass `officeName` as a prop OR derive it from `OFFICE_IDS` constants:
+- [x] **Photo:** Use `next/image` with `src={agent.photoOptimizedUrl ?? agent.photoUrl ?? '/images/agent-placeholder.jpg'}`. If photo is null/undefined, use a placeholder image at `/images/agent-placeholder.jpg` (create a simple SVG fallback — see Task 6). Sizes: `"80px"` (sidebar). Add `data-testid="agent-photo"`.
+- [x] **Languages display:** Map `agent.languages` array to human-readable labels using `t('language.{lang}')` keys (add in Task 7). Example: `['en', 'es']` → "English, Spanish". Add `data-testid="agent-languages"`.
+- [x] **Office affiliation:** Resolve office name by `agent.officeId`. Since `AgentCard` is passed an `Agent` object (which has `officeId` UUID), you need a way to resolve the name. **Use a lookup constants approach** — pass `officeName` as a prop OR derive it from `OFFICE_IDS` constants:
   ```typescript
   // Add officeName to props (recommended — simpler, resolved server-side in listing-detail-layout.tsx):
   interface AgentCardProps {
@@ -144,7 +144,7 @@ so that I can ask questions or schedule a viewing with one tap.
   }
   ```
   **Alternate:** The `offices.ts` constants file (`src/lib/constants/offices.ts`) has the two offices. The `officeId` UUID on `Agent` comes from the database. To avoid a second DB query, the parent (`ListingDetailLayout`) should pass `officeName` directly. See Task 5 for how `ListingDetailLayout` provides this.
-- [ ] **WhatsApp button (AC: #2, #3):**
+- [x] **WhatsApp button (AC: #2, #3):**
   - Import `buildWhatsAppMessage` and `buildWhatsAppUrl` from `@/lib/utils/whatsapp`
   - Build message: `buildWhatsAppMessage({ agentName: agent.name, propertyTitle, propertyRef, locale })`
   - Build URL: `buildWhatsAppUrl(agent.whatsapp!, message)` — guard: if `agent.whatsapp` is null/empty, hide button or disable it
@@ -154,29 +154,29 @@ so that I can ask questions or schedule a viewing with one tap.
   - Icon: WhatsApp icon (inline SVG or use a simple phone icon — do NOT install a new icon library)
   - `data-testid="agent-whatsapp-cta"`
   - On click, fire lead tracking (see Task 4)
-- [ ] **Email button (AC: #4):**
+- [x] **Email button (AC: #4):**
   - If `agent.email` is set: render as `<a href="mailto:{agent.email}?subject=...&body=...">`. Pre-fill subject: `t('emailSubject', { title: propertyTitle, ref: propertyRef })`. Pre-fill body: same template as WhatsApp but formatted for email.
   - If `agent.email` is null: render disabled button (dimmed, `aria-disabled="true"`)
   - `data-testid="agent-email-cta"`
   - Apply `bg-brand-navy` (existing design token)
-- [ ] **Transparency note (AC: #5, FR36):** Below the agent info, before the CTA buttons, add:
+- [x] **Transparency note (AC: #5, FR36):** Below the agent info, before the CTA buttons, add:
   ```tsx
   <p className="text-sm text-text-muted" data-testid="agent-transparency-note">
     {t('transparencyNote')}
   </p>
   ```
   Translation key: "This agent may use WhatsApp's built-in translation for multilingual conversations." / "Este agente puede usar la traducción integrada de WhatsApp para conversaciones multilingües."
-- [ ] **ARIA (AC: #9):** Root element is `<article role="article" aria-label={t('agentCardLabel', { name: agent.name })}>`. Agent name heading is `<h3>` (the listing detail `<article>` uses `<h1>` for title, `<h2>` for sections — agent card is a sub-section using `<h3>`).
-- [ ] **i18n:** Use `useTranslations('AgentCard')` — add namespace in Task 7.
-- [ ] **Lead tracking on WhatsApp click:** Call `trackWhatsAppClick` from Task 4 in an `onClick` handler.
+- [x] **ARIA (AC: #9):** Root element is `<article role="article" aria-label={t('agentCardLabel', { name: agent.name })}>`. Agent name heading is `<h3>` (the listing detail `<article>` uses `<h1>` for title, `<h2>` for sections — agent card is a sub-section using `<h3>`).
+- [x] **i18n:** Use `useTranslations('AgentCard')` — add namespace in Task 7.
+- [x] **Lead tracking on WhatsApp click:** Call `trackWhatsAppClick` from Task 4 in an `onClick` handler.
 
 ### Task 4: Create `src/components/lead/whatsapp-cta.tsx` — Lead tracking for WhatsApp (AC: #8)
 
-- [ ] Create the file at EXACTLY `src/components/lead/whatsapp-cta.tsx`
-- [ ] Add `'use client'` — this module contains a function that accesses `window` and dispatches browser events. While it exports a plain function (not a React component), marking it `'use client'` ensures Next.js does not attempt to run it on the server, where `window` is undefined.
-- [ ] **Purpose:** Thin wrapper that fires a lead tracking event when WhatsApp is clicked. This is the "FR54 support" referenced in AC #8 — records click source + UTM data.
-- [ ] **IMPORTANT:** Story 4.2 does NOT implement `POST /api/leads` (that is Epic 5 / Story 5.3 scope). The tracking in this story is **client-side only** — use `console.log` or `window.dispatchEvent` as a placeholder that Epic 5 will replace with the real API call.
-- [ ] **Export a `trackWhatsAppClick` function:**
+- [x] Create the file at EXACTLY `src/components/lead/whatsapp-cta.tsx`
+- [x] Add `'use client'` — this module contains a function that accesses `window` and dispatches browser events. While it exports a plain function (not a React component), marking it `'use client'` ensures Next.js does not attempt to run it on the server, where `window` is undefined.
+- [x] **Purpose:** Thin wrapper that fires a lead tracking event when WhatsApp is clicked. This is the "FR54 support" referenced in AC #8 — records click source + UTM data.
+- [x] **IMPORTANT:** Story 4.2 does NOT implement `POST /api/leads` (that is Epic 5 / Story 5.3 scope). The tracking in this story is **client-side only** — use `console.log` or `window.dispatchEvent` as a placeholder that Epic 5 will replace with the real API call.
+- [x] **Export a `trackWhatsAppClick` function:**
   ```typescript
   interface WhatsAppClickEvent {
     agentId: string;
@@ -194,8 +194,8 @@ so that I can ask questions or schedule a viewing with one tap.
     }
   }
   ```
-- [ ] Import `extractUtmParams` and `UtmParams` from `@/lib/utils/utm`.
-- [ ] In `AgentCard` (Task 3), call `trackWhatsAppClick` in the WhatsApp `<a>` tag's `onClick` handler:
+- [x] Import `extractUtmParams` and `UtmParams` from `@/lib/utils/utm`.
+- [x] In `AgentCard` (Task 3), call `trackWhatsAppClick` in the WhatsApp `<a>` tag's `onClick` handler:
   ```typescript
   onClick={() => {
     trackWhatsAppClick({
@@ -210,9 +210,9 @@ so that I can ask questions or schedule a viewing with one tap.
 
 ### Task 5: Update `src/components/listing/listing-detail-layout.tsx` — Wire in `AgentCard` (AC: #1, #6, #7)
 
-- [ ] **File:** `src/components/listing/listing-detail-layout.tsx` (MODIFY — exists from Story 4.1)
-- [ ] **CRITICAL:** Remove the `void agent;` suppression (line 43-44 in current implementation) and the TODO comment on line 195-196.
-- [ ] **Add `AgentCard` import** (lazy-load it — it's a Client Component in a Server Component context, same pattern as `PropertyGallery`):
+- [x] **File:** `src/components/listing/listing-detail-layout.tsx` (MODIFY — exists from Story 4.1)
+- [x] **CRITICAL:** Remove the `void agent;` suppression (line 43-44 in current implementation) and the TODO comment on line 195-196.
+- [x] **Add `AgentCard` import** (lazy-load it — it's a Client Component in a Server Component context, same pattern as `PropertyGallery`):
   ```typescript
   import dynamic from "next/dynamic";
   const AgentCard = dynamic(() => import("@/components/agent/agent-card").then(m => ({ default: m.AgentCard })), { ssr: false });
@@ -222,14 +222,14 @@ so that I can ask questions or schedule a viewing with one tap.
   import { AgentCard } from "@/components/agent/agent-card";
   ```
   `AgentCard` is a Client Component but can be imported directly in a Server Component — Next.js handles the boundary automatically. Only use `next/dynamic` with `ssr: false` for browser-only APIs (like Mapbox). AgentCard uses no browser-only APIs in its initial render.
-- [ ] **Resolve office name:** Query the office for the agent — use `getOfficeById` from `src/lib/db/queries/offices.ts` if it exists, OR derive from `src/lib/constants/offices.ts`. The simplest approach:
+- [x] **Resolve office name:** Query the office for the agent — use `getOfficeById` from `src/lib/db/queries/offices.ts` if it exists, OR derive from `src/lib/constants/offices.ts`. The simplest approach:
   ```typescript
   // In ListingDetailLayoutProps or in the component body:
   // agents.officeId is a UUID. Look it up against the hardcoded office constants
   // OR add a getOfficeById query. Recommendation: pass officeName as a prop derived in page.tsx
   ```
   **Recommended:** In `src/app/[locale]/property/[slug]/page.tsx`, after fetching `agent`, resolve the office name with a new query `getOfficeById`. See Task 5b below.
-- [ ] **Replace the TODO comment** with actual AgentCard usage:
+- [x] **Replace the TODO comment** with actual AgentCard usage:
   ```tsx
   {agent && (
     <AgentCard
@@ -245,7 +245,7 @@ so that I can ask questions or schedule a viewing with one tap.
   )}
   {/* Note: t() here is from getTranslations({ namespace: "ListingDetail" }) — so both 'unknownOffice' and 'noAgentAssigned' are in the ListingDetail namespace */}
   ```
-- [ ] **Also add `StickyMobileCTA`** (imported from Task 6 below):
+- [x] **Also add `StickyMobileCTA`** (imported from Task 6 below):
   ```tsx
   {agent && (
     <StickyMobileCTA
@@ -262,9 +262,9 @@ so that I can ask questions or schedule a viewing with one tap.
 
 ### Task 5b: Add `getOfficeById` query (dependency for Task 5)
 
-- [ ] **File:** `src/lib/db/queries/offices.ts` (check if file exists first — if it does, ADD to it; if not, CREATE it)
-- [ ] **Check:** Does `src/lib/db/queries/offices.ts` exist? Look at the current file listing.
-- [ ] **Add function:**
+- [x] **File:** `src/lib/db/queries/offices.ts` (check if file exists first — if it does, ADD to it; if not, CREATE it)
+- [x] **Check:** Does `src/lib/db/queries/offices.ts` exist? Look at the current file listing.
+- [x] **Add function:**
   ```typescript
   import "server-only";
   import { eq } from "drizzle-orm";
@@ -276,7 +276,7 @@ so that I can ask questions or schedule a viewing with one tap.
     return rows[0] ?? null;
   }
   ```
-- [ ] **Update `src/app/[locale]/property/[slug]/page.tsx`:** After fetching agent, also fetch office:
+- [x] **Update `src/app/[locale]/property/[slug]/page.tsx`:** After fetching agent, also fetch office:
   ```typescript
   const office = agent?.officeId ? await getOfficeById(agent.officeId) : null;
   // Then pass officeName to ListingDetailLayout:
@@ -285,9 +285,9 @@ so that I can ask questions or schedule a viewing with one tap.
 
 ### Task 6: Create `src/components/lead/sticky-mobile-cta.tsx` — Persistent mobile contact bar (AC: #6, #7)
 
-- [ ] Create the file at EXACTLY `src/components/lead/sticky-mobile-cta.tsx`
-- [ ] Add `'use client'` — uses `useRef`, `useEffect`, `useState` for IntersectionObserver
-- [ ] **Props interface:**
+- [x] Create the file at EXACTLY `src/components/lead/sticky-mobile-cta.tsx`
+- [x] Add `'use client'` — uses `useRef`, `useEffect`, `useState` for IntersectionObserver
+- [x] **Props interface:**
   ```typescript
   interface StickyMobileCTAProps {
     agentWhatsapp: string | null;
@@ -298,7 +298,7 @@ so that I can ask questions or schedule a viewing with one tap.
     locale: string;
   }
   ```
-- [ ] **IntersectionObserver logic (AC: #7 — hide when AgentCard visible):**
+- [x] **IntersectionObserver logic (AC: #7 — hide when AgentCard visible):**
   ```typescript
   const [isVisible, setIsVisible] = useState(false);
 
@@ -321,7 +321,7 @@ so that I can ask questions or schedule a viewing with one tap.
     return () => observer.disconnect();
   }, []);
   ```
-- [ ] **Layout (UX spec §StickyMobileCTA — 56px fixed bottom bar):**
+- [x] **Layout (UX spec §StickyMobileCTA — 56px fixed bottom bar):**
   ```tsx
   <div
     className={cn(
@@ -341,16 +341,16 @@ so that I can ask questions or schedule a viewing with one tap.
   - Slide-up entrance animation: `transition-transform duration-200 ease-out` + `translate-y-0` / `translate-y-full` (UX spec: "200ms ease-out")
   - Background: `bg-brand-warm` (design system warm cream token `#efece4`; UX spec refers to "cream" but the actual Tailwind token is `bg-brand-warm`)
   - WhatsApp color: `bg-brand-whatsapp` (Tailwind utility; mapped from `--color-brand-whatsapp: #128c7e`; WCAG AA verified per UX spec)
-- [ ] **`cn` utility:** Import as `import { cn } from "@/lib/utils"` — this is `src/lib/utils.ts` (a barrel export combining `clsx` + `tailwind-merge`). This is the universal pattern used by all Client Components in this project.
-- [ ] **WhatsApp button in sticky bar:** Same `buildWhatsAppMessage` + `buildWhatsAppUrl` + `trackWhatsAppClick` pattern as AgentCard. Source: `"sticky_mobile_cta"`.
-- [ ] **Email button in sticky bar:** `mailto:` link same as AgentCard.
-- [ ] `data-testid="sticky-mobile-cta"` on the container div.
-- [ ] **i18n:** Use `useTranslations('StickyMobileCTA')` — add namespace in Task 7.
-- [ ] **IMPORTANT:** Add `data-testid="agent-card"` to the root `<article>` element in `AgentCard` (Task 3) so the IntersectionObserver can find it.
+- [x] **`cn` utility:** Import as `import { cn } from "@/lib/utils"` — this is `src/lib/utils.ts` (a barrel export combining `clsx` + `tailwind-merge`). This is the universal pattern used by all Client Components in this project.
+- [x] **WhatsApp button in sticky bar:** Same `buildWhatsAppMessage` + `buildWhatsAppUrl` + `trackWhatsAppClick` pattern as AgentCard. Source: `"sticky_mobile_cta"`.
+- [x] **Email button in sticky bar:** `mailto:` link same as AgentCard.
+- [x] `data-testid="sticky-mobile-cta"` on the container div.
+- [x] **i18n:** Use `useTranslations('StickyMobileCTA')` — add namespace in Task 7.
+- [x] **IMPORTANT:** Add `data-testid="agent-card"` to the root `<article>` element in `AgentCard` (Task 3) so the IntersectionObserver can find it.
 
 ### Task 7: Add i18n keys for new components (AC: all)
 
-- [ ] **File:** `src/messages/en.json` — add new namespaces (DO NOT re-add existing keys):
+- [x] **File:** `src/messages/en.json` — add new namespaces (DO NOT re-add existing keys):
   ```json
   "AgentCard": {
     "agentCardLabel": "Listing agent: {name}",
@@ -378,7 +378,7 @@ so that I can ask questions or schedule a viewing with one tap.
     "email": "Email"
   }
   ```
-- [ ] **File:** `src/messages/es.json` — add equivalent Spanish translations:
+- [x] **File:** `src/messages/es.json` — add equivalent Spanish translations:
   ```json
   "AgentCard": {
     "agentCardLabel": "Agente a cargo: {name}",
@@ -406,16 +406,16 @@ so that I can ask questions or schedule a viewing with one tap.
     "email": "Correo"
   }
   ```
-- [ ] **ALSO update `ListingDetail` namespace** to add `unknownOffice` key (the existing `noAgentAssigned` key is already there from Story 4.1 — do NOT re-add it):
+- [x] **ALSO update `ListingDetail` namespace** to add `unknownOffice` key (the existing `noAgentAssigned` key is already there from Story 4.1 — do NOT re-add it):
   - English: `"unknownOffice": "RE/MAX Altitud"`
   - Spanish: `"unknownOffice": "RE/MAX Altitud"`
-- [ ] **DO NOT re-add** existing keys (`PropertyCard.*`, `PropertyUnavailable.*`, `UnitToggle.*`, `PropertyGallery.*`, `StickySpecsBar.*`, `Navigation.*`, and the full existing `ListingDetail.*` namespace — only ADD `unknownOffice` to it)
+- [x] **DO NOT re-add** existing keys (`PropertyCard.*`, `PropertyUnavailable.*`, `UnitToggle.*`, `PropertyGallery.*`, `StickySpecsBar.*`, `Navigation.*`, and the full existing `ListingDetail.*` namespace — only ADD `unknownOffice` to it)
 
 ### Task 8: Create agent placeholder image (AC: #1)
 
-- [ ] Create or verify `public/images/agent-placeholder.jpg` (or `.svg`) exists.
-- [ ] **Check:** Does `public/images/` directory exist? If not, create it.
-- [ ] Create a minimal SVG placeholder at `public/images/agent-placeholder.svg`:
+- [x] Create or verify `public/images/agent-placeholder.jpg` (or `.svg`) exists.
+- [x] **Check:** Does `public/images/` directory exist? If not, create it.
+- [x] Create a minimal SVG placeholder at `public/images/agent-placeholder.svg`:
   ```svg
   <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
     <circle cx="40" cy="40" r="40" fill="#E8E4DA"/>
@@ -424,13 +424,13 @@ so that I can ask questions or schedule a viewing with one tap.
   </svg>
   ```
   Use brand-warm tones that fit the design system.
-- [ ] Reference as `'/images/agent-placeholder.svg'` in `AgentCard` photo fallback.
+- [x] Reference as `'/images/agent-placeholder.svg'` in `AgentCard` photo fallback.
 
 ### Task 9: Unit tests for `AgentCard` (AC: #1, #2, #3, #4, #5, #9)
 
-- [ ] Create `tests/unit/listing/agent-card.spec.tsx` (jsdom applies from Story 4.1's vitest.config.mts update — `tests/unit/listing/**/*.spec.tsx` glob is already configured)
-- [ ] **CRITICAL — vi.mock hoisting pattern** (established in Epic 3 and all Epic 4 stories): ALL `vi.mock()` calls MUST appear BEFORE the component import. Add `// imported AFTER mocks` comment.
-- [ ] **Required mocks (hoisted before imports):**
+- [x] Create `tests/unit/listing/agent-card.spec.tsx` (jsdom applies from Story 4.1's vitest.config.mts update — `tests/unit/listing/**/*.spec.tsx` glob is already configured)
+- [x] **CRITICAL — vi.mock hoisting pattern** (established in Epic 3 and all Epic 4 stories): ALL `vi.mock()` calls MUST appear BEFORE the component import. Add `// imported AFTER mocks` comment.
+- [x] **Required mocks (hoisted before imports):**
   ```typescript
   vi.mock("next/image", () => ({
     default: ({ src, alt, "data-testid": testId, ...props }: {
@@ -458,7 +458,7 @@ so that I can ask questions or schedule a viewing with one tap.
   import { render, screen, fireEvent } from "@testing-library/react";
   import { AgentCard } from "@/components/agent/agent-card";
   ```
-- [ ] **Test fixture:**
+- [x] **Test fixture:**
   ```typescript
   const mockAgent = {
     id: "agent-uuid-1",
@@ -482,7 +482,7 @@ so that I can ask questions or schedule a viewing with one tap.
     updatedAt: new Date(),
   };
   ```
-- [ ] **Tests to write:**
+- [x] **Tests to write:**
   - `[P0]` renders `data-testid="agent-card"` element
   - `[P0]` renders agent name
   - `[P0]` renders `data-testid="agent-photo"` with correct src (photoOptimizedUrl preferred)
@@ -499,8 +499,8 @@ so that I can ask questions or schedule a viewing with one tap.
 
 ### Task 10: Unit tests for `StickyMobileCTA` (AC: #6, #7)
 
-- [ ] Create `tests/unit/listing/sticky-mobile-cta.spec.tsx`
-- [ ] **Required mocks (hoisted):**
+- [x] Create `tests/unit/listing/sticky-mobile-cta.spec.tsx`
+- [x] **Required mocks (hoisted):**
   ```typescript
   vi.mock("next-intl", () => ({
     useTranslations: vi.fn(() => (key: string) => key),
@@ -524,7 +524,7 @@ so that I can ask questions or schedule a viewing with one tap.
     unobserve: vi.fn(),
   })));
   ```
-- [ ] **Tests to write:**
+- [x] **Tests to write:**
   - `[P0]` renders `data-testid="sticky-mobile-cta"` element
   - `[P0]` initially not visible (translate-y-full class) before IntersectionObserver fires
   - `[P1]` shows WhatsApp button when agentWhatsapp is provided
@@ -536,8 +536,8 @@ so that I can ask questions or schedule a viewing with one tap.
 
 ### Task 11: Unit tests for whatsapp.ts utility (AC: #2, #3)
 
-- [ ] Create `tests/unit/listing/whatsapp-utils.spec.ts` (`.ts`, no JSX — pure function tests)
-- [ ] **Tests to write:**
+- [x] Create `tests/unit/listing/whatsapp-utils.spec.ts` (`.ts`, no JSX — pure function tests)
+- [x] **Tests to write:**
   - `[P0]` English message format: "Hi [name], I'm interested in..."
   - `[P0]` Spanish message format: "Hola [name], me interesa la propiedad..."
   - `[P0]` buildWhatsAppUrl returns correct wa.me URL with encoded message
@@ -546,11 +546,11 @@ so that I can ask questions or schedule a viewing with one tap.
 
 ### Task 12: CI verification (AC: all)
 
-- [ ] `npm run typecheck` → 0 new errors
-- [ ] `npm run lint` → 0 errors
-- [ ] `npm run format:check` → pass
-- [ ] `npm run build` → pass
-- [ ] `npm test` → all existing tests pass (614+ baseline from Story 4.1) + new agent card / sticky CTA / whatsapp utils tests pass
+- [x] `npm run typecheck` → 0 new errors
+- [x] `npm run lint` → 0 errors
+- [x] `npm run format:check` → pass
+- [x] `npm run build` → pass
+- [x] `npm test` → all existing tests pass (614+ baseline from Story 4.1) + new agent card / sticky CTA / whatsapp utils tests pass
 
 ---
 
@@ -705,7 +705,48 @@ From `deferred-work.md`:
 
 ## Dev Agent Record
 
+### Implementation Plan
+
+Implemented all 12 tasks per story spec:
+- Task 1: Created `src/lib/utils/whatsapp.ts` with `buildWhatsAppMessage` and `buildWhatsAppUrl` pure functions.
+- Task 2: Created `src/lib/utils/utm.ts` with `extractUtmParams` browser-safe function.
+- Task 3: Created `src/components/agent/agent-card.tsx` Client Component with photo, languages, office, WhatsApp/email CTAs, transparency note, and ARIA semantics.
+- Task 4: Created `src/components/lead/whatsapp-cta.tsx` with `trackWhatsAppClick` placeholder (browser custom event dispatch per spec).
+- Task 5/5b: Updated `listing-detail-layout.tsx` to wire in AgentCard + StickyMobileCTA. Created `src/lib/db/queries/offices.ts` with `getOfficeById`. Updated `page.tsx` to resolve officeName.
+- Task 6: Created `src/components/lead/sticky-mobile-cta.tsx` with IntersectionObserver, 56px fixed bottom bar, iOS safe-area, slide animation.
+- Task 7: Added `AgentCard`, `StickyMobileCTA` i18n namespaces to `en.json` and `es.json`. Added `unknownOffice` key to `ListingDetail` namespace.
+- Task 8: Created `public/images/agent-placeholder.svg` with brand-warm tones.
+- Tasks 9-11: Enabled ATDD test scaffolds by removing `test.skip()`. Added proper `cleanup()` calls. All 27 new tests pass.
+- Task 12: CI verified — typecheck 0 errors, lint 0 errors, format pass, build pass, 641 tests pass (27 new above 614 baseline).
+
+### Completion Notes
+
+- All 12 tasks complete, all 9 acceptance criteria satisfied.
+- 641 tests pass (27 new: 14 AgentCard + 8 StickyMobileCTA + 5 whatsapp-utils).
+- Build passes, typecheck clean, lint 0 errors, format clean.
+- WhatsApp color token `bg-brand-whatsapp` (#128c7e) used for buttons per WCAG AA spec.
+- Lead tracking uses browser custom event placeholder (TODO Story 5.3 noted in code).
+- IntersectionObserver always created and disconnected on unmount to satisfy test contract.
+
+### File List
+
+- src/lib/utils/whatsapp.ts (NEW)
+- src/lib/utils/utm.ts (NEW)
+- src/components/agent/agent-card.tsx (NEW)
+- src/components/lead/whatsapp-cta.tsx (NEW)
+- src/components/lead/sticky-mobile-cta.tsx (NEW)
+- src/lib/db/queries/offices.ts (NEW)
+- src/components/listing/listing-detail-layout.tsx (MODIFIED)
+- src/app/[locale]/property/[slug]/page.tsx (MODIFIED)
+- src/messages/en.json (MODIFIED)
+- src/messages/es.json (MODIFIED)
+- public/images/agent-placeholder.svg (NEW)
+- tests/unit/listing/agent-card.spec.tsx (MODIFIED — enabled from ATDD scaffold)
+- tests/unit/listing/sticky-mobile-cta.spec.tsx (MODIFIED — enabled from ATDD scaffold)
+- tests/unit/listing/whatsapp-utils.spec.ts (MODIFIED — enabled from ATDD scaffold)
+
 ### Change Log
 
 - 2026-05-02: Story 4.2 created — agent card and contact CTAs (Date: 2026-05-02)
+- 2026-05-02: Story 4.2 implemented — all tasks complete, status set to review (Date: 2026-05-02)
 - 2026-05-02: ATDD red-phase test scaffolds generated (22 unit + 12 E2E, all test.skip())
