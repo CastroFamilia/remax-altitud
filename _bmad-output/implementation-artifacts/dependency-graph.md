@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-02T18:45:00-06:00_
+_Last updated: 2026-05-02T21:00:00-06:00_
 
 ## Stories
 
@@ -27,11 +27,11 @@ _Last updated: 2026-05-02T18:45:00-06:00_
 | 3.6   | 3    | Mobile Pull-Up Sheet | done | #90 | #128 | merged | 3.1, 3.5 | ✅ Yes (done) |
 | 3.7   | 3    | Unit Conversion & Price Display | done | #91 | #129 | merged | 3.5 | ✅ Yes (done) |
 | 3.8   | 3    | No-Results, Hidden Listings & Near Me | done | #92 | #130 | merged | 3.3 | ✅ Yes (done) |
-| 4.1   | 4    | Listing Detail Page & Photo Gallery | backlog | #93 | — | — | none | ✅ Yes |
-| 4.2   | 4    | Agent Card & Contact CTAs | backlog | #94 | — | — | 4.1 | ❌ No (4.1 not merged) |
-| 4.3   | 4    | Agent Profile Pages | backlog | #95 | — | — | 4.2 | ❌ No (4.2 not merged) |
-| 4.4   | 4    | SEO Architecture & WordPress Redirects | backlog | #96 | — | — | 4.1 | ❌ No (4.1 not merged) |
-| 4.5   | 4    | Similar Properties & Cross-Linking | backlog | #97 | — | — | 4.1, 4.3 | ❌ No (4.1 not merged) |
+| 4.1   | 4    | Listing Detail Page & Photo Gallery | done | #93 | #131 | merged | none | ✅ Yes (done) |
+| 4.2   | 4    | Agent Card & Contact CTAs | done | #94 | #132 | merged | 4.1 | ✅ Yes (done) |
+| 4.3   | 4    | Agent Profile Pages | backlog | #95 | — | — | 4.2 | ✅ Yes |
+| 4.4   | 4    | SEO Architecture & WordPress Redirects | backlog | #96 | — | — | 4.1 | ✅ Yes |
+| 4.5   | 4    | Similar Properties & Cross-Linking | backlog | #97 | — | — | 4.1, 4.3 | ❌ No (4.3 not merged) |
 | 5.1   | 5    | Seller Landing Page & List With Us Form | backlog | #98 | — | — | none | ❌ No (epic 4 not complete) |
 | 5.2   | 5    | CMA Request Form | backlog | #99 | — | — | 5.1 | ❌ No (epic 4 not complete) |
 | 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | backlog | #100 | — | — | 5.1 | ❌ No (epic 4 not complete) |
@@ -106,7 +106,8 @@ _Last updated: 2026-05-02T18:45:00-06:00_
 - Epic 2 is fully complete (all 7 stories done and merged). PR #121 for 2.7 merged 2026-04-26.
 - Epic 2 complete: PRs #66, #67, #117, #118, #119, #120, #121 all merged.
 - Epic 3 is fully complete (all 8 stories done and merged). PRs #122, #123, #125, #126, #127, #128, #129, #130 all merged.
-- Epic 4 (Listing Detail & Agent Profiles) is now the active epic. Story 4.1 is Ready to Work; 4.2–4.5 depend on 4.1.
+- Epic 4 (Listing Detail & Agent Profiles) is now the active epic. Stories 4.1 and 4.2 are done and merged.
 - Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
 - Updated 2026-05-02 (batch 2): PRs #128 (3.6), #129 (3.7), #130 (3.8) confirmed merged. Epic 3 marked done. Epic 4 stories now unblocked (4.1 Ready to Work).
+- Updated 2026-05-02 (batch 4): PR #131 (4.1) merged 2026-05-02. PR #132 (4.2) merged 2026-05-03. Stories 4.3 and 4.4 are now unblocked (Ready to Work). Story 4.5 still blocked on 4.3 not merged.
 - No open PRs. No stale worktrees.

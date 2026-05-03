@@ -478,6 +478,33 @@
       "pt": "Portugués"
     }
   },
+  "AgentProfile": {
+    "listings": "propiedades",
+    "whatsapp": "WhatsApp",
+    "email": "Correo",
+    "generalInquiryEn": "Hola {name}, me gustaría obtener más información sobre sus propiedades.",
+    "noListings": "{name} no tiene propiedades activas en este momento.",
+    "listingsHeading": "Propiedades de {name}",
+    "noAgentsMatch": "Ningún agente coincide con tus filtros.",
+    "clearFilters": "Limpiar filtros",
+    "indexPageTitle": "Conoce a Nuestros Agentes",
+    "indexPageDescription": "Explora los agentes de RE/MAX Altitud — encuentra uno que hable tu idioma y conozca tu área.",
+    "filterByOffice": "Filtrar por oficina",
+    "filterByLanguage": "Filtrar por idioma",
+    "allOffices": "Todas las oficinas",
+    "allLanguages": "Todos los idiomas",
+    "defaultMetaDescription": "Ver las propiedades e información de contacto de {name} en RE/MAX Altitud.",
+    "agentNoLongerActive": "Este agente ya no está activo.",
+    "backToAgents": "Ver todos los agentes",
+    "language": {
+      "en": "Inglés",
+      "es": "Español",
+      "de": "Alemán",
+      "fr": "Francés",
+      "it": "Italiano",
+      "pt": "Portugués"
+    }
+  },
   "StickyMobileCTA": {
     "stickyCtaLabel": "Contactar agente",
     "whatsapp": "WhatsApp",
