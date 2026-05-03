@@ -20,8 +20,10 @@ interface AgentCardProps {
   propertyRef: string; // property's apiId — used in WhatsApp message, e.g. "ALT-12345"
   locale: string;
   officeName: string; // resolved server-side and passed as prop
-  variant?: "default" | "compact"; // default = listing detail sidebar; compact = future use
 }
+
+// Known language code → i18n key. Anything else falls back to upper-cased code.
+const KNOWN_LANGUAGES = new Set(["en", "es", "de", "fr", "it", "pt"]);
 
 // WhatsApp icon as inline SVG (no external icon library installed)
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -47,15 +49,22 @@ export function AgentCard({
 }: AgentCardProps) {
   const t = useTranslations("AgentCard");
 
-  // Photo fallback chain: photoOptimizedUrl → photoUrl → placeholder
-  const photoSrc = agent.photoOptimizedUrl ?? agent.photoUrl ?? "/images/agent-placeholder.svg";
+  // Photo fallback chain: photoOptimizedUrl → photoUrl → placeholder.
+  // Treat empty strings as missing — next/image throws on src="".
+  const photoSrc =
+    (agent.photoOptimizedUrl && agent.photoOptimizedUrl.length > 0
+      ? agent.photoOptimizedUrl
+      : null) ??
+    (agent.photoUrl && agent.photoUrl.length > 0 ? agent.photoUrl : null) ??
+    "/images/agent-placeholder.svg";
 
-  // Build WhatsApp URL (only when whatsapp is set)
-  const whatsappMessage = agent.whatsapp
+  // Build WhatsApp URL (only when whatsapp is set; sanitize to digits-only for wa.me).
+  const whatsappDigits = agent.whatsapp ? agent.whatsapp.replace(/\D/g, "") : "";
+  const whatsappMessage = whatsappDigits
     ? buildWhatsAppMessage({ agentName: agent.name, propertyTitle, propertyRef, locale })
     : null;
   const whatsappUrl =
-    agent.whatsapp && whatsappMessage ? buildWhatsAppUrl(agent.whatsapp, whatsappMessage) : null;
+    whatsappDigits && whatsappMessage ? buildWhatsAppUrl(whatsappDigits, whatsappMessage) : null;
 
   // Build mailto URL
   const emailSubject = agent.email
@@ -67,15 +76,17 @@ export function AgentCard({
       ? `mailto:${agent.email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
       : null;
 
-  // Languages: map locale codes to human-readable labels via i18n keys
-  const languages = (agent.languages as string[])
-    .map((lang) => {
-      try {
-        return t(`language.${lang}` as Parameters<typeof t>[0]);
-      } catch {
-        return lang.toUpperCase();
-      }
-    })
+  // Languages: map locale codes to human-readable labels via i18n keys.
+  // Guard against null/non-array values from the DB and unknown codes.
+  const languageCodes: string[] = Array.isArray(agent.languages)
+    ? (agent.languages as string[])
+    : [];
+  const languages = languageCodes
+    .map((lang) =>
+      KNOWN_LANGUAGES.has(lang)
+        ? t(`language.${lang}` as Parameters<typeof t>[0])
+        : lang.toUpperCase(),
+    )
     .join(", ");
 
   function handleWhatsAppClick() {

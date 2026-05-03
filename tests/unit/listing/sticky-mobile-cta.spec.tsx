@@ -60,6 +60,7 @@ import { StickyMobileCTA } from "@/components/lead/sticky-mobile-cta";
 // ---------------------------------------------------------------------------
 
 const defaultProps = {
+  agentId: "agent-uuid-1",
   agentWhatsapp: "50688000000",
   agentEmail: "agent@remax-altitud.cr",
   agentName: "Emma Smith",
@@ -97,26 +98,25 @@ describe("Story 4.2: StickyMobileCTA component", () => {
 
   it("[P1] 4.2-STICKY-003: shows WhatsApp button when agentWhatsapp is provided", () => {
     render(<StickyMobileCTA {...defaultProps} />);
-    // WhatsApp CTA should be present when whatsapp number is set
+    // The bar starts off-screen with aria-hidden=true, so links are hidden
+    // from the accessibility tree. Use { hidden: true } to include them.
     const whatsappLinks = screen
-      .getAllByRole("link")
+      .getAllByRole("link", { hidden: true })
       .filter((el) => el.getAttribute("href")?.includes("wa.me"));
     expect(whatsappLinks.length).toBeGreaterThan(0);
   });
 
   it("[P1] 4.2-STICKY-004: shows Email button when agentEmail is provided", () => {
     render(<StickyMobileCTA {...defaultProps} />);
-    // Email CTA should be present when email is set
     const emailLinks = screen
-      .getAllByRole("link")
+      .getAllByRole("link", { hidden: true })
       .filter((el) => el.getAttribute("href")?.startsWith("mailto:"));
     expect(emailLinks.length).toBeGreaterThan(0);
   });
 
   it("[P1] 4.2-STICKY-005: hides WhatsApp button when agentWhatsapp is null", () => {
     render(<StickyMobileCTA {...defaultProps} agentWhatsapp={null} />);
-    // No wa.me links when whatsapp is null
-    const allLinks = screen.queryAllByRole("link");
+    const allLinks = screen.queryAllByRole("link", { hidden: true });
     const whatsappLinks = allLinks.filter((el) =>
       el.getAttribute("href")?.includes("wa.me"),
     );
@@ -125,8 +125,7 @@ describe("Story 4.2: StickyMobileCTA component", () => {
 
   it("[P1] 4.2-STICKY-006: hides Email button when agentEmail is null", () => {
     render(<StickyMobileCTA {...defaultProps} agentEmail={null} />);
-    // No mailto links when email is null
-    const allLinks = screen.queryAllByRole("link");
+    const allLinks = screen.queryAllByRole("link", { hidden: true });
     const emailLinks = allLinks.filter((el) =>
       el.getAttribute("href")?.startsWith("mailto:"),
     );

@@ -16,6 +16,7 @@ import { extractUtmParams } from "@/lib/utils/utm";
 import { trackWhatsAppClick } from "@/components/lead/whatsapp-cta";
 
 interface StickyMobileCTAProps {
+  agentId: string;
   agentWhatsapp: string | null;
   agentEmail: string | null;
   agentName: string;
@@ -40,6 +41,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
 }
 
 export function StickyMobileCTA({
+  agentId,
   agentWhatsapp,
   agentEmail,
   agentName,
@@ -94,7 +96,7 @@ export function StickyMobileCTA({
 
   function handleWhatsAppClick() {
     trackWhatsAppClick({
-      agentId: agentName, // sticky bar doesn't have agentId — use name as identifier
+      agentId,
       propertyRef,
       locale,
       source: "sticky_mobile_cta",
@@ -104,12 +106,14 @@ export function StickyMobileCTA({
 
   return (
     <div
+      role="region"
       className={cn(
         "fixed bottom-0 left-0 right-0 z-50 flex h-14 items-center justify-center gap-2 border-t border-brand-warm bg-brand-warm px-4 pb-[env(safe-area-inset-bottom)] transition-transform duration-200 ease-out md:hidden",
         isVisible ? "translate-y-0" : "translate-y-full",
       )}
       data-testid="sticky-mobile-cta"
       aria-label={t("stickyCtaLabel")}
+      aria-hidden={!isVisible}
     >
       {whatsappUrl && (
         <a
@@ -117,6 +121,7 @@ export function StickyMobileCTA({
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleWhatsAppClick}
+          tabIndex={isVisible ? 0 : -1}
           className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-brand-whatsapp px-4 py-2 text-sm font-semibold text-white"
         >
           <WhatsAppIcon className="h-5 w-5" />
@@ -126,6 +131,7 @@ export function StickyMobileCTA({
       {emailUrl && (
         <a
           href={emailUrl}
+          tabIndex={isVisible ? 0 : -1}
           className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-brand-navy px-4 py-2 text-sm font-semibold text-white"
         >
           {t("email")}

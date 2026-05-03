@@ -26,7 +26,11 @@ export function buildWhatsAppMessage(opts: WhatsAppMessageOptions): string {
 /**
  * Builds a wa.me URL with the message URL-encoded.
  * `whatsapp` must be E.164 digits only (e.g. "50627710000").
+ * Strips any non-digit characters defensively. Returns `null` if no
+ * digits remain — the caller is expected to guard the link against null.
  */
-export function buildWhatsAppUrl(whatsapp: string, message: string): string {
-  return `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`;
+export function buildWhatsAppUrl(whatsapp: string, message: string): string | null {
+  const digits = whatsapp.replace(/\D/g, "");
+  if (!digits) return null;
+  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }

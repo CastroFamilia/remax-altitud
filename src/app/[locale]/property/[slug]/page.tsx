@@ -136,7 +136,7 @@ export default async function PropertyPage({
       property={property}
       agent={agent}
       locale={locale}
-      officeName={office?.name ?? undefined}
+      officeName={office?.name}
     />
   );
 }

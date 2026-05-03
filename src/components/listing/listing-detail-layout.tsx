@@ -50,7 +50,13 @@ export async function ListingDetailLayout({
 }: ListingDetailLayoutProps) {
   const t = await getTranslations({ locale, namespace: "ListingDetail" });
 
-  const title = locale === "es" ? property.titleEs : property.titleEn;
+  // Locale-aware title with cross-locale fallback so the WhatsApp/email
+  // pre-populated message never references an empty title when one locale is missing.
+  const title =
+    (locale === "es" ? property.titleEs : property.titleEn) ??
+    property.titleEn ??
+    property.titleEs ??
+    "";
   const description = locale === "es" ? property.descriptionEs : property.descriptionEn;
   const images = (property.images as unknown as OptimizedImage[]) ?? [];
 
@@ -223,6 +229,7 @@ export async function ListingDetailLayout({
       {/* Sticky mobile CTA bar — 56px fixed bottom bar, mobile-only (Story 4.2, AC #6/#7) */}
       {agent && (
         <StickyMobileCTA
+          agentId={agent.id}
           agentWhatsapp={agent.whatsapp ?? null}
           agentEmail={agent.email ?? null}
           agentName={agent.name}
