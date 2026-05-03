@@ -2,8 +2,8 @@
  * Story 4.5: Similar Properties & Cross-Linking
  * Component: src/components/listing/similar-properties.tsx
  *
- * TDD Phase: RED — all tests are it.skip() until implementation is done.
- * Remove it.skip() per test when implementing to verify green phase.
+ * TDD Phase: RED — all tests are it() until implementation is done.
+ * Remove it() per test when implementing to verify green phase.
  *
  * Covers:
  *   AC #1  — "Similar Properties" section appears with horizontal carousel of PropertyCards
@@ -134,7 +134,7 @@ async function renderSimilarProperties(
 describe("Story 4.5: SimilarProperties component", () => {
   // [P0] Core rendering — carousel when properties are present
 
-  it.skip(
+  it(
     "[P0] 4.5-COMP-001: renders data-testid='similar-properties-carousel' when properties are provided (AC #1)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented
@@ -145,7 +145,7 @@ describe("Story 4.5: SimilarProperties component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.5-COMP-002: renders the correct number of PropertyCard elements (AC #1, #6)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented
@@ -156,7 +156,7 @@ describe("Story 4.5: SimilarProperties component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.5-COMP-003: renders data-testid='similar-properties-empty' when properties array is empty (AC #7)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented
@@ -167,7 +167,7 @@ describe("Story 4.5: SimilarProperties component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.5-COMP-004: renders data-testid='similar-browse-cta' link in empty state (AC #7)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented
@@ -181,7 +181,7 @@ describe("Story 4.5: SimilarProperties component", () => {
 
   // [P1] i18n and accessibility
 
-  it.skip(
+  it(
     "[P1] 4.5-COMP-005: heading text matches i18n key 'heading' (AC #1)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented
@@ -193,7 +193,7 @@ describe("Story 4.5: SimilarProperties component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.5-COMP-006: does not render similar-properties-empty when properties are present (AC #7 negative)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented
@@ -204,7 +204,7 @@ describe("Story 4.5: SimilarProperties component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.5-COMP-007: does not render PropertyCards in empty state (AC #7 negative)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented
@@ -217,7 +217,7 @@ describe("Story 4.5: SimilarProperties component", () => {
 
   // [P2] Layout and CSS classes
 
-  it.skip(
+  it(
     "[P2] 4.5-COMP-008: carousel container has overflow-x-auto and snap-x classes (AC #5)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented
@@ -231,7 +231,7 @@ describe("Story 4.5: SimilarProperties component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.5-COMP-009: aria-labelledby on section matches id on heading (accessibility, AC #1)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented
@@ -246,7 +246,7 @@ describe("Story 4.5: SimilarProperties component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.5-COMP-010: renders gracefully with 1 property (AC #7 — fewer than 3)",
     async () => {
       // THIS TEST WILL FAIL — SimilarProperties component not yet implemented

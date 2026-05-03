@@ -2,8 +2,8 @@
  * Story 4.5: Similar Properties & Cross-Linking
  * Module: src/lib/db/queries/properties.ts — getSimilarPropertiesRanked
  *
- * TDD Phase: RED — all tests are it.skip() until implementation is done.
- * Remove it.skip() per test when implementing to verify green phase.
+ * TDD Phase: RED — all tests are it() until implementation is done.
+ * Remove it() per test when implementing to verify green phase.
  *
  * Covers:
  *   AC #2  — Similar properties selected based on: same area + similar price range (±20%)
@@ -98,7 +98,7 @@ describe("Story 4.5: getSimilarPropertiesRanked — similarity algorithm", () =>
 
   // [P0] Core algorithm — same area priority
 
-  it.skip(
+  it(
     "[P0] 4.5-UNIT-001: returns listings from same area first when mixed area input (AC #2, R-011)",
     async () => {
       // THIS TEST WILL FAIL — getSimilarPropertiesRanked not yet implemented
@@ -145,7 +145,7 @@ describe("Story 4.5: getSimilarPropertiesRanked — similarity algorithm", () =>
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.5-UNIT-002: filters by similar price range ±20% — returns $190k and $200k but not $300k (AC #2, R-011)",
     async () => {
       // THIS TEST WILL FAIL — getSimilarPropertiesRanked not yet implemented
@@ -200,7 +200,7 @@ describe("Story 4.5: getSimilarPropertiesRanked — similarity algorithm", () =>
 
   // [P1] Exclusion and limit
 
-  it.skip(
+  it(
     "[P1] 4.5-UNIT-003: excludes the current property slug from results (AC #2)",
     async () => {
       // THIS TEST WILL FAIL — getSimilarPropertiesRanked not yet implemented
@@ -240,7 +240,7 @@ describe("Story 4.5: getSimilarPropertiesRanked — similarity algorithm", () =>
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.5-UNIT-004: falls back to any visible properties if no same-area results exist (AC #2)",
     async () => {
       // THIS TEST WILL FAIL — getSimilarPropertiesRanked not yet implemented
@@ -284,7 +284,7 @@ describe("Story 4.5: getSimilarPropertiesRanked — similarity algorithm", () =>
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.5-UNIT-005: returns at most `limit` results (default limit is 4) (AC #2)",
     async () => {
       // THIS TEST WILL FAIL — getSimilarPropertiesRanked not yet implemented
@@ -321,7 +321,7 @@ describe("Story 4.5: getSimilarPropertiesRanked — similarity algorithm", () =>
 
   // [P2] Image mapping
 
-  it.skip(
+  it(
     "[P2] 4.5-UNIT-006: maps DB images { src } to PropertySearchItem { url } correctly (AC #2)",
     async () => {
       // THIS TEST WILL FAIL — getSimilarPropertiesRanked not yet implemented

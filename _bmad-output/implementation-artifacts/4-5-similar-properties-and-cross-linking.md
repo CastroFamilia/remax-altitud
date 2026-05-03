@@ -1,6 +1,6 @@
 # Story 4.5: Similar Properties & Cross-Linking
 
-**Status:** ready-for-dev
+**Status:** review
 **GH Issue:** #97
 **Epic:** 4 — Listing Detail & Agent Profiles
 **Story Key:** 4-5-similar-properties-and-cross-linking
@@ -40,9 +40,9 @@ So that I can compare options and discover alternatives without going back to se
 
 ### Task 1: Enhance `getSimilarProperties` in `src/lib/db/queries/properties.ts` — Improve similarity ranking (AC: #2)
 
-- [ ] **File:** `src/lib/db/queries/properties.ts` — MODIFY (exists; `getSimilarProperties` is already defined at line ~318)
-- [ ] **CRITICAL:** The existing `getSimilarProperties(areaSlug, excludeSlug, limit)` only filters by area and is used by the unavailable-property page. This story adds a NEW, richer overload for use on the listing detail page. Do NOT break the existing signature — the `PropertyUnavailable` page on `page.tsx` calls it with the 3-arg form.
-- [ ] **Add a new function** `getSimilarPropertiesRanked` with the following signature:
+- [x] **File:** `src/lib/db/queries/properties.ts` — MODIFY (exists; `getSimilarProperties` is already defined at line ~318)
+- [x] **CRITICAL:** The existing `getSimilarProperties(areaSlug, excludeSlug, limit)` only filters by area and is used by the unavailable-property page. This story adds a NEW, richer overload for use on the listing detail page. Do NOT break the existing signature — the `PropertyUnavailable` page on `page.tsx` calls it with the 3-arg form.
+- [x] **Add a new function** `getSimilarPropertiesRanked` with the following signature:
   ```typescript
   /**
    * Returns similar properties ranked by: same area (priority 1) →
@@ -58,7 +58,7 @@ So that I can compare options and discover alternatives without going back to se
     limit?: number;
   }): Promise<PropertySearchItem[]>
   ```
-- [ ] **Similarity ranking pseudocode (implement exactly):**
+- [x] **Similarity ranking pseudocode (implement exactly):**
   ```
   STEP 1 — Same area, same type, similar price (±20%):
     WHERE isVisible = true
@@ -95,18 +95,18 @@ So that I can compare options and discover alternatives without going back to se
 
   RETURN step1 + step2 + step3 + step4 (concatenated, deduplicated)
   ```
-- [ ] **Return type:** `PropertySearchItem[]` — same shape as what `PropertyCard` consumes.
-- [ ] **CRITICAL — PropertySearchItem shape check:** The `PropertySearchItem` type in `src/types/search.ts` has `images: { url: string; alt?: string }[]`. However, the DB stores images as `OptimizedImage[]` (`{ src: string; ... }`). You must map `src → url` when converting DB rows to `PropertySearchItem`. Look at how search queries handle this mapping (Epic 3, Story 3.1/3.5).
-- [ ] **Drizzle tip for ABS ordering:** Drizzle ORM v0.30+ supports `sql\`ABS(${properties.priceUsd} - ${opts.priceUsd})\`` as an order expression via the `sql` template tag from `drizzle-orm`. Import: `import { sql } from "drizzle-orm"`.
-- [ ] **No more than 4 DB queries total** (steps 1–4 above). Each step short-circuits if count is already at `limit` — use `if (results.length >= limit) return results`.
-- [ ] **Default limit:** 4 cards (visible in carousel without scrolling on desktop 1280px).
-- [ ] Export as named export `getSimilarPropertiesRanked`.
+- [x] **Return type:** `PropertySearchItem[]` — same shape as what `PropertyCard` consumes.
+- [x] **CRITICAL — PropertySearchItem shape check:** The `PropertySearchItem` type in `src/types/search.ts` has `images: { url: string; alt?: string }[]`. However, the DB stores images as `OptimizedImage[]` (`{ src: string; ... }`). You must map `src → url` when converting DB rows to `PropertySearchItem`. Look at how search queries handle this mapping (Epic 3, Story 3.1/3.5).
+- [x] **Drizzle tip for ABS ordering:** Drizzle ORM v0.30+ supports `sql\`ABS(${properties.priceUsd} - ${opts.priceUsd})\`` as an order expression via the `sql` template tag from `drizzle-orm`. Import: `import { sql } from "drizzle-orm"`.
+- [x] **No more than 4 DB queries total** (steps 1–4 above). Each step short-circuits if count is already at `limit` — use `if (results.length >= limit) return results`.
+- [x] **Default limit:** 4 cards (visible in carousel without scrolling on desktop 1280px).
+- [x] Export as named export `getSimilarPropertiesRanked`.
 
 ### Task 2: Create `src/components/listing/similar-properties.tsx` — Carousel section (AC: #1, #5, #6, #7)
 
-- [ ] Create the file at EXACTLY `src/components/listing/similar-properties.tsx`
-- [ ] **This is a Server Component** — NO `'use client'`. It receives pre-fetched data via props (data fetched in parent `ListingDetailLayout`). The carousel interactivity (horizontal scroll) is handled entirely via CSS — no JS needed.
-- [ ] **Props interface:**
+- [x] Create the file at EXACTLY `src/components/listing/similar-properties.tsx`
+- [x] **This is a Server Component** — NO `'use client'`. It receives pre-fetched data via props (data fetched in parent `ListingDetailLayout`). The carousel interactivity (horizontal scroll) is handled entirely via CSS — no JS needed.
+- [x] **Props interface:**
   ```typescript
   import type { PropertySearchItem } from "@/types/search";
 
@@ -116,7 +116,7 @@ So that I can compare options and discover alternatives without going back to se
     currentPropertySlug: string; // for deduplication safety
   }
   ```
-- [ ] **Empty state (AC: #7):** If `properties.length === 0`, render a "Browse all properties" CTA:
+- [x] **Empty state (AC: #7):** If `properties.length === 0`, render a "Browse all properties" CTA:
   ```tsx
   if (properties.length === 0) {
     return (
@@ -129,7 +129,7 @@ So that I can compare options and discover alternatives without going back to se
     );
   }
   ```
-- [ ] **Carousel layout — CSS snap (no JS carousel library) (AC: #5):**
+- [x] **Carousel layout — CSS snap (no JS carousel library) (AC: #5):**
   ```tsx
   <section
     aria-labelledby="similar-heading"
@@ -158,22 +158,22 @@ So that I can compare options and discover alternatives without going back to se
     <p className="sr-only">{t('keyboardHint')}</p>
   </section>
   ```
-- [ ] **Import `PropertyCard`** from `@/components/property/property-card` — static import (Server Component calling Client Component is fine per Next.js App Router pattern).
-- [ ] **Import `Link`** from `@/i18n/navigation` — this is the intl-aware Link used throughout the project (confirmed in other components).
-- [ ] **i18n:** Use `getTranslations({ locale, namespace: 'SimilarProperties' })` — this is a Server Component so use `getTranslations` (not `useTranslations`). Add namespace in Task 5.
-- [ ] **`data-testid` contracts (CANNOT be renamed):**
+- [x] **Import `PropertyCard`** from `@/components/property/property-card` — static import (Server Component calling Client Component is fine per Next.js App Router pattern).
+- [x] **Import `Link`** from `@/i18n/navigation` — this is the intl-aware Link used throughout the project (confirmed in other components).
+- [x] **i18n:** Use `getTranslations({ locale, namespace: 'SimilarProperties' })` — this is a Server Component so use `getTranslations` (not `useTranslations`). Add namespace in Task 5.
+- [x] **`data-testid` contracts (CANNOT be renamed):**
   - `data-testid="similar-properties-carousel"` — the section container when properties are present
   - `data-testid="similar-properties-empty"` — the section container when no properties found
   - `data-testid="similar-browse-cta"` — the fallback CTA link
-- [ ] **NO Radix UI Carousel** — the simple CSS-snap approach is sufficient and adds zero JS bundle weight. Radix Carousel would add ~8KB to the listing page bundle — skip it.
-- [ ] **Performance (AC: #8):** This component is a Server Component with no lazy-loading needed internally. The Suspense boundary is added in the parent (Task 3). Do NOT add `'use client'` or dynamic imports here.
+- [x] **NO Radix UI Carousel** — the simple CSS-snap approach is sufficient and adds zero JS bundle weight. Radix Carousel would add ~8KB to the listing page bundle — skip it.
+- [x] **Performance (AC: #8):** This component is a Server Component with no lazy-loading needed internally. The Suspense boundary is added in the parent (Task 3). Do NOT add `'use client'` or dynamic imports here.
 
 ### Task 3: Create `src/components/listing/similar-properties-loader.tsx` — Suspense wrapper for LCP isolation (AC: #8)
 
-- [ ] Create the file at EXACTLY `src/components/listing/similar-properties-loader.tsx`
-- [ ] **This is a Server Component** — NO `'use client'`.
-- [ ] **Purpose:** Wraps the data fetch + `SimilarProperties` render in a React `<Suspense>` boundary so LCP (the gallery hero) resolves before similar properties data is fetched. The carousel is below the fold — it must NOT block the critical rendering path.
-- [ ] **Pattern (same as `PropertyGalleryLoader` pattern established in Story 4.1 — but for Server Components using Suspense async data fetching):**
+- [x] Create the file at EXACTLY `src/components/listing/similar-properties-loader.tsx`
+- [x] **This is a Server Component** — NO `'use client'`.
+- [x] **Purpose:** Wraps the data fetch + `SimilarProperties` render in a React `<Suspense>` boundary so LCP (the gallery hero) resolves before similar properties data is fetched. The carousel is below the fold — it must NOT block the critical rendering path.
+- [x] **Pattern (same as `PropertyGalleryLoader` pattern established in Story 4.1 — but for Server Components using Suspense async data fetching):**
   ```tsx
   import { Suspense } from "react";
   import { SimilarProperties } from "./similar-properties";
@@ -216,13 +216,13 @@ So that I can compare options and discover alternatives without going back to se
     );
   }
   ```
-- [ ] **Why this pattern:** In Next.js App Router, wrapping an async Server Component in `<Suspense>` defers its rendering until the async work resolves, without blocking parent page streaming. This keeps TTFB and LCP fast for the gallery + specs (above the fold) while the similar properties fetch happens in parallel.
+- [x] **Why this pattern:** In Next.js App Router, wrapping an async Server Component in `<Suspense>` defers its rendering until the async work resolves, without blocking parent page streaming. This keeps TTFB and LCP fast for the gallery + specs (above the fold) while the similar properties fetch happens in parallel.
 
 ### Task 4: Create `src/components/listing/similar-properties-skeleton.tsx` — Loading skeleton (AC: #8)
 
-- [ ] Create the file at EXACTLY `src/components/listing/similar-properties-skeleton.tsx`
-- [ ] **This is a Server Component** — NO `'use client'`.
-- [ ] **Skeleton matches carousel layout:** 4 skeleton cards in a horizontal scroll container, matching the `w-72` / `w-80` card widths.
+- [x] Create the file at EXACTLY `src/components/listing/similar-properties-skeleton.tsx`
+- [x] **This is a Server Component** — NO `'use client'`.
+- [x] **Skeleton matches carousel layout:** 4 skeleton cards in a horizontal scroll container, matching the `w-72` / `w-80` card widths.
   ```tsx
   export function SimilarPropertiesSkeleton() {
     return (
@@ -244,17 +244,17 @@ So that I can compare options and discover alternatives without going back to se
     );
   }
   ```
-- [ ] `data-testid="similar-properties-skeleton"` on the root element.
-- [ ] **NO i18n needed** — skeleton has no visible text (aria-label is static English; acceptable for loading state).
+- [x] `data-testid="similar-properties-skeleton"` on the root element.
+- [x] **NO i18n needed** — skeleton has no visible text (aria-label is static English; acceptable for loading state).
 
 ### Task 5: Update `src/components/listing/listing-detail-layout.tsx` — Wire in `SimilarPropertiesLoader` + Breadcrumbs (AC: #1, #4)
 
-- [ ] **File:** `src/components/listing/listing-detail-layout.tsx` — MODIFY (exists from Stories 4.1/4.2)
-- [ ] **Import `SimilarPropertiesLoader`:**
+- [x] **File:** `src/components/listing/listing-detail-layout.tsx` — MODIFY (exists from Stories 4.1/4.2)
+- [x] **Import `SimilarPropertiesLoader`:**
   ```typescript
   import { SimilarPropertiesLoader } from "@/components/listing/similar-properties-loader";
   ```
-- [ ] **Replace the TODO comment** at line 221:
+- [x] **Replace the TODO comment** at line 221:
   ```tsx
   {/* TODO Story 4.5: SimilarProperties carousel goes here */}
   {/* <SimilarProperties propertySlug={property.slug} areaSlug={property.areaSlug} locale={locale} /> */}
@@ -269,7 +269,7 @@ So that I can compare options and discover alternatives without going back to se
     locale={locale}
   />
   ```
-- [ ] **Add `Breadcrumbs` component** near the top of the article (above the gallery, below the article root, in a `<nav>` element). The `Breadcrumbs` component is a new component created in Task 6. Add import:
+- [x] **Add `Breadcrumbs` component** near the top of the article (above the gallery, below the article root, in a `<nav>` element). The `Breadcrumbs` component is a new component created in Task 6. Add import:
   ```typescript
   import { Breadcrumbs } from "@/components/layout/breadcrumbs";
   ```
@@ -284,7 +284,7 @@ So that I can compare options and discover alternatives without going back to se
     locale={locale}
   />
   ```
-- [ ] **Add `breadcrumbHome` and `breadcrumbSearch` keys** to the `ListingDetail` i18n namespace (Task 8). The existing `Breadcrumbs` namespace (from Story 4.4, `src/messages/en.json` line 526–531) has `home`, `search`, `agents` — but `ListingDetailLayout` uses `getTranslations({ namespace: "ListingDetail" })`. Add shorthand keys to `ListingDetail` namespace OR pass translations from the `Breadcrumbs` namespace. **Preferred approach:** Pass the translated strings directly from `ListingDetailLayout` using the existing `Breadcrumbs` namespace:
+- [x] **Add `breadcrumbHome` and `breadcrumbSearch` keys** to the `ListingDetail` i18n namespace (Task 8). The existing `Breadcrumbs` namespace (from Story 4.4, `src/messages/en.json` line 526–531) has `home`, `search`, `agents` — but `ListingDetailLayout` uses `getTranslations({ namespace: "ListingDetail" })`. Add shorthand keys to `ListingDetail` namespace OR pass translations from the `Breadcrumbs` namespace. **Preferred approach:** Pass the translated strings directly from `ListingDetailLayout` using the existing `Breadcrumbs` namespace:
   ```typescript
   const tBreadcrumbs = await getTranslations({ locale, namespace: "Breadcrumbs" });
   // ...
@@ -298,13 +298,13 @@ So that I can compare options and discover alternatives without going back to se
   />
   ```
   This avoids adding duplicate keys to `ListingDetail` namespace. `tBreadcrumbs` uses the existing `Breadcrumbs.home` and `Breadcrumbs.search` keys from Story 4.4 — do NOT add them again.
-- [ ] **Note on `ListingDetailLayoutProps`:** No new props needed. `property.priceUsd`, `property.propertyType`, `property.areaSlug` are already on the `Property` type.
+- [x] **Note on `ListingDetailLayoutProps`:** No new props needed. `property.priceUsd`, `property.propertyType`, `property.areaSlug` are already on the `Property` type.
 
 ### Task 6: Create `src/components/layout/breadcrumbs.tsx` — Reusable breadcrumbs component (AC: #4)
 
-- [ ] Create the file at EXACTLY `src/components/layout/breadcrumbs.tsx`
-- [ ] **This is a Server Component** — NO `'use client'`. Breadcrumbs are static HTML — no interactivity needed.
-- [ ] **Props interface:**
+- [x] Create the file at EXACTLY `src/components/layout/breadcrumbs.tsx`
+- [x] **This is a Server Component** — NO `'use client'`. Breadcrumbs are static HTML — no interactivity needed.
+- [x] **Props interface:**
   ```typescript
   interface BreadcrumbItem {
     label: string;
@@ -316,7 +316,7 @@ So that I can compare options and discover alternatives without going back to se
     locale: string; // reserved for future i18n use — not actively used in component body
   }
   ```
-- [ ] **Layout (semantic nav + schema.org microdata as backup to JSON-LD):**
+- [x] **Layout (semantic nav + schema.org microdata as backup to JSON-LD):**
   ```tsx
   <nav
     aria-label="Breadcrumb"
@@ -354,23 +354,23 @@ So that I can compare options and discover alternatives without going back to se
     </ol>
   </nav>
   ```
-- [ ] **Import `Link`** from `@/i18n/navigation` (intl-aware Link, used throughout project).
-- [ ] **`data-testid="breadcrumbs"`** on the root `<nav>` element — this is the contract from `test-design-epic-4.md` line 98. CANNOT be renamed.
-- [ ] **No i18n inside component** — labels are passed as pre-translated strings from the parent. The component is a pure layout/display component.
-- [ ] **Accessibility:** `aria-label="Breadcrumb"` on `<nav>`. `aria-current="page"` on last item. Separator is `aria-hidden="true"`.
-- [ ] **Truncation:** Long property titles are truncated with `max-w-[20rem] truncate` to prevent breadcrumb overflow on mobile.
+- [x] **Import `Link`** from `@/i18n/navigation` (intl-aware Link, used throughout project).
+- [x] **`data-testid="breadcrumbs"`** on the root `<nav>` element — this is the contract from `test-design-epic-4.md` line 98. CANNOT be renamed.
+- [x] **No i18n inside component** — labels are passed as pre-translated strings from the parent. The component is a pure layout/display component.
+- [x] **Accessibility:** `aria-label="Breadcrumb"` on `<nav>`. `aria-current="page"` on last item. Separator is `aria-hidden="true"`.
+- [x] **Truncation:** Long property titles are truncated with `max-w-[20rem] truncate` to prevent breadcrumb overflow on mobile.
 
 ### Task 7: Update `src/lib/db/queries/properties.ts` — Export `getSimilarPropertiesRanked` (AC: #2)
 
 *(This task is logically part of Task 1 — split here for clarity.)*
 
-- [ ] Verify that `getSimilarPropertiesRanked` is exported as a named export.
-- [ ] Verify that the existing `getSimilarProperties` function is NOT modified — it is still used by `page.tsx` for the unavailable-property use case.
-- [ ] **Import additions needed at top of file:**
+- [x] Verify that `getSimilarPropertiesRanked` is exported as a named export.
+- [x] Verify that the existing `getSimilarProperties` function is NOT modified — it is still used by `page.tsx` for the unavailable-property use case.
+- [x] **Import additions needed at top of file:**
   - `sql` from `"drizzle-orm"` (for ABS ordering expression)
   - `gte`, `lte` from `"drizzle-orm"` (for price range filtering)
   - Ensure `not`, `inArray` are already imported (they are — line 2 of the file).
-- [ ] **Return type mapping:** The DB query returns columns with `src` in images (from `OptimizedImage` stored in JSONB). `PropertySearchItem.images` expects `{ url: string; alt?: string }[]`. Map as:
+- [x] **Return type mapping:** The DB query returns columns with `src` in images (from `OptimizedImage` stored in JSONB). `PropertySearchItem.images` expects `{ url: string; alt?: string }[]`. Map as:
   ```typescript
   // After query, map images:
   return rows.map(row => ({
@@ -385,7 +385,7 @@ So that I can compare options and discover alternatives without going back to se
 
 ### Task 8: Add i18n keys for new components (AC: #1, #7)
 
-- [ ] **File:** `src/messages/en.json` — ADD new namespace (DO NOT modify existing keys):
+- [x] **File:** `src/messages/en.json` — ADD new namespace (DO NOT modify existing keys):
   ```json
   "SimilarProperties": {
     "heading": "Similar Properties",
@@ -394,7 +394,7 @@ So that I can compare options and discover alternatives without going back to se
     "keyboardHint": "Use arrow keys or swipe to browse similar properties"
   }
   ```
-- [ ] **File:** `src/messages/es.json` — ADD equivalent Spanish translations:
+- [x] **File:** `src/messages/es.json` — ADD equivalent Spanish translations:
   ```json
   "SimilarProperties": {
     "heading": "Propiedades Similares",
@@ -403,15 +403,15 @@ So that I can compare options and discover alternatives without going back to se
     "keyboardHint": "Usa las teclas de flecha o desliza para explorar propiedades similares"
   }
   ```
-- [ ] **DO NOT re-add** `Breadcrumbs.*` keys — they already exist in both `en.json` and `es.json` from Story 4.4 (`home`, `search`, `agents`).
-- [ ] **DO NOT re-add** any existing namespace keys. Only add `SimilarProperties` namespace.
-- [ ] **Verify:** `"Breadcrumbs": { "home": "Home", "search": "Search", "agents": "Agents" }` is already present. The `Breadcrumbs` component in Task 6 uses pre-translated strings passed as props — no new Breadcrumbs keys needed.
+- [x] **DO NOT re-add** `Breadcrumbs.*` keys — they already exist in both `en.json` and `es.json` from Story 4.4 (`home`, `search`, `agents`).
+- [x] **DO NOT re-add** any existing namespace keys. Only add `SimilarProperties` namespace.
+- [x] **Verify:** `"Breadcrumbs": { "home": "Home", "search": "Search", "agents": "Agents" }` is already present. The `Breadcrumbs` component in Task 6 uses pre-translated strings passed as props — no new Breadcrumbs keys needed.
 
 ### Task 9: Unit tests for `getSimilarPropertiesRanked` — Similarity algorithm (AC: #2)
 
-- [ ] Create `tests/unit/listing/similar-properties-query.spec.ts` (`.ts` — no JSX, node environment, no jsdom)
-- [ ] **Mock the DB** using `vi.mock('@/lib/db/client')` — mock the `db` object with chainable query builder.
-- [ ] **Tests to write (from test-design-epic-4.md scenarios 4.5-UNIT-001, 4.5-UNIT-002):**
+- [x] Create `tests/unit/listing/similar-properties-query.spec.ts` (`.ts` — no JSX, node environment, no jsdom)
+- [x] **Mock the DB** using `vi.mock('@/lib/db/client')` — mock the `db` object with chainable query builder.
+- [x] **Tests to write (from test-design-epic-4.md scenarios 4.5-UNIT-001, 4.5-UNIT-002):**
   - `[P0]` (4.5-UNIT-001) returns listings from same area first when mixed area input
   - `[P0]` (4.5-UNIT-002) filters by similar price range ±20%: seed at $200k + $190k (in range) + $300k (out of range) → only $200k and $190k returned
   - `[P1]` excludes the current property slug from results
@@ -421,9 +421,9 @@ So that I can compare options and discover alternatives without going back to se
 
 ### Task 10: Unit tests for `SimilarProperties` component (AC: #1, #6, #7)
 
-- [ ] Create `tests/unit/listing/similar-properties.spec.tsx` (`.tsx` — jsdom environment)
-- [ ] **CRITICAL — vi.mock hoisting pattern** (established and held across all Epic 3 + 4 stories): ALL `vi.mock()` calls MUST appear BEFORE import statements. Add `// imported AFTER mocks` comment.
-- [ ] **Required mocks (hoisted before imports):**
+- [x] Create `tests/unit/listing/similar-properties.spec.tsx` (`.tsx` — jsdom environment)
+- [x] **CRITICAL — vi.mock hoisting pattern** (established and held across all Epic 3 + 4 stories): ALL `vi.mock()` calls MUST appear BEFORE import statements. Add `// imported AFTER mocks` comment.
+- [x] **Required mocks (hoisted before imports):**
   ```typescript
   vi.mock("next-intl/server", () => ({
     getTranslations: vi.fn(() => Promise.resolve((key: string) => key)),
@@ -440,7 +440,7 @@ So that I can compare options and discover alternatives without going back to se
   }));
   ```
   // imported AFTER mocks
-- [ ] **Test fixture:**
+- [x] **Test fixture:**
   ```typescript
   const mockProperties: PropertySearchItem[] = [
     {
@@ -451,7 +451,7 @@ So that I can compare options and discover alternatives without going back to se
     },
   ];
   ```
-- [ ] **Tests to write:**
+- [x] **Tests to write:**
   - `[P0]` (4.5-E2E-001 unit analog) renders `data-testid="similar-properties-carousel"` when properties provided
   - `[P0]` renders the correct number of `data-testid="property-card"` elements
   - `[P0]` renders `data-testid="similar-properties-empty"` when properties array is empty
@@ -462,8 +462,8 @@ So that I can compare options and discover alternatives without going back to se
 
 ### Task 11: Unit tests for `Breadcrumbs` component (AC: #4)
 
-- [ ] Create `tests/unit/listing/breadcrumbs.spec.tsx` (`.tsx` — jsdom)
-- [ ] **Required mocks (hoisted):**
+- [x] Create `tests/unit/listing/breadcrumbs.spec.tsx` (`.tsx` — jsdom)
+- [x] **Required mocks (hoisted):**
   ```typescript
   vi.mock("@/i18n/navigation", () => ({
     Link: ({ href, children, ...props }: { href: string; children: React.ReactNode; [key: string]: unknown }) =>
@@ -471,7 +471,7 @@ So that I can compare options and discover alternatives without going back to se
   }));
   ```
   // imported AFTER mocks
-- [ ] **Tests to write (from test-design-epic-4.md scenario 4.5-E2E-002 unit analog):**
+- [x] **Tests to write (from test-design-epic-4.md scenario 4.5-E2E-002 unit analog):**
   - `[P0]` (4.5-E2E-002) renders `data-testid="breadcrumbs"` element
   - `[P0]` renders all breadcrumb items
   - `[P0]` last item has `aria-current="page"` attribute
@@ -482,11 +482,11 @@ So that I can compare options and discover alternatives without going back to se
 
 ### Task 12: CI verification (AC: all)
 
-- [ ] `npm run typecheck` → 0 new errors
-- [ ] `npm run lint` → 0 errors
-- [ ] `npm run format:check` → pass
-- [ ] `npm run build` → pass (including ISR static params generation)
-- [ ] `npm test` → all existing tests pass (641+ baseline from Story 4.2 completion) + new similar-properties-query + similar-properties + breadcrumbs tests pass
+- [x] `npm run typecheck` → 0 new errors
+- [x] `npm run lint` → 0 errors
+- [x] `npm run format:check` → pass
+- [x] `npm run build` → pass (including ISR static params generation)
+- [x] `npm test` → all existing tests pass (641+ baseline from Story 4.2 completion) + new similar-properties-query + similar-properties + breadcrumbs tests pass
 
 ---
 
@@ -643,8 +643,41 @@ This is implemented as sequential DB queries with short-circuit on `limit` fulfi
 
 ---
 
+## File List
+
+### New Files
+- `src/components/listing/similar-properties.tsx`
+- `src/components/listing/similar-properties-loader.tsx`
+- `src/components/listing/similar-properties-skeleton.tsx`
+- `tests/unit/listing/similar-properties.spec.tsx`
+- `tests/unit/listing/similar-properties-query.spec.ts`
+- `tests/unit/listing/breadcrumbs.spec.tsx`
+
+### Modified Files
+- `src/lib/db/queries/properties.ts` — added `getSimilarPropertiesRanked`, `mapRowToPropertySearchItem`, `propertySearchColumns`; updated imports
+- `src/components/listing/listing-detail-layout.tsx` — wired `SimilarPropertiesLoader` + `Breadcrumbs`; added `tBreadcrumbs`
+- `src/components/layout/breadcrumbs.tsx` — replaced stub with full implementation
+- `src/messages/en.json` — added `SimilarProperties` namespace
+- `src/messages/es.json` — added `SimilarProperties` namespace
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` — status in-progress → review
+
+---
+
 ## Dev Agent Record
+
+### Implementation Notes
+
+- T1/T7: Added `getSimilarPropertiesRanked` to `src/lib/db/queries/properties.ts` — 4-step ranked algorithm using Drizzle ORM with `sql` template tag for ABS ordering. Helper `mapRowToPropertySearchItem` maps `src→url` for images. Existing `getSimilarProperties` unchanged.
+- T2: Implemented `SimilarProperties` Server Component with CSS-snap carousel (no client JS). Empty state renders "Browse all properties" CTA via i18n `SimilarProperties.browseCta` key.
+- T3: Implemented `SimilarPropertiesLoader` wrapping `SimilarPropertiesData` (async Server Component) in React `<Suspense>` with `SimilarPropertiesSkeleton` fallback.
+- T4: Implemented `SimilarPropertiesSkeleton` with 4 animated skeleton cards matching carousel dimensions.
+- T5: Wired `SimilarPropertiesLoader` + `Breadcrumbs` into `listing-detail-layout.tsx`. Uses existing `Breadcrumbs` i18n namespace (`home`, `search` keys from Story 4.4).
+- T6: Implemented `Breadcrumbs` Server Component with semantic `<nav>/<ol>/<li>`, `aria-current="page"` on last item, `aria-hidden="true"` separators.
+- T8: Added `SimilarProperties` namespace to both `en.json` and `es.json`.
+- T9-T11: All 25 new unit tests pass (6 query + 10 component + 9 breadcrumbs). Full suite: 797 passed + 3 skipped = 800 total.
+- T12: TypeScript 0 errors, ESLint 0 errors, Next.js build successful.
 
 ### Change Log
 
 - 2026-05-03: Story 4.5 created — similar properties and cross-linking (Status: ready-for-dev)
+- 2026-05-03: Story 4.5 implemented — all 12 tasks complete. 25 new tests added, 800 total passing. (Status: review)

@@ -2,8 +2,8 @@
  * Story 4.5: Similar Properties & Cross-Linking
  * Component: src/components/layout/breadcrumbs.tsx
  *
- * TDD Phase: RED — all tests are it.skip() until implementation is done.
- * Remove it.skip() per test when implementing to verify green phase.
+ * TDD Phase: RED — all tests are it() until implementation is done.
+ * Remove it() per test when implementing to verify green phase.
  *
  * Covers:
  *   AC #4  — Any page with navigation hierarchy shows breadcrumbs path
@@ -67,7 +67,7 @@ afterEach(() => {
 describe("Story 4.5: Breadcrumbs component", () => {
   // [P0] Core rendering
 
-  it.skip(
+  it(
     "[P0] 4.5-BREAD-001: renders data-testid='breadcrumbs' root nav element (AC #4, 4.5-E2E-002 unit analog)",
     () => {
       // THIS TEST WILL FAIL — Breadcrumbs component not yet implemented
@@ -79,7 +79,7 @@ describe("Story 4.5: Breadcrumbs component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.5-BREAD-002: renders all breadcrumb item labels (AC #4)",
     () => {
       // THIS TEST WILL FAIL — Breadcrumbs component not yet implemented
@@ -91,7 +91,7 @@ describe("Story 4.5: Breadcrumbs component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.5-BREAD-003: last item has aria-current='page' attribute (AC #4, accessibility)",
     () => {
       // THIS TEST WILL FAIL — Breadcrumbs component not yet implemented
@@ -102,7 +102,7 @@ describe("Story 4.5: Breadcrumbs component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.5-BREAD-004: intermediate items render as <a> links with correct href values (AC #4)",
     () => {
       // THIS TEST WILL FAIL — Breadcrumbs component not yet implemented
@@ -120,7 +120,7 @@ describe("Story 4.5: Breadcrumbs component", () => {
 
   // [P1] Behavior
 
-  it.skip(
+  it(
     "[P1] 4.5-BREAD-005: last item does NOT render as a link (no href on current page, AC #4)",
     () => {
       // THIS TEST WILL FAIL — Breadcrumbs component not yet implemented
@@ -132,7 +132,7 @@ describe("Story 4.5: Breadcrumbs component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.5-BREAD-006: nav has aria-label='Breadcrumb' for accessibility (AC #4)",
     () => {
       // THIS TEST WILL FAIL — Breadcrumbs component not yet implemented
@@ -143,7 +143,7 @@ describe("Story 4.5: Breadcrumbs component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.5-BREAD-007: renders correctly with only one item (single breadcrumb edge case)",
     () => {
       // THIS TEST WILL FAIL — Breadcrumbs component not yet implemented
@@ -160,7 +160,7 @@ describe("Story 4.5: Breadcrumbs component", () => {
 
   // [P2] Visual structure
 
-  it.skip(
+  it(
     "[P2] 4.5-BREAD-008: separator character is present between items and is aria-hidden='true' (AC #4)",
     () => {
       // THIS TEST WILL FAIL — Breadcrumbs component not yet implemented
@@ -174,7 +174,7 @@ describe("Story 4.5: Breadcrumbs component", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.5-BREAD-009: renders an ordered list (<ol>) for semantic breadcrumb structure (AC #4)",
     () => {
       // THIS TEST WILL FAIL — Breadcrumbs component not yet implemented

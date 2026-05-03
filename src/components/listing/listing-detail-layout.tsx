@@ -14,6 +14,8 @@ import { StickySpecsBar } from "@/components/listing/sticky-specs-bar";
 import { PropertyGalleryLoader } from "@/components/listing/property-gallery-loader";
 import { AgentCard } from "@/components/agent/agent-card";
 import { StickyMobileCTA } from "@/components/lead/sticky-mobile-cta";
+import { SimilarPropertiesLoader } from "@/components/listing/similar-properties-loader";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import type { Property } from "@/lib/db/schema/properties";
 import type { Agent } from "@/lib/db/schema/agents";
 import type { OptimizedImage } from "@/types/images";
@@ -49,6 +51,7 @@ export async function ListingDetailLayout({
   officeName,
 }: ListingDetailLayoutProps) {
   const t = await getTranslations({ locale, namespace: "ListingDetail" });
+  const tBreadcrumbs = await getTranslations({ locale, namespace: "Breadcrumbs" });
 
   // Locale-aware title with cross-locale fallback so the WhatsApp/email
   // pre-populated message never references an empty title when one locale is missing.
@@ -73,6 +76,16 @@ export async function ListingDetailLayout({
   return (
     <>
       <article className="min-h-screen bg-background">
+        {/* Breadcrumbs — visual nav (Story 4.5, AC #4) */}
+        <Breadcrumbs
+          items={[
+            { label: tBreadcrumbs("home"), href: `/${locale}` },
+            { label: tBreadcrumbs("search"), href: `/${locale}/search` },
+            { label: title },
+          ]}
+          locale={locale}
+        />
+
         {/* Hero Gallery — lazy-loaded Client Component via PropertyGalleryLoader (ssr: false) */}
         <PropertyGalleryLoader
           images={images}
@@ -218,8 +231,16 @@ export async function ListingDetailLayout({
             <p className="text-sm text-text-muted">{t("noAgentAssigned")}</p>
           )}
 
-          {/* TODO Story 4.5: SimilarProperties carousel goes here */}
-          {/* <SimilarProperties propertySlug={property.slug} areaSlug={property.areaSlug} locale={locale} /> */}
+          {/* Similar Properties carousel — Suspense-wrapped for LCP isolation (Story 4.5, AC #1, #8) */}
+          <SimilarPropertiesLoader
+            currentSlug={property.slug}
+            areaSlug={property.areaSlug}
+            priceUsd={property.priceUsd}
+            propertyType={property.propertyType}
+            locale={locale}
+          />
+
+          {/* TODO Epic 6: Area context block (area name link + nearby count) goes here */}
 
           {/* TODO post-4.1: Location Map (Mapbox, Epic 3 scope only) */}
           {/* <PropertyLocationMap lat={property.latitude} lng={property.longitude} /> */}
