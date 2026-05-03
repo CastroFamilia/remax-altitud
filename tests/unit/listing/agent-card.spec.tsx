@@ -228,11 +228,15 @@ describe("Story 4.2: AgentCard component", () => {
     expect(photo.getAttribute("src")).toBe("/images/agent-placeholder.svg");
   });
 
-  it("[P2] 4.2-COMP-013: root element is article with role='article' for AC #9", () => {
+  it("[P2] 4.2-COMP-013: root element is <article> (implicit role='article') for AC #9", () => {
     render(<AgentCard {...defaultProps} />);
+    // The <article> element carries the implicit ARIA role "article".
+    // We verify the element tag — no explicit role attribute needed (redundant on <article>).
     const card = screen.getByTestId("agent-card");
     expect(card.tagName.toLowerCase()).toBe("article");
-    expect(card.getAttribute("role")).toBe("article");
+    // Verify accessible as an article landmark via ARIA role query
+    const articleByRole = screen.getByRole("article");
+    expect(articleByRole).toBeTruthy();
   });
 
   it("[P2] 4.2-COMP-014: agent card has aria-label containing agent name", () => {

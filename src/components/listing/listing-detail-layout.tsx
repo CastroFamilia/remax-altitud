@@ -209,7 +209,7 @@ export async function ListingDetailLayout({
           {agent ? (
             <AgentCard
               agent={agent}
-              propertyTitle={title ?? ""}
+              propertyTitle={title}
               propertyRef={property.apiId ?? property.id}
               locale={locale}
               officeName={officeName ?? t("unknownOffice")}
@@ -233,7 +233,7 @@ export async function ListingDetailLayout({
           agentWhatsapp={agent.whatsapp ?? null}
           agentEmail={agent.email ?? null}
           agentName={agent.name}
-          propertyTitle={title ?? ""}
+          propertyTitle={title}
           propertyRef={property.apiId ?? property.id}
           locale={locale}
         />
