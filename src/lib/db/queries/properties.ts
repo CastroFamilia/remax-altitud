@@ -1,10 +1,11 @@
 import "server-only";
-import { and, desc, eq, inArray, not } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lte, not, sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawProperty } from "@/types/remax-api";
 import type { OptimizedImage } from "@/types/images";
+import type { PropertySearchItem } from "@/types/search";
 
 /**
  * Upserts a single property into the database using Drizzle's
@@ -301,6 +302,180 @@ export async function getAllPropertySlugs(): Promise<string[]> {
 export async function getPropertyBySlug(slug: string) {
   const rows = await db.select().from(properties).where(eq(properties.slug, slug)).limit(1);
   return rows[0] ?? null;
+}
+
+/**
+ * Maps DB property rows to PropertySearchItem shape.
+ * DB stores images as OptimizedImage[] with { src: string; ... }.
+ * PropertySearchItem expects images: { url: string; alt?: string }[].
+ * So we must map src → url.
+ */
+function mapRowToPropertySearchItem(row: {
+  id: string;
+  slug: string;
+  titleEn: string;
+  titleEs: string;
+  priceUsd: number;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  lotSizeM2: number | null;
+  constructionM2: number | null;
+  zmtStatus: string | null;
+  propertyType: string;
+  areaSlug: string | null;
+  images: unknown;
+  latitude: number | null;
+  longitude: number | null;
+}): PropertySearchItem {
+  const rawImages = (row.images as { src: string; alt?: string }[] | null) ?? [];
+  return {
+    id: row.id,
+    slug: row.slug,
+    titleEn: row.titleEn,
+    titleEs: row.titleEs,
+    priceUsd: row.priceUsd,
+    bedrooms: row.bedrooms,
+    bathrooms: row.bathrooms,
+    lotSizeM2: row.lotSizeM2,
+    constructionM2: row.constructionM2,
+    zmtStatus: row.zmtStatus ?? "titled",
+    propertyType: row.propertyType,
+    areaSlug: row.areaSlug,
+    images: rawImages.map((img) => ({ url: img.src, alt: img.alt })),
+    latitude: row.latitude,
+    longitude: row.longitude,
+  };
+}
+
+/** Columns to select for PropertySearchItem queries */
+const propertySearchColumns = {
+  id: properties.id,
+  slug: properties.slug,
+  titleEn: properties.titleEn,
+  titleEs: properties.titleEs,
+  priceUsd: properties.priceUsd,
+  bedrooms: properties.bedrooms,
+  bathrooms: properties.bathrooms,
+  lotSizeM2: properties.lotSizeM2,
+  constructionM2: properties.constructionM2,
+  zmtStatus: properties.zmtStatus,
+  propertyType: properties.propertyType,
+  areaSlug: properties.areaSlug,
+  images: properties.images,
+  latitude: properties.latitude,
+  longitude: properties.longitude,
+} as const;
+
+/**
+ * Returns similar properties ranked by: same area (priority 1) →
+ * similar price range ±20% (priority 2) → same property type (priority 3).
+ * Excludes the current property. Returns up to `limit` results.
+ * Used by SimilarProperties carousel on the listing detail page (Story 4.5).
+ *
+ * Algorithm:
+ *   STEP 1 — Same area, same type, similar price (±20%)
+ *   STEP 2 — Same area, similar price (type relaxed)
+ *   STEP 3 — Same area (price relaxed)
+ *   STEP 4 — Any visible (area relaxed, final fallback)
+ *
+ * Max 4 DB round-trips total; each step short-circuits if limit is reached.
+ */
+export async function getSimilarPropertiesRanked(opts: {
+  excludeSlug: string;
+  areaSlug: string | null;
+  priceUsd: number;
+  propertyType: string;
+  limit?: number;
+}): Promise<PropertySearchItem[]> {
+  const limit = opts.limit ?? 4;
+  const priceLow = Math.round(opts.priceUsd * 0.8);
+  const priceHigh = Math.round(opts.priceUsd * 1.2);
+
+  const results: PropertySearchItem[] = [];
+
+  // STEP 1 — Same area, same type, similar price (±20%)
+  if (results.length < limit && opts.areaSlug) {
+    const step1Rows = await db
+      .select(propertySearchColumns)
+      .from(properties)
+      .where(
+        and(
+          eq(properties.isVisible, true),
+          not(eq(properties.slug, opts.excludeSlug)),
+          eq(properties.areaSlug, opts.areaSlug),
+          eq(properties.propertyType, opts.propertyType),
+          gte(properties.priceUsd, priceLow),
+          lte(properties.priceUsd, priceHigh),
+        ),
+      )
+      .orderBy(asc(sql`ABS(${properties.priceUsd} - ${opts.priceUsd})`))
+      .limit(limit - results.length);
+    results.push(...step1Rows.map(mapRowToPropertySearchItem));
+  }
+
+  if (results.length >= limit) return results;
+
+  // STEP 2 — Same area, similar price (type relaxed)
+  if (opts.areaSlug) {
+    const collectedSlugs = results.map((r) => r.slug);
+    const step2Rows = await db
+      .select(propertySearchColumns)
+      .from(properties)
+      .where(
+        and(
+          eq(properties.isVisible, true),
+          not(eq(properties.slug, opts.excludeSlug)),
+          ...(collectedSlugs.length > 0 ? [not(inArray(properties.slug, collectedSlugs))] : []),
+          eq(properties.areaSlug, opts.areaSlug),
+          gte(properties.priceUsd, priceLow),
+          lte(properties.priceUsd, priceHigh),
+        ),
+      )
+      .orderBy(asc(sql`ABS(${properties.priceUsd} - ${opts.priceUsd})`))
+      .limit(limit - results.length);
+    results.push(...step2Rows.map(mapRowToPropertySearchItem));
+  }
+
+  if (results.length >= limit) return results;
+
+  // STEP 3 — Same area (price relaxed)
+  if (opts.areaSlug) {
+    const collectedSlugs = results.map((r) => r.slug);
+    const step3Rows = await db
+      .select(propertySearchColumns)
+      .from(properties)
+      .where(
+        and(
+          eq(properties.isVisible, true),
+          not(eq(properties.slug, opts.excludeSlug)),
+          ...(collectedSlugs.length > 0 ? [not(inArray(properties.slug, collectedSlugs))] : []),
+          eq(properties.areaSlug, opts.areaSlug),
+        ),
+      )
+      .orderBy(desc(properties.syncedAt))
+      .limit(limit - results.length);
+    results.push(...step3Rows.map(mapRowToPropertySearchItem));
+  }
+
+  if (results.length >= limit) return results;
+
+  // STEP 4 — Any visible (fallback, area relaxed)
+  const collectedSlugs = results.map((r) => r.slug);
+  const step4Rows = await db
+    .select(propertySearchColumns)
+    .from(properties)
+    .where(
+      and(
+        eq(properties.isVisible, true),
+        not(eq(properties.slug, opts.excludeSlug)),
+        ...(collectedSlugs.length > 0 ? [not(inArray(properties.slug, collectedSlugs))] : []),
+      ),
+    )
+    .orderBy(desc(properties.syncedAt))
+    .limit(limit - results.length);
+  results.push(...step4Rows.map(mapRowToPropertySearchItem));
+
+  return results;
 }
 
 /**

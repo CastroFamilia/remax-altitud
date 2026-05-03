@@ -526,9 +526,17 @@
   "Breadcrumbs": {
     "home": "Inicio",
     "search": "Buscar",
-    "agents": "Agentes"
+    "agents": "Agentes",
+    "ariaLabel": "Migas de pan"
   },
   "AgentAreaServed": {
     "name": "Zona Sur, Costa Rica"
+  },
+  "SimilarProperties": {
+    "heading": "Propiedades Similares",
+    "browseCta": "Ver todas las propiedades",
+    "carouselAriaLabel": "Carrusel de propiedades similares",
+    "keyboardHint": "Usa las teclas de flecha o desliza para explorar propiedades similares",
+    "loadingAriaLabel": "Cargando propiedades similares"
   }
 }
