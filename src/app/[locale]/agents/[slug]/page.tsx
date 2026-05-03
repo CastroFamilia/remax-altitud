@@ -3,11 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SimplePageLayout } from "@/components/layout/simple-page-layout";
 import { Link } from "@/i18n/navigation";
-import {
-  getAgentBySlug,
-  getAllAgentSlugs,
-  getPropertiesByAgentId,
-} from "@/lib/db/queries/agents";
+import { getAgentBySlug, getAllAgentSlugs, getPropertiesByAgentId } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 import { AgentProfileHero } from "@/components/agent/agent-profile-hero";
 import { AgentListingsGrid } from "@/components/agent/agent-listings-grid";

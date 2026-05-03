@@ -21,11 +21,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function AgentsIndexPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function AgentsIndexPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale); // required for next-intl static rendering support
 

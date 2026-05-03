@@ -73,17 +73,11 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
           </h1>
           <p className="mt-1 text-base text-text-muted">{officeName}</p>
           {languages && (
-            <p
-              className="mt-1 text-sm text-text-muted"
-              data-testid="agent-profile-languages"
-            >
+            <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-languages">
               {languages}
             </p>
           )}
-          <p
-            className="mt-1 text-sm text-text-muted"
-            data-testid="agent-profile-listing-count"
-          >
+          <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-listing-count">
             {agent.listingCount} {t("listings")}
           </p>
         </div>

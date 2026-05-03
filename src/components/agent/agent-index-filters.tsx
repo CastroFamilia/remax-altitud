@@ -12,6 +12,9 @@ import { useTranslations } from "next-intl";
 import { AgentIndexCard } from "@/components/agent/agent-index-card";
 import type { Agent } from "@/lib/db/schema/agents";
 
+// Same set used in AgentProfileHero / AgentIndexCard — keeps labels in sync.
+const KNOWN_LANGUAGES = new Set(["en", "es", "de", "fr", "it", "pt"]);
+
 interface AgentIndexFiltersProps {
   agents: Agent[];
   locale: string;
@@ -35,9 +38,7 @@ export function AgentIndexFilters({ agents, locale, officeMap }: AgentIndexFilte
 
   // Derive unique language options from the agents list
   const allLanguages = Array.from(
-    new Set(
-      agents.flatMap((a) => (Array.isArray(a.languages) ? (a.languages as string[]) : [])),
-    ),
+    new Set(agents.flatMap((a) => (Array.isArray(a.languages) ? (a.languages as string[]) : []))),
   ).sort();
 
   // Filter logic
@@ -92,7 +93,9 @@ export function AgentIndexFilters({ agents, locale, officeMap }: AgentIndexFilte
             <option value="all">{t("allLanguages")}</option>
             {allLanguages.map((lang) => (
               <option key={lang} value={lang}>
-                {lang.toUpperCase()}
+                {KNOWN_LANGUAGES.has(lang)
+                  ? t(`language.${lang}` as Parameters<typeof t>[0])
+                  : lang.toUpperCase()}
               </option>
             ))}
           </select>
@@ -111,7 +114,10 @@ export function AgentIndexFilters({ agents, locale, officeMap }: AgentIndexFilte
           </button>
         </div>
       ) : (
-        <ul data-testid="agent-index-list" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul
+          data-testid="agent-index-list"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {filteredAgents.map((agent) => (
             <li key={agent.id}>
               <AgentIndexCard

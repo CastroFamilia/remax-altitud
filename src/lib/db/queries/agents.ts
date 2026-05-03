@@ -114,10 +114,7 @@ export async function getAgentBySlug(slug: string) {
  * Used by generateStaticParams in the agent profile page (AC #6, NFR25).
  */
 export async function getAllAgentSlugs(): Promise<string[]> {
-  const rows = await db
-    .select({ slug: agents.slug })
-    .from(agents)
-    .where(eq(agents.isActive, true));
+  const rows = await db.select({ slug: agents.slug }).from(agents).where(eq(agents.isActive, true));
   return rows.map((r) => r.slug);
 }
 

@@ -30,16 +30,14 @@ export function AgentProfileCTAs({
 }: AgentProfileCTAsProps) {
   const t = useTranslations("AgentProfile");
 
-  // General inquiry message (no property context on agent profile page)
-  const agentProfileMessage =
-    locale === "es"
-      ? `Hola ${agentName}, me gustaría obtener más información sobre sus propiedades.`
-      : `Hi ${agentName}, I'd like to learn more about your properties.`;
+  // General inquiry message (no property context on agent profile page).
+  // Localized via the `generalInquiryEn` key, which has Spanish + English copies
+  // in src/messages/{en,es}.json — the active locale namespace selects which.
+  const agentProfileMessage = t("generalInquiryEn", { name: agentName });
 
   // Build WhatsApp URL
   const whatsappDigits = agentWhatsapp ? agentWhatsapp.replace(/\D/g, "") : "";
-  const whatsappUrl =
-    whatsappDigits ? buildWhatsAppUrl(whatsappDigits, agentProfileMessage) : null;
+  const whatsappUrl = whatsappDigits ? buildWhatsAppUrl(whatsappDigits, agentProfileMessage) : null;
 
   // Build mailto URL
   const emailUrl = agentEmail ? `mailto:${agentEmail}` : null;
