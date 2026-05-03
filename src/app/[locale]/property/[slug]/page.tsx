@@ -12,6 +12,12 @@ import { getAgentById } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 import { ListingDetailLayout } from "@/components/listing/listing-detail-layout";
 import type { OptimizedImage } from "@/types/images";
+import {
+  generateListingJsonLd,
+  generateBreadcrumbJsonLd,
+} from "@/lib/seo/structured-data";
+import { buildAlternatesMetadata, generateCanonicalUrl } from "@/lib/seo/metadata";
+import { SITE_ORIGIN } from "@/lib/seo/constants";
 
 // Story 4.1 Task 1: Replace force-dynamic with ISR (NFR25, 4.1-UNIT-002)
 // Revalidate every 24 hours — the sync pipeline's revalidateTag('properties') call
@@ -47,10 +53,16 @@ export async function generateMetadata({
   return {
     title: `${title} | RE/MAX Altitud`,
     description: description.slice(0, 160),
+    alternates: {
+      canonical: generateCanonicalUrl(locale, `/property/${slug}`),
+      ...buildAlternatesMetadata(`/property/${slug}`),
+    },
     openGraph: {
       title,
       description: description.slice(0, 160),
       images: images[0] ? [{ url: images[0].src }] : [],
+      type: "website",
+      url: generateCanonicalUrl(locale, `/property/${slug}`),
     },
   };
 }
@@ -130,13 +142,38 @@ export default async function PropertyPage({
   // Fetch associated office name (Story 4.2, Task 5b)
   const office = agent?.officeId ? await getOfficeById(agent.officeId) : null;
 
+  // Story 4.4 Task 7: JSON-LD structured data for RealEstateListing + BreadcrumbList (AC #1, #4)
+  const title = locale === "es" ? property.titleEs : property.titleEn;
+  const listingJsonLd = generateListingJsonLd(property, locale);
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { position: 1, name: "Home", href: `${SITE_ORIGIN}/${locale}` },
+    { position: 2, name: "Search", href: `${SITE_ORIGIN}/${locale}/search` },
+    {
+      position: 3,
+      name: title,
+      href: `${SITE_ORIGIN}/${locale}/property/${property.slug}`,
+    },
+  ]);
+
   // Visible property → full listing detail page (Story 4.1)
   return (
-    <ListingDetailLayout
-      property={property}
-      agent={agent}
-      locale={locale}
-      officeName={office?.name}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(listingJsonLd) }}
+        data-testid="listing-jsonld"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        data-testid="breadcrumb-jsonld"
+      />
+      <ListingDetailLayout
+        property={property}
+        agent={agent}
+        locale={locale}
+        officeName={office?.name}
+      />
+    </>
   );
 }

@@ -2,8 +2,8 @@
  * Story 4.4: SEO Architecture & WordPress Redirects
  * Unit tests for JSON-LD generator functions in src/lib/seo/structured-data.ts
  *
- * TDD Phase: RED — all tests are it.skip() until structured-data.ts is implemented.
- * Remove it.skip() per test when implementing to verify green phase.
+ * TDD Phase: RED — all tests are it() until structured-data.ts is implemented.
+ * Remove it() per test when implementing to verify green phase.
  *
  * Covers:
  *   4.4-UNIT-001 — generateListingJsonLd() produces valid RealEstateListing JSON-LD (AC #1, R-004)
@@ -114,10 +114,14 @@ const mockAgentNoOptimizedPhoto = {
 const mockArea = {
   id: "area-uuid-1",
   slug: "perez-zeledon",
-  name: "Pérez Zeledón",
+  nameEn: "Pérez Zeledón",
   nameEs: "Pérez Zeledón",
+  region: "Southern Zone",
   descriptionEn: "A beautiful valley in the Southern Zone of Costa Rica.",
   descriptionEs: "Un hermoso valle en la Zona Sur de Costa Rica.",
+  propertyCount: 0,
+  sortOrder: 0,
+  metadata: {},
   createdAt: new Date("2026-01-01"),
   updatedAt: new Date("2026-01-01"),
 };
@@ -131,7 +135,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     vi.clearAllMocks();
   });
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-001a: returns object with @type: 'RealEstateListing'",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "en");
@@ -139,7 +143,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-001b: includes @context: 'https://schema.org'",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "en");
@@ -147,7 +151,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-001c: includes price equal to property.priceUsd",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "en") as Record<string, unknown>;
@@ -155,7 +159,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-001d: includes address with @type: 'PostalAddress' and addressCountry: 'CR'",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "en") as Record<string, unknown>;
@@ -166,7 +170,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-001e: includes geo with latitude and longitude when property has coordinates",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "en") as Record<string, unknown>;
@@ -178,7 +182,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-001f: includes image array with image URLs",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "en") as Record<string, unknown>;
@@ -188,7 +192,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-001g: includes description from descriptionEn when locale is 'en'",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "en") as Record<string, unknown>;
@@ -196,7 +200,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-001h: uses descriptionEs when locale is 'es'",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "es") as Record<string, unknown>;
@@ -206,7 +210,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-001i: omits geo when latitude and longitude are null",
     () => {
       const result = generateListingJsonLd(mockPropertyNoGeo as never, "en") as Record<
@@ -217,7 +221,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-001j: URL includes locale prefix and property slug",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "en") as Record<string, unknown>;
@@ -227,7 +231,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-001k: URL uses 'es' locale when locale is 'es'",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "es") as Record<string, unknown>;
@@ -237,7 +241,7 @@ describe("generateListingJsonLd (4.4-UNIT-001)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-001l: includes priceCurrency: 'USD'",
     () => {
       const result = generateListingJsonLd(mockProperty as never, "en") as Record<string, unknown>;
@@ -255,7 +259,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     vi.clearAllMocks();
   });
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-002a: returns object with @type: 'RealEstateAgent'",
     () => {
       const result = generateAgentJsonLd(mockAgent as never, "en");
@@ -263,7 +267,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-002b: includes @context: 'https://schema.org'",
     () => {
       const result = generateAgentJsonLd(mockAgent as never, "en");
@@ -271,7 +275,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-002c: includes name equal to agent.name",
     () => {
       const result = generateAgentJsonLd(mockAgent as never, "en") as Record<string, unknown>;
@@ -279,7 +283,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-002d: includes image from photoOptimizedUrl",
     () => {
       const result = generateAgentJsonLd(mockAgent as never, "en") as Record<string, unknown>;
@@ -287,7 +291,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-002e: includes telephone from agent.phone",
     () => {
       const result = generateAgentJsonLd(mockAgent as never, "en") as Record<string, unknown>;
@@ -295,7 +299,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-002f: includes areaServed with @type: 'Place' and addressCountry: 'CR'",
     () => {
       const result = generateAgentJsonLd(mockAgent as never, "en") as Record<string, unknown>;
@@ -306,7 +310,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-002g: falls back to photoUrl when photoOptimizedUrl is null",
     () => {
       const result = generateAgentJsonLd(mockAgentNoOptimizedPhoto as never, "en") as Record<
@@ -317,7 +321,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-002h: URL includes locale prefix and agent slug",
     () => {
       const result = generateAgentJsonLd(mockAgent as never, "en") as Record<string, unknown>;
@@ -325,7 +329,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-002i: uses bioEs for description when locale is 'es'",
     () => {
       const result = generateAgentJsonLd(mockAgent as never, "es") as Record<string, unknown>;
@@ -333,7 +337,7 @@ describe("generateAgentJsonLd (4.4-UNIT-002)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-002j: includes email when present",
     () => {
       const result = generateAgentJsonLd(mockAgent as never, "en") as Record<string, unknown>;
@@ -357,7 +361,7 @@ describe("generateBreadcrumbJsonLd (4.4-UNIT-005)", () => {
     },
   ];
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-005a: returns object with @type: 'BreadcrumbList'",
     () => {
       const result = generateBreadcrumbJsonLd(breadcrumbItems);
@@ -365,7 +369,7 @@ describe("generateBreadcrumbJsonLd (4.4-UNIT-005)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-005b: includes @context: 'https://schema.org'",
     () => {
       const result = generateBreadcrumbJsonLd(breadcrumbItems);
@@ -373,7 +377,7 @@ describe("generateBreadcrumbJsonLd (4.4-UNIT-005)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-005c: itemListElement is an array with correct length",
     () => {
       const result = generateBreadcrumbJsonLd(breadcrumbItems) as Record<string, unknown>;
@@ -383,7 +387,7 @@ describe("generateBreadcrumbJsonLd (4.4-UNIT-005)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-005d: each item has @type: 'ListItem', position, name, and item (href)",
     () => {
       const result = generateBreadcrumbJsonLd(breadcrumbItems) as Record<string, unknown>;
@@ -398,7 +402,7 @@ describe("generateBreadcrumbJsonLd (4.4-UNIT-005)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-005e: positions are correctly numbered (1-based)",
     () => {
       const result = generateBreadcrumbJsonLd(breadcrumbItems) as Record<string, unknown>;
@@ -409,7 +413,7 @@ describe("generateBreadcrumbJsonLd (4.4-UNIT-005)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-005f: item (href) values match the provided breadcrumb hrefs",
     () => {
       const result = generateBreadcrumbJsonLd(breadcrumbItems) as Record<string, unknown>;
@@ -421,7 +425,7 @@ describe("generateBreadcrumbJsonLd (4.4-UNIT-005)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-005g: name values match the provided breadcrumb names",
     () => {
       const result = generateBreadcrumbJsonLd(breadcrumbItems) as Record<string, unknown>;
@@ -432,7 +436,7 @@ describe("generateBreadcrumbJsonLd (4.4-UNIT-005)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.4-UNIT-005h: handles single-item breadcrumb (e.g. homepage only)",
     () => {
       const singleItem = [{ position: 1, name: "Home", href: "https://remax-altitud.cr/en" }];
@@ -448,7 +452,7 @@ describe("generateBreadcrumbJsonLd (4.4-UNIT-005)", () => {
 // ---------------------------------------------------------------------------
 
 describe("generatePlaceJsonLd (AC #3 — Place schema for area pages)", () => {
-  it.skip(
+  it(
     "[P1] returns object with @type: 'Place'",
     () => {
       const result = generatePlaceJsonLd(mockArea as never, "en");
@@ -456,7 +460,7 @@ describe("generatePlaceJsonLd (AC #3 — Place schema for area pages)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] includes area name for locale 'en'",
     () => {
       const result = generatePlaceJsonLd(mockArea as never, "en") as Record<string, unknown>;
@@ -464,7 +468,7 @@ describe("generatePlaceJsonLd (AC #3 — Place schema for area pages)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] includes area description from descriptionEn for locale 'en'",
     () => {
       const result = generatePlaceJsonLd(mockArea as never, "en") as Record<string, unknown>;
@@ -472,7 +476,7 @@ describe("generatePlaceJsonLd (AC #3 — Place schema for area pages)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] includes address with addressCountry: 'CR'",
     () => {
       const result = generatePlaceJsonLd(mockArea as never, "en") as Record<string, unknown>;
@@ -481,7 +485,7 @@ describe("generatePlaceJsonLd (AC #3 — Place schema for area pages)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] URL includes locale prefix and area slug",
     () => {
       const result = generatePlaceJsonLd(mockArea as never, "en") as Record<string, unknown>;

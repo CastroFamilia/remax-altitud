@@ -2,9 +2,9 @@
  * Story 4.4: SEO Architecture & WordPress Redirects
  * Unit tests for WordPress static redirect map and URL pattern detection helpers
  *
- * TDD Phase: RED — all tests are it.skip() until redirects.ts and
+ * TDD Phase: RED — all tests are it() until redirects.ts and
  * wordpress-redirect-middleware.ts are implemented.
- * Remove it.skip() per test when implementing to verify green phase.
+ * Remove it() per test when implementing to verify green phase.
  *
  * Covers:
  *   4.4-UNIT-003 — WordPress 301 redirect data shape: /property/:id → correct destination (AC #7, R-001)
@@ -18,7 +18,7 @@
  * Environment: node (pure functions, no JSX, no jsdom)
  */
 
-import { vi, describe, it, expect } from "vitest";
+import { describe, it, expect } from "vitest";
 
 // ---------------------------------------------------------------------------
 // Module mocks — MUST appear BEFORE any imports of the module under test
@@ -43,7 +43,7 @@ import {
 // ---------------------------------------------------------------------------
 
 describe("staticRedirects data shape (4.4-UNIT-003)", () => {
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-003a: /contact entry has destination: '/en/contact' and permanent: true",
     () => {
       const entry = staticRedirects.find((r: RedirectEntry) => r.source === "/contact");
@@ -53,7 +53,7 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-003b: /listings entry has destination: '/en/search' and permanent: true",
     () => {
       const entry = staticRedirects.find((r: RedirectEntry) => r.source === "/listings");
@@ -63,7 +63,7 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-003c: /agents entry has destination: '/en/agents' and permanent: true",
     () => {
       const entry = staticRedirects.find((r: RedirectEntry) => r.source === "/agents");
@@ -73,7 +73,7 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-003d: all entries with permanent: true will result in HTTP 301 (Next.js convention)",
     () => {
       // All staticRedirects should have permanent: true (301)
@@ -85,7 +85,7 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-003e: /agentes entry redirects to '/es/agents'",
     () => {
       const entry = staticRedirects.find((r: RedirectEntry) => r.source === "/agentes");
@@ -95,7 +95,7 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-003f: /contacto entry redirects to '/es/contact'",
     () => {
       const entry = staticRedirects.find((r: RedirectEntry) => r.source === "/contacto");
@@ -105,7 +105,7 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-003g: /propiedades entry redirects to '/es/search'",
     () => {
       const entry = staticRedirects.find((r: RedirectEntry) => r.source === "/propiedades");
@@ -115,7 +115,7 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.4-UNIT-003h: staticRedirects is a non-empty array",
     () => {
       expect(Array.isArray(staticRedirects)).toBe(true);
@@ -123,7 +123,7 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.4-UNIT-003i: each entry has required shape: source, destination, permanent",
     () => {
       for (const entry of staticRedirects as RedirectEntry[]) {
@@ -134,7 +134,7 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.4-UNIT-003j: EN static page redirects cover all major legacy WP pages",
     () => {
       const sources = staticRedirects.map((r: RedirectEntry) => r.source);
@@ -150,14 +150,14 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
 // ---------------------------------------------------------------------------
 
 describe("isWordPressPropertyUrl (4.4-UNIT-006 — property URL detection)", () => {
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-006a: /property/123 returns '123'",
     () => {
       expect(isWordPressPropertyUrl("/property/123")).toBe("123");
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-006b: /listing/beautiful-home-123 returns 'beautiful-home-123'",
     () => {
       expect(isWordPressPropertyUrl("/listing/beautiful-home-123")).toBe(
@@ -166,7 +166,7 @@ describe("isWordPressPropertyUrl (4.4-UNIT-006 — property URL detection)", () 
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-006c: /en/property/valid-slug returns null (new URL — not WP)",
     () => {
       // New-platform URLs start with /en/ or /es/ — should NOT be matched as WP URLs
@@ -174,28 +174,28 @@ describe("isWordPressPropertyUrl (4.4-UNIT-006 — property URL detection)", () 
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-006d: /propiedad/456 returns '456' (Spanish WP pattern)",
     () => {
       expect(isWordPressPropertyUrl("/propiedad/456")).toBe("456");
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-006e: /search returns null (not a property URL)",
     () => {
       expect(isWordPressPropertyUrl("/search")).toBeNull();
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-006f: empty string returns null",
     () => {
       expect(isWordPressPropertyUrl("")).toBeNull();
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.4-UNIT-006g: /property/123/extra-segment returns null (too many segments)",
     () => {
       // WP URLs are /property/:id (exactly one segment) — not /property/id/extra
@@ -203,7 +203,7 @@ describe("isWordPressPropertyUrl (4.4-UNIT-006 — property URL detection)", () 
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.4-UNIT-006h: trailing slash /property/123/ is handled (returns '123')",
     () => {
       // Optional trailing slash — return the ID segment
@@ -218,21 +218,21 @@ describe("isWordPressPropertyUrl (4.4-UNIT-006 — property URL detection)", () 
 // ---------------------------------------------------------------------------
 
 describe("isWordPressAgentUrl (AC #7 — agent URL detection)", () => {
-  it.skip(
+  it(
     "[P0] /agent/john-doe returns 'john-doe'",
     () => {
       expect(isWordPressAgentUrl("/agent/john-doe")).toBe("john-doe");
     },
   );
 
-  it.skip(
+  it(
     "[P0] /agente/juan-garcia returns 'juan-garcia'",
     () => {
       expect(isWordPressAgentUrl("/agente/juan-garcia")).toBe("juan-garcia");
     },
   );
 
-  it.skip(
+  it(
     "[P0] /en/agents/emma-smith returns null (new URL — not WP)",
     () => {
       // New-platform URLs start with /en/ or /es/ — should NOT be matched as WP URLs
@@ -240,21 +240,21 @@ describe("isWordPressAgentUrl (AC #7 — agent URL detection)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] /agents returns null (index page — not a single agent URL)",
     () => {
       expect(isWordPressAgentUrl("/agents")).toBeNull();
     },
   );
 
-  it.skip(
+  it(
     "[P1] /property/123 returns null (not an agent URL)",
     () => {
       expect(isWordPressAgentUrl("/property/123")).toBeNull();
     },
   );
 
-  it.skip(
+  it(
     "[P2] /agent/123/extra-segment returns null (too many segments)",
     () => {
       expect(isWordPressAgentUrl("/agent/123/extra")).toBeNull();

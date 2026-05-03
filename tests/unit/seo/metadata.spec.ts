@@ -2,8 +2,8 @@
  * Story 4.4: SEO Architecture & WordPress Redirects
  * Unit tests for hreflang and canonical URL helpers in src/lib/seo/metadata.ts
  *
- * TDD Phase: RED — all tests are it.skip() until metadata.ts is implemented.
- * Remove it.skip() per test when implementing to verify green phase.
+ * TDD Phase: RED — all tests are it() until metadata.ts is implemented.
+ * Remove it() per test when implementing to verify green phase.
  *
  * Covers:
  *   4.4-UNIT-004 — generateAlternateLanguages() produces correct hreflang for EN + ES (AC #5, R-007)
@@ -43,7 +43,7 @@ import {
 // ---------------------------------------------------------------------------
 
 describe("generateAlternateLanguages (4.4-UNIT-004)", () => {
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-004a: returns array with 2 entries (en + es)",
     () => {
       const result = generateAlternateLanguages("/property/beautiful-mountain-home");
@@ -52,7 +52,7 @@ describe("generateAlternateLanguages (4.4-UNIT-004)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-004b: EN entry has hrefLang: 'en' and href containing '/en/property/beautiful-mountain-home'",
     () => {
       const result = generateAlternateLanguages("/property/beautiful-mountain-home");
@@ -62,7 +62,7 @@ describe("generateAlternateLanguages (4.4-UNIT-004)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-004c: ES entry has hrefLang: 'es' and href containing '/es/property/beautiful-mountain-home'",
     () => {
       const result = generateAlternateLanguages("/property/beautiful-mountain-home");
@@ -72,7 +72,7 @@ describe("generateAlternateLanguages (4.4-UNIT-004)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-004d: all hrefs start with 'https://remax-altitud.cr'",
     () => {
       const result = generateAlternateLanguages("/property/beautiful-mountain-home");
@@ -82,7 +82,7 @@ describe("generateAlternateLanguages (4.4-UNIT-004)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-004e: path is appended correctly with no double slashes",
     () => {
       const result = generateAlternateLanguages("/property/beautiful-mountain-home");
@@ -94,7 +94,7 @@ describe("generateAlternateLanguages (4.4-UNIT-004)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-004f: works correctly for agent slug paths",
     () => {
       const result = generateAlternateLanguages("/agents/emma-smith");
@@ -105,7 +105,7 @@ describe("generateAlternateLanguages (4.4-UNIT-004)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-004g: each entry has both hrefLang and href properties",
     () => {
       const result = generateAlternateLanguages("/property/test-slug");
@@ -124,7 +124,7 @@ describe("generateAlternateLanguages (4.4-UNIT-004)", () => {
 // ---------------------------------------------------------------------------
 
 describe("generateCanonicalUrl (AC #8)", () => {
-  it.skip(
+  it(
     "[P0] returns correct canonical URL for locale='en' and property path",
     () => {
       const result = generateCanonicalUrl("en", "/property/beautiful-mountain-home");
@@ -134,7 +134,7 @@ describe("generateCanonicalUrl (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] returns correct URL for ES locale",
     () => {
       const result = generateCanonicalUrl("es", "/property/beautiful-mountain-home");
@@ -144,7 +144,7 @@ describe("generateCanonicalUrl (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] returns correct URL for agent path",
     () => {
       const result = generateCanonicalUrl("en", "/agents/emma-smith");
@@ -152,7 +152,7 @@ describe("generateCanonicalUrl (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] URL starts with the SITE_ORIGIN constant",
     () => {
       const result = generateCanonicalUrl("en", "/search");
@@ -160,7 +160,7 @@ describe("generateCanonicalUrl (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] URL has no double slashes between origin and path",
     () => {
       const result = generateCanonicalUrl("en", "/property/test");
@@ -174,7 +174,7 @@ describe("generateCanonicalUrl (AC #8)", () => {
 // ---------------------------------------------------------------------------
 
 describe("buildAlternatesMetadata (AC #5, #8)", () => {
-  it.skip(
+  it(
     "[P0] returns object with 'languages' key",
     () => {
       const result = buildAlternatesMetadata("/property/beautiful-mountain-home");
@@ -182,7 +182,7 @@ describe("buildAlternatesMetadata (AC #5, #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] languages.en contains the EN canonical URL",
     () => {
       const result = buildAlternatesMetadata("/property/beautiful-mountain-home");
@@ -192,7 +192,7 @@ describe("buildAlternatesMetadata (AC #5, #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] languages.es contains the ES canonical URL",
     () => {
       const result = buildAlternatesMetadata("/property/beautiful-mountain-home");
@@ -202,7 +202,7 @@ describe("buildAlternatesMetadata (AC #5, #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] languages object has exactly 2 entries (en + es for Phase 1)",
     () => {
       const result = buildAlternatesMetadata("/property/test-slug");
@@ -210,7 +210,7 @@ describe("buildAlternatesMetadata (AC #5, #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] languages keys match hrefLang values ('en', 'es')",
     () => {
       const result = buildAlternatesMetadata("/property/test-slug");

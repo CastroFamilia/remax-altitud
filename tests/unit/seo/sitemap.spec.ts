@@ -2,8 +2,8 @@
  * Story 4.4: SEO Architecture & WordPress Redirects
  * Integration-style unit tests for sitemap generation and robots.txt
  *
- * TDD Phase: RED — all tests are it.skip() until sitemap.ts and robots.ts are implemented.
- * Remove it.skip() per test when implementing to verify green phase.
+ * TDD Phase: RED — all tests are it() until sitemap.ts and robots.ts are implemented.
+ * Remove it() per test when implementing to verify green phase.
  *
  * Covers:
  *   4.4-UNIT-007 — XML sitemap endpoint returns 200 and contains listing/agent/area URLs (AC #6, R-012)
@@ -69,7 +69,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     vi.clearAllMocks();
   });
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-007a: returns an array (MetadataRoute.Sitemap)",
     async () => {
       const { default: sitemap } = (await import("@/app/sitemap")) as {
@@ -80,7 +80,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-007b: result is non-empty (has at least static routes)",
     async () => {
       const { default: sitemap } = (await import("@/app/sitemap")) as {
@@ -91,7 +91,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-007c: contains EN listing URLs for all property slugs",
     async () => {
       const { default: sitemap } = (await import("@/app/sitemap")) as {
@@ -108,7 +108,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-007d: contains ES listing URLs for all property slugs",
     async () => {
       const { default: sitemap } = (await import("@/app/sitemap")) as {
@@ -122,7 +122,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] 4.4-UNIT-007e: contains agent URLs for all agent slugs (both locales)",
     async () => {
       const { default: sitemap } = (await import("@/app/sitemap")) as {
@@ -135,7 +135,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-007f: contains static route '/' (home) for both locales",
     async () => {
       const { default: sitemap } = (await import("@/app/sitemap")) as {
@@ -148,7 +148,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-007g: each entry has required fields: url, lastModified, changeFrequency, priority",
     async () => {
       const { default: sitemap } = (await import("@/app/sitemap")) as {
@@ -162,7 +162,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-007h: home page (/ route) has priority 1.0",
     async () => {
       const { default: sitemap } = (await import("@/app/sitemap")) as {
@@ -176,7 +176,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 4.4-UNIT-007i: property listings have changeFrequency 'daily'",
     async () => {
       const { default: sitemap } = (await import("@/app/sitemap")) as {
@@ -190,7 +190,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.4-UNIT-007j: returns empty array gracefully when DB query fails",
     async () => {
       // Re-mock to throw error
@@ -210,7 +210,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 4.4-UNIT-007k: calls getAllPropertySlugs and getAllAgentSlugs in parallel",
     async () => {
       const propertiesModule = (await import("@/lib/db/queries/properties")) as unknown as {
@@ -236,7 +236,7 @@ describe("sitemap() function (4.4-UNIT-007)", () => {
 // ---------------------------------------------------------------------------
 
 describe("robots() function (AC #8, NFR27)", () => {
-  it.skip(
+  it(
     "[P0] robots() returns an object with rules and sitemap fields",
     async () => {
       const { default: robots } = (await import("@/app/robots")) as {
@@ -248,7 +248,7 @@ describe("robots() function (AC #8, NFR27)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] robots() sitemap field points to the correct sitemap URL",
     async () => {
       const { default: robots } = (await import("@/app/robots")) as {
@@ -259,7 +259,7 @@ describe("robots() function (AC #8, NFR27)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] robots() rules allow '/' for all user agents",
     async () => {
       const { default: robots } = (await import("@/app/robots")) as {
@@ -275,7 +275,7 @@ describe("robots() function (AC #8, NFR27)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] robots() disallows /api/ and search pages",
     async () => {
       const { default: robots } = (await import("@/app/robots")) as {
