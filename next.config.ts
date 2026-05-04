@@ -1,11 +1,44 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 import createNextIntlPlugin from "next-intl/plugin";
+import { staticRedirects } from "./src/lib/seo/redirects";
 
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // images.remotePatterns — Task 0, Story 4.1
+  // Property images are stored locally as WebP files at relative /property-images/... paths
+  // and do NOT need remotePatterns (same-origin static files).
+  // Azure CDN entries are added here in case any component references original CDN URLs
+  // (e.g., map popups from Story 3.2, agent photos from the RE/MAX CCA API).
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.azurefd.net", // Azure Front Door CDN — RE/MAX CCA API photos
+      },
+      {
+        protocol: "https",
+        hostname: "*.azureedge.net", // Azure CDN edge — RE/MAX CCA raw property images
+      },
+      {
+        protocol: "https",
+        hostname: "*.blob.core.windows.net", // Azure Blob Storage fallback
+      },
+      {
+        protocol: "https",
+        hostname: "balloon.remax-cca.com", // RE/MAX CCA user-uploaded content (agent photos)
+      },
+    ],
+  },
+  // sharp is a native module — opt it out of Server Component bundling so
+  // Next.js uses the native Node.js require() path instead of Webpack bundling.
+  // `serverExternalPackages` is the stable key in Next.js 15+ (was
+  // `experimental.serverComponentsExternalPackages` before v15.0.0).
+  // Note: sharp is also on Next.js's built-in auto-opt-out list, so this is
+  // belt-and-suspenders but explicit is better than implicit.
+  serverExternalPackages: ["sharp"],
 
   async headers() {
     return [
@@ -22,6 +55,15 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+
+  // Task 5 (Story 4.4): WordPress static URL redirects — edge-level, < 10ms
+  // Uses static import at top of file (./src/lib/seo/redirects) — Next.js 15
+  // transpiles next.config.ts including its imports. Static import is simpler
+  // and more reliable than dynamic import for config-time use.
+  // Performance (NFR26): matched at CDN/proxy layer before Node.js handles request.
+  async redirects() {
+    return staticRedirects;
   },
 };
 

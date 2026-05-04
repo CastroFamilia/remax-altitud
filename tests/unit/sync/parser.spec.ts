@@ -59,10 +59,10 @@ describe("parsePropertyArray", () => {
     expect(records[0].lotSizeM2).toBe(31);
   });
 
-  it("sets isExpired=true for past ExpirationDate", () => {
+  it("sets isExpired=false even for past ExpirationDate (expiration ignored)", () => {
     const { records } = parsePropertyArray(loadFixture("properties-pz-expired.json"));
     expect(records).toHaveLength(1);
-    expect(records[0].isExpired).toBe(true);
+    expect(records[0].isExpired).toBe(false);
   });
 
   it("returns an error payload when the root is not an array", () => {

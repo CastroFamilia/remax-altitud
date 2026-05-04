@@ -11,19 +11,20 @@ export function ListingRemovedState() {
   const whatsAppHref = buildWhatsAppUrl(offices[0], t("whatsappMessage"));
 
   return (
-    <EmptyState
-      icon={<Home className="h-12 w-12 text-muted-foreground" aria-hidden="true" />}
-      title={t("title")}
-      description={t("description")}
-      primaryAction={{
-        label: t("browseSimilar"),
-        // TODO: change to /search when Epic 3 is implemented
-        href: "/",
-      }}
-      secondaryAction={{
-        label: t("contactAgent"),
-        href: whatsAppHref,
-      }}
-    />
+    <div data-testid="listing-removed-state">
+      <EmptyState
+        icon={<Home className="h-12 w-12 text-muted-foreground" aria-hidden="true" />}
+        title={t("title")}
+        description={t("description")}
+        primaryAction={{
+          label: t("browseSimilar"),
+          href: "/search",
+        }}
+        secondaryAction={{
+          label: t("contactAgent"),
+          href: whatsAppHref,
+        }}
+      />
+    </div>
   );
 }

@@ -271,7 +271,16 @@
       "description": "No hay propiedades que coincidan con tus filtros en esta zona. Intenta ajustar tu búsqueda o cuéntale a un agente lo que buscas.",
       "adjustFilters": "Ajustar filtros",
       "tellAgent": "Habla con un agente",
-      "whatsappMessage": "Hola, estoy buscando una propiedad..."
+      "whatsappMessage": "Hola, estoy buscando una propiedad...",
+      "whatsappIntro": "Hola, estoy buscando:",
+      "whatsappAnyProperty": "cualquier propiedad",
+      "criteriaType": "Tipo",
+      "criteriaMinPrice": "Precio mínimo",
+      "criteriaMaxPrice": "Precio máximo",
+      "criteriaBedrooms": "Habitaciones",
+      "criteriaBathrooms": "Baños",
+      "criteriaArea": "Zona",
+      "criteriaTags": "Etiquetas"
     },
     "listingRemoved": {
       "title": "Esta propiedad ya no está disponible",
@@ -279,6 +288,365 @@
       "browseSimilar": "Buscar similares",
       "contactAgent": "Contactar agente",
       "whatsappMessage": "Hola, estaba viendo una propiedad..."
+    }
+  },
+  "NearMe": {
+    "label": "Cerca de mí",
+    "loading": "Localizando...",
+    "fallbackMessage": "Ubicación no disponible — mostrando propiedades cerca de nuestra oficina en Pérez Zeledón",
+    "fallbackDenied": "Ubicación no disponible — mostrando propiedades cerca de nuestra oficina en Pérez Zeledón",
+    "fallbackError": "Error de ubicación — mostrando propiedades cerca de nuestra oficina",
+    "fallbackUnsupported": "Ubicación no compatible — mostrando propiedades cerca de nuestra oficina",
+    "fallbackDismiss": "Cerrar"
+  },
+  "SearchPage": {
+    "title": "Buscar Propiedades",
+    "description": "Busca casas, terrenos y propiedades comerciales en Costa Rica",
+    "viewToggle": {
+      "split": "Vista dividida",
+      "map": "Solo mapa",
+      "grid": "Solo lista"
+    },
+    "filterBar": {
+      "label": "Filtros",
+      "loading": "Cargando filtros"
+    },
+    "filters": {
+      "type": "Tipo",
+      "typeAll": "Todos los Tipos",
+      "price": "Precio",
+      "pricePlaceholder": "$0 – Cualquiera",
+      "bedrooms": "Habitaciones",
+      "bedroomsAny": "Cualquiera",
+      "bathrooms": "Baños",
+      "bathroomsAny": "Cualquiera",
+      "lotSize": "Tamaño del Lote",
+      "location": "Ubicación",
+      "locationAll": "Todas las Áreas",
+      "sort": "Ordenar",
+      "sortNewest": "Más Reciente",
+      "sortPriceAsc": "Precio ↑",
+      "sortPriceDesc": "Precio ↓",
+      "sortRelevance": "Relevancia",
+      "clearAll": "Borrar todo",
+      "activeChip": "{label}: {value}",
+      "dismiss": "Eliminar filtro {label}",
+      "propertyTypes": {
+        "Casa": "Casa",
+        "Apartamento": "Apartamento",
+        "Lote": "Lote",
+        "Terreno": "Terreno",
+        "Comercial": "Comercial",
+        "Finca": "Finca"
+      }
+    },
+    "pullUpHandle": {
+      "propertiesCount": "{count, plural, one {# propiedad} other {# propiedades}}"
+    },
+    "pullUpSheet": {
+      "regionLabel": "Lista de propiedades",
+      "close": "Volver al mapa",
+      "closeLabel": "Cerrar lista de propiedades y volver al mapa"
+    },
+    "sidePanel": {
+      "show": "Mostrar listados",
+      "hide": "Ocultar listados"
+    },
+    "grid": {
+      "page": "Página {page} de {total}",
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "showing": "Mostrando {count} de {total} propiedades",
+      "empty": "No se encontraron propiedades"
+    },
+    "lifestyleTags": {
+      "label": "Estilo de vida",
+      "chips": {
+        "Rental Potential": "Potencial de renta",
+        "Investment Property": "Propiedad de inversión",
+        "Vacation Home": "Casa vacacional",
+        "Retire": "Paraíso de retiro",
+        "Commercial": "Comercial"
+      }
+    },
+    "presets": {
+      "label": "Búsquedas rápidas",
+      "mountainRetirement": "Casas de retiro en la montaña",
+      "beachInvestment": "Terrenos de inversión en la playa",
+      "rentalPotential": "Propiedades para renta",
+      "vacationHome": "Casas vacacionales"
+    },
+    "MapView": {
+      "ariaLabel": "Mapa de ubicaciones de propiedades",
+      "loading": "Cargando mapa...",
+      "closePopup": "Cerrar vista previa de propiedad",
+      "viewDetails": "Ver Detalles",
+      "zmtStatus": {
+        "titled": "Titulada",
+        "concession": "Concesión",
+        "zmt_restricted": "Zona Restringida ZMT"
+      },
+      "specs": {
+        "beds": "{count} habitación",
+        "baths": "{count} baño",
+        "lotSize": "{size} m²"
+      }
+    }
+  },
+  "PropertyCard": {
+    "saveProperty": "Guardar propiedad",
+    "removeFromSaved": "Quitar de guardados",
+    "shortlistFull": "Lista llena (máx. 20)",
+    "region": {
+      "mountain": "Montaña",
+      "beach": "Playa"
+    },
+    "zmtStatus": {
+      "titled": "Propiedad Titulada",
+      "concession": "Concesión",
+      "zmt_restricted": "Restringida ZMT"
+    },
+    "specs": {
+      "beds": "{count} hab.",
+      "baths": "{count} baño",
+      "lot": "{size}",
+      "built": "{size} construido"
+    },
+    "share": "Compartir propiedad",
+    "viewDetails": "Ver detalles",
+    "linkCopied": "¡Enlace copiado!"
+  },
+  "PropertyUnavailable": {
+    "heading": "Esta propiedad ya no está disponible",
+    "subtext": "Puede que haya sido vendida o retirada de nuestros listados.",
+    "similarHeading": "Propiedades similares que podrían interesarte",
+    "browseCta": "Ver todas las propiedades",
+    "similarCta": "Ver propiedad"
+  },
+  "UnitToggle": {
+    "label": "Cambiar unidades de área",
+    "metric": "m²",
+    "imperial": "ft²"
+  },
+  "PropertyGallery": {
+    "openLightbox": "Ver todas las fotos",
+    "closeLightbox": "Cerrar visor de fotos",
+    "photoCount": "Foto {current} de {total}",
+    "nextPhoto": "Foto siguiente",
+    "prevPhoto": "Foto anterior",
+    "videoTitle": "Video tour de la propiedad",
+    "noPhotos": "No hay fotos disponibles",
+    "thumbnailStripLabel": "Fotos de {title}"
+  },
+  "ListingDetail": {
+    "description": "Descripción",
+    "features": "Características y Amenidades",
+    "specs": {
+      "price": "Precio",
+      "bedrooms": "{count} hab.",
+      "bathrooms": "{count} baños",
+      "lotSize": "Terreno",
+      "builtArea": "Construcción",
+      "zmtStatus": "Tenencia"
+    },
+    "zmtStatus": {
+      "titled": "Propiedad Titulada",
+      "concession": "Concesión",
+      "zmt_restricted": "Zona Marítimo Terrestre Restringida"
+    },
+    "noAgentAssigned": "Contactar RE/MAX Altitud",
+    "agentSection": "Agente a cargo",
+    "unknownOffice": "RE/MAX Altitud"
+  },
+  "AgentCard": {
+    "agentCardLabel": "Agente a cargo: {name}",
+    "agentPhotoAlt": "Foto de {name}",
+    "listings": "propiedades",
+    "contactAgent": "Contactar Agente",
+    "whatsapp": "WhatsApp",
+    "email": "Correo",
+    "emailSubject": "Consulta: {title} — Ref {ref}",
+    "emailBody": "Hola, me interesa la propiedad {title} (Ref: {ref}).",
+    "transparencyNote": "Este agente puede usar la traducción integrada de WhatsApp para conversaciones multilingües.",
+    "noWhatsApp": "WhatsApp no disponible",
+    "language": {
+      "en": "Inglés",
+      "es": "Español",
+      "de": "Alemán",
+      "fr": "Francés",
+      "it": "Italiano",
+      "pt": "Portugués"
+    }
+  },
+  "AgentProfile": {
+    "listings": "propiedades",
+    "whatsapp": "WhatsApp",
+    "email": "Correo",
+    "generalInquiryEn": "Hola {name}, me gustaría obtener más información sobre sus propiedades.",
+    "noListings": "{name} no tiene propiedades activas en este momento.",
+    "listingsHeading": "Propiedades de {name}",
+    "noAgentsMatch": "Ningún agente coincide con tus filtros.",
+    "clearFilters": "Limpiar filtros",
+    "indexPageTitle": "Conoce a Nuestros Agentes",
+    "indexPageDescription": "Explora los agentes de RE/MAX Altitud — encuentra uno que hable tu idioma y conozca tu área.",
+    "filterByOffice": "Filtrar por oficina",
+    "filterByLanguage": "Filtrar por idioma",
+    "allOffices": "Todas las oficinas",
+    "allLanguages": "Todos los idiomas",
+    "defaultMetaDescription": "Ver las propiedades e información de contacto de {name} en RE/MAX Altitud.",
+    "agentNoLongerActive": "Este agente ya no está activo.",
+    "backToAgents": "Ver todos los agentes",
+    "language": {
+      "en": "Inglés",
+      "es": "Español",
+      "de": "Alemán",
+      "fr": "Francés",
+      "it": "Italiano",
+      "pt": "Portugués"
+    }
+  },
+  "StickyMobileCTA": {
+    "stickyCtaLabel": "Contactar agente",
+    "whatsapp": "WhatsApp",
+    "email": "Correo"
+  },
+  "StickySpecsBar": {
+    "price": "Precio",
+    "beds": "{count} hab.",
+    "baths": "{count} baños",
+    "lot": "Terreno",
+    "built": "Construido",
+    "toggleUnits": "Cambiar unidades de área",
+    "zmtStatus": {
+      "titled": "Propiedad Titulada",
+      "concession": "Concesión",
+      "zmt_restricted": "Zona Marítimo Terrestre Restringida"
+    }
+  },
+  "Breadcrumbs": {
+    "home": "Inicio",
+    "search": "Buscar",
+    "agents": "Agentes",
+    "ariaLabel": "Migas de pan"
+  },
+  "AgentAreaServed": {
+    "name": "Zona Sur, Costa Rica"
+  },
+  "SimilarProperties": {
+    "heading": "Propiedades Similares",
+    "browseCta": "Ver todas las propiedades",
+    "carouselAriaLabel": "Carrusel de propiedades similares",
+    "keyboardHint": "Usa las teclas de flecha o desliza para explorar propiedades similares",
+    "loadingAriaLabel": "Cargando propiedades similares"
+  },
+  "SellerPage": {
+    "meta": {
+      "title": "Publicar su Propiedad | RE/MAX Altitud",
+      "description": "Publique su propiedad en Costa Rica con RE/MAX Altitud — el equipo #1 en bienes raíces de la Zona Sur. Complete nuestro sencillo formulario de 3 pasos para conectar con un experto local.",
+      "ogTitle": "Venda su Propiedad con RE/MAX Altitud",
+      "ogDescription": "Conéctese con un agente RE/MAX local en 3 minutos. Sin necesidad de cuenta."
+    },
+    "hero": {
+      "heading": "Publique su Propiedad con el Equipo #1 de la Zona Sur",
+      "subheading": "De Pérez Zeledón a Dominical — nuestros agentes conocen cada hectárea.",
+      "benefit1": "Exposición en la red global de RE/MAX",
+      "benefit2": "Experiencia en el mercado local desde 2008",
+      "benefit3": "Sin honorarios por adelantado — solo comisión",
+      "process": "Cómo funciona: Complete nuestro formulario de 3 pasos → Sea asignado a un agente local → Programe una visita a la propiedad",
+      "testimonial1": "\"RE/MAX Altitud vendió nuestra finca en 3 meses al precio solicitado.\" — Carlos, Rivas",
+      "startButton": "Comenzar",
+      "startButtonAriaLabel": "Iniciar el formulario de publicación de propiedad"
+    },
+    "form": {
+      "progressAriaLabel": "Progreso del formulario: paso {current} de {total}",
+      "step1Label": "Básicos",
+      "step2Label": "Detalles",
+      "step3Label": "Contacto",
+      "step1TimeEstimate": "Aproximadamente 60 segundos",
+      "step2TimeEstimate": "Aproximadamente 90 segundos",
+      "step3TimeEstimate": "Aproximadamente 30 segundos",
+      "nextButton": "Siguiente",
+      "nextButtonAriaLabel": "Continuar al siguiente paso",
+      "backButton": "Atrás",
+      "backButtonAriaLabel": "Regresar al paso anterior",
+      "submitButton": "Enviar mi Propiedad",
+      "submitButtonAriaLabel": "Enviar la solicitud de publicación de su propiedad",
+      "submittingButton": "Enviando...",
+      "step1": {
+        "heading": "Cuéntenos sobre su propiedad",
+        "propertyTypeLabel": "Tipo de Propiedad",
+        "propertyTypeAriaLabel": "Seleccione el tipo de propiedad",
+        "typeCasa": "Casa",
+        "typeLote": "Lote / Terreno",
+        "typeFinca": "Finca",
+        "typeCondominio": "Condominio",
+        "typeCommercial": "Comercial",
+        "locationLabel": "Ubicación",
+        "locationPlaceholder": "Ingrese la dirección o el punto de referencia más cercano",
+        "locationAriaLabel": "Ingrese la ubicación de la propiedad",
+        "locationMapAriaLabel": "Mapa interactivo — haga clic para marcar la ubicación de su propiedad",
+        "locationMapFallbackNote": "Mapa no disponible — por favor describa la ubicación en el campo de texto",
+        "sizeLabel": "Tamaño Aproximado",
+        "sizePlaceholder": "ej. 5000",
+        "sizeAriaLabel": "Ingrese el tamaño de la propiedad",
+        "sizeUnitAriaLabel": "Cambiar unidad de medida entre metros cuadrados, pies cuadrados y acres"
+      },
+      "step2": {
+        "heading": "Más sobre su propiedad",
+        "priceLabel": "Precio Esperado (USD)",
+        "pricePlaceholder": "ej. 250000",
+        "priceAriaLabel": "Ingrese su precio esperado en dólares estadounidenses",
+        "priceOptionalLabel": "(Opcional)",
+        "pricingHelpLabel": "Necesito ayuda con el precio",
+        "pricingHelpDescription": "Nuestro agente le proporcionará un Análisis de Mercado Comparativo (CMA) gratuito",
+        "descriptionLabel": "Descripción (opcional)",
+        "descriptionPlaceholder": "Describa su propiedad — características, estado, motivo de venta...",
+        "descriptionAriaLabel": "Describa su propiedad (opcional)",
+        "photosLabel": "Fotos (opcional)",
+        "photosDescription": "Agregue hasta 5 fotos (JPG, PNG — máx 10MB cada una)",
+        "photosAriaLabel": "Subir fotos de la propiedad (opcional)",
+        "photosButton": "Elegir Fotos",
+        "bedroomsLabel": "Habitaciones",
+        "bedroomsAriaLabel": "Número de habitaciones",
+        "bathroomsLabel": "Baños",
+        "bathroomsAriaLabel": "Número de baños"
+      },
+      "step3": {
+        "heading": "¿Cómo podemos contactarle?",
+        "nameLabel": "Nombre Completo",
+        "namePlaceholder": "Su nombre",
+        "nameAriaLabel": "Ingrese su nombre completo",
+        "phoneLabel": "Teléfono / WhatsApp",
+        "phonePlaceholder": "+506 8888-8888",
+        "phoneAriaLabel": "Ingrese su número de teléfono o WhatsApp",
+        "phoneDescription": "Preferimos WhatsApp — su agente le contactará aquí",
+        "emailLabel": "Correo Electrónico (opcional)",
+        "emailPlaceholder": "su@correo.com",
+        "emailAriaLabel": "Ingrese su correo electrónico (opcional)",
+        "emailOptionalBadge": "Opcional",
+        "languageLabel": "Idioma Preferido",
+        "languageAriaLabel": "Seleccione su idioma de contacto preferido",
+        "languageEn": "English",
+        "languageEs": "Español"
+      },
+      "validation": {
+        "propertyTypeRequired": "Por favor seleccione un tipo de propiedad",
+        "locationRequired": "Por favor ingrese la ubicación de su propiedad",
+        "sizeRequired": "Por favor ingrese un tamaño aproximado",
+        "nameRequired": "Por favor ingrese su nombre",
+        "phoneRequired": "Por favor ingrese su número de teléfono",
+        "phoneInvalid": "Por favor ingrese un número de teléfono válido",
+        "emailInvalid": "Por favor ingrese una dirección de correo electrónico válida",
+        "priceInvalid": "Por favor ingrese un precio válido (solo números)"
+      }
+    },
+    "confirmation": {
+      "heading": "¡Propiedad Enviada Exitosamente!",
+      "subheading": "Su agente dedicado le contactará dentro de 24 horas.",
+      "agentMatchHeading": "Su Agente Asignado",
+      "whatsappButtonAriaLabel": "Contactar a {agentName} por WhatsApp",
+      "emailButtonAriaLabel": "Contactar a {agentName} por correo electrónico",
+      "browseWhileWaiting": "Mientras espera, explore lo que se vende en su área"
     }
   }
 }

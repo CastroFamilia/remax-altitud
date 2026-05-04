@@ -1,0 +1,60 @@
+name: Lighthouse CI (Nightly)
+
+# Task 14 (Story 4.4): Lighthouse CI gate — Advisory only (NOT a PR gate)
+# NFR28: Lighthouse score target ≥ 80 on listing detail + agent profile pages.
+# Runs nightly at 02:00 UTC against the staging environment.
+# Also triggerable manually via workflow_dispatch for ad-hoc audits.
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # 02:00 UTC nightly
+  workflow_dispatch: # Manual trigger for ad-hoc audits
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    name: Lighthouse SEO Audit
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js (standalone)
+        run: npm run build
+        env:
+          # Staging DB URL (set in GitHub environment secrets)
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+
+      - name: Start Next.js server
+        run: |
+          node .next/standalone/server.js &
+          echo "Waiting for server to be ready..."
+          npx wait-on http://localhost:3000 --timeout 60000
+        env:
+          PORT: 3000
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Run Lighthouse CI
+        run: lhci autorun --config=.lighthouserc.js
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results-${{ github.run_number }}
+          path: .lighthouseci/
+          retention-days: 30

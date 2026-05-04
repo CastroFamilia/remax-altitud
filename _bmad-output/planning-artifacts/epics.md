@@ -524,6 +524,7 @@ Epic 1 (Foundation) → Epic 2 (Data) → Epic 3 (Search) → Epic 4 (Listings/A
 Visitors can access a professionally branded, multilingual-ready platform with consistent visual identity, navigation, and static content pages.
 
 ### Story 1.1: Project Scaffolding & CI/CD Pipeline
+**GH Issue:** #71
 
 As a **developer**,
 I want a production-ready Next.js 15 project with PostgreSQL, Drizzle ORM, and automated CI/CD,
@@ -565,6 +566,7 @@ So that all subsequent features can be built on a solid, deployable foundation.
 ---
 
 ### Story 1.2: Design System & Token Foundation
+**GH Issue:** #72
 
 As a **visitor**,
 I want consistent, premium visual styling across the entire platform,
@@ -606,6 +608,7 @@ So that the site feels trustworthy and professionally designed on any device.
 ---
 
 ### Story 1.3: Core Layout & Navigation
+**GH Issue:** #73
 
 As a **visitor**,
 I want clear, consistent navigation that works beautifully on my phone or desktop,
@@ -647,6 +650,7 @@ So that I can find any section of the site within 2 taps.
 ---
 
 ### Story 1.4: Internationalization (EN/ES)
+**GH Issue:** #74
 
 As a **visitor**,
 I want the site to automatically display in my language and let me switch easily,
@@ -684,6 +688,7 @@ So that I can browse comfortably whether I speak English or Spanish.
 ---
 
 ### Story 1.5: Homepage Shell & Split-Hero
+**GH Issue:** #75
 
 As a **visitor**,
 I want a stunning homepage that immediately shows me mountain AND coast living options,
@@ -721,6 +726,7 @@ So that I understand RE/MAX Altitud's unique geographic coverage within 3 second
 ---
 
 ### Story 1.6: Static Content Pages
+**GH Issue:** #76
 
 As a **visitor**,
 I want to learn about RE/MAX Altitud's team, services, and how to contact them,
@@ -758,6 +764,7 @@ So that I can trust the company and reach out through my preferred channel.
 ---
 
 ### Story 1.7: Loading States, Empty States & Error Handling
+**GH Issue:** #77
 
 As a **visitor**,
 I want smooth loading indicators and helpful error messages,
@@ -795,6 +802,7 @@ So that I never feel lost or stuck when something takes time or goes wrong.
 The system automatically syncs, validates, translates, and serves property and agent data from the RE/MAX API — ensuring the platform always has fresh, optimized listing data.
 
 ### Story 2.1: Database Schema & Drizzle Models
+**GH Issue:** #78
 
 As a **developer**,
 I want type-safe database models for properties, agents, areas, and sync logs with spatial indexing,
@@ -831,6 +839,7 @@ So that all platform data can be stored, queried, and extended reliably.
 ---
 
 ### Story 2.2: API Integration & Data Fetching
+**GH Issue:** #79
 
 As a **system**,
 I want to reliably fetch property and agent data from the RE/MAX CCA API for both offices,
@@ -880,6 +889,7 @@ So that the platform always has access to the latest listing and agent informati
 ---
 
 ### Story 2.3: Sync Pipeline Core
+**GH Issue:** #80
 
 As an **admin**,
 I want property and agent data to sync automatically every day,
@@ -925,6 +935,7 @@ So that the website always shows current listings without manual intervention.
 ---
 
 ### Story 2.4: Image Optimization Pipeline
+**GH Issue:** #81
 
 As a **visitor**,
 I want property photos to load quickly in high quality,
@@ -954,6 +965,7 @@ So that I can evaluate listings without waiting on slow images.
 ---
 
 ### Story 2.5: Translation Pipeline
+**GH Issue:** #82
 
 As a **visitor**,
 I want listing content available in my language,
@@ -983,6 +995,7 @@ So that I can understand property details without needing a translator.
 ---
 
 ### Story 2.6: Lifestyle Tag Auto-Tagging
+**GH Issue:** #83
 
 As a **visitor**,
 I want properties tagged with relevant lifestyle categories,
@@ -1012,6 +1025,7 @@ So that I can filter for exactly the type of property I'm looking for.
 ---
 
 ### Story 2.7: Sync Monitoring & Failure Resilience
+**GH Issue:** #84
 
 As an **admin**,
 I want to be alerted when sync fails and confident the site still works,
@@ -1048,6 +1062,7 @@ So that data issues never take the website down.
 Visitors can discover and browse properties through an interactive map with pins, filters, lifestyle tags, and multiple view modes — the core product experience.
 
 ### Story 3.1: Search Page Layout & Split-View
+**GH Issue:** #85
 
 As a **visitor**,
 I want a search page where I can see both a map and property listings at the same time,
@@ -1085,6 +1100,7 @@ So that I can understand where properties are while browsing details.
 ---
 
 ### Story 3.2: Interactive Map with Property Pins
+**GH Issue:** #86
 
 As a **visitor**,
 I want to see property locations on an interactive map with terrain,
@@ -1122,6 +1138,7 @@ So that I can understand the geography and find properties in specific locations
 ---
 
 ### Story 3.3: Search Filters & URL State
+**GH Issue:** #87
 
 As a **visitor**,
 I want to filter properties by type, price, size, rooms, and location,
@@ -1167,6 +1184,7 @@ So that I only see properties that match my needs.
 ---
 
 ### Story 3.4: Lifestyle Tags & Smart Presets
+**GH Issue:** #88
 
 As a **visitor**,
 I want to browse by lifestyle category or use preset searches,
@@ -1200,6 +1218,7 @@ So that I can quickly find properties that match my goals without configuring ev
 ---
 
 ### Story 3.5: Property Cards & Grid View
+**GH Issue:** #89
 
 As a **visitor**,
 I want to browse properties in a clean card grid with key details visible at a glance,
@@ -1241,6 +1260,7 @@ So that I can quickly scan and compare listings.
 ---
 
 ### Story 3.6: Mobile Pull-Up Sheet
+**GH Issue:** #90
 
 As a **mobile visitor**,
 I want a pull-up sheet over the map to browse property cards,
@@ -1277,6 +1297,7 @@ So that I can see the map and listings without switching views.
 ---
 
 ### Story 3.7: Unit Conversion & Price Display
+**GH Issue:** #91
 
 As a **visitor**,
 I want to see property sizes in my preferred units and prices in my currency,
@@ -1313,6 +1334,7 @@ So that I can evaluate properties using measurements I understand.
 ---
 
 ### Story 3.8: No-Results, Hidden Listings & Near Me
+**GH Issue:** #92
 
 As a **visitor**,
 I want helpful suggestions when no properties match and easy location-based search,
@@ -1353,6 +1375,7 @@ So that I'm never stuck at a dead end and can discover nearby properties.
 Visitors can view complete property listings and agent profiles — evaluating properties and connecting with agents via WhatsApp or email.
 
 ### Story 4.1: Listing Detail Page & Photo Gallery
+**GH Issue:** #93
 
 As a **visitor**,
 I want a beautiful, gallery-first property page with all the details I need to evaluate a listing,
@@ -1402,6 +1425,7 @@ So that I can decide if this property is worth contacting an agent about.
 ---
 
 ### Story 4.2: Agent Card & Contact CTAs
+**GH Issue:** #94
 
 As a **visitor**,
 I want to easily contact the listing agent via WhatsApp or email,
@@ -1443,6 +1467,7 @@ So that I can ask questions or schedule a viewing with one tap.
 ---
 
 ### Story 4.3: Agent Profile Pages
+**GH Issue:** #95
 
 As a **visitor**,
 I want to view an agent's profile with their listings, languages, and contact info,
@@ -1476,6 +1501,7 @@ So that I can find an agent who speaks my language and see their expertise.
 ---
 
 ### Story 4.4: SEO Architecture & WordPress Redirects
+**GH Issue:** #96
 
 As **the business**,
 I want full SEO architecture and seamless migration from WordPress,
@@ -1520,6 +1546,7 @@ So that we maintain search rankings and maximize organic discovery.
 ---
 
 ### Story 4.5: Similar Properties & Cross-Linking
+**GH Issue:** #97
 
 As a **visitor**,
 I want to see similar properties when viewing a listing,
@@ -1556,6 +1583,7 @@ So that I can compare options and discover alternatives without going back to se
 Sellers can submit property listing inquiries and CMA requests through a progressive form, getting matched with an area-specific agent.
 
 ### Story 5.1: Seller Landing Page & "List With Us" Form
+**GH Issue:** #98
 
 As a **seller**,
 I want to submit my property for listing through a simple, progressive form on a dedicated seller page,
@@ -1610,6 +1638,7 @@ So that I can connect with an area-specific RE/MAX agent without needing an acco
 ---
 
 ### Story 5.2: CMA Request Form
+**GH Issue:** #99
 
 As a **seller**,
 I want to request a free Comparative Market Analysis through a dedicated form,
@@ -1643,6 +1672,7 @@ So that I can learn my property's market value before deciding to list.
 ---
 
 ### Story 5.3: Seller Lead Storage, Routing & Source Tracking
+**GH Issue:** #100
 
 As an **admin**,
 I want seller form and CMA submissions stored with full context and routed to the right agent,
@@ -1692,6 +1722,7 @@ So that leads are never lost and the assigned agent has all the information need
 Visitors can explore curated communities and area guides — discovering developments, neighborhoods, and lifestyle zones with rich content and filtered properties.
 
 ### Story 6.1: Area Guide Pages
+**GH Issue:** #101
 
 As a **visitor**,
 I want to explore area guides with lifestyle narratives, climate info, and filtered properties,
@@ -1730,6 +1761,7 @@ So that I can understand what living in a specific area feels like before browsi
 ---
 
 ### Story 6.2: Community Pages
+**GH Issue:** #102
 
 As a **visitor**,
 I want to explore curated community developments with quick facts, availability status, and filtered properties,
@@ -1775,6 +1807,7 @@ So that I can evaluate premium developments and check which lots/homes are avail
 ---
 
 ### Story 6.3: Community Mini-Map & Geo-Fence Display
+**GH Issue:** #103
 
 As a **visitor**,
 I want to see where a community is located on a map relative to the broader area,
@@ -1800,6 +1833,7 @@ So that I can understand the geography and proximity to key landmarks.
 ---
 
 ### Story 6.4: Investment Discovery & Area Context
+**GH Issue:** #104
 
 As an **investor**,
 I want to discover investment-relevant properties and see area appreciation data,
@@ -1829,6 +1863,7 @@ So that I can make informed decisions about where to invest.
 ---
 
 ### Story 6.5: Community Geo-Fence Auto-Tagging
+**GH Issue:** #105
 
 As an **admin**,
 I want properties automatically tagged to communities based on their geographic coordinates,
@@ -1866,6 +1901,7 @@ So that community pages always show current available properties without manual 
 Visitors can save properties to a shortlist, compare them, share the list, and contact a single agent about all saved properties through intelligent routing.
 
 ### Story 7.1: Save & Shortlist Properties
+**GH Issue:** #106
 
 As a **visitor**,
 I want to save properties to a shortlist by tapping a heart icon,
@@ -1907,6 +1943,7 @@ So that I can build a comparison set while browsing without creating an account.
 ---
 
 ### Story 7.2: Shortlist Comparison Page
+**GH Issue:** #107
 
 As a **visitor**,
 I want to view all my saved properties on a comparison page with photos, prices, and a map,
@@ -1940,6 +1977,7 @@ So that I can evaluate my options side-by-side before contacting an agent.
 ---
 
 ### Story 7.3: Shareable Shortlist URL
+**GH Issue:** #108
 
 As a **visitor**,
 I want to share my shortlist via a unique URL,
@@ -1973,6 +2011,7 @@ So that my family or partner can see the same properties on their device without
 ---
 
 ### Story 7.4: Smart Agent Routing from Shortlist
+**GH Issue:** #109
 
 As a **visitor**,
 I want to contact one agent about all my saved properties through an intelligent routing system,
@@ -2014,6 +2053,7 @@ So that I get a single point of contact who coordinates all viewings — even fo
 Admin can monitor the platform, manage leads, curate content, and maintain operational oversight via admin dashboard and admin-facing features.
 
 ### Story 8.1: Sync Status Dashboard & Monitoring
+**GH Issue:** #110
 
 As an **admin**,
 I want to view sync status logs with timestamps, counts, and error details,
@@ -2043,6 +2083,7 @@ So that I can monitor data freshness and quickly diagnose sync failures.
 ---
 
 ### Story 8.2: Lead Management & Agent Assignment
+**GH Issue:** #111
 
 As an **admin**,
 I want to view, filter, and manage all leads with full source context,
@@ -2076,6 +2117,7 @@ So that I can ensure leads are routed to the right agents and track conversion p
 ---
 
 ### Story 8.3: Bulk Lead Reassignment & Export
+**GH Issue:** #112
 
 As an **admin**,
 I want to bulk-reassign leads from one agent to another and export client contacts,
@@ -2109,6 +2151,7 @@ So that I can maintain business continuity when an agent departs the organizatio
 ---
 
 ### Story 8.4: Lifestyle Tag Administration
+**GH Issue:** #113
 
 As an **admin**,
 I want to add, edit, and remove lifestyle tags on listings,
@@ -2142,6 +2185,7 @@ So that I can curate which properties appear under specific discovery categories
 ---
 
 ### Story 8.5: Community Administration
+**GH Issue:** #114
 
 As an **admin**,
 I want to create and manage communities with rich metadata and geo-fence polygons,
@@ -2175,6 +2219,7 @@ So that I can curate premium development pages and control which properties are 
 ---
 
 ### Story 8.6: Listing Visibility & SEO Monitoring
+**GH Issue:** #115
 
 As an **admin**,
 I want to hide/unhide listings and monitor SEO performance,
@@ -2208,6 +2253,7 @@ So that I can control what appears on the website and track search engine perfor
 ---
 
 ### Story 8.7: Shortlist Analytics
+**GH Issue:** #116
 
 As an **admin**,
 I want to see which properties are being shortlisted most frequently by visitors,

@@ -271,7 +271,16 @@
       "description": "No properties match your filters in this area. Try adjusting your search or tell an agent what you're looking for.",
       "adjustFilters": "Adjust filters",
       "tellAgent": "Tell an agent",
-      "whatsappMessage": "Hi, I'm looking for a property..."
+      "whatsappMessage": "Hi, I'm looking for a property...",
+      "whatsappIntro": "Hi, I'm looking for:",
+      "whatsappAnyProperty": "any property",
+      "criteriaType": "Type",
+      "criteriaMinPrice": "Min price",
+      "criteriaMaxPrice": "Max price",
+      "criteriaBedrooms": "Bedrooms",
+      "criteriaBathrooms": "Bathrooms",
+      "criteriaArea": "Area",
+      "criteriaTags": "Tags"
     },
     "listingRemoved": {
       "title": "This property is no longer available",
@@ -279,6 +288,365 @@
       "browseSimilar": "Browse similar",
       "contactAgent": "Contact an agent",
       "whatsappMessage": "Hi, I was looking at a property..."
+    }
+  },
+  "NearMe": {
+    "label": "Near Me",
+    "loading": "Locating...",
+    "fallbackMessage": "Location unavailable — showing properties near our Pérez Zeledón office",
+    "fallbackDenied": "Location unavailable — showing properties near our Pérez Zeledón office",
+    "fallbackError": "Location error — showing properties near our office",
+    "fallbackUnsupported": "Location not supported — showing properties near our office",
+    "fallbackDismiss": "Dismiss"
+  },
+  "SearchPage": {
+    "title": "Search Properties",
+    "description": "Search homes, land, and commercial properties in Costa Rica",
+    "viewToggle": {
+      "split": "Split View",
+      "map": "Full Map",
+      "grid": "Full Grid"
+    },
+    "filterBar": {
+      "label": "Filters",
+      "loading": "Filter bar loading"
+    },
+    "filters": {
+      "type": "Type",
+      "typeAll": "All Types",
+      "price": "Price",
+      "pricePlaceholder": "$0 – Any",
+      "bedrooms": "Beds",
+      "bedroomsAny": "Any",
+      "bathrooms": "Baths",
+      "bathroomsAny": "Any",
+      "lotSize": "Lot Size",
+      "location": "Location",
+      "locationAll": "All Areas",
+      "sort": "Sort",
+      "sortNewest": "Newest",
+      "sortPriceAsc": "Price ↑",
+      "sortPriceDesc": "Price ↓",
+      "sortRelevance": "Relevance",
+      "clearAll": "Clear all",
+      "activeChip": "{label}: {value}",
+      "dismiss": "Remove {label} filter",
+      "propertyTypes": {
+        "Casa": "House",
+        "Apartamento": "Apartment",
+        "Lote": "Lot",
+        "Terreno": "Land",
+        "Comercial": "Commercial",
+        "Finca": "Farm"
+      }
+    },
+    "pullUpHandle": {
+      "propertiesCount": "{count, plural, one {# property} other {# properties}}"
+    },
+    "pullUpSheet": {
+      "regionLabel": "Property list",
+      "close": "Back to map",
+      "closeLabel": "Close property list and return to map"
+    },
+    "sidePanel": {
+      "show": "Show listings",
+      "hide": "Hide listings"
+    },
+    "grid": {
+      "page": "Page {page} of {total}",
+      "prev": "Previous",
+      "next": "Next",
+      "showing": "Showing {count} of {total} properties",
+      "empty": "No properties found"
+    },
+    "lifestyleTags": {
+      "label": "Lifestyle",
+      "chips": {
+        "Rental Potential": "Rental Potential",
+        "Investment Property": "Investment Property",
+        "Vacation Home": "Vacation Home",
+        "Retire": "Retirement Paradise",
+        "Commercial": "Commercial"
+      }
+    },
+    "presets": {
+      "label": "Quick Searches",
+      "mountainRetirement": "Mountain Retirement Homes",
+      "beachInvestment": "Beach Investment Land",
+      "rentalPotential": "Rental Income Properties",
+      "vacationHome": "Vacation Homes"
+    },
+    "MapView": {
+      "ariaLabel": "Property locations map",
+      "loading": "Loading map...",
+      "closePopup": "Close property preview",
+      "viewDetails": "View Details",
+      "zmtStatus": {
+        "titled": "Titled",
+        "concession": "Concession",
+        "zmt_restricted": "ZMT Restricted"
+      },
+      "specs": {
+        "beds": "{count} bed",
+        "baths": "{count} bath",
+        "lotSize": "{size} m²"
+      }
+    }
+  },
+  "PropertyCard": {
+    "saveProperty": "Save property",
+    "removeFromSaved": "Remove from saved",
+    "shortlistFull": "Shortlist full (20 max)",
+    "region": {
+      "mountain": "Mountain",
+      "beach": "Beach"
+    },
+    "zmtStatus": {
+      "titled": "Titled Property",
+      "concession": "Concession",
+      "zmt_restricted": "ZMT Restricted"
+    },
+    "specs": {
+      "beds": "{count} bed",
+      "baths": "{count} bath",
+      "lot": "{size}",
+      "built": "{size} built"
+    },
+    "share": "Share property",
+    "viewDetails": "View details",
+    "linkCopied": "Link copied!"
+  },
+  "PropertyUnavailable": {
+    "heading": "This property is no longer available",
+    "subtext": "It may have been sold or removed from our listings.",
+    "similarHeading": "Similar properties you might like",
+    "browseCta": "Browse all properties",
+    "similarCta": "View property"
+  },
+  "UnitToggle": {
+    "label": "Toggle area units",
+    "metric": "m²",
+    "imperial": "ft²"
+  },
+  "PropertyGallery": {
+    "openLightbox": "View all photos",
+    "closeLightbox": "Close photo viewer",
+    "photoCount": "Photo {current} of {total}",
+    "nextPhoto": "Next photo",
+    "prevPhoto": "Previous photo",
+    "videoTitle": "Property video tour",
+    "noPhotos": "No photos available",
+    "thumbnailStripLabel": "{title} photos"
+  },
+  "ListingDetail": {
+    "description": "Description",
+    "features": "Features & Amenities",
+    "specs": {
+      "price": "Asking Price",
+      "bedrooms": "{count} bed",
+      "bathrooms": "{count} bath",
+      "lotSize": "Lot",
+      "builtArea": "Built",
+      "zmtStatus": "Ownership"
+    },
+    "zmtStatus": {
+      "titled": "Titled Property",
+      "concession": "Concession",
+      "zmt_restricted": "ZMT Restricted"
+    },
+    "noAgentAssigned": "Contact RE/MAX Altitud",
+    "agentSection": "Listing Agent",
+    "unknownOffice": "RE/MAX Altitud"
+  },
+  "AgentCard": {
+    "agentCardLabel": "Listing agent: {name}",
+    "agentPhotoAlt": "Photo of {name}",
+    "listings": "listings",
+    "contactAgent": "Contact Agent",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "emailSubject": "Inquiry: {title} — Ref {ref}",
+    "emailBody": "Hello, I'm interested in {title} (Ref: {ref}).",
+    "transparencyNote": "This agent may use WhatsApp's built-in translation for multilingual conversations.",
+    "noWhatsApp": "WhatsApp not available",
+    "language": {
+      "en": "English",
+      "es": "Spanish",
+      "de": "German",
+      "fr": "French",
+      "it": "Italian",
+      "pt": "Portuguese"
+    }
+  },
+  "AgentProfile": {
+    "listings": "listings",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "generalInquiryEn": "Hi {name}, I'd like to learn more about your properties.",
+    "noListings": "{name} has no active listings at this time.",
+    "listingsHeading": "{name}'s Listings",
+    "noAgentsMatch": "No agents match your filters.",
+    "clearFilters": "Clear filters",
+    "indexPageTitle": "Meet Our Agents",
+    "indexPageDescription": "Browse RE/MAX Altitud agents — find an agent who speaks your language and knows your area.",
+    "filterByOffice": "Filter by office",
+    "filterByLanguage": "Filter by language",
+    "allOffices": "All offices",
+    "allLanguages": "All languages",
+    "defaultMetaDescription": "View {name}'s listings and contact information at RE/MAX Altitud.",
+    "agentNoLongerActive": "This agent is no longer active.",
+    "backToAgents": "Browse all agents",
+    "language": {
+      "en": "English",
+      "es": "Spanish",
+      "de": "German",
+      "fr": "French",
+      "it": "Italian",
+      "pt": "Portuguese"
+    }
+  },
+  "StickyMobileCTA": {
+    "stickyCtaLabel": "Contact agent",
+    "whatsapp": "WhatsApp",
+    "email": "Email"
+  },
+  "StickySpecsBar": {
+    "price": "Asking Price",
+    "beds": "{count} bed",
+    "baths": "{count} bath",
+    "lot": "Lot",
+    "built": "Built",
+    "toggleUnits": "Toggle area units",
+    "zmtStatus": {
+      "titled": "Titled Property",
+      "concession": "Concession",
+      "zmt_restricted": "ZMT Restricted"
+    }
+  },
+  "Breadcrumbs": {
+    "home": "Home",
+    "search": "Search",
+    "agents": "Agents",
+    "ariaLabel": "Breadcrumb"
+  },
+  "AgentAreaServed": {
+    "name": "Southern Zone, Costa Rica"
+  },
+  "SimilarProperties": {
+    "heading": "Similar Properties",
+    "browseCta": "Browse all properties",
+    "carouselAriaLabel": "Similar properties carousel",
+    "keyboardHint": "Use arrow keys or swipe to browse similar properties",
+    "loadingAriaLabel": "Loading similar properties"
+  },
+  "SellerPage": {
+    "meta": {
+      "title": "List Your Property | RE/MAX Altitud",
+      "description": "List your Costa Rica property with RE/MAX Altitud — Southern Zone's #1 real estate team. Fill our simple 3-step form to connect with an area expert.",
+      "ogTitle": "Sell Your Property with RE/MAX Altitud",
+      "ogDescription": "Connect with a local RE/MAX agent in 3 minutes. No account needed."
+    },
+    "hero": {
+      "heading": "List Your Property with the Southern Zone's #1 Team",
+      "subheading": "From Pérez Zeledón to Dominical — our agents know every hectare.",
+      "benefit1": "Global RE/MAX network exposure",
+      "benefit2": "Local market expertise since 2008",
+      "benefit3": "No upfront fees — commission only",
+      "process": "How it works: Fill our 3-step form → Get matched with an area agent → Schedule a property visit",
+      "testimonial1": "\"RE/MAX Altitud sold our finca in 3 months at asking price.\" — Carlos, Rivas",
+      "startButton": "Get Started",
+      "startButtonAriaLabel": "Start the property listing form"
+    },
+    "form": {
+      "progressAriaLabel": "Form progress: step {current} of {total}",
+      "step1Label": "Basics",
+      "step2Label": "Details",
+      "step3Label": "Contact",
+      "step1TimeEstimate": "About 60 seconds",
+      "step2TimeEstimate": "About 90 seconds",
+      "step3TimeEstimate": "About 30 seconds",
+      "nextButton": "Next",
+      "nextButtonAriaLabel": "Continue to next step",
+      "backButton": "Back",
+      "backButtonAriaLabel": "Return to previous step",
+      "submitButton": "Submit My Property",
+      "submitButtonAriaLabel": "Submit your property listing request",
+      "submittingButton": "Submitting...",
+      "step1": {
+        "heading": "Tell us about your property",
+        "propertyTypeLabel": "Property Type",
+        "propertyTypeAriaLabel": "Select property type",
+        "typeCasa": "House / Casa",
+        "typeLote": "Lot / Lote",
+        "typeFinca": "Farm / Finca",
+        "typeCondominio": "Condo / Condominio",
+        "typeCommercial": "Commercial / Comercial",
+        "locationLabel": "Location",
+        "locationPlaceholder": "Type address or nearest landmark",
+        "locationAriaLabel": "Enter property location",
+        "locationMapAriaLabel": "Interactive map — click to drop a pin on your property location",
+        "locationMapFallbackNote": "Map unavailable — please describe location in the text field",
+        "sizeLabel": "Approximate Size",
+        "sizePlaceholder": "e.g. 5000",
+        "sizeAriaLabel": "Enter property size",
+        "sizeUnitAriaLabel": "Toggle size unit between square meters, square feet, and acres"
+      },
+      "step2": {
+        "heading": "More about your property",
+        "priceLabel": "Price Expectation (USD)",
+        "pricePlaceholder": "e.g. 250000",
+        "priceAriaLabel": "Enter your price expectation in US dollars",
+        "priceOptionalLabel": "(Optional)",
+        "pricingHelpLabel": "I need help with pricing",
+        "pricingHelpDescription": "Our agent will provide a free Comparative Market Analysis (CMA)",
+        "descriptionLabel": "Description (optional)",
+        "descriptionPlaceholder": "Describe your property — features, condition, why you are selling...",
+        "descriptionAriaLabel": "Describe your property (optional)",
+        "photosLabel": "Photos (optional)",
+        "photosDescription": "Add up to 5 photos (JPG, PNG — max 10MB each)",
+        "photosAriaLabel": "Upload property photos (optional)",
+        "photosButton": "Choose Photos",
+        "bedroomsLabel": "Bedrooms",
+        "bedroomsAriaLabel": "Number of bedrooms",
+        "bathroomsLabel": "Bathrooms",
+        "bathroomsAriaLabel": "Number of bathrooms"
+      },
+      "step3": {
+        "heading": "How can we reach you?",
+        "nameLabel": "Full Name",
+        "namePlaceholder": "Your name",
+        "nameAriaLabel": "Enter your full name",
+        "phoneLabel": "Phone / WhatsApp",
+        "phonePlaceholder": "+506 8888-8888",
+        "phoneAriaLabel": "Enter your phone or WhatsApp number",
+        "phoneDescription": "WhatsApp preferred — your agent will contact you here",
+        "emailLabel": "Email Address (optional)",
+        "emailPlaceholder": "your@email.com",
+        "emailAriaLabel": "Enter your email address (optional)",
+        "emailOptionalBadge": "Optional",
+        "languageLabel": "Preferred Language",
+        "languageAriaLabel": "Select your preferred contact language",
+        "languageEn": "English",
+        "languageEs": "Español"
+      },
+      "validation": {
+        "propertyTypeRequired": "Please select a property type",
+        "locationRequired": "Please enter your property location",
+        "sizeRequired": "Please enter an approximate size",
+        "nameRequired": "Please enter your name",
+        "phoneRequired": "Please enter your phone number",
+        "phoneInvalid": "Please enter a valid phone number",
+        "emailInvalid": "Please enter a valid email address",
+        "priceInvalid": "Please enter a valid price (numbers only)"
+      }
+    },
+    "confirmation": {
+      "heading": "Property Submitted Successfully!",
+      "subheading": "Your dedicated agent will contact you within 24 hours.",
+      "agentMatchHeading": "Your Agent Match",
+      "whatsappButtonAriaLabel": "Contact {agentName} via WhatsApp",
+      "emailButtonAriaLabel": "Contact {agentName} via email",
+      "browseWhileWaiting": "While you wait, explore what's selling in your area"
     }
   }
 }

@@ -22,6 +22,11 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# NOTE: /app/public/property-images requires a Docker volume mount for persistence
+# across redeploys. Configure in Coolify / docker-compose as:
+#   volumes:
+#     - property_images:/app/public/property-images
+
 USER nextjs
 
 EXPOSE 3000

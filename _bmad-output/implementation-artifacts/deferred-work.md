@@ -44,3 +44,28 @@
 - `response.text()` + `JSON.parse` double-buffers the whole body in memory [src/lib/sync/api-client.ts:45-51] — property feeds are well under any OOM threshold at current scale.
 - `isExpired` parser test depends on the real clock with no `vi.useFakeTimers` [tests/unit/sync/parser.spec.ts] — fixture date is sufficiently in the past to be robust through any CI clock.
 - `extractApiId` mixes property (`ListingId`) and agent (`AssociateID`/`AssociateId`) candidates in one helper [src/lib/sync/parser.ts:97-105] — tight scoping is cleanup, not a correctness issue.
+
+## Deferred from: code review of 2-6-lifestyle-tag-auto-tagging (2026-04-25)
+- AC #2 references "Condo in tourist zone" but the shipped rule fires on any condo (no area/keyword check) [src/lib/constants/lifestyle-tags.ts:42-48] — spec narrative explicitly approves this scope ("Extend in future: add tourist-zone area check once area data is linked"); area data wiring lands in Epic 6 Story 6.5.
+- `fetchPropertyLifestyleTags` queries the DB for just-inserted `diff.new` rows that always return empty tags [src/lib/sync/pipeline.ts:225] — matches the spec's prescribed pseudocode exactly; cost is one indexed `inArray` query per sync; revisit only if profiling identifies the sync as latency-bound.
+
+## Deferred from: code review of 3-2-interactive-map-with-property-pins (2026-04-26)
+- Duplicate `MapBounds` / `MapProperty` type definitions across 6 files (`src/store/map-store.ts`, `src/lib/map/geo-utils.ts`, `src/components/map/map-view.tsx`, `src/components/search/split-view-layout.tsx`, `src/components/search/search-page-client.tsx`, `src/app/actions/map-actions.ts`) — types are currently consistent; consolidate into a single shared types module in a follow-up.
+- `MapPropertyPopup` uses hardcoded English strings ("View Details", "Close property preview", "Titled", "Concession", "ZMT Restricted", "{n} bed/bath/m²") instead of `useTranslations` even though i18n keys for these were added to `messages/{en,es}.json` in Task 10 — UX polish, low risk; AC #4 doesn't mandate i18n for these labels.
+- `next.config.ts` lacks `images.remotePatterns` for property image hosts — popup uses `unoptimized` as a forward-compatible workaround; revisit when CMS/CDN host(s) for property photos are decided in a later epic.
+
+## Deferred from: code review of 3-4-lifestyle-tags-and-smart-presets (2026-05-01)
+- `LifestyleTagChips` container lacks `role="group"` / `aria-label` for the tag row — minor a11y polish; AC #1 only requires the chips to render, not a labelled group.
+- `latestParamsRef.current` is reassigned during render in `useSearchFilters` — pre-existing pattern from Story 3.3, works in practice; revisit if/when concurrent rendering surfaces issues.
+
+## Deferred from: code review of story-3.5 (2026-05-01)
+- `SaveButton.propertyTitle` prop is declared but unused — kept for forward compatibility (toast personalization in Story 7.1) [src/components/property/save-button.tsx:8].
+- `ShareButton` is silent when neither `navigator.share` nor `navigator.clipboard` is available — older browsers (and most desktop Firefox without MDN flags) get no feedback after clicking the share icon [src/components/property/share-button.tsx:25-45].
+- Empty-string image URL is not explicitly guarded — `property.images[0]?.url ?? "/property-placeholder.svg"` only catches `null`/`undefined`. An empty string slips through to `next/image` and would throw [src/components/property/property-card.tsx:81]; data integrity belongs upstream in the sync pipeline.
+
+## Deferred from: code review of story-3.7 (2026-05-02)
+- Cross-tab localStorage sync — `useLocaleUnits` does not register a `storage` event listener, so toggling units in tab A leaves tab B stale until reload [src/hooks/use-locale-units.ts]. Nice-to-have; not in AC #4.
+- PropertyCard `aria-label` hardcodes the English "Property:" prefix instead of pulling from i18n [src/components/property/property-card.tsx:90]. Pre-existing from Story 3.5.
+- PropertyCard `aria-label` includes only the USD price; non-US-locale screen-reader users miss the EUR equivalent line [src/components/property/property-card.tsx:90, 130-134]. Minor a11y polish.
+- E2E tests `tests/e2e/unit-conversion-and-price-display.spec.ts` are scaffolds (`test.skip`) — activation depends on Playwright framework configuration, which lands in a later epic.
+- `EUR_RATE = 0.92` in `src/lib/utils/currency.ts` has no auto-update mechanism; spec accepts "approximate" but a future task should refresh the constant or wire a build-time fetch.

@@ -13,6 +13,7 @@ export const syncLogs = pgTable("sync_logs", {
   propertiesRemoved: integer("properties_removed").notNull().default(0),
   agentsSynced: integer("agents_synced").notNull().default(0),
   translationsQueued: integer("translations_queued").notNull().default(0),
+  tagsQueued: integer("tags_queued").notNull().default(0),
   imagesOptimized: integer("images_optimized").notNull().default(0),
   errors: jsonb("errors")
     .notNull()

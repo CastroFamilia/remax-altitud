@@ -58,3 +58,8 @@ _bmad/config.user.yaml
 # Symlink aliases (canonical dir is .agents/)
 .agent
 .claude
+
+# Property images — Docker volume (gitkeep tracks the directory, images are not committed)
+public/property-images/*
+!public/property-images/.gitkeep
+.env.local

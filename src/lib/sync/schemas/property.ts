@@ -115,7 +115,10 @@ export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
   const mentionsLargeUnit = /hectare|hectárea|manzana/i.test(description);
   const lotSizeUnitWarning = mentionsLargeUnit && lotSizeM2 !== null && lotSizeM2 < 1000;
 
-  const isExpired = p.ExpirationDate !== null && p.ExpirationDate.getTime() < Date.now();
+  // ExpirationDate is unreliable in the RE/MAX CCA feed — all properties
+  // present in the API response are considered active. Expiration-based
+  // soft-deletion is disabled; removal is driven solely by absence from the feed.
+  const isExpired = false;
 
   return {
     apiId: p.ListingId,

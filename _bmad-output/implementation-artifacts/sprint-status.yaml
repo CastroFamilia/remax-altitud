@@ -1,5 +1,5 @@
 # generated: 2026-04-10T12:39:46-03:00
-# last_updated: 2026-04-24T21:00:00-0600
+# last_updated: 2026-05-02T00:00:00-0600
 # project: remax-altitud
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-10T12:39:46-03:00
-last_updated: 2026-04-24T21:00:00-0600
+last_updated: 2026-05-04T08:55:00-0600
 project: remax-altitud
 project_key: NOKEY
 tracking_system: file-system
@@ -43,7 +43,7 @@ story_location: "{project-root}/_bmad-output/implementation-artifacts"
 
 development_status:
   # Epic 1: Project Foundation & Design System
-  epic-1: in-progress
+  epic-1: done
   1-1-project-scaffolding-and-ci-cd-pipeline: done
   1-2-design-system-and-token-foundation: done
   1-3-core-layout-and-navigation: done
@@ -54,40 +54,40 @@ development_status:
   epic-1-retrospective: optional
 
   # Epic 2: Data Pipeline & Property Database
-  epic-2: in-progress
+  epic-2: done
   2-1-database-schema-and-drizzle-models: done
   2-2-api-integration-and-data-fetching: done
-  2-3-sync-pipeline-core: backlog
-  2-4-image-optimization-pipeline: backlog
-  2-5-translation-pipeline: backlog
-  2-6-lifestyle-tag-auto-tagging: backlog
-  2-7-sync-monitoring-and-failure-resilience: backlog
-  epic-2-retrospective: optional
+  2-3-sync-pipeline-core: done
+  2-4-image-optimization-pipeline: done
+  2-5-translation-pipeline: done
+  2-6-lifestyle-tag-auto-tagging: done
+  2-7-sync-monitoring-and-failure-resilience: done
+  epic-2-retrospective: done
 
   # Epic 3: Property Discovery & Search
-  epic-3: backlog
-  3-1-search-page-layout-and-split-view: backlog
-  3-2-interactive-map-with-property-pins: backlog
-  3-3-search-filters-and-url-state: backlog
-  3-4-lifestyle-tags-and-smart-presets: backlog
-  3-5-property-cards-and-grid-view: backlog
-  3-6-mobile-pull-up-sheet: backlog
-  3-7-unit-conversion-and-price-display: backlog
-  3-8-no-results-hidden-listings-and-near-me: backlog
-  epic-3-retrospective: optional
+  epic-3: done
+  3-1-search-page-layout-and-split-view: done
+  3-2-interactive-map-with-property-pins: done
+  3-3-search-filters-and-url-state: done
+  3-4-lifestyle-tags-and-smart-presets: done
+  3-5-property-cards-and-grid-view: done
+  3-6-mobile-pull-up-sheet: done
+  3-7-unit-conversion-and-price-display: done
+  3-8-no-results-hidden-listings-and-near-me: done
+  epic-3-retrospective: done
 
   # Epic 4: Listing Detail & Agent Profiles
-  epic-4: backlog
-  4-1-listing-detail-page-and-photo-gallery: backlog
-  4-2-agent-card-and-contact-ctas: backlog
-  4-3-agent-profile-pages: backlog
-  4-4-seo-architecture-and-wordpress-redirects: backlog
-  4-5-similar-properties-and-cross-linking: backlog
-  epic-4-retrospective: optional
+  epic-4: done
+  4-1-listing-detail-page-and-photo-gallery: done
+  4-2-agent-card-and-contact-ctas: done
+  4-3-agent-profile-pages: done
+  4-4-seo-architecture-and-wordpress-redirects: done
+  4-5-similar-properties-and-cross-linking: done
+  epic-4-retrospective: done
 
   # Epic 5: Seller Lead Capture
-  epic-5: backlog
-  5-1-seller-landing-page-and-list-with-us-form: backlog
+  epic-5: in-progress
+  5-1-seller-landing-page-and-list-with-us-form: done
   5-2-cma-request-form: backlog
   5-3-seller-lead-storage-routing-and-source-tracking: backlog
   epic-5-retrospective: optional
