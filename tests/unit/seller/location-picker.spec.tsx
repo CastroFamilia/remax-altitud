@@ -137,24 +137,21 @@ describe("LocationPicker — map pin-drop (5.1-COMP-001)", () => {
       vi.advanceTimersByTime(2100);
     });
 
+    // The MapViewLoader mock renders immediately once the timer fires; map must be present.
     const mapContainer = document.querySelector('[data-testid="location-map"]');
-    if (mapContainer) {
-      await act(async () => {
-        fireEvent.click(mapContainer);
-      });
+    expect(mapContainer).not.toBeNull();
 
-      vi.useRealTimers();
+    await act(async () => {
+      fireEvent.click(mapContainer as Element);
+    });
 
-      expect(onChange).toHaveBeenCalled();
-      const result = onChange.mock.calls[0][0] as { lat: number | null; lng: number | null };
-      // Coordinates must be non-null (not silently dropped — R-004)
-      expect(result.lat).not.toBeNull();
-      expect(result.lng).not.toBeNull();
-    } else {
-      vi.useRealTimers();
-      // Map not shown — fallback text-only mode is acceptable
-      expect(true).toBe(true);
-    }
+    vi.useRealTimers();
+
+    expect(onChange).toHaveBeenCalled();
+    const result = onChange.mock.calls[0][0] as { lat: number | null; lng: number | null };
+    // Coordinates must be non-null (not silently dropped — R-004)
+    expect(result.lat).not.toBeNull();
+    expect(result.lng).not.toBeNull();
   });
 });
 

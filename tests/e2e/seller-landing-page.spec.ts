@@ -307,10 +307,10 @@ test.describe("Story 5.1: Seller Landing Page (ATDD Red Phase)", () => {
       // Step 2: Details
       await expect(page.getByTestId("form-step-2")).toBeVisible();
 
+      // Price field must be present; fill it to satisfy required validation.
       const priceInput = page.getByRole("spinbutton", { name: /price|precio/i });
-      if (await priceInput.isVisible()) {
-        await priceInput.fill("250000");
-      }
+      await expect(priceInput).toBeVisible();
+      await priceInput.fill("250000");
 
       const nextButton2 = page.getByRole("button", { name: /next|siguiente/i });
       await nextButton2.click();
@@ -368,7 +368,7 @@ test.describe("Story 5.1: Seller Landing Page (ATDD Red Phase)", () => {
 
   test.skip(
     "[P2] 5.1-E2E-009: form is completable in under 3 minutes on simulated 4G mobile (AC #9)",
-    async ({ page, browser }: any) => {
+    async ({ page }: any) => {
       // THIS TEST WILL FAIL — SellerForm not yet implemented
       await page.setViewportSize(MOBILE_VIEWPORT);
 
@@ -415,8 +415,6 @@ test.describe("Story 5.1: Seller Landing Page (ATDD Red Phase)", () => {
 
       // AC #9: completable in under 3 minutes
       expect(totalMs).toBeLessThan(THREE_MINUTES_MS);
-
-      void browser; // referenced for type narrowing
     },
   );
 

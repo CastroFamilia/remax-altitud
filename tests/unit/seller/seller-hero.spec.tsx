@@ -23,6 +23,7 @@
 // vi.mock hoisting rule: ALL vi.mock() calls MUST appear before import statements
 // ---------------------------------------------------------------------------
 
+import React from "react";
 import { vi, describe, it, expect, afterEach } from "vitest";
 
 vi.mock("next-intl/server", () => ({

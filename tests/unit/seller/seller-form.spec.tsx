@@ -303,9 +303,9 @@ describe("SellerForm — Step 2: Details", () => {
     const updatedPriceInput = document.querySelector(
       '[name="priceExpectation"]',
     ) as HTMLInputElement | null;
-    if (updatedPriceInput) {
-      expect(updatedPriceInput.required).toBe(false);
-    }
+    // The field was already asserted non-null above; it must still be present after checkbox click.
+    expect(updatedPriceInput).not.toBeNull();
+    expect(updatedPriceInput!.required).toBe(false);
 
     // Advance to step 3 without filling price (should succeed now)
     const nextButton = screen.getByRole("button", { name: /next|siguiente/i });
@@ -316,35 +316,31 @@ describe("SellerForm — Step 2: Details", () => {
   });
 
   it("[P1] 5.1-COMP-002b: buildLeadPayload includes pricing consultation note when checkbox is checked (R-008)", async () => {
-    // This test verifies the payload builder function includes the notes field
-    const module = await import("@/components/seller/seller-form");
-    const { buildLeadPayload } = module;
+    // buildLeadPayload is a named export of seller-form.tsx (verified in contract test 5.1-E2E-002).
+    const { buildLeadPayload } = await import("@/components/seller/seller-form");
 
-    // If buildLeadPayload is exported
-    if (typeof buildLeadPayload === "function") {
-      const payload = buildLeadPayload({
-        propertyType: "Casa",
-        location: { text: "San Isidro", lat: 9.37, lng: -83.7 },
-        size: "500",
-        sizeUnit: "sqm",
-        priceExpectation: "",
-        needsPricingHelp: true,
-        description: "",
-        photos: [],
-        bedrooms: "",
-        bathrooms: "",
-        name: "Carlos",
-        phone: "+50688881234",
-        email: "",
-        preferredLanguage: "en",
-      });
+    // The function must be present — no conditional branching.
+    expect(typeof buildLeadPayload).toBe("function");
 
-      // R-008: notes must include pricing consultation signal
-      expect(payload.notes).toMatch(/pricing consultation|pricing help|needs pricing/i);
-    } else {
-      // If not exported, skip gracefully — E2E test covers end-to-end
-      expect(true).toBe(true);
-    }
+    const payload = buildLeadPayload({
+      propertyType: "Casa",
+      location: { text: "San Isidro", lat: 9.37, lng: -83.7 },
+      size: "500",
+      sizeUnit: "sqm",
+      priceExpectation: "",
+      needsPricingHelp: true,
+      description: "",
+      photos: [],
+      bedrooms: "",
+      bathrooms: "",
+      name: "Carlos",
+      phone: "+50688881234",
+      email: "",
+      preferredLanguage: "en",
+    });
+
+    // R-008: notes must include pricing consultation signal
+    expect(payload.notes).toMatch(/pricing consultation|pricing help|needs pricing/i);
   });
 });
 
