@@ -162,7 +162,7 @@ function makeProperties(count: number): PropertySearchItem[] {
     zmtStatus: "titled",
     propertyType: "Casa",
     areaSlug: "perez-zeledon",
-    images: [{ url: `/images/property-${i + 1}.jpg`, alt: `Property ${i + 1}` }],
+    images: [{ src: `/images/property-${i + 1}.jpg`, alt: `Property ${i + 1}` }],
     latitude: 9.3 + i * 0.01,
     longitude: -83.6 + i * 0.01,
   }));

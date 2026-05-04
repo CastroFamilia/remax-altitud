@@ -20,7 +20,15 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "*.azureedge.net", // Azure CDN edge — RE/MAX CCA raw property images
+      },
+      {
+        protocol: "https",
         hostname: "*.blob.core.windows.net", // Azure Blob Storage fallback
+      },
+      {
+        protocol: "https",
+        hostname: "balloon.remax-cca.com", // RE/MAX CCA user-uploaded content (agent photos)
       },
     ],
   },

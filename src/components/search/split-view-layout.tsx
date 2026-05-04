@@ -13,6 +13,7 @@ import { NearMeButton } from "@/components/search/near-me-button";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets, SearchFilters } from "@/types/search";
+import type { OptimizedImage } from "@/types/images";
 
 type ViewMode = "split" | "map" | "grid";
 
@@ -26,7 +27,7 @@ export type MapProperty = {
   bathrooms: number | null;
   lotSizeM2: number | null;
   zmtStatus: string;
-  images: { url: string; alt?: string }[];
+  images: OptimizedImage[];
   latitude: number;
   longitude: number;
 };

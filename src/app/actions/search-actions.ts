@@ -15,6 +15,7 @@ import { properties } from "@/lib/db/schema/properties";
 import { and, eq, gte, lte, isNotNull, desc, asc, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
+import { mapPropertyRowToSearchItem } from "@/lib/db/queries/properties";
 
 /**
  * Sanitize a numeric value — returns undefined if the value is not a finite,
@@ -93,7 +94,9 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
     areaSlug: filters.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined,
     // Story 3.4: lifestyle tag OR filter using PostgreSQL && (overlap) operator on GIN-indexed array
     // The && operator returns rows where lifestyleTags and the filter array share at least one element
-    tags: sanitizedTags?.length ? sql`${properties.lifestyleTags} && ${sanitizedTags}` : undefined,
+    tags: sanitizedTags?.length
+      ? sql`${properties.lifestyleTags} && ARRAY[${sql.join(sanitizedTags, sql`, `)}]::text[]`
+      : undefined,
   };
 
   // Compose conditions for the main query — every set dimension applies.
@@ -139,23 +142,7 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
     .limit(20)
     .offset((safePage - 1) * 20);
 
-  const propertyItems: PropertySearchItem[] = rows.map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    titleEn: row.titleEn,
-    titleEs: row.titleEs,
-    priceUsd: row.priceUsd,
-    bedrooms: row.bedrooms,
-    bathrooms: row.bathrooms,
-    lotSizeM2: row.lotSizeM2,
-    constructionM2: row.constructionM2,
-    zmtStatus: row.zmtStatus,
-    propertyType: row.propertyType,
-    areaSlug: row.areaSlug,
-    images: (row.images as { url: string; alt?: string }[]) ?? [],
-    latitude: row.latitude,
-    longitude: row.longitude,
-  }));
+  const propertyItems: PropertySearchItem[] = rows.map((row) => mapPropertyRowToSearchItem(row));
 
   // Facets queries — aggregation for filter count display ("Casa (12)") — AC #6
   // Each facet dimension is computed with all OTHER dimensions applied so that

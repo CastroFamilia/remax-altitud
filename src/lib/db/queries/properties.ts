@@ -6,6 +6,7 @@ import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawProperty } from "@/types/remax-api";
 import type { OptimizedImage } from "@/types/images";
 import type { PropertySearchItem } from "@/types/search";
+import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 
 /**
  * Upserts a single property into the database using Drizzle's
@@ -306,11 +307,9 @@ export async function getPropertyBySlug(slug: string) {
 
 /**
  * Maps DB property rows to PropertySearchItem shape.
- * DB stores images as OptimizedImage[] with { src: string; ... }.
- * PropertySearchItem expects images: { url: string; alt?: string }[].
- * So we must map src → url.
+ * Handles normalization of images (Story 3.5 transition).
  */
-function mapRowToPropertySearchItem(row: {
+export function mapPropertyRowToSearchItem(row: {
   id: string;
   slug: string;
   titleEn: string;
@@ -327,7 +326,6 @@ function mapRowToPropertySearchItem(row: {
   latitude: number | null;
   longitude: number | null;
 }): PropertySearchItem {
-  const rawImages = (row.images as { src: string; alt?: string }[] | null) ?? [];
   return {
     id: row.id,
     slug: row.slug,
@@ -341,7 +339,7 @@ function mapRowToPropertySearchItem(row: {
     zmtStatus: row.zmtStatus ?? "titled",
     propertyType: row.propertyType,
     areaSlug: row.areaSlug,
-    images: rawImages.map((img) => ({ url: img.src, alt: img.alt })),
+    images: normalizePropertyImages(row.images, row.titleEn),
     latitude: row.latitude,
     longitude: row.longitude,
   };
@@ -410,7 +408,7 @@ export async function getSimilarPropertiesRanked(opts: {
       )
       .orderBy(asc(sql`ABS(${properties.priceUsd} - ${opts.priceUsd})`))
       .limit(limit - results.length);
-    results.push(...step1Rows.map(mapRowToPropertySearchItem));
+    results.push(...step1Rows.map(mapPropertyRowToSearchItem));
   }
 
   if (results.length >= limit) return results;
@@ -433,7 +431,7 @@ export async function getSimilarPropertiesRanked(opts: {
       )
       .orderBy(asc(sql`ABS(${properties.priceUsd} - ${opts.priceUsd})`))
       .limit(limit - results.length);
-    results.push(...step2Rows.map(mapRowToPropertySearchItem));
+    results.push(...step2Rows.map(mapPropertyRowToSearchItem));
   }
 
   if (results.length >= limit) return results;
@@ -454,7 +452,7 @@ export async function getSimilarPropertiesRanked(opts: {
       )
       .orderBy(desc(properties.syncedAt))
       .limit(limit - results.length);
-    results.push(...step3Rows.map(mapRowToPropertySearchItem));
+    results.push(...step3Rows.map(mapPropertyRowToSearchItem));
   }
 
   if (results.length >= limit) return results;
@@ -473,7 +471,7 @@ export async function getSimilarPropertiesRanked(opts: {
     )
     .orderBy(desc(properties.syncedAt))
     .limit(limit - results.length);
-  results.push(...step4Rows.map(mapRowToPropertySearchItem));
+  results.push(...step4Rows.map(mapPropertyRowToSearchItem));
 
   return results;
 }

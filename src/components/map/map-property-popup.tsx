@@ -13,6 +13,7 @@ import Image from "next/image";
 import { Popup } from "react-map-gl";
 import { X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import type { OptimizedImage } from "@/types/images";
 
 interface MapPropertyPopupProps {
   property: {
@@ -25,7 +26,7 @@ interface MapPropertyPopupProps {
     bathrooms: number | null;
     lotSizeM2: number | null;
     zmtStatus: string;
-    images: { url: string; alt?: string }[];
+    images: OptimizedImage[];
     latitude: number;
     longitude: number;
   };
@@ -75,7 +76,7 @@ export function MapPropertyPopup({ property, locale, onClose }: MapPropertyPopup
             Falls back to /property-placeholder.svg when url is absent. */}
         <div className="relative h-32 w-full">
           <Image
-            src={firstImage?.url || "/property-placeholder.svg"}
+            src={firstImage?.src || "/property-placeholder.svg"}
             alt={firstImage?.alt ?? title}
             fill
             className="object-cover"

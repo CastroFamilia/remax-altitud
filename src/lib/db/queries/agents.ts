@@ -4,6 +4,7 @@ import { db } from "@/lib/db/client";
 import { agents } from "@/lib/db/schema/agents";
 import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawAgent } from "@/types/remax-api";
+import { mapPropertyRowToSearchItem } from "./properties";
 
 /**
  * Upserts a single agent into the database using Drizzle's
@@ -130,7 +131,7 @@ export async function getPropertiesByAgentId(agentId: string) {
   // Dynamic import to avoid circular dependency:
   // properties.ts schema imports agents.ts at line 14
   const { properties } = await import("@/lib/db/schema/properties");
-  return db
+  const rows = await db
     .select({
       id: properties.id,
       slug: properties.slug,
@@ -151,6 +152,8 @@ export async function getPropertiesByAgentId(agentId: string) {
     .from(properties)
     .where(and(eq(properties.agentId, agentId), eq(properties.isVisible, true)))
     .orderBy(desc(properties.syncedAt));
+
+  return rows.map((row) => mapPropertyRowToSearchItem(row));
 }
 
 /**

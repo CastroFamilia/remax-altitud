@@ -18,7 +18,7 @@ import { SimilarPropertiesLoader } from "@/components/listing/similar-properties
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import type { Property } from "@/lib/db/schema/properties";
 import type { Agent } from "@/lib/db/schema/agents";
-import type { OptimizedImage } from "@/types/images";
+import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import { getRegionFromAreaSlug } from "@/components/property/property-card";
 
 // ZMT badge visual config (same as property-card.tsx)
@@ -61,7 +61,7 @@ export async function ListingDetailLayout({
     property.titleEs ??
     "";
   const description = locale === "es" ? property.descriptionEs : property.descriptionEn;
-  const images = (property.images as unknown as OptimizedImage[]) ?? [];
+  const images = normalizePropertyImages(property.images, title);
 
   // ZMT badge
   const zmtVisual = property.zmtStatus ? ZMT_VISUAL[property.zmtStatus] : null;
@@ -79,8 +79,8 @@ export async function ListingDetailLayout({
         {/* Breadcrumbs — visual nav (Story 4.5, AC #4) */}
         <Breadcrumbs
           items={[
-            { label: tBreadcrumbs("home"), href: `/${locale}` },
-            { label: tBreadcrumbs("search"), href: `/${locale}/search` },
+            { label: tBreadcrumbs("home"), href: "/" },
+            { label: tBreadcrumbs("search"), href: "/search" },
             { label: title },
           ]}
           locale={locale}

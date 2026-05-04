@@ -23,6 +23,8 @@ export interface SearchFilters {
   tags?: string[];
 }
 
+import type { OptimizedImage } from "./images";
+
 export interface PropertySearchItem {
   id: string;
   slug: string;
@@ -36,7 +38,7 @@ export interface PropertySearchItem {
   zmtStatus: string;
   propertyType: string;
   areaSlug: string | null;
-  images: { url: string; alt?: string }[];
+  images: OptimizedImage[];
   latitude: number | null;
   longitude: number | null;
 }

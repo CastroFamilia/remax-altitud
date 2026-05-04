@@ -21,6 +21,8 @@
 import { and, isNotNull, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema";
+import { normalizePropertyImages } from "@/lib/utils/normalize-images";
+import type { OptimizedImage } from "@/types/images";
 
 export type MapProperty = {
   id: string;
@@ -32,7 +34,7 @@ export type MapProperty = {
   bathrooms: number | null;
   lotSizeM2: number | null;
   zmtStatus: string;
-  images: { url: string; alt?: string }[];
+  images: OptimizedImage[];
   latitude: number;
   longitude: number;
 };
@@ -124,6 +126,6 @@ export async function getPropertiesForMap(bounds?: RawBounds): Promise<MapProper
     ...row,
     latitude: row.latitude as number,
     longitude: row.longitude as number,
-    images: (row.images as { url: string; alt?: string }[]) ?? [],
+    images: normalizePropertyImages(row.images, row.titleEn),
   }));
 }

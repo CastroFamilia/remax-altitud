@@ -22,6 +22,7 @@ import { useMapStore } from "@/store/map-store";
 import { MapClusterPin } from "@/components/map/map-cluster-pin";
 import { MapPricePin } from "@/components/map/map-price-pin";
 import { MapPropertyPopup } from "@/components/map/map-property-popup";
+import type { OptimizedImage } from "@/types/images";
 
 export type MapBounds = {
   north: number;
@@ -40,7 +41,7 @@ export type MapProperty = {
   bathrooms: number | null;
   lotSizeM2: number | null;
   zmtStatus: string;
-  images: { url: string; alt?: string }[];
+  images: OptimizedImage[];
   latitude: number;
   longitude: number;
 };

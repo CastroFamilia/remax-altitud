@@ -185,8 +185,9 @@ describe("diffProperties", () => {
     expect(result.unchanged).toHaveLength(0);
   });
 
-  it("[P0] treats an expired property (isExpired=true) as REMOVED even if present in API", () => {
-    // AC #5 — expired listings flagged by parser → soft-delete
+  it("[P2] (defensive) treats isExpired=true as REMOVED — dead path since schema always returns false", () => {
+    // AC #5 — differ still handles isExpired as a safety net, but the schema
+    // now hardcodes isExpired=false (ExpirationDate is unreliable in the feed).
     const raw = makeRawProperty({ apiId: "113149", isExpired: true });
     const hash = computePropertyHash(raw);
 

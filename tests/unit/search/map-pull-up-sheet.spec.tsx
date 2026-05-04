@@ -74,7 +74,7 @@ const mockProperties = [
     zmtStatus: "titled",
     propertyType: "Casa",
     areaSlug: "perez-zeledon",
-    images: [{ url: "https://example.com/img1.jpg", alt: "Villa" }],
+    images: [{ src: "https://example.com/img1.jpg", alt: "Villa" }],
     latitude: 9.35,
     longitude: -83.68,
   },

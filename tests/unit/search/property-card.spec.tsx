@@ -207,7 +207,7 @@ const mockPropertyMountain: PropertySearchItem = {
   zmtStatus: "titled",
   propertyType: "Casa",
   areaSlug: "perez-zeledon",
-  images: [{ url: "/images/mountain-house.jpg", alt: "Mountain house" }],
+  images: [{ src: "/images/mountain-house.jpg", alt: "Mountain house" }],
   latitude: 9.35,
   longitude: -83.68,
 };
@@ -225,7 +225,7 @@ const mockPropertyBeach: PropertySearchItem = {
   zmtStatus: "concession",
   propertyType: "Casa",
   areaSlug: "dominical",
-  images: [{ url: "/images/beach-house.jpg", alt: "Beach house" }],
+  images: [{ src: "/images/beach-house.jpg", alt: "Beach house" }],
   latitude: 9.25,
   longitude: -83.85,
 };

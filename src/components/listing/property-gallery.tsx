@@ -67,7 +67,7 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
     return (
       <div
         data-testid="gallery-hero"
-        className="relative w-full h-[60vh] bg-gray-200 flex items-center justify-center"
+        className="relative w-full aspect-[4/3] bg-gray-200 flex items-center justify-center"
         aria-label={propertyTitle}
       >
         <span className="text-gray-500">{t("noPhotos")}</span>
@@ -79,19 +79,19 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
 
   return (
     <div className="w-full">
-      {/* Hero image container */}
       <div
         data-testid="gallery-hero"
-        className="relative w-full h-[60vh] overflow-hidden bg-gray-100"
+        className="relative w-full aspect-[4/3] overflow-hidden bg-gray-100"
       >
         <Image
           src={activeImage.src}
-          alt={activeImage.alt}
+          alt={activeImage.alt || propertyTitle}
           fill
           sizes="100vw"
           priority={activeIndex === 0}
-          placeholder="blur"
-          blurDataURL={activeImage.blurDataUrl}
+          {...(activeImage.blurDataUrl
+            ? { placeholder: "blur" as const, blurDataURL: activeImage.blurDataUrl }
+            : {})}
           className="object-cover"
         />
 
@@ -128,7 +128,7 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
             type="button"
             role="listitem"
             onClick={() => setActiveIndex(index)}
-            className={`flex-shrink-0 w-20 h-14 overflow-hidden rounded border-2 transition-all ${
+            className={`relative flex-shrink-0 w-20 aspect-[4/3] overflow-hidden rounded border-2 transition-all ${
               index === activeIndex
                 ? "border-brand-navy ring-2 ring-brand-navy ring-offset-1"
                 : "border-transparent hover:border-gray-400"
@@ -136,13 +136,7 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
             aria-label={t("photoCount", { current: index + 1, total })}
             aria-current={index === activeIndex ? "true" : undefined}
           >
-            <Image
-              src={image.src}
-              alt={image.alt}
-              width={80}
-              height={56}
-              className="object-cover w-full h-full"
-            />
+            <Image src={image.src} alt={image.alt || propertyTitle} fill className="object-cover" />
           </button>
         ))}
       </div>
@@ -173,11 +167,12 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
               <div className="relative w-full max-w-5xl h-[80vh]">
                 <Image
                   src={activeImage.src}
-                  alt={activeImage.alt}
+                  alt={activeImage.alt || propertyTitle}
                   fill
                   sizes="100vw"
-                  placeholder="blur"
-                  blurDataURL={activeImage.blurDataUrl}
+                  {...(activeImage.blurDataUrl
+                    ? { placeholder: "blur" as const, blurDataURL: activeImage.blurDataUrl }
+                    : {})}
                   className="object-contain"
                 />
               </div>

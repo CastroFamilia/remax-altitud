@@ -73,7 +73,7 @@ export function PropertyCard({
   const t = useTranslations("PropertyCard");
   const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
   const activeUnitSystem = unitSystem ?? "metric";
-  const imageSrc = property.images[0]?.url ?? "/property-placeholder.svg";
+  const imageSrc = property.images[0]?.src ?? "/property-placeholder.svg";
   const imageAlt = property.images[0]?.alt ?? title;
   const region = getRegionFromAreaSlug(property.areaSlug);
   const isLand = LAND_TYPES.has(property.propertyType);
