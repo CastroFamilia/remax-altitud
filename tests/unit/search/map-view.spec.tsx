@@ -222,7 +222,7 @@ type TestProperty = {
   bathrooms: number | null;
   lotSizeM2: number | null;
   zmtStatus: string;
-  images: { url: string; alt?: string }[];
+  images: { src: string; alt?: string }[];
   latitude: number;
   longitude: number;
 };
@@ -237,7 +237,7 @@ const makeProperty = (overrides: Partial<TestProperty> = {}): TestProperty => ({
   bathrooms: 2,
   lotSizeM2: 5000,
   zmtStatus: "titled",
-  images: [{ url: "https://example.com/img.jpg", alt: "Farm view" }],
+  images: [{ src: "https://example.com/img.jpg", alt: "Farm view" }],
   latitude: 9.38,
   longitude: -83.7,
   ...overrides,

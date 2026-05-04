@@ -80,7 +80,7 @@ function makeDbRow(overrides: {
     zmtStatus: "titled",
     propertyType: overrides.propertyType ?? "Casa",
     areaSlug: overrides.areaSlug ?? "perez-zeledon",
-    images: [{ url: "/img/placeholder.jpg" }],
+    images: [{ src: "/img/placeholder.jpg" }],
     latitude: 9.37,
     longitude: -83.69,
   };
@@ -322,14 +322,10 @@ describe("Story 4.5: getSimilarPropertiesRanked — similarity algorithm", () =>
   // [P2] Image mapping
 
   it(
-    "[P2] 4.5-UNIT-006: maps DB images { src } to PropertySearchItem { url } correctly (AC #2)",
+    "[P2] 4.5-UNIT-006: maintains OptimizedImage[] shape with { src } in PropertySearchItem (AC #2)",
     async () => {
-      // THIS TEST WILL FAIL — getSimilarPropertiesRanked not yet implemented
-      //
       // DB stores images as OptimizedImage[] with { src: string; ... }
-      // PropertySearchItem expects { url: string; alt?: string }[]
-      // The function MUST map src → url
-      //
+      // PropertySearchItem also expects OptimizedImage[]
       const dbRowWithSrc = {
         id: "prop-src-test",
         slug: "casa-src-test",
@@ -343,7 +339,6 @@ describe("Story 4.5: getSimilarPropertiesRanked — similarity algorithm", () =>
         zmtStatus: "titled",
         propertyType: "Casa",
         areaSlug: "perez-zeledon",
-        // DB shape: { src: string } — NOT { url: string }
         images: [{ src: "/img/test.jpg", alt: "Test image" }],
         latitude: 9.37,
         longitude: -83.69,
@@ -374,12 +369,9 @@ describe("Story 4.5: getSimilarPropertiesRanked — similarity algorithm", () =>
 
       expect(results.length).toBeGreaterThan(0);
       const firstResult = results[0];
-      // Must have url, NOT src
-      expect(firstResult.images[0]).toHaveProperty("url");
-      expect(
-        (firstResult.images[0] as unknown as { src?: string }).src,
-      ).toBeUndefined();
-      expect(firstResult.images[0].url).toBe("/img/test.jpg");
+      // Must have src, NOT url
+      expect(firstResult.images[0]).toHaveProperty("src");
+      expect(firstResult.images[0].src).toBe("/img/test.jpg");
     },
   );
 });
