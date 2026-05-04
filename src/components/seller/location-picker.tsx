@@ -28,6 +28,12 @@ interface LocationPickerProps {
   onChange: (value: LocationValue) => void;
   locale: string;
   placeholder?: string;
+  /** Optional id forwarded to the text input — allows parent to attach a `<label htmlFor>`. */
+  inputId?: string;
+  /** Optional aria-describedby id for error messaging. */
+  describedBy?: string;
+  /** When true, sets aria-invalid on the text input. */
+  invalid?: boolean;
 }
 
 export function LocationPicker({
@@ -35,6 +41,9 @@ export function LocationPicker({
   onChange,
   locale: _locale, // eslint-disable-line @typescript-eslint/no-unused-vars
   placeholder,
+  inputId,
+  describedBy,
+  invalid,
 }: LocationPickerProps) {
   const t = useTranslations("SellerPage");
   const [showMap, setShowMap] = useState(false);
@@ -67,12 +76,15 @@ export function LocationPicker({
     <div className="space-y-3">
       {/* Text input — renders immediately, SSR-safe */}
       <input
+        id={inputId}
         type="text"
         data-testid="location-text-input"
         value={value.text}
         onChange={handleTextChange}
         placeholder={resolvedPlaceholder}
         aria-label={t("form.step1.locationAriaLabel")}
+        aria-describedby={describedBy}
+        aria-invalid={invalid || undefined}
         className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy"
       />
 

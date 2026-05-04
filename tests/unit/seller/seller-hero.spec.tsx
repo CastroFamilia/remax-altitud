@@ -53,6 +53,8 @@ vi.mock("@/i18n/navigation", () => ({
 // Imports — AFTER mocks
 // ---------------------------------------------------------------------------
 
+import { readFileSync } from "node:fs";
+import { resolve as pathResolve } from "node:path";
 import { render, cleanup } from "@testing-library/react";
 
 // ---------------------------------------------------------------------------
@@ -112,9 +114,7 @@ describe("SellerHero (async Server Component)", () => {
   });
 
   it("[P2] seller-hero.tsx is a Server Component — file must NOT start with 'use client' (AC #12)", () => {
-    const { readFileSync } = require("fs");
-    const path = require("path");
-    const filePath = path.resolve(process.cwd(), "src/components/seller/seller-hero.tsx");
+    const filePath = pathResolve(process.cwd(), "src/components/seller/seller-hero.tsx");
     const src = readFileSync(filePath, "utf8");
     // Server Component: must NOT have 'use client' at the top
     expect(src.trimStart()).not.toMatch(/^['"]use client['"]/);

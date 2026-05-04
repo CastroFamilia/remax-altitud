@@ -92,6 +92,11 @@ export interface LeadPayload {
 
 export function buildLeadPayload(data: SellerFormData): LeadPayload {
   const notes = data.needsPricingHelp ? "Seller needs pricing consultation" : "";
+  // R-012 mitigation: if property type is land (Lote/Terreno), beds/baths are
+  // not applicable. Omit them from the payload regardless of any stale state
+  // from a prior property-type selection. Beds/baths visibility is also
+  // controlled in the UI (`showBedsBaths`); this is a defense-in-depth check.
+  const isLand = data.propertyType === "Lote/Terreno";
   return {
     propertyType: data.propertyType,
     location: data.location,
@@ -100,8 +105,8 @@ export function buildLeadPayload(data: SellerFormData): LeadPayload {
     priceExpectation: data.priceExpectation || null,
     needsPricingHelp: data.needsPricingHelp,
     description: data.description,
-    bedrooms: data.bedrooms || null,
-    bathrooms: data.bathrooms || null,
+    bedrooms: isLand ? null : data.bedrooms || null,
+    bathrooms: isLand ? null : data.bathrooms || null,
     name: data.name,
     phone: data.phone,
     email: data.email,
@@ -119,12 +124,16 @@ interface FieldProps {
   error?: string;
   required?: boolean;
   optional?: boolean;
-  children: (id: string) => React.ReactNode;
+  /** Localized "(Optional)" text — passed in by parent because Field cannot call useTranslations conditionally. */
+  optionalLabel?: string;
+  children: (params: { id: string; describedBy?: string; invalid: boolean }) => React.ReactNode;
 }
 
-function Field({ label, error, required, optional, children }: FieldProps) {
+function Field({ label, error, required, optional, optionalLabel, children }: FieldProps) {
   const reactId = useId();
   const id = `sf-${reactId}`;
+  const errorId = error ? `${id}-error` : undefined;
+  const invalid = Boolean(error);
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-sm font-semibold text-brand-navy">
@@ -134,11 +143,13 @@ function Field({ label, error, required, optional, children }: FieldProps) {
             *
           </span>
         )}
-        {optional && <span className="ml-1 text-xs font-normal text-text-muted">(Optional)</span>}
+        {optional && optionalLabel && (
+          <span className="ml-1 text-xs font-normal text-text-muted">{optionalLabel}</span>
+        )}
       </label>
-      {children(id)}
+      {children({ id, describedBy: errorId, invalid })}
       {error && (
-        <span role="alert" className="text-xs text-[var(--color-error,#dc2626)]">
+        <span id={errorId} role="alert" className="text-xs text-[var(--color-error,#dc2626)]">
           {error}
         </span>
       )}
@@ -163,6 +174,15 @@ export function SellerForm({
 }: SellerFormProps) {
   const t = useTranslations("SellerPage");
   const { unitSystem, toggleUnits } = useLocaleUnits(locale);
+
+  // ---- Stable IDs for fields not wrapped by Field helper ----
+  const emailFieldReactId = useId();
+  const emailFieldId = `sf-email-${emailFieldReactId}`;
+  const emailErrorId = `${emailFieldId}-error`;
+  const propertyTypeErrorId = `sf-propertyType-error`;
+  const locationFieldReactId = useId();
+  const locationFieldId = `sf-location-${locationFieldReactId}`;
+  const locationErrorId = `${locationFieldId}-error`;
 
   // ---- Form state ----
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -373,6 +393,8 @@ export function SellerForm({
                 className="grid grid-cols-2 gap-2 sm:grid-cols-3"
                 role="radiogroup"
                 aria-label={t("form.step1.propertyTypeAriaLabel")}
+                aria-describedby={step1Errors.propertyType ? propertyTypeErrorId : undefined}
+                aria-invalid={step1Errors.propertyType ? true : undefined}
               >
                 {PROPERTY_TYPES.map(({ value }) => {
                   const labelKey = `form.step1.${
@@ -420,15 +442,25 @@ export function SellerForm({
                 })}
               </div>
               {step1Errors.propertyType && (
-                <span role="alert" className="mt-1 text-xs text-[var(--color-error,#dc2626)]">
+                <span
+                  id={propertyTypeErrorId}
+                  role="alert"
+                  className="mt-1 text-xs text-[var(--color-error,#dc2626)]"
+                >
                   {step1Errors.propertyType}
                 </span>
               )}
             </fieldset>
 
             {/* Location — LocationPicker (AC #3, #4) */}
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-brand-navy">
+            <div
+              aria-describedby={step1Errors.location ? locationErrorId : undefined}
+              aria-invalid={step1Errors.location ? true : undefined}
+            >
+              <label
+                htmlFor={locationFieldId}
+                className="mb-2 block text-sm font-semibold text-brand-navy"
+              >
                 {t("form.step1.locationLabel")}
                 <span aria-hidden className="ml-0.5 text-red-500">
                   *
@@ -439,9 +471,16 @@ export function SellerForm({
                 onChange={(val) => updateField("location", val)}
                 locale={locale}
                 placeholder={t("form.step1.locationPlaceholder")}
+                inputId={locationFieldId}
+                describedBy={step1Errors.location ? locationErrorId : undefined}
+                invalid={Boolean(step1Errors.location)}
               />
               {step1Errors.location && (
-                <span role="alert" className="mt-1 text-xs text-[var(--color-error,#dc2626)]">
+                <span
+                  id={locationErrorId}
+                  role="alert"
+                  className="mt-1 text-xs text-[var(--color-error,#dc2626)]"
+                >
                   {step1Errors.location}
                 </span>
               )}
@@ -449,7 +488,7 @@ export function SellerForm({
 
             {/* Size + unit toggle (AC #3, 5.1-COMP-006) */}
             <Field label={t("form.step1.sizeLabel")}>
-              {(id) => (
+              {({ id }) => (
                 <div className="flex gap-2">
                   <input
                     id={id}
@@ -502,9 +541,10 @@ export function SellerForm({
               label={t("form.step2.priceLabel")}
               required={priceRequired}
               optional={!priceRequired}
+              optionalLabel={t("form.step2.priceOptionalLabel")}
               error={step2Errors.priceExpectation}
             >
-              {(id) => (
+              {({ id, describedBy, invalid }) => (
                 <input
                   id={id}
                   name="priceExpectation"
@@ -515,6 +555,8 @@ export function SellerForm({
                   }
                   placeholder={t("form.step2.pricePlaceholder")}
                   aria-label={t("form.step2.priceAriaLabel")}
+                  aria-describedby={describedBy}
+                  aria-invalid={invalid || undefined}
                   required={priceRequired}
                   min="0"
                   className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy"
@@ -549,7 +591,7 @@ export function SellerForm({
 
             {/* Description (optional) (AC #5) */}
             <Field label={t("form.step2.descriptionLabel")}>
-              {(id) => (
+              {({ id }) => (
                 <textarea
                   id={id}
                   value={formData.description}
@@ -599,7 +641,7 @@ export function SellerForm({
             {showBedsBaths && (
               <div data-testid="beds-baths-fields" className="grid grid-cols-2 gap-4">
                 <Field label={t("form.step2.bedroomsLabel")}>
-                  {(id) => (
+                  {({ id }) => (
                     <select
                       id={id}
                       value={formData.bedrooms}
@@ -619,7 +661,7 @@ export function SellerForm({
                   )}
                 </Field>
                 <Field label={t("form.step2.bathroomsLabel")}>
-                  {(id) => (
+                  {({ id }) => (
                     <select
                       id={id}
                       value={formData.bathrooms}
@@ -672,7 +714,7 @@ export function SellerForm({
 
             {/* Name (required) (AC #7) */}
             <Field label={t("form.step3.nameLabel")} required error={step3Errors.name}>
-              {(id) => (
+              {({ id, describedBy, invalid }) => (
                 <input
                   id={id}
                   type="text"
@@ -682,6 +724,8 @@ export function SellerForm({
                   }
                   placeholder={t("form.step3.namePlaceholder")}
                   aria-label={t("form.step3.nameAriaLabel")}
+                  aria-describedby={describedBy}
+                  aria-invalid={invalid || undefined}
                   required
                   autoComplete="name"
                   className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy"
@@ -692,7 +736,7 @@ export function SellerForm({
             {/* Phone / WhatsApp (required) (AC #7) */}
             <div className="space-y-1.5">
               <Field label={t("form.step3.phoneLabel")} required error={step3Errors.phone}>
-                {(id) => (
+                {({ id, describedBy, invalid }) => (
                   <input
                     id={id}
                     type="tel"
@@ -702,6 +746,8 @@ export function SellerForm({
                     }
                     placeholder={t("form.step3.phonePlaceholder")}
                     aria-label={t("form.step3.phoneAriaLabel")}
+                    aria-describedby={describedBy}
+                    aria-invalid={invalid || undefined}
                     required
                     autoComplete="tel"
                     className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy"
@@ -714,7 +760,7 @@ export function SellerForm({
             {/* Email (optional) (AC #7) */}
             <div>
               <div className="flex items-center gap-2 mb-1.5">
-                <label className="text-sm font-semibold text-brand-navy">
+                <label htmlFor={emailFieldId} className="text-sm font-semibold text-brand-navy">
                   {t("form.step3.emailLabel")}
                 </label>
                 <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-text-muted">
@@ -722,6 +768,7 @@ export function SellerForm({
                 </span>
               </div>
               <input
+                id={emailFieldId}
                 type="email"
                 value={formData.email}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -729,11 +776,17 @@ export function SellerForm({
                 }
                 placeholder={t("form.step3.emailPlaceholder")}
                 aria-label={t("form.step3.emailAriaLabel")}
+                aria-describedby={step3Errors.email ? emailErrorId : undefined}
+                aria-invalid={step3Errors.email ? true : undefined}
                 autoComplete="email"
                 className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy"
               />
               {step3Errors.email && (
-                <span role="alert" className="mt-1 text-xs text-[var(--color-error,#dc2626)]">
+                <span
+                  id={emailErrorId}
+                  role="alert"
+                  className="mt-1 text-xs text-[var(--color-error,#dc2626)]"
+                >
                   {step3Errors.email}
                 </span>
               )}
@@ -741,7 +794,7 @@ export function SellerForm({
 
             {/* Preferred Language (auto-detected, selectable) (AC #7) */}
             <Field label={t("form.step3.languageLabel")}>
-              {(id) => (
+              {({ id }) => (
                 <select
                   id={id}
                   value={formData.preferredLanguage}

@@ -56,8 +56,9 @@ vi.mock("next-intl", () => ({
 // Imports — AFTER mocks
 // ---------------------------------------------------------------------------
 
-import { render, screen, fireEvent, cleanup, act } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { readFileSync } from "node:fs";
+import { resolve as pathResolve } from "node:path";
+import { render, fireEvent, cleanup, act } from "@testing-library/react";
 
 // ---------------------------------------------------------------------------
 
@@ -196,9 +197,7 @@ describe("LocationPicker — text field", () => {
   });
 
   it("[P1] location-picker.tsx is a 'use client' component (file content check)", () => {
-    const { readFileSync } = require("fs");
-    const path = require("path");
-    const filePath = path.resolve(process.cwd(), "src/components/seller/location-picker.tsx");
+    const filePath = pathResolve(process.cwd(), "src/components/seller/location-picker.tsx");
     const src = readFileSync(filePath, "utf8");
     expect(src.trimStart()).toMatch(/^['"]use client['"]/);
   });

@@ -91,7 +91,9 @@ vi.mock("@/hooks/use-locale-units", () => ({
 // ---------------------------------------------------------------------------
 
 import React from "react";
-import { render, screen, cleanup, act, fireEvent } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { resolve as pathResolve } from "node:path";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 // ---------------------------------------------------------------------------
@@ -111,14 +113,12 @@ describe("SellerForm lazy-load contract (5.1-E2E-002)", () => {
     // The lazy load in page.tsx uses next/dynamic with a named export:
     //   () => import('@/components/seller/seller-form').then(m => m.SellerForm)
     // This test verifies the named export contract exists.
-    const module = await import("@/components/seller/seller-form");
-    expect(typeof module.SellerForm).toBe("function");
+    const sellerFormModule = await import("@/components/seller/seller-form");
+    expect(typeof sellerFormModule.SellerForm).toBe("function");
   });
 
   it("[P0] seller-form.tsx is a 'use client' component (file content check)", () => {
-    const { readFileSync } = require("fs");
-    const path = require("path");
-    const filePath = path.resolve(process.cwd(), "src/components/seller/seller-form.tsx");
+    const filePath = pathResolve(process.cwd(), "src/components/seller/seller-form.tsx");
     const src = readFileSync(filePath, "utf8");
     expect(src.trimStart()).toMatch(/^['"]use client['"]/);
   });
