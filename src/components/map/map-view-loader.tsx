@@ -19,4 +19,19 @@ const MapView = dynamic(() => import("./map-view").then((m) => ({ default: m.Map
   ),
 });
 
-export { MapView };
+/**
+ * MapViewLoader — lazy-loaded PinDropMap for the seller form LocationPicker (Story 5.1).
+ * Exported as a named export so location-picker.tsx can mock it in tests via:
+ *   vi.mock('@/components/map/map-view-loader', () => ({ MapViewLoader: ... }))
+ */
+const MapViewLoader = dynamic(
+  () => import("./pin-drop-map").then((m) => ({ default: m.PinDropMap })),
+  {
+    ssr: false,
+    loading: () => (
+      <div data-testid="location-map" className="h-64 w-full bg-muted rounded-lg animate-pulse" />
+    ),
+  },
+);
+
+export { MapView, MapViewLoader };
