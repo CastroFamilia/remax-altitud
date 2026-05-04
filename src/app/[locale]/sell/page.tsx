@@ -6,24 +6,22 @@
  * No export const dynamic = 'force-static' needed — SSG is inherited from layout's
  * generateStaticParams().
  *
- * SellerForm is lazy-loaded via next/dynamic (ssr: false) — R-006 compliance (AC #14).
- * SellerFormSkeleton is shown while the form lazy-loads.
+ * SellerForm is lazy-loaded via SellerFormLoader (next/dynamic, ssr: false) — R-006 compliance
+ * (AC #14). SellerFormLoader is a thin 'use client' wrapper following the PropertyGalleryLoader
+ * pattern — required by Turbopack which enforces that dynamic(ssr:false) must live in a Client
+ * Component.
  */
 
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import dynamic from "next/dynamic";
 import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { SellerHero } from "@/components/seller/seller-hero";
-import { SellerFormSkeleton } from "@/components/seller/seller-form-skeleton";
+import { SellerFormLoader } from "@/components/seller/seller-form-loader";
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 
-// Lazy-loaded SellerForm — ~15KB, NOT in main bundle (R-006, AC #14)
-const SellerForm = dynamic(
-  () => import("@/components/seller/seller-form").then((m) => m.SellerForm),
-  { ssr: false, loading: () => <SellerFormSkeleton /> },
-);
+// ISR — revalidate every 24 hours (same cadence as agents/page.tsx)
+export const revalidate = 86400;
 
 export async function generateMetadata({
   params,
@@ -48,18 +46,24 @@ export default async function SellPage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // Stub agent for confirmation screen — Story 5.3 replaces with routing logic
-  const agents = await getAllAgents();
-  const fallbackAgent = agents[0] ?? null;
-
-  // Resolve office name for confirmation screen
-  const office = fallbackAgent?.officeId ? await getOfficeById(fallbackAgent.officeId) : null;
-  const officeName = office?.name ?? "RE/MAX Altitud";
+  // Stub agent for confirmation screen — Story 5.3 replaces with routing logic.
+  // Wrapped in try/catch so SSG build continues if DB is unavailable —
+  // pages are generated on-demand via ISR fallback (same pattern as agents/page.tsx).
+  let fallbackAgent: Awaited<ReturnType<typeof getAllAgents>>[0] | null = null;
+  let officeName = "RE/MAX Altitud";
+  try {
+    const agents = await getAllAgents();
+    fallbackAgent = agents[0] ?? null;
+    const office = fallbackAgent?.officeId ? await getOfficeById(fallbackAgent.officeId) : null;
+    officeName = office?.name ?? "RE/MAX Altitud";
+  } catch {
+    // DB unavailable at build time — render empty shell; ISR will populate on first request.
+  }
 
   return (
     <main>
       <SellerHero locale={locale} />
-      <SellerForm locale={locale} fallbackAgent={fallbackAgent} officeName={officeName} />
+      <SellerFormLoader locale={locale} fallbackAgent={fallbackAgent} officeName={officeName} />
     </main>
   );
 }
