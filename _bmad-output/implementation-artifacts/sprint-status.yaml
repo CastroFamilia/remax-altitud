@@ -77,13 +77,13 @@ development_status:
   epic-3-retrospective: done
 
   # Epic 4: Listing Detail & Agent Profiles
-  epic-4: in-progress
+  epic-4: done
   4-1-listing-detail-page-and-photo-gallery: done
   4-2-agent-card-and-contact-ctas: done
   4-3-agent-profile-pages: done
   4-4-seo-architecture-and-wordpress-redirects: done
-  4-5-similar-properties-and-cross-linking: review
-  epic-4-retrospective: optional
+  4-5-similar-properties-and-cross-linking: done
+  epic-4-retrospective: done
 
   # Epic 5: Seller Lead Capture
   epic-5: backlog
