@@ -580,7 +580,7 @@
         "typeLote": "Lote / Terreno",
         "typeFinca": "Finca",
         "typeCondominio": "Condominio",
-        "typeComericial": "Comercial",
+        "typeCommercial": "Comercial",
         "locationLabel": "Ubicación",
         "locationPlaceholder": "Ingrese la dirección o el punto de referencia más cercano",
         "locationAriaLabel": "Ingrese la ubicación de la propiedad",

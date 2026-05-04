@@ -580,7 +580,7 @@
         "typeLote": "Lot / Lote",
         "typeFinca": "Farm / Finca",
         "typeCondominio": "Condo / Condominio",
-        "typeComericial": "Commercial / Comercial",
+        "typeCommercial": "Commercial / Comercial",
         "locationLabel": "Location",
         "locationPlaceholder": "Type address or nearest landmark",
         "locationAriaLabel": "Enter property location",

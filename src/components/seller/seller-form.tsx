@@ -66,7 +66,7 @@ const PROPERTY_TYPES: {
   { value: "Lote/Terreno", labelKey: "form.step1.typeLote" as never },
   { value: "Finca", labelKey: "form.step1.typeFinca" as never },
   { value: "Condominio", labelKey: "form.step1.typeCondominio" as never },
-  { value: "Comercial", labelKey: "form.step1.typeComericial" as never },
+  { value: "Comercial", labelKey: "form.step1.typeCommercial" as never },
 ];
 
 // ---------------------------------------------------------------------------
@@ -179,10 +179,13 @@ export function SellerForm({
   const emailFieldReactId = useId();
   const emailFieldId = `sf-email-${emailFieldReactId}`;
   const emailErrorId = `${emailFieldId}-error`;
-  const propertyTypeErrorId = `sf-propertyType-error`;
+  const propertyTypeReactId = useId();
+  const propertyTypeErrorId = `sf-propertyType-${propertyTypeReactId}-error`;
   const locationFieldReactId = useId();
   const locationFieldId = `sf-location-${locationFieldReactId}`;
   const locationErrorId = `${locationFieldId}-error`;
+  const pricingHelpReactId = useId();
+  const pricingHelpId = `sf-pricing-help-${pricingHelpReactId}`;
 
   // ---- Form state ----
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -217,8 +220,17 @@ export function SellerForm({
   }
 
   // ---- Step navigation ----
-  const PHONE_RE = /^\+?[\d\s\-()+]{7,}$/;
-  const EMAIL_RE = /^[^@]+@[^@]+\.[^@]+$/;
+  // Phone: optional leading +, then a mix of digits/spaces/dashes/parens, with at
+  // least 7 actual digits required. Story 5.3 owns strict E.164 validation; this
+  // is the same permissive pattern as contact-form.tsx but tightened to require
+  // ≥7 digits (not just 7 characters), so "       " or "+++++++" are rejected.
+  const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const phoneHasEnoughDigits = (v: string) => v.replace(/\D/g, "").length >= 7;
+  const PHONE_RE = /^\+?[\d\s\-()]+$/;
+
+  // Photo upload limits (matches photosDescription i18n string).
+  const MAX_PHOTOS = 5;
+  const MAX_PHOTO_BYTES = 10 * 1024 * 1024; // 10MB
 
   function validateStep1(): Step1Errors {
     const errors: Step1Errors = {};
@@ -249,7 +261,7 @@ export function SellerForm({
     }
     if (!formData.phone.trim()) {
       errors.phone = t("form.validation.phoneRequired");
-    } else if (!PHONE_RE.test(formData.phone)) {
+    } else if (!PHONE_RE.test(formData.phone) || !phoneHasEnoughDigits(formData.phone)) {
       errors.phone = t("form.validation.phoneInvalid");
     }
     if (formData.email && !EMAIL_RE.test(formData.email)) {
@@ -293,9 +305,13 @@ export function SellerForm({
     setStep3Errors({});
     setSubmitting(true);
 
-    // 5.1 stub — Story 5.3 replaces with real API call
+    // 5.1 stub — Story 5.3 replaces with real API call.
+    // Gated on NODE_ENV so PII (name/phone/email/coords) is never printed to the
+    // browser console in production builds.
     const payload = buildLeadPayload(formData);
-    console.log("[5.1 stub] seller form payload:", payload);
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[5.1 stub] seller form payload:", payload);
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 500));
     setSubmitting(false);
@@ -406,7 +422,7 @@ export function SellerForm({
                           ? "typeFinca"
                           : value === "Condominio"
                             ? "typeCondominio"
-                            : "typeComericial"
+                            : "typeCommercial"
                   }` as Parameters<typeof t>[0];
                   return (
                     <label
@@ -568,7 +584,7 @@ export function SellerForm({
             <div className="flex items-start gap-3">
               <input
                 type="checkbox"
-                id="pricing-help"
+                id={pricingHelpId}
                 data-testid="pricing-help-checkbox"
                 checked={formData.needsPricingHelp}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -578,7 +594,7 @@ export function SellerForm({
               />
               <div>
                 <label
-                  htmlFor="pricing-help"
+                  htmlFor={pricingHelpId}
                   className="text-sm font-semibold text-brand-navy cursor-pointer"
                 >
                   {t("form.step2.pricingHelpLabel")}
@@ -607,10 +623,13 @@ export function SellerForm({
             </Field>
 
             {/* Photos (optional) (AC #5) */}
+            {/* The visible heading is a <span> (not <label>) so screen readers
+                don't announce it as a separate orphan label — the wrapping
+                <label> below provides the accessible label for the file input. */}
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-brand-navy">
+              <span className="block text-sm font-semibold text-brand-navy">
                 {t("form.step2.photosLabel")}
-              </label>
+              </span>
               <p className="text-xs text-text-muted">{t("form.step2.photosDescription")}</p>
               <label
                 className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-4 py-3 text-sm text-text-muted hover:border-brand-navy/30 hover:text-brand-navy transition-colors"
@@ -623,7 +642,12 @@ export function SellerForm({
                   className="sr-only"
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     if (e.target.files) {
-                      const files = Array.from(e.target.files).slice(0, 5);
+                      // Enforce client-side limits documented in photosDescription:
+                      // up to 5 photos, max 10MB each. Oversized files are dropped
+                      // silently here; Story 5.3 will surface a localized error.
+                      const files = Array.from(e.target.files)
+                        .filter((f) => f.size <= MAX_PHOTO_BYTES)
+                        .slice(0, MAX_PHOTOS);
                       updateField("photos", files);
                     }
                   }}
