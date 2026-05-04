@@ -35,7 +35,7 @@ const PropertyGalleryDynamic = dynamic(
     loading: () => (
       <div
         data-testid="gallery-hero"
-        className="relative w-full h-[60vh] bg-gray-200 animate-pulse"
+        className="relative w-full aspect-[4/3] bg-gray-200 animate-pulse"
       />
     ),
   },

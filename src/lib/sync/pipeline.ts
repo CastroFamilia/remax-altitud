@@ -34,6 +34,15 @@ export interface SyncPipelineResult {
   status: "success" | "partial";
 }
 
+/** Progress event emitted during the sync pipeline. */
+export type SyncProgressEvent =
+  | { type: "info"; message: string }
+  | { type: "agent_upsert"; apiId: string; name: string }
+  | { type: "property_upsert"; apiId: string; title: string; action: "create" | "update" }
+  | { type: "property_optimize"; apiId: string; imageCount: number }
+  | { type: "property_translate"; apiId: string }
+  | { type: "property_tag"; apiId: string };
+
 /**
  * Orchestrates the full sync pipeline against the RE/MAX CCA API.
  *
@@ -51,7 +60,13 @@ export interface SyncPipelineResult {
  *
  * On uncaught exception: updates sync_log to status="failure" then re-throws (AC #10).
  */
-export async function runSyncPipeline(): Promise<SyncPipelineResult> {
+export async function runSyncPipeline(options?: {
+  onProgress?: (event: SyncProgressEvent) => void;
+}): Promise<SyncPipelineResult> {
+  const { onProgress } = options ?? {};
+  const progress = (event: SyncProgressEvent) => onProgress?.(event);
+  const info = (msg: string) => progress({ type: "info", message: msg });
+
   // Step 1: Create sync log BEFORE any external call (AC #1)
   const syncLog = await createSyncLog();
   const logId = syncLog.id;
@@ -60,6 +75,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
     const pzGuid = process.env.PZ_OFFICE_GUID ?? "";
     const domGuid = process.env.DOM_OFFICE_GUID ?? "";
 
+    info("Fetching data from RE/MAX CCA API...");
     // Step 2: Fetch all 4 endpoints concurrently (AC Architecture §5 Step 1)
     const [pzPropsResult, domPropsResult, pzAgentsResult, domAgentsResult] = await Promise.all([
       fetchPropertiesForOffice(pzGuid),
@@ -89,6 +105,8 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       ...domAgentsResult.records.map((r) => ({ raw: r, sourceGuid: domGuid })),
     ];
 
+    info(`Fetched ${allProps.length} properties and ${allAgents.length} agents.`);
+
     // Step 3: Load DB snapshot for diff (minimal columns — NFR15 guardrail)
     const dbSnapshot = await fetchPropertySnapshot();
 
@@ -100,6 +118,10 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
     // Step 4: Diff API vs DB (operates on raw records)
     const rawProps = allProps.map((p) => p.raw);
     const diff = diffProperties(rawProps, dbSnapshot);
+
+    info(
+      `Diff complete: ${diff.new.length} new, ${diff.updated.length} updated, ${diff.unchanged.length} unchanged, ${diff.removed.length} removed.`,
+    );
 
     // Step 5: Resolve office UUIDs and upsert agents first (needed for agent FK on properties)
     const officeMap = await fetchOfficeIdMap();
@@ -120,6 +142,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
     // numeric `officeApiId` field (which is not a GUID).
     for (const { raw: rawAgent, sourceGuid } of allAgents) {
       const officeId = resolveOfficeId(sourceGuid);
+      progress({ type: "agent_upsert", apiId: rawAgent.apiId, name: rawAgent.name });
       await upsertAgent(rawAgent, officeId);
     }
 
@@ -137,6 +160,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       const officeId = resolveOfficeId(sourceGuid);
       const agentId = raw.agentApiId ? (agentIdMap.get(String(raw.agentApiId)) ?? null) : null;
       const apiHash = computePropertyHash(raw);
+      progress({ type: "property_upsert", apiId: raw.apiId, title: raw.titleEn, action: "create" });
       await upsertProperty(raw, officeId, agentId, apiHash);
       propertiesCreated++;
     }
@@ -146,11 +170,15 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       const officeId = resolveOfficeId(sourceGuid);
       const agentId = raw.agentApiId ? (agentIdMap.get(String(raw.agentApiId)) ?? null) : null;
       const apiHash = computePropertyHash(raw);
+      progress({ type: "property_upsert", apiId: raw.apiId, title: raw.titleEn, action: "update" });
       await upsertProperty(raw, officeId, agentId, apiHash);
       propertiesUpdated++;
     }
 
     // Step 6c: Soft-delete removed apiIds (AC #6)
+    if (diff.removed.length > 0) {
+      info(`Soft-deleting ${diff.removed.length} removed properties...`);
+    }
     const propertiesRemoved =
       diff.removed.length > 0 ? await softDeleteProperties(diff.removed) : 0;
 
@@ -171,10 +199,12 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
       }));
       translationsQueued = batchInput.length;
 
+      info(`Translating ${translationsQueued} properties...`);
       const { results, errors } = await translateBatch(batchInput);
 
       for (const result of results) {
         if (result.translated && result.titleEs) {
+          progress({ type: "property_translate", apiId: result.apiId });
           await updatePropertyTranslations(
             result.apiId,
             result.titleEs,
@@ -204,6 +234,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
         raw.propertyTypeEn,
         location,
       );
+      progress({ type: "property_optimize", apiId: raw.apiId, imageCount: raw.images.length });
       await updatePropertyImages(raw.apiId, result.optimized);
       // AC #11: count individual variant files written to disk.
       // result.optimized.length = number of source images successfully encoded.
@@ -236,6 +267,7 @@ export async function runSyncPipeline(): Promise<SyncPipelineResult> {
 
       for (const result of taggingResults) {
         if (result.tagged) {
+          progress({ type: "property_tag", apiId: result.apiId });
           await updatePropertyLifestyleTags(result.apiId, result.tags);
         }
       }

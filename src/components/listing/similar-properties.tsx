@@ -36,7 +36,7 @@ export async function SimilarProperties({
           {t("heading")}
         </h2>
         <Link
-          href={`/${locale}/search`}
+          href="/search"
           data-testid="similar-browse-cta"
           className="inline-flex items-center rounded-lg border border-brand-navy px-4 py-2 text-sm font-medium text-brand-navy hover:bg-brand-navy hover:text-white transition-colors"
         >
