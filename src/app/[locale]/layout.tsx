@@ -6,6 +6,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import { routing, type Locale } from "@/i18n/routing";
+import { SITE_ORIGIN } from "@/lib/seo/constants";
 import { SkipToContent } from "@/components/layout/skip-to-content";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -32,6 +33,7 @@ export async function generateMetadata({
     : routing.defaultLocale;
   const t = await getTranslations({ locale: resolved, namespace: "Metadata" });
   return {
+    metadataBase: new URL(SITE_ORIGIN),
     title: t("title"),
     description: t("description"),
   };

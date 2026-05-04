@@ -11,7 +11,7 @@ import {
 import { getAgentById } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 import { ListingDetailLayout } from "@/components/listing/listing-detail-layout";
-import type { OptimizedImage } from "@/types/images";
+import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import {
   generateListingJsonLd,
   generateBreadcrumbJsonLd,
@@ -50,7 +50,7 @@ export async function generateMetadata({
   if (!property.isVisible) return { robots: { index: false, follow: false } };
   const title = locale === "es" ? property.titleEs : property.titleEn;
   const description = locale === "es" ? property.descriptionEs : property.descriptionEn;
-  const images = (property.images as unknown as OptimizedImage[]) ?? [];
+  const images = normalizePropertyImages(property.images);
   return {
     title: `${title} | RE/MAX Altitud`,
     description: description.slice(0, 160),
