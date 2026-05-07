@@ -100,6 +100,150 @@ API docs: [`docs/`](docs/)
 - **CI/CD**: GitHub Actions + Coolify auto-deploy + Lighthouse CI (score ≥ 90 gate)
 - **Data sync**: Docker Cron → RE/MAX CCA API → validate → translate → optimize → PostgreSQL → ISR revalidation
 
+## Getting Started (Local Development)
+
+Follow these steps to run the project on your machine. No prior experience with Next.js is required — just follow along.
+
+### Prerequisites
+
+Make sure you have the following installed before continuing:
+
+| Tool | Minimum Version | How to install |
+|------|-----------------|----------------|
+| **Node.js** | v20+ | [nodejs.org](https://nodejs.org/) or via [nvm](https://github.com/nvm-sh/nvm) |
+| **npm** | v10+ | Comes bundled with Node.js |
+| **Git** | any recent | [git-scm.com](https://git-scm.com/) |
+| **Docker** | any recent | [docker.com/get-started](https://www.docker.com/get-started/) (needed for the local database) |
+
+> [!TIP]
+> On macOS you can install Node.js with [Homebrew](https://brew.sh/): `brew install node`
+
+### Step 1 — Clone the repository
+
+```bash
+git clone https://github.com/CastroFamilia/remax-altitud.git
+cd remax-altitud
+```
+
+### Step 2 — Install dependencies
+
+```bash
+npm install
+```
+
+This reads `package.json` and downloads all required libraries into the `node_modules/` folder. It may take a minute or two the first time.
+
+### Step 3 — Create your environment file
+
+```bash
+cp .env.example .env.local
+```
+
+Open `.env.local` in your editor and fill in **at minimum** the database connection string:
+
+```dotenv
+# Local database (matches docker-compose.dev.yml defaults)
+DATABASE_URL=postgresql://remax:remax@localhost:5432/remax_altitud
+```
+
+The other variables (API keys, Mapbox token, Sentry, etc.) are optional for basic local development — features that depend on them will gracefully degrade.
+
+### Step 4 — Start the local database
+
+The project uses **PostgreSQL + PostGIS**. A ready-made Docker Compose file is included:
+
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
+
+This starts a PostgreSQL 16 container with PostGIS on port `5432`. You can verify it's running with:
+
+```bash
+docker ps
+```
+
+You should see a container named `remax-altitud-postgres` with status **healthy**.
+
+> [!NOTE]
+> If port 5432 is already in use by another Postgres instance, stop that service first or change the port mapping in `docker-compose.dev.yml`.
+
+### Step 5 — Run database migrations
+
+Push the schema to your fresh database:
+
+```bash
+npm run db:push
+```
+
+This uses Drizzle ORM to synchronize the database schema with the TypeScript definitions in the project.
+
+### Step 6 — Start the development server
+
+```bash
+npm run dev
+```
+
+The app will start on **http://localhost:3000** with Turbopack for fast hot-reload. Open that URL in your browser — you should see the RE/MAX Altitud site.
+
+> [!TIP]
+> The dev server watches for file changes. Edit any file in `src/` and the browser will update automatically.
+
+### Quick Reference — All Available Scripts
+
+| Command | What it does |
+|---------|-------------|
+| `npm run dev` | Start the dev server (http://localhost:3000) |
+| `npm run build` | Create a production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | Run ESLint checks |
+| `npm run lint:fix` | Auto-fix linting issues |
+| `npm run format` | Format code with Prettier |
+| `npm run typecheck` | Run TypeScript type checking |
+| `npm run test` | Run all tests (Vitest) |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run db:generate` | Generate Drizzle migration files |
+| `npm run db:push` | Push schema to database |
+| `npm run db:migrate` | Run migration files |
+| `npm run db:studio` | Open Drizzle Studio (visual DB browser) |
+| `npm run sync` | Run the RE/MAX data sync pipeline |
+| `npm run sync:dry-run` | Preview sync without writing to DB |
+
+### Troubleshooting
+
+<details>
+<summary><strong>npm install fails with permission errors</strong></summary>
+
+Don't use `sudo npm install`. Instead, fix your npm permissions or use [nvm](https://github.com/nvm-sh/nvm) to manage Node.js installations.
+</details>
+
+<details>
+<summary><strong>Port 3000 is already in use</strong></summary>
+
+Another app is using port 3000. Either stop that app, or start the dev server on a different port:
+
+```bash
+npm run dev -- --port 3001
+```
+</details>
+
+<details>
+<summary><strong>Docker Compose fails to start</strong></summary>
+
+- Make sure Docker Desktop is running.
+- Check if port 5432 is already used: `lsof -i :5432`.
+- If another Postgres is running, stop it first: `brew services stop postgresql` (Homebrew) or stop it via Docker Desktop.
+</details>
+
+<details>
+<summary><strong>Database connection errors</strong></summary>
+
+- Verify your `.env.local` has the correct `DATABASE_URL`.
+- Ensure the Docker container is running: `docker ps`.
+- Test the connection: `docker exec -it remax-altitud-postgres psql -U remax -d remax_altitud -c '\dt'`.
+</details>
+
+---
+
 ## Key Documents
 
 | Document | Location |
