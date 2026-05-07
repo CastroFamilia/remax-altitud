@@ -69,3 +69,6 @@
 - PropertyCard `aria-label` includes only the USD price; non-US-locale screen-reader users miss the EUR equivalent line [src/components/property/property-card.tsx:90, 130-134]. Minor a11y polish.
 - E2E tests `tests/e2e/unit-conversion-and-price-display.spec.ts` are scaffolds (`test.skip`) — activation depends on Playwright framework configuration, which lands in a later epic.
 - `EUR_RATE = 0.92` in `src/lib/utils/currency.ts` has no auto-update mechanism; spec accepts "approximate" but a future task should refresh the constant or wire a build-time fetch.
+
+## Deferred from: agent profile review (2026-05-07)
+- Agent `languages` array is populated solely from the RE/MAX CCA API's single `Lang` field (`"English"` → `["en"]`, `"Spanish"` → `["es"]`). Most agents speak multiple languages but only one is captured. Add a `languages_override text[]` column to the `agents` table; sync pipeline should prefer override when non-empty. Admin UI to manage per-agent languages belongs in Epic 8 (Story 8.2 or a new story). Quick-win: seed correct languages via SQL until admin UI exists. See [agent sync schema](file:///Users/nicolascastro/Desktop/AntiGravity%20Workspaces/Remax%20Altitud/src/lib/sync/schemas/agent.ts#L43-L45) and [upsert logic](file:///Users/nicolascastro/Desktop/AntiGravity%20Workspaces/Remax%20Altitud/src/lib/db/queries/agents.ts#L34).
