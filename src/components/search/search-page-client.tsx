@@ -131,7 +131,7 @@ export function SearchPageClient() {
   }, []);
 
   return (
-    <div className="flex flex-col overscroll-none">
+    <div className="flex flex-col overscroll-none h-[calc(100vh-var(--header-height))]">
       <SearchFilterBar facets={facets} areas={areas} />
       <SplitViewLayout
         viewMode={viewMode}

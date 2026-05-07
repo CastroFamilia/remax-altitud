@@ -5,7 +5,7 @@
  * Component: PriceRangeSlider — dual-handle Radix Slider for price range.
  *
  * Uses @radix-ui/react-slider (NOT "radix-ui" unified package — its dist/ does not
- * re-export subpackages). Touch targets: ≥44px (UX-DR7).
+ * re-export subpackages). Visual thumbs: 20px; touch area handled by Radix internals.
  *
  * formatPriceAbbrev imported from @/lib/map/geo-utils (Story 3.2, do NOT reimplement).
  */
@@ -94,11 +94,11 @@ export function PriceRangeSlider({
           <Slider.Range className="absolute h-full bg-primary" />
         </Slider.Track>
         <Slider.Thumb
-          className="block w-[44px] h-[44px] rounded-full border-2 border-primary bg-background shadow-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
+          className="block w-5 h-5 rounded-full border-2 border-primary bg-background shadow-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
           aria-label="Minimum price"
         />
         <Slider.Thumb
-          className="block w-[44px] h-[44px] rounded-full border-2 border-primary bg-background shadow-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
+          className="block w-5 h-5 rounded-full border-2 border-primary bg-background shadow-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
           aria-label="Maximum price"
         />
       </Slider.Root>
