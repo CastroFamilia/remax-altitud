@@ -40,7 +40,15 @@ export function UnitToggle({ locale, className }: UnitToggleProps) {
       data-testid="unit-toggle"
       className={cn(DEFAULT_TOGGLE_CLASS, className)}
     >
-      <span aria-hidden="true">{isMetric ? "m²" : "ft²"}</span>
+      <span aria-hidden="true" className="flex items-center gap-1">
+        <span className={cn("transition-opacity", isMetric ? "font-semibold" : "opacity-50")}>
+          m²
+        </span>
+        <span className="opacity-40">/</span>
+        <span className={cn("transition-opacity", !isMetric ? "font-semibold" : "opacity-50")}>
+          ft²
+        </span>
+      </span>
     </button>
   );
 }

@@ -10,6 +10,7 @@ import { PropertyGrid } from "@/components/property/property-grid";
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
 import { UnitToggle } from "@/components/layout/unit-toggle";
 import { NearMeButton } from "@/components/search/near-me-button";
+import { SortSelect } from "@/components/search/sort-select";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets, SearchFilters } from "@/types/search";
@@ -99,7 +100,7 @@ export function SplitViewLayout({
   }
 
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col flex-1 min-h-0">
       {/* View mode + unit toggle row — desktop/tablet only, hidden on mobile.
           The outer wrapper provides the full-width border-b and bg-background so
           the bottom border spans the entire toolbar width (ViewModeToggle's own
@@ -107,6 +108,7 @@ export function SplitViewLayout({
       <div className="hidden lg:flex items-center justify-between border-b border-border bg-background">
         <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
         <div className="flex items-center gap-2 px-4 py-2">
+          <SortSelect />
           <NearMeButton
             onLocationSuccess={(coords) => {
               setFlyToTarget({ ...coords, zoom: 13 });
@@ -142,7 +144,7 @@ export function SplitViewLayout({
       )}
 
       {/* Split-view container */}
-      <div className="relative flex flex-row">
+      <div className="relative flex flex-row flex-1 min-h-0">
         {/* Map panel */}
         <div
           data-testid="map-panel"
@@ -151,12 +153,8 @@ export function SplitViewLayout({
             "w-full",
             // Desktop split / full-map / full-grid
             mapHidden ? "lg:hidden" : gridHidden ? "lg:w-full" : "lg:w-[60%]",
-            // Height:
-            //   Mobile (<md): viewport minus header (var) minus mobile filter bar (h-12 = 3rem)
-            //                  — keeps map flush with filter bar above and pull-up handle below.
-            //   Desktop (≥lg): viewport minus header minus desktop filter bar (h-14 = 3.5rem).
-            "h-[calc(100vh-var(--header-height)-3rem)]",
-            "lg:h-[calc(100vh-var(--header-height)-3.5rem)]",
+            // Height: fill the remaining flex space
+            "h-full",
             "flex-shrink-0",
           )}
         >
@@ -179,7 +177,7 @@ export function SplitViewLayout({
             // Desktop: show in split/grid mode, hide in full-map mode
             gridHidden ? "lg:hidden" : mapHidden ? "lg:w-full lg:block" : "lg:w-[40%] lg:block",
             "overflow-y-auto",
-            "lg:h-[calc(100vh-var(--header-height)-3.5rem)]",
+            "lg:h-full",
           )}
         >
           {/* Story 3.5: render PropertyGrid when filterProperties provided, else skeleton */}

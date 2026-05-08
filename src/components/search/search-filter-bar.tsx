@@ -6,7 +6,7 @@
  *
  * Preserved from Story 3.1 (must NOT break):
  * - data-testid="search-filter-bar" on root div
- * - className: sticky, top-[var(--header-height)], z-10, h-12, md:h-14
+ * - className: sticky, top-[var(--header-height)], z-10, py-2, md:py-3
  * - className: bg-background, border-b, border-border
  * - data-testid="mobile-filters-button" on mobile button
  * - File starts with 'use client'
@@ -164,25 +164,7 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
         </div>
       )}
 
-      {/* Sort dropdown */}
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-muted-foreground">{t("filters.sort")}</label>
-        <select
-          className="rounded border border-border bg-background px-2 py-1 text-sm"
-          value={filters.sort ?? ""}
-          onChange={(e) =>
-            setFilter(
-              "sort",
-              (e.target.value as "newest" | "price_asc" | "price_desc" | "relevance") || undefined,
-            )
-          }
-        >
-          <option value="">{t("filters.sortNewest")}</option>
-          <option value="price_asc">{t("filters.sortPriceAsc")}</option>
-          <option value="price_desc">{t("filters.sortPriceDesc")}</option>
-          <option value="relevance">{t("filters.sortRelevance")}</option>
-        </select>
-      </div>
+      {/* Sort dropdown moved to SplitViewLayout toolbar (sort-select.tsx) */}
     </div>
   );
 
@@ -191,7 +173,7 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
       {/* Filter bar wrapper */}
       <div
         data-testid="search-filter-bar"
-        className="sticky top-[var(--header-height)] z-10 h-12 md:h-14 bg-background border-b border-border flex flex-col"
+        className="sticky top-[var(--header-height)] z-10 py-2 md:py-3 bg-background border-b border-border flex flex-col"
       >
         <div className="flex items-center px-4 gap-3 h-full">
           {/* Mobile compact bar — visible below md breakpoint */}
