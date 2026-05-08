@@ -84,20 +84,24 @@ The completed UX specification covers:
 
 API docs: [`docs/`](docs/)
 
-## Tech Stack (Planned)
+## Tech Stack
 
-- **Framework**: Next.js 15 (App Router, React 19, TypeScript)
+- **Framework**: Next.js 15 (App Router, React 19, TypeScript, Turbopack)
 - **UI Primitives**: shadcn/ui (Radix-based, copy-pasted, fully owned)
 - **Styling**: Tailwind CSS v4 (CSS-first config via `@theme` directives)
 - **i18n**: next-intl (EN/ES MVP, per-route locale loading)
 - **Database**: PostgreSQL + PostGIS (self-hosted via Coolify)
 - **ORM**: Drizzle ORM (type-safe SQL, PostGIS support, git-based migrations)
-- **Maps**: Mapbox GL JS (3D terrain, clustering, interactive price-bubble pins)
+- **Maps**: Mapbox GL JS + react-map-gl (3D terrain, clustering via Supercluster, interactive price-bubble pins)
+- **State**: Zustand (lightweight client-side state for search filters, shortlists)
+- **Validation**: Zod (API schemas, form validation, type-safe parsing)
 - **Translation**: DeepL API with domain-specific glossary + GPT-4 for creative/SEO
-- **Images**: Next.js Image Optimization via `next/image` (WebP, LQIP)
+- **Images**: Sharp (server-side optimization) + Next.js `next/image` (WebP, LQIP)
+- **Error Monitoring**: Sentry (client, server, edge)
 - **Analytics**: GA4 consent mode
 - **Hosting**: Coolify (Docker, self-hosted)
 - **CI/CD**: GitHub Actions + Coolify auto-deploy + Lighthouse CI (score ≥ 90 gate)
+- **Testing**: Vitest + Testing Library (component & integration tests)
 - **Data sync**: Docker Cron → RE/MAX CCA API → validate → translate → optimize → PostgreSQL → ISR revalidation
 
 ## Getting Started (Local Development)
@@ -263,22 +267,22 @@ npm run dev -- --port 3001
 
 ## Current Status
 
-→ **Implementation in progress** — Epic 1 complete, Epic 2 underway _(sprint snapshot: 2026-04-24)_
+→ **Implementation in progress** — Epics 1–4 complete, Epic 5 underway _(sprint snapshot: 2026-05-07)_
 
 | Epic | Stories | FRs | Progress | Status |
 |------|---------|-----|----------|--------|
 | 1. Project Foundation & Design System | 7 | FR29–FR32, FR67, FR68 | 7 / 7 | ✅ Complete |
-| 2. Data Pipeline & Property Database | 7 | FR46–FR55 | 2 / 7 | 🚧 In progress |
-| 3. Property Discovery & Search | 8 | FR1–FR16 | 0 / 8 | ⚪ Backlog |
-| 4. Listing Detail & Agent Profiles | 5 | FR8, FR13, FR31, FR33–FR39, FR69 | 0 / 5 | ⚪ Backlog |
-| 5. Seller Lead Capture | 3 | FR40–FR43, FR54 | 0 / 3 | ⚪ Backlog |
+| 2. Data Pipeline & Property Database | 7 | FR46–FR55 | 7 / 7 | ✅ Complete |
+| 3. Property Discovery & Search | 8 | FR1–FR16 | 8 / 8 | ✅ Complete |
+| 4. Listing Detail & Agent Profiles | 5 | FR8, FR13, FR31, FR33–FR39, FR69 | 5 / 5 | ✅ Complete |
+| 5. Seller Lead Capture | 3 | FR40–FR43, FR54 | 1 / 3 | 🚧 In progress |
 | 6. Community Pages & Area Guides | 5 | FR17–FR21, FR44–FR45, FR50 | 0 / 5 | ⚪ Backlog |
 | 7. Shortlist & Smart Agent Routing | 4 | FR22–FR28 | 0 / 4 | ⚪ Backlog |
 | 8. Administration & Operations | 7 | FR56–FR66 | 0 / 7 | ⚪ Backlog |
 
-**Implementation:** 9 / 46 stories done (20%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
+**Implementation:** 28 / 46 stories done (61%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
 
-**Latest shipped:** Story 2.2 — API Integration & Data Fetching (typed RE/MAX CCA fetch + parse layer with Zod schemas, exponential-backoff retries with `AbortSignal` timeouts, `server-only` enforcement, and 31 fixture-driven Vitest specs).
-**Next up:** Story 2.3 — Sync Pipeline Core.
+**Latest shipped:** Story 5.1 — Seller Landing Page & List With Us Form (seller lead capture page with form submission, image normalization, and gallery improvements).
+**Next up:** Story 5.2 — CMA Request Form.
 
 _Source of truth for day-to-day status lives in [`_bmad-output/implementation-artifacts/sprint-status.yaml`](_bmad-output/implementation-artifacts/sprint-status.yaml)._
