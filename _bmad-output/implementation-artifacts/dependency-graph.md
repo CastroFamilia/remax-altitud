@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-04T00:00:00-06:00_
+_Last updated: 2026-05-11T18:27:00+02:00_
 
 ## Stories
 
@@ -32,9 +32,9 @@ _Last updated: 2026-05-04T00:00:00-06:00_
 | 4.3   | 4    | Agent Profile Pages | done | #95 | #133 | merged | 4.2 | ✅ Yes (done) |
 | 4.4   | 4    | SEO Architecture & WordPress Redirects | done | #96 | #134 | merged | 4.1 | ✅ Yes (done) |
 | 4.5   | 4    | Similar Properties & Cross-Linking | done | #97 | #135 | merged | 4.1, 4.3 | ✅ Yes (done) |
-| 5.1   | 5    | Seller Landing Page & List With Us Form | backlog | #98 | — | — | none | ✅ Yes |
-| 5.2   | 5    | CMA Request Form | backlog | #99 | — | — | 5.1 | ❌ No (5.1 not merged) |
-| 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | backlog | #100 | — | — | 5.1, 5.2 | ❌ No (5.1, 5.2 not merged) |
+| 5.1   | 5    | Seller Landing Page & List With Us Form | done | #98 | #137 | merged | none | ✅ Yes (done) |
+| 5.2   | 5    | CMA Request Form | backlog | #99 | — | — | 5.1 | ✅ Yes |
+| 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | backlog | #100 | — | — | 5.1, 5.2 | ❌ No (5.2 not merged) |
 | 6.1   | 6    | Area Guide Pages | backlog | #101 | — | — | none | ❌ No (epic 5 not complete) |
 | 6.2   | 6    | Community Pages | backlog | #102 | — | — | 6.1 | ❌ No (epic 5 not complete) |
 | 6.3   | 6    | Community Mini-Map & Geo-Fence Display | backlog | #103 | — | — | 6.2 | ❌ No (epic 5 not complete) |
@@ -82,7 +82,7 @@ _Last updated: 2026-05-04T00:00:00-06:00_
 - **4.5** depends on: 4.1, 4.3
 - **5.1** depends on: Epic 4 complete
 - **5.2** depends on: 5.1
-- **5.3** depends on: 5.1
+- **5.3** depends on: 5.1, 5.2
 - **6.1** depends on: Epic 5 complete
 - **6.2** depends on: 6.1
 - **6.3** depends on: 6.2
@@ -107,11 +107,10 @@ _Last updated: 2026-05-04T00:00:00-06:00_
 - Epic 2 complete: PRs #66, #67, #117, #118, #119, #120, #121 all merged.
 - Epic 3 is fully complete (all 8 stories done and merged). PRs #122, #123, #125, #126, #127, #128, #129, #130 all merged.
 - Epic 4 is fully complete (all 5 stories done and merged). PRs #131 (4.1), #132 (4.2), #133 (4.3), #134 (4.4), #135 (4.5) all merged.
-- Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
-- Updated 2026-05-02 (batch 2): PRs #128 (3.6), #129 (3.7), #130 (3.8) confirmed merged. Epic 3 marked done. Epic 4 stories now unblocked (4.1 Ready to Work).
-- Updated 2026-05-02 (batch 4): PR #131 (4.1) merged 2026-05-02. PR #132 (4.2) merged 2026-05-03. Stories 4.3 and 4.4 are now unblocked (Ready to Work). Story 4.5 still blocked on 4.3 not merged.
-- Updated 2026-05-03 (batch 5): PR #133 (4.3) merged 2026-05-03. Story 4.3 marked done. Story 4.5 now unblocked (both 4.1 and 4.3 merged). Next story: 4.4 (SEO Architecture & WordPress Redirects, GH #96).
-- Updated 2026-05-03 (batch 6): PR #134 (4.4) merged 2026-05-03. Story 4.4 marked done. Stories 4.1–4.4 all done. Next story: 4.5 (Similar Properties & Cross-Linking, GH #97). 4.5 was already ready-for-dev (dependencies 4.1 + 4.3 both merged).
-- Updated 2026-05-04: PR #135 (4.5) merged 2026-05-03. Epic 4 fully complete. Epic 5 (Seller Lead Capture) is now the active epic. Story 5.1 is Ready to Work (no dependencies). Stories 5.2 and 5.3 blocked on 5.1. Story 5.3 has a known gating decision: PII encryption strategy for column-level encryption (AR17, NFR9) — phone and email fields must be encrypted at rest. This is an architectural decision that should be confirmed before 5.3 begins.
+- Epic 5 in progress: Story 5.1 done (PR #137 merged 2026-05-04). Stories 5.2 and 5.3 in backlog.
+- Story 5.2 (CMA Request Form) is Ready to Work — dependency 5.1 is merged.
+- Story 5.3 blocked on 5.2 not merged.
+- Base branch: `development` (not `main`). All worktrees and PRs target `development`.
 - No open PRs. No stale worktrees.
-- WARNING: Local main has 1 commit ("epic-4 retrospective", SHA 104e164) ahead of origin/main that cannot be pushed due to branch protection rules. This is expected — it does not affect story work.
+- Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
+- WARNING: Story 5.3 has a known gating decision: PII encryption strategy for column-level encryption (AR17, NFR9) — phone and email fields must be encrypted at rest.
