@@ -227,18 +227,37 @@ describe("getPropertiesByAgentId (ATDD Red Phase)", () => {
   });
 
   it("[P1] 4.3-DB-010: returns properties ordered by syncedAt descending", async () => {
-    // THIS TEST WILL FAIL — getPropertiesByAgentId not yet implemented
-    const properties = [
-      { id: "p1", slug: "mountain-home", agentId: "agent-uuid-1", isVisible: true },
-      { id: "p2", slug: "beach-condo", agentId: "agent-uuid-1", isVisible: true },
+    // Rows must match the column set selected in getPropertiesByAgentId so
+    // that mapPropertyRowToSearchItem produces deterministic output.
+    const baseRow = {
+      titleEn: "Title",
+      titleEs: "Título",
+      priceUsd: 100000,
+      bedrooms: null,
+      bathrooms: null,
+      lotSizeM2: null,
+      constructionM2: null,
+      zmtStatus: "titled",
+      propertyType: "Casa",
+      areaSlug: null,
+      images: [],
+      latitude: null,
+      longitude: null,
+    };
+    const rows = [
+      { id: "p1", slug: "mountain-home", ...baseRow },
+      { id: "p2", slug: "beach-condo", ...baseRow },
     ];
     mockWhere.mockReturnValueOnce({ orderBy: mockOrderBy });
-    mockOrderBy.mockResolvedValueOnce(properties);
+    mockOrderBy.mockResolvedValueOnce(rows);
 
     const { getPropertiesByAgentId } = await import("@/lib/db/queries/agents");
     const result = await getPropertiesByAgentId("agent-uuid-1");
 
-    expect(result).toEqual(properties);
+    // The intent of 4.3-DB-010 is ordering preservation; the implementation
+    // maps rows through mapPropertyRowToSearchItem, so we assert id order.
+    expect(result).toHaveLength(2);
+    expect(result.map((r) => r.id)).toEqual(["p1", "p2"]);
   });
 
   it("[P1] 4.3-DB-011: returns empty array when agent has no visible properties", async () => {
