@@ -30,6 +30,7 @@ vi.mock("next/navigation", () => ({
     toString: vi.fn(() => ""),
     get: vi.fn(() => null),
   })),
+  usePathname: vi.fn(() => "/en/search"),
 }));
 
 // next-intl is used by the pull-up handle for the property count label.
@@ -268,18 +269,22 @@ describe("SplitViewLayout", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P1] map panel height uses calc(100vh - var(--header-height) - 3.5rem) on desktop",
+    "[P1] map panel fills available viewport height below header + filter bar",
     () => {
       render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
 
       const mapPanel = document.querySelector('[data-testid="map-panel"]');
 
       expect(mapPanel).not.toBeNull();
-      const hasCalcHeight =
+      // UI polish (commit 48f4a66) replaced explicit calc(100vh - ...) with a
+      // flex layout: parent uses `flex-1 min-h-0`, panel uses `h-full`.
+      // Either implementation satisfies the AC #1 intent (panel fills remaining space).
+      const usesFlexHeight = mapPanel?.className.includes("h-full");
+      const usesCalcHeight =
         mapPanel?.className.includes("calc(100vh") ||
         (mapPanel as HTMLElement | null)?.style.height.includes("calc(100vh");
 
-      expect(hasCalcHeight).toBe(true);
+      expect(usesFlexHeight || usesCalcHeight).toBe(true);
     },
   );
 

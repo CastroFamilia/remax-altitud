@@ -132,7 +132,7 @@ describe("ShareButton — AC #1: share property URL", () => {
       expect(mockShare).toHaveBeenCalledWith(
         expect.objectContaining({
           title: TEST_TITLE,
-          src: expect.stringContaining(`/${TEST_LOCALE}/property/${TEST_SLUG}`),
+          url: expect.stringContaining(`/${TEST_LOCALE}/property/${TEST_SLUG}`),
         }),
       );
     },
@@ -248,7 +248,7 @@ describe("ShareButton — AC #1: share property URL", () => {
 
       expect(mockShare).toHaveBeenCalledWith(
         expect.objectContaining({
-          src: expect.stringContaining("/es/property/beach-house-dominical"),
+          url: expect.stringContaining("/es/property/beach-house-dominical"),
         }),
       );
     },
