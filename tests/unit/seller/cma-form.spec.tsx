@@ -62,7 +62,7 @@ vi.mock("@/components/seller/location-picker", () => ({
 vi.mock("@/components/seller/seller-confirmation", () => ({
   SellerConfirmation: ({ source }: { source?: string }) => (
     <div data-testid={source === "cma" ? "cma-confirmation" : "seller-confirmation"}>
-      confirmation-{source ?? "seller"}
+      {`confirmation-${source ?? "seller"}`}
     </div>
   ),
 }));
