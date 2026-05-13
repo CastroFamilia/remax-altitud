@@ -33,7 +33,7 @@ _Last updated: 2026-05-11T18:27:00+02:00_
 | 4.4   | 4    | SEO Architecture & WordPress Redirects | done | #96 | #134 | merged | 4.1 | ✅ Yes (done) |
 | 4.5   | 4    | Similar Properties & Cross-Linking | done | #97 | #135 | merged | 4.1, 4.3 | ✅ Yes (done) |
 | 5.1   | 5    | Seller Landing Page & List With Us Form | done | #98 | #137 | merged | none | ✅ Yes (done) |
-| 5.2   | 5    | CMA Request Form | backlog | #99 | — | — | 5.1 | ✅ Yes |
+| 5.2   | 5    | CMA Request Form | in-review | #99 | #142 | open | 5.1 | ✅ Yes (in-review) |
 | 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | backlog | #100 | — | — | 5.1, 5.2 | ❌ No (5.2 not merged) |
 | 6.1   | 6    | Area Guide Pages | backlog | #101 | — | — | none | ❌ No (epic 5 not complete) |
 | 6.2   | 6    | Community Pages | backlog | #102 | — | — | 6.1 | ❌ No (epic 5 not complete) |
