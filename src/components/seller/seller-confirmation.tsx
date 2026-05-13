@@ -1,12 +1,14 @@
 "use client";
 
 /**
- * SellerConfirmation — Story 5.1 (AC #11)
+ * SellerConfirmation — Story 5.1 (AC #11) + Story 5.2 (AC #4)
  *
  * Success screen shown after form submission.
  * Displays an agent match card using the existing AgentCard component (Story 4.2).
  *
- * data-testid="seller-confirmation" on the root container (AC #11 contract).
+ * Supports two variants via `source` prop:
+ *   - "seller" (default) — uses SellerPage i18n namespace, data-testid="seller-confirmation"
+ *   - "cma" — uses CmaForm i18n namespace, data-testid="cma-confirmation"
  */
 
 import { useTranslations } from "next-intl";
@@ -17,16 +19,21 @@ interface SellerConfirmationProps {
   agent: Agent;
   officeName: string;
   locale: string;
+  /** Confirmation variant — determines i18n namespace and testid. Defaults to "seller". */
+  source?: "seller" | "cma";
 }
 
-export function SellerConfirmation({ agent, officeName, locale }: SellerConfirmationProps) {
-  const t = useTranslations("SellerPage");
+export function SellerConfirmation({
+  agent,
+  officeName,
+  locale,
+  source = "seller",
+}: SellerConfirmationProps) {
+  const t = useTranslations(source === "cma" ? "CmaForm" : "SellerPage");
+  const testId = source === "cma" ? "cma-confirmation" : "seller-confirmation";
 
   return (
-    <div
-      data-testid="seller-confirmation"
-      className="mx-auto max-w-lg space-y-6 py-8 px-4 text-center"
-    >
+    <div data-testid={testId} className="mx-auto max-w-lg space-y-6 py-8 px-4 text-center">
       {/* Success heading */}
       <div className="space-y-2">
         <div
