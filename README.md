@@ -86,7 +86,7 @@ API docs: [`docs/`](docs/)
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router, React 19, TypeScript, Turbopack)
+- **Framework**: Next.js 15 (App Router, React 19, TypeScript 5, Turbopack)
 - **UI Primitives**: shadcn/ui (Radix-based, copy-pasted, fully owned)
 - **Styling**: Tailwind CSS v4 (CSS-first config via `@theme` directives)
 - **i18n**: next-intl (EN/ES MVP, per-route locale loading)
@@ -100,8 +100,8 @@ API docs: [`docs/`](docs/)
 - **Error Monitoring**: Sentry (client, server, edge)
 - **Analytics**: GA4 consent mode
 - **Hosting**: Coolify (Docker, self-hosted)
-- **CI/CD**: GitHub Actions + Coolify auto-deploy + Lighthouse CI (score ≥ 90 gate)
-- **Testing**: Vitest + Testing Library (component & integration tests)
+- **CI/CD**: GitHub Actions (Node 24, Actions v5) + Coolify auto-deploy + Lighthouse CI (score ≥ 90 gate)
+- **Testing**: Vitest 4 (workspace projects: node + jsdom) + Testing Library (component & integration tests)
 - **Data sync**: Docker Cron → RE/MAX CCA API → validate → translate → optimize → PostgreSQL → ISR revalidation
 
 ## Getting Started (Local Development)
@@ -267,7 +267,7 @@ npm run dev -- --port 3001
 
 ## Current Status
 
-→ **Implementation in progress** — Epics 1–4 complete, Epic 5 underway _(sprint snapshot: 2026-05-07)_
+→ **Implementation in progress** — Epics 1–4 complete, Epic 5 underway _(sprint snapshot: 2026-05-13)_
 
 | Epic | Stories | FRs | Progress | Status |
 |------|---------|-----|----------|--------|
@@ -275,14 +275,14 @@ npm run dev -- --port 3001
 | 2. Data Pipeline & Property Database | 7 | FR46–FR55 | 7 / 7 | ✅ Complete |
 | 3. Property Discovery & Search | 8 | FR1–FR16 | 8 / 8 | ✅ Complete |
 | 4. Listing Detail & Agent Profiles | 5 | FR8, FR13, FR31, FR33–FR39, FR69 | 5 / 5 | ✅ Complete |
-| 5. Seller Lead Capture | 3 | FR40–FR43, FR54 | 1 / 3 | 🚧 In progress |
+| 5. Seller Lead Capture | 3 | FR40–FR43, FR54 | 2 / 3 | 🚧 In progress |
 | 6. Community Pages & Area Guides | 5 | FR17–FR21, FR44–FR45, FR50 | 0 / 5 | ⚪ Backlog |
 | 7. Shortlist & Smart Agent Routing | 4 | FR22–FR28 | 0 / 4 | ⚪ Backlog |
 | 8. Administration & Operations | 7 | FR56–FR66 | 0 / 7 | ⚪ Backlog |
 
-**Implementation:** 28 / 46 stories done (61%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
+**Implementation:** 29 / 46 stories done (63%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
 
-**Latest shipped:** Story 5.1 — Seller Landing Page & List With Us Form (seller lead capture page with form submission, image normalization, and gallery improvements).
-**Next up:** Story 5.2 — CMA Request Form.
+**Latest shipped:** Story 5.2 — CMA Request Form (in-review: CMA hero section, validated request form with lazy loading, i18n, and ATDD test coverage).
+**Next up:** Story 5.3 — Seller Lead Storage, Routing & Source Tracking.
 
 _Source of truth for day-to-day status lives in [`_bmad-output/implementation-artifacts/sprint-status.yaml`](_bmad-output/implementation-artifacts/sprint-status.yaml)._

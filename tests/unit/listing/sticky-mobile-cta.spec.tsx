@@ -43,11 +43,12 @@ const mockUnobserve = vi.fn();
 
 vi.stubGlobal(
   "IntersectionObserver",
-  vi.fn(() => ({
-    observe: mockObserve,
-    disconnect: mockDisconnect,
-    unobserve: mockUnobserve,
-  })),
+  class IntersectionObserverMock {
+    constructor() {}
+    observe = mockObserve;
+    disconnect = mockDisconnect;
+    unobserve = mockUnobserve;
+  },
 );
 
 // imported AFTER mocks
