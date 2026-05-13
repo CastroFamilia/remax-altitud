@@ -76,4 +76,3 @@ export default async function SellPage({ params }: { params: Promise<{ locale: s
     </main>
   );
 }
-

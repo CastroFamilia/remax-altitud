@@ -21,7 +21,8 @@ interface CmaHeroProps {
   children?: React.ReactNode;
 }
 
-export function CmaHero({ locale: _locale, defaultExpanded = false, children }: CmaHeroProps) { // eslint-disable-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function CmaHero({ locale: _locale, defaultExpanded = false, children }: CmaHeroProps) {
   const t = useTranslations("CmaForm");
   const [expanded, setExpanded] = useState(defaultExpanded);
 
@@ -42,10 +43,7 @@ export function CmaHero({ locale: _locale, defaultExpanded = false, children }: 
 
       {/* CMA value proposition card */}
       <div className="rounded-xl border border-brand-gold/30 bg-gradient-to-br from-brand-gold/5 to-transparent p-6 md:p-8">
-        <h2
-          id="cma-hero-heading"
-          className="text-2xl font-bold text-brand-navy md:text-3xl"
-        >
+        <h2 id="cma-hero-heading" className="text-2xl font-bold text-brand-navy md:text-3xl">
           {t("hero.heading")}
         </h2>
 

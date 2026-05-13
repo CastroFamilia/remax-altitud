@@ -23,15 +23,17 @@ interface SellerConfirmationProps {
   source?: "seller" | "cma";
 }
 
-export function SellerConfirmation({ agent, officeName, locale, source = "seller" }: SellerConfirmationProps) {
+export function SellerConfirmation({
+  agent,
+  officeName,
+  locale,
+  source = "seller",
+}: SellerConfirmationProps) {
   const t = useTranslations(source === "cma" ? "CmaForm" : "SellerPage");
   const testId = source === "cma" ? "cma-confirmation" : "seller-confirmation";
 
   return (
-    <div
-      data-testid={testId}
-      className="mx-auto max-w-lg space-y-6 py-8 px-4 text-center"
-    >
+    <div data-testid={testId} className="mx-auto max-w-lg space-y-6 py-8 px-4 text-center">
       {/* Success heading */}
       <div className="space-y-2">
         <div

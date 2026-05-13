@@ -139,11 +139,7 @@ interface CmaFormProps {
   officeName?: string;
 }
 
-export function CmaForm({
-  locale,
-  fallbackAgent,
-  officeName = "RE/MAX Altitud",
-}: CmaFormProps) {
+export function CmaForm({ locale, fallbackAgent, officeName = "RE/MAX Altitud" }: CmaFormProps) {
   const t = useTranslations("CmaForm");
   const { unitSystem, toggleUnits } = useLocaleUnits(locale);
 
@@ -221,7 +217,14 @@ export function CmaForm({
 
   // ---- Post-submit: show confirmation screen ----
   if (submitted && fallbackAgent) {
-    return <SellerConfirmation agent={fallbackAgent} officeName={officeName} locale={locale} source="cma" />;
+    return (
+      <SellerConfirmation
+        agent={fallbackAgent}
+        officeName={officeName}
+        locale={locale}
+        source="cma"
+      />
+    );
   }
 
   return (
@@ -313,10 +316,7 @@ export function CmaForm({
                 id={id}
                 value={formData.propertyType}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  updateField(
-                    "propertyType",
-                    e.target.value as CmaFormData["propertyType"],
-                  )
+                  updateField("propertyType", e.target.value as CmaFormData["propertyType"])
                 }
                 aria-label={t("form.propertyTypeAriaLabel")}
                 className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy"
