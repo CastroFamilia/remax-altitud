@@ -649,5 +649,61 @@
       "emailButtonAriaLabel": "Contactar a {agentName} por correo electrónico",
       "browseWhileWaiting": "Mientras espera, explore lo que se vende en su área"
     }
+  },
+  "CmaForm": {
+    "hero": {
+      "heading": "Solicita un Avalúo Gratuito",
+      "subheading": "¿Solo necesitas una valoración?",
+      "description": "Un Análisis Comparativo de Mercado (CMA) es una evaluación profesional del valor actual de tu propiedad. Nuestros agentes analizan ventas recientes, listados activos y tendencias del mercado en tu zona para darte un precio estimado preciso — completamente gratis.",
+      "ctaButton": "Solicitar CMA Gratuito",
+      "ctaButtonAriaLabel": "Abrir el formulario de solicitud de CMA"
+    },
+    "form": {
+      "heading": "Solicita tu CMA Gratuito",
+      "nameLabel": "Nombre Completo",
+      "namePlaceholder": "Tu nombre",
+      "nameAriaLabel": "Ingresa tu nombre completo",
+      "phoneLabel": "Teléfono / WhatsApp",
+      "phonePlaceholder": "+506 8888-8888",
+      "phoneAriaLabel": "Ingresa tu número de teléfono o WhatsApp",
+      "phoneDescription": "WhatsApp preferido — tu agente te contactará aquí",
+      "emailLabel": "Correo Electrónico (opcional)",
+      "emailPlaceholder": "tu@correo.com",
+      "emailAriaLabel": "Ingresa tu correo electrónico (opcional)",
+      "emailOptionalBadge": "Opcional",
+      "propertyTypeLabel": "Tipo de Propiedad",
+      "propertyTypeAriaLabel": "Selecciona el tipo de propiedad (opcional)",
+      "propertyTypePlaceholder": "Seleccionar tipo...",
+      "typeCasa": "Casa",
+      "typeLote": "Lote / Terreno",
+      "typeFinca": "Finca",
+      "typeCondominio": "Condominio",
+      "typeCommercial": "Comercial",
+      "locationLabel": "Ubicación de la Propiedad",
+      "locationPlaceholder": "Escribe la dirección o punto de referencia más cercano",
+      "locationAriaLabel": "Ingresa la ubicación de la propiedad",
+      "sizeLabel": "Tamaño Aproximado",
+      "sizePlaceholder": "ej. 5000",
+      "sizeAriaLabel": "Ingresa el tamaño aproximado de la propiedad",
+      "sizeUnitAriaLabel": "Alternar unidad de medida entre metros cuadrados, pies cuadrados y acres",
+      "commentLabel": "Comentarios o Preguntas (opcional)",
+      "commentPlaceholder": "Cuéntanos algo más sobre tu propiedad o qué te gustaría saber...",
+      "commentAriaLabel": "Comentarios o preguntas adicionales (opcional)",
+      "submitButton": "Solicitar Mi CMA Gratuito",
+      "submitButtonAriaLabel": "Enviar tu solicitud de CMA",
+      "submittingButton": "Enviando...",
+      "validation": {
+        "nameRequired": "Por favor ingresa tu nombre",
+        "phoneRequired": "Por favor ingresa tu número de teléfono",
+        "phoneInvalid": "Por favor ingresa un número de teléfono válido",
+        "emailInvalid": "Por favor ingresa un correo electrónico válido"
+      }
+    },
+    "confirmation": {
+      "heading": "¡Solicitud de CMA Recibida!",
+      "subheading": "Tu agente preparará tu Análisis Comparativo de Mercado y te contactará dentro de 24 horas.",
+      "agentMatchHeading": "Tu Agente Asignado",
+      "browseWhileWaiting": "Mientras esperas, explora lo que se vende en tu zona"
+    }
   }
 }
