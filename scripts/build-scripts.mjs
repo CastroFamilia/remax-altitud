@@ -46,19 +46,21 @@ const shared = {
     "@": path.resolve(root, "src"),
   },
   plugins: [serverOnlyShimPlugin],
-  // Keep node built-ins and heavy native deps external (they'll be in
-  // node_modules at runtime via Next.js standalone output)
+  // Only keep native-addon packages external — everything else is bundled
+  // inline so the scripts are fully self-contained in the runner stage
+  // (Next.js standalone only traces deps used by the app, not our scripts).
   external: [
-    "dotenv",
-    "drizzle-orm",
-    "drizzle-orm/*",
-    "postgres",
     "sharp",
-    "deepl-node",
-    "zod",
   ],
+  // When esbuild bundles CJS packages (dotenv, postgres, etc.) into ESM,
+  // it generates a synthetic `require()` that can't resolve Node built-ins.
+  // Inject a real `require` via createRequire so CJS→ESM interop works.
   banner: {
-    js: "// Auto-generated — do not edit. Re-run `npm run scripts:build` to regenerate.",
+    js: [
+      "// Auto-generated — do not edit. Re-run `npm run scripts:build` to regenerate.",
+      'import { createRequire as __createRequire } from "node:module";',
+      "const require = __createRequire(import.meta.url);",
+    ].join("\n"),
   },
 };
 
