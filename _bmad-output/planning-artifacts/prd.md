@@ -418,7 +418,7 @@ See **Non-Functional Requirements** section for measurable performance targets (
 
 ### Implementation Stack
 
-- **Framework:** Next.js 15 with App Router
+- **Framework:** Next.js 15.5.18 with App Router
 - **Hosting:** Coolify (self-hosted Docker, ISR support, long-running processes)
 - **Database:** PostgreSQL + PostGIS (self-hosted via Coolify) — geospatial queries, spatial indexing
 - **Maps:** Mapbox GL JS (3D terrain, clustering, interactive pins)

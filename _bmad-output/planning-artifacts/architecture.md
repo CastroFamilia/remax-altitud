@@ -137,7 +137,7 @@ remax-altitud/
 ├── .env.local                          # Environment variables (never committed)
 ├── .env.example                        # Template for env vars
 ├── next.config.ts                      # Next.js configuration
-├── postcss.config.ts                   # PostCSS config (Tailwind v4 plugin)
+├── postcss.config.mjs                  # PostCSS config (Tailwind v4 plugin)
 ├── drizzle.config.ts                   # Drizzle ORM configuration
 ├── Dockerfile                          # Multi-stage Docker build for Coolify
 ├── .dockerignore                       # Docker build exclusions
@@ -1186,17 +1186,18 @@ GitHub (main branch)
 
 | Technology | Version | Lock Strategy |
 |-----------|---------|--------------|
-| Next.js | 15.x | `package.json` exact version |
-| React | 19.x | Peer dependency of Next.js |
-| TypeScript | 5.x | `package.json` exact version |
-| Tailwind CSS | 4.x | `package.json` exact version |
-| Drizzle ORM | latest stable | `package.json` exact version |
-| Mapbox GL JS | 3.x | `package.json` exact version |
-| next-intl | latest stable | `package.json` exact version |
-| react-map-gl | 7.x | `package.json` exact version |
-| @use-gesture/react | 10.x | `package.json` exact version |
-| zod | 3.x | `package.json` exact version |
-| react-hook-form | 7.x | `package.json` exact version |
+| Next.js | 15.5.18 | `package.json` exact version + `package-lock.json` |
+| React | 19.1.0 | `package.json` exact version |
+| TypeScript | 5.9.3 | `package.json` exact version |
+| Tailwind CSS | 4.3.0 | `package.json` exact version |
+| Drizzle ORM | 0.45.2 | `package.json` exact version |
+| Mapbox GL JS | 3.24.0 | `package.json` exact version |
+| next-intl | 4.12.0 | `package.json` exact version |
+| react-map-gl | 7.1.9 | `package.json` exact version |
+| @use-gesture/react | 10.3.1 | `package.json` exact version |
+| zod | 3.25.76 | `package.json` exact version |
+| Node.js | 24.13.1 | `.nvmrc` + Dockerfile digest pin |
+| PostgreSQL + PostGIS | 16-3.4 | `docker-compose.dev.yml` image tag |
 
 ### Glossary
 
