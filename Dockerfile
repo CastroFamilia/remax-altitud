@@ -9,6 +9,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
+RUN npm run scripts:build
 
 FROM node:24-alpine@sha256:d1b3b4da11eefd5941e7f0b9cf17783fc99d9c6fc34884a665f40a06dbdfc94f AS runner
 WORKDIR /app
@@ -21,6 +22,11 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Bundled scripts for server-side operations (migrate, sync)
+COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
+# Migration SQL files needed by drizzle migrator at runtime
+COPY --from=builder --chown=nextjs:nodejs /app/src/lib/db/migrations ./src/lib/db/migrations
 
 # NOTE: /app/public/property-images requires a Docker volume mount for persistence
 # across redeploys. Configure in Coolify / docker-compose as:
@@ -35,3 +41,4 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]
+

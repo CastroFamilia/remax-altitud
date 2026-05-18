@@ -17,6 +17,10 @@
     "db:studio": "drizzle-kit studio",
     "sync": "tsx scripts/run-sync.ts",
     "sync:dry-run": "tsx scripts/run-sync.ts --dry-run --verbose",
+    "scripts:build": "node scripts/build-scripts.mjs",
+    "dist:migrate": "node dist/migrate.mjs",
+    "dist:sync": "node dist/run-sync.mjs",
+    "dist:sync:dry-run": "node dist/run-sync.mjs --dry-run --verbose",
     "test": "vitest run",
     "test:watch": "vitest"
   },
