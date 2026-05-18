@@ -11,8 +11,11 @@ function createDb() {
     );
   }
 
-  // Disable prefetch for connection pooling compatibility
-  const client = postgres(connectionString, { prepare: false });
+  // - prepare: false → required for pgBouncer / connection-pooler compat
+  // - max: 3 → prevents "too many clients" during `next build` parallel prerendering
+  //   (multiple build workers each create a postgres instance; 10 × N workers can
+  //    exceed PostgreSQL's max_connections, typically 100)
+  const client = postgres(connectionString, { prepare: false, max: 3 });
   return drizzle({ client });
 }
 

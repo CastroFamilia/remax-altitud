@@ -7,6 +7,11 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Pin workspace root so Turbopack doesn't walk up to stray lockfiles
+  // in parent directories (e.g. accidental npm install in ~/)
+  turbopack: {
+    root: __dirname,
+  },
   // images.remotePatterns — Task 0, Story 4.1
   // Property images are stored locally as WebP files at relative /property-images/... paths
   // and do NOT need remotePatterns (same-origin static files).
