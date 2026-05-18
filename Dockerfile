@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
@@ -32,6 +32,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/src/lib/db/migrations ./src/lib/d
 # across redeploys. Configure in Coolify / docker-compose as:
 #   volumes:
 #     - property_images:/app/public/property-images
+RUN mkdir -p /app/public/property-images && chown nextjs:nodejs /app/public/property-images
 
 USER nextjs
 
