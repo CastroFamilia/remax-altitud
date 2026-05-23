@@ -79,6 +79,15 @@ vi.mock("@/components/seller/seller-confirmation", () => ({
   ),
 }));
 
+// Mock UTM extraction (Story 5.3: CMA form now calls extractUtmParams)
+vi.mock("@/lib/utils/utm", () => ({
+  extractUtmParams: vi.fn().mockReturnValue({
+    source: null,
+    medium: null,
+    campaign: null,
+  }),
+}));
+
 // imported AFTER mocks
 import { CmaForm, buildCmaLeadPayload } from "@/components/seller/cma-form";
 import { CmaHero } from "@/components/seller/cma-hero";
@@ -111,10 +120,21 @@ function renderCmaForm() {
 describe("CmaForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Mock fetch for API calls (Story 5.3: CMA form now POSTs to /api/leads)
+    global.fetch = vi.fn().mockResolvedValue({
+      status: 201,
+      json: () =>
+        Promise.resolve({
+          leadId: "lead-test-001",
+          assignedAgentId: "agent-1",
+          agent: null,
+        }),
+    });
   });
 
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
   });
 
   // ──────────────────────────────────────────────────────────────────────────

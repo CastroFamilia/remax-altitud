@@ -151,6 +151,9 @@ export function CmaForm({ locale, fallbackAgent, officeName = "RE/MAX Altitud" }
   // ---- Form state ----
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [matchedAgent, setMatchedAgent] = useState<any>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<CmaFormData>({
     name: "",
@@ -200,31 +203,90 @@ export function CmaForm({ locale, fallbackAgent, officeName = "RE/MAX Altitud" }
     }
     setErrors({});
     setSubmitting(true);
+    setSubmitError(null);
 
-    // 5.2 stub — Story 5.3 replaces with real API call.
+    // Story 5.3: POST /api/leads with CMA payload, UTM params, and referrer
     const payload = buildCmaLeadPayload(formData);
-    if (process.env.NODE_ENV !== "production") {
-      console.log("[5.2 stub] CMA form payload:", payload);
-    }
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setSubmitting(false);
-    setSubmitted(true);
+    const { extractUtmParams } = await import("@/lib/utils/utm");
+    const utmParams = extractUtmParams();
+
+    const apiPayload = {
+      ...payload,
+      // map CMA-specific fields to the API schema
+      size: payload.approximateSize ?? "",
+      sizeUnit: payload.sizeUnit ?? "",
+      priceExpectation: null,
+      needsPricingHelp: true,
+      description: payload.comment ?? "",
+      bedrooms: null,
+      bathrooms: null,
+      preferredLanguage: "",
+      notes: payload.comment ? `CMA request: ${payload.comment}` : "CMA request",
+      utm_source: utmParams.source ?? null,
+      utm_medium: utmParams.medium ?? null,
+      utm_campaign: utmParams.campaign ?? null,
+      referrer: typeof document !== "undefined" ? document.referrer || null : null,
+    };
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(apiPayload),
+      });
+
+      const body = await response.json();
+
+      if (response.status === 201) {
+        if (body.agent) {
+          setMatchedAgent(body.agent);
+        }
+        setSubmitting(false);
+        setSubmitted(true);
+      } else if (response.status === 409) {
+        setSubmitError(
+          locale === "es" ? "Ya se envió esta solicitud." : "Already submitted.",
+        );
+        setSubmitting(false);
+      } else if (response.status === 400) {
+        const issues = body.issues?.map((i: { message: string }) => i.message).join(", ") ?? "Validation error";
+        setSubmitError(issues);
+        setSubmitting(false);
+      } else {
+        setSubmitError(
+          locale === "es"
+            ? "Error al enviar. Intente de nuevo."
+            : "Submission failed. Please try again.",
+        );
+        setSubmitting(false);
+      }
+    } catch {
+      setSubmitError(
+        locale === "es"
+          ? "Error de conexión. Intente de nuevo."
+          : "Connection error. Please try again.",
+      );
+      setSubmitting(false);
+    }
   }
 
   // Unit label
   const sizeUnitLabel = unitSystem === "metric" ? "m²" : "ft²";
 
   // ---- Post-submit: show confirmation screen ----
-  if (submitted && fallbackAgent) {
-    return (
-      <SellerConfirmation
-        agent={fallbackAgent}
-        officeName={officeName}
-        locale={locale}
-        source="cma"
-      />
-    );
+  if (submitted) {
+    const agentToShow = matchedAgent ?? fallbackAgent;
+    if (agentToShow) {
+      return (
+        <SellerConfirmation
+          agent={agentToShow}
+          officeName={officeName}
+          locale={locale}
+          source="cma"
+        />
+      );
+    }
   }
 
   return (
@@ -390,6 +452,13 @@ export function CmaForm({ locale, fallbackAgent, officeName = "RE/MAX Altitud" }
             )}
           </Field>
         </div>
+
+        {/* Submit error message (Story 5.3) */}
+        {submitError && (
+          <div role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+            {submitError}
+          </div>
+        )}
 
         {/* Submit button */}
         <div className="mt-8">

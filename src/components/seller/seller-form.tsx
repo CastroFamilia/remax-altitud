@@ -191,6 +191,9 @@ export function SellerForm({
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [matchedAgent, setMatchedAgent] = useState<any>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<SellerFormData>({
     propertyType: "",
@@ -304,18 +307,68 @@ export function SellerForm({
     }
     setStep3Errors({});
     setSubmitting(true);
-
-    // 5.1 stub — Story 5.3 replaces with real API call.
-    // Gated on NODE_ENV so PII (name/phone/email/coords) is never printed to the
-    // browser console in production builds.
+    setSubmitError(null);
+    // Story 5.3: POST /api/leads with full payload, UTM params, and referrer
     const payload = buildLeadPayload(formData);
-    if (process.env.NODE_ENV !== "production") {
-      console.log("[5.1 stub] seller form payload:", payload);
-    }
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setSubmitting(false);
-    setSubmitted(true);
+    // Import UTM extractor — browser-safe, reads from window.location.search
+    const { extractUtmParams } = await import("@/lib/utils/utm");
+    const utmParams = extractUtmParams();
+
+    const apiPayload = {
+      ...payload,
+      source: "seller_form" as const,
+      intent: "sell" as const,
+      utm_source: utmParams.source ?? null,
+      utm_medium: utmParams.medium ?? null,
+      utm_campaign: utmParams.campaign ?? null,
+      referrer: typeof document !== "undefined" ? document.referrer || null : null,
+    };
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(apiPayload),
+      });
+
+      const body = await response.json();
+
+      if (response.status === 201) {
+        // Success — store matched agent from response for confirmation
+        if (body.agent) {
+          setMatchedAgent(body.agent);
+        }
+        setSubmitting(false);
+        setSubmitted(true);
+      } else if (response.status === 409) {
+        // Duplicate — show friendly message
+        setSubmitError(
+          locale === "es" ? "Ya se envió esta solicitud." : "Already submitted.",
+        );
+        setSubmitting(false);
+      } else if (response.status === 400) {
+        // Validation error
+        const issues = body.issues?.map((i: { message: string }) => i.message).join(", ") ?? "Validation error";
+        setSubmitError(issues);
+        setSubmitting(false);
+      } else {
+        // Server error
+        setSubmitError(
+          locale === "es"
+            ? "Error al enviar. Intente de nuevo."
+            : "Submission failed. Please try again.",
+        );
+        setSubmitting(false);
+      }
+    } catch {
+      setSubmitError(
+        locale === "es"
+          ? "Error de conexión. Intente de nuevo."
+          : "Connection error. Please try again.",
+      );
+      setSubmitting(false);
+    }
   }
 
   // Beds/Baths visibility (R-012 mitigation, AC #5)
@@ -328,8 +381,11 @@ export function SellerForm({
   const sizeUnitLabel = unitSystem === "metric" ? "m²" : "ft²";
 
   // ---- Post-submit: show confirmation screen ----
-  if (submitted && fallbackAgent) {
-    return <SellerConfirmation agent={fallbackAgent} officeName={officeName} locale={locale} />;
+  if (submitted) {
+    const agentToShow = matchedAgent ?? fallbackAgent;
+    if (agentToShow) {
+      return <SellerConfirmation agent={agentToShow} officeName={officeName} locale={locale} />;
+    }
   }
 
   // Progress bar step labels
@@ -833,6 +889,13 @@ export function SellerForm({
                 </select>
               )}
             </Field>
+
+            {/* Submit error message (Story 5.3) */}
+            {submitError && (
+              <div role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                {submitError}
+              </div>
+            )}
 
             {/* Step navigation */}
             <div className="flex justify-between pt-2">
