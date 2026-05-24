@@ -106,11 +106,7 @@ export async function findRecentDuplicate(
  * For future admin use.
  */
 export async function getLeadById(id: string) {
-  const rows = await db
-    .select()
-    .from(leads)
-    .where(eq(leads.id, id))
-    .limit(1);
+  const rows = await db.select().from(leads).where(eq(leads.id, id)).limit(1);
 
   if (rows.length === 0) return null;
 

@@ -53,4 +53,3 @@ export function trackWhatsAppClick(event: WhatsAppClickEvent): void {
     window.dispatchEvent(new CustomEvent("whatsapp_click", { detail: event }));
   }
 }
-

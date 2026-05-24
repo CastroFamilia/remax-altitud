@@ -57,9 +57,10 @@ export async function matchAgentByCoordinates(
  * whose latitude/longitude match the given coordinates.
  * Uses getAllOffices() to find office by coords, then queries agents.
  */
-async function findAgentByOfficeCoords(
-  coords: { lat: number; lng: number },
-): Promise<string | null> {
+async function findAgentByOfficeCoords(coords: {
+  lat: number;
+  lng: number;
+}): Promise<string | null> {
   try {
     // Find office by matching coordinates
     const allOffices = await getAllOffices();

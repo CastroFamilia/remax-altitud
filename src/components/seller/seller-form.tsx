@@ -343,13 +343,12 @@ export function SellerForm({
         setSubmitted(true);
       } else if (response.status === 409) {
         // Duplicate — show friendly message
-        setSubmitError(
-          locale === "es" ? "Ya se envió esta solicitud." : "Already submitted.",
-        );
+        setSubmitError(locale === "es" ? "Ya se envió esta solicitud." : "Already submitted.");
         setSubmitting(false);
       } else if (response.status === 400) {
         // Validation error
-        const issues = body.issues?.map((i: { message: string }) => i.message).join(", ") ?? "Validation error";
+        const issues =
+          body.issues?.map((i: { message: string }) => i.message).join(", ") ?? "Validation error";
         setSubmitError(issues);
         setSubmitting(false);
       } else {

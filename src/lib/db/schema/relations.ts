@@ -31,4 +31,3 @@ export const leadsRelations = relations(leads, ({ one }) => ({
   agent: one(agents, { fields: [leads.assignedAgentId], references: [agents.id] }),
   property: one(properties, { fields: [leads.propertyId], references: [properties.id] }),
 }));
-

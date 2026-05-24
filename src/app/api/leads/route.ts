@@ -33,13 +33,7 @@ const leadInputSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(7, "Phone must have at least 7 characters"),
   email: z.string().email("Invalid email").nullable().optional().or(z.literal("")),
-  source: z.enum([
-    "whatsapp",
-    "seller_form",
-    "contact_form",
-    "cma_form",
-    "whatsapp_click",
-  ]),
+  source: z.enum(["whatsapp", "seller_form", "contact_form", "cma_form", "whatsapp_click"]),
   intent: z.enum(["buy", "sell", "invest", "recruit"]),
   propertyType: z.string().optional().default(""),
   location: locationSchema,
@@ -136,10 +130,7 @@ export async function POST(request: Request) {
   try {
     rawBody = await request.json();
   } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   // Zod validation
@@ -175,10 +166,7 @@ export async function POST(request: Request) {
     }
 
     // Agent routing
-    const assignedAgentId = await matchAgentByCoordinates(
-      data.location.lat,
-      data.location.lng,
-    );
+    const assignedAgentId = await matchAgentByCoordinates(data.location.lat, data.location.lng);
 
     // Build notes from property details
     const noteParts: string[] = [];
@@ -246,9 +234,6 @@ export async function POST(request: Request) {
     // Sentry error capture (AR19)
     Sentry.captureException(error);
 
-    return NextResponse.json(
-      { error: "Lead creation failed" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Lead creation failed" }, { status: 500 });
   }
 }
