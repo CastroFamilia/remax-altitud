@@ -1,8 +1,6 @@
 /**
  * Story 5.3: Seller Lead Storage, Routing & Source Tracking — Agent Routing Tests
  *
- * TDD Phase: RED — all tests will fail until route-agent.ts is implemented.
- *
  * Covers (from test-design-epic-5.md):
  *   5.3-UNIT-003 — matchAgentByCoordinates() returns Altitud PZ agent for PZ coords
  *   5.3-UNIT-004 — matchAgentByCoordinates() returns Altitud Cero agent for Dominical coords
@@ -33,9 +31,26 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 // Mock server-only (route-agent.ts likely imports from queries that use server-only)
 vi.mock("server-only", () => ({}));
 
-// Mock the database client and queries
+// ---------------------------------------------------------------------------
+// Configurable mock state — used by tests to control DB responses
+// ---------------------------------------------------------------------------
+
+const mockAllOffices: Array<{ id: string; latitude: number; longitude: number }> = [];
+const mockAgentRows: Array<{ id: string }> = [];
+
+// Mock the database client with a configurable select chain
 vi.mock("@/lib/db/client", () => ({
-  db: {},
+  db: {
+    select: vi.fn(() => ({
+      from: vi.fn(() => ({
+        where: vi.fn(() => ({
+          orderBy: vi.fn(() => ({
+            limit: vi.fn(() => mockAgentRows),
+          })),
+        })),
+      })),
+    })),
+  },
 }));
 
 // Mock getNearestOfficeCoords to control routing decisions
@@ -45,25 +60,19 @@ vi.mock("@/lib/constants/offices-geo", () => ({
   OFFICE_DOMINICAL_COORDS: { lat: 9.257, lng: -83.885 },
 }));
 
-// Mock offices queries
+// Mock offices queries — getAllOffices returns the configurable array
 vi.mock("@/lib/db/queries/offices", () => ({
   getOfficeById: vi.fn(),
-  getAllOffices: vi.fn(),
+  getAllOffices: vi.fn(() => Promise.resolve(mockAllOffices)),
 }));
 
-// Mock drizzle query operations
-vi.mock("drizzle-orm/postgres-js", () => ({
-  drizzle: vi.fn(() => ({
-    select: vi.fn(() => ({
-      from: vi.fn(() => ({
-        where: vi.fn(() => ({
-          orderBy: vi.fn(() => ({
-            limit: vi.fn(() => []),
-          })),
-        })),
-      })),
-    })),
-  })),
+// Mock drizzle-orm operators (and, eq, desc used in route-agent.ts; sql used in agents schema)
+vi.mock("drizzle-orm", () => ({
+  and: vi.fn((...args: unknown[]) => args),
+  eq: vi.fn((a: unknown, b: unknown) => [a, b]),
+  desc: vi.fn((col: unknown) => col),
+  gte: vi.fn((a: unknown, b: unknown) => [a, b]),
+  sql: new Proxy(() => "", { apply: () => "", get: () => "" }),
 }));
 
 // ---------------------------------------------------------------------------
@@ -71,35 +80,28 @@ vi.mock("drizzle-orm/postgres-js", () => ({
 // ---------------------------------------------------------------------------
 
 import { getNearestOfficeCoords } from "@/lib/constants/offices-geo";
+import { getAllOffices } from "@/lib/db/queries/offices";
 
 // ---------------------------------------------------------------------------
 
 const mockedGetNearestOffice = vi.mocked(getNearestOfficeCoords);
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
 // ---------------------------------------------------------------------------
-// Test data: coordinates known to map to specific offices
+// Test data: coordinates and mock office/agent records
 // ---------------------------------------------------------------------------
 
 const PZ_COORDS = { lat: 9.3725, lng: -83.7011 };
 const DOMINICAL_COORDS = { lat: 9.257, lng: -83.885 };
 
-const MOCK_PZ_AGENT = {
-  id: "agent-pz-001",
-  name: "Agent PZ",
-  officeId: "office-pz",
-  isActive: true,
-};
+const OFFICE_PZ = { id: "office-pz", latitude: 9.3725, longitude: -83.7011 };
+const OFFICE_CERO = { id: "office-cero", latitude: 9.257, longitude: -83.885 };
 
-const MOCK_CERO_AGENT = {
-  id: "agent-cero-001",
-  name: "Agent Cero",
-  officeId: "office-cero",
-  isActive: true,
-};
+beforeEach(() => {
+  vi.clearAllMocks();
+  // Reset configurable state
+  mockAllOffices.length = 0;
+  mockAgentRows.length = 0;
+});
 
 // ---------------------------------------------------------------------------
 // 5.3-UNIT-003: PZ coordinates → PZ agent
@@ -112,6 +114,10 @@ describe("Agent Routing — matchAgentByCoordinates (5.3-UNIT-003/004/005)", () 
       "@/lib/leads/route-agent"
     );
 
+    // Seed mock data: offices and agent
+    mockAllOffices.push(OFFICE_PZ, OFFICE_CERO);
+    mockAgentRows.push({ id: "agent-pz-001" });
+
     // Mock: getNearestOfficeCoords returns PZ for PZ coordinates
     mockedGetNearestOffice.mockReturnValue(PZ_COORDS);
 
@@ -123,9 +129,11 @@ describe("Agent Routing — matchAgentByCoordinates (5.3-UNIT-003/004/005)", () 
       PZ_COORDS.lng,
     );
 
-    // Must return a non-null agent ID (specific value depends on DB seed)
-    // In the mock scenario, we verify the function at least executes and returns
-    expect(agentId).toBeDefined();
+    // getAllOffices must have been called to look up office by coords
+    expect(getAllOffices).toHaveBeenCalled();
+
+    // Must return the PZ agent ID — not null, not undefined
+    expect(agentId).toBe("agent-pz-001");
   });
 
   // ---------------------------------------------------------------------------
@@ -137,6 +145,10 @@ describe("Agent Routing — matchAgentByCoordinates (5.3-UNIT-003/004/005)", () 
     const { matchAgentByCoordinates } = await import(
       "@/lib/leads/route-agent"
     );
+
+    // Seed mock data: offices and agent
+    mockAllOffices.push(OFFICE_PZ, OFFICE_CERO);
+    mockAgentRows.push({ id: "agent-cero-001" });
 
     // Mock: getNearestOfficeCoords returns Dominical for Dominical coordinates
     mockedGetNearestOffice.mockReturnValue(DOMINICAL_COORDS);
@@ -151,8 +163,8 @@ describe("Agent Routing — matchAgentByCoordinates (5.3-UNIT-003/004/005)", () 
       DOMINICAL_COORDS.lng,
     );
 
-    // Must return a defined value (agent ID or null with fallback)
-    expect(agentId).toBeDefined();
+    // Must return the Cero agent ID
+    expect(agentId).toBe("agent-cero-001");
   });
 
   // ---------------------------------------------------------------------------
@@ -165,16 +177,21 @@ describe("Agent Routing — matchAgentByCoordinates (5.3-UNIT-003/004/005)", () 
       "@/lib/leads/route-agent"
     );
 
-    // Must not throw when called with null coordinates
-    await expect(
-      matchAgentByCoordinates(null, null),
-    ).resolves.not.toThrow();
+    // Seed offices but no agents — so the function should return null gracefully
+    mockAllOffices.push(OFFICE_PZ, OFFICE_CERO);
+
+    const result = await matchAgentByCoordinates(null, null);
+
+    // With no agents seeded, should return null (not undefined, not throw)
+    expect(result).toBeNull();
   });
 
   it("[P0] 5.3-UNIT-005b: null coordinates do NOT call getNearestOfficeCoords (bypass geo lookup)", async () => {
     const { matchAgentByCoordinates } = await import(
       "@/lib/leads/route-agent"
     );
+
+    mockAllOffices.push(OFFICE_PZ, OFFICE_CERO);
 
     await matchAgentByCoordinates(null, null);
 
@@ -183,21 +200,58 @@ describe("Agent Routing — matchAgentByCoordinates (5.3-UNIT-003/004/005)", () 
     expect(getNearestOfficeCoords).not.toHaveBeenCalled();
   });
 
-  // ---------------------------------------------------------------------------
-  // Edge case: no active agents in matched office → try other office
-  // ---------------------------------------------------------------------------
-
-  it("[P0] 5.3-UNIT-005c: returns null (not undefined, not throw) when no active agents exist at all", async () => {
+  it("[P0] 5.3-UNIT-005c: null coords with PZ agent seeded returns the PZ fallback agent", async () => {
     const { matchAgentByCoordinates } = await import(
       "@/lib/leads/route-agent"
     );
 
-    // Even when the DB has no agents, the function should return null gracefully
-    // (API must still create the lead with assigned_agent_id = null per Task 3.7)
+    // Seed offices and a PZ agent for fallback
+    mockAllOffices.push(OFFICE_PZ, OFFICE_CERO);
+    mockAgentRows.push({ id: "agent-pz-fallback" });
+
+    const result = await matchAgentByCoordinates(null, null);
+
+    // Should return PZ fallback agent since null coords default to PZ
+    expect(result).toBe("agent-pz-fallback");
+    expect(getNearestOfficeCoords).not.toHaveBeenCalled();
+  });
+
+  // ---------------------------------------------------------------------------
+  // Edge case: no active agents in matched office → try other office → null
+  // ---------------------------------------------------------------------------
+
+  it("[P0] 5.3-UNIT-005d: returns null when no active agents exist in any office", async () => {
+    const { matchAgentByCoordinates } = await import(
+      "@/lib/leads/route-agent"
+    );
+
+    // Seed offices but NO agents
+    mockAllOffices.push(OFFICE_PZ, OFFICE_CERO);
+    // mockAgentRows stays empty — no agents in DB
+
+    mockedGetNearestOffice.mockReturnValue(PZ_COORDS);
+
     const result = await matchAgentByCoordinates(PZ_COORDS.lat, PZ_COORDS.lng);
 
-    // If mocked DB returns no agents, result should be null
-    // (this depends on DB mock returning empty arrays, which our drizzle mock does)
-    expect(result === null || typeof result === "string").toBe(true);
+    // Must return null gracefully (API will create lead with assigned_agent_id = null per Task 3.7)
+    expect(result).toBeNull();
+  });
+
+  // ---------------------------------------------------------------------------
+  // Edge case: no offices in DB
+  // ---------------------------------------------------------------------------
+
+  it("[P0] 5.3-UNIT-005e: returns null gracefully when no offices exist in DB", async () => {
+    const { matchAgentByCoordinates } = await import(
+      "@/lib/leads/route-agent"
+    );
+
+    // No offices seeded — mockAllOffices is empty
+    mockedGetNearestOffice.mockReturnValue(PZ_COORDS);
+
+    const result = await matchAgentByCoordinates(PZ_COORDS.lat, PZ_COORDS.lng);
+
+    // No matching office → no agent → return null
+    expect(result).toBeNull();
   });
 });

@@ -188,16 +188,21 @@ describe("POST /api/leads — Seller form (5.3-API-001)", () => {
     // Must return 201 Created
     expect(response.status).toBe(201);
 
-    // Response must include leadId and assignedAgentId
-    expect(body.leadId).toBeDefined();
-    expect(body.assignedAgentId).toBeDefined();
+    // Response must include leadId and assignedAgentId with correct values
+    expect(body.leadId).toBe("lead-test-001");
+    expect(body.assignedAgentId).toBe("agent-pz-001");
 
-    // createLead must have been called with all fields
+    // createLead must have been called with all critical fields
     expect(mockCreateLead).toHaveBeenCalledTimes(1);
     const createArgs = mockCreateLead.mock.calls[0][0];
     expect(createArgs.name).toBe("Carlos Vendedor");
+    expect(createArgs.phone).toBe("+50688881234");
+    expect(createArgs.email).toBe("carlos@example.com");
     expect(createArgs.source).toBe("seller_form");
     expect(createArgs.intent).toBe("sell");
+    expect(createArgs.language).toBe("es");
+    expect(createArgs.assignedAgentId).toBe("agent-pz-001");
+    expect(createArgs.status).toBe("new");
   });
 });
 
@@ -358,13 +363,11 @@ describe("POST /api/leads — UTM tracking (5.3-API-005)", () => {
     const response = await POST(request);
     expect(response.status).toBe(201);
 
-    // createLead must have been called with UTM fields
+    // createLead must have been called with UTM fields (camelCase per createLead interface)
     const createArgs = mockCreateLead.mock.calls[0][0];
-    expect(createArgs.utm_source ?? createArgs.utmSource).toBe("facebook");
-    expect(createArgs.utm_medium ?? createArgs.utmMedium).toBe("ad");
-    expect(createArgs.utm_campaign ?? createArgs.utmCampaign).toBe(
-      "sellers_pz",
-    );
+    expect(createArgs.utmSource).toBe("facebook");
+    expect(createArgs.utmMedium).toBe("ad");
+    expect(createArgs.utmCampaign).toBe("sellers_pz");
   });
 });
 
@@ -442,8 +445,9 @@ describe("POST /api/leads — CMA form (5.2-API-001)", () => {
 // ---------------------------------------------------------------------------
 
 describe("POST /api/leads — Input sanitization (5.3-API-008)", () => {
-  it("[P1] 5.3-API-008: SQL injection in utm_source is rejected or sanitized by Zod", async () => {
-    // R-010: UTM params must not be passed directly to SQL unsanitized
+  it("[P1] 5.3-API-008: SQL injection in utm_source is rejected by Zod regex", async () => {
+    // R-010: UTM params validated by Zod regex /^[a-zA-Z0-9_\-./ ]*$/
+    // SQL injection chars ('; --) are NOT allowed by the regex → 400
     const { POST } = await import("@/app/api/leads/route");
 
     const payload = buildSellerLeadPayload({
@@ -452,27 +456,43 @@ describe("POST /api/leads — Input sanitization (5.3-API-008)", () => {
     const request = createMockRequest(payload);
 
     const response = await POST(request);
+    const body = await response.json();
 
-    // Two acceptable outcomes:
-    // 1. Zod rejects the payload (400) — injection string fails validation
-    // 2. Zod accepts but sanitizes — lead is created with safe value
-    if (response.status === 400) {
-      // Zod rejected — correct
-      const body = await response.json();
-      expect(body.error).toMatch(/validation/i);
-    } else if (response.status === 201) {
-      // Zod accepted — verify the stored value is safe
-      const createArgs = mockCreateLead.mock.calls[0][0];
-      const storedUtm =
-        createArgs.utm_source ?? createArgs.utmSource;
-      // Must NOT contain raw SQL injection characters
-      expect(storedUtm).not.toContain("DROP TABLE");
-    } else {
-      // Unexpected status
-      expect.unreachable(
-        `Expected 400 or 201, got ${response.status}`,
-      );
-    }
+    // Zod must reject — the regex explicitly disallows semicolons and quotes
+    expect(response.status).toBe(400);
+    expect(body.error).toMatch(/validation/i);
+    expect(body.issues).toBeDefined();
+    // Lead must NOT be created
+    expect(mockCreateLead).not.toHaveBeenCalled();
+  });
+
+  it("[P1] 5.3-API-008b: valid utm_source characters are accepted", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+
+    const payload = buildSellerLeadPayload({
+      utm_source: "facebook_organic-2026",
+      utm_medium: "social",
+      utm_campaign: "spring/sellers.launch",
+    });
+    const request = createMockRequest(payload);
+
+    const response = await POST(request);
+    expect(response.status).toBe(201);
+
+    const createArgs = mockCreateLead.mock.calls[0][0];
+    expect(createArgs.utmSource).toBe("facebook_organic-2026");
+  });
+
+  it("[P1] 5.3-API-008c: utm_source exceeding 200 chars is rejected", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+
+    const payload = buildSellerLeadPayload({
+      utm_source: "a".repeat(201),
+    });
+    const request = createMockRequest(payload);
+
+    const response = await POST(request);
+    expect(response.status).toBe(400);
   });
 });
 
@@ -495,22 +515,36 @@ describe("POST /api/leads — Full schema (5.3-API-009)", () => {
     const response = await POST(request);
     expect(response.status).toBe(201);
 
-    // Verify createLead was called with all required schema fields
+    // Verify createLead was called with all required schema fields per AC #3
     const createArgs = mockCreateLead.mock.calls[0][0];
 
-    // Required fields per AC #3 / Architecture §4
-    expect(createArgs.name).toBeDefined();
-    expect(createArgs.phone).toBeDefined();
-    expect(createArgs.source).toBeDefined();
-    expect(createArgs.intent).toBeDefined();
-    expect(createArgs.language ?? createArgs.preferredLanguage).toBeDefined();
+    // Required identity fields
+    expect(createArgs.name).toBe("Carlos Vendedor");
+    expect(createArgs.phone).toBe("+50688881234");
+    expect(createArgs.email).toBe("carlos@example.com");
 
-    // source and intent must have expected values
+    // Source tracking fields
     expect(createArgs.source).toBe("seller_form");
     expect(createArgs.intent).toBe("sell");
+    expect(createArgs.language).toBe("es");
+
+    // Agent assignment
+    expect(createArgs.assignedAgentId).toBe("agent-pz-001");
+
+    // UTM fields
+    expect(createArgs.utmSource).toBe("facebook");
+    expect(createArgs.utmMedium).toBe("ad");
+    expect(createArgs.utmCampaign).toBe("sellers_pz");
+
+    // Referrer
+    expect(createArgs.referrer).toBe("https://facebook.com");
 
     // Status must be "new" for fresh leads
     expect(createArgs.status).toBe("new");
+
+    // Notes must contain property details
+    expect(createArgs.notes).toBeDefined();
+    expect(createArgs.notes).toMatch(/Property: Casa/);
   });
 });
 
@@ -533,5 +567,75 @@ describe("POST /api/leads — Performance (5.3-API-010)", () => {
     // With mocked DB, this should be well under 500ms
     // In integration, this validates no N+1 or slow queries
     expect(elapsed).toBeLessThan(500);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Edge cases: invalid JSON body, email-optional
+// ---------------------------------------------------------------------------
+
+describe("POST /api/leads — Edge cases", () => {
+  it("[P1] returns 400 for invalid JSON body", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+
+    const request = new Request("http://localhost:3000/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "not valid json{{",
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toMatch(/invalid json/i);
+    expect(mockCreateLead).not.toHaveBeenCalled();
+  });
+
+  it("[P1] accepts submission without email (email is optional per AC)", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+
+    const payload = buildSellerLeadPayload({ email: "" });
+    const request = createMockRequest(payload);
+
+    const response = await POST(request);
+    expect(response.status).toBe(201);
+
+    const createArgs = mockCreateLead.mock.calls[0][0];
+    // email should be null (empty string converted to null)
+    expect(createArgs.email).toBeNull();
+  });
+
+  it("[P1] passes agent routing coordinates from location field", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+
+    const payload = buildSellerLeadPayload({
+      location: { text: "Dominical", lat: 9.257, lng: -83.885 },
+    });
+    const request = createMockRequest(payload);
+
+    const response = await POST(request);
+    expect(response.status).toBe(201);
+
+    // matchAgentByCoordinates must have been called with the correct coords
+    expect(mockMatchAgent).toHaveBeenCalledWith(9.257, -83.885);
+  });
+
+  it("[P0] creates lead even when agent routing returns null (AC: assigned_agent_id can be null)", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+
+    // Agent routing fails
+    mockMatchAgent.mockResolvedValue(null);
+
+    const payload = buildSellerLeadPayload();
+    const request = createMockRequest(payload);
+
+    const response = await POST(request);
+    expect(response.status).toBe(201);
+
+    // Lead must still be created
+    expect(mockCreateLead).toHaveBeenCalledTimes(1);
+    const createArgs = mockCreateLead.mock.calls[0][0];
+    expect(createArgs.assignedAgentId).toBeNull();
   });
 });

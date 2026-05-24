@@ -113,6 +113,63 @@ describe("PII Encryption — encryptField / decryptField (5.3-UNIT-001)", () => 
 
     expect(() => decryptField(tampered)).toThrow();
   });
+
+  it("[P0] 5.3-UNIT-001g: encryptField() handles empty string without throwing", async () => {
+    const { encryptField, decryptField } = await import(
+      "@/lib/utils/encryption"
+    );
+
+    const encrypted = encryptField("");
+    expect(encrypted).not.toBe("");
+    expect(encrypted.split(":")).toHaveLength(3);
+    expect(decryptField(encrypted)).toBe("");
+  });
+
+  it("[P0] 5.3-UNIT-001h: encryptField() throws when LEAD_ENCRYPTION_KEY is missing", async () => {
+    // Temporarily remove the key
+    const savedKey = process.env.LEAD_ENCRYPTION_KEY;
+    delete process.env.LEAD_ENCRYPTION_KEY;
+
+    try {
+      // Force fresh import to pick up missing env var
+      // Since the module is cached, we test getKey() indirectly via the function
+      // The key is read on each call, so removing it should cause a throw
+      const { encryptField } = await import("@/lib/utils/encryption");
+      expect(() => encryptField("test")).toThrow(/LEAD_ENCRYPTION_KEY/);
+    } finally {
+      process.env.LEAD_ENCRYPTION_KEY = savedKey;
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// hashField() — deterministic SHA-256 hashing for dedup
+// ---------------------------------------------------------------------------
+
+describe("PII Hashing — hashField (dedup support)", () => {
+  it("[P0] hashField() produces deterministic SHA-256 hex hash", async () => {
+    const { hashField } = await import("@/lib/utils/encryption");
+
+    const phone = "+50688881234";
+    const hash1 = hashField(phone);
+    const hash2 = hashField(phone);
+
+    // Same input must produce same hash (deterministic)
+    expect(hash1).toBe(hash2);
+    // Must be valid hex, 64 chars (SHA-256 = 256 bits = 64 hex chars)
+    expect(hash1).toMatch(/^[0-9a-f]{64}$/);
+    // Must NOT be the plaintext
+    expect(hash1).not.toBe(phone);
+  });
+
+  it("[P0] hashField() produces different hashes for different inputs", async () => {
+    const { hashField } = await import("@/lib/utils/encryption");
+
+    const hash1 = hashField("+50688881234");
+    const hash2 = hashField("+50688885678");
+
+    expect(hash1).not.toBe(hash2);
+  });
 });
 
 // ---------------------------------------------------------------------------
