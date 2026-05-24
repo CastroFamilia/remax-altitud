@@ -191,8 +191,7 @@ export function SellerForm({
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [matchedAgent, setMatchedAgent] = useState<any>(null);
+  const [matchedAgent, setMatchedAgent] = useState<Partial<Agent> | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<SellerFormData>({
@@ -381,7 +380,7 @@ export function SellerForm({
 
   // ---- Post-submit: show confirmation screen ----
   if (submitted) {
-    const agentToShow = matchedAgent ?? fallbackAgent;
+    const agentToShow = (matchedAgent as Agent | null) ?? fallbackAgent;
     if (agentToShow) {
       return <SellerConfirmation agent={agentToShow} officeName={officeName} locale={locale} />;
     }

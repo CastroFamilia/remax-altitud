@@ -151,8 +151,7 @@ export function CmaForm({ locale, fallbackAgent, officeName = "RE/MAX Altitud" }
   // ---- Form state ----
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [matchedAgent, setMatchedAgent] = useState<any>(null);
+  const [matchedAgent, setMatchedAgent] = useState<Partial<Agent> | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<CmaFormData>({
@@ -275,7 +274,7 @@ export function CmaForm({ locale, fallbackAgent, officeName = "RE/MAX Altitud" }
 
   // ---- Post-submit: show confirmation screen ----
   if (submitted) {
-    const agentToShow = matchedAgent ?? fallbackAgent;
+    const agentToShow = (matchedAgent as Agent | null) ?? fallbackAgent;
     if (agentToShow) {
       return (
         <SellerConfirmation
