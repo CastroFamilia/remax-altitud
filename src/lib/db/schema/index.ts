@@ -2,6 +2,7 @@ export * from "./offices";
 export * from "./areas";
 export * from "./agents";
 export * from "./properties";
+export * from "./leads";
 export * from "./sync-logs";
 export * from "./relations";
 export type { GeoPoint } from "../types/postgis";

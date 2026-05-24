@@ -1,15 +1,11 @@
 "use client";
 
 /**
- * Lead tracking for WhatsApp CTA clicks — Story 4.2 (AC #8 / FR54)
+ * Lead tracking for WhatsApp CTA clicks — Story 5.3 (AC #5 / FR54)
  *
- * Client-side only. This file accesses `window` to dispatch custom
- * browser events. Marking it 'use client' prevents Next.js from
- * attempting to run it on the server.
- *
- * NOTE: Story 4.2 does NOT implement POST /api/leads (Epic 5 / Story 5.3 scope).
- * This is a client-side placeholder that dispatches a custom event.
- * Epic 5 Story 5.3 will replace the dispatchEvent call with a real API call.
+ * Client-side only. Fires a POST /api/leads with source="whatsapp_click"
+ * as a fire-and-forget operation. Also dispatches a custom browser event
+ * for backwards compatibility and future analytics integration.
  */
 
 import type { UtmParams } from "@/lib/utils/utm";
@@ -24,11 +20,35 @@ export interface WhatsAppClickEvent {
 
 /**
  * Fires a lead tracking event when WhatsApp is clicked.
- * TODO Story 5.3: Replace with POST /api/leads
+ * Story 5.3: POST /api/leads (fire-and-forget, no await).
  */
 export function trackWhatsAppClick(event: WhatsAppClickEvent): void {
-  // TODO Story 5.3: Replace with POST /api/leads
-  // For now, emit a custom event for future analytics integration
+  // Fire-and-forget: POST /api/leads with whatsapp_click source
+  try {
+    fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: "WhatsApp Click",
+        phone: "0000000", // placeholder — satisfies min(7) Zod rule; not a real contact
+        source: "whatsapp_click",
+        intent: "buy",
+        notes: `WhatsApp click from ${event.source} for agent ${event.agentId}`,
+        utm_source: event.utmParams.source ?? null,
+        utm_medium: event.utmParams.medium ?? null,
+        utm_campaign: event.utmParams.campaign ?? null,
+        referrer: typeof document !== "undefined" ? document.referrer || null : null,
+        preferredLanguage: event.locale,
+        location: { text: "", lat: null, lng: null },
+      }),
+    }).catch(() => {
+      // Fire-and-forget — intentionally swallow errors
+    });
+  } catch {
+    // Fire-and-forget — intentionally swallow errors
+  }
+
+  // Also dispatch custom event for backwards compatibility and analytics
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent("whatsapp_click", { detail: event }));
   }
