@@ -83,12 +83,24 @@ const leadInputSchema = z.object({
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_MS = 60_000;
+let rateLimitRequestCount = 0;
+const RATE_LIMIT_CLEANUP_INTERVAL = 100; // prune expired entries every N requests
 
 function isRateLimited(ip: string): boolean {
   // Skip rate limiting in test environment
   if (process.env.NODE_ENV === "test" || process.env.VITEST) return false;
 
   const now = Date.now();
+
+  // Periodic cleanup to prevent unbounded Map growth
+  rateLimitRequestCount++;
+  if (rateLimitRequestCount >= RATE_LIMIT_CLEANUP_INTERVAL) {
+    rateLimitRequestCount = 0;
+    for (const [key, entry] of rateLimitMap) {
+      if (now > entry.resetAt) rateLimitMap.delete(key);
+    }
+  }
+
   const entry = rateLimitMap.get(ip);
 
   if (!entry || now > entry.resetAt) {
@@ -145,7 +157,8 @@ export async function POST(request: Request) {
   const data = parseResult.data;
 
   // Capture HTTP Referer from request headers (fallback to body referrer)
-  const headerReferer = request.headers.get("referer") ?? request.headers.get("Referer");
+  // Headers.get() is case-insensitive per spec — one call suffices
+  const headerReferer = request.headers.get("referer");
   const referrer = data.referrer || headerReferer || null;
 
   try {

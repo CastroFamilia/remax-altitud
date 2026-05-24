@@ -30,10 +30,9 @@ export function trackWhatsAppClick(event: WhatsAppClickEvent): void {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: "WhatsApp Click",
-        phone: "N/A",
+        phone: "0000000", // placeholder — satisfies min(7) Zod rule; not a real contact
         source: "whatsapp_click",
         intent: "buy",
-        propertyRef: event.propertyRef,
         notes: `WhatsApp click from ${event.source} for agent ${event.agentId}`,
         utm_source: event.utmParams.source ?? null,
         utm_medium: event.utmParams.medium ?? null,

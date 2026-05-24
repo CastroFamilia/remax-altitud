@@ -3,7 +3,6 @@ import "server-only";
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { agents } from "@/lib/db/schema/agents";
-import { offices } from "@/lib/db/schema/offices";
 import {
   getNearestOfficeCoords,
   OFFICE_PZ_COORDS,
