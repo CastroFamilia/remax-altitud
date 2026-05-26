@@ -35,7 +35,8 @@ export function CommunityCard({ name, tagline, heroImageUrl, href, locale }: Com
           <div
             className="flex h-full w-full items-center justify-center"
             style={{
-              background: "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-gold, #C2A661) 100%)",
+              background:
+                "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-gold, #C2A661) 100%)",
             }}
           >
             <span className="text-2xl font-bold text-white">{name[0]}</span>

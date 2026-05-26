@@ -31,14 +31,12 @@ const {
   mockOrderBy,
   mockFrom,
   mockSelect,
-  mockAnd,
 } = vi.hoisted(() => {
   const mockWhere = vi.fn();
   const mockLimit = vi.fn();
   const mockOrderBy = vi.fn();
   const mockFrom = vi.fn();
   const mockSelect = vi.fn();
-  const mockAnd = vi.fn();
 
   // Default chain: db.select().from().where().orderBy().limit()
   mockLimit.mockResolvedValue([]);
@@ -47,7 +45,7 @@ const {
   mockFrom.mockReturnValue({ where: mockWhere, orderBy: mockOrderBy });
   mockSelect.mockReturnValue({ from: mockFrom });
 
-  return { mockWhere, mockLimit, mockOrderBy, mockFrom, mockSelect, mockAnd };
+  return { mockWhere, mockLimit, mockOrderBy, mockFrom, mockSelect };
 });
 
 // ---------------------------------------------------------------------------
@@ -361,7 +359,7 @@ describe("getSimilarAreas — same-region area lookup (AC #3)", () => {
       expect(result).toHaveLength(1);
       expect(result[0].slug).toBe("san-isidro");
       // Must NOT include the excluded area
-      expect(result.every((a: any) => a.slug !== "perez-zeledon")).toBe(true);
+      expect(result.every((a: Record<string, unknown>) => a.slug !== "perez-zeledon")).toBe(true);
     },
   );
 

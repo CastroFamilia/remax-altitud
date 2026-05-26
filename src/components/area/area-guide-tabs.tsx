@@ -119,7 +119,9 @@ export function AreaGuideTabs({ properties, agents, similarAreas, locale }: Area
             ))}
           </div>
         ) : (
-          <p data-testid="area-no-properties" className="py-12 text-center text-text-muted">{t("noProperties")}</p>
+          <p data-testid="area-no-properties" className="py-12 text-center text-text-muted">
+            {t("noProperties")}
+          </p>
         )}
       </div>
 
@@ -169,7 +171,9 @@ export function AreaGuideTabs({ properties, agents, similarAreas, locale }: Area
  */
 function AgentCardSimple({ agent, locale }: { agent: Agent; locale: string }) {
   const photoSrc =
-    (agent.photoOptimizedUrl && agent.photoOptimizedUrl.length > 0 ? agent.photoOptimizedUrl : null) ??
+    (agent.photoOptimizedUrl && agent.photoOptimizedUrl.length > 0
+      ? agent.photoOptimizedUrl
+      : null) ??
     (agent.photoUrl && agent.photoUrl.length > 0 ? agent.photoUrl : null) ??
     "/images/agent-placeholder.svg";
 

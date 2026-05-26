@@ -48,7 +48,6 @@ vi.mock("next-intl", () => ({
 
 vi.mock("next/image", () => ({
   default: (props: Record<string, unknown>) => {
-    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
     return `<img src="${props.src}" alt="${props.alt}" />`;
   },
 }));
@@ -79,7 +78,7 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
       );
 
       const area = makeArea();
-      const jsonLd = generatePlaceJsonLd(area as any, "en");
+      const jsonLd = generatePlaceJsonLd(area as Parameters<typeof generatePlaceJsonLd>[0], "en");
 
       // Must return a valid Place schema
       expect(jsonLd).toHaveProperty("@type", "Place");
@@ -96,7 +95,7 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
       );
 
       const area = makeArea();
-      const jsonLd = generatePlaceJsonLd(area as any, "en") as any;
+      const jsonLd = generatePlaceJsonLd(area as Parameters<typeof generatePlaceJsonLd>[0], "en") as Record<string, unknown>;
 
       expect(jsonLd.name).toBe("Pérez Zeledón");
     },
@@ -110,7 +109,7 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
       );
 
       const area = makeArea();
-      const jsonLd = generatePlaceJsonLd(area as any, "es") as any;
+      const jsonLd = generatePlaceJsonLd(area as Parameters<typeof generatePlaceJsonLd>[0], "es") as Record<string, unknown>;
 
       expect(jsonLd.description).toContain("exuberante");
     },
@@ -124,7 +123,7 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
       );
 
       const area = makeArea();
-      const jsonLd = generatePlaceJsonLd(area as any, "en") as any;
+      const jsonLd = generatePlaceJsonLd(area as Parameters<typeof generatePlaceJsonLd>[0], "en") as Record<string, unknown>;
 
       // Should include geo coordinates for Google Maps integration
       expect(jsonLd).toHaveProperty("geo");
@@ -141,7 +140,7 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
       );
 
       const area = makeArea({ latitude: null, longitude: null });
-      const jsonLd = generatePlaceJsonLd(area as any, "en") as any;
+      const jsonLd = generatePlaceJsonLd(area as Parameters<typeof generatePlaceJsonLd>[0], "en") as Record<string, unknown>;
 
       expect(jsonLd).not.toHaveProperty("geo");
     },
@@ -185,7 +184,7 @@ describe("Breadcrumb JSON-LD (AC #10, Task 6)", () => {
         { name: "Home", href: "/en", position: 1 },
         { name: "Areas", href: "/en/areas", position: 2 },
         { name: "Pérez Zeledón", href: "/en/areas/perez-zeledon", position: 3 },
-      ]) as any;
+      ]) as Record<string, unknown>;
 
       expect(breadcrumb["@type"]).toBe("BreadcrumbList");
       expect(breadcrumb.itemListElement).toHaveLength(3);
@@ -204,7 +203,7 @@ describe("Breadcrumb JSON-LD (AC #10, Task 6)", () => {
       const breadcrumb = generateBreadcrumbJsonLd([
         { name: "Home", href: "/en", position: 1 },
         { name: "Areas", href: "/en/areas", position: 2 },
-      ]) as any;
+      ]) as Record<string, unknown>;
 
       expect(breadcrumb["@type"]).toBe("BreadcrumbList");
       expect(breadcrumb.itemListElement).toHaveLength(2);

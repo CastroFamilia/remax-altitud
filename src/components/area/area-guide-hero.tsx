@@ -43,7 +43,8 @@ export function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
         <div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-cream, #FFF8F0) 100%)",
+            background:
+              "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-cream, #FFF8F0) 100%)",
           }}
           aria-hidden="true"
         />

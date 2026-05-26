@@ -45,7 +45,8 @@ export function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
           <div
             className="h-full w-full"
             style={{
-              background: "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-cream, #FFF8F0) 100%)",
+              background:
+                "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-cream, #FFF8F0) 100%)",
             }}
           />
         )}
@@ -70,7 +71,12 @@ export function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
         <h2 className="text-lg font-bold text-brand-navy group-hover:underline">{areaName}</h2>
-        <p data-testid="area-description-snippet" className="mt-2 text-sm text-text-muted line-clamp-3">{description}</p>
+        <p
+          data-testid="area-description-snippet"
+          className="mt-2 text-sm text-text-muted line-clamp-3"
+        >
+          {description}
+        </p>
       </div>
     </a>
   );

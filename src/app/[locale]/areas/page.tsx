@@ -31,16 +31,20 @@ export async function generateMetadata({
   };
 }
 
-export default async function AreasIndexPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function AreasIndexPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
-  const areas = await getAllAreas();
+
+  // Wrapped in try/catch so the build succeeds without a live DB connection.
+  // At runtime, the DB will be available and areas will load normally.
+  let areas: Awaited<ReturnType<typeof getAllAreas>> = [];
+  try {
+    areas = await getAllAreas();
+  } catch {
+    // DB unavailable — render empty grid (CI build with dummy DATABASE_URL)
+  }
 
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: locale === "es" ? "Inicio" : "Home", href: `/${locale}`, position: 1 },
@@ -56,12 +60,8 @@ export default async function AreasIndexPage({
 
       {/* Page header */}
       <div className="mb-12 text-center">
-        <h1 className="text-4xl font-extrabold text-brand-navy md:text-5xl">
-          {t("index.title")}
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-text-muted">
-          {t("index.description")}
-        </p>
+        <h1 className="text-4xl font-extrabold text-brand-navy md:text-5xl">{t("index.title")}</h1>
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-text-muted">{t("index.description")}</p>
       </div>
 
       {/* Area cards grid */}

@@ -80,7 +80,8 @@ export function SimilarAreasSlider({ areas, locale }: SimilarAreasSliderProps) {
                   <div
                     className="h-full w-full"
                     style={{
-                      background: "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-cream, #FFF8F0) 100%)",
+                      background:
+                        "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-cream, #FFF8F0) 100%)",
                     }}
                   />
                 )}

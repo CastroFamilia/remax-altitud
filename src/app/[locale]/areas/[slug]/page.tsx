@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { getAreaBySlug, getAllAreaSlugs, getPropertiesByAreaSlug, getSimilarAreas } from "@/lib/db/queries/areas";
+import {
+  getAreaBySlug,
+  getAllAreaSlugs,
+  getPropertiesByAreaSlug,
+  getSimilarAreas,
+} from "@/lib/db/queries/areas";
 import { getAllAgents } from "@/lib/db/queries/agents";
-import { generatePlaceJsonLd, generateBreadcrumbJsonLd, serializeJsonLd } from "@/lib/seo/structured-data";
+import {
+  generatePlaceJsonLd,
+  generateBreadcrumbJsonLd,
+  serializeJsonLd,
+} from "@/lib/seo/structured-data";
 import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { AreaGuideHero } from "@/components/area/area-guide-hero";
 import { AreaGuideDescription } from "@/components/area/area-guide-description";
@@ -18,9 +27,18 @@ import { AreaGuideTabs } from "@/components/area/area-guide-tabs";
  * Stories: 6.1 (AC #1–#13)
  */
 
+/**
+ * SSG build-time generation — calls getAllAreaSlugs at build time.
+ * Wrapped in try/catch so the build continues if the DB is unavailable
+ * (pages generated on-demand via fallback).
+ */
 export async function generateStaticParams() {
-  const slugs = await getAllAreaSlugs();
-  return slugs.map((slug) => ({ slug }));
+  try {
+    const slugs = await getAllAreaSlugs();
+    return slugs.map((slug) => ({ slug }));
+  } catch {
+    return []; // Build continues; pages generated on-demand
+  }
 }
 
 export async function generateMetadata({
