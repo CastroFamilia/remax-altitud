@@ -1,5 +1,3 @@
-import type { Area } from "@/lib/db/schema/areas";
-
 interface CommunityCardProps {
   name: string;
   tagline?: string;
