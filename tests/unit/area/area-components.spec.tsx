@@ -27,6 +27,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { makeArea } from "../../fixtures/area-factories";
 
 // ---------------------------------------------------------------------------
 // Mock next-intl/server — prevent SSR errors in test environment
@@ -51,42 +52,6 @@ vi.mock("next/image", () => ({
     return `<img src="${props.src}" alt="${props.alt}" />`;
   },
 }));
-
-// ---------------------------------------------------------------------------
-// Test data factories
-// ---------------------------------------------------------------------------
-
-function makeArea(overrides: Record<string, unknown> = {}) {
-  return {
-    id: "uuid-area-1",
-    slug: "perez-zeledon",
-    nameEn: "Pérez Zeledón",
-    nameEs: "Pérez Zeledón",
-    region: "Mountain",
-    descriptionEn:
-      "A lush mountain valley in southern Costa Rica, Pérez Zeledón offers a unique blend of tropical climate and mountain serenity. The area is known for its stunning landscapes, world-class birding, and proximity to national parks.",
-    descriptionEs:
-      "Un exuberante valle montañoso en el sur de Costa Rica, Pérez Zeledón ofrece una combinación única de clima tropical y serenidad montañosa.",
-    heroImageUrl: "/images/areas/perez-zeledon-hero.webp",
-    province: "San José",
-    canton: "Pérez Zeledón",
-    district: "San Isidro",
-    latitude: 9.37,
-    longitude: -83.7,
-    propertyCount: 15,
-    metadata: {
-      elevation: "700m",
-      climate: "Tropical humid",
-      nearestAirport: "San José (SJO) — 3.5 hours",
-      nearestHospital: "Hospital Escalante Pradilla — 15 min",
-      nearestBeach: "Dominical — 45 min",
-    },
-    sortOrder: 1,
-    createdAt: new Date("2026-01-01"),
-    updatedAt: new Date("2026-01-01"),
-    ...overrides,
-  };
-}
 
 // ---------------------------------------------------------------------------
 // Setup / teardown
@@ -167,6 +132,20 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
       expect(jsonLd.geo).toHaveProperty("longitude", -83.7);
     },
   );
+
+  it(
+    "[P2] 6.1-COMP-001e: generatePlaceJsonLd omits geo when coordinates are null",
+    async () => {
+      const { generatePlaceJsonLd } = await import(
+        "@/lib/seo/structured-data"
+      );
+
+      const area = makeArea({ latitude: null, longitude: null });
+      const jsonLd = generatePlaceJsonLd(area as any, "en") as any;
+
+      expect(jsonLd).not.toHaveProperty("geo");
+    },
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -239,26 +218,53 @@ describe("Breadcrumb JSON-LD (AC #10, Task 6)", () => {
 
 describe("AreaGuideHero gradient fallback (AC #12)", () => {
   it(
-    "[P2] given area without heroImageUrl when AreaGuideHero rendered then gradient placeholder is used",
+    "[P2] given area without heroImageUrl then hero component renders gradient instead of image",
     async () => {
       // AC #12 — gradient placeholder (navy-to-cream) when no hero image
-      // This is a placeholder test — actual rendering test requires RTL setup
-      const area = makeArea({ heroImageUrl: null });
+      // Verifies the AreaGuideHero component uses conditional rendering based on heroImageUrl
+      const fs = await import("node:fs");
+      const heroSourcePath = "src/components/area/area-guide-hero.tsx";
+      const source = fs.readFileSync(heroSourcePath, "utf-8");
 
-      // Verify the area has no hero image URL
-      expect(area.heroImageUrl).toBeNull();
-      // The component should render a gradient instead of <Image>
-      // Full rendering test will be added when component is created
+      // The component MUST branch on heroImageUrl to show gradient vs image
+      expect(source).toContain("heroImageUrl");
+      expect(source).toContain("gradient");
+      // Must NOT have 'use client' directive — it's a Server Component
+      expect(source).not.toMatch(/^\s*["']use client["']/);
     },
   );
 
   it(
-    "[P2] given area with heroImageUrl when AreaGuideHero rendered then image is used (not gradient)",
+    "[P2] given area with heroImageUrl then hero component renders an image element",
     async () => {
-      const area = makeArea();
+      // Verify the source uses next/image when heroImageUrl is present
+      const fs = await import("node:fs");
+      const heroSourcePath = "src/components/area/area-guide-hero.tsx";
+      const source = fs.readFileSync(heroSourcePath, "utf-8");
 
-      expect(area.heroImageUrl).toBeTruthy();
-      expect(area.heroImageUrl).toContain(".webp");
+      // Should import and use next/image for optimized image delivery
+      expect(source).toContain("next/image");
+      expect(source).toContain("<Image");
+    },
+  );
+});
+
+// ---------------------------------------------------------------------------
+// AreaGuideDescription — Server Component validation (AC #2)
+// ---------------------------------------------------------------------------
+
+describe("AreaGuideDescription Server Component (AC #2)", () => {
+  it(
+    "[P0] AreaGuideDescription source file does NOT contain 'use client' directive",
+    async () => {
+      // AC #2 — Description MUST be a Server Component so it appears in SSG HTML
+      // Risk R-003: Client-rendered description invisible to Googlebot
+      const fs = await import("node:fs");
+      const descSourcePath = "src/components/area/area-guide-description.tsx";
+      const source = fs.readFileSync(descSourcePath, "utf-8");
+
+      expect(source).not.toMatch(/^\s*["']use client["']/);
+      expect(source).toContain('data-testid="area-guide-description"');
     },
   );
 });
@@ -290,6 +296,21 @@ describe("AreaIndexCard data contract (AC #7)", () => {
       expect(area.slug).toMatch(/^[a-z0-9-]+$/);
     },
   );
+
+  it(
+    "[P1] AreaIndexCard source contains required data-testid attributes for E2E compatibility",
+    async () => {
+      // Validate that the component has the test IDs that E2E tests depend on
+      const fs = await import("node:fs");
+      const cardSourcePath = "src/components/area/area-index-card.tsx";
+      const source = fs.readFileSync(cardSourcePath, "utf-8");
+
+      expect(source).toContain('data-testid="area-index-card"');
+      expect(source).toContain('data-testid="region-badge"');
+      expect(source).toContain('data-testid="area-property-count"');
+      expect(source).toContain('data-testid="area-description-snippet"');
+    },
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -298,19 +319,31 @@ describe("AreaIndexCard data contract (AC #7)", () => {
 
 describe("AreaGuideTabs WAI-ARIA contract (AC #13)", () => {
   it(
-    "[P1] tabs component must have 3 tab panels: Properties, Agents, Similar Areas",
-    () => {
-      // AC #3 — tabbed sections: Properties, Agents, Similar Areas
-      // This is a contract test — verifying expected tab count
-      const expectedTabs = ["Properties", "Agents", "Similar Areas"];
-      expect(expectedTabs).toHaveLength(3);
+    "[P1] AreaGuideTabs source implements WAI-ARIA Tabs pattern with required roles",
+    async () => {
+      // AC #13 — tabs must follow WAI-ARIA pattern for accessibility
+      const fs = await import("node:fs");
+      const tabsSourcePath = "src/components/area/area-guide-tabs.tsx";
+      const source = fs.readFileSync(tabsSourcePath, "utf-8");
+
+      // Must have role="tablist", role="tab", role="tabpanel"
+      expect(source).toContain('role="tablist"');
+      expect(source).toContain('role="tab"');
+      expect(source).toContain('role="tabpanel"');
+      // Must have aria-selected and aria-controls
+      expect(source).toContain("aria-selected");
+      expect(source).toContain("aria-controls");
     },
   );
 
   it(
-    "[P1] tab data-testid attributes match test-design-epic-6.md contract",
-    () => {
+    "[P1] AreaGuideTabs source contains all required data-testid attributes",
+    async () => {
       // Verify the expected data-testid values from the test design doc
+      const fs = await import("node:fs");
+      const tabsSourcePath = "src/components/area/area-guide-tabs.tsx";
+      const source = fs.readFileSync(tabsSourcePath, "utf-8");
+
       const expectedTestIds = [
         "area-guide-tabs",
         "area-guide-properties-tab",
@@ -318,10 +351,38 @@ describe("AreaGuideTabs WAI-ARIA contract (AC #13)", () => {
         "area-guide-similar-tab",
       ];
 
-      // Each test ID should follow the kebab-case convention
       for (const testId of expectedTestIds) {
-        expect(testId).toMatch(/^[a-z-]+$/);
+        expect(source).toContain(`data-testid="${testId}"`);
       }
+    },
+  );
+
+  it(
+    "[P1] AreaGuideTabs source implements keyboard navigation for ArrowLeft, ArrowRight, Home, End",
+    async () => {
+      // AC #13 — keyboard navigation is required for WAI-ARIA tabs
+      const fs = await import("node:fs");
+      const tabsSourcePath = "src/components/area/area-guide-tabs.tsx";
+      const source = fs.readFileSync(tabsSourcePath, "utf-8");
+
+      expect(source).toContain("ArrowRight");
+      expect(source).toContain("ArrowLeft");
+      expect(source).toContain('"Home"');
+      expect(source).toContain('"End"');
+    },
+  );
+
+  it(
+    "[P1] AreaGuideTabs has exactly 3 tab panels: Properties, Agents, Similar Areas",
+    async () => {
+      // AC #3 — tabbed sections: Properties, Agents, Similar Areas
+      const fs = await import("node:fs");
+      const tabsSourcePath = "src/components/area/area-guide-tabs.tsx";
+      const source = fs.readFileSync(tabsSourcePath, "utf-8");
+
+      // Count actual tabpanel elements — only JSX attributes (line starts with whitespace + role=)
+      const panelMatches = source.match(/^\s+role="tabpanel"/gm);
+      expect(panelMatches).toHaveLength(3);
     },
   );
 });

@@ -119,7 +119,7 @@ export function AreaGuideTabs({ properties, agents, similarAreas, locale }: Area
             ))}
           </div>
         ) : (
-          <p className="py-12 text-center text-text-muted">{t("noProperties")}</p>
+          <p data-testid="area-no-properties" className="py-12 text-center text-text-muted">{t("noProperties")}</p>
         )}
       </div>
 

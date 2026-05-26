@@ -52,13 +52,17 @@ export function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
 
         {/* Region badge */}
         <span
+          data-testid="region-badge"
           className={`absolute left-3 top-3 rounded px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-white ${regionBadgeClass}`}
         >
           {area.region}
         </span>
 
         {/* Property count overlay */}
-        <span className="absolute bottom-3 right-3 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
+        <span
+          data-testid="area-property-count"
+          className="absolute bottom-3 right-3 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm"
+        >
           {area.propertyCount} properties
         </span>
       </div>
@@ -66,7 +70,7 @@ export function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
         <h2 className="text-lg font-bold text-brand-navy group-hover:underline">{areaName}</h2>
-        <p className="mt-2 text-sm text-text-muted line-clamp-3">{description}</p>
+        <p data-testid="area-description-snippet" className="mt-2 text-sm text-text-muted line-clamp-3">{description}</p>
       </div>
     </a>
   );
