@@ -146,7 +146,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe("getAllAreas — ordered area list (AC #1, #7)", () => {
-  it.skip(
+  it(
     "[P0] given areas exist in DB when getAllAreas called then db.select is called",
     async () => {
       // AC #7 — area index page requires listing all areas
@@ -162,7 +162,7 @@ describe("getAllAreas — ordered area list (AC #1, #7)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given 3 areas when getAllAreas called then results are ordered by sortOrder ascending",
     async () => {
       // AC #7 — area index must display areas in correct order
@@ -178,7 +178,7 @@ describe("getAllAreas — ordered area list (AC #1, #7)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given no areas in DB when getAllAreas called then returns empty array",
     async () => {
       const { getAllAreas } = await import("@/lib/db/queries/areas");
@@ -197,7 +197,7 @@ describe("getAllAreas — ordered area list (AC #1, #7)", () => {
 // ---------------------------------------------------------------------------
 
 describe("getAreaBySlug — single area lookup (AC #1)", () => {
-  it.skip(
+  it(
     "[P0] given slug='perez-zeledon' when getAreaBySlug called then returns area object",
     async () => {
       // AC #1 — area guide page needs to fetch area data by slug
@@ -213,7 +213,7 @@ describe("getAreaBySlug — single area lookup (AC #1)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given non-existent slug when getAreaBySlug called then returns null",
     async () => {
       // AC #1 — area guide page calls notFound() when area doesn't exist
@@ -227,7 +227,7 @@ describe("getAreaBySlug — single area lookup (AC #1)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given valid slug when getAreaBySlug called then query uses .limit(1)",
     async () => {
       // Performance: slug is unique, so limit(1) prevents scanning more rows
@@ -247,7 +247,7 @@ describe("getAreaBySlug — single area lookup (AC #1)", () => {
 // ---------------------------------------------------------------------------
 
 describe("getAllAreaSlugs — SSG path generation (AC #8)", () => {
-  it.skip(
+  it(
     "[P0] given 3 areas when getAllAreaSlugs called then returns array of 3 slugs",
     async () => {
       // AC #8 — generateStaticParams needs all slugs for SSG
@@ -274,7 +274,7 @@ describe("getAllAreaSlugs — SSG path generation (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given no areas when getAllAreaSlugs called then returns empty array",
     async () => {
       const { getAllAreaSlugs } = await import("@/lib/db/queries/areas");
@@ -288,7 +288,7 @@ describe("getAllAreaSlugs — SSG path generation (AC #8)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P0] given getAllAreaSlugs returns string[] when called then each element is a string",
     async () => {
       // Type safety: generateStaticParams expects string[] for the slug param
@@ -313,7 +313,7 @@ describe("getAllAreaSlugs — SSG path generation (AC #8)", () => {
 // ---------------------------------------------------------------------------
 
 describe("getPropertiesByAreaSlug — properties filtered by area (AC #4)", () => {
-  it.skip(
+  it(
     "[P0] given areaSlug='perez-zeledon' with 2 visible properties when called then returns 2 PropertySearchItems",
     async () => {
       // AC #4 — Properties tab shows property grid filtered to this area
@@ -341,7 +341,7 @@ describe("getPropertiesByAreaSlug — properties filtered by area (AC #4)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P0] given areaSlug with no visible properties when called then returns empty array",
     async () => {
       // AC #11 — empty state: zero properties → localized empty state message
@@ -364,7 +364,7 @@ describe("getPropertiesByAreaSlug — properties filtered by area (AC #4)", () =
     },
   );
 
-  it.skip(
+  it(
     "[P1] given properties query when called then only returns is_visible=true properties",
     async () => {
       // Only visible properties should appear in the area guide
@@ -398,7 +398,7 @@ describe("getPropertiesByAreaSlug — properties filtered by area (AC #4)", () =
 // ---------------------------------------------------------------------------
 
 describe("getSimilarAreas — same-region area lookup (AC #3)", () => {
-  it.skip(
+  it(
     "[P0] given region='Mountain' and excludeSlug='perez-zeledon' when called then returns other Mountain areas",
     async () => {
       // AC #3 — Similar Areas tab shows SimilarAreasSlider with nearby area cards
@@ -422,7 +422,7 @@ describe("getSimilarAreas — same-region area lookup (AC #3)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given region='Coast' and excludeSlug='dominical' when no other Coast areas then returns empty array",
     async () => {
       const { getSimilarAreas } = await import("@/lib/db/queries/areas");
@@ -442,7 +442,7 @@ describe("getSimilarAreas — same-region area lookup (AC #3)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] given similar areas when called then results are ordered by sortOrder ascending",
     async () => {
       const { getSimilarAreas } = await import("@/lib/db/queries/areas");

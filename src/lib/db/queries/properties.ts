@@ -346,7 +346,7 @@ export function mapPropertyRowToSearchItem(row: {
 }
 
 /** Columns to select for PropertySearchItem queries */
-const propertySearchColumns = {
+export const propertySearchColumns = {
   id: properties.id,
   slug: properties.slug,
   titleEn: properties.titleEn,

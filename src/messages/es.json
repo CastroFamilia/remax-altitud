@@ -528,6 +528,7 @@
     "home": "Inicio",
     "search": "Buscar",
     "agents": "Agentes",
+    "areas": "Zonas",
     "ariaLabel": "Migas de pan"
   },
   "AgentAreaServed": {
@@ -705,5 +706,29 @@
       "agentMatchHeading": "Tu Agente Asignado",
       "browseWhileWaiting": "Mientras esperas, explora lo que se vende en tu zona"
     }
+  },
+  "AreaGuide": {
+    "meta": {
+      "title": "{area} — Guía de Zona | RE/MAX Altitud",
+      "description": "Explora {area}: listados de propiedades, estilo de vida, datos climáticos y agentes locales. Tu guía para vivir en {area}, Costa Rica.",
+      "ogTitle": "{area} — Guía de Zona | RE/MAX Altitud",
+      "ogDescription": "Descubre propiedades y estilo de vida en {area}, Costa Rica — de RE/MAX Altitud."
+    },
+    "index": {
+      "title": "Explora Nuestras Zonas",
+      "description": "Desde valles montañosos hasta playas del Pacífico — descubre la Zona Sur de Costa Rica.",
+      "meta": {
+        "title": "Zonas — RE/MAX Altitud",
+        "description": "Explora todas las zonas que atiende RE/MAX Altitud en la Zona Sur de Costa Rica — Pérez Zeledón, Dominical, Uvita y más."
+      }
+    },
+    "tabs": {
+      "properties": "Propiedades",
+      "agents": "Agentes",
+      "similarAreas": "Zonas Similares"
+    },
+    "noProperties": "No hay propiedades listadas actualmente en esta zona.",
+    "noAgents": "No hay agentes asignados actualmente a esta zona.",
+    "noSimilarAreas": "No se encontraron zonas similares."
   }
 }

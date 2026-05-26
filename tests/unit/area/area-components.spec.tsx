@@ -105,7 +105,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
-  it.skip(
+  it(
     "[P1] 6.1-COMP-001: generatePlaceJsonLd returns Place schema with area data",
     async () => {
       // AC #10 — JSON-LD structured data for Place schema is present (AR14)
@@ -123,7 +123,7 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 6.1-COMP-001b: generatePlaceJsonLd uses English name when locale is 'en'",
     async () => {
       const { generatePlaceJsonLd } = await import(
@@ -137,7 +137,7 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] 6.1-COMP-001c: generatePlaceJsonLd uses Spanish description when locale is 'es'",
     async () => {
       const { generatePlaceJsonLd } = await import(
@@ -151,7 +151,7 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] 6.1-COMP-001d: generatePlaceJsonLd includes geo coordinates when available",
     async () => {
       const { generatePlaceJsonLd } = await import(
@@ -174,7 +174,7 @@ describe("JSON-LD Place Schema (6.1-COMP-001, AC #10)", () => {
 // ---------------------------------------------------------------------------
 
 describe("Area Metadata (6.1-COMP-002, AC #1)", () => {
-  it.skip(
+  it(
     "[P2] 6.1-COMP-002: area metadata JSONB contains elevation and climate data",
     () => {
       // AC #1 — climate/altitude data is part of the area guide hero section
@@ -195,7 +195,7 @@ describe("Area Metadata (6.1-COMP-002, AC #1)", () => {
 // ---------------------------------------------------------------------------
 
 describe("Breadcrumb JSON-LD (AC #10, Task 6)", () => {
-  it.skip(
+  it(
     "[P1] generateBreadcrumbJsonLd produces valid BreadcrumbList for area guide: Home → Areas → Area Name",
     async () => {
       const { generateBreadcrumbJsonLd } = await import(
@@ -215,7 +215,7 @@ describe("Breadcrumb JSON-LD (AC #10, Task 6)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] generateBreadcrumbJsonLd produces valid BreadcrumbList for area index: Home → Areas",
     async () => {
       const { generateBreadcrumbJsonLd } = await import(
@@ -238,7 +238,7 @@ describe("Breadcrumb JSON-LD (AC #10, Task 6)", () => {
 // ---------------------------------------------------------------------------
 
 describe("AreaGuideHero gradient fallback (AC #12)", () => {
-  it.skip(
+  it(
     "[P2] given area without heroImageUrl when AreaGuideHero rendered then gradient placeholder is used",
     async () => {
       // AC #12 — gradient placeholder (navy-to-cream) when no hero image
@@ -252,7 +252,7 @@ describe("AreaGuideHero gradient fallback (AC #12)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] given area with heroImageUrl when AreaGuideHero rendered then image is used (not gradient)",
     async () => {
       const area = makeArea();
@@ -268,7 +268,7 @@ describe("AreaGuideHero gradient fallback (AC #12)", () => {
 // ---------------------------------------------------------------------------
 
 describe("AreaIndexCard data contract (AC #7)", () => {
-  it.skip(
+  it(
     "[P1] area data shape has all required fields for AreaIndexCard: name, region, propertyCount, description",
     () => {
       // AC #7 — area index card needs: area name, region badge, property count, description snippet
@@ -281,7 +281,7 @@ describe("AreaIndexCard data contract (AC #7)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P2] area slug is URL-safe for use in generateStaticParams",
     () => {
       const area = makeArea();
@@ -297,7 +297,7 @@ describe("AreaIndexCard data contract (AC #7)", () => {
 // ---------------------------------------------------------------------------
 
 describe("AreaGuideTabs WAI-ARIA contract (AC #13)", () => {
-  it.skip(
+  it(
     "[P1] tabs component must have 3 tab panels: Properties, Agents, Similar Areas",
     () => {
       // AC #3 — tabbed sections: Properties, Agents, Similar Areas
@@ -307,7 +307,7 @@ describe("AreaGuideTabs WAI-ARIA contract (AC #13)", () => {
     },
   );
 
-  it.skip(
+  it(
     "[P1] tab data-testid attributes match test-design-epic-6.md contract",
     () => {
       // Verify the expected data-testid values from the test design doc
