@@ -187,9 +187,10 @@ describe("Breadcrumb JSON-LD (AC #10, Task 6)", () => {
       ]) as Record<string, unknown>;
 
       expect(breadcrumb["@type"]).toBe("BreadcrumbList");
-      expect(breadcrumb.itemListElement).toHaveLength(3);
-      expect(breadcrumb.itemListElement[0].name).toBe("Home");
-      expect(breadcrumb.itemListElement[2].name).toBe("Pérez Zeledón");
+      const items = breadcrumb.itemListElement as Array<Record<string, unknown>>;
+      expect(items).toHaveLength(3);
+      expect(items[0].name).toBe("Home");
+      expect(items[2].name).toBe("Pérez Zeledón");
     },
   );
 
