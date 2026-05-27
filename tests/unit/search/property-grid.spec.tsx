@@ -161,6 +161,7 @@ function makeProperties(count: number): PropertySearchItem[] {
     constructionM2: 100,
     zmtStatus: "titled",
     propertyType: "Casa",
+    status: "active",
     areaSlug: "perez-zeledon",
     images: [{ src: `/images/property-${i + 1}.jpg`, alt: `Property ${i + 1}` }],
     latitude: 9.3 + i * 0.01,

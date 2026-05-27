@@ -338,6 +338,7 @@ describe("SplitViewLayout", () => {
           constructionM2: 120,
           zmtStatus: "titled",
           propertyType: "Casa",
+          status: "active",
           areaSlug: "perez-zeledon",
           images: [],
           latitude: 9.35,
