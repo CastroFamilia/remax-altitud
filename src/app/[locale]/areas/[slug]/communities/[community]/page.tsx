@@ -19,6 +19,7 @@ import { CommunityQuickFacts } from "@/components/community/community-quick-fact
 import { CommunityDescription } from "@/components/community/community-description";
 import { CommunityTabs } from "@/components/community/community-tabs";
 import { SimilarCommunitiesSlider } from "@/components/community/similar-communities-slider";
+import { CommunityMiniMap } from "@/components/community/community-mini-map";
 
 /**
  * Community Page — SSG + ISR (revalidate = 3600)
@@ -126,6 +127,7 @@ export default async function CommunityPage({
       <CommunityHero community={community} areaName={areaName} locale={locale} />
       <CommunityQuickFacts community={community} locale={locale} />
       <CommunityDescription community={community} locale={locale} />
+      <CommunityMiniMap community={community} areaName={areaName} locale={locale} />
       <CommunityTabs properties={communityProperties} community={community} locale={locale} />
       <SimilarCommunitiesSlider communities={similarCommunities} locale={locale} areaSlug={slug} />
     </main>

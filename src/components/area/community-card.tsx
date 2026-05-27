@@ -1,3 +1,5 @@
+import { buildAreaThumbnailMapUrl } from "@/lib/map/static-map";
+
 interface CommunityCardProps {
   name: string;
   tagline?: string;
@@ -7,13 +9,20 @@ interface CommunityCardProps {
   priceMin?: number | null;
   priceMax?: number | null;
   listingCount?: number;
+  /** Community center-point latitude for thumbnail mini-map (Story 6.3) */
+  latitude?: number | null;
+  /** Community center-point longitude for thumbnail mini-map (Story 6.3) */
+  longitude?: number | null;
+  /** GeoJSON polygon coordinates for thumbnail geo-fence overlay (Story 6.3) */
+  geoFenceCoords?: [number, number][] | null;
 }
 
 /**
  * CommunityCard — Server Component (AC #6, #7)
  *
  * Gold-bordered card linking to community page.
- * Displays hero image, name, tagline, price range, and listing count.
+ * Displays hero image, name, tagline, price range, listing count,
+ * and optional thumbnail mini-map when coordinates are available (Story 6.3, AC #3).
  */
 export function CommunityCard({
   name,
@@ -24,12 +33,25 @@ export function CommunityCard({
   priceMin,
   priceMax,
   listingCount,
+  latitude,
+  longitude,
+  geoFenceCoords,
 }: CommunityCardProps) {
   const linkHref = href ?? `/${locale}/communities`;
 
   const priceRange =
     priceMin && priceMax
       ? `$${(priceMin / 1000).toFixed(0)}K–$${(priceMax / 1000).toFixed(0)}K`
+      : null;
+
+  // Build thumbnail mini-map URL when coordinates are available (Story 6.3, AC #3)
+  const thumbnailMapUrl =
+    latitude && longitude
+      ? buildAreaThumbnailMapUrl({
+          latitude,
+          longitude,
+          geoFenceCoords,
+        })
       : null;
 
   return (
@@ -59,6 +81,20 @@ export function CommunityCard({
           </div>
         )}
       </div>
+
+      {/* Thumbnail mini-map — Story 6.3 AC #3 */}
+      {thumbnailMapUrl && (
+        <div className="px-2 pt-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={thumbnailMapUrl}
+            alt={`Location of ${name}`}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-auto aspect-[3/2] rounded-md"
+          />
+        </div>
+      )}
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-4">

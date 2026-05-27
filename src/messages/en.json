@@ -787,6 +787,11 @@
     "similarCommunities": {
       "heading": "Similar Communities"
     },
+    "miniMap": {
+      "heading": "Community Location",
+      "alt": "Map of {community} in {area}",
+      "geoFenceLabel": "Community boundary shown"
+    },
     "index": {
       "title": "Explore Our Communities",
       "description": "Curated developments in the mountains and on the coast — premium living in Costa Rica.",
