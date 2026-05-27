@@ -4,7 +4,7 @@ totalSteps: 5
 stepsCompleted: ['step-01-detect-mode', 'step-02-load-context', 'step-03-risk-and-testability', 'step-04-coverage-plan', 'step-05-generate-output']
 lastStep: 'step-05-generate-output'
 nextStep: ''
-lastSaved: '2026-05-04'
+lastSaved: '2026-05-27'
 ---
 
 # Test Design Workflow Progress
@@ -12,9 +12,9 @@ lastSaved: '2026-05-04'
 ## Step 1: Mode Detection
 
 - **Mode selected:** Epic-Level (Phase 4)
-- **Reason:** `sprint-status.yaml` exists; explicit argument "Epic 5 — Seller Lead Capture" provided
-- **Epic number:** 5
-- **All stories in backlog:** 5.1, 5.2, 5.3
+- **Reason:** `sprint-status.yaml` exists; explicit argument "Epic 6 — Community Pages & Area Guides" provided
+- **Epic number:** 6
+- **Stories in scope:** 6.1 (done), 6.2 (done), 6.3, 6.4, 6.5
 
 ## Step 2: Context Loaded
 
@@ -22,35 +22,36 @@ lastSaved: '2026-05-04'
 - `tea_use_playwright_utils`: true
 - `tea_browser_automation`: auto
 - `test_stack_type`: auto → inferred `frontend`
-- Epics loaded: Epic 5 (Stories 5.1–5.3) with all acceptance criteria
-- Architecture doc loaded: SSG rendering for seller page, performance budget (15KB lazy SellerForm), AR17 (column encryption), AR18 (Zod), AR19 (Sentry)
-- PRD loaded: FR40–FR43, FR54, NFR9, AR17–AR19
-- Epic 4 test design loaded for infrastructure carry-over
+- Epics loaded: Epic 6 (Stories 6.1–6.5) with all acceptance criteria
+- Architecture doc loaded: PostGIS geo-fence matching (AR2), SSG/ISR for community pages, Mapbox Static API for mini-maps
+- PRD loaded: FR17–FR21, FR44, FR45, FR50, NFR24, NFR25
+- Epic 5 test design loaded for infrastructure carry-over
 - Knowledge fragments loaded: risk-governance, probability-impact, test-levels-framework, test-priorities-matrix
 
 ## Step 3: Risk Assessment
 
-- 11 risks identified (R-001 through R-012, no R-013 gap)
-- 6 high-priority (score ≥ 6): R-001 through R-006
-- Critical categories: SEC (R-001, R-010), DATA (R-002, R-003, R-009), BUS (R-004, R-005, R-008, R-011, R-012), PERF (R-006)
+- 13 risks identified (R-001 through R-013)
+- 5 high-priority (score ≥ 6): R-001 through R-005
+- Critical categories: DATA (R-001, R-002, R-006), SEO (R-003, R-005), BUS (R-004, R-008–R-012), PERF (R-007)
 - No score-9 (BLOCK) risks — all high-priority risks scored 6 (MITIGATE threshold)
 
 ## Step 4: Coverage Plan
 
-- P0: 12 scenarios (~20–36 hours) — encryption, idempotency, silent-drop, routing, coordinate capture, bundle assertion
-- P1: 16 scenarios (~18–30 hours) — form flows, locale, Zod validation, UTM capture, CMA confirmation
-- P2: 12 scenarios (~8–16 hours) — component field rendering, SSG, i18n, WhatsApp event
-- P3: 4 scenarios (~2–4 hours) — Lighthouse, progressive map, SEO meta, response time
-- **Total:** 44 scenarios, ~48–86 hours
+- P0: 14 scenarios (~24–42 hours) — geo-fence auto-tagging, manual override, SSG description visibility, community property grid, path generation
+- P1: 18 scenarios (~20–36 hours) — area guide tabs, community quick facts, lot status, mini-map, investment context, responsive
+- P2: 14 scenarios (~10–20 hours) — locale tests, gold border, ISR config, ST_Within verification, bundle analysis
+- P3: 5 scenarios (~3–6 hours) — Lighthouse performance, LCP benchmarks, geo-tag performance
+- **Total:** 51 scenarios, ~57–104 hours (~1.5–2.5 weeks)
 
 ## Step 5: Output Generated
 
-- **Output file:** `_bmad-output/test-artifacts/test-design-epic-5.md`
+- **Output file:** `_bmad-output/test-artifacts/test-design-epic-6.md`
 - **Mode:** Epic-Level (Phase 4)
 - **Validated against checklist:** Yes — all sections populated, no orphaned template placeholders
 - **Key risks and gates:**
-  - R-001 (PII encryption): must confirm ciphertext in raw DB before 5.3 ships
-  - R-002 (silent drop + Sentry): Sentry integration test required
-  - R-003 (idempotency): 409 on duplicate within 60s
-  - R-005 (agent routing): PZ + Cero unit tests required
-- **Open assumptions:** agent routing coordinate fixtures, exact seller page route pattern (`/sell` vs `/vende`), photo upload storage provider
+  - R-001 (manual override preservation): admin-set community_id must survive sync pipeline geo-tagging
+  - R-002 (correct community assignment): polygon boundary matching with ≥2 polygons verified
+  - R-003 (SEO description visibility): area guide description confirmed visible in SSG HTML without tab
+  - R-004 (community property grid): filtered grid renders correct count on community page
+  - R-005 (SSG path generation): `next build` generates all expected community paths
+- **Open assumptions:** community polygon data format (GeoJSON vs WKT), Mapbox Static API availability in CI, investment data storage location (areas.metadata JSONB vs dedicated column)
