@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { agents } from "./agents";
 import { areas } from "./areas";
+import { communities } from "./communities";
 import { leads } from "./leads";
 import { offices } from "./offices";
 import { properties } from "./properties";
@@ -14,6 +15,7 @@ export const propertiesRelations = relations(properties, ({ one, many }) => ({
   office: one(offices, { fields: [properties.officeId], references: [offices.id] }),
   area: one(areas, { fields: [properties.areaId], references: [areas.id] }),
   agent: one(agents, { fields: [properties.agentId], references: [agents.id] }),
+  community: one(communities, { fields: [properties.communityId], references: [communities.id] }),
   leads: many(leads),
 }));
 
@@ -24,6 +26,12 @@ export const agentsRelations = relations(agents, ({ one, many }) => ({
 }));
 
 export const areasRelations = relations(areas, ({ many }) => ({
+  properties: many(properties),
+  communities: many(communities),
+}));
+
+export const communitiesRelations = relations(communities, ({ one, many }) => ({
+  area: one(areas, { fields: [communities.areaId], references: [areas.id] }),
   properties: many(properties),
 }));
 

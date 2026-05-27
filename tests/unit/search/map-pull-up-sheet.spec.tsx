@@ -55,12 +55,13 @@ vi.mock("@/components/search/search-results-skeleton", () => ({
 // ---------------------------------------------------------------------------
 
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
+import type { PropertySearchItem } from "@/types/search";
 
 // ---------------------------------------------------------------------------
 // Test helpers
 // ---------------------------------------------------------------------------
 
-const mockProperties = [
+const mockProperties: PropertySearchItem[] = [
   {
     id: "prop-001",
     slug: "villa-perez-zeledon",
@@ -73,6 +74,7 @@ const mockProperties = [
     constructionM2: 180,
     zmtStatus: "titled",
     propertyType: "Casa",
+    status: "active",
     areaSlug: "perez-zeledon",
     images: [{ src: "https://example.com/img1.jpg", alt: "Villa" }],
     latitude: 9.35,
@@ -90,6 +92,7 @@ const mockProperties = [
     constructionM2: 250,
     zmtStatus: "titled",
     propertyType: "Finca",
+    status: "active",
     areaSlug: "san-isidro",
     images: [],
     latitude: 9.37,
@@ -107,6 +110,7 @@ const mockProperties = [
     constructionM2: 75,
     zmtStatus: "untitled",
     propertyType: "Apartamento",
+    status: "active",
     areaSlug: "centro",
     images: [],
     latitude: 9.34,

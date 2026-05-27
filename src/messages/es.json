@@ -740,6 +740,60 @@
       "airport": "Aeropuerto Más Cercano",
       "hospital": "Hospital Más Cercano",
       "beach": "Playa Más Cercana"
+    },
+    "communities": {
+      "heading": "Comunidades en Esta Zona"
+    }
+  },
+  "CommunityPage": {
+    "meta": {
+      "title": "{community} — Comunidad | RE/MAX Altitud",
+      "description": "Explora {community}: casas, disponibilidad de lotes, datos rápidos y estilo de vida. Tu guía para vivir en esta comunidad premium de Costa Rica.",
+      "ogTitle": "{community} — Comunidad | RE/MAX Altitud",
+      "ogDescription": "Descubre {community} — una comunidad exclusiva en Costa Rica con casas y lotes premium."
+    },
+    "tabs": {
+      "properties": "Propiedades",
+      "siteMap": "Mapa del Sitio"
+    },
+    "hero": {
+      "homesFrom": "Desde {min}–{max}"
+    },
+    "quickFacts": {
+      "heading": "Datos Rápidos",
+      "elevation": "Elevación",
+      "airport": "Aeropuerto",
+      "internet": "Internet",
+      "amenities": "Comodidades",
+      "developer": "Desarrollador",
+      "established": "Establecido"
+    },
+    "description": {
+      "heading": "Sobre esta Comunidad"
+    },
+    "noProperties": "No hay propiedades listadas actualmente en esta comunidad.",
+    "noSiteMap": "Mapa del sitio aún no disponible para esta comunidad.",
+    "lotStatus": {
+      "available": "Disponible",
+      "sold": "Vendido",
+      "reserved": "Reservado"
+    },
+    "sort": {
+      "label": "Ordenar por",
+      "status": "Estado",
+      "priceAsc": "Precio ↑",
+      "priceDesc": "Precio ↓"
+    },
+    "similarCommunities": {
+      "heading": "Comunidades Similares"
+    },
+    "index": {
+      "title": "Explora Nuestras Comunidades",
+      "description": "Desarrollos exclusivos en la montaña y en la costa — vida premium en Costa Rica.",
+      "meta": {
+        "title": "Comunidades — RE/MAX Altitud",
+        "description": "Explora comunidades exclusivas atendidas por RE/MAX Altitud en la Zona Sur de Costa Rica."
+      }
     }
   }
 }

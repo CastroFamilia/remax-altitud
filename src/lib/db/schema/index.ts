@@ -4,6 +4,7 @@ export * from "./agents";
 export * from "./properties";
 export * from "./leads";
 export * from "./sync-logs";
+export * from "./communities";
 export * from "./relations";
 export type { GeoPoint } from "../types/postgis";
 export { geographyPoint } from "../types/postgis";

@@ -131,6 +131,7 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       constructionM2: properties.constructionM2,
       zmtStatus: properties.zmtStatus,
       propertyType: properties.propertyType,
+      status: properties.status,
       areaSlug: properties.areaSlug,
       images: properties.images,
       latitude: properties.latitude,

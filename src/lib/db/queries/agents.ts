@@ -144,6 +144,7 @@ export async function getPropertiesByAgentId(agentId: string) {
       constructionM2: properties.constructionM2,
       zmtStatus: properties.zmtStatus,
       propertyType: properties.propertyType,
+      status: properties.status,
       areaSlug: properties.areaSlug,
       images: properties.images,
       latitude: properties.latitude,

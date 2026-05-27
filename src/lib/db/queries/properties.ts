@@ -321,6 +321,7 @@ export function mapPropertyRowToSearchItem(row: {
   constructionM2: number | null;
   zmtStatus: string | null;
   propertyType: string;
+  status: string;
   areaSlug: string | null;
   images: unknown;
   latitude: number | null;
@@ -338,6 +339,7 @@ export function mapPropertyRowToSearchItem(row: {
     constructionM2: row.constructionM2,
     zmtStatus: row.zmtStatus ?? "titled",
     propertyType: row.propertyType,
+    status: row.status,
     areaSlug: row.areaSlug,
     images: normalizePropertyImages(row.images, row.titleEn),
     latitude: row.latitude,
@@ -358,6 +360,7 @@ export const propertySearchColumns = {
   constructionM2: properties.constructionM2,
   zmtStatus: properties.zmtStatus,
   propertyType: properties.propertyType,
+  status: properties.status,
   areaSlug: properties.areaSlug,
   images: properties.images,
   latitude: properties.latitude,
