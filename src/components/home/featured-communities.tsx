@@ -40,13 +40,9 @@ export async function FeaturedCommunities({ locale }: FeaturedCommunitiesProps) 
           <h2 id="featured-communities-heading" className="text-brand-navy">
             {t("heading")}
           </h2>
-          <p className="mt-1 text-sm text-text-secondary md:text-base">
-            {t("description")}
-          </p>
+          <p className="mt-1 text-sm text-text-secondary md:text-base">{t("description")}</p>
         </div>
-        <p className="py-12 text-center text-text-muted">
-          {t("shellNotice")}
-        </p>
+        <p className="py-12 text-center text-text-muted">{t("shellNotice")}</p>
       </section>
     );
   }
@@ -62,9 +58,7 @@ export async function FeaturedCommunities({ locale }: FeaturedCommunitiesProps) 
           <h2 id="featured-communities-heading" className="text-brand-navy">
             {t("heading")}
           </h2>
-          <p className="mt-1 text-sm text-text-secondary md:text-base">
-            {t("description")}
-          </p>
+          <p className="mt-1 text-sm text-text-secondary md:text-base">{t("description")}</p>
         </div>
         <a
           href={`/${locale}/communities`}
@@ -76,8 +70,7 @@ export async function FeaturedCommunities({ locale }: FeaturedCommunitiesProps) 
 
       <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0">
         {communities.map((community) => {
-          const tagline =
-            locale === "es" ? community.taglineEs : community.taglineEn;
+          const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
           const areaSlug = areaMap[community.areaId] ?? "";
 
           return (

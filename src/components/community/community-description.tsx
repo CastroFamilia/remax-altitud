@@ -13,8 +13,7 @@ interface CommunityDescriptionProps {
  * Follows AreaGuideDescription pattern from Story 6.1.
  */
 export function CommunityDescription({ community, locale }: CommunityDescriptionProps) {
-  const description =
-    locale === "es" ? community.descriptionEs : community.descriptionEn;
+  const description = locale === "es" ? community.descriptionEs : community.descriptionEn;
 
   if (!description) return null;
 

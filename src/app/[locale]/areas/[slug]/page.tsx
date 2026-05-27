@@ -110,13 +110,10 @@ export default async function AreaGuidePage({
       {/* Communities belonging to this area */}
       {communities.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <h2 className="mb-6 text-2xl font-bold text-brand-navy">
-            {t("communities.heading")}
-          </h2>
+          <h2 className="mb-6 text-2xl font-bold text-brand-navy">{t("communities.heading")}</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {communities.map((community) => {
-              const tagline =
-                locale === "es" ? community.taglineEs : community.taglineEn;
+              const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
               return (
                 <CommunityCard
                   key={community.slug}

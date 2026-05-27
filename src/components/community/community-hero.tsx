@@ -70,9 +70,7 @@ export async function CommunityHero({ community, areaName, locale }: CommunityHe
           </h1>
 
           {/* Tagline */}
-          {tagline && (
-            <p className="mt-2 text-lg text-white/90 md:text-xl">{tagline}</p>
-          )}
+          {tagline && <p className="mt-2 text-lg text-white/90 md:text-xl">{tagline}</p>}
 
           {/* Price range */}
           {priceRange && (

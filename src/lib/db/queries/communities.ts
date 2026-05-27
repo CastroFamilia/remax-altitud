@@ -48,7 +48,9 @@ export async function getAllCommunityParams() {
  * Returns PropertySearchItem[] compatible with PropertyCard.
  * Used by the Properties tab on community pages (AC #4).
  */
-export async function getPropertiesByCommunityId(communityId: string): Promise<PropertySearchItem[]> {
+export async function getPropertiesByCommunityId(
+  communityId: string,
+): Promise<PropertySearchItem[]> {
   const rows = await db
     .select(propertySearchColumns)
     .from(properties)

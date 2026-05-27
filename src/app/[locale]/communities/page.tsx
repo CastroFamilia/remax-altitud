@@ -47,10 +47,7 @@ export default async function CommunitiesIndexPage({
   let communities: Awaited<ReturnType<typeof getAllCommunities>> = [];
   let areaMap: Record<string, string> = {};
   try {
-    const [communitiesData, areasData] = await Promise.all([
-      getAllCommunities(),
-      getAllAreas(),
-    ]);
+    const [communitiesData, areasData] = await Promise.all([getAllCommunities(), getAllAreas()]);
     communities = communitiesData;
     areaMap = Object.fromEntries(areasData.map((a) => [a.id, a.slug]));
   } catch {
@@ -81,19 +78,14 @@ export default async function CommunitiesIndexPage({
 
       {/* Page header */}
       <div className="mb-12 text-center">
-        <h1 className="text-4xl font-extrabold text-brand-navy md:text-5xl">
-          {t("index.title")}
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-text-muted">
-          {t("index.description")}
-        </p>
+        <h1 className="text-4xl font-extrabold text-brand-navy md:text-5xl">{t("index.title")}</h1>
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-text-muted">{t("index.description")}</p>
       </div>
 
       {/* Community cards grid */}
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {communities.map((community) => {
-          const tagline =
-            locale === "es" ? community.taglineEs : community.taglineEn;
+          const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
           const areaSlug = areaMap[community.areaId] ?? "";
 
           return (

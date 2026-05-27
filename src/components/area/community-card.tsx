@@ -71,7 +71,14 @@ export function CommunityCard({
         )}
         {typeof listingCount === "number" && listingCount > 0 && (
           <p className="mt-1 text-xs text-text-muted">
-            {listingCount} {listingCount === 1 ? (locale === "es" ? "propiedad" : "listing") : (locale === "es" ? "propiedades" : "listings")}
+            {listingCount}{" "}
+            {listingCount === 1
+              ? locale === "es"
+                ? "propiedad"
+                : "listing"
+              : locale === "es"
+                ? "propiedades"
+                : "listings"}
           </p>
         )}
       </div>

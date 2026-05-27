@@ -75,7 +75,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
     );
 
-    return [...staticEntries, ...propertyEntries, ...agentEntries, ...areaEntries, ...communityEntries];
+    return [
+      ...staticEntries,
+      ...propertyEntries,
+      ...agentEntries,
+      ...areaEntries,
+      ...communityEntries,
+    ];
   } catch {
     // Build continues; sitemap generates on-demand at runtime
     return [];

@@ -182,8 +182,7 @@ export function generateCommunityJsonLd(
   locale: string,
 ): Record<string, unknown> {
   const name = community.name;
-  const description =
-    locale === "es" ? community.descriptionEs : community.descriptionEn;
+  const description = locale === "es" ? community.descriptionEs : community.descriptionEn;
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
 
   return {

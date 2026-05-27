@@ -33,11 +33,7 @@ export function CommunityLotList({ properties, locale }: CommunityLotListProps) 
       case "status":
       default: {
         const order: Record<string, number> = { active: 0, reserved: 1, sold: 2 };
-        return items.sort(
-          (a, b) =>
-            (order[a.status] ?? 3) -
-            (order[b.status] ?? 3),
-        );
+        return items.sort((a, b) => (order[a.status] ?? 3) - (order[b.status] ?? 3));
       }
     }
   }, [properties, sortBy]);
@@ -65,9 +61,7 @@ export function CommunityLotList({ properties, locale }: CommunityLotListProps) 
       <ul className="divide-y divide-gray-200">
         {sorted.map((property) => {
           const title = locale === "es" ? property.titleEs : property.titleEn;
-          const price = property.priceUsd
-            ? `$${property.priceUsd.toLocaleString()}`
-            : "—";
+          const price = property.priceUsd ? `$${property.priceUsd.toLocaleString()}` : "—";
 
           return (
             <li key={property.id} className="flex items-center justify-between py-3">
@@ -80,10 +74,7 @@ export function CommunityLotList({ properties, locale }: CommunityLotListProps) 
                 </a>
                 <p className="mt-0.5 text-sm text-text-muted">{price}</p>
               </div>
-              <LotStatusIndicator
-                status={property.status ?? "active"}
-                locale={locale}
-              />
+              <LotStatusIndicator status={property.status ?? "active"} locale={locale} />
             </li>
           );
         })}

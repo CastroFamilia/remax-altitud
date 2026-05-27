@@ -74,7 +74,9 @@ export function CommunityTabs({ properties, community, locale }: CommunityTabsPr
         {TAB_KEYS.map((key, index) => (
           <button
             key={key}
-            ref={(el) => { tabRefs.current[index] = el; }}
+            ref={(el) => {
+              tabRefs.current[index] = el;
+            }}
             role="tab"
             id={`tab-${key}`}
             aria-selected={activeTab === key}
@@ -108,11 +110,7 @@ export function CommunityTabs({ properties, community, locale }: CommunityTabsPr
             {/* Desktop: property grid */}
             <div className="hidden md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-3">
               {properties.map((property) => (
-                <PropertyCard
-                  key={property.id}
-                  property={property}
-                  locale={locale}
-                />
+                <PropertyCard key={property.id} property={property} locale={locale} />
               ))}
             </div>
             {/* Mobile: sortable lot list */}
@@ -121,9 +119,7 @@ export function CommunityTabs({ properties, community, locale }: CommunityTabsPr
             </div>
           </>
         ) : (
-          <p className="py-12 text-center text-text-muted">
-            {t("noProperties")}
-          </p>
+          <p className="py-12 text-center text-text-muted">{t("noProperties")}</p>
         )}
       </div>
 
@@ -146,9 +142,7 @@ export function CommunityTabs({ properties, community, locale }: CommunityTabsPr
             />
           </div>
         ) : (
-          <p className="py-12 text-center text-text-muted">
-            {t("noSiteMap")}
-          </p>
+          <p className="py-12 text-center text-text-muted">{t("noSiteMap")}</p>
         )}
       </div>
     </section>

@@ -26,11 +26,21 @@ export async function CommunityQuickFacts({ community, locale }: CommunityQuickF
 
   const facts: QuickFact[] = [
     { key: "elevation", icon: "📍", labelKey: "quickFacts.elevation", value: quickFacts.elevation },
-    { key: "airportDistance", icon: "✈", labelKey: "quickFacts.airport", value: quickFacts.airportDistance },
+    {
+      key: "airportDistance",
+      icon: "✈",
+      labelKey: "quickFacts.airport",
+      value: quickFacts.airportDistance,
+    },
     { key: "internet", icon: "🌐", labelKey: "quickFacts.internet", value: quickFacts.internet },
     { key: "amenities", icon: "🏊", labelKey: "quickFacts.amenities", value: quickFacts.amenities },
     { key: "developer", icon: "🏗", labelKey: "quickFacts.developer", value: quickFacts.developer },
-    { key: "established", icon: "📅", labelKey: "quickFacts.established", value: quickFacts.established },
+    {
+      key: "established",
+      icon: "📅",
+      labelKey: "quickFacts.established",
+      value: quickFacts.established,
+    },
   ];
 
   const visibleFacts = facts.filter((f) => f.value);
@@ -42,9 +52,7 @@ export async function CommunityQuickFacts({ community, locale }: CommunityQuickF
       data-testid="community-quick-facts"
       className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
     >
-      <h2 className="mb-6 text-2xl font-bold text-brand-navy">
-        {t("quickFacts.heading")}
-      </h2>
+      <h2 className="mb-6 text-2xl font-bold text-brand-navy">{t("quickFacts.heading")}</h2>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {visibleFacts.map((fact) => (
           <div
@@ -57,9 +65,7 @@ export async function CommunityQuickFacts({ community, locale }: CommunityQuickF
             <span className="mt-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
               {t(fact.labelKey)}
             </span>
-            <span className="mt-1 text-sm font-medium text-brand-navy">
-              {fact.value}
-            </span>
+            <span className="mt-1 text-sm font-medium text-brand-navy">{fact.value}</span>
           </div>
         ))}
       </div>

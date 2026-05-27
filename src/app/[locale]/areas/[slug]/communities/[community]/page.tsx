@@ -58,9 +58,7 @@ export async function generateMetadata({
     title: t("meta.title", { community: community.name }),
     description: t("meta.description", { community: community.name }),
     alternates: {
-      ...buildAlternatesMetadata(
-        `/areas/${slug}/communities/${communitySlug}`,
-      ),
+      ...buildAlternatesMetadata(`/areas/${slug}/communities/${communitySlug}`),
     },
     openGraph: {
       title: t("meta.ogTitle", { community: community.name }),
@@ -125,23 +123,11 @@ export default async function CommunityPage({
           __html: serializeJsonLd(breadcrumbJsonLd),
         }}
       />
-      <CommunityHero
-        community={community}
-        areaName={areaName}
-        locale={locale}
-      />
+      <CommunityHero community={community} areaName={areaName} locale={locale} />
       <CommunityQuickFacts community={community} locale={locale} />
       <CommunityDescription community={community} locale={locale} />
-      <CommunityTabs
-        properties={communityProperties}
-        community={community}
-        locale={locale}
-      />
-      <SimilarCommunitiesSlider
-        communities={similarCommunities}
-        locale={locale}
-        areaSlug={slug}
-      />
+      <CommunityTabs properties={communityProperties} community={community} locale={locale} />
+      <SimilarCommunitiesSlider communities={similarCommunities} locale={locale} areaSlug={slug} />
     </main>
   );
 }
