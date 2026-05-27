@@ -8,6 +8,7 @@ import {
   getSimilarAreas,
 } from "@/lib/db/queries/areas";
 import { getAllAgents } from "@/lib/db/queries/agents";
+import { getCommunitiesByAreaId } from "@/lib/db/queries/communities";
 import {
   generatePlaceJsonLd,
   generateBreadcrumbJsonLd,
@@ -17,6 +18,7 @@ import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { AreaGuideHero } from "@/components/area/area-guide-hero";
 import { AreaGuideDescription } from "@/components/area/area-guide-description";
 import { AreaGuideTabs } from "@/components/area/area-guide-tabs";
+import { CommunityCard } from "@/components/area/community-card";
 
 /**
  * Area Guide Page — SSG (no ISR)
@@ -77,10 +79,11 @@ export default async function AreaGuidePage({
 
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
 
-  const [areaProperties, agents, similarAreas] = await Promise.all([
+  const [areaProperties, agents, similarAreas, communities] = await Promise.all([
     getPropertiesByAreaSlug(slug),
     getAllAgents(),
     getSimilarAreas(area.region, slug),
+    getCommunitiesByAreaId(area.id),
   ]);
 
   const placeJsonLd = generatePlaceJsonLd(area, locale);
@@ -103,7 +106,34 @@ export default async function AreaGuidePage({
       />
       <AreaGuideHero area={area} locale={locale} />
       <AreaGuideDescription area={area} locale={locale} />
-      {/* Communities — populated in Story 6.2 */}
+
+      {/* Communities belonging to this area */}
+      {communities.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <h2 className="mb-6 text-2xl font-bold text-brand-navy">
+            {t("communities.heading")}
+          </h2>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {communities.map((community) => {
+              const tagline =
+                locale === "es" ? community.taglineEs : community.taglineEn;
+              return (
+                <CommunityCard
+                  key={community.slug}
+                  name={community.name}
+                  tagline={tagline}
+                  heroImageUrl={community.heroImageUrl}
+                  href={`/${locale}/areas/${slug}/communities/${community.slug}`}
+                  locale={locale}
+                  priceMin={community.priceMinUsd}
+                  priceMax={community.priceMaxUsd}
+                  listingCount={community.listingCount}
+                />
+              );
+            })}
+          </div>
+        </section>
+      )}
       <AreaGuideTabs
         properties={areaProperties}
         agents={agents}

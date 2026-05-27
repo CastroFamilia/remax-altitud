@@ -740,6 +740,60 @@
       "airport": "Nearest Airport",
       "hospital": "Nearest Hospital",
       "beach": "Nearest Beach"
+    },
+    "communities": {
+      "heading": "Communities in This Area"
+    }
+  },
+  "CommunityPage": {
+    "meta": {
+      "title": "{community} — Community | RE/MAX Altitud",
+      "description": "Explore {community}: curated homes, lot availability, quick facts, and lifestyle details. Your guide to living in this premium Costa Rica community.",
+      "ogTitle": "{community} — Community | RE/MAX Altitud",
+      "ogDescription": "Discover {community} — a curated community in Costa Rica with premium homes and lots."
+    },
+    "tabs": {
+      "properties": "Properties",
+      "siteMap": "Site Map"
+    },
+    "hero": {
+      "homesFrom": "Homes from {min}–{max}"
+    },
+    "quickFacts": {
+      "heading": "Quick Facts",
+      "elevation": "Elevation",
+      "airport": "Airport",
+      "internet": "Internet",
+      "amenities": "Amenities",
+      "developer": "Developer",
+      "established": "Established"
+    },
+    "description": {
+      "heading": "About This Community"
+    },
+    "noProperties": "No properties are currently listed in this community.",
+    "noSiteMap": "Site map not yet available for this community.",
+    "lotStatus": {
+      "available": "Available",
+      "sold": "Sold",
+      "reserved": "Reserved"
+    },
+    "sort": {
+      "label": "Sort by",
+      "status": "Status",
+      "priceAsc": "Price ↑",
+      "priceDesc": "Price ↓"
+    },
+    "similarCommunities": {
+      "heading": "Similar Communities"
+    },
+    "index": {
+      "title": "Explore Our Communities",
+      "description": "Curated developments in the mountains and on the coast — premium living in Costa Rica.",
+      "meta": {
+        "title": "Communities — RE/MAX Altitud",
+        "description": "Explore curated community developments served by RE/MAX Altitud in the Southern Zone of Costa Rica."
+      }
     }
   }
 }

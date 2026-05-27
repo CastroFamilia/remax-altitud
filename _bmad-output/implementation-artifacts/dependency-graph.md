@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-11T18:27:00+02:00_
+_Last updated: 2026-05-27T12:37:00-06:00_
 
 ## Stories
 
@@ -33,13 +33,13 @@ _Last updated: 2026-05-11T18:27:00+02:00_
 | 4.4   | 4    | SEO Architecture & WordPress Redirects | done | #96 | #134 | merged | 4.1 | ✅ Yes (done) |
 | 4.5   | 4    | Similar Properties & Cross-Linking | done | #97 | #135 | merged | 4.1, 4.3 | ✅ Yes (done) |
 | 5.1   | 5    | Seller Landing Page & List With Us Form | done | #98 | #137 | merged | none | ✅ Yes (done) |
-| 5.2   | 5    | CMA Request Form | in-review | #99 | #142 | open | 5.1 | ✅ Yes (in-review) |
-| 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | backlog | #100 | — | — | 5.1, 5.2 | ❌ No (5.2 not merged) |
-| 6.1   | 6    | Area Guide Pages | backlog | #101 | — | — | none | ❌ No (epic 5 not complete) |
-| 6.2   | 6    | Community Pages | backlog | #102 | — | — | 6.1 | ❌ No (epic 5 not complete) |
-| 6.3   | 6    | Community Mini-Map & Geo-Fence Display | backlog | #103 | — | — | 6.2 | ❌ No (epic 5 not complete) |
-| 6.4   | 6    | Investment Discovery & Area Context | backlog | #104 | — | — | 6.1 | ❌ No (epic 5 not complete) |
-| 6.5   | 6    | Community Geo-Fence Auto-Tagging | backlog | #105 | — | — | 6.2 | ❌ No (epic 5 not complete) |
+| 5.2   | 5    | CMA Request Form | done | #99 | #144 | merged | 5.1 | ✅ Yes (done) |
+| 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | done | #100 | #152 | merged | 5.1, 5.2 | ✅ Yes (done) |
+| 6.1   | 6    | Area Guide Pages | done | #101 | #153 | merged | none | ✅ Yes (done) |
+| 6.2   | 6    | Community Pages | backlog | #102 | — | — | 6.1 | ✅ Yes |
+| 6.3   | 6    | Community Mini-Map & Geo-Fence Display | backlog | #103 | — | — | 6.2 | ❌ No (6.2 not merged) |
+| 6.4   | 6    | Investment Discovery & Area Context | backlog | #104 | — | — | 6.1 | ✅ Yes |
+| 6.5   | 6    | Community Geo-Fence Auto-Tagging | backlog | #105 | — | — | 6.2 | ❌ No (6.2 not merged) |
 | 7.1   | 7    | Save & Shortlist Properties | backlog | #106 | — | — | none | ❌ No (epic 6 not complete) |
 | 7.2   | 7    | Shortlist Comparison Page | backlog | #107 | — | — | 7.1 | ❌ No (epic 6 not complete) |
 | 7.3   | 7    | Shareable Shortlist URL | backlog | #108 | — | — | 7.2 | ❌ No (epic 6 not complete) |
@@ -102,15 +102,13 @@ _Last updated: 2026-05-11T18:27:00+02:00_
 
 ## Notes
 
-- Epic 1 is fully complete (all 7 stories done and merged).
-- Epic 2 is fully complete (all 7 stories done and merged). PR #121 for 2.7 merged 2026-04-26.
-- Epic 2 complete: PRs #66, #67, #117, #118, #119, #120, #121 all merged.
-- Epic 3 is fully complete (all 8 stories done and merged). PRs #122, #123, #125, #126, #127, #128, #129, #130 all merged.
-- Epic 4 is fully complete (all 5 stories done and merged). PRs #131 (4.1), #132 (4.2), #133 (4.3), #134 (4.4), #135 (4.5) all merged.
-- Epic 5 in progress: Story 5.1 done (PR #137 merged 2026-05-04). Stories 5.2 and 5.3 in backlog.
-- Story 5.2 (CMA Request Form) is Ready to Work — dependency 5.1 is merged.
-- Story 5.3 blocked on 5.2 not merged.
+- Epics 1–5 are fully complete (all stories done and merged).
+- Epic 5 retrospective complete (PR #154 merged 2026-05-27).
+- Story 5.2 original PR #142 was closed; clean rebased PR #144 merged 2026-05-13.
+- Story 5.3 PR #152 merged 2026-05-24.
+- Story 6.1 PR #153 merged 2026-05-27 (today).
+- Epic 6 in progress: Story 6.1 done. Stories 6.2 (Community Pages) and 6.4 (Investment Discovery) are Ready to Work.
+- Stories 6.3 and 6.5 blocked on 6.2 (not merged).
 - Base branch: `development` (not `main`). All worktrees and PRs target `development`.
 - No open PRs. No stale worktrees.
-- Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
-- WARNING: Story 5.3 has a known gating decision: PII encryption strategy for column-level encryption (AR17, NFR9) — phone and email fields must be encrypted at rest.
+- Epic ordering strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.

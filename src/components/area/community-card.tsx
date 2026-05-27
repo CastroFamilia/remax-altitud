@@ -4,17 +4,33 @@ interface CommunityCardProps {
   heroImageUrl?: string | null;
   href?: string;
   locale: string;
+  priceMin?: number | null;
+  priceMax?: number | null;
+  listingCount?: number;
 }
 
 /**
- * CommunityCard — Server Component (AC #6)
+ * CommunityCard — Server Component (AC #6, #7)
  *
  * Gold-bordered card linking to community page.
- * Communities table does not exist yet (Story 6.2).
- * This component renders the visual structure with gold border.
+ * Displays hero image, name, tagline, price range, and listing count.
  */
-export function CommunityCard({ name, tagline, heroImageUrl, href, locale }: CommunityCardProps) {
+export function CommunityCard({
+  name,
+  tagline,
+  heroImageUrl,
+  href,
+  locale,
+  priceMin,
+  priceMax,
+  listingCount,
+}: CommunityCardProps) {
   const linkHref = href ?? `/${locale}/communities`;
+
+  const priceRange =
+    priceMin && priceMax
+      ? `$${(priceMin / 1000).toFixed(0)}K–$${(priceMax / 1000).toFixed(0)}K`
+      : null;
 
   return (
     <a
@@ -48,6 +64,16 @@ export function CommunityCard({ name, tagline, heroImageUrl, href, locale }: Com
       <div className="flex flex-1 flex-col p-4">
         <h3 className="font-bold text-brand-navy">{name}</h3>
         {tagline && <p className="mt-1 text-sm text-text-muted line-clamp-2">{tagline}</p>}
+        {priceRange && (
+          <p className="mt-2 text-sm font-semibold text-[var(--color-gold,#C2A661)]">
+            {priceRange}
+          </p>
+        )}
+        {typeof listingCount === "number" && listingCount > 0 && (
+          <p className="mt-1 text-xs text-text-muted">
+            {listingCount} {listingCount === 1 ? (locale === "es" ? "propiedad" : "listing") : (locale === "es" ? "propiedades" : "listings")}
+          </p>
+        )}
       </div>
     </a>
   );
