@@ -283,9 +283,13 @@ test.describe(
       "[P2] community page without coordinates does not render mini-map (graceful null handling)",
       async ({ page }: any) => {
         // Navigate to a community known to have no lat/lng
+        // NOTE: All current seed communities have coordinates. This test
+        // requires a seed community with null latitude/longitude, or a
+        // test-specific DB fixture. For now targets Serena del Mar in Uvita
+        // (correct area slug) — adjust when a null-coord community is seeded.
         await page.setViewportSize(DESKTOP_VIEWPORT);
         await page.goto(
-          "/en/areas/dominical/communities/serena-del-mar",
+          "/en/areas/uvita/communities/serena-del-mar",
         );
 
         const hero = page.getByTestId("community-hero");

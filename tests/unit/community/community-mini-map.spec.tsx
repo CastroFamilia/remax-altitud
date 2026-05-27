@@ -30,11 +30,10 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import {
-  makeCommunity,
-  makeCommunityEmpty,
-} from "../../fixtures/community-factories";
-import { makeArea } from "../../fixtures/area-factories";
+// NOTE: Factory imports removed — these source-inspection tests use fs.readFileSync
+// rather than component rendering. Factories are available in
+// ../../fixtures/community-factories.ts and ../../fixtures/area-factories.ts
+// for future behavioral tests.
 
 // ---------------------------------------------------------------------------
 // Mock next-intl/server — prevent SSR errors in test environment
@@ -333,6 +332,7 @@ describe("Mini-map i18n strings (AC #5, Task 6)", () => {
     expect(miniMap).toBeDefined();
     expect(miniMap.heading).toBeDefined();
     expect(miniMap.alt).toBeDefined();
+    expect(miniMap.geoFenceLabel).toBeDefined();
   });
 
   it("[P2] es.json has CommunityPage.miniMap keys", async () => {
@@ -345,6 +345,7 @@ describe("Mini-map i18n strings (AC #5, Task 6)", () => {
     expect(miniMap).toBeDefined();
     expect(miniMap.heading).toBeDefined();
     expect(miniMap.alt).toBeDefined();
+    expect(miniMap.geoFenceLabel).toBeDefined();
   });
 });
 
