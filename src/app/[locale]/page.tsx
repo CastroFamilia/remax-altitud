@@ -23,7 +23,6 @@ function HomeContent({ locale }: { locale: string }) {
       <SplitHero />
       <div className="container space-y-16 py-16">
         <FeaturedPropertiesShell />
-        {/* @ts-expect-error Async Server Component */}
         <FeaturedCommunities locale={locale} />
         <AreaHighlightsShell />
       </div>
