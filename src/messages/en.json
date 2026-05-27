@@ -528,6 +528,7 @@
     "home": "Home",
     "search": "Search",
     "agents": "Agents",
+    "areas": "Areas",
     "ariaLabel": "Breadcrumb"
   },
   "AgentAreaServed": {
@@ -704,6 +705,41 @@
       "subheading": "Your agent will prepare your Comparative Market Analysis and contact you within 24 hours.",
       "agentMatchHeading": "Your Agent Match",
       "browseWhileWaiting": "While you wait, explore what's selling in your area"
+    }
+  },
+  "AreaGuide": {
+    "meta": {
+      "title": "{area} — Area Guide | RE/MAX Altitud",
+      "description": "Explore {area}: real estate listings, lifestyle info, climate data, and local agents. Your guide to living in {area}, Costa Rica.",
+      "ogTitle": "{area} — Area Guide | RE/MAX Altitud",
+      "ogDescription": "Discover properties and lifestyle in {area}, Costa Rica — from RE/MAX Altitud."
+    },
+    "index": {
+      "title": "Explore Our Areas",
+      "description": "From mountain valleys to Pacific beaches — discover the Southern Zone of Costa Rica.",
+      "meta": {
+        "title": "Areas — RE/MAX Altitud",
+        "description": "Explore all areas served by RE/MAX Altitud in the Southern Zone of Costa Rica — Pérez Zeledón, Dominical, Uvita, and more."
+      }
+    },
+    "tabs": {
+      "properties": "Properties",
+      "agents": "Agents",
+      "similarAreas": "Similar Areas"
+    },
+    "noProperties": "No properties are currently listed in this area.",
+    "noAgents": "No agents are currently assigned to this area.",
+    "noSimilarAreas": "No similar areas found.",
+    "region": {
+      "Mountain": "Mountain",
+      "Coast": "Coast"
+    },
+    "propertyCount": "{count, plural, one {# property} other {# properties}}",
+    "listingCount": "{count, plural, one {# listing} other {# listings}}",
+    "nearestServices": {
+      "airport": "Nearest Airport",
+      "hospital": "Nearest Hospital",
+      "beach": "Nearest Beach"
     }
   }
 }

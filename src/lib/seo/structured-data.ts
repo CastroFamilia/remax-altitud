@@ -157,5 +157,14 @@ export function generatePlaceJsonLd(area: Area, locale: string): object {
     description: description?.slice(0, 300) || undefined,
     url: `${SITE_ORIGIN}/${locale}/areas/${area.slug}`,
     address: { "@type": "PostalAddress", addressCountry: "CR" },
+    ...(area.latitude != null && area.longitude != null
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: area.latitude,
+            longitude: area.longitude,
+          },
+        }
+      : {}),
   };
 }
