@@ -729,6 +729,17 @@
     },
     "noProperties": "No properties are currently listed in this area.",
     "noAgents": "No agents are currently assigned to this area.",
-    "noSimilarAreas": "No similar areas found."
+    "noSimilarAreas": "No similar areas found.",
+    "region": {
+      "Mountain": "Mountain",
+      "Coast": "Coast"
+    },
+    "propertyCount": "{count, plural, one {# property} other {# properties}}",
+    "listingCount": "{count, plural, one {# listing} other {# listings}}",
+    "nearestServices": {
+      "airport": "Nearest Airport",
+      "hospital": "Nearest Hospital",
+      "beach": "Nearest Beach"
+    }
   }
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import type { Area } from "@/lib/db/schema/areas";
 
 interface AreaGuideHeroProps {
@@ -12,17 +13,18 @@ interface AreaGuideHeroProps {
  * Renders hero section with area name (h1), region badge, and climate/altitude data.
  * Falls back to a navy-to-cream gradient when heroImageUrl is null (AC #12).
  */
-export function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
+export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
   const metadata = area.metadata as Record<string, string> | null;
   const hasHeroImage = !!area.heroImageUrl;
+  const t = await getTranslations({ locale, namespace: "AreaGuide" });
 
   const regionBadgeClass =
     area.region === "Mountain"
       ? "bg-[var(--mountain-primary,#233428)]"
       : "bg-[var(--beach-primary,#183C5A)]";
 
-  const regionLabel = area.region === "Mountain" ? "Mountain" : "Coast";
+  const regionLabel = t(`region.${area.region === "Mountain" ? "Mountain" : "Coast"}`);
 
   return (
     <section

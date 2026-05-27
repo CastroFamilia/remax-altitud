@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import type { Area } from "@/lib/db/schema/areas";
 
 interface AreaGuideDescriptionProps {
@@ -13,9 +14,10 @@ interface AreaGuideDescriptionProps {
  * the description is in the initial SSG HTML output for full SEO indexing.
  * The description is always visible — not behind a tab (AC #2, Risk R-003).
  */
-export function AreaGuideDescription({ area, locale }: AreaGuideDescriptionProps) {
+export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptionProps) {
   const description = locale === "es" ? area.descriptionEs : area.descriptionEn;
   const metadata = area.metadata as Record<string, string> | null;
+  const t = await getTranslations({ locale, namespace: "AreaGuide" });
 
   return (
     <section
@@ -31,13 +33,13 @@ export function AreaGuideDescription({ area, locale }: AreaGuideDescriptionProps
       {metadata && (
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {metadata.nearestAirport && (
-            <ServiceItem icon="✈️" label="Nearest Airport" value={metadata.nearestAirport} />
+            <ServiceItem icon="✈️" label={t("nearestServices.airport")} value={metadata.nearestAirport} />
           )}
           {metadata.nearestHospital && (
-            <ServiceItem icon="🏥" label="Nearest Hospital" value={metadata.nearestHospital} />
+            <ServiceItem icon="🏥" label={t("nearestServices.hospital")} value={metadata.nearestHospital} />
           )}
           {metadata.nearestBeach && (
-            <ServiceItem icon="🏖️" label="Nearest Beach" value={metadata.nearestBeach} />
+            <ServiceItem icon="🏖️" label={t("nearestServices.beach")} value={metadata.nearestBeach} />
           )}
         </div>
       )}

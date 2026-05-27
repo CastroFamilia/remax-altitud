@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import type { Area } from "@/lib/db/schema/areas";
 
 interface AreaIndexCardProps {
@@ -16,14 +17,17 @@ interface AreaIndexCardProps {
  * - Property count
  * - Description snippet
  */
-export function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
+export async function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
   const description = locale === "es" ? area.descriptionEs : area.descriptionEn;
+  const t = await getTranslations({ locale, namespace: "AreaGuide" });
 
   const regionBadgeClass =
     area.region === "Mountain"
       ? "bg-[var(--mountain-primary,#233428)]"
       : "bg-[var(--beach-primary,#183C5A)]";
+
+  const regionLabel = t(`region.${area.region === "Mountain" ? "Mountain" : "Coast"}`);
 
   return (
     <a
@@ -56,7 +60,7 @@ export function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
           data-testid="region-badge"
           className={`absolute left-3 top-3 rounded px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-white ${regionBadgeClass}`}
         >
-          {area.region}
+          {regionLabel}
         </span>
 
         {/* Property count overlay */}
@@ -64,7 +68,7 @@ export function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
           data-testid="area-property-count"
           className="absolute bottom-3 right-3 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm"
         >
-          {area.propertyCount} properties
+          {t("propertyCount", { count: area.propertyCount })}
         </span>
       </div>
 

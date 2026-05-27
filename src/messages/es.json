@@ -729,6 +729,17 @@
     },
     "noProperties": "No hay propiedades listadas actualmente en esta zona.",
     "noAgents": "No hay agentes asignados actualmente a esta zona.",
-    "noSimilarAreas": "No se encontraron zonas similares."
+    "noSimilarAreas": "No se encontraron zonas similares.",
+    "region": {
+      "Mountain": "Montaña",
+      "Coast": "Costa"
+    },
+    "propertyCount": "{count, plural, one {# propiedad} other {# propiedades}}",
+    "listingCount": "{count, plural, one {# propiedad} other {# propiedades}}",
+    "nearestServices": {
+      "airport": "Aeropuerto Más Cercano",
+      "hospital": "Hospital Más Cercano",
+      "beach": "Playa Más Cercana"
+    }
   }
 }

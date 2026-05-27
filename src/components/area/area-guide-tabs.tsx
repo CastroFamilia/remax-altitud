@@ -170,6 +170,7 @@ export function AreaGuideTabs({ properties, agents, similarAreas, locale }: Area
  * (unlike the listing detail AgentCard which is tightly coupled to a property).
  */
 function AgentCardSimple({ agent, locale }: { agent: Agent; locale: string }) {
+  const t = useTranslations("AreaGuide");
   const photoSrc =
     (agent.photoOptimizedUrl && agent.photoOptimizedUrl.length > 0
       ? agent.photoOptimizedUrl
@@ -197,7 +198,7 @@ function AgentCardSimple({ agent, locale }: { agent: Agent; locale: string }) {
         <h3 className="font-bold text-brand-navy group-hover:underline">{agent.name}</h3>
         {languages && <p className="mt-1 text-sm text-text-muted">{languages}</p>}
         {agent.listingCount > 0 && (
-          <p className="mt-1 text-xs text-text-muted">{agent.listingCount} listings</p>
+          <p className="mt-1 text-xs text-text-muted">{t("listingCount", { count: agent.listingCount })}</p>
         )}
       </div>
     </a>

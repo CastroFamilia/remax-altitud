@@ -39,7 +39,7 @@ export function CommunityCard({ name, tagline, heroImageUrl, href, locale }: Com
                 "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-gold, #C2A661) 100%)",
             }}
           >
-            <span className="text-2xl font-bold text-white">{name[0]}</span>
+            <span className="text-2xl font-bold text-white">{name.charAt(0) || "?"}</span>
           </div>
         )}
       </div>

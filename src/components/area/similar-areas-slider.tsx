@@ -9,6 +9,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import type { Area } from "@/lib/db/schema/areas";
 
 interface SimilarAreasSliderProps {
@@ -18,6 +19,7 @@ interface SimilarAreasSliderProps {
 
 export function SimilarAreasSlider({ areas, locale }: SimilarAreasSliderProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations("AreaGuide");
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
@@ -59,6 +61,7 @@ export function SimilarAreasSlider({ areas, locale }: SimilarAreasSliderProps) {
         {areas.map((area) => {
           const areaName = locale === "es" ? area.nameEs : area.nameEn;
           const description = locale === "es" ? area.descriptionEs : area.descriptionEn;
+          const regionLabel = t(`region.${area.region === "Mountain" ? "Mountain" : "Coast"}`);
 
           return (
             <a
@@ -93,14 +96,14 @@ export function SimilarAreasSlider({ areas, locale }: SimilarAreasSliderProps) {
                       : "bg-[var(--beach-primary,#183C5A)]"
                   }`}
                 >
-                  {area.region}
+                  {regionLabel}
                 </span>
               </div>
 
               {/* Content */}
               <div className="p-4">
                 <h3 className="font-bold text-brand-navy group-hover:underline">{areaName}</h3>
-                <p className="mt-1 text-xs text-text-muted">{area.propertyCount} properties</p>
+                <p className="mt-1 text-xs text-text-muted">{t("propertyCount", { count: area.propertyCount })}</p>
                 <p className="mt-2 text-sm text-text-muted line-clamp-2">{description}</p>
               </div>
             </a>
