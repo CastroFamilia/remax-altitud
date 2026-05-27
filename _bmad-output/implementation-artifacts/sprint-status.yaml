@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-10T12:39:46-03:00
-last_updated: 2026-05-04T08:55:00-0600
+last_updated: 2026-05-27T09:32:00-0600
 project: remax-altitud
 project_key: NOKEY
 tracking_system: file-system
@@ -86,15 +86,15 @@ development_status:
   epic-4-retrospective: done
 
   # Epic 5: Seller Lead Capture
-  epic-5: in-progress
+  epic-5: done
   5-1-seller-landing-page-and-list-with-us-form: done
-  5-2-cma-request-form: in-review
+  5-2-cma-request-form: done
   5-3-seller-lead-storage-routing-and-source-tracking: done
   epic-5-retrospective: optional
 
   # Epic 6: Community Pages & Area Guides
-  epic-6: backlog
-  6-1-area-guide-pages: backlog
+  epic-6: in-progress
+  6-1-area-guide-pages: done
   6-2-community-pages: backlog
   6-3-community-mini-map-and-geo-fence-display: backlog
   6-4-investment-discovery-and-area-context: backlog
