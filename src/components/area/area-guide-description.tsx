@@ -33,13 +33,25 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
       {metadata && (
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {metadata.nearestAirport && (
-            <ServiceItem icon="✈️" label={t("nearestServices.airport")} value={metadata.nearestAirport} />
+            <ServiceItem
+              icon="✈️"
+              label={t("nearestServices.airport")}
+              value={metadata.nearestAirport}
+            />
           )}
           {metadata.nearestHospital && (
-            <ServiceItem icon="🏥" label={t("nearestServices.hospital")} value={metadata.nearestHospital} />
+            <ServiceItem
+              icon="🏥"
+              label={t("nearestServices.hospital")}
+              value={metadata.nearestHospital}
+            />
           )}
           {metadata.nearestBeach && (
-            <ServiceItem icon="🏖️" label={t("nearestServices.beach")} value={metadata.nearestBeach} />
+            <ServiceItem
+              icon="🏖️"
+              label={t("nearestServices.beach")}
+              value={metadata.nearestBeach}
+            />
           )}
         </div>
       )}

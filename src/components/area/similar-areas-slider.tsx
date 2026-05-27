@@ -103,7 +103,9 @@ export function SimilarAreasSlider({ areas, locale }: SimilarAreasSliderProps) {
               {/* Content */}
               <div className="p-4">
                 <h3 className="font-bold text-brand-navy group-hover:underline">{areaName}</h3>
-                <p className="mt-1 text-xs text-text-muted">{t("propertyCount", { count: area.propertyCount })}</p>
+                <p className="mt-1 text-xs text-text-muted">
+                  {t("propertyCount", { count: area.propertyCount })}
+                </p>
                 <p className="mt-2 text-sm text-text-muted line-clamp-2">{description}</p>
               </div>
             </a>
