@@ -37,6 +37,7 @@ export interface PropertySearchItem {
   constructionM2: number | null;
   zmtStatus: string;
   propertyType: string;
+  status: string;
   areaSlug: string | null;
   images: OptimizedImage[];
   latitude: number | null;

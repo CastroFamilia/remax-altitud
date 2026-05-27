@@ -35,8 +35,8 @@ export function CommunityLotList({ properties, locale }: CommunityLotListProps) 
         const order: Record<string, number> = { active: 0, reserved: 1, sold: 2 };
         return items.sort(
           (a, b) =>
-            (order[(a as Record<string, unknown>).status as string] ?? 3) -
-            (order[(b as Record<string, unknown>).status as string] ?? 3),
+            (order[a.status] ?? 3) -
+            (order[b.status] ?? 3),
         );
       }
     }
@@ -81,7 +81,7 @@ export function CommunityLotList({ properties, locale }: CommunityLotListProps) 
                 <p className="mt-0.5 text-sm text-text-muted">{price}</p>
               </div>
               <LotStatusIndicator
-                status={(property as Record<string, unknown>).status as string ?? "active"}
+                status={property.status ?? "active"}
                 locale={locale}
               />
             </li>
