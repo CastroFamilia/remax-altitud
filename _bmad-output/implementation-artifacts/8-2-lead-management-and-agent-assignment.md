@@ -68,3 +68,8 @@ So that I can ensure leads are routed to the right agents and track conversion p
 
 ### Story Completion Status
 Ultimate context engine analysis completed - comprehensive developer guide created.
+
+### ATDD Artifacts
+- **Checklist**: _bmad-output/test-artifacts/atdd-checklist-8-2-lead-management-and-agent-assignment.md
+- **E2E tests**: tests/e2e/admin/leads.spec.ts
+- **Unit tests**: tests/unit/admin/leads.test.ts
