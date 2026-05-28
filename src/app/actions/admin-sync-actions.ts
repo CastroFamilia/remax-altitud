@@ -15,7 +15,7 @@ export async function fetchAdminSyncDashboardData(params: {
   const status = params.status;
 
   // Normalize page parameter to prevent NaN or negative/zero values causing DB offset errors
-  let page = typeof params.page === "number" ? params.page : parseInt(params.page as any, 10);
+  let page = typeof params.page === "number" ? params.page : parseInt(String(params.page), 10);
   if (isNaN(page) || page < 1) {
     page = 1;
   } else {

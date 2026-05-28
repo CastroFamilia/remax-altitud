@@ -50,8 +50,10 @@ export async function getSyncLogs(filters: {
   limit?: number;
   offset?: number;
 }): Promise<SyncLog[]> {
-  let limitVal = typeof filters.limit === "number" && !isNaN(filters.limit) ? Math.floor(filters.limit) : 20;
-  let offsetVal = typeof filters.offset === "number" && !isNaN(filters.offset) ? Math.floor(filters.offset) : 0;
+  let limitVal =
+    typeof filters.limit === "number" && !isNaN(filters.limit) ? Math.floor(filters.limit) : 20;
+  let offsetVal =
+    typeof filters.offset === "number" && !isNaN(filters.offset) ? Math.floor(filters.offset) : 0;
   limitVal = Math.max(1, limitVal);
   offsetVal = Math.max(0, offsetVal);
 
