@@ -126,10 +126,7 @@ export async function FeaturedAreas({ locale, showSectionHeader = true }: Featur
         ? dbArea?.descriptionEs || staticArea.descriptionEs
         : dbArea?.descriptionEn || staticArea.descriptionEn;
     const region = dbArea?.region || staticArea.region;
-    const heroImageUrl = getAreaHeroImage(
-      dbArea?.heroImageUrl || staticArea.heroImageUrl,
-      region,
-    );
+    const heroImageUrl = getAreaHeroImage(dbArea?.heroImageUrl || staticArea.heroImageUrl, region);
     const propertyCount = dbArea?.propertyCount || 0;
 
     // Gracefully handle database JSONB metadata typing

@@ -16,4 +16,3 @@ export function getAreaHeroImage(heroImageUrl: string | null | undefined, region
   const isMountain = region === "Mountain";
   return isMountain ? "/images/home/hero-mountains.jpg" : "/images/home/hero-coast.jpg";
 }
-
