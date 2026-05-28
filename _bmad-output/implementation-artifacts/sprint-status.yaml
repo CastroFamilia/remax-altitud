@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-10T12:39:46-03:00
-last_updated: 2026-05-28T04:18:00-06:00
+last_updated: 2026-05-28T04:30:00-06:00
 project: remax-altitud
 project_key: NOKEY
 tracking_system: file-system
@@ -102,8 +102,8 @@ development_status:
   epic-6-retrospective: done
 
   # Epic 7: Shortlist & Smart Agent Routing
-  epic-7: backlog
-  7-1-save-and-shortlist-properties: backlog
+  epic-7: in-progress
+  7-1-save-and-shortlist-properties: done
   7-2-shortlist-comparison-page: backlog
   7-3-shareable-shortlist-url: backlog
   7-4-smart-agent-routing-from-shortlist: backlog

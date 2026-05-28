@@ -1,6 +1,6 @@
 # Story 7.1: Save & Shortlist Properties
 
-**Status:** review
+**Status:** done
 **GH Issue:** #106
 **Epic:** 7 — Shortlist & Smart Agent Routing
 **Story Key:** 7-1-save-and-shortlist-properties
@@ -158,6 +158,12 @@ So that I can build a comparison set while browsing without creating an account.
     - Cross-component state synchronization via custom events.
     - Safe server-side handling when `window` is undefined.
   - [x] 7.2 Run `npm run test` to verify all tests pass.
+
+### Review Findings
+
+- [x] [Review][Patch] Accessibility `aria-label` mismatch on ShortlistIcon link [src/components/shortlist/shortlist-icon.tsx:17]
+- [x] [Review][Patch] Redundant keyboard event listeners on interactive SaveButton [src/components/shortlist/save-button.tsx:89]
+- [x] [Review][Patch] Contrast improvement for SaveButton focus ring [src/components/shortlist/save-button.tsx:90]
 
 ---
 

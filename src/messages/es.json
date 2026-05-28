@@ -812,6 +812,7 @@
     "limitReached": "Elimina una para agregar más",
     "agentTooltip": "Guarda más — tu agente te las mostrará todas.",
     "saveLabel": "Guardar propiedad",
-    "removeLabel": "Eliminar de guardados"
+    "removeLabel": "Eliminar de guardados",
+    "linkLabel": "Propiedades guardadas"
   }
 }

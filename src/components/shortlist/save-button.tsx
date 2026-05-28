@@ -56,12 +56,6 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
-      handleToggle(e);
-    }
-  };
-
   // Safe SSR placeholder for hydration
   if (!isLoaded) {
     return (
@@ -86,8 +80,7 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
         data-testid="save-button"
         aria-label={saved ? t("removeLabel") : t("saveLabel")}
         onClick={handleToggle}
-        onKeyDown={handleKeyDown}
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-white/80 backdrop-blur-xs shadow-xs hover:scale-105 transition-transform cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[--color-accent]"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-white/80 backdrop-blur-xs shadow-xs hover:scale-105 transition-transform cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold"
       >
         <Heart 
           className={`h-5 w-5 transition-colors ${

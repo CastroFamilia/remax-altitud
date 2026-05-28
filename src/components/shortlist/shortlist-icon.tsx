@@ -14,7 +14,7 @@ export function ShortlistIcon() {
   return (
     <Link
       href="/shortlist"
-      aria-label={t("saveLabel")}
+      aria-label={t("linkLabel")}
       className="relative flex h-10 w-10 items-center justify-center rounded-lg text-white hover:bg-white/10 transition-colors"
     >
       <Heart className="h-5 w-5" strokeWidth={2} />
