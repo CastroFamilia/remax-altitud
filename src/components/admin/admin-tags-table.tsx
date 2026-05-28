@@ -84,9 +84,7 @@ export function AdminTagsTable({
   };
 
   const handleTagToggle = (tag: string) => {
-    setModalTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
+    setModalTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   };
 
   const handleSaveChanges = async () => {
@@ -98,7 +96,9 @@ export function AdminTagsTable({
       if (res.success) {
         setAlert({
           type: "success",
-          message: t("successMessage", { title: locale === "es" ? selectedProperty.titleEs : selectedProperty.titleEn }),
+          message: t("successMessage", {
+            title: locale === "es" ? selectedProperty.titleEs : selectedProperty.titleEn,
+          }),
         });
         // Update local property tags list visually
         selectedProperty.lifestyleTags = [...modalTags];
@@ -186,7 +186,10 @@ export function AdminTagsTable({
                       <td className="px-6 py-4 font-semibold text-slate-100 property-title">
                         {title}
                       </td>
-                      <td data-testid="listing-ref-code" className="px-6 py-4 font-mono font-bold text-slate-400 property-ref">
+                      <td
+                        data-testid="listing-ref-code"
+                        className="px-6 py-4 font-mono font-bold text-slate-400 property-ref"
+                      >
                         #{property.apiId}
                       </td>
                       <td className="px-6 py-4 font-bold text-slate-200 property-price">
@@ -247,9 +250,7 @@ export function AdminTagsTable({
               <ChevronLeft className="w-5 h-5" />
             </button>
 
-            <span className="text-sm font-semibold text-slate-400">
-              {currentPage}
-            </span>
+            <span className="text-sm font-semibold text-slate-400">{currentPage}</span>
 
             <button
               onClick={() => handlePageChange(currentPage + 1)}
@@ -264,7 +265,10 @@ export function AdminTagsTable({
 
       {/* Modal */}
       {selectedProperty && (
-        <div data-testid="manage-tags-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm tags-modal">
+        <div
+          data-testid="manage-tags-modal"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm tags-modal"
+        >
           <div className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-2xl space-y-6">
             {/* Close button */}
             <button
@@ -277,7 +281,9 @@ export function AdminTagsTable({
             {/* Modal Header */}
             <div>
               <h2 className="text-xl font-bold text-white pr-8">
-                {t("modalTitle", { title: locale === "es" ? selectedProperty.titleEs : selectedProperty.titleEn })}
+                {t("modalTitle", {
+                  title: locale === "es" ? selectedProperty.titleEs : selectedProperty.titleEn,
+                })}
               </h2>
               <p className="text-xs text-slate-400 mt-2 leading-relaxed font-semibold">
                 {t("modalDescription")}

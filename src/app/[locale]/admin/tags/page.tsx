@@ -53,9 +53,7 @@ export default async function AdminTagsPage({ params, searchParams }: PageProps)
             <Tags className="w-7 h-7 text-red-500" />
             <span>{t("title")}</span>
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
-            {t("subtitle")}
-          </p>
+          <p className="text-slate-400 text-sm mt-1">{t("subtitle")}</p>
         </div>
       </div>
 

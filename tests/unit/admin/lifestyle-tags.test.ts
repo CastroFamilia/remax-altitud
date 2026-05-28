@@ -41,7 +41,9 @@ describe("Story 8.4: Lifestyle Tag Administration - Unit Tests", () => {
 
       // When called
       // Then it should throw an auth error
-      await expect(updatePropertyTagsAction("property-1", ["investment-property"])).rejects.toThrow("Unauthorized");
+      await expect(updatePropertyTagsAction("property-1", ["investment-property"])).rejects.toThrow(
+        "Unauthorized",
+      );
     });
 
     it("should successfully save property tags and trigger revalidations when admin is authenticated", async () => {
@@ -62,7 +64,7 @@ describe("Story 8.4: Lifestyle Tag Administration - Unit Tests", () => {
       expect(mockUpdateSet).toHaveBeenCalledWith(
         expect.objectContaining({
           lifestyleTags: ["investment-property"],
-        })
+        }),
       );
       expect(mockUpdateWhere).toHaveBeenCalled();
 
@@ -89,7 +91,7 @@ describe("Story 8.4: Lifestyle Tag Administration - Unit Tests", () => {
       expect(mockUpdateSet).toHaveBeenCalledWith(
         expect.objectContaining({
           lifestyleTags: ["investment-property"],
-        })
+        }),
       );
     });
   });

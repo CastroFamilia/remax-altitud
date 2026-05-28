@@ -18,7 +18,9 @@ test.describe("Story 8.4: Lifestyle Tag Administration - E2E Tests", () => {
     ]);
   });
 
-  test("[P0] 8.4-E2E-001: displays all active property listings in tag management page (AC1, AC7)", async ({ page }: any) => {
+  test("[P0] 8.4-E2E-001: displays all active property listings in tag management page (AC1, AC7)", async ({
+    page,
+  }: any) => {
     // Given the admin lifestyle tags view
     await page.setViewportSize(DESKTOP_VIEWPORT);
     await page.goto("/en/admin/tags");
@@ -37,7 +39,9 @@ test.describe("Story 8.4: Lifestyle Tag Administration - E2E Tests", () => {
     await expect(firstListingRow.locator('[data-testid="listing-tags-chips"]')).toBeVisible();
   });
 
-  test("[P0] 8.4-E2E-002: adds a tag to a listing and revalidates (AC2, AC6)", async ({ page }: any) => {
+  test("[P0] 8.4-E2E-002: adds a tag to a listing and revalidates (AC2, AC6)", async ({
+    page,
+  }: any) => {
     // Given the admin lifestyle tags view
     await page.setViewportSize(DESKTOP_VIEWPORT);
     await page.goto("/en/admin/tags");
@@ -87,7 +91,9 @@ test.describe("Story 8.4: Lifestyle Tag Administration - E2E Tests", () => {
     await expect(activeChips).not.toContainText("Investment Property");
   });
 
-  test("[P1] 8.4-E2E-004: overrides auto-tagging from sync pipeline (AC4)", async ({ page }: any) => {
+  test("[P1] 8.4-E2E-004: overrides auto-tagging from sync pipeline (AC4)", async ({
+    page,
+  }: any) => {
     // Given the admin tag management UI
     await page.setViewportSize(DESKTOP_VIEWPORT);
     await page.goto("/en/admin/tags");

@@ -11,10 +11,7 @@ import { verifyAdminAuth } from "@/lib/auth/admin";
  * Server Action to fetch property listings for administration with search and pagination.
  * AC: 1, 7
  */
-export async function fetchAdminPropertiesData(params: {
-  search?: string;
-  page?: number;
-}) {
+export async function fetchAdminPropertiesData(params: { search?: string; page?: number }) {
   await verifyAdminAuth();
 
   let page = typeof params.page === "number" ? params.page : parseInt(String(params.page), 10);
@@ -33,7 +30,7 @@ export async function fetchAdminPropertiesData(params: {
     whereClause = or(
       ilike(properties.titleEn, searchPattern),
       ilike(properties.titleEs, searchPattern),
-      ilike(properties.apiId, searchPattern)
+      ilike(properties.apiId, searchPattern),
     );
   }
 
@@ -83,10 +80,10 @@ export async function fetchAdminPropertiesData(params: {
  */
 export async function updatePropertyTagsAction(
   propertyId: string,
-  tags: string[]
+  tags: string[],
 ): Promise<{ success: boolean }> {
   await verifyAdminAuth();
-  
+
   await updatePropertyTags(propertyId, tags);
 
   // Trigger path revalidations as specified in the Dev Notes
