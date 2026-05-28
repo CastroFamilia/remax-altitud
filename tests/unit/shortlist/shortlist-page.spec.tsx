@@ -25,6 +25,13 @@ import React from "react";
 vi.mock("next-intl", () => ({
   useTranslations: vi.fn(() => (key: string) => {
     const translations: Record<string, string> = {
+      "title": "My Saved Properties",
+      "emptyState": "No properties saved yet. Browse listings and tap ♡ to save.",
+      "browseCta": "Browse Listings",
+      "askAgentCta": "Ask about these",
+      "shareShortlistCta": "Share my shortlist",
+      "whatsAppMessageHeader": "Hello, I'm interested in these properties from my shortlist:",
+      "shareMessageHeader": "Check out my property shortlist:",
       "Shortlist.title": "My Saved Properties",
       "Shortlist.emptyState": "No properties saved yet. Browse listings and tap ♡ to save.",
       "Shortlist.browseCta": "Browse Listings",

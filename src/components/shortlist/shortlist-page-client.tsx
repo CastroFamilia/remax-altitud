@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { useShortlist } from "@/hooks/use-shortlist";
@@ -17,15 +17,7 @@ export function ShortlistPageClient() {
 
   const [properties, setProperties] = useState<PropertySearchItem[]>([]);
   const [copied, setCopied] = useState(false);
-
-  // Support both unit test mock translations and dynamic standard translations
-  const getTranslation = (key: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const val = t(key as any);
-    if (val && val !== key) return val;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return t(`Shortlist.${key}` as any);
-  };
+  const fetchedShortlistRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (copied) {
@@ -36,6 +28,26 @@ export function ShortlistPageClient() {
 
   useEffect(() => {
     if (!isLoaded) return;
+
+    const prev = fetchedShortlistRef.current;
+
+    // Check if shortlist is identical to prev
+    const isSame =
+      shortlist.length === prev.length &&
+      [...shortlist].sort().every((id, idx) => id === [...prev].sort()[idx]);
+
+    if (isSame) return;
+
+    // Check if this was a simple removal (shortlist is a subset of prev)
+    const isSubset = shortlist.every((id) => prev.includes(id));
+
+    if (isSubset && prev.length > 0) {
+      fetchedShortlistRef.current = shortlist;
+      setProperties((prevProps) => prevProps.filter((p) => shortlist.includes(p.id)));
+      return;
+    }
+
+    fetchedShortlistRef.current = shortlist;
 
     if (shortlist.length === 0) {
       setProperties([]);
@@ -57,7 +69,7 @@ export function ShortlistPageClient() {
   };
 
   const handleAskAgent = () => {
-    const header = getTranslation("whatsAppMessageHeader");
+    const header = t("whatsAppMessageHeader");
     const message = `${header}\n${properties
       .map((p) => {
         const title = locale === "es" ? p.titleEs || p.titleEn : p.titleEn;
@@ -69,7 +81,7 @@ export function ShortlistPageClient() {
   };
 
   const handleShareShortlist = () => {
-    const header = getTranslation("shareMessageHeader");
+    const header = t("shareMessageHeader");
     const text = `${header}\n${properties
       .map((p) => `${window.location.origin}/${locale}/property/${p.slug}`)
       .join("\n")}`;
@@ -93,7 +105,7 @@ export function ShortlistPageClient() {
   if (!isLoaded) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6 text-brand-navy">{getTranslation("title")}</h1>
+        <h1 className="text-3xl font-bold mb-6 text-brand-navy">{t("title")}</h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <PropertyCardSkeleton />
           <PropertyCardSkeleton />
@@ -107,13 +119,13 @@ export function ShortlistPageClient() {
   if (properties.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16 text-center max-w-lg">
-        <h1 className="text-3xl font-bold mb-4 text-brand-navy">{getTranslation("title")}</h1>
-        <p className="text-muted-foreground mb-8">{getTranslation("emptyState")}</p>
+        <h1 className="text-3xl font-bold mb-4 text-brand-navy">{t("title")}</h1>
+        <p className="text-muted-foreground mb-8">{t("emptyState")}</p>
         <Link
           href={`/${locale}/search`}
           className="inline-flex h-11 items-center justify-center rounded-md bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-8 shadow-md transition-colors"
         >
-          {getTranslation("browseCta")}
+          {t("browseCta")}
         </Link>
       </div>
     );
@@ -128,7 +140,7 @@ export function ShortlistPageClient() {
   // Comparison grid + interactive map
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-brand-navy">{getTranslation("title")}</h1>
+      <h1 className="text-3xl font-bold mb-6 text-brand-navy">{t("title")}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Side: Property list and Actions */}
@@ -150,13 +162,13 @@ export function ShortlistPageClient() {
               onClick={handleAskAgent}
               className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-6 shadow-md transition-colors"
             >
-              {getTranslation("askAgentCta")}
+              {t("askAgentCta")}
             </button>
             <button
               onClick={handleShareShortlist}
               className="flex-1 inline-flex h-11 items-center justify-center rounded-md border border-brand-navy/30 text-brand-navy hover:bg-brand-navy/5 font-semibold px-6 transition-colors relative"
             >
-              {copied ? "Copied!" : getTranslation("shareShortlistCta")}
+              {copied ? "Copied!" : t("shareShortlistCta")}
             </button>
           </div>
         </div>
