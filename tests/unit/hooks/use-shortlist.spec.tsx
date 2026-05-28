@@ -41,23 +41,23 @@ describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
   // Utility Tests (src/lib/utils/shortlist.ts)
   // ---------------------------------------------------------------------------
   describe("Shortlist Pure Utilities", () => {
-    it("[P0] should get empty shortlist when localStorage is empty", () => {
+    it("[P0] 7.1-UNIT-001: should get empty shortlist when localStorage is empty", () => {
       expect(getShortlist()).toEqual([]);
     });
 
-    it("[P0] should add property to shortlist in localStorage", () => {
+    it("[P0] 7.1-UNIT-002: should add property to shortlist in localStorage", () => {
       const res = addToShortlist("ALT-1001");
       expect(res.success).toBe(true);
       expect(getShortlist()).toEqual(["ALT-1001"]);
     });
 
-    it("[P0] should remove property from shortlist in localStorage", () => {
+    it("[P0] 7.1-UNIT-003: should remove property from shortlist in localStorage", () => {
       addToShortlist("ALT-1001");
       removeFromShortlist("ALT-1001");
       expect(getShortlist()).toEqual([]);
     });
 
-    it("[P1] should enforce 20-item cap constraint", () => {
+    it("[P1] 7.1-UNIT-004: should enforce 20-item cap constraint", () => {
       // Add 20 items
       for (let i = 1; i <= 20; i++) {
         const res = addToShortlist(`ALT-${1000 + i}`);
@@ -72,7 +72,7 @@ describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
       expect(getShortlist()).not.toContain("ALT-1021");
     });
 
-    it("[P2] should handle server-side rendering safely when window is undefined", () => {
+    it("[P2] 7.1-UNIT-005: should handle server-side rendering safely when window is undefined", () => {
       // Temporarily mock window as undefined
       const originalWindow = globalThis.window;
       // @ts-ignore
@@ -94,13 +94,13 @@ describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
   // Hook Tests (src/hooks/use-shortlist.ts)
   // ---------------------------------------------------------------------------
   describe("useShortlist Custom React Hook", () => {
-    it("[P0] should initialize with isLoaded=false then true, loading empty shortlist", () => {
+    it("[P0] 7.1-UNIT-006: should initialize with isLoaded=false then true, loading empty shortlist", () => {
       const { result } = renderHook(() => useShortlist());
       expect(result.current.isLoaded).toBe(true);
       expect(result.current.shortlist).toEqual([]);
     });
 
-    it("[P0] should load initial state from localStorage", () => {
+    it("[P0] 7.1-UNIT-007: should load initial state from localStorage", () => {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(["ALT-1001", "ALT-1002"]));
       const { result } = renderHook(() => useShortlist());
       expect(result.current.shortlist).toEqual(["ALT-1001", "ALT-1002"]);
@@ -108,7 +108,7 @@ describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
       expect(result.current.isSaved("ALT-1003")).toBe(false);
     });
 
-    it("[P0] should save property and update state reactive synchrony", () => {
+    it("[P0] 7.1-UNIT-008: should save property and update state reactive synchrony", () => {
       const { result } = renderHook(() => useShortlist());
 
       act(() => {
@@ -120,7 +120,7 @@ describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
       expect(result.current.isSaved("ALT-1001")).toBe(true);
     });
 
-    it("[P0] should remove property and update state", () => {
+    it("[P0] 7.1-UNIT-009: should remove property and update state", () => {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(["ALT-1001"]));
       const { result } = renderHook(() => useShortlist());
 
@@ -132,7 +132,7 @@ describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
       expect(result.current.isSaved("ALT-1001")).toBe(false);
     });
 
-    it("[P1] should dispatch custom 'shortlist-change' event on mutation", () => {
+    it("[P1] 7.1-UNIT-010: should dispatch custom 'shortlist-change' event on mutation", () => {
       const dispatchSpy = vi.spyOn(window, "dispatchEvent");
       const { result } = renderHook(() => useShortlist());
 
@@ -145,7 +145,7 @@ describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
       expect(lastEvent.type).toBe("shortlist-change");
     });
 
-    it("[P1] should listen to 'shortlist-change' and update state reactively", () => {
+    it("[P1] 7.1-UNIT-011: should listen to 'shortlist-change' and update state reactively", () => {
       const { result: hook1 } = renderHook(() => useShortlist());
       const { result: hook2 } = renderHook(() => useShortlist());
 
@@ -160,7 +160,7 @@ describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
       expect(hook2.current.shortlist).toEqual(["ALT-1001"]);
     });
 
-    it("[P1] should listen to storage event and update state", () => {
+    it("[P1] 7.1-UNIT-012: should listen to storage event and update state", () => {
       const { result } = renderHook(() => useShortlist());
       expect(result.current.shortlist).toEqual([]);
 
