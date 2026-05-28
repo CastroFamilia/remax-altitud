@@ -1,10 +1,11 @@
 import React from "react";
 import { cookies } from "next/headers";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { AdminLogoutButton } from "@/components/admin/admin-logout-button";
 import { Activity, Users, Tags, Map, Eye, ShieldAlert } from "lucide-react";
 import Link from "next/link";
+import { createHash } from "crypto";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -15,11 +16,17 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
   const { locale } = await params;
   setRequestLocale(locale);
 
+  const t = await getTranslations({ locale, namespace: "Admin" });
+
   const cookieStore = await cookies();
   const session = cookieStore.get("admin_session")?.value;
   const adminPassword =
     process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
-  const isAuthenticated = !!adminPassword && session === adminPassword;
+
+  const expectedSession = adminPassword
+    ? createHash("sha256").update(adminPassword).digest("hex")
+    : undefined;
+  const isAuthenticated = !!expectedSession && session === expectedSession;
 
   if (!isAuthenticated) {
     return <AdminLoginForm />;
@@ -36,8 +43,8 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
               <ShieldAlert className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white tracking-tight">ALTITUD</h2>
-              <p className="text-xs text-slate-500 font-medium">Control Center</p>
+              <h2 className="text-lg font-bold text-white tracking-tight">{t("navigationTitle")}</h2>
+              <p className="text-xs text-slate-500 font-medium">{t("controlCenter")}</p>
             </div>
           </div>
 
@@ -49,50 +56,50 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
             >
               <div className="flex items-center gap-3">
                 <Activity className="w-5 h-5 text-red-500" />
-                <span>Sync Status</span>
+                <span>{t("syncStatus")}</span>
               </div>
               <span className="text-[10px] uppercase tracking-wider font-extrabold px-1.5 py-0.5 rounded bg-red-500/20 text-red-400">
-                Active
+                {t("active")}
               </span>
             </Link>
 
             <div className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-slate-500 cursor-not-allowed select-none font-semibold group">
               <div className="flex items-center gap-3">
                 <Users className="w-5 h-5 text-slate-600" />
-                <span>Leads (8.2)</span>
+                <span>{t("leads")}</span>
               </div>
               <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-600">
-                Stub
+                {t("stub")}
               </span>
             </div>
 
             <div className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-slate-500 cursor-not-allowed select-none font-semibold group">
               <div className="flex items-center gap-3">
                 <Tags className="w-5 h-5 text-slate-600" />
-                <span>Lifestyle Tags</span>
+                <span>{t("lifestyleTags")}</span>
               </div>
               <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-600">
-                Stub
+                {t("stub")}
               </span>
             </div>
 
             <div className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-slate-500 cursor-not-allowed select-none font-semibold group">
               <div className="flex items-center gap-3">
                 <Map className="w-5 h-5 text-slate-600" />
-                <span>Communities</span>
+                <span>{t("communities")}</span>
               </div>
               <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-600">
-                Stub
+                {t("stub")}
               </span>
             </div>
 
             <div className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-slate-500 cursor-not-allowed select-none font-semibold group">
               <div className="flex items-center gap-3">
                 <Eye className="w-5 h-5 text-slate-600" />
-                <span>Visibility</span>
+                <span>{t("visibility")}</span>
               </div>
               <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-600">
-                Stub
+                {t("stub")}
               </span>
             </div>
           </nav>

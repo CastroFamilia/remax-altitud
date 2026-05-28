@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-27T22:20:00-06:00_
+_Last updated: 2026-05-28T00:41:00-06:00_
 
 ## Stories
 
@@ -40,17 +40,17 @@ _Last updated: 2026-05-27T22:20:00-06:00_
 | 6.3   | 6    | Community Mini-Map & Geo-Fence Display | done | #103 | #157 | merged | 6.2 | ✅ Yes (done) |
 | 6.4   | 6    | Investment Discovery & Area Context | done | #104 | #159 | merged | 6.1 | ✅ Yes (done) |
 | 6.5   | 6    | Community Geo-Fence Auto-Tagging | done | #105 | #160 | merged | 6.2 | ✅ Yes (done) |
-| 7.1   | 7    | Save & Shortlist Properties | backlog | #106 | — | — | none | ✅ Yes |
-| 7.2   | 7    | Shortlist Comparison Page | backlog | #107 | — | — | 7.1 | ❌ No (7.1 not complete) |
-| 7.3   | 7    | Shareable Shortlist URL | backlog | #108 | — | — | 7.2 | ❌ No (7.2 not complete) |
-| 7.4   | 7    | Smart Agent Routing from Shortlist | backlog | #109 | — | — | 7.2 | ❌ No (7.2 not complete) |
-| 8.1   | 8    | Sync Status Dashboard & Monitoring | backlog | #110 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.2   | 8    | Lead Management & Agent Assignment | backlog | #111 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.3   | 8    | Bulk Lead Reassignment & Export | backlog | #112 | — | — | 8.2 | ❌ No (epic 7 not complete) |
-| 8.4   | 8    | Lifestyle Tag Administration | backlog | #113 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.5   | 8    | Community Administration | backlog | #114 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.6   | 8    | Listing Visibility & SEO Monitoring | backlog | #115 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.7   | 8    | Shortlist Analytics | backlog | #116 | — | — | none | ❌ No (epic 7 not complete) |
+| 7.1   | 7    | Save & Shortlist Properties | done | #106 | #161 | merged | none | ✅ Yes (done) |
+| 7.2   | 7    | Shortlist Comparison Page | done | #107 | #162 | merged | 7.1 | ✅ Yes (done) |
+| 7.3   | 7    | Shareable Shortlist URL | done | #108 | #164 | merged | 7.2 | ✅ Yes (done) |
+| 7.4   | 7    | Smart Agent Routing from Shortlist | done | #109 | #165 | merged | 7.2 | ✅ Yes (done) |
+| 8.1   | 8    | Sync Status Dashboard & Monitoring | done | #110 | #166 | merged | none | ✅ Yes (done) |
+| 8.2   | 8    | Lead Management & Agent Assignment | backlog | #111 | — | — | none | ✅ Yes |
+| 8.3   | 8    | Bulk Lead Reassignment & Export | backlog | #112 | — | — | 8.2 | ❌ No (8.2 not merged) |
+| 8.4   | 8    | Lifestyle Tag Administration | backlog | #113 | — | — | none | ✅ Yes |
+| 8.5   | 8    | Community Administration | backlog | #114 | — | — | none | ✅ Yes |
+| 8.6   | 8    | Listing Visibility & SEO Monitoring | backlog | #115 | — | — | none | ✅ Yes |
+| 8.7   | 8    | Shortlist Analytics | backlog | #116 | — | — | none | ✅ Yes |
 
 ## Dependency Chains
 
@@ -102,10 +102,10 @@ _Last updated: 2026-05-27T22:20:00-06:00_
 
 ## Notes
 
-- Epics 1–6 are fully complete (all stories done and merged).
-- Story 6.4 PR #159 and Story 6.5 PR #160 merged 2026-05-28.
-- Epic 7 (Shortlist & Smart Agent Routing) is now unblocked and Ready to Work.
+- Epics 1–7 are fully complete (all stories done and merged).
+- Epic 8 is in progress. Story 8.1 PR #166 merged 2026-05-28.
+- Epic 8 parallelization opportunities: Stories 8.2, 8.4, 8.5, 8.6, and 8.7 are all unblocked and Ready to Work.
 - Base branch: `development` (not `main`). All worktrees and PRs target `development`.
 - No open story PRs. PR #155 (Release) is open but not story-related.
-- Cleaned up story-6.4 and story-6.5 worktrees and remote branches.
+- Cleaned up story-8.1 worktree and remote/local branch.
 - Epic ordering strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.

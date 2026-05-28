@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import { loginAdmin } from "@/app/actions/admin-sync-actions";
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function AdminLoginForm() {
+  const t = useTranslations("Admin");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,10 +23,10 @@ export function AdminLoginForm() {
       if (res.success) {
         router.refresh();
       } else {
-        setError("Invalid password. Please try again.");
+        setError(t("errorInvalidPassword"));
       }
     } catch {
-      setError("An unexpected error occurred. Please try again.");
+      setError(t("errorUnexpected"));
     } finally {
       setIsLoading(false);
     }
@@ -37,14 +39,14 @@ export function AdminLoginForm() {
           <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white mb-4">
             <Lock className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Admin Portal</h1>
-          <p className="text-slate-400 text-sm mt-1">RE/MAX Altitud Administration</p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">{t("portalTitle")}</h1>
+          <p className="text-slate-400 text-sm mt-1">{t("portalSubtitle")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="password" className="block text-sm font-semibold text-slate-300 mb-2">
-              Password
+              {t("password")}
             </label>
             <input
               id="password"
@@ -52,7 +54,7 @@ export function AdminLoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-              placeholder="••••••••"
+              placeholder={t("passwordPlaceholder")}
               required
             />
           </div>
@@ -68,7 +70,7 @@ export function AdminLoginForm() {
             disabled={isLoading}
             className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Authenticating..." : "Unlock Dashboard"}
+            {isLoading ? t("authenticating") : t("unlockButton")}
           </button>
         </form>
       </div>

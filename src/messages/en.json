@@ -871,6 +871,31 @@
     "running": "Running",
     "success": "Success",
     "failure": "Failure",
-    "partial": "Partial Success"
+    "partial": "Partial Success",
+    "justNow": "just now",
+    "mAgo": "{mins}m ago",
+    "hAgo": "{hours}h ago",
+    "dAgo": "{days}d ago"
+  },
+  "Admin": {
+    "portalTitle": "Admin Portal",
+    "portalSubtitle": "RE/MAX Altitud Administration",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "unlockButton": "Unlock Dashboard",
+    "authenticating": "Authenticating...",
+    "errorInvalidPassword": "Invalid password. Please try again.",
+    "errorUnexpected": "An unexpected error occurred. Please try again.",
+    "controlCenter": "Control Center",
+    "navigationTitle": "ALTITUD",
+    "syncStatus": "Sync Status",
+    "active": "Active",
+    "stub": "Stub",
+    "leads": "Leads (8.2)",
+    "lifestyleTags": "Lifestyle Tags",
+    "communities": "Communities",
+    "visibility": "Visibility",
+    "loggingOut": "Logging out...",
+    "logOut": "Log Out"
   }
 }

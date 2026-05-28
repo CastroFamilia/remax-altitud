@@ -871,6 +871,31 @@
     "running": "En ejecución",
     "success": "Éxito",
     "failure": "Fallo",
-    "partial": "Éxito Parcial"
+    "partial": "Éxito Parcial",
+    "justNow": "hace un momento",
+    "mAgo": "hace {mins}m",
+    "hAgo": "hace {hours}h",
+    "dAgo": "hace {days}d"
+  },
+  "Admin": {
+    "portalTitle": "Portal de Administración",
+    "portalSubtitle": "Administración de RE/MAX Altitud",
+    "password": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "unlockButton": "Desbloquear Panel",
+    "authenticating": "Autenticando...",
+    "errorInvalidPassword": "Contraseña inválida. Por favor, intente de nuevo.",
+    "errorUnexpected": "Ocurrió un error inesperado. Por favor, intente de nuevo.",
+    "controlCenter": "Centro de Control",
+    "navigationTitle": "ALTITUD",
+    "syncStatus": "Sincronización",
+    "active": "Activo",
+    "stub": "Stub",
+    "leads": "Prospectos (8.2)",
+    "lifestyleTags": "Etiquetas de Estilo",
+    "communities": "Comunidades",
+    "visibility": "Visibilidad",
+    "loggingOut": "Cerrando sesión...",
+    "logOut": "Cerrar Sesión"
   }
 }

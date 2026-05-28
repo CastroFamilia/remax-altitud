@@ -29,6 +29,7 @@ interface SyncLogItem {
 
 interface AdminSyncLogRowProps {
   log: SyncLogItem;
+  locale: string;
   translations: {
     startedAt: string;
     completedAt: string;
@@ -48,7 +49,7 @@ interface AdminSyncLogRowProps {
   };
 }
 
-export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
+export function AdminSyncLogRow({ log, locale, translations }: AdminSyncLogRowProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const start = new Date(log.startedAt);
@@ -121,7 +122,7 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
   const formattedDate = (date: Date) => {
     try {
       if (!date || isNaN(date.getTime())) return "N/A";
-      return date.toLocaleString(undefined, {
+      return date.toLocaleString(locale, {
         month: "short",
         day: "2-digit",
         hour: "2-digit",
@@ -310,7 +311,7 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
                     Error Array Stack
                   </span>
                   <pre className="w-full bg-slate-950 text-red-300 font-mono text-xs p-4 rounded-lg overflow-x-auto border border-slate-800 max-h-60 scrollbar-thin select-all">
-                    {JSON.stringify(log.errors, null, 2)}
+                    {JSON.stringify(log.errors, (_, v) => typeof v === "bigint" ? v.toString() : v, 2)}
                   </pre>
                 </div>
               )}
