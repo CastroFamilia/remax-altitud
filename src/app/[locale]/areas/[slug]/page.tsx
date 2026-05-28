@@ -56,14 +56,21 @@ export async function generateMetadata({
 
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
+  const metadata = area.metadata as Record<string, string | undefined> | null;
+
+  const seoTitleKey = locale === "es" ? "seoTitleEs" : "seoTitleEn";
+  const seoDescKey = locale === "es" ? "seoDescriptionEs" : "seoDescriptionEn";
+
+  const title = metadata?.[seoTitleKey] || t("meta.title", { area: areaName });
+  const description = metadata?.[seoDescKey] || t("meta.description", { area: areaName });
 
   return {
-    title: t("meta.title", { area: areaName }),
-    description: t("meta.description", { area: areaName }),
+    title,
+    description,
     alternates: { ...buildAlternatesMetadata(`/areas/${slug}`) },
     openGraph: {
-      title: t("meta.ogTitle", { area: areaName }),
-      description: t("meta.ogDescription", { area: areaName }),
+      title,
+      description,
     },
   };
 }

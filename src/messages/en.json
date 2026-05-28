@@ -18,7 +18,8 @@
     "ourTeam": "Our Team",
     "contact": "Contact",
     "ourAgents": "Our Agents",
-    "mainNav": "Main navigation"
+    "mainNav": "Main navigation",
+    "vipBuyerService": "VIP Buyer Service"
   },
   "LanguageToggle": {
     "switchLanguage": "Switch language",
@@ -1039,5 +1040,95 @@
     "successUpdated": "Successfully updated community {name}",
     "successDeleted": "Successfully deleted community",
     "errorSaveFailed": "Failed to save community. Please try again."
+  },
+  "VipBuyerPage": {
+    "metaTitle": "Find Your Dream Property - RE/MAX Altitud",
+    "metaDescription": "Exclusive Property Search Service: You describe the life you want, we'll show you where it can happen. We’ll help you discover the place in Costa Rica that truly fits your life.",
+    "hero": {
+      "title": "Exclusive Property Search Service",
+      "subtitle": "You describe the life you want, we'll show you where it can happen. We’ll help you discover the place in Costa Rica that truly fits your life. From your first call to the moment you find your home, our process blends local expertise, curated experiences, and a clear plan from day one.",
+      "ctaCall": "Book Your Discovery Call",
+      "ctaWhatsapp": "Send us a WhatsApp"
+    },
+    "howItWorks": {
+      "heading": "How It Works",
+      "subtitle": "Moving to Costa Rica is exciting, but it can also feel overwhelming. That’s why we designed a process that makes it simple, personal, and strategic.",
+      "step1": {
+        "title": "Introductory Discovery Call",
+        "body": "You don’t need to know Costa Rica; that’s our job. Tell us what kind of life you imagine, your budget, and your timeline, and we’ll show you the best regions that match your lifestyle."
+      },
+      "step2": {
+        "title": "Shortlist and Strategy",
+        "body": "We map out the areas and properties that truly fit your needs, not just what appears online. Each recommendation comes from local agents who actually live there."
+      },
+      "step3": {
+        "title": "On-the-Ground Experience",
+        "body": "Visit properties in person or join live virtual tours. Discover each area’s rhythm, community, and potential."
+      },
+      "step4": {
+        "title": "Decision and Next Steps",
+        "body": "From offers and due diligence to trusted attorneys, banks, and builders. We guide you with clarity and confidence."
+      }
+    },
+    "chooseExperience": {
+      "heading": "Choose Your Experience",
+      "premium": {
+        "tag": "No Cost",
+        "name": "Premium",
+        "description": "A clear, guided start to your Costa Rica journey.",
+        "bestFor": "Best for: Early planning, clarity, and a focused start.",
+        "cta": "Book Your Discovery Call",
+        "bullet1": "Discovery Call: Share your goals, budget, and lifestyle. You don’t need to know Costa Rica. We’ll help you understand where you’ll actually find what you want.",
+        "bullet2": "Local Insight Plan: After our first call, we’ll define the right local agents from the areas that best fit your vision.",
+        "bullet3": "Tailored Shortlist: Review hand-picked properties together online, with transparent answers about costs, process, and timelines.",
+        "bullet4": "Next-Step Plan: Move forward confidently. Visit in person or let us tour properties via live video calls."
+      },
+      "vip": {
+        "tag": "By Arrangement",
+        "name": "VIP White-Glove",
+        "description": "For those ready to move with purpose and ease. Everything included in Premium, plus full concierge coordination:",
+        "bestFor": "Best for: Serious movers who want an end-to-end, time-efficient experience.",
+        "cta": "Request VIP Experience",
+        "bullet1": "Private airport pickup (Chauffeur or Charter Flight option)",
+        "bullet2": "Accommodation coordination (Stay near your areas of interest)",
+        "bullet3": "Curated property & neighborhood tours (with lifestyle stops)",
+        "bullet4": "School visits & meetings arranged for you",
+        "bullet5": "Local appointments (With attorneys, banks, builders and inspectors)",
+        "bullet6": "Personalized itineraries, transfers, and reservations",
+        "bullet7": "Decision support with comparable analysis and offer strategy"
+      }
+    },
+    "whyChooseUs": {
+      "heading": "Why Buyers Choose Us",
+      "subtitle": "Because buying property in Costa Rica should feel exciting, not confusing. Let’s make it simple, and unforgettable.",
+      "pillar1": {
+        "title": "Knowledge",
+        "body": "You don’t need to know Costa Rica: We know every corner of it."
+      },
+      "pillar2": {
+        "title": "Local Expertise",
+        "body": "Local agents who live in the areas they represent."
+      },
+      "pillar3": {
+        "title": "Professionalism",
+        "body": "Efficient, curated tours that save you days (and costly mistakes)."
+      },
+      "pillar4": {
+        "title": "Network",
+        "body": "Verified network of trusted pros: attorneys, builders, and banks."
+      },
+      "pillar5": {
+        "title": "Transparency",
+        "body": "Transparent numbers: clear costs, timelines, and next steps."
+      },
+      "pillar6": {
+        "title": "RE/MAX Power",
+        "body": "The brand you already trust, now right here guiding your move."
+      }
+    },
+    "booking": {
+      "heading": "Start Here: Tell Us About You",
+      "subtitle": "Let’s start your Costa Rica journey. Tell us what you’re dreaming of, and we’ll make it real."
+    }
   }
 }

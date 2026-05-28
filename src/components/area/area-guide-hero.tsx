@@ -3,6 +3,16 @@ import { getTranslations } from "next-intl/server";
 import type { Area } from "@/lib/db/schema/areas";
 import { getAreaHeroImage } from "@/lib/utils";
 
+interface AreaMetadata {
+  h1Es?: string;
+  h1En?: string;
+  elevation?: string | number;
+  climate?: string;
+  nearestBeach?: string;
+  nearestHospital?: string;
+  [key: string]: unknown;
+}
+
 interface AreaGuideHeroProps {
   area: Area;
   locale: string;
@@ -16,7 +26,10 @@ interface AreaGuideHeroProps {
  */
 export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
-  const metadata = area.metadata as Record<string, string> | null;
+  const metadata = area.metadata as AreaMetadata | null;
+  const h1Key = locale === "es" ? "h1Es" : "h1En";
+  const displayTitle = (metadata?.[h1Key] as string | undefined) || areaName;
+
   const hasHeroImage = !!area.heroImageUrl;
   const heroImageUrl = getAreaHeroImage(area.heroImageUrl, area.region);
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
@@ -51,6 +64,7 @@ export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
               "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-cream, #FFF8F0) 100%)",
           }}
           aria-hidden="true"
+          data-testid="gradient-fallback"
         />
       )}
 
@@ -69,7 +83,7 @@ export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
 
           {/* Area name */}
           <h1 className="mt-3 text-4xl font-extrabold text-white md:text-5xl lg:text-6xl">
-            {areaName}
+            {displayTitle}
           </h1>
 
           {/* Climate / altitude metadata */}
