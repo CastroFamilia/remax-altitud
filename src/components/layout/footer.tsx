@@ -57,6 +57,7 @@ const quickLinks = [
   { key: "properties", href: "/search" },
   { key: "areas", href: "/areas" },
   { key: "ourAgents", href: "/agents" },
+  { key: "vipBuyer", href: "/find-your-dream-property" },
   { key: "about", href: "/about" },
   { key: "contact", href: "/contact" },
   { key: "joinTeam", href: "/join" },
