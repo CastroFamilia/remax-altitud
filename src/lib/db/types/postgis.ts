@@ -18,6 +18,7 @@ export const geographyPoint = customType<{
     return "geography(Point, 4326)";
   },
   toDriver(value: GeoPoint): string {
+    if (!value) return null as any;
     return `SRID=4326;POINT(${value.lng} ${value.lat})`;
   },
 });
@@ -32,6 +33,7 @@ export const geographyPolygon = customType<{
     return "geography(Polygon, 4326)";
   },
   toDriver(value: GeoPolygon): string {
+    if (!value) return null as any;
     if (value.length < 3) {
       throw new Error("Polygon must have at least 3 points");
     }
