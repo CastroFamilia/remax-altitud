@@ -129,7 +129,10 @@ export default async function CommunityPage({
       <CommunityQuickFacts community={community} locale={locale} />
       <CommunityDescription community={community} locale={locale} />
       <CommunityMiniMap community={community} areaName={areaName} locale={locale} />
-      <InvestmentContext metadata={area.metadata as Record<string, unknown> | null} locale={locale} />
+      <InvestmentContext
+        metadata={area.metadata as Record<string, unknown> | null}
+        locale={locale}
+      />
       <CommunityTabs properties={communityProperties} community={community} locale={locale} />
       <SimilarCommunitiesSlider communities={similarCommunities} locale={locale} areaSlug={slug} />
     </main>

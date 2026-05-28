@@ -33,18 +33,14 @@ export async function InvestmentContext({ metadata, locale }: InvestmentContextP
             <span className="text-sm font-semibold uppercase tracking-wide text-brand-navy block mb-1">
               {t("appreciation")}
             </span>
-            <p className="text-lg text-text-primary">
-              {data.appreciationTrend}
-            </p>
+            <p className="text-lg text-text-primary">{data.appreciationTrend}</p>
           </div>
 
           <div>
             <span className="text-sm font-semibold uppercase tracking-wide text-brand-navy block mb-1">
               {t("rentalYield")}
             </span>
-            <p className="text-lg text-text-primary">
-              {data.rentalYieldEstimate}
-            </p>
+            <p className="text-lg text-text-primary">{data.rentalYieldEstimate}</p>
           </div>
         </div>
 

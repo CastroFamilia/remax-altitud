@@ -162,7 +162,8 @@ export default async function PropertyPage({
   // Query optimization: only fetch area metadata if the property is tagged for investment (AC #4)
   const INVESTMENT_TAGS = ["Investment Property", "Rental Potential", "Commercial"];
   const hasInvestmentTag = property.lifestyleTags?.some((tag) => INVESTMENT_TAGS.includes(tag));
-  const area = hasInvestmentTag && property.areaSlug ? await getAreaBySlug(property.areaSlug) : null;
+  const area =
+    hasInvestmentTag && property.areaSlug ? await getAreaBySlug(property.areaSlug) : null;
 
   const investmentContext = area ? (
     <InvestmentContext metadata={area.metadata as Record<string, unknown> | null} locale={locale} />
