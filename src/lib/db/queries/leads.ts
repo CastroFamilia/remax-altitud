@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
 
 import { and, desc, eq, gte } from "drizzle-orm";

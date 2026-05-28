@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 /**
  * Story 7.4: Smart Agent Routing from Shortlist — Component & Routing Unit Tests
  * Component: src/components/shortlist/shortlist-page-client.tsx
@@ -64,7 +65,7 @@ vi.mock("next-intl", () => {
 // Mock use-shortlist hook
 const mockUseShortlist = vi.fn(() => ({
   isLoaded: true,
-  shortlist: [],
+  shortlist: [] as string[],
   remove: vi.fn(),
   isSaved: () => true,
   save: () => ({ success: true }),
