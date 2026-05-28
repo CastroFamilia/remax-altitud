@@ -15,11 +15,11 @@ export async function fetchAdminSyncDashboardData(params: {
   const status = params.status;
 
   // Normalize page parameter to prevent NaN or negative/zero values causing DB offset errors
-  let page = params.page ?? 1;
+  let page = typeof params.page === "number" ? params.page : parseInt(params.page as any, 10);
   if (isNaN(page) || page < 1) {
     page = 1;
   } else {
-    page = Math.floor(page);
+    page = Math.trunc(page);
   }
 
   const limit = 20;
