@@ -36,10 +36,11 @@ export default async function AgentHistoryPage({ params, searchParams }: PagePro
 
   const resolvedSearchParams = await searchParams;
   const agentId = resolvedSearchParams.agentId || "";
+  const hasAgentSelected = agentId && agentId !== "none";
 
   const [agents, leads] = await Promise.all([
     getAllAgents(),
-    agentId ? getLeads({ agentId }) : Promise.resolve([]),
+    hasAgentSelected ? getLeads({ agentId }) : Promise.resolve([]),
   ]);
 
   return (
@@ -71,7 +72,7 @@ export default async function AgentHistoryPage({ params, searchParams }: PagePro
       />
 
       {/* History table */}
-      {agentId ? (
+      {hasAgentSelected ? (
         leads.length === 0 ? (
           <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center text-slate-400">
             <ShieldAlert className="w-12 h-12 text-slate-500 mx-auto mb-3" />

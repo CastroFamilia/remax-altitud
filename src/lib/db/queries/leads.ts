@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
 
-import { and, desc, eq, gte, lte, inArray } from "drizzle-orm";
+import { and, desc, eq, gte, lte, inArray, isNull } from "drizzle-orm";
 import { agents } from "@/lib/db/schema/agents";
 import { properties } from "@/lib/db/schema/properties";
 import { leadAssignmentLogs } from "@/lib/db/schema/lead-assignment-logs";
@@ -217,16 +217,20 @@ export interface GetLeadsFilters {
 export async function getLeads(filters: GetLeadsFilters) {
   const conditions = [];
 
-  if (filters.agentId) {
-    conditions.push(eq(leads.assignedAgentId, filters.agentId));
+  if (filters.agentId && filters.agentId !== "all" && filters.agentId !== "none") {
+    if (filters.agentId === "unassigned") {
+      conditions.push(isNull(leads.assignedAgentId));
+    } else {
+      conditions.push(eq(leads.assignedAgentId, filters.agentId));
+    }
   }
-  if (filters.source) {
+  if (filters.source && filters.source !== "all") {
     conditions.push(eq(leads.source, filters.source));
   }
-  if (filters.intent) {
+  if (filters.intent && filters.intent !== "all") {
     conditions.push(eq(leads.intent, filters.intent));
   }
-  if (filters.status) {
+  if (filters.status && filters.status !== "all") {
     conditions.push(eq(leads.status, filters.status));
   }
   if (filters.startDate) {
