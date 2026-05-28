@@ -188,7 +188,7 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
                 <SlidersHorizontal size={16} aria-hidden="true" />
                 <span>{t("filterBar.label")}</span>
                 {activeFilterCount > 0 && (
-                  <span className="inline-flex items-center justify-center rounded-full bg-brand-blue text-white text-xs w-5 h-5">
+                  <span className="inline-flex items-center justify-center rounded-full bg-brand-blue text-white text-xs w-5 h-5 font-bold shadow-sm">
                     {activeFilterCount}
                   </span>
                 )}

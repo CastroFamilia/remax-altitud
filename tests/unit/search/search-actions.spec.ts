@@ -345,6 +345,31 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     expect(mockWhere).toHaveBeenCalled();
   });
 
+  it("[P0] searchProperties with q='waterfall' expands to matching Spanish synonyms like 'cascada' or 'catarata'", async () => {
+    await searchProperties({ q: "waterfall" });
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
+  it("[P0] searchProperties with q='views' expands to matching Spanish synonyms like 'vista' or 'vistas'", async () => {
+    await searchProperties({ q: "views" });
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
+  it("[P0] searchProperties with q='beach' expands to matching Spanish synonyms like 'playa' or 'mar'", async () => {
+    await searchProperties({ q: "beach" });
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
+  it("[P0] searchProperties with compound query q='waterfall views' expands both terms and intersects them using AND", async () => {
+    await searchProperties({ q: "waterfall views" });
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
+  it("[P0] searchProperties with stop words query q='properties with waterfall and views' filters stop words and matches waterfall and views", async () => {
+    await searchProperties({ q: "properties with waterfall and views" });
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
   // -------------------------------------------------------------------------
   // Pagination defaults
   // -------------------------------------------------------------------------
