@@ -50,15 +50,20 @@ export function ShortlistPageClient() {
   };
 
   const handleAskAgent = () => {
-    const message = `Hello, I'm interested in these properties from my shortlist:\n${properties
-      .map((p) => `- ${p.titleEn} (${p.id})`)
+    const header = getTranslation("whatsAppMessageHeader");
+    const message = `${header}\n${properties
+      .map((p) => {
+        const title = locale === "es" ? (p.titleEs || p.titleEn) : p.titleEn;
+        return `- ${title} (${p.id})`;
+      })
       .join("\n")}`;
     const whatsappUrl = `https://wa.me/50688888888?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
 
   const handleShareShortlist = () => {
-    const text = `Check out my property shortlist:\n${properties
+    const header = getTranslation("shareMessageHeader");
+    const text = `${header}\n${properties
       .map((p) => `${window.location.origin}/${locale}/property/${p.slug}`)
       .join("\n")}`;
     
@@ -66,7 +71,12 @@ export function ShortlistPageClient() {
       navigator.clipboard.writeText(text).then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+      }).catch((err) => {
+        console.error("Clipboard copy failed, using alert fallback:", err);
+        alert(text);
       });
+    } else {
+      alert(text);
     }
   };
 
@@ -99,6 +109,12 @@ export function ShortlistPageClient() {
       </div>
     );
   }
+
+  // Filter out any properties that have null coordinates to prevent Mapbox/Supercluster runtime crashes.
+  const mapProperties = properties.filter(
+    (p): p is typeof p & { latitude: number; longitude: number } =>
+      p.latitude !== null && p.longitude !== null
+  );
 
   // Comparison grid + interactive map
   return (
@@ -138,7 +154,7 @@ export function ShortlistPageClient() {
 
         {/* Right Side: Mini-map showing saved property locations */}
         <div className="lg:col-span-5 h-[350px] lg:h-[600px] sticky top-24 rounded-xl overflow-hidden shadow-md border border-border">
-          <MapView properties={properties as any} locale={locale} />
+          <MapView properties={mapProperties} locale={locale} />
         </div>
       </div>
     </div>
