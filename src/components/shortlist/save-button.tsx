@@ -102,7 +102,7 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
       >
         <Heart
           className={`h-5 w-5 transition-colors ${
-            saved ? "fill-[#660000] stroke-[#660000] fill-accent" : "stroke-[#888] stroke-current"
+            saved ? "fill-accent stroke-accent" : "stroke-[#888] stroke-current"
           }`}
           strokeWidth={2}
         />

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition, useEffect } from "react";
+import React, { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Search,
@@ -12,9 +12,7 @@ import {
   Heart,
   ArrowUpDown,
   ExternalLink,
-  BookOpen,
 } from "lucide-react";
-import { formatUSD } from "@/lib/utils/currency";
 
 export interface AnalyticsRow {
   id: string;
@@ -45,8 +43,6 @@ export function AdminShortlistAnalyticsDashboard({
   totalCount,
   currentPage,
   totalPages,
-  sortBy: initialSortBy,
-  sortOrder: initialSortOrder,
 }: AdminShortlistAnalyticsDashboardProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -186,12 +182,12 @@ export function AdminShortlistAnalyticsDashboard({
 
         {/* 30 Days Saves Card */}
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-md group hover:border-red-500/30 transition-all duration-300">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-red-650/5 rounded-full blur-xl group-hover:bg-red-650/10 transition-all duration-300"></div>
+          <div className="absolute top-0 right-0 w-24 h-24 bg-red-600/5 rounded-full blur-xl group-hover:bg-red-600/10 transition-all duration-300"></div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               {labels.statSaves30}
             </span>
-            <div className="p-2 bg-red-650/10 text-red-500 rounded-xl">
+            <div className="p-2 bg-red-500/10 text-red-500 rounded-xl">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
@@ -207,7 +203,7 @@ export function AdminShortlistAnalyticsDashboard({
 
         {/* Active Saves Card */}
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-md group hover:border-red-500/30 transition-all duration-300">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-red-650/5 rounded-full blur-xl group-hover:bg-red-650/10 transition-all duration-300"></div>
+          <div className="absolute top-0 right-0 w-24 h-24 bg-red-600/5 rounded-full blur-xl group-hover:bg-red-600/10 transition-all duration-300"></div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               {labels.statActiveSaves}
@@ -374,9 +370,9 @@ export function AdminShortlistAnalyticsDashboard({
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-slate-200">{row.saves30Days}</span>
                             {row.saves30Days > 0 && (
-                              <div className="w-16 h-1.5 bg-slate-850 rounded-full overflow-hidden">
+                              <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
                                 <div
-                                  className="h-full bg-gradient-to-r from-red-650 to-red-500 rounded-full"
+                                  className="h-full bg-gradient-to-r from-red-600 to-red-500 rounded-full"
                                   style={{
                                     width: `${Math.min((row.saves30Days / 10) * 100, 100)}%`,
                                   }}

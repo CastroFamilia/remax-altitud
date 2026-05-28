@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   let rawBody: unknown;
   try {
     rawBody = await request.json();
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
   }
 
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to record event" }, { status: 500 });
   }
 }
