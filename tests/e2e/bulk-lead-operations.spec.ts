@@ -19,7 +19,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment and Export E2E Tests", () => {
     await expect(page.locator("h1")).toContainText(/Leads & Assignment Management/i);
 
     // Verify "Bulk Lead Operations" button exists
-    const bulkButton = page.getByTestId("bulk-ops-btn");
+    const bulkButton = page.getByTestId("bulk-reassign-btn");
     await expect(bulkButton).toBeVisible();
     await expect(bulkButton).toContainText(/Bulk Lead Operations/i);
   });
@@ -27,7 +27,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment and Export E2E Tests", () => {
   test("should open modal when clicking Bulk Lead Operations button and support tab switching", async ({ page }: any) => {
     await page.goto(LEADS_PAGE);
 
-    const bulkButton = page.getByTestId("bulk-ops-btn");
+    const bulkButton = page.getByTestId("bulk-reassign-btn");
     await bulkButton.click();
 
     // Verify modal container exists and header matches
@@ -58,7 +58,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment and Export E2E Tests", () => {
   test("should show validation warning when selecting a source agent with no leads", async ({ page }: any) => {
     await page.goto(LEADS_PAGE);
 
-    const bulkButton = page.getByTestId("bulk-ops-btn");
+    const bulkButton = page.getByTestId("bulk-reassign-btn");
     await bulkButton.click();
 
     // Select source agent select box
@@ -74,7 +74,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment and Export E2E Tests", () => {
   test("should show explicit confirmation prompt in the single reassign flow", async ({ page }: any) => {
     await page.goto(LEADS_PAGE);
 
-    await page.getByTestId("bulk-ops-btn").click();
+    await page.getByTestId("bulk-reassign-btn").click();
 
     // Fill source agent select
     const sourceSelect = page.locator("#source-agent");
@@ -100,7 +100,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment and Export E2E Tests", () => {
     await expect(page.locator("text=/Are you sure? This will reassign/i")).toBeVisible();
 
     // Cancel reassignment
-    const cancelBtn = page.getByTestId("cancel-reassign");
+    const cancelBtn = page.getByTestId("cancel-reassign-dialog-btn");
     await expect(cancelBtn).toBeVisible();
     await cancelBtn.click();
 
