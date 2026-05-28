@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-27T12:37:00-06:00_
+_Last updated: 2026-05-27T19:33:00-06:00_
 
 ## Stories
 
@@ -36,10 +36,10 @@ _Last updated: 2026-05-27T12:37:00-06:00_
 | 5.2   | 5    | CMA Request Form | done | #99 | #144 | merged | 5.1 | ✅ Yes (done) |
 | 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | done | #100 | #152 | merged | 5.1, 5.2 | ✅ Yes (done) |
 | 6.1   | 6    | Area Guide Pages | done | #101 | #153 | merged | none | ✅ Yes (done) |
-| 6.2   | 6    | Community Pages | backlog | #102 | — | — | 6.1 | ✅ Yes |
-| 6.3   | 6    | Community Mini-Map & Geo-Fence Display | backlog | #103 | — | — | 6.2 | ❌ No (6.2 not merged) |
+| 6.2   | 6    | Community Pages | done | #102 | #156 | merged | 6.1 | ✅ Yes (done) |
+| 6.3   | 6    | Community Mini-Map & Geo-Fence Display | done | #103 | #157 | merged | 6.2 | ✅ Yes (done) |
 | 6.4   | 6    | Investment Discovery & Area Context | backlog | #104 | — | — | 6.1 | ✅ Yes |
-| 6.5   | 6    | Community Geo-Fence Auto-Tagging | backlog | #105 | — | — | 6.2 | ❌ No (6.2 not merged) |
+| 6.5   | 6    | Community Geo-Fence Auto-Tagging | backlog | #105 | — | — | 6.2 | ✅ Yes |
 | 7.1   | 7    | Save & Shortlist Properties | backlog | #106 | — | — | none | ❌ No (epic 6 not complete) |
 | 7.2   | 7    | Shortlist Comparison Page | backlog | #107 | — | — | 7.1 | ❌ No (epic 6 not complete) |
 | 7.3   | 7    | Shareable Shortlist URL | backlog | #108 | — | — | 7.2 | ❌ No (epic 6 not complete) |
@@ -103,12 +103,11 @@ _Last updated: 2026-05-27T12:37:00-06:00_
 ## Notes
 
 - Epics 1–5 are fully complete (all stories done and merged).
-- Epic 5 retrospective complete (PR #154 merged 2026-05-27).
-- Story 5.2 original PR #142 was closed; clean rebased PR #144 merged 2026-05-13.
-- Story 5.3 PR #152 merged 2026-05-24.
-- Story 6.1 PR #153 merged 2026-05-27 (today).
-- Epic 6 in progress: Story 6.1 done. Stories 6.2 (Community Pages) and 6.4 (Investment Discovery) are Ready to Work.
-- Stories 6.3 and 6.5 blocked on 6.2 (not merged).
+- Epic 6 in progress: Stories 6.1, 6.2, 6.3 are done. Stories 6.4 and 6.5 remain.
+- Story 6.2 PR #156 merged 2026-05-27. Story 6.3 PR #157 merged 2026-05-28.
+- Stories 6.4 (Investment Discovery) and 6.5 (Community Geo-Fence Auto-Tagging) are Ready to Work — can be parallelized.
+- Epic 7 and 8 blocked until Epic 6 is complete.
 - Base branch: `development` (not `main`). All worktrees and PRs target `development`.
-- No open PRs. No stale worktrees.
+- No open story PRs. PR #155 (Release) is open but not story-related.
+- No stale worktrees. Cleaned up story-6.3 remote branch.
 - Epic ordering strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.

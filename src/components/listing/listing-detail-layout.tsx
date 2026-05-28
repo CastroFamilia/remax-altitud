@@ -42,6 +42,7 @@ interface ListingDetailLayoutProps {
   agent: Agent | null;
   locale: string;
   officeName?: string; // resolved server-side in page.tsx (Story 4.2, Task 5b)
+  investmentContext?: React.ReactNode;
 }
 
 export async function ListingDetailLayout({
@@ -49,6 +50,7 @@ export async function ListingDetailLayout({
   agent,
   locale,
   officeName,
+  investmentContext,
 }: ListingDetailLayoutProps) {
   const t = await getTranslations({ locale, namespace: "ListingDetail" });
   const tBreadcrumbs = await getTranslations({ locale, namespace: "Breadcrumbs" });
@@ -242,6 +244,7 @@ export async function ListingDetailLayout({
           />
 
           {/* TODO Epic 6: Area context block (area name link + nearby count) goes here */}
+          {investmentContext}
 
           {/* TODO post-4.1: Location Map (Mapbox, Epic 3 scope only) */}
           {/* <PropertyLocationMap lat={property.latitude} lng={property.longitude} /> */}

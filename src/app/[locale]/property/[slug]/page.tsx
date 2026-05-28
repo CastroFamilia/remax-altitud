@@ -12,6 +12,8 @@ import { getAgentById } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 import { ListingDetailLayout } from "@/components/listing/listing-detail-layout";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
+import { getAreaBySlug } from "@/lib/db/queries/areas";
+import { InvestmentContext } from "@/components/area/investment-context";
 import {
   generateListingJsonLd,
   generateBreadcrumbJsonLd,
@@ -67,6 +69,8 @@ export async function generateMetadata({
     },
   };
 }
+
+const INVESTMENT_TAGS = ["Investment Property", "Rental Potential", "Commercial"];
 
 export default async function PropertyPage({
   params,
@@ -157,6 +161,15 @@ export default async function PropertyPage({
     },
   ]);
 
+  // Query optimization: only fetch area metadata if the property is tagged for investment (AC #4)
+  const hasInvestmentTag = property.lifestyleTags?.some((tag) => INVESTMENT_TAGS.includes(tag));
+  const area =
+    hasInvestmentTag && property.areaSlug ? await getAreaBySlug(property.areaSlug) : null;
+
+  const investmentContext = area ? (
+    <InvestmentContext metadata={area.metadata as Record<string, unknown> | null} locale={locale} />
+  ) : undefined;
+
   // Visible property → full listing detail page (Story 4.1)
   return (
     <>
@@ -175,6 +188,7 @@ export default async function PropertyPage({
         agent={agent}
         locale={locale}
         officeName={office?.name}
+        investmentContext={investmentContext}
       />
     </>
   );
