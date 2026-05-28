@@ -13,6 +13,7 @@ interface PropertyCardProps {
   variant?: "default" | "compact" | "horizontal";
   unitSystem?: UnitSystem;
   onRemove?: (id: string) => void;
+  isSharedView?: boolean;
 }
 
 const BEACH_SLUGS = new Set([
@@ -71,6 +72,7 @@ export function PropertyCard({
   variant = "default",
   unitSystem,
   onRemove,
+  isSharedView = false,
 }: PropertyCardProps) {
   const t = useTranslations("PropertyCard");
   const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
@@ -88,7 +90,7 @@ export function PropertyCard({
 
   return (
     <article
-      data-testid="property-card"
+      data-testid={isSharedView ? `property-card-${property.id}` : "property-card"}
       aria-label={`Property: ${title}, ${usdPrice}`}
       className={`group relative overflow-hidden rounded-lg bg-card shadow-sm transition-all duration-200 ease-out hover:translate-y-[-4px] hover:shadow-lg ${isHorizontal ? "flex flex-row" : ""}`}
     >

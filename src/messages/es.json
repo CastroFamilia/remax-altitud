@@ -821,6 +821,11 @@
     "shareShortlistCta": "Compartir mi lista",
     "removeButtonLabel": "Eliminar propiedad de guardados",
     "whatsAppMessageHeader": "Hola, estoy interesado en estas propiedades de mi lista:",
-    "shareMessageHeader": "Mira mi lista de propiedades guardadas:"
+    "shareMessageHeader": "Mira mi lista de propiedades guardadas:",
+    "shareCopied": "¡Enlace copiado! Compártelo con cualquiera.",
+    "expiredTitle": "Lista Compartida Expirada",
+    "expiredMessage": "Esta lista compartida ha expirado. Comienza una nueva búsqueda.",
+    "sharedBanner": "Viendo una lista compartida. ¡Comienza a guardar propiedades para crear la tuya!",
+    "shareError": "Error al generar enlace de compartir. Copiando enlaces directos de propiedades."
   }
 }

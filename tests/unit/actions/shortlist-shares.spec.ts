@@ -59,7 +59,7 @@ vi.mock("@/lib/db/schema", () => ({
 // (Since we are in TDD RED phase, these are imported or defined as placeholders)
 import { createShortlistShare, getSharedShortlist } from "@/app/actions/shortlist-actions";
 
-describe.skip("Story 7.3: Shareable Shortlist URL Server Actions Unit Tests (RED PHASE)", () => {
+describe("Story 7.3: Shareable Shortlist URL Server Actions Unit Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockWhere.mockResolvedValue([]);

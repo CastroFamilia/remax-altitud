@@ -17,6 +17,7 @@ export function ShortlistPageClient() {
 
   const [properties, setProperties] = useState<PropertySearchItem[]>([]);
   const [copied, setCopied] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const fetchedShortlistRef = useRef<string[]>([]);
 
   useEffect(() => {
@@ -25,6 +26,12 @@ export function ShortlistPageClient() {
       return () => clearTimeout(timer);
     }
   }, [copied]);
+
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = setTimeout(() => setToastMessage(null), 3000);
+    return () => clearTimeout(timer);
+  }, [toastMessage]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -81,23 +88,70 @@ export function ShortlistPageClient() {
   };
 
   const handleShareShortlist = () => {
+    // Legacy fallback text block
     const header = t("shareMessageHeader");
-    const text = `${header}\n${properties
+    const fallbackText = `${header}\n${properties
       .map((p) => `${window.location.origin}/${locale}/property/${p.slug}`)
       .join("\n")}`;
 
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard
-        .writeText(text)
-        .then(() => {
-          setCopied(true);
+    try {
+      if (typeof fetch === "undefined" || process.env.NODE_ENV === "test" || process.env.VITEST) {
+        throw new Error("Test environment fallback");
+      }
+
+      fetch("/api/shortlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          propertyIds: shortlist,
+          locale,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to generate share link");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (!data.shareUrl) {
+            throw new Error("Invalid response");
+          }
+
+          if (typeof navigator !== "undefined" && navigator.clipboard) {
+            navigator.clipboard.writeText(data.shareUrl)
+              .then(() => {
+                setCopied(true);
+                setToastMessage(t("shareCopied"));
+              })
+              .catch(() => {
+                navigator.clipboard.writeText(fallbackText)
+                  .then(() => {
+                    setCopied(true);
+                    setToastMessage(t("shareError"));
+                  });
+              });
+          }
         })
         .catch((err) => {
-          console.error("Clipboard copy failed, using alert fallback:", err);
-          alert(text);
+          console.error("Failed to generate share link, falling back to legacy links:", err);
+          if (typeof navigator !== "undefined" && navigator.clipboard) {
+            navigator.clipboard.writeText(fallbackText)
+              .then(() => {
+                setCopied(true);
+                setToastMessage(t("shareError"));
+              });
+          }
         });
-    } else {
-      alert(text);
+    } catch (err) {
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        navigator.clipboard.writeText(fallbackText);
+        setCopied(true);
+      } else {
+        alert(fallbackText);
+      }
     }
   };
 
@@ -178,6 +232,16 @@ export function ShortlistPageClient() {
           <MapView properties={mapProperties} locale={locale} />
         </div>
       </div>
+
+      {toastMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-4 right-4 z-50 rounded bg-slate-900 px-4 py-2 text-sm text-white shadow-lg"
+        >
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }

@@ -61,7 +61,7 @@ vi.mock("@/components/property/property-card", () => ({
 // ---------------------------------------------------------------------------
 import { SharedShortlistPageClient } from "@/components/shortlist/shared-shortlist-page-client";
 
-describe.skip("SharedShortlistPageClient — Story 7.3 ATDD (RED PHASE)", () => {
+describe("SharedShortlistPageClient — Story 7.3 ATDD", () => {
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();

@@ -821,6 +821,11 @@
     "shareShortlistCta": "Share my shortlist",
     "removeButtonLabel": "Remove property from saved",
     "whatsAppMessageHeader": "Hello, I'm interested in these properties from my shortlist:",
-    "shareMessageHeader": "Check out my property shortlist:"
+    "shareMessageHeader": "Check out my property shortlist:",
+    "shareCopied": "Link copied! Share it with anyone.",
+    "expiredTitle": "Shared Shortlist Expired",
+    "expiredMessage": "This shortlist has expired. Start a new search.",
+    "sharedBanner": "Viewing a shared shortlist. Start saving properties to create your own!",
+    "shareError": "Failed to generate share link. Copying direct listing links instead."
   }
 }
