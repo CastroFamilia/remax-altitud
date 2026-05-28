@@ -10,6 +10,7 @@
 import { Logo } from "@/components/layout/logo";
 import { DesktopNav } from "@/components/layout/desktop-nav";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { ShortlistIcon } from "@/components/shortlist/shortlist-icon";
 
 export function Header() {
   return (
@@ -25,8 +26,12 @@ export function Header() {
       <div className="container flex h-14 items-center justify-between md:h-16">
         <Logo />
         <DesktopNav />
-        <MobileNav />
+        <div className="flex items-center gap-2">
+          <ShortlistIcon />
+          <MobileNav />
+        </div>
       </div>
     </header>
   );
 }
+

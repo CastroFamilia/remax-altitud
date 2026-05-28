@@ -807,5 +807,11 @@
     "rentalYield": "Estimación de Retorno de Renta",
     "highlights": "Aspectos Destacados del Mercado",
     "disclaimer": "Basado en estimaciones de mercado — consulte con un agente para obtener datos actualizados"
+  },
+  "Shortlist": {
+    "limitReached": "Elimina una para agregar más",
+    "agentTooltip": "Guarda más — tu agente te las mostrará todas.",
+    "saveLabel": "Guardar propiedad",
+    "removeLabel": "Eliminar de guardados"
   }
 }

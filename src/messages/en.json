@@ -807,5 +807,11 @@
     "rentalYield": "Rental Yield Estimate",
     "highlights": "Market Highlights",
     "disclaimer": "Based on market estimates — consult an agent for current data"
+  },
+  "Shortlist": {
+    "limitReached": "Remove one to add more",
+    "agentTooltip": "Save more — your agent will show you all of them.",
+    "saveLabel": "Save property",
+    "removeLabel": "Remove from saved"
   }
 }

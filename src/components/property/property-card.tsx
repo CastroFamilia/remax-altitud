@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { SaveButton } from "@/components/property/save-button";
+import { SaveButton } from "@/components/shortlist/save-button";
 import { ShareButton } from "@/components/property/share-button";
 import { convertArea, type UnitSystem } from "@/lib/utils/units";
 import { formatUSD, formatEUR, isNonUSLocale } from "@/lib/utils/currency";
