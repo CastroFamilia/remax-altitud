@@ -127,8 +127,9 @@ describe("Story 7.3: Shareable Shortlist URL Server Actions Unit Tests", () => {
 
     const result = await getSharedShortlist("expired123");
 
-    expect(result.isExpired).toBe(true);
-    expect(result.properties).toEqual([]);
+    expect(result).not.toBeNull();
+    expect(result!.isExpired).toBe(true);
+    expect(result!.properties).toEqual([]);
   });
 
   it("[P0] 7.3-UNIT-004: should return the valid shortlist and properties when active (AC #2)", async () => {
@@ -156,8 +157,9 @@ describe("Story 7.3: Shareable Shortlist URL Server Actions Unit Tests", () => {
 
     const result = await getSharedShortlist("active123");
 
-    expect(result.isExpired).toBe(false);
-    expect(result.properties.length).toBe(1);
-    expect(result.properties[0].id).toBe("prop-1");
+    expect(result).not.toBeNull();
+    expect(result!.isExpired).toBe(false);
+    expect(result!.properties.length).toBe(1);
+    expect(result!.properties[0].id).toBe("prop-1");
   });
 });

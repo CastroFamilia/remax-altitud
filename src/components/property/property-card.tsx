@@ -14,6 +14,7 @@ interface PropertyCardProps {
   unitSystem?: UnitSystem;
   onRemove?: (id: string) => void;
   isSharedView?: boolean;
+  readOnly?: boolean;
 }
 
 const BEACH_SLUGS = new Set([
@@ -73,6 +74,7 @@ export function PropertyCard({
   unitSystem,
   onRemove,
   isSharedView = false,
+  readOnly = false,
 }: PropertyCardProps) {
   const t = useTranslations("PropertyCard");
   const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
