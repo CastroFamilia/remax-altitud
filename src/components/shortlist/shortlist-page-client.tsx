@@ -14,7 +14,7 @@ export function ShortlistPageClient() {
   const t = useTranslations("Shortlist");
   const locale = useLocale();
   const { shortlist, remove, isLoaded } = useShortlist();
-  
+
   const [properties, setProperties] = useState<PropertySearchItem[]>([]);
   const [copied, setCopied] = useState(false);
 
@@ -26,6 +26,13 @@ export function ShortlistPageClient() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return t(key as any);
   };
+
+  useEffect(() => {
+    if (copied) {
+      const timer = setTimeout(() => setCopied(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [copied]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -53,7 +60,7 @@ export function ShortlistPageClient() {
     const header = getTranslation("whatsAppMessageHeader");
     const message = `${header}\n${properties
       .map((p) => {
-        const title = locale === "es" ? (p.titleEs || p.titleEn) : p.titleEn;
+        const title = locale === "es" ? p.titleEs || p.titleEn : p.titleEn;
         return `- ${title} (${p.id})`;
       })
       .join("\n")}`;
@@ -66,15 +73,17 @@ export function ShortlistPageClient() {
     const text = `${header}\n${properties
       .map((p) => `${window.location.origin}/${locale}/property/${p.slug}`)
       .join("\n")}`;
-    
+
     if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      }).catch((err) => {
-        console.error("Clipboard copy failed, using alert fallback:", err);
-        alert(text);
-      });
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          setCopied(true);
+        })
+        .catch((err) => {
+          console.error("Clipboard copy failed, using alert fallback:", err);
+          alert(text);
+        });
     } else {
       alert(text);
     }
@@ -113,14 +122,14 @@ export function ShortlistPageClient() {
   // Filter out any properties that have null coordinates to prevent Mapbox/Supercluster runtime crashes.
   const mapProperties = properties.filter(
     (p): p is typeof p & { latitude: number; longitude: number } =>
-      p.latitude !== null && p.longitude !== null
+      p.latitude !== null && p.longitude !== null,
   );
 
   // Comparison grid + interactive map
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-brand-navy">{getTranslation("title")}</h1>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Side: Property list and Actions */}
         <div className="lg:col-span-7 flex flex-col gap-6">

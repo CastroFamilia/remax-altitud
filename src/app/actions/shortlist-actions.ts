@@ -12,16 +12,11 @@ import type { PropertySearchItem } from "@/types/search";
  */
 export async function getShortlistProperties(ids: string[]): Promise<PropertySearchItem[]> {
   if (!ids || ids.length === 0) return [];
-  
+
   const rows = await db
     .select(propertySearchColumns)
     .from(properties)
-    .where(
-      and(
-        inArray(properties.id, ids),
-        eq(properties.isVisible, true)
-      )
-    );
+    .where(and(inArray(properties.id, ids), eq(properties.isVisible, true)));
 
   return rows.map(mapPropertyRowToSearchItem);
 }
