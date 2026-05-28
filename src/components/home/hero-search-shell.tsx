@@ -183,8 +183,8 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
 
   const shellClass =
     variant === "desktop-overlay"
-      ? "pointer-events-auto mx-auto w-full max-w-[720px] rounded-xl glass-strong p-3 shadow-[var(--shadow-glass)]"
-      : "rounded-xl glass-strong p-3 shadow-[var(--shadow-glass)]";
+      ? "pointer-events-auto mx-auto w-full max-w-[720px] rounded-2xl bg-brand-navy/75 backdrop-blur-xl border border-brand-gold/30 p-4 shadow-[0_20px_50px_rgba(0,0,0,0.4),_0_0_30px_rgba(194,166,97,0.15)] hover:border-brand-gold/50 transition-all duration-300"
+      : "rounded-2xl bg-brand-navy/90 backdrop-blur-lg border border-brand-gold/25 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.2)]";
 
   const handleSearch = () => {
     const params = parseQuery(query);
@@ -210,39 +210,51 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
         <div>
           {/* Interactive Search Mode Toggles */}
           <div
-            className="mb-2.5 flex gap-2 text-xs font-semibold"
+            className="mb-3 flex gap-2.5 text-xs font-semibold"
             aria-label="Search mode selector"
           >
             <button
               type="button"
               onClick={() => setSearchMode("smart")}
               className={cn(
-                "flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-gold",
+                "flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-gold",
                 searchMode === "smart"
-                  ? "bg-white/15 text-brand-gold ring-1 ring-brand-gold/30 shadow-sm"
-                  : "text-white/60 hover:text-white/90 hover:bg-white/5",
+                  ? "bg-brand-gold/20 text-brand-gold ring-1 ring-brand-gold/55 shadow-[0_0_12px_rgba(194,166,97,0.25)]"
+                  : "text-white/70 hover:text-white hover:bg-white/10",
               )}
             >
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              <Sparkles
+                className={cn(
+                  "h-3.5 w-3.5 transition-all duration-300",
+                  searchMode === "smart" ? "animate-pulse text-brand-gold" : "text-white/70",
+                )}
+                aria-hidden="true"
+              />
               {t("smartToggle")}
             </button>
             <button
               type="button"
               onClick={() => setSearchMode("traditional")}
               className={cn(
-                "flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-gold",
+                "flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-gold",
                 searchMode === "traditional"
-                  ? "bg-white/15 text-brand-gold ring-1 ring-brand-gold/30 shadow-sm"
-                  : "text-white/60 hover:text-white/90 hover:bg-white/5",
+                  ? "bg-brand-gold/20 text-brand-gold ring-1 ring-brand-gold/55 shadow-[0_0_12px_rgba(194,166,97,0.25)]"
+                  : "text-white/70 hover:text-white hover:bg-white/10",
               )}
             >
-              <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
+              <SlidersHorizontal
+                className={cn(
+                  "h-3.5 w-3.5 transition-all duration-300",
+                  searchMode === "traditional" ? "text-brand-gold" : "text-white/70",
+                )}
+                aria-hidden="true"
+              />
               {t("traditionalToggle")}
             </button>
           </div>
 
           {/* Interactive Input and Submit Button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 bg-black/30 border border-white/15 rounded-xl pl-3 pr-1.5 py-1 focus-within:border-brand-gold/60 focus-within:ring-1 focus-within:ring-brand-gold/30 transition-all duration-200">
             <input
               type="search"
               value={query}
@@ -251,14 +263,14 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
               placeholder={t("searchPlaceholder")}
               aria-label={t("searchPlaceholder")}
               className={cn(
-                "min-h-11 flex-1 bg-transparent px-2 text-sm text-white outline-none placeholder:text-white/70",
+                "min-h-10 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/45",
               )}
             />
             <button
               type="button"
               onClick={handleSearch}
               aria-label={t("searchSubmit")}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-navy text-white shadow-[var(--shadow-cta)] hover:bg-brand-navy-dark hover:scale-105 active:scale-95 transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 focus-visible:ring-brand-gold"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-gold text-brand-navy shadow-md hover:bg-brand-gold-light hover:scale-105 active:scale-95 transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 focus-visible:ring-brand-gold"
             >
               <Search className="h-4 w-4" aria-hidden="true" />
             </button>
