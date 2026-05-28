@@ -5,6 +5,9 @@ import {
   reassignLead,
   getLeadAssignmentLogs,
   getShortlistLeadDetails,
+  bulkReassignLeads,
+  getLeadsForExport,
+  getAgentLeadsCount,
 } from "@/lib/db/queries/leads";
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { revalidatePath } from "next/cache";
@@ -123,3 +126,65 @@ export async function fetchShortlistDetailsAction(leadId: string) {
   await verifyAdminAuth();
   return getShortlistLeadDetails(leadId);
 }
+
+/**
+ * Server Action to bulk reassign leads from one agent to other agent(s).
+ */
+export async function bulkReassignLeadsAction(
+  sourceAgentId: string,
+  targetAgentIds: string[],
+  locale: string,
+) {
+  await verifyAdminAuth();
+  try {
+    const result = await bulkReassignLeads(sourceAgentId, targetAgentIds);
+    revalidatePath(`/${locale}/admin/leads`);
+    return result;
+  } catch (error: any) {
+    return { success: false, error: error.message || "Failed to bulk reassign leads" };
+  }
+}
+
+/**
+ * Server Action to export agent leads as a CSV string.
+ */
+export async function exportAgentLeadsCSVAction(agentId: string) {
+  await verifyAdminAuth();
+
+  const leadsList = await getLeadsForExport(agentId);
+
+  // CSV formatting (RFC 4180 compliant)
+  // Headers: Name, Email, Phone
+  const headers = ["Name", "Email", "Phone"];
+  
+  const escapeCSVField = (val: string | null | undefined): string => {
+    if (val === null || val === undefined) {
+      return "";
+    }
+    let escaped = val.replace(/"/g, '""');
+    if (escaped.includes(",") || escaped.includes('"') || escaped.includes("\n") || escaped.includes("\r")) {
+      escaped = `"${escaped}"`;
+    }
+    return escaped;
+  };
+
+  const rows = leadsList.map((lead) => {
+    return [
+      escapeCSVField(lead.name),
+      escapeCSVField(lead.email),
+      escapeCSVField(lead.phone),
+    ].join(",");
+  });
+
+  return [headers.join(","), ...rows].join("\n");
+}
+
+/**
+ * Server Action to fetch lead count for a specific agent.
+ */
+export async function fetchAgentLeadsCountAction(agentId: string) {
+  await verifyAdminAuth();
+  return getAgentLeadsCount(agentId);
+}
+
+

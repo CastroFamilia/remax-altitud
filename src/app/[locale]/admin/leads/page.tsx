@@ -4,6 +4,7 @@ import { fetchAdminLeadsData } from "@/app/actions/admin-lead-actions";
 import { AdminLeadsFilters } from "@/components/admin/admin-leads-filters";
 import { AdminLeadsTable, Lead } from "@/components/admin/admin-leads-table";
 import { AdminLeadsPagination } from "@/components/admin/admin-leads-pagination";
+import { AdminBulkReassignModal } from "@/components/admin/admin-bulk-reassign-modal";
 import { Users, History } from "lucide-react";
 import Link from "next/link";
 import { cookies } from "next/headers";
@@ -74,13 +75,17 @@ export default async function AdminLeadsPage({ params, searchParams }: PageProps
           </p>
         </div>
 
-        <Link
-          href={`/${locale}/admin/leads/reassignment-logs`}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-semibold text-sm cursor-pointer"
-        >
-          <History className="w-4 h-4 text-blue-400" />
-          <span>View Reassignment History</span>
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <AdminBulkReassignModal locale={locale} agents={agents} />
+
+          <Link
+            href={`/${locale}/admin/leads/reassignment-logs`}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-semibold text-sm cursor-pointer"
+          >
+            <History className="w-4 h-4 text-blue-400" />
+            <span>View Reassignment History</span>
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}

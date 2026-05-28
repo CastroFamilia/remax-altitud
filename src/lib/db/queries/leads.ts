@@ -344,3 +344,87 @@ export async function getLeadAssignmentLogs() {
     createdAt: log.createdAt,
   }));
 }
+
+/**
+ * bulkReassignLeads — Story 8.3 (AC 1, 2, 3, 5, 7)
+ * Bulk reassigns leads from a source agent to target agent(s) using round-robin distribution.
+ * Implemented inside a transaction and records assignment logs.
+ */
+export async function bulkReassignLeads(sourceAgentId: string, targetAgentIds: string[]) {
+  if (!targetAgentIds || targetAgentIds.length === 0) {
+    throw new Error("No target agents selected for reassignment");
+  }
+
+  return await db.transaction(async (tx) => {
+    // 1. Get source agent name for descriptive error validation
+    const agentRows = await tx
+      .select({ name: agents.name })
+      .from(agents)
+      .where(eq(agents.id, sourceAgentId))
+      .limit(1);
+
+    const sourceAgentName = agentRows[0]?.name || "Unknown Agent";
+
+    // 2. Retrieve all leads for the source agent
+    const leadRows = await tx
+      .select({ id: leads.id })
+      .from(leads)
+      .where(eq(leads.assignedAgentId, sourceAgentId));
+
+    if (leadRows.length === 0) {
+      throw new Error(`No leads to reassign for ${sourceAgentName}`);
+    }
+
+    // 3. Update leads and insert immutable logs
+    for (let i = 0; i < leadRows.length; i++) {
+      const leadId = leadRows[i].id;
+      const targetAgentId = targetAgentIds[i % targetAgentIds.length];
+
+      await tx
+        .update(leads)
+        .set({ assignedAgentId: targetAgentId })
+        .where(eq(leads.id, leadId));
+
+      await tx.insert(leadAssignmentLogs).values({
+        leadId,
+        previousAgentId: sourceAgentId,
+        newAgentId: targetAgentId,
+      });
+    }
+
+    return { success: true, count: leadRows.length };
+  });
+}
+
+/**
+ * getLeadsForExport — Story 8.3 (AC 4)
+ * Fetches all leads for a specific agent and decrypts their PII fields.
+ */
+export async function getLeadsForExport(agentId: string) {
+  const rows = await db
+    .select()
+    .from(leads)
+    .where(eq(leads.assignedAgentId, agentId))
+    .orderBy(desc(leads.createdAt));
+
+  return rows.map((lead) => ({
+    ...lead,
+    phone: decryptField(lead.phone),
+    email: lead.email ? decryptField(lead.email) : null,
+  }));
+}
+
+/**
+ * getAgentLeadsCount — Story 8.3
+ * Returns the total number of leads assigned to a specific agent.
+ */
+export async function getAgentLeadsCount(agentId: string) {
+  const { count } = await import("drizzle-orm");
+  const [row] = await db
+    .select({ count: count() })
+    .from(leads)
+    .where(eq(leads.assignedAgentId, agentId));
+  return row?.count || 0;
+}
+
+

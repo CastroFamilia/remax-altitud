@@ -17,7 +17,8 @@ vi.mock("@/lib/db/client", () => ({
   },
 }));
 
-import { bulkReassignLeads, exportAgentLeadsCSV } from "@/lib/db/queries/leads";
+import { bulkReassignLeads } from "@/lib/db/queries/leads";
+import { exportAgentLeadsCSVAction } from "@/app/actions/admin-lead-actions";
 import { encryptField } from "@/lib/utils/encryption";
 
 describe.skip("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
@@ -53,7 +54,7 @@ describe.skip("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () =>
 
       // 3. Then all leads assigned to the source agent are reassigned to the target agent
       expect(result.success).toBe(true);
-      expect(result.reassignedCount).toBe(mockLeads.length);
+      expect(result.count).toBe(mockLeads.length);
     });
 
     it("[P0] 8.3-UNIT-002: should distribute leads round-robin among multiple target agents", async () => {
@@ -76,7 +77,7 @@ describe.skip("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () =>
 
       // 3. Then leads are distributed evenly/round-robin
       expect(result.success).toBe(true);
-      expect(result.reassignedCount).toBe(mockLeads.length);
+      expect(result.count).toBe(mockLeads.length);
     });
 
     it("[P0] 8.3-UNIT-003: should throw or return clear error if source agent has zero leads", async () => {
@@ -93,7 +94,7 @@ describe.skip("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () =>
       try {
         const result = await bulkReassignLeads(sourceAgentId, targetAgentIds);
         expect(result.success).toBe(false);
-        expect(result.message).toContain("No leads to reassign");
+        expect((result as any).error).toContain("No leads to reassign");
       } catch (error: any) {
         expect(error.message).toContain("No leads to reassign");
       }
@@ -130,7 +131,7 @@ describe.skip("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () =>
       ];
 
       // 2. When contact export is generated
-      const csvString = await exportAgentLeadsCSV(agentId);
+      const csvString = await exportAgentLeadsCSVAction(agentId);
 
       // 3. Then it contains the headers and decrypted contact details
       expect(csvString).toContain("Name,Email,Phone");
