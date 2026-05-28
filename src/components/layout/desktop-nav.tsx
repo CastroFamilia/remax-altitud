@@ -84,7 +84,7 @@ function CtaNavItem({ item, pathname, t }: { item: NavItem; pathname: string; t:
       variant="outline"
       asChild
       className={cn(
-        "ml-1 border-brand-gold text-brand-gold hover:bg-brand-gold/10 hover:text-white",
+        "ml-1 bg-transparent border-brand-gold text-brand-gold hover:bg-brand-gold/10 hover:text-white",
         isActive && "bg-brand-gold/15 text-white",
       )}
     >
