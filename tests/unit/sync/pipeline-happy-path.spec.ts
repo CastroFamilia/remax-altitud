@@ -49,7 +49,10 @@ vi.mock("@/lib/db/queries/agents", () => ({
 }));
 
 vi.mock("@/lib/db/client", () => ({
-  db: { select: vi.fn() },
+  db: {
+    select: vi.fn(),
+    execute: vi.fn().mockResolvedValue({ count: 0 }),
+  },
 }));
 
 // Mock the image optimizer — prevents real sharp/fetch calls in pipeline tests

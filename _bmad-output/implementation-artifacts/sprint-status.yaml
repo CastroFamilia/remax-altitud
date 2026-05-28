@@ -98,7 +98,7 @@ development_status:
   6-2-community-pages: done
   6-3-community-mini-map-and-geo-fence-display: done
   6-4-investment-discovery-and-area-context: backlog
-  6-5-community-geo-fence-auto-tagging: backlog
+  6-5-community-geo-fence-auto-tagging: review
   epic-6-retrospective: optional
 
   # Epic 7: Shortlist & Smart Agent Routing

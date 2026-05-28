@@ -21,3 +21,29 @@ export const geographyPoint = customType<{
     return `SRID=4326;POINT(${value.lng} ${value.lat})`;
   },
 });
+
+export type GeoPolygon = [number, number][];
+
+export const geographyPolygon = customType<{
+  data: GeoPolygon;
+  driverData: string;
+}>({
+  dataType() {
+    return "geography(Polygon, 4326)";
+  },
+  toDriver(value: GeoPolygon): string {
+    if (value.length < 3) {
+      throw new Error("Polygon must have at least 3 points");
+    }
+    // Ensure the polygon ring is closed (first and last coordinate MUST be identical)
+    const coords = [...value];
+    const first = coords[0];
+    const last = coords[coords.length - 1];
+    if (first[0] !== last[0] || first[1] !== last[1]) {
+      coords.push(first);
+    }
+    const ringStr = coords.map(([lng, lat]) => `${lng} ${lat}`).join(", ");
+    return `SRID=4326;POLYGON((${ringStr}))`;
+  },
+});
+

@@ -43,7 +43,7 @@ describe("autoTagCommunities — Spatial Auto-Tagging (ATDD — RED PHASE)", () 
   // ---------------------------------------------------------------------------
   // 6.5-UNIT-001 — Bulk Tagging (AC #1, P0)
   // ---------------------------------------------------------------------------
-  it.skip(
+  it(
     "[P0] 6.5-UNIT-001: Bulk Tagging — properties with coordinates inside a community polygon are assigned to that community",
     async () => {
       // Setup the database execution to return 3 successfully auto-tagged properties
@@ -55,7 +55,17 @@ describe("autoTagCommunities — Spatial Auto-Tagging (ATDD — RED PHASE)", () 
       expect(taggedCount).toBe(3);
 
       const sqlCall = mockExecute.mock.calls[0][0];
-      const sqlString = (sqlCall.sql || (sqlCall as any).query || "").toLowerCase();
+      const sqlString = (
+        sqlCall.sql ||
+        (sqlCall as any).query ||
+        (sqlCall.queryChunks
+          ? sqlCall.queryChunks
+              .map((chunk: any) =>
+                Array.isArray(chunk.value) ? chunk.value.join(" ") : chunk.value || ""
+              )
+              .join(" ")
+          : "")
+      ).toLowerCase();
 
       // Verify spatial matching query structure uses ST_Within and cast to geometry
       expect(sqlString).toContain("update properties");
@@ -69,7 +79,7 @@ describe("autoTagCommunities — Spatial Auto-Tagging (ATDD — RED PHASE)", () 
   // ---------------------------------------------------------------------------
   // 6.5-UNIT-002 — Manual Override Preservation (AC #4, P0)
   // ---------------------------------------------------------------------------
-  it.skip(
+  it(
     "[P0] 6.5-UNIT-002: Manual Override Preservation — properties that already have a communityId assigned and whose coordinates did NOT change are unaffected",
     async () => {
       // This test targets upsertProperty coordinates stability check (atomic CASE expression).
@@ -88,7 +98,7 @@ describe("autoTagCommunities — Spatial Auto-Tagging (ATDD — RED PHASE)", () 
   // ---------------------------------------------------------------------------
   // 6.5-UNIT-003 — Relocation/Movement: Update on coordinate changes (AC #2, P0)
   // ---------------------------------------------------------------------------
-  it.skip(
+  it(
     "[P0] 6.5-UNIT-003: Relocation/Movement — properties whose coordinates change to a new community get updated successfully",
     async () => {
       // Verify relocation clears community_id during upsert to allow the next geo-fence sync run to tag them.
@@ -104,7 +114,7 @@ describe("autoTagCommunities — Spatial Auto-Tagging (ATDD — RED PHASE)", () 
   // ---------------------------------------------------------------------------
   // 6.5-UNIT-004 — Relocation/Movement: Moving outside all communities (AC #3, P0)
   // ---------------------------------------------------------------------------
-  it.skip(
+  it(
     "[P0] 6.5-UNIT-004: Relocation/Movement — properties moving outside all communities get reset to NULL",
     async () => {
       // Verify atomic coordinate-difference detection clears communityId to NULL when moving.

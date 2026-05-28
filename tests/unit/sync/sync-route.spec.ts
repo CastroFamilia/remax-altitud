@@ -48,7 +48,10 @@ vi.mock("@/lib/db/queries/agents", () => ({
 }));
 
 vi.mock("@/lib/db/client", () => ({
-  db: { select: vi.fn() },
+  db: {
+    select: vi.fn(),
+    execute: vi.fn().mockResolvedValue({ count: 0 }),
+  },
 }));
 
 // Story 2.4/2.5 — Mock image optimizer and translator to prevent real calls

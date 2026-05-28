@@ -51,6 +51,13 @@ export function makeCommunity(overrides: Record<string, unknown> = {}) {
       [-83.655, 9.355],
       [-83.655, 9.345],
     ] as [number, number][],
+    geoFence: [
+      [-83.655, 9.345],
+      [-83.645, 9.345],
+      [-83.645, 9.355],
+      [-83.655, 9.355],
+      [-83.655, 9.345],
+    ] as [number, number][],
     createdAt: new Date("2026-01-01"),
     updatedAt: new Date("2026-01-01"),
     ...overrides,
@@ -91,6 +98,13 @@ export function makeCommunity2(overrides: Record<string, unknown> = {}) {
       [-83.785, 9.285],
       [-83.785, 9.275],
     ] as [number, number][],
+    geoFence: [
+      [-83.785, 9.275],
+      [-83.775, 9.275],
+      [-83.775, 9.285],
+      [-83.785, 9.285],
+      [-83.785, 9.275],
+    ] as [number, number][],
     ...overrides,
   });
 }
@@ -123,6 +137,13 @@ export function makeCommunity3(overrides: Record<string, unknown> = {}) {
     latitude: 9.17,
     longitude: -83.75,
     geoFenceCoords: [
+      [-83.755, 9.165],
+      [-83.745, 9.165],
+      [-83.745, 9.175],
+      [-83.755, 9.175],
+      [-83.755, 9.165],
+    ] as [number, number][],
+    geoFence: [
       [-83.755, 9.165],
       [-83.745, 9.165],
       [-83.745, 9.175],

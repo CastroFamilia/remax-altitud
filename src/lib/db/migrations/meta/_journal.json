@@ -36,6 +36,13 @@
       "when": 1779913838187,
       "tag": "0004_brainy_cyclops",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1779940971547,
+      "tag": "0005_spicy_silverclaw",
+      "breakpoints": true
     }
   ]
 }
