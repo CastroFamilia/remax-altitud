@@ -298,7 +298,6 @@ export async function updatePropertyTags(id: string, tags: string[]): Promise<vo
     .where(eq(properties.id, id));
 }
 
-
 /**
  * Fetches all slugs for visible properties.
  * Used by `generateStaticParams` for SSG build-time generation (Story 4.1, Task 1).
