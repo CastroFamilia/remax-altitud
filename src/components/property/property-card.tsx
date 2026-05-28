@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { PropertyImage } from "@/components/property/property-image";
 import { useTranslations } from "next-intl";
 import { SaveButton } from "@/components/shortlist/save-button";
 import { ShareButton } from "@/components/property/share-button";
@@ -108,7 +108,7 @@ export function PropertyCard({
           data-testid="property-image"
           className={`relative aspect-[3/2] overflow-hidden ${isHorizontal ? "w-[40%] flex-shrink-0" : ""}`}
         >
-          <Image
+          <PropertyImage
             src={imageSrc}
             alt={imageAlt}
             fill
