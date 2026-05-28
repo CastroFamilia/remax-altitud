@@ -50,31 +50,15 @@ export interface ThumbnailMapOptions {
  * Includes community pin marker + optional geo-fence polygon overlay.
  */
 export function buildCommunityMiniMapUrl(options: MiniMapOptions): string {
-  const {
-    latitude,
-    longitude,
-    geoFenceCoords,
-    zoom = 13,
-    width = 600,
-    height = 400,
-    retina = true,
-  } = options;
-
-  const overlays: string[] = [];
-
-  // Geo-fence polygon path overlay (shaded fill)
-  if (geoFenceCoords && geoFenceCoords.length >= 3) {
-    const pathOverlay = encodeGeoFencePath(geoFenceCoords);
-    overlays.push(pathOverlay);
-  }
-
-  // Community center pin marker (gold color #C2A661)
-  overlays.push(`pin-l+C2A661(${longitude},${latitude})`);
-
-  const overlayStr = overlays.join(",");
-  const retinaStr = retina ? "@2x" : "";
-
-  return `${MAPBOX_STATIC_BASE}/${overlayStr}/${longitude},${latitude},${zoom}/${width}x${height}${retinaStr}?access_token=${MAPBOX_TOKEN}`;
+  return buildStaticMapUrl({
+    latitude: options.latitude,
+    longitude: options.longitude,
+    geoFenceCoords: options.geoFenceCoords,
+    zoom: options.zoom ?? 13,
+    width: options.width ?? 600,
+    height: options.height ?? 400,
+    retina: options.retina ?? true,
+  });
 }
 
 /**
@@ -82,22 +66,45 @@ export function buildCommunityMiniMapUrl(options: MiniMapOptions): string {
  * Used in area guide pages for community cards (AC #3).
  */
 export function buildAreaThumbnailMapUrl(options: ThumbnailMapOptions): string {
-  const {
-    latitude,
-    longitude,
-    geoFenceCoords,
-    zoom = 11,
-    width = 300,
-    height = 200,
-    retina = true,
-  } = options;
+  return buildStaticMapUrl({
+    latitude: options.latitude,
+    longitude: options.longitude,
+    geoFenceCoords: options.geoFenceCoords,
+    zoom: options.zoom ?? 11,
+    width: options.width ?? 300,
+    height: options.height ?? 200,
+    retina: options.retina ?? true,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Internal helpers
+// ---------------------------------------------------------------------------
+
+interface StaticMapParams {
+  latitude: number;
+  longitude: number;
+  geoFenceCoords?: [number, number][] | null;
+  zoom: number;
+  width: number;
+  height: number;
+  retina: boolean;
+}
+
+/**
+ * Shared builder — constructs a Mapbox Static Images API URL with
+ * an optional geo-fence GeoJSON polygon overlay and a pin marker.
+ */
+function buildStaticMapUrl(params: StaticMapParams): string {
+  const { latitude, longitude, geoFenceCoords, zoom, width, height, retina } =
+    params;
 
   const overlays: string[] = [];
 
-  // Geo-fence polygon path overlay (shaded fill)
+  // Geo-fence polygon overlay using Mapbox GeoJSON overlay format
+  // (simplestyle-spec properties for stroke/fill styling)
   if (geoFenceCoords && geoFenceCoords.length >= 3) {
-    const pathOverlay = encodeGeoFencePath(geoFenceCoords);
-    overlays.push(pathOverlay);
+    overlays.push(encodeGeoFencePath(geoFenceCoords));
   }
 
   // Community center pin marker (gold color #C2A661)
@@ -109,19 +116,37 @@ export function buildAreaThumbnailMapUrl(options: ThumbnailMapOptions): string {
   return `${MAPBOX_STATIC_BASE}/${overlayStr}/${longitude},${latitude},${zoom}/${width}x${height}${retinaStr}?access_token=${MAPBOX_TOKEN}`;
 }
 
-// ---------------------------------------------------------------------------
-// Internal helpers
-// ---------------------------------------------------------------------------
-
 /**
- * Encodes a GeoJSON polygon coordinate ring as a Mapbox Static API path overlay.
- * Format: path-{strokeWidth}+{strokeColor}-{strokeOpacity}+{fillColor}-{fillOpacity}({encoded_polyline})
+ * Encodes a GeoJSON polygon coordinate ring as a Mapbox Static API GeoJSON overlay.
  *
- * Uses gold (#C2A661) for stroke and fill with 0.2 fill opacity for the shaded overlay.
+ * Uses the `geojson()` overlay format with simplestyle-spec properties for
+ * stroke and fill styling. Gold (#C2A661) stroke at 0.8 opacity, gold fill at 0.2 opacity.
+ *
+ * @see https://docs.mapbox.com/api/maps/static-images/#overlay-options
  */
 function encodeGeoFencePath(coords: [number, number][]): string {
-  // Mapbox Static API accepts raw coordinate pairs in path syntax
-  const coordStr = coords.map(([lng, lat]) => `[${lng},${lat}]`).join(",");
-  // stroke: 2px gold (#C2A661) at 0.8 opacity, fill: gold at 0.2 opacity
-  return `path-2+C2A661-0.8+C2A661-0.2(${encodeURIComponent(coordStr)})`;
+  // Ensure the polygon ring is closed (first === last coordinate)
+  const ring =
+    coords.length > 0 &&
+    (coords[0][0] !== coords[coords.length - 1][0] ||
+      coords[0][1] !== coords[coords.length - 1][1])
+      ? [...coords, coords[0]]
+      : coords;
+
+  const geojson = {
+    type: "Feature" as const,
+    properties: {
+      stroke: "#C2A661",
+      "stroke-width": 2,
+      "stroke-opacity": 0.8,
+      fill: "#C2A661",
+      "fill-opacity": 0.2,
+    },
+    geometry: {
+      type: "Polygon" as const,
+      coordinates: [ring],
+    },
+  };
+
+  return `geojson(${encodeURIComponent(JSON.stringify(geojson))})`;
 }

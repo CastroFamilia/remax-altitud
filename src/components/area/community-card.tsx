@@ -88,7 +88,7 @@ export function CommunityCard({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={thumbnailMapUrl}
-            alt={`Location of ${name}`}
+            alt={locale === "es" ? `Ubicación de ${name}` : `Location of ${name}`}
             loading="lazy"
             decoding="async"
             className="w-full h-auto aspect-[3/2] rounded-md"
