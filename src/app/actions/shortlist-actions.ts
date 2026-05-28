@@ -148,21 +148,22 @@ export async function getShortlistPropertiesWithAgents(ids: string[]): Promise<a
     images: normalizePropertyImages(row.properties.images, row.properties.titleEn),
     latitude: row.properties.latitude,
     longitude: row.properties.longitude,
-    agent: row.agents ? {
-      id: row.agents.id,
-      name: row.agents.name,
-      photoUrl: row.agents.photoUrl,
-      photoOptimizedUrl: row.agents.photoOptimizedUrl,
-      email: row.agents.email,
-      phone: row.agents.phone,
-      whatsapp: row.agents.whatsapp,
-      languages: Array.isArray(row.agents.languages)
-        ? row.agents.languages.join(", ")
-        : typeof row.agents.languages === "string"
-        ? row.agents.languages
-        : "",
-      listingCount: row.agents.listingCount,
-    } : null,
+    agent: row.agents
+      ? {
+          id: row.agents.id,
+          name: row.agents.name,
+          photoUrl: row.agents.photoUrl,
+          photoOptimizedUrl: row.agents.photoOptimizedUrl,
+          email: row.agents.email,
+          phone: row.agents.phone,
+          whatsapp: row.agents.whatsapp,
+          languages: Array.isArray(row.agents.languages)
+            ? row.agents.languages.join(", ")
+            : typeof row.agents.languages === "string"
+              ? row.agents.languages
+              : "",
+          listingCount: row.agents.listingCount,
+        }
+      : null,
   }));
 }
-

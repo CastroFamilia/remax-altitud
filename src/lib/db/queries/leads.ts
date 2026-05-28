@@ -195,4 +195,3 @@ export async function getShortlistLeadDetails(leadId: string): Promise<any> {
     },
   };
 }
-

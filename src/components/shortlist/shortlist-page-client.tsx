@@ -13,13 +13,10 @@ import { MapView } from "@/components/map/map-view-loader";
 import { ModalShimmer } from "@/components/shortlist/modal-shimmer";
 import type { PropertySearchItem } from "@/types/search";
 
-const AgentSelectionModal = dynamic(
-  () => import("@/components/shortlist/agent-selection-modal"),
-  {
-    ssr: false,
-    loading: () => <ModalShimmer />,
-  }
-);
+const AgentSelectionModal = dynamic(() => import("@/components/shortlist/agent-selection-modal"), {
+  ssr: false,
+  loading: () => <ModalShimmer />,
+});
 
 export function ShortlistPageClient() {
   const t = useTranslations("Shortlist");
@@ -98,8 +95,8 @@ export function ShortlistPageClient() {
       properties
         .map((p) => p.agent)
         .filter((a): a is NonNullable<typeof a> => !!a)
-        .map((a) => [a.id, a])
-    ).values()
+        .map((a) => [a.id, a]),
+    ).values(),
   );
 
   // Compute Auto-Selected Coordinator Agent dynamically
@@ -385,7 +382,11 @@ export function ShortlistPageClient() {
                 {/* Profile Photo */}
                 <div className="w-20 h-20 rounded-full overflow-hidden border border-slate-200 bg-white flex-shrink-0">
                   <img
-                    src={activeCoordinator.photoOptimizedUrl || activeCoordinator.photoUrl || "/images/agent-placeholder.jpg"}
+                    src={
+                      activeCoordinator.photoOptimizedUrl ||
+                      activeCoordinator.photoUrl ||
+                      "/images/agent-placeholder.jpg"
+                    }
                     alt={activeCoordinator.name}
                     className="w-full h-full object-cover"
                   />
@@ -395,10 +396,14 @@ export function ShortlistPageClient() {
                 <div className="flex-1 min-w-0">
                   <h3 className="text-lg font-bold text-slate-900">{activeCoordinator.name}</h3>
                   <p className="text-sm text-slate-500 mt-0.5">
-                    <span className="font-semibold text-slate-600">{tRouting("languages")}</span> {activeCoordinator.languages}
+                    <span className="font-semibold text-slate-600">{tRouting("languages")}</span>{" "}
+                    {activeCoordinator.languages}
                   </p>
                   <p className="text-sm text-slate-700 mt-3 font-medium bg-blue-50/50 border border-blue-100/50 text-blue-900 p-3 rounded-lg leading-relaxed">
-                    {tRouting("autoSuggestText", { name: activeCoordinator.name, count: properties.length })}
+                    {tRouting("autoSuggestText", {
+                      name: activeCoordinator.name,
+                      count: properties.length,
+                    })}
                   </p>
                 </div>
               </div>

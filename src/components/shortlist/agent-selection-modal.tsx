@@ -90,7 +90,12 @@ export default function AgentSelectionModal({
             aria-label="Close modal"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -106,7 +111,8 @@ export default function AgentSelectionModal({
           <div className="space-y-3">
             {sortedAgents.map((agent) => {
               const isActive = agent.id === activeCoordinatorId;
-              const photoSrc = agent.photoOptimizedUrl || agent.photoUrl || "/images/agent-placeholder.jpg";
+              const photoSrc =
+                agent.photoOptimizedUrl || agent.photoUrl || "/images/agent-placeholder.jpg";
 
               return (
                 <button
@@ -136,16 +142,19 @@ export default function AgentSelectionModal({
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-semibold text-slate-900 block truncate">{agent.name}</span>
+                      <span className="font-semibold text-slate-900 block truncate">
+                        {agent.name}
+                      </span>
                       {isActive && (
                         <span className="bg-blue-100 text-blue-800 text-[11px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap">
                           Active
                         </span>
                       )}
                     </div>
-                    
+
                     <div className="text-xs text-slate-500 mt-1 truncate">
-                      <span className="font-medium text-slate-600">{t("languages")}</span> {agent.languages}
+                      <span className="font-medium text-slate-600">{t("languages")}</span>{" "}
+                      {agent.languages}
                     </div>
 
                     <div className="text-xs text-slate-400 mt-0.5">

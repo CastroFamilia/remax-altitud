@@ -168,7 +168,8 @@ export async function POST(request: Request) {
     }
 
     // Agent routing
-    const assignedAgentId = data.assignedAgentId || (await matchAgentByCoordinates(data.location.lat, data.location.lng));
+    const assignedAgentId =
+      data.assignedAgentId || (await matchAgentByCoordinates(data.location.lat, data.location.lng));
 
     // Build notes from property details
     const noteParts: string[] = [];
