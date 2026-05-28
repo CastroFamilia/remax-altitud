@@ -5,39 +5,13 @@ import { agents } from "@/lib/db/schema/agents";
 import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawAgent } from "@/types/remax-api";
 import { mapPropertyRowToSearchItem } from "./properties";
-
-const AGENT_LANGUAGES_MAP: Record<string, string[]> = {
-  "gustavo valverde": ["es", "en"],
-  "natalia leon": ["es", "en"],
-  "gerardo gonzalez": ["es", "en"],
-  "krisley pereira": ["es", "en"],
-  "omar gonzalez": ["es", "en"],
-  "yeudi cisneros": ["es"],
-  "mauricio espinoza": ["es", "en"],
-  "carlos mora": ["es", "en"],
-  "tatiana estrada": ["es"],
-  "klary perez": ["es"],
-  "alejandra castro": ["es", "pt", "en"],
-  "cesar negrette": ["es", "en"],
-  "debra west": ["en"],
-  "david west": ["en"],
-  "ismara ubeda": ["es"],
-  "ralff abarca": ["es"],
-  "josue alvarado": ["es", "en"],
-  "rafael lee": ["es", "en"],
-  "kevin alvarez": ["es", "en"],
-  "andrey perez": ["es"],
-};
+import { AGENT_LANGUAGE_OVERRIDES, normalizeAgentName } from "@/lib/constants/agent-overrides";
 
 export function getAgentLanguages(name: string, fallbackLang: string | null): string[] {
-  const normalized = name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
-  const override = AGENT_LANGUAGES_MAP[normalized];
+  const normalized = normalizeAgentName(name);
+  const override = AGENT_LANGUAGE_OVERRIDES[normalized];
   if (override) return override;
-  return fallbackLang ? [fallbackLang] : ["es"];
+  return fallbackLang ? [fallbackLang] : [];
 }
 
 /**
@@ -56,6 +30,10 @@ export async function upsertAgent(raw: RawAgent, officeId: string): Promise<void
   const baseSlug = slugify(raw.name);
   const slugWithSuffix = slugify(raw.name, raw.apiId);
 
+  const normalizedName = normalizeAgentName(raw.name);
+  const resolvedLanguages =
+    AGENT_LANGUAGE_OVERRIDES[normalizedName] || (raw.primaryLang ? [raw.primaryLang] : []);
+
   const values = {
     apiId: raw.apiId,
     officeId,
@@ -65,7 +43,7 @@ export async function upsertAgent(raw: RawAgent, officeId: string): Promise<void
     phone: raw.phone ?? null,
     whatsapp: raw.whatsapp ?? null,
     photoUrl: raw.photoUrl ?? null,
-    languages: getAgentLanguages(raw.name, raw.primaryLang),
+    languages: resolvedLanguages,
     specializations: [],
     isActive: true,
     syncedAt: new Date(),
@@ -77,7 +55,7 @@ export async function upsertAgent(raw: RawAgent, officeId: string): Promise<void
     phone: values.phone,
     whatsapp: values.whatsapp,
     photoUrl: values.photoUrl,
-    languages: values.languages,
+    languages: resolvedLanguages,
     isActive: values.isActive,
     syncedAt: values.syncedAt,
     updatedAt: new Date(),
