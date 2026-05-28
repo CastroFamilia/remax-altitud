@@ -41,6 +41,8 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
     .map((b) => b.trim())
     .filter(Boolean);
 
+  const hasExplicitMetricsGrid = blocks.includes("[METRICS_GRID]");
+
   return (
     <section
       data-testid="area-guide-description"
@@ -93,6 +95,11 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
             return <CtaButton key={idx} locale={locale} areaSlug={area.slug} />;
           }
 
+          // 7. Custom metrics grid token inline
+          if (block === "[METRICS_GRID]") {
+            return <MetricsGrid key={idx} metadata={metadata} locale={locale} t={t} />;
+          }
+
           // Default: Paragraph with inline bold parsing
           return (
             <p
@@ -104,37 +111,11 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
         })}
       </div>
 
-      {/* Nearest services quick metrics grid */}
-      {metadata &&
+      {/* Nearest services quick metrics grid (fallback if not placed explicitly) */}
+      {!hasExplicitMetricsGrid &&
+        metadata &&
         (metadata.nearestAirport || metadata.nearestHospital || metadata.nearestBeach) && (
-          <div className="pt-8 border-t border-border/40">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-brand-navy/60 mb-4">
-              {locale === "es" ? "DISTANCIAS Y SERVICIOS DIRECTOS" : "DIRECT DISTANCES & LOGISTICS"}
-            </h4>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {metadata.nearestAirport && (
-                <ServiceMetricItem
-                  icon="✈️"
-                  label={t("nearestServices.airport")}
-                  value={metadata.nearestAirport}
-                />
-              )}
-              {metadata.nearestHospital && (
-                <ServiceMetricItem
-                  icon="🏥"
-                  label={t("nearestServices.hospital")}
-                  value={metadata.nearestHospital}
-                />
-              )}
-              {metadata.nearestBeach && (
-                <ServiceMetricItem
-                  icon="🏖️"
-                  label={t("nearestServices.beach")}
-                  value={metadata.nearestBeach}
-                />
-              )}
-            </div>
-          </div>
+          <MetricsGrid metadata={metadata} locale={locale} t={t} />
         )}
     </section>
   );
@@ -176,8 +157,8 @@ function ServicesList({ locale }: { locale: string }) {
     {
       title: isEs ? "Educación Privada Premium" : "Premium Private Education",
       desc: isEs
-        ? "Escuelas internacionales y bilingües como BMS o Colegio del Valle, así como educación alternativa Waldorf en RISE Waldorf Inspired School y diversas universidades."
-        : "International and Bilingual schools like BMS or Colegio del Valle as well as alternative Waldorf Education at the RISE Waldorf Inspired School and many Universities.",
+        ? "Educación de alta calidad que incluye el colegio bilingüe K-12 BMS School, la escuela de inspiración Waldorf RISE, el Colegio del Valle y diversas universidades."
+        : "High-quality options including the K-12 bilingual BMS School, the nature-based RISE Waldorf-inspired school, Colegio del Valle, and several local universities.",
       icon: GraduationCap,
     },
     {
@@ -478,6 +459,54 @@ function ServiceMetricItem({ icon, label, value }: { icon: string; label: string
       <div>
         <p className="text-[11px] font-bold uppercase tracking-wider text-text-muted">{label}</p>
         <p className="mt-1 text-sm font-semibold text-brand-navy leading-tight">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+/** 5. Reuseable direct distances and logistics grid */
+function MetricsGrid({
+  metadata,
+  locale,
+  t,
+}: {
+  metadata: DescriptionMetadata | null;
+  locale: string;
+  t: (key: string) => string;
+}) {
+  if (
+    !metadata ||
+    (!metadata.nearestAirport && !metadata.nearestHospital && !metadata.nearestBeach)
+  ) {
+    return null;
+  }
+  return (
+    <div className="pt-6 pb-2 border-t border-b border-border/40 my-8">
+      <h4 className="text-xs font-bold uppercase tracking-widest text-brand-navy/60 mb-4">
+        {locale === "es" ? "DISTANCIAS Y SERVICIOS DIRECTOS" : "DIRECT DISTANCES & LOGISTICS"}
+      </h4>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {metadata.nearestAirport && (
+          <ServiceMetricItem
+            icon="✈️"
+            label={t("nearestServices.airport")}
+            value={metadata.nearestAirport}
+          />
+        )}
+        {metadata.nearestHospital && (
+          <ServiceMetricItem
+            icon="🏥"
+            label={t("nearestServices.hospital")}
+            value={metadata.nearestHospital}
+          />
+        )}
+        {metadata.nearestBeach && (
+          <ServiceMetricItem
+            icon="🏖️"
+            label={t("nearestServices.beach")}
+            value={metadata.nearestBeach}
+          />
+        )}
       </div>
     </div>
   );
