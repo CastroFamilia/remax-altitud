@@ -138,7 +138,7 @@ export function ShortlistPageClient() {
 
         {/* Right Side: Mini-map showing saved property locations */}
         <div className="lg:col-span-5 h-[350px] lg:h-[600px] sticky top-24 rounded-xl overflow-hidden shadow-md border border-border">
-          <MapView properties={properties as unknown as Parameters<typeof MapView>[0]["properties"]} locale={locale} />
+          <MapView properties={properties as any} locale={locale} />
         </div>
       </div>
     </div>

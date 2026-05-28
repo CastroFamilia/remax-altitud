@@ -819,6 +819,8 @@
     "browseCta": "Explorar Propiedades",
     "askAgentCta": "Consultar por estas",
     "shareShortlistCta": "Compartir mi lista",
-    "removeButtonLabel": "Eliminar propiedad de guardados"
+    "removeButtonLabel": "Eliminar propiedad de guardados",
+    "whatsAppMessageHeader": "Hola, estoy interesado en estas propiedades de mi lista:",
+    "shareMessageHeader": "Mira mi lista de propiedades guardadas:"
   }
 }
