@@ -56,13 +56,17 @@ describe("autoTagCommunities — Spatial Auto-Tagging (ATDD — RED PHASE)", () 
       expect(mockExecute).toHaveBeenCalledOnce();
       expect(taggedCount).toBe(3);
 
-      const sqlCall = mockExecute.mock.calls[0][0];
+      const sqlCall = mockExecute.mock.calls[0][0] as {
+        sql?: string;
+        query?: string;
+        queryChunks?: { value?: string | string[] }[];
+      };
       const sqlString = (
         sqlCall.sql ||
-        (sqlCall as any).query ||
+        sqlCall.query ||
         (sqlCall.queryChunks
           ? sqlCall.queryChunks
-              .map((chunk: any) =>
+              .map((chunk) =>
                 Array.isArray(chunk.value) ? chunk.value.join(" ") : chunk.value || ""
               )
               .join(" ")
