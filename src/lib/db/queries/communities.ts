@@ -6,6 +6,7 @@ import { areas } from "@/lib/db/schema/areas";
 import { properties } from "@/lib/db/schema/properties";
 import { propertySearchColumns, mapPropertyRowToSearchItem } from "./properties";
 import type { PropertySearchItem } from "@/types/search";
+import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 
 /**
  * Fetches all communities ordered by name ascending.
@@ -94,4 +95,36 @@ export async function getCommunitiesByAreaId(areaId: string) {
     .from(communities)
     .where(eq(communities.areaId, areaId))
     .orderBy(asc(communities.name));
+}
+
+export async function createCommunity(data: NewCommunity) {
+  const rows = await db.insert(communities).values(data).returning();
+  return rows[0];
+}
+
+export async function updateCommunity(id: string, data: Partial<Community>) {
+  const rows = await db
+    .update(communities)
+    .set({ ...data, updatedAt: new Date() })
+    .where(eq(communities.id, id))
+    .returning();
+  return rows[0];
+}
+
+export async function deleteCommunity(id: string) {
+  return db.transaction(async (tx) => {
+    await tx.update(properties).set({ communityId: null }).where(eq(properties.communityId, id));
+
+    return tx.delete(communities).where(eq(communities.id, id));
+  });
+}
+
+export async function getCommunityById(id: string) {
+  const rows = await db.select().from(communities).where(eq(communities.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function getCommunityBySlug(slug: string) {
+  const rows = await db.select().from(communities).where(eq(communities.slug, slug)).limit(1);
+  return rows[0] ?? null;
 }

@@ -1,11 +1,22 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Search, Loader2, Tags, ChevronLeft, ChevronRight, X } from "lucide-react";
+import {
+  Search,
+  Loader2,
+  Tags,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  MapPin,
+  AlertCircle,
+  HelpCircle,
+} from "lucide-react";
 import { LIFESTYLE_TAGS, tagDisplayLabel } from "@/lib/constants/lifestyle-tags";
 import { updatePropertyTagsAction } from "@/app/actions/admin-tag-actions";
+import { updatePropertyCommunityAction } from "@/app/actions/admin-community-actions";
 import { formatUSD } from "@/lib/utils/currency";
 
 export interface AdminProperty {
@@ -20,19 +31,49 @@ export interface AdminProperty {
   titleEs: string;
   images: { src: string }[] | null | undefined;
   isVisible: boolean;
+  latitude: number | null;
+  longitude: number | null;
+  communityId: string | null;
+}
+
+export interface DatabaseCommunity {
+  id: string;
+  slug: string;
+  name: string;
+  geoFenceCoords: {
+    type: "Polygon";
+    coordinates: [number, number][][];
+  } | null;
 }
 
 interface AdminTagsTableProps {
   locale: string;
   properties: AdminProperty[];
+  communities: DatabaseCommunity[];
   total: number;
   currentPage: number;
   hasMore: boolean;
 }
 
+// Ray Casting Algorithm to check if a point lies inside a polygon
+function isPointInPolygon(point: [number, number], polygon: [number, number][]): boolean {
+  const [lng, lat] = point;
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i][0],
+      yi = polygon[i][1];
+    const xj = polygon[j][0],
+      yj = polygon[j][1];
+    const intersect = yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi;
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
 export function AdminTagsTable({
   locale,
   properties,
+  communities,
   total,
   currentPage,
   hasMore,
@@ -41,15 +82,32 @@ export function AdminTagsTable({
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Local state for properties to prevent prop mutations
+  const [localProperties, setLocalProperties] = useState<AdminProperty[]>(properties);
+
+  useEffect(() => {
+    setLocalProperties(properties);
+  }, [properties]);
+
   // Search input state
   const [searchVal, setSearchVal] = useState(searchParams.get("search") || "");
   const [isPending, startTransition] = useTransition();
 
-  // Modal state
+  // Tags Modal state
   const [selectedProperty, setSelectedProperty] = useState<AdminProperty | null>(null);
   const [modalTags, setModalTags] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  // Communities Modal state
+  const [selectedPropertyForCommunity, setSelectedPropertyForCommunity] =
+    useState<AdminProperty | null>(null);
+  const [selectedCommunityId, setSelectedCommunityId] = useState<string>("");
+  const [isSavingCommunity, setIsSavingCommunity] = useState(false);
+  const [communityAlert, setCommunityAlert] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,6 +141,18 @@ export function AdminTagsTable({
     setAlert(null);
   };
 
+  const handleOpenCommunityModal = (property: AdminProperty) => {
+    setSelectedPropertyForCommunity(property);
+    setSelectedCommunityId(property.communityId || "");
+    setCommunityAlert(null);
+  };
+
+  const handleCloseCommunityModal = () => {
+    setSelectedPropertyForCommunity(null);
+    setSelectedCommunityId("");
+    setCommunityAlert(null);
+  };
+
   const handleTagToggle = (tag: string) => {
     setModalTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   };
@@ -101,7 +171,12 @@ export function AdminTagsTable({
           }),
         });
         // Update local property tags list visually
-        selectedProperty.lifestyleTags = [...modalTags];
+        setLocalProperties((prev) =>
+          prev.map((p) =>
+            p.id === selectedProperty.id ? { ...p, lifestyleTags: [...modalTags] } : p,
+          ),
+        );
+        setSelectedProperty((prev) => (prev ? { ...prev, lifestyleTags: [...modalTags] } : null));
         router.refresh();
         setTimeout(() => {
           handleCloseModal();
@@ -116,6 +191,78 @@ export function AdminTagsTable({
       setIsSaving(false);
     }
   };
+
+  const handleSaveCommunity = async () => {
+    if (!selectedPropertyForCommunity) return;
+    setIsSavingCommunity(true);
+    setCommunityAlert(null);
+    try {
+      const val = selectedCommunityId === "" ? null : selectedCommunityId;
+      const res = await updatePropertyCommunityAction(selectedPropertyForCommunity.id, val);
+      if (res.success) {
+        setCommunityAlert({
+          type: "success",
+          message: `Successfully updated community for property.`,
+        });
+        // Update local property community assignment visually
+        setLocalProperties((prev) =>
+          prev.map((p) =>
+            p.id === selectedPropertyForCommunity.id ? { ...p, communityId: val } : p,
+          ),
+        );
+        setSelectedPropertyForCommunity((prev) => (prev ? { ...prev, communityId: val } : null));
+        router.refresh();
+        setTimeout(() => {
+          handleCloseCommunityModal();
+        }, 1500);
+      } else {
+        setCommunityAlert({ type: "error", message: "Failed to update community association." });
+      }
+    } catch (error) {
+      console.error(error);
+      setCommunityAlert({ type: "error", message: "Failed to update community association." });
+    } finally {
+      setIsSavingCommunity(false);
+    }
+  };
+
+  // Perform coordinates geofence validation for warning box (memoized)
+  const validationResult = useMemo(() => {
+    if (!selectedPropertyForCommunity || !selectedCommunityId) return null;
+    const { latitude, longitude } = selectedPropertyForCommunity;
+    if (latitude === null || longitude === null) {
+      return {
+        status: "no_coords" as const,
+        message: "Property does not have location coordinates. Geofence validation skipped.",
+      };
+    }
+
+    const selectedComm = communities.find((c) => c.id === selectedCommunityId);
+    if (!selectedComm || !selectedComm.geoFenceCoords?.coordinates?.[0]) {
+      return {
+        status: "no_geofence" as const,
+        message:
+          "Selected community does not have a geo-fence defined. Geofence validation skipped.",
+      };
+    }
+
+    const polygon = selectedComm.geoFenceCoords.coordinates[0];
+    const isInside = isPointInPolygon([longitude, latitude], polygon);
+
+    if (isInside) {
+      return {
+        status: "inside" as const,
+        message:
+          "Coordinates validated: The listing is successfully inside the community geofence.",
+      };
+    } else {
+      return {
+        status: "outside" as const,
+        message:
+          "Warning: The property's coordinates are outside the selected community's geo-fence boundary. Association is permitted but not recommended.",
+      };
+    }
+  }, [selectedPropertyForCommunity, selectedCommunityId, communities]);
 
   return (
     <div className="space-y-6">
@@ -143,7 +290,7 @@ export function AdminTagsTable({
       </form>
 
       {/* Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table data-testid="listings-tags-table" className="w-full text-left border-collapse">
             <thead>
@@ -153,22 +300,26 @@ export function AdminTagsTable({
                 <th className="px-6 py-4 w-32">{t("tableRef")}</th>
                 <th className="px-6 py-4 w-32">{t("tablePrice")}</th>
                 <th className="px-6 py-4">{t("tableTags")}</th>
-                <th className="px-6 py-4 text-right w-40">{t("tableActions")}</th>
+                <th className="px-6 py-4 text-right w-[280px]">{t("tableActions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800 text-sm text-slate-300">
-              {properties.length === 0 ? (
+              {localProperties.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-slate-500 font-semibold">
                     {t("noProperties")}
                   </td>
                 </tr>
               ) : (
-                properties.map((property) => {
+                localProperties.map((property) => {
                   const title = locale === "es" ? property.titleEs : property.titleEn;
                   const imageSrc =
                     (Array.isArray(property.images) ? property.images[0]?.src : null) ??
                     "/property-placeholder.svg";
+
+                  const associatedCommunity = communities.find(
+                    (c) => c.id === property.communityId,
+                  );
 
                   return (
                     <tr
@@ -183,8 +334,15 @@ export function AdminTagsTable({
                           className="w-12 h-8 object-cover rounded border border-slate-700 bg-slate-800"
                         />
                       </td>
-                      <td className="px-6 py-4 font-semibold text-slate-100 property-title">
-                        {title}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="font-bold text-slate-100 property-title">{title}</span>
+                          {associatedCommunity && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400 mt-1 max-w-max px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
+                              🏔️ {associatedCommunity.name}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td
                         data-testid="listing-ref-code"
@@ -212,14 +370,24 @@ export function AdminTagsTable({
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => handleOpenModal(property)}
-                          data-testid="manage-tags-btn"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition-all cursor-pointer manage-tags-btn"
-                        >
-                          <Tags className="w-3.5 h-3.5" />
-                          <span>{t("btnManageTags")}</span>
-                        </button>
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => handleOpenCommunityModal(property)}
+                            data-testid="manage-community-btn"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-850 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-800 rounded-lg transition-all cursor-pointer"
+                          >
+                            <MapPin className="w-3.5 h-3.5 text-amber-500" />
+                            <span>Community</span>
+                          </button>
+                          <button
+                            onClick={() => handleOpenModal(property)}
+                            data-testid="manage-tags-btn"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition-all cursor-pointer manage-tags-btn"
+                          >
+                            <Tags className="w-3.5 h-3.5" />
+                            <span>{t("btnManageTags")}</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -263,7 +431,126 @@ export function AdminTagsTable({
         </div>
       )}
 
-      {/* Modal */}
+      {/* Community Management Modal */}
+      {selectedPropertyForCommunity && (
+        <div
+          data-testid="manage-community-modal"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+        >
+          <div className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-2xl space-y-6">
+            {/* Close button */}
+            <button
+              onClick={handleCloseCommunityModal}
+              className="absolute right-4 top-4 p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Modal Header */}
+            <div>
+              <h2 className="text-xl font-bold text-white pr-8">Associate Community</h2>
+              <p className="text-xs text-slate-400 mt-2 leading-relaxed font-semibold">
+                Manually link &quot;
+                {locale === "es"
+                  ? selectedPropertyForCommunity.titleEs
+                  : selectedPropertyForCommunity.titleEn}
+                &quot; to a curated community development.
+              </p>
+            </div>
+
+            {/* Alert Message */}
+            {communityAlert && (
+              <div
+                className={`p-3.5 rounded-lg border text-sm font-medium ${
+                  communityAlert.type === "success"
+                    ? "bg-green-500/10 text-green-400 border-green-500/20"
+                    : "bg-red-500/10 text-red-400 border-red-500/20"
+                }`}
+              >
+                {communityAlert.message}
+              </div>
+            )}
+
+            {/* Dropdown Selector */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Select Community
+              </label>
+              <select
+                value={selectedCommunityId}
+                onChange={(e) => setSelectedCommunityId(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
+                data-testid="community-select"
+              >
+                <option value="">None (Decouple property)</option>
+                {communities.map((comm) => (
+                  <option key={comm.id} value={comm.id}>
+                    {comm.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Geofence Validation Warning Box */}
+            {validationResult && (
+              <div
+                data-testid="geofence-alert"
+                className={`p-4 rounded-lg border text-xs font-semibold flex gap-3 items-start ${
+                  validationResult.status === "inside"
+                    ? "bg-green-500/5 text-green-400 border-green-500/15"
+                    : validationResult.status === "outside"
+                      ? "bg-red-500/10 text-red-400 border-red-500/20 shadow-lg shadow-red-950/20"
+                      : "bg-slate-950/50 text-slate-400 border-slate-800"
+                }`}
+              >
+                {validationResult.status === "inside" ? (
+                  <MapPin className="w-5 h-5 flex-shrink-0 text-green-400" />
+                ) : validationResult.status === "outside" ? (
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-400 animate-pulse" />
+                ) : (
+                  <HelpCircle className="w-5 h-5 flex-shrink-0 text-slate-500" />
+                )}
+                <div className="space-y-1">
+                  <span className="block font-bold">
+                    {validationResult.status === "inside"
+                      ? "Geofence Match Success"
+                      : validationResult.status === "outside"
+                        ? "Geofence Boundary Warning"
+                        : "Geofence Check"}
+                  </span>
+                  <p className="leading-relaxed text-[11px] font-medium text-slate-300">
+                    {validationResult.message}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Modal Footer Actions */}
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={handleCloseCommunityModal}
+                disabled={isSavingCommunity}
+                className="px-4 py-2 text-sm text-slate-400 hover:text-white transition-all rounded-lg hover:bg-slate-800 cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveCommunity}
+                disabled={isSavingCommunity}
+                data-testid="save-community-btn"
+                className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg text-sm transition-all focus:ring-2 focus:ring-red-500 disabled:opacity-50 cursor-pointer flex items-center gap-2"
+              >
+                {isSavingCommunity && <Loader2 className="w-4 h-4 animate-spin" />}
+                <span>{isSavingCommunity ? "Saving..." : "Save Association"}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tags Modal */}
       {selectedProperty && (
         <div
           data-testid="manage-tags-modal"

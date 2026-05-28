@@ -55,6 +55,9 @@ export async function fetchAdminPropertiesData(params: { search?: string; page?:
       titleEs: properties.titleEs,
       images: properties.images,
       isVisible: properties.isVisible,
+      latitude: properties.latitude,
+      longitude: properties.longitude,
+      communityId: properties.communityId,
     })
     .from(properties)
     .where(whereClause)
