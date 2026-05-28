@@ -2,15 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import {
-  Users,
-  Download,
-  AlertTriangle,
-  CheckCircle2,
-  X,
-  Loader2,
-  HelpCircle,
-} from "lucide-react";
+import { Users, Download, AlertTriangle, CheckCircle2, X, Loader2, HelpCircle } from "lucide-react";
 import {
   fetchAgentLeadsCountAction,
   bulkReassignLeadsAction,
