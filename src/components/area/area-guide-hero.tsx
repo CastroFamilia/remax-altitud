@@ -15,7 +15,10 @@ interface AreaGuideHeroProps {
  */
 export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
-  const metadata = area.metadata as Record<string, string> | null;
+  const metadata = area.metadata as Record<string, any> | null;
+  const h1Key = locale === "es" ? "h1Es" : "h1En";
+  const displayTitle = metadata?.[h1Key] || areaName;
+
   const hasHeroImage = !!area.heroImageUrl;
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
 
@@ -49,6 +52,7 @@ export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
               "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-cream, #FFF8F0) 100%)",
           }}
           aria-hidden="true"
+          data-testid="gradient-fallback"
         />
       )}
 
@@ -67,7 +71,7 @@ export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
 
           {/* Area name */}
           <h1 className="mt-3 text-4xl font-extrabold text-white md:text-5xl lg:text-6xl">
-            {areaName}
+            {displayTitle}
           </h1>
 
           {/* Climate / altitude metadata */}

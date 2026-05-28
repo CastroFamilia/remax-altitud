@@ -62,6 +62,12 @@ export const mainNavItems: NavItem[] = [
     ],
   },
   {
+    labelKey: "vipBuyerService",
+    href: "/find-your-dream-property",
+    activePrefix: "/find-your-dream-property",
+    icon: "✨",
+  },
+  {
     labelKey: "sellYourProperty",
     href: "/sell",
     isCta: true,

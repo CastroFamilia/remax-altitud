@@ -19,7 +19,15 @@ import { getAllAreaSlugs } from "@/lib/db/queries/areas";
 import { getAllCommunityParams } from "@/lib/db/queries/communities";
 import { SITE_ORIGIN, LOCALES } from "@/lib/seo/constants";
 
-const staticRoutes = ["", "/search", "/about", "/contact", "/services", "/join"];
+const staticRoutes = [
+  "",
+  "/search",
+  "/about",
+  "/contact",
+  "/services",
+  "/join",
+  "/find-your-dream-property",
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {

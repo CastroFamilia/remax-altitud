@@ -18,7 +18,8 @@
     "ourTeam": "Nuestro Equipo",
     "contact": "Contacto",
     "ourAgents": "Nuestros Agentes",
-    "mainNav": "Navegación principal"
+    "mainNav": "Navegación principal",
+    "vipBuyerService": "Servicio Comprador VIP"
   },
   "LanguageToggle": {
     "switchLanguage": "Cambiar idioma",
@@ -1035,5 +1036,95 @@
     "successUpdated": "Comunidad {name} actualizada con éxito",
     "successDeleted": "Comunidad eliminada con éxito",
     "errorSaveFailed": "Error al guardar la comunidad. Por favor, inténtelo de nuevo."
+  },
+  "VipBuyerPage": {
+    "metaTitle": "Encuentre la Propiedad de sus Sueños - RE/MAX Altitud",
+    "metaDescription": "Servicio Exclusivo de Búsqueda de Propiedades: Describa la vida que desea, le mostraremos dónde puede hacerse realidad. Le ayudaremos a descubrir el lugar en Costa Rica que realmente se adapte a su vida.",
+    "hero": {
+      "title": "Servicio Exclusivo de Búsqueda de Propiedades",
+      "subtitle": "Describa la vida que desea, le mostraremos dónde puede hacerse realidad. Le ayudaremos a descubrir el lugar en Costa Rica que realmente se adapte a su vida. Desde su primera llamada hasta el momento en que encuentre su hogar, nuestro proceso combina experiencia local, experiencias seleccionadas y un plan claro desde el primer día.",
+      "ctaCall": "Reserve su Llamada de Descubrimiento",
+      "ctaWhatsapp": "Envíenos un WhatsApp"
+    },
+    "howItWorks": {
+      "heading": "Cómo Funciona",
+      "subtitle": "Mudarse a Costa Rica es emocionante, pero también puede resultar abrumador. Por eso diseñamos un proceso que lo hace simple, personal y estratégico.",
+      "step1": {
+        "title": "Llamada Inicial de Descubrimiento",
+        "body": "No necesita conocer Costa Rica; ese es nuestro trabajo. Cuéntenos qué tipo de vida imagina, su presupuesto y sus plazos, y le mostraremos las mejores regiones que se adapten a su estilo de vida."
+      },
+      "step2": {
+        "title": "Selección y Estrategia",
+        "body": "Mapeamos las zonas y propiedades que realmente se adaptan a sus necesidades, no solo lo que aparece en línea. Cada recomendación proviene de agentes locales que realmente viven allí."
+      },
+      "step3": {
+        "title": "Experiencia en el Terreno",
+        "body": "Visite las propiedades en persona o únase a recorridos virtuales en vivo. Descubra el ritmo, la comunidad y el potencial de cada zona."
+      },
+      "step4": {
+        "title": "Decisión y Siguientes Pasos",
+        "body": "Desde ofertas y la debida diligencia hasta abogados, bancos y constructores de confianza. Lo guiamos con claridad y confianza."
+      }
+    },
+    "chooseExperience": {
+      "heading": "Elija su Experiencia",
+      "premium": {
+        "tag": "Sin Costo",
+        "name": "Premium",
+        "description": "Un comienzo claro y guiado para su viaje a Costa Rica.",
+        "bestFor": "Ideal para: Planificación temprana, claridad y un inicio enfocado.",
+        "cta": "Reserve su Llamada de Descubrimiento",
+        "bullet1": "Llamada de Descubrimiento: Comparta sus metas, presupuesto y estilo de vida. No necesita conocer Costa Rica. Le ayudaremos a entender dónde encontrará realmente lo que busca.",
+        "bullet2": "Plan de Información Local: Después de nuestra primera llamada, definiremos los agentes locales adecuados para las zonas que mejor se adapten a su visión.",
+        "bullet3": "Selección Personalizada: Revisen juntos propiedades preseleccionadas en línea, con respuestas transparentes sobre costos, procesos y plazos.",
+        "bullet4": "Plan de Siguiente Paso: Avance con confianza. Visite en persona o permítanos recorrer las propiedades por usted mediante videollamadas en vivo."
+      },
+      "vip": {
+        "tag": "Por Acuerdo",
+        "name": "VIP Guante Blanco",
+        "description": "Para quienes están listos para mudarse con propósito y total tranquilidad. Todo lo incluido en Premium, más coordinación completa de conserjería:",
+        "bestFor": "Ideal para: Compradores decididos que desean una experiencia integral y eficiente.",
+        "cta": "Solicitar Experiencia VIP",
+        "bullet1": "Traslado privado desde el aeropuerto (opción de chofer o vuelo chárter)",
+        "bullet2": "Coordinación de alojamiento (hospédese cerca de sus zonas de interés)",
+        "bullet3": "Recorridos curados por propiedades y vecindarios (con paradas de estilo de vida)",
+        "bullet4": "Visitas a escuelas y reuniones organizadas para usted",
+        "bullet5": "Citas locales (con abogados, bancos, constructores e inspectores)",
+        "bullet6": "Itinerarios personalizados, traslados y reservas",
+        "bullet7": "Apoyo en decisiones con análisis comparativo y estrategia de oferta"
+      }
+    },
+    "whyChooseUs": {
+      "heading": "Por Qué Elegirnos",
+      "subtitle": "Porque comprar una propiedad en Costa Rica debería ser emocionante, no confuso. Hagámoslo simple e inolvidable.",
+      "pillar1": {
+        "title": "Conocimiento",
+        "body": "No necesita conocer Costa Rica: nosotros conocemos cada rincón."
+      },
+      "pillar2": {
+        "title": "Experiencia Local",
+        "body": "Agentes locales que viven en las áreas que representan."
+      },
+      "pillar3": {
+        "title": "Profesionalismo",
+        "body": "Recorridos eficientes y curados que le ahorran días (y errores costosos)."
+      },
+      "pillar4": {
+        "title": "Red de Contactos",
+        "body": "Red verificada de profesionales de confianza: abogados, constructores y bancos."
+      },
+      "pillar5": {
+        "title": "Transparencia",
+        "body": "Cifras transparentes: costos claros, plazos y próximos pasos."
+      },
+      "pillar6": {
+        "title": "El Poder de RE/MAX",
+        "body": "La marca en la que ya confía, ahora guiando su mudanza aquí mismo."
+      }
+    },
+    "booking": {
+      "heading": "Comience Aquí: Cuéntenos Sobre Usted",
+      "subtitle": "Comencemos su viaje a Costa Rica. Cuéntenos qué sueña y lo haremos realidad."
+    }
   }
 }
