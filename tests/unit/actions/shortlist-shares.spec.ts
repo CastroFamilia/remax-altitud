@@ -14,13 +14,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Hoisted mocks for Drizzle client
-const { mockWhere, mockFrom, mockSelect, mockInsert, mockValues } = vi.hoisted(() => {
+const { mockWhere, mockFrom, mockSelect, mockInsert, mockValues, mockReturning } = vi.hoisted(() => {
   const mockWhere = vi.fn().mockResolvedValue([]);
   const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
   const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
   const mockValues = vi.fn().mockResolvedValue([]);
-  const mockInsert = vi.fn().mockReturnValue({ values: mockValues });
-  return { mockWhere, mockFrom, mockSelect, mockInsert, mockValues };
+  const mockReturning = vi.fn().mockImplementation(() => mockValues());
+  const mockInsert = vi.fn().mockReturnValue({
+    values: vi.fn().mockReturnValue({
+      returning: mockReturning,
+    }),
+  });
+  return { mockWhere, mockFrom, mockSelect, mockInsert, mockValues, mockReturning };
 });
 
 vi.mock("@/lib/db/client", () => ({
@@ -66,7 +71,12 @@ describe("Story 7.3: Shareable Shortlist URL Server Actions Unit Tests", () => {
     mockFrom.mockReturnValue({ where: mockWhere });
     mockSelect.mockReturnValue({ from: mockFrom });
     mockValues.mockResolvedValue([]);
-    mockInsert.mockReturnValue({ values: mockValues });
+    mockReturning.mockImplementation(() => mockValues());
+    mockInsert.mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        returning: mockReturning,
+      }),
+    });
   });
 
   afterEach(() => {
@@ -111,6 +121,33 @@ describe("Story 7.3: Shareable Shortlist URL Server Actions Unit Tests", () => {
     expect(mockInsert).toHaveBeenCalled();
     expect(result.shareId).toBe("abc123ef");
     expect(result.expiresAt.getTime()).toBeGreaterThan(Date.now() + 29 * 24 * 60 * 60 * 1000);
+  });
+
+  it("[P0] 7.3-UNIT-002b: should successfully create a shortlist share and deduplicate input property IDs (AC #3, AC #7)", async () => {
+    // Mock that DB returns only the unique property
+    mockWhere.mockResolvedValueOnce([
+      { id: "prop-1", isVisible: true },
+    ]);
+
+    // Mock successful insert
+    const fakeShareRecord = {
+      shareId: "abc123ef",
+      propertyIds: ["prop-1"],
+      locale: "en",
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days TTL
+    };
+    mockValues.mockResolvedValueOnce([fakeShareRecord]);
+
+    const result = await createShortlistShare({
+      propertyIds: ["prop-1", "prop-1"],
+      locale: "en",
+    });
+
+    expect(mockSelect).toHaveBeenCalled();
+    expect(mockInsert).toHaveBeenCalled();
+    expect(result.shareId).toBe("abc123ef");
+    expect(result.propertyIds).toEqual(["prop-1"]);
   });
 
   it("[P0] 7.3-UNIT-003: should return isExpired true when fetching a shortlist share older than 30 days (AC #4)", async () => {

@@ -34,13 +34,16 @@ export async function createShortlistShare({
     throw new Error("No properties selected to share");
   }
 
+  // Deduplicate property IDs to prevent false validation failures on duplicates
+  const uniquePropertyIds = Array.from(new Set(propertyIds));
+
   // Validate all property IDs exist and are currently visible
   const existingProps = await db
     .select({ id: properties.id, isVisible: properties.isVisible })
     .from(properties)
-    .where(and(inArray(properties.id, propertyIds), eq(properties.isVisible, true)));
+    .where(and(inArray(properties.id, uniquePropertyIds), eq(properties.isVisible, true)));
 
-  if (existingProps.length !== propertyIds.length) {
+  if (existingProps.length !== uniquePropertyIds.length) {
     throw new Error("One or more properties are invalid or hidden");
   }
 
@@ -52,10 +55,11 @@ export async function createShortlistShare({
     .insert(shortlistShares)
     .values({
       shareId,
-      propertyIds,
+      propertyIds: uniquePropertyIds,
       locale,
       expiresAt,
-    });
+    })
+    .returning();
 
   if (result && Array.isArray(result) && result[0]) {
     return result[0];
@@ -63,11 +67,10 @@ export async function createShortlistShare({
 
   return {
     shareId,
-    propertyIds,
+    propertyIds: uniquePropertyIds,
     locale,
     expiresAt,
   };
-
 }
 
 export async function getSharedShortlist(shareId: string) {

@@ -45,10 +45,11 @@ export async function POST(request: Request) {
       },
       { status: 201 },
     );
-  } catch (error: any) {
+  } catch (error) {
     Sentry.captureException(error);
-    if (error.message === "One or more properties are invalid or hidden") {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    const errorMessage = error instanceof Error ? error.message : "";
+    if (errorMessage === "One or more properties are invalid or hidden") {
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
     return NextResponse.json({ error: "Failed to create shortlist share" }, { status: 500 });
   }

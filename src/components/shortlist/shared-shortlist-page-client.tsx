@@ -7,7 +7,7 @@ import { MapView } from "@/components/map/map-view-loader";
 import type { PropertySearchItem } from "@/types/search";
 
 interface SharedShortlistPageClientProps {
-  properties: any[];
+  properties: PropertySearchItem[];
   isExpired?: boolean;
 }
 

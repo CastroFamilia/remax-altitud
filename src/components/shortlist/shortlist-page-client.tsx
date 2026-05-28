@@ -126,10 +126,15 @@ export function ShortlistPageClient() {
                 setCopied(true);
                 setToastMessage(t("shareCopied"));
               })
-              .catch(() => {
+              .catch((err) => {
+                console.error("Failed to copy share link:", err);
                 navigator.clipboard.writeText(fallbackText)
                   .then(() => {
                     setCopied(true);
+                    setToastMessage(t("shareError"));
+                  })
+                  .catch((fallbackErr) => {
+                    console.error("Fallback clipboard write also failed:", fallbackErr);
                     setToastMessage(t("shareError"));
                   });
               });
@@ -142,13 +147,24 @@ export function ShortlistPageClient() {
               .then(() => {
                 setCopied(true);
                 setToastMessage(t("shareError"));
+              })
+              .catch((fallbackErr) => {
+                console.error("Fallback clipboard write failed during API error:", fallbackErr);
+                setToastMessage(t("shareError"));
               });
           }
         });
     } catch (err) {
+      console.error("Error in outer share click handler:", err);
       if (typeof navigator !== "undefined" && navigator.clipboard) {
-        navigator.clipboard.writeText(fallbackText);
-        setCopied(true);
+        navigator.clipboard.writeText(fallbackText)
+          .then(() => {
+            setCopied(true);
+          })
+          .catch((fallbackErr) => {
+            console.error("Fallback clipboard write failed in outer catch:", fallbackErr);
+            alert(fallbackText);
+          });
       } else {
         alert(fallbackText);
       }
