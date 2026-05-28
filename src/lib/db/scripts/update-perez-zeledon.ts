@@ -20,6 +20,8 @@ const descriptionEn = `San Isidro de El General: A City That Has It All with Exc
 
 At the heart of the region lies San Isidro de El General, the largest and most developed city in southern Costa Rica. Moving to a rural area here does not mean giving up urban conveniences or accessibility. San Isidro provides robust infrastructure, a city center that has it all, and seamless regional travel options.
 
+[METRICS_GRID]
+
 ### Everyday Essential Services
 
 [SERVICES_LIST]
@@ -36,15 +38,17 @@ San Isidro de El General sits perfectly in the center of the valley. From this c
 
 If your goal is an organic lifestyle; waking up to the sound of a river, picking fruit from your own trees, and owning a home built with sustainable materials; Pérez Zeledón is an ideal destination. The rural property market here is highly diverse, ranging from small eco-cottages to large sustainable luxury estates.
 
-### Find Your Property with RE/MAX Altitud
+### Find Your Property with REMAX Altitud
 
-Whether you are looking for a modern condo near city amenities, a large agricultural estate with its own waterfalls, or a home inside an exclusive eco-community, our team at RE/MAX Altitud is deeply rooted in the local market. We specialize in matching international investors and families with properties that elevate their quality of life.
+Whether you are looking for a modern condo near city amenities, a large agricultural estate with its own waterfalls, or a home inside an exclusive eco-community, our team at REMAX Altitud is deeply rooted in the local market. We specialize in matching international investors and families with properties that elevate their quality of life.
 
 [CTA_BUTTON]`;
 
 const descriptionEs = `San Isidro de El General: Una ciudad que lo tiene todo con excelente conectividad
 
 En el corazón de la región se encuentra San Isidro de El General, la ciudad más grande y desarrollada del sur de Costa Rica. Mudarse a una zona rural aquí no significa renunciar a las comodidades urbanas ni a la accesibilidad. San Isidro ofrece una infraestructura sólida, un centro urbano que lo tiene todo y opciones de transporte regional inmejorables.
+
+[METRICS_GRID]
 
 ### Servicios Esenciales Diarios
 
@@ -62,9 +66,9 @@ San Isidro de El General se ubica perfectamente en el centro del valle. Desde es
 
 Si su objetivo es un estilo de vida orgánico; despertarse con el sonido de un río, cosechar frutas de sus propios árboles y ser dueño de una casa construida con materiales sostenibles, Pérez Zeledón es el destino ideal. El mercado de propiedades rurales aquí es muy diverso, abarcando desde pequeñas cabañas ecológicas hasta grandes propiedades sostenibles de lujo.
 
-### Encuentre su propiedad con RE/MAX Altitud
+### Encuentre su propiedad con REMAX Altitud
 
-Ya sea que busque un condominio moderno cerca de los servicios de la ciudad, una gran propiedad agrícola con sus propias cascadas o una casa dentro de una comunidad ecológica exclusiva, nuestro equipo en RE/MAX Altitud está profundamente arraigado en el mercado local. Nos especializamos en conectar a inversionistas internacionales y familias con propiedades que elevan su calidad de vida.
+Ya sea que busque un condominio moderno cerca de los servicios de la ciudad, una gran propiedad agrícola con sus propias cascadas o una casa dentro de una comunidad ecológica exclusiva, nuestro equipo en REMAX Altitud está profundamente arraigado en el mercado local. Nos especializamos en conectar a inversionistas internacionales y familias con propiedades que elevan su calidad de vida.
 
 [CTA_BUTTON]`;
 
@@ -91,6 +95,53 @@ const metadata = {
       "Lower entry prices than coastal areas",
     ],
   },
+  galleryImages: [
+    {
+      url: "/images/areas/perez-zeledon-gallery-1.png",
+      captionEn: "San Isidro de El General Valley",
+      captionEs: "Valle de San Isidro de El General",
+    },
+    {
+      url: "/images/areas/perez-zeledon-gallery-2.png",
+      captionEn: "Chirripó Mountain Peak",
+      captionEs: "Pico de la Montaña Chirripó",
+    },
+    {
+      url: "/images/areas/perez-zeledon-gallery-3.png",
+      captionEn: "Beautiful Waterfalls in Pérez Zeledón",
+      captionEs: "Hermosas Cataratas en Pérez Zeledón",
+    },
+    {
+      url: "/images/areas/perez-zeledon-gallery-4.jpg",
+      captionEn: "San Isidro de El General Town Center",
+      captionEs: "Centro de San Isidro de El General",
+    },
+    {
+      url: "/images/areas/perez-zeledon-gallery-5.png",
+      captionEn: "Resplendent Quetzal in the Cloud Forest",
+      captionEs: "Quetzal Resplandeciente en el Bosque Nuboso",
+    },
+    {
+      url: "/images/areas/perez-zeledon-gallery-6.png",
+      captionEn: "Vibrant Chestnut-mandibled Toucan",
+      captionEs: "Tucán de Pico Multicolor",
+    },
+    {
+      url: "/images/areas/perez-zeledon-gallery-7.png",
+      captionEn: "Two-toed Sloth in the Tree Canopy",
+      captionEs: "Perezoso de Dos Dedos en las Copas de los Árboles",
+    },
+    {
+      url: "/images/areas/perez-zeledon-gallery-8.png",
+      captionEn: "Baird's Tapir (Danta) grazing in Mount Chirripó",
+      captionEs: "Danta (Tapir) pastando en el Cerro Chirripó",
+    },
+    {
+      url: "/images/areas/perez-zeledon-stadium.jpg",
+      captionEn: "Pérez Zeledón Municipal Stadium — Home of Guerreros del Sur",
+      captionEs: "Estadio Municipal de Pérez Zeledón — Hogar de los Guerreros del Sur",
+    },
+  ],
 };
 
 async function main() {

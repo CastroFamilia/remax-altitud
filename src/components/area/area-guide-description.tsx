@@ -41,6 +41,8 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
     .map((b) => b.trim())
     .filter(Boolean);
 
+  const hasExplicitMetricsGrid = blocks.includes("[METRICS_GRID]");
+
   return (
     <section
       data-testid="area-guide-description"
@@ -93,6 +95,18 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
             return <CtaButton key={idx} locale={locale} areaSlug={area.slug} />;
           }
 
+          // 7. Custom metrics grid token inline
+          if (block === "[METRICS_GRID]") {
+            return (
+              <MetricsGrid
+                key={idx}
+                metadata={metadata}
+                locale={locale}
+                t={t}
+              />
+            );
+          }
+
           // Default: Paragraph with inline bold parsing
           return (
             <p
@@ -104,37 +118,10 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
         })}
       </div>
 
-      {/* Nearest services quick metrics grid */}
-      {metadata &&
+      {/* Nearest services quick metrics grid (fallback if not placed explicitly) */}
+      {!hasExplicitMetricsGrid && metadata &&
         (metadata.nearestAirport || metadata.nearestHospital || metadata.nearestBeach) && (
-          <div className="pt-8 border-t border-border/40">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-brand-navy/60 mb-4">
-              {locale === "es" ? "DISTANCIAS Y SERVICIOS DIRECTOS" : "DIRECT DISTANCES & LOGISTICS"}
-            </h4>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {metadata.nearestAirport && (
-                <ServiceMetricItem
-                  icon="✈️"
-                  label={t("nearestServices.airport")}
-                  value={metadata.nearestAirport}
-                />
-              )}
-              {metadata.nearestHospital && (
-                <ServiceMetricItem
-                  icon="🏥"
-                  label={t("nearestServices.hospital")}
-                  value={metadata.nearestHospital}
-                />
-              )}
-              {metadata.nearestBeach && (
-                <ServiceMetricItem
-                  icon="🏖️"
-                  label={t("nearestServices.beach")}
-                  value={metadata.nearestBeach}
-                />
-              )}
-            </div>
-          </div>
+          <MetricsGrid metadata={metadata} locale={locale} t={t} />
         )}
     </section>
   );
@@ -176,8 +163,8 @@ function ServicesList({ locale }: { locale: string }) {
     {
       title: isEs ? "Educación Privada Premium" : "Premium Private Education",
       desc: isEs
-        ? "El valle es un centro en crecimiento para la educación de alta calidad, que cuenta con BMS (Bilingual Multidisciplinary School), una academia privada K-12 de primer nivel respaldada por el Ministerio de Educación Pública que ofrece programas académicos, artísticos y de robótica, junto con modelos alternativos innovadores como la escuela de inspiración Waldorf RISE para un aprendizaje experiencial basado en la naturaleza en preescolar y primaria."
-        : "The valley is a growing hub for high-quality education; featuring BMS (Bilingual Multidisciplinary School), a top-rated private K-12 academy endorsed by the Ministry of Public Education offering academic, artistic, and robotics programs, alongside innovative alternative models like the RISE Waldorf-inspired school for experiential, nature-based early childhood and elementary learning.",
+        ? "Educación de alta calidad que incluye el colegio bilingüe K-12 BMS School, la escuela de inspiración Waldorf RISE, el Colegio del Valle y diversas universidades."
+        : "High-quality options including the K-12 bilingual BMS School, the nature-based RISE Waldorf-inspired school, Colegio del Valle, and several local universities.",
       icon: GraduationCap,
     },
     {
@@ -233,7 +220,7 @@ function CardinalMap({ locale }: { locale: string }) {
         </div>
 
         {/* ROW 1: North */}
-        <div className="col-start-2 flex flex-col items-center">
+        <div className="row-start-1 col-start-2 flex flex-col items-center">
           <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
               ▲ {isEs ? "NORTE" : "NORTH"}
@@ -250,7 +237,7 @@ function CardinalMap({ locale }: { locale: string }) {
 
         {/* ROW 2: West | Center (San Isidro) | East */}
         {/* West */}
-        <div className="flex items-center">
+        <div className="row-start-2 col-start-1 flex items-center">
           <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-right">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
               {isEs ? "OESTE" : "WEST"} ◀
@@ -266,7 +253,7 @@ function CardinalMap({ locale }: { locale: string }) {
         </div>
 
         {/* Center Compass Needle */}
-        <div className="flex flex-col items-center justify-center p-6 rounded-full bg-brand-navy border-4 border-brand-gold text-white text-center w-44 h-44 mx-auto shadow-2xl relative z-10">
+        <div className="row-start-2 col-start-2 flex flex-col items-center justify-center p-6 rounded-full bg-brand-navy border-4 border-brand-gold text-white text-center w-44 h-44 mx-auto shadow-2xl relative z-10">
           <Compass className="w-8 h-8 text-brand-gold animate-[pulse_4s_ease-in-out_infinite]" />
           <span className="text-[10px] font-bold tracking-widest text-brand-gold/80 mt-2 block">
             {isEs ? "NÚCLEO URBANIZADO" : "CENTRAL URBAN HUB"}
@@ -277,7 +264,7 @@ function CardinalMap({ locale }: { locale: string }) {
         </div>
 
         {/* East */}
-        <div className="flex items-center">
+        <div className="row-start-2 col-start-3 flex items-center">
           <div className="w-8 h-0.5 bg-gradient-to-l from-brand-gold/45 to-transparent mr-2" />
           <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-left">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
@@ -293,7 +280,7 @@ function CardinalMap({ locale }: { locale: string }) {
         </div>
 
         {/* ROW 3: South */}
-        <div className="col-start-2 flex flex-col items-center">
+        <div className="row-start-3 col-start-2 flex flex-col items-center">
           <div className="w-0.5 h-8 bg-gradient-to-t from-brand-gold/45 to-transparent mb-2" />
           <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
@@ -478,6 +465,51 @@ function ServiceMetricItem({ icon, label, value }: { icon: string; label: string
       <div>
         <p className="text-[11px] font-bold uppercase tracking-wider text-text-muted">{label}</p>
         <p className="mt-1 text-sm font-semibold text-brand-navy leading-tight">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+/** 5. Reuseable direct distances and logistics grid */
+function MetricsGrid({
+  metadata,
+  locale,
+  t,
+}: {
+  metadata: DescriptionMetadata | null;
+  locale: string;
+  t: any;
+}) {
+  if (!metadata || (!metadata.nearestAirport && !metadata.nearestHospital && !metadata.nearestBeach)) {
+    return null;
+  }
+  return (
+    <div className="pt-6 pb-2 border-t border-b border-border/40 my-8">
+      <h4 className="text-xs font-bold uppercase tracking-widest text-brand-navy/60 mb-4">
+        {locale === "es" ? "DISTANCIAS Y SERVICIOS DIRECTOS" : "DIRECT DISTANCES & LOGISTICS"}
+      </h4>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {metadata.nearestAirport && (
+          <ServiceMetricItem
+            icon="✈️"
+            label={t("nearestServices.airport")}
+            value={metadata.nearestAirport}
+          />
+        )}
+        {metadata.nearestHospital && (
+          <ServiceMetricItem
+            icon="🏥"
+            label={t("nearestServices.hospital")}
+            value={metadata.nearestHospital}
+          />
+        )}
+        {metadata.nearestBeach && (
+          <ServiceMetricItem
+            icon="🏖️"
+            label={t("nearestServices.beach")}
+            value={metadata.nearestBeach}
+          />
+        )}
       </div>
     </div>
   );

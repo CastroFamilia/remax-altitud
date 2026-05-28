@@ -21,6 +21,7 @@ import { AreaGuideTabs } from "@/components/area/area-guide-tabs";
 import { CommunityCard } from "@/components/area/community-card";
 import { InvestmentContext } from "@/components/area/investment-context";
 import { FeaturedAreas } from "@/components/home/featured-areas";
+import { AreaGalleryCarousel } from "@/components/area/area-gallery-carousel";
 
 /**
  * Area Guide Page — SSG (no ISR)
@@ -151,6 +152,12 @@ export default async function AreaGuidePage({
         properties={areaProperties}
         agents={agents}
         similarAreas={similarAreas}
+        locale={locale}
+      />
+
+      {/* Area Photo Gallery Carousel */}
+      <AreaGalleryCarousel
+        metadata={area.metadata as Record<string, unknown> | null}
         locale={locale}
       />
 
