@@ -8,3 +8,4 @@ export * from "./communities";
 export * from "./relations";
 export type { GeoPoint } from "../types/postgis";
 export { geographyPoint } from "../types/postgis";
+export * from "./shortlist-shares";

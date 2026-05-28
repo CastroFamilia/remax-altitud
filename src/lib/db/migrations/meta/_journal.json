@@ -43,6 +43,13 @@
       "when": 1779940971547,
       "tag": "0005_spicy_silverclaw",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779945400744,
+      "tag": "0006_faithful_mach_iv",
+      "breakpoints": true
     }
   ]
 }
