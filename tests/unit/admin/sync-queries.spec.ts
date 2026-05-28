@@ -78,9 +78,9 @@ afterEach(() => {
 });
 
 // ---------------------------------------------------------------------------
-// getSyncLogs — RED PHASE
+// getSyncLogs
 // ---------------------------------------------------------------------------
-describe("getSyncLogs (ATDD Red Phase)", () => {
+describe("getSyncLogs", () => {
   it("[P0] 8.1-UNIT-001: fetches chronological sync logs successfully", async () => {
     const { getSyncLogs } = await import("@/lib/db/queries/sync-log");
     await getSyncLogs({});
@@ -114,9 +114,9 @@ describe("getSyncLogs (ATDD Red Phase)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// getSyncDashboardStats — RED PHASE
+// getSyncDashboardStats
 // ---------------------------------------------------------------------------
-describe("getSyncDashboardStats (ATDD Red Phase)", () => {
+describe("getSyncDashboardStats", () => {
   it("[P0] 8.1-UNIT-005: retrieves active listings count and last successful sync", async () => {
     const { getSyncDashboardStats } = await import("@/lib/db/queries/sync-log");
     const result = await getSyncDashboardStats();
@@ -130,7 +130,7 @@ describe("getSyncDashboardStats (ATDD Red Phase)", () => {
 // ---------------------------------------------------------------------------
 // Formatting Helpers Unit Tests
 // ---------------------------------------------------------------------------
-describe("formatSyncDuration Formatting Helper (ATDD Red Phase)", () => {
+describe("formatSyncDuration Formatting Helper", () => {
   it("[P2] 8.1-UNIT-006: converts sync duration in milliseconds to human-readable format", async () => {
     const { formatSyncDuration } = await import("@/lib/db/queries/sync-log");
 

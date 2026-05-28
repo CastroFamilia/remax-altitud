@@ -157,24 +157,13 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
   // loginAdmin Tests
   // ---------------------------------------------------------------------------
   describe("loginAdmin", () => {
-    const originalEnv = process.env.NODE_ENV;
-
     afterEach(() => {
-      Object.defineProperty(process.env, "NODE_ENV", {
-        value: originalEnv,
-        configurable: true,
-        writable: true,
-      });
-      delete process.env.ADMIN_PASSWORD;
+      vi.unstubAllEnvs();
     });
 
     it("[P0] 8.1-UNIT-009: loginAdmin sets httpOnly secure cookie when password matches ADMIN_PASSWORD", async () => {
-      process.env.ADMIN_PASSWORD = "test-password";
-      Object.defineProperty(process.env, "NODE_ENV", {
-        value: "production",
-        configurable: true,
-        writable: true,
-      });
+      vi.stubEnv("ADMIN_PASSWORD", "test-password");
+      vi.stubEnv("NODE_ENV", "production");
 
       const result = await loginAdmin("test-password");
 
@@ -188,7 +177,7 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
     });
 
     it("[P1] 8.1-UNIT-010: loginAdmin rejects invalid password", async () => {
-      process.env.ADMIN_PASSWORD = "test-password";
+      vi.stubEnv("ADMIN_PASSWORD", "test-password");
 
       const result = await loginAdmin("wrong-password");
 
@@ -197,12 +186,9 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
     });
 
     it("[P1] 8.1-UNIT-011: loginAdmin returns success=false if ADMIN_PASSWORD is not configured in production", async () => {
-      Object.defineProperty(process.env, "NODE_ENV", {
-        value: "production",
-        configurable: true,
-        writable: true,
-      });
-      delete process.env.ADMIN_PASSWORD;
+      vi.stubEnv("NODE_ENV", "production");
+      // ensure ADMIN_PASSWORD is not set
+      vi.stubEnv("ADMIN_PASSWORD", "");
 
       const result = await loginAdmin("admin");
 
@@ -211,12 +197,9 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
     });
 
     it("[P2] 8.1-UNIT-012: loginAdmin falls back to default 'admin' password in non-production", async () => {
-      Object.defineProperty(process.env, "NODE_ENV", {
-        value: "development",
-        configurable: true,
-        writable: true,
-      });
-      delete process.env.ADMIN_PASSWORD;
+      vi.stubEnv("NODE_ENV", "development");
+      // ensure ADMIN_PASSWORD is not set
+      vi.stubEnv("ADMIN_PASSWORD", "");
 
       const result = await loginAdmin("admin");
 
