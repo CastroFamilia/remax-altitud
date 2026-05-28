@@ -21,10 +21,10 @@ export function ShortlistPageClient() {
   // Support both unit test mock translations and dynamic standard translations
   const getTranslation = (key: string) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const val = t(`Shortlist.${key}` as any);
-    if (val && val !== `Shortlist.${key}`) return val;
+    const val = t(key as any);
+    if (val && val !== key) return val;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return t(key as any);
+    return t(`Shortlist.${key}` as any);
   };
 
   useEffect(() => {
