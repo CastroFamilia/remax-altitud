@@ -19,6 +19,7 @@ export const LIFESTYLE_TAGS = [
   "Vacation Home",
   "Retire",
   "Commercial",
+  "Luxury Property",
 ] as const;
 
 /** Union type of all valid lifestyle tag strings. */
