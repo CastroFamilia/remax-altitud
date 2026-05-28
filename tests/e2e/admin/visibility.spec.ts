@@ -60,6 +60,16 @@ test.describe("Story 8.6: Listing Visibility & SEO Monitoring - E2E Tests (ATDD 
     await page.goto(`/en/search?q=${propertySlug}`);
     const noResults = page.locator('[data-testid="no-results-message"]');
     await expect(noResults).toBeVisible();
+
+    // Cleanup: Restore visibility to visible to ensure test state isolation
+    await page.goto("/en/admin/visibility");
+    const targetRow = page.locator(`tr[data-property-slug="${propertySlug}"]`);
+    const toggleBackBtn = targetRow.locator('[data-testid="visibility-toggle-btn"]');
+    await toggleBackBtn.click();
+    
+    // Assert status is successfully restored to Visible
+    const restoredBadge = targetRow.locator('[data-testid="visibility-status-badge"]');
+    await expect(restoredBadge).toHaveText("Visible");
   });
 
   test("[P0] 8.6-E2E-003: directly accessing a hidden listing displays a high-converting Agent CTA (AC2)", async ({
