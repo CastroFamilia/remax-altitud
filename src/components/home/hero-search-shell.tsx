@@ -13,67 +13,67 @@ const AREA_KEYWORDS: Record<string, string> = {
   "perez zeledon": "perez-zeledon",
   "perez zeledón": "perez-zeledon",
   "pérez zeledón": "perez-zeledon",
-  "pz": "perez-zeledon",
-  "uvita": "uvita",
-  "dominical": "dominical",
-  "ojochal": "ojochal",
-  "quepos": "quepos",
+  pz: "perez-zeledon",
+  uvita: "uvita",
+  dominical: "dominical",
+  ojochal: "ojochal",
+  quepos: "quepos",
   "manuel antonio": "manuel-antonio",
-  "jaco": "jaco",
-  "jacó": "jaco",
-  "tamarindo": "tamarindo",
-  "nosara": "nosara",
-  "samara": "samara",
-  "sámara": "samara",
+  jaco: "jaco",
+  jacó: "jaco",
+  tamarindo: "tamarindo",
+  nosara: "nosara",
+  samara: "samara",
+  sámara: "samara",
   "santa teresa": "santa-teresa",
   "playa hermosa": "playa-hermosa",
-  "liberia": "liberia",
+  liberia: "liberia",
   "san jose": "san-jose",
   "san josé": "san-jose",
-  "escazu": "escazu",
-  "escazú": "escazu",
+  escazu: "escazu",
+  escazú: "escazu",
   "santa ana": "santa-ana",
-  "heredia": "heredia",
-  "alajuela": "alajuela",
-  "cartago": "cartago",
+  heredia: "heredia",
+  alajuela: "alajuela",
+  cartago: "cartago",
 };
 
 const TYPE_KEYWORDS: Record<string, string> = {
-  "casa": "Casa",
-  "house": "Casa",
-  "home": "Casa",
-  "apartamento": "Apartamento",
-  "apartment": "Apartamento",
-  "condo": "Apartamento",
-  "condominio": "Apartamento",
-  "lote": "Lote",
-  "lot": "Lote",
-  "terreno": "Terreno",
-  "land": "Terreno",
-  "comercial": "Comercial",
-  "commercial": "Comercial",
-  "finca": "Finca",
-  "farm": "Finca",
-  "ranch": "Finca",
+  casa: "Casa",
+  house: "Casa",
+  home: "Casa",
+  apartamento: "Apartamento",
+  apartment: "Apartamento",
+  condo: "Apartamento",
+  condominio: "Apartamento",
+  lote: "Lote",
+  lot: "Lote",
+  terreno: "Terreno",
+  land: "Terreno",
+  comercial: "Comercial",
+  commercial: "Comercial",
+  finca: "Finca",
+  farm: "Finca",
+  ranch: "Finca",
 };
 
 const LIFESTYLE_KEYWORDS: Record<string, string> = {
-  "retire": "Retire",
-  "retiro": "Retire",
-  "jubilacion": "Retire",
-  "jubilación": "Retire",
-  "investment": "Investment Property",
-  "inversión": "Investment Property",
-  "inversion": "Investment Property",
-  "rental": "Rental Potential",
-  "renta": "Rental Potential",
-  "alquiler": "Rental Potential",
-  "vacation": "Vacation Home",
-  "vacaciones": "Vacation Home",
-  "vacacional": "Vacation Home",
-  "negocio": "Commercial",
-  "comercio": "Commercial",
-  "business": "Commercial",
+  retire: "Retire",
+  retiro: "Retire",
+  jubilacion: "Retire",
+  jubilación: "Retire",
+  investment: "Investment Property",
+  inversión: "Investment Property",
+  inversion: "Investment Property",
+  rental: "Rental Potential",
+  renta: "Rental Potential",
+  alquiler: "Rental Potential",
+  vacation: "Vacation Home",
+  vacaciones: "Vacation Home",
+  vacacional: "Vacation Home",
+  negocio: "Commercial",
+  comercio: "Commercial",
+  business: "Commercial",
 };
 
 function parseQuery(queryText: string): Record<string, string> {
@@ -129,25 +129,25 @@ function parseQuery(queryText: string): Record<string, string> {
   }
 
   // 5. Match Price limits
-  const cleanedForPrice = normalized
-    .replace(/\$/g, "")
-    .replace(/(\d+)[.,](\d{3})\b/g, "$1$2"); 
-  
+  const cleanedForPrice = normalized.replace(/\$/g, "").replace(/(\d+)[.,](\d{3})\b/g, "$1$2");
+
   const numbers = cleanedForPrice.match(/\b\d+\b/g);
   const kNumbers = cleanedForPrice.match(/\b(\d+)\s*k\b/g);
-  
+
   let priceValues: number[] = [];
   if (numbers) {
-    priceValues = priceValues.concat(numbers.map(num => parseInt(num, 10)));
+    priceValues = priceValues.concat(numbers.map((num) => parseInt(num, 10)));
   }
   if (kNumbers) {
-    priceValues = priceValues.concat(kNumbers.map(kNum => {
-      const val = parseInt(kNum.replace(/\s*k/g, ""), 10);
-      return val * 1000;
-    }));
+    priceValues = priceValues.concat(
+      kNumbers.map((kNum) => {
+        const val = parseInt(kNum.replace(/\s*k/g, ""), 10);
+        return val * 1000;
+      }),
+    );
   }
 
-  priceValues = Array.from(new Set(priceValues)).filter(val => val > 5000);
+  priceValues = Array.from(new Set(priceValues)).filter((val) => val > 5000);
 
   if (priceValues.length > 0) {
     const isMax = /(?:under|max|less|below|hasta|menos|<)\s*\$?/i.test(normalized);
@@ -188,10 +188,10 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
 
   const handleSearch = () => {
     const params = parseQuery(query);
-    
+
     // Add view=split to ensure consistent split layout
     params.view = "split";
-    
+
     const qString = new URLSearchParams(params).toString();
     const searchUrl = qString ? `/search?${qString}` : "/search";
     router.push(searchUrl);
@@ -209,7 +209,10 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
       <div role="search" aria-label={t("searchAriaLabel")} className={shellClass}>
         <div>
           {/* Interactive Search Mode Toggles */}
-          <div className="mb-2.5 flex gap-2 text-xs font-semibold" aria-label="Search mode selector">
+          <div
+            className="mb-2.5 flex gap-2 text-xs font-semibold"
+            aria-label="Search mode selector"
+          >
             <button
               type="button"
               onClick={() => setSearchMode("smart")}
@@ -217,7 +220,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                 "flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-gold",
                 searchMode === "smart"
                   ? "bg-white/15 text-brand-gold ring-1 ring-brand-gold/30 shadow-sm"
-                  : "text-white/60 hover:text-white/90 hover:bg-white/5"
+                  : "text-white/60 hover:text-white/90 hover:bg-white/5",
               )}
             >
               <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
@@ -230,7 +233,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                 "flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-gold",
                 searchMode === "traditional"
                   ? "bg-white/15 text-brand-gold ring-1 ring-brand-gold/30 shadow-sm"
-                  : "text-white/60 hover:text-white/90 hover:bg-white/5"
+                  : "text-white/60 hover:text-white/90 hover:bg-white/5",
               )}
             >
               <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
@@ -265,4 +268,3 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
     </div>
   );
 }
-

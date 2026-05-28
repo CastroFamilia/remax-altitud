@@ -31,8 +31,8 @@ export async function upsertAgent(raw: RawAgent, officeId: string): Promise<void
   const slugWithSuffix = slugify(raw.name, raw.apiId);
 
   const normalizedName = normalizeAgentName(raw.name);
-  const resolvedLanguages = AGENT_LANGUAGE_OVERRIDES[normalizedName] ||
-    (raw.primaryLang ? [raw.primaryLang] : []);
+  const resolvedLanguages =
+    AGENT_LANGUAGE_OVERRIDES[normalizedName] || (raw.primaryLang ? [raw.primaryLang] : []);
 
   const values = {
     apiId: raw.apiId,
