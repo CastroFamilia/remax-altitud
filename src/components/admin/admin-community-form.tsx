@@ -4,12 +4,25 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2, ArrowLeft, Trash2 } from "lucide-react";
-import { CommunityGeoFenceMap } from "@/components/map/community-geofence-map";
+import dynamic from "next/dynamic";
 import {
   createCommunityAction,
   updateCommunityAction,
 } from "@/app/actions/admin-community-actions";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
+
+const CommunityGeoFenceMap = dynamic(
+  () => import("@/components/map/community-geofence-map").then((m) => m.CommunityGeoFenceMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        data-testid="geofence-map-loading"
+        className="h-[400px] w-full bg-slate-900 rounded-lg animate-pulse border border-slate-800"
+      />
+    ),
+  },
+);
 
 export interface AreaOption {
   id: string;
@@ -130,15 +143,8 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
   const [geofenceText, setGeofenceText] = useState(JSON.stringify(polygonPoints));
 
   useEffect(() => {
-    try {
-      const parsed = JSON.parse(geofenceText);
-      if (JSON.stringify(parsed) !== JSON.stringify(polygonPoints)) {
-        setGeofenceText(JSON.stringify(polygonPoints));
-      }
-    } catch {
-      setGeofenceText(JSON.stringify(polygonPoints));
-    }
-  }, [polygonPoints, geofenceText]);
+    setGeofenceText(JSON.stringify(polygonPoints));
+  }, [polygonPoints]);
 
   const handleGeofenceTextChange = (val: string) => {
     setGeofenceText(val);
@@ -147,7 +153,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
       if (Array.isArray(parsed)) {
         setPolygonPoints(parsed);
       }
-    } catch (e) {
+    } catch {
       // Ignore invalid JSON while user is typing
     }
   };
@@ -172,6 +178,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
       setLatitude(avgLat.toFixed(6));
       setLongitude(avgLng.toFixed(6));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [polygonPoints]);
 
   const handleClearGeoFence = () => {
