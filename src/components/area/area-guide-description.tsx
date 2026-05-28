@@ -176,8 +176,8 @@ function ServicesList({ locale }: { locale: string }) {
     {
       title: isEs ? "Educación Privada Premium" : "Premium Private Education",
       desc: isEs
-        ? "El valle es un centro en crecimiento para la educación de alta calidad, que cuenta con BMS (Bilingual Multidisciplinary School), una academia privada K-12 de primer nivel respaldada por el Ministerio de Educación Pública que ofrece programas académicos, artísticos y de robótica, junto con modelos alternativos innovadores como la escuela de inspiración Waldorf RISE para un aprendizaje experiencial basado en la naturaleza en preescolar y primaria."
-        : "The valley is a growing hub for high-quality education; featuring BMS (Bilingual Multidisciplinary School), a top-rated private K-12 academy endorsed by the Ministry of Public Education offering academic, artistic, and robotics programs, alongside innovative alternative models like the RISE Waldorf-inspired school for experiential, nature-based early childhood and elementary learning.",
+        ? "Escuelas internacionales y bilingües como BMS o Colegio del Valle, así como educación alternativa Waldorf en RISE Waldorf Inspired School y diversas universidades."
+        : "International and Bilingual schools like BMS or Colegio del Valle as well as alternative Waldorf Education at the RISE Waldorf Inspired School and many Universities.",
       icon: GraduationCap,
     },
     {
