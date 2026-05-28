@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-27T19:33:00-06:00_
+_Last updated: 2026-05-27T22:16:00-06:00_
 
 ## Stories
 
@@ -38,12 +38,12 @@ _Last updated: 2026-05-27T19:33:00-06:00_
 | 6.1   | 6    | Area Guide Pages | done | #101 | #153 | merged | none | ✅ Yes (done) |
 | 6.2   | 6    | Community Pages | done | #102 | #156 | merged | 6.1 | ✅ Yes (done) |
 | 6.3   | 6    | Community Mini-Map & Geo-Fence Display | done | #103 | #157 | merged | 6.2 | ✅ Yes (done) |
-| 6.4   | 6    | Investment Discovery & Area Context | backlog | #104 | — | — | 6.1 | ✅ Yes |
-| 6.5   | 6    | Community Geo-Fence Auto-Tagging | backlog | #105 | — | — | 6.2 | ✅ Yes |
-| 7.1   | 7    | Save & Shortlist Properties | backlog | #106 | — | — | none | ❌ No (epic 6 not complete) |
-| 7.2   | 7    | Shortlist Comparison Page | backlog | #107 | — | — | 7.1 | ❌ No (epic 6 not complete) |
-| 7.3   | 7    | Shareable Shortlist URL | backlog | #108 | — | — | 7.2 | ❌ No (epic 6 not complete) |
-| 7.4   | 7    | Smart Agent Routing from Shortlist | backlog | #109 | — | — | 7.2 | ❌ No (epic 6 not complete) |
+| 6.4   | 6    | Investment Discovery & Area Context | done | #104 | #159 | merged | 6.1 | ✅ Yes (done) |
+| 6.5   | 6    | Community Geo-Fence Auto-Tagging | done | #105 | #160 | merged | 6.2 | ✅ Yes (done) |
+| 7.1   | 7    | Save & Shortlist Properties | backlog | #106 | — | — | none | ✅ Yes |
+| 7.2   | 7    | Shortlist Comparison Page | backlog | #107 | — | — | 7.1 | ❌ No (7.1 not complete) |
+| 7.3   | 7    | Shareable Shortlist URL | backlog | #108 | — | — | 7.2 | ❌ No (7.2 not complete) |
+| 7.4   | 7    | Smart Agent Routing from Shortlist | backlog | #109 | — | — | 7.2 | ❌ No (7.2 not complete) |
 | 8.1   | 8    | Sync Status Dashboard & Monitoring | backlog | #110 | — | — | none | ❌ No (epic 7 not complete) |
 | 8.2   | 8    | Lead Management & Agent Assignment | backlog | #111 | — | — | none | ❌ No (epic 7 not complete) |
 | 8.3   | 8    | Bulk Lead Reassignment & Export | backlog | #112 | — | — | 8.2 | ❌ No (epic 7 not complete) |
@@ -102,12 +102,10 @@ _Last updated: 2026-05-27T19:33:00-06:00_
 
 ## Notes
 
-- Epics 1–5 are fully complete (all stories done and merged).
-- Epic 6 in progress: Stories 6.1, 6.2, 6.3 are done. Stories 6.4 and 6.5 remain.
-- Story 6.2 PR #156 merged 2026-05-27. Story 6.3 PR #157 merged 2026-05-28.
-- Stories 6.4 (Investment Discovery) and 6.5 (Community Geo-Fence Auto-Tagging) are Ready to Work — can be parallelized.
-- Epic 7 and 8 blocked until Epic 6 is complete.
+- Epics 1–6 are fully complete (all stories done and merged).
+- Story 6.4 PR #159 and Story 6.5 PR #160 merged 2026-05-28.
+- Epic 7 (Shortlist & Smart Agent Routing) is now unblocked and Ready to Work.
 - Base branch: `development` (not `main`). All worktrees and PRs target `development`.
 - No open story PRs. PR #155 (Release) is open but not story-related.
-- No stale worktrees. Cleaned up story-6.3 remote branch.
+- Cleaned up story-6.4 and story-6.5 worktrees and remote branches.
 - Epic ordering strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
