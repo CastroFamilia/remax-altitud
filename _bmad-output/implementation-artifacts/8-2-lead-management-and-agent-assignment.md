@@ -1,6 +1,6 @@
 # Story 8.2: Lead Management & Agent Assignment
 
-Status: review
+Status: done
 
 ## Story
 
