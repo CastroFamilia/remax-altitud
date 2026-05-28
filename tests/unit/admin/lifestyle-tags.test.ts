@@ -27,7 +27,7 @@ vi.mock("@/lib/auth/admin", () => ({
   verifyAdminAuth: mockVerifyAdminAuth,
 }));
 
-describe.skip("Story 8.4: Lifestyle Tag Administration - Unit Tests (TDD RED PHASE)", () => {
+describe("Story 8.4: Lifestyle Tag Administration - Unit Tests (TDD RED PHASE)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

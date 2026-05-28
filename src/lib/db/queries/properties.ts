@@ -282,6 +282,24 @@ export async function updatePropertyLifestyleTags(apiId: string, tags: string[])
 }
 
 /**
+ * Updates the lifestyle tags array column for a specific property id.
+ * AC: 1, 2, 3
+ *
+ * @param id   - The property's UUID
+ * @param tags - The new array of lifestyle tags
+ */
+export async function updatePropertyTags(id: string, tags: string[]): Promise<void> {
+  await db
+    .update(properties)
+    .set({
+      lifestyleTags: tags,
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.id, id));
+}
+
+
+/**
  * Fetches all slugs for visible properties.
  * Used by `generateStaticParams` for SSG build-time generation (Story 4.1, Task 1).
  *
