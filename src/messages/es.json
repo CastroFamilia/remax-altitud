@@ -89,9 +89,12 @@
     },
     "areaHighlights": {
       "heading": "Explora Nuestras Zonas",
-      "description": "Desde valles montañosos hasta playas del Pacífico.",
+      "description": "Encuentre su hogar ideal en el Pacífico Sur y las montañas de Costa Rica. Desde el lujo \"barefoot\" rodeado de ríos y valles cerca de la ciudad, hasta propiedades de alta gama frente al mar.",
       "viewAll": "Ver todas las zonas",
-      "shellNotice": "Zonas destacadas próximamente"
+      "shellNotice": "Zonas destacadas próximamente",
+      "altitude": "Altitud",
+      "temperature": "Temp",
+      "explore": "Explorar Zona"
     },
     "sellCta": {
       "heading": "¿Listo para vender tu propiedad?",

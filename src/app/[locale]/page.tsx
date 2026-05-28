@@ -2,11 +2,11 @@ import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { SplitHero } from "@/components/home/split-hero";
 import {
-  AreaHighlightsShell,
   FeaturedPropertiesShell,
   SellCtaShell,
 } from "@/components/home/homepage-sections";
 import { FeaturedCommunities } from "@/components/home/featured-communities";
+import { FeaturedAreas } from "@/components/home/featured-areas";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -24,7 +24,7 @@ function HomeContent({ locale }: { locale: string }) {
       <div className="container space-y-16 py-16">
         <FeaturedPropertiesShell />
         <FeaturedCommunities locale={locale} />
-        <AreaHighlightsShell />
+        <FeaturedAreas locale={locale} />
       </div>
       <div className="container pb-16">
         <SellCtaShell />
