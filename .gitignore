@@ -64,3 +64,4 @@ _bmad/config.user.yaml
 public/property-images/*
 !public/property-images/.gitkeep
 .env.local
+.vercel

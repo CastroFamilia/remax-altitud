@@ -1,15 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Area } from "@/lib/db/schema/areas";
 import Link from "next/link";
-import {
-  Compass,
-  ArrowRight,
-  Plane,
-  Bus,
-  Activity,
-  CreditCard,
-  ShoppingBag,
-} from "lucide-react";
+import { Compass, ArrowRight, Plane, Bus, Activity, CreditCard, ShoppingBag } from "lucide-react";
 
 interface DescriptionMetadata {
   nearestAirport?: string;
@@ -35,7 +27,10 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
   const metadata = area.metadata as DescriptionMetadata | null;
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
 
-  const blocks = description.split("\n\n").map((b) => b.trim()).filter(Boolean);
+  const blocks = description
+    .split("\n\n")
+    .map((b) => b.trim())
+    .filter(Boolean);
 
   return (
     <section
@@ -101,36 +96,37 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
       </div>
 
       {/* Nearest services quick metrics grid */}
-      {metadata && (metadata.nearestAirport || metadata.nearestHospital || metadata.nearestBeach) && (
-        <div className="pt-8 border-t border-border/40">
-          <h4 className="text-xs font-bold uppercase tracking-widest text-brand-navy/60 mb-4">
-            {locale === "es" ? "DISTANCIAS Y SERVICIOS DIRECTOS" : "DIRECT DISTANCES & LOGISTICS"}
-          </h4>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {metadata.nearestAirport && (
-              <ServiceMetricItem
-                icon="✈️"
-                label={t("nearestServices.airport")}
-                value={metadata.nearestAirport}
-              />
-            )}
-            {metadata.nearestHospital && (
-              <ServiceMetricItem
-                icon="🏥"
-                label={t("nearestServices.hospital")}
-                value={metadata.nearestHospital}
-              />
-            )}
-            {metadata.nearestBeach && (
-              <ServiceMetricItem
-                icon="🏖️"
-                label={t("nearestServices.beach")}
-                value={metadata.nearestBeach}
-              />
-            )}
+      {metadata &&
+        (metadata.nearestAirport || metadata.nearestHospital || metadata.nearestBeach) && (
+          <div className="pt-8 border-t border-border/40">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-brand-navy/60 mb-4">
+              {locale === "es" ? "DISTANCIAS Y SERVICIOS DIRECTOS" : "DIRECT DISTANCES & LOGISTICS"}
+            </h4>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {metadata.nearestAirport && (
+                <ServiceMetricItem
+                  icon="✈️"
+                  label={t("nearestServices.airport")}
+                  value={metadata.nearestAirport}
+                />
+              )}
+              {metadata.nearestHospital && (
+                <ServiceMetricItem
+                  icon="🏥"
+                  label={t("nearestServices.hospital")}
+                  value={metadata.nearestHospital}
+                />
+              )}
+              {metadata.nearestBeach && (
+                <ServiceMetricItem
+                  icon="🏖️"
+                  label={t("nearestServices.beach")}
+                  value={metadata.nearestBeach}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </section>
   );
 }
@@ -197,13 +193,9 @@ function ServicesList({ locale }: { locale: string }) {
               <div className="p-3 rounded-xl bg-brand-navy/5 text-brand-navy border border-brand-navy/10 group-hover:bg-brand-navy group-hover:text-white transition-colors duration-300">
                 <IconComponent className="w-6 h-6" />
               </div>
-              <h4 className="font-bold text-[17px] text-brand-navy leading-tight">
-                {srv.title}
-              </h4>
+              <h4 className="font-bold text-[17px] text-brand-navy leading-tight">{srv.title}</h4>
             </div>
-            <p className="text-sm text-text-secondary leading-relaxed flex-grow">
-              {srv.desc}
-            </p>
+            <p className="text-sm text-text-secondary leading-relaxed flex-grow">{srv.desc}</p>
           </div>
         );
       })}
@@ -232,7 +224,9 @@ function CardinalMap({ locale }: { locale: string }) {
             </span>
             <h4 className="font-semibold text-brand-navy text-sm">Rivas & San Gerardo</h4>
             <p className="text-[11px] text-text-muted mt-1 leading-snug">
-              {isEs ? "Montañas, vistas al Chirripó, ecoturismo" : "Cool mountains, Chirripó views, eco-tourism"}
+              {isEs
+                ? "Montañas, vistas al Chirripó, ecoturismo"
+                : "Cool mountains, Chirripó views, eco-tourism"}
             </p>
           </div>
           <div className="w-0.5 h-8 bg-gradient-to-b from-brand-gold/45 to-transparent mt-2" />
@@ -247,7 +241,9 @@ function CardinalMap({ locale }: { locale: string }) {
             </span>
             <h4 className="font-semibold text-brand-navy text-sm">Tinamastes / Platanillo</h4>
             <p className="text-[11px] text-text-muted mt-1 leading-snug">
-              {isEs ? "Brisa marina, permacultura, transición" : "Ocean breezes, permaculture, marine transition"}
+              {isEs
+                ? "Brisa marina, permacultura, transición"
+                : "Ocean breezes, permaculture, marine transition"}
             </p>
           </div>
           <div className="w-8 h-0.5 bg-gradient-to-r from-brand-gold/45 to-transparent ml-2" />
@@ -273,7 +269,9 @@ function CardinalMap({ locale }: { locale: string }) {
             </span>
             <h4 className="font-semibold text-brand-navy text-sm">General Viejo & Cajón</h4>
             <p className="text-[11px] text-text-muted mt-1 leading-snug">
-              {isEs ? "Colinas onduladas, campo, agricultura fértil" : "Rolling fincas, country feel, rich soils"}
+              {isEs
+                ? "Colinas onduladas, campo, agricultura fértil"
+                : "Rolling fincas, country feel, rich soils"}
             </p>
           </div>
         </div>
@@ -287,7 +285,9 @@ function CardinalMap({ locale }: { locale: string }) {
             </span>
             <h4 className="font-semibold text-brand-navy text-sm">Pedregoso & Residenciales</h4>
             <p className="text-[11px] text-text-muted mt-1 leading-snug">
-              {isEs ? "Comunidades cerradas, fincas de lujo" : "Gated communities, luxury hillside estates"}
+              {isEs
+                ? "Comunidades cerradas, fincas de lujo"
+                : "Gated communities, luxury hillside estates"}
             </p>
           </div>
         </div>
@@ -296,35 +296,46 @@ function CardinalMap({ locale }: { locale: string }) {
       {/* Mobile stacked visual list */}
       <div className="grid grid-cols-2 gap-4 lg:hidden max-w-lg mx-auto">
         <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
-          <span className="text-xs font-bold text-brand-gold block">▲ {isEs ? "NORTE" : "NORTH"}</span>
+          <span className="text-xs font-bold text-brand-gold block">
+            ▲ {isEs ? "NORTE" : "NORTH"}
+          </span>
           <h4 className="font-bold text-brand-navy text-sm mt-1">Rivas & Gerardo</h4>
           <p className="text-[11px] text-text-muted mt-1 leading-tight">
             {isEs ? "Montañas, Chirripó" : "High peaks, cool climate"}
           </p>
         </div>
         <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
-          <span className="text-xs font-bold text-brand-gold block">▶ {isEs ? "ESTE" : "EAST"}</span>
+          <span className="text-xs font-bold text-brand-gold block">
+            ▶ {isEs ? "ESTE" : "EAST"}
+          </span>
           <h4 className="font-bold text-brand-navy text-sm mt-1">General Viejo</h4>
           <p className="text-[11px] text-text-muted mt-1 leading-tight">
             {isEs ? "Fincas fértiles, sol" : "Rolling agricultural fincas"}
           </p>
         </div>
         <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
-          <span className="text-xs font-bold text-brand-gold block">▼ {isEs ? "SUR" : "SOUTH"}</span>
+          <span className="text-xs font-bold text-brand-gold block">
+            ▼ {isEs ? "SUR" : "SOUTH"}
+          </span>
           <h4 className="font-bold text-brand-navy text-sm mt-1">Pedregoso</h4>
           <p className="text-[11px] text-text-muted mt-1 leading-tight">
             {isEs ? "Residencias privadas" : "Gated luxury properties"}
           </p>
         </div>
         <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
-          <span className="text-xs font-bold text-brand-gold block">◀ {isEs ? "OESTE" : "WEST"}</span>
+          <span className="text-xs font-bold text-brand-gold block">
+            ◀ {isEs ? "OESTE" : "WEST"}
+          </span>
           <h4 className="font-bold text-brand-navy text-sm mt-1">Tinamastes</h4>
           <p className="text-[11px] text-text-muted mt-1 leading-tight">
             {isEs ? "Brisa marina, RISE" : "Sea breeze & permaculture"}
           </p>
         </div>
         <div className="col-span-2 p-3 rounded-xl bg-brand-navy text-white text-center text-xs font-semibold shadow-inner">
-          📍 {isEs ? "Núcleo Central: San Isidro de El General" : "Central Hub: San Isidro de El General"}
+          📍{" "}
+          {isEs
+            ? "Núcleo Central: San Isidro de El General"
+            : "Central Hub: San Isidro de El General"}
         </div>
       </div>
     </div>
@@ -337,7 +348,9 @@ function CardinalCards({ locale }: { locale: string }) {
 
   const sectors = [
     {
-      title: isEs ? "1. El Norte (Rivas y San Gerardo de Rivas)" : "1. The North (Rivas & San Gerardo)",
+      title: isEs
+        ? "1. El Norte (Rivas y San Gerardo de Rivas)"
+        : "1. The North (Rivas & San Gerardo)",
       direction: isEs ? "NORTE — Clima Fresco" : "NORTH — Cool Climates",
       vibe: isEs
         ? "Vida de montaña a gran altitud, clima fresco y aire sumamente puro. Es la puerta de entrada al Parque Nacional Cerro Chirripó."
@@ -347,7 +360,9 @@ function CardinalCards({ locale }: { locale: string }) {
         : "Eco-tourism lodges, mountain cabins, and properties bordered by rushing, boulder-lined rivers. Ideal for boutique hospitality.",
     },
     {
-      title: isEs ? "2. El Oeste (Tinamastes, Platanillo y Barú)" : "2. The West (Tinamastes & Platanillo)",
+      title: isEs
+        ? "2. El Oeste (Tinamastes, Platanillo y Barú)"
+        : "2. The West (Tinamastes & Platanillo)",
       direction: isEs ? "OESTE — Brisa Marina" : "WEST — Ocean Breezes",
       vibe: isEs
         ? "El puente natural entre montaña y mar. Al ascender por la cordillera costera, se disfrutan de constantes brisas frescas del Pacífico."
@@ -357,7 +372,9 @@ function CardinalCards({ locale }: { locale: string }) {
         : "Regenerative communities (like RISE), permaculture farms, and luxury estates featuring rare valley and Pacific horizon views.",
     },
     {
-      title: isEs ? "3. El Este (General Viejo, Cajón y El Hoyón)" : "3. The East (General Viejo & Cajón)",
+      title: isEs
+        ? "3. El Este (General Viejo, Cajón y El Hoyón)"
+        : "3. The East (General Viejo & Cajón)",
       direction: isEs ? "ESTE — Campo Tradicional" : "EAST — Country Charm",
       vibe: isEs
         ? "Colinas onduladas, suelos agrícolas sumamente ricos y un clima cálido, soleado y con el acogedor encanto del campo costarricense."
@@ -367,7 +384,9 @@ function CardinalCards({ locale }: { locale: string }) {
         : "Expansive agricultural estates, sprawling homesteads (fincas), and large acreage lots with private springs.",
     },
     {
-      title: isEs ? "4. El Sur (Pedregoso, Barrio Sinaí y Residenciales)" : "4. The South (Pedregoso & Ridges)",
+      title: isEs
+        ? "4. El Sur (Pedregoso, Barrio Sinaí y Residenciales)"
+        : "4. The South (Pedregoso & Ridges)",
       direction: isEs ? "SUR — Conveniencia Residencial" : "SOUTH — Premium Gated Estates",
       vibe: isEs
         ? "Tranquilidad residencial exclusiva con conveniencia inigualable a solo 5 o 10 minutos del centro urbano de San Isidro."
@@ -434,27 +453,15 @@ function CtaButton({ locale, areaSlug }: { locale: string; areaSlug: string }) {
 }
 
 /** Sub-component for individual travel service/hospital details */
-function ServiceMetricItem({
-  icon,
-  label,
-  value,
-}: {
-  icon: string;
-  label: string;
-  value: string;
-}) {
+function ServiceMetricItem({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <div className="flex items-start gap-4 rounded-xl border border-border/80 bg-background p-4 shadow-sm hover:shadow transition-shadow duration-300">
       <span className="text-2xl p-2 rounded-lg bg-secondary/30" aria-hidden="true">
         {icon}
       </span>
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-wider text-text-muted">
-          {label}
-        </p>
-        <p className="mt-1 text-sm font-semibold text-brand-navy leading-tight">
-          {value}
-        </p>
+        <p className="text-[11px] font-bold uppercase tracking-wider text-text-muted">{label}</p>
+        <p className="mt-1 text-sm font-semibold text-brand-navy leading-tight">{value}</p>
       </div>
     </div>
   );
