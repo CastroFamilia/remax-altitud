@@ -8,13 +8,16 @@
  * interactive map component. Community pages use static <img> only (AC #4).
  *
  * @see _bmad-output/implementation-artifacts/6-3-community-mini-map-and-geo-fence-display.md
+ *
+ * NOTE: "server-only" was intentionally removed — this module is a pure URL
+ * builder that uses the public NEXT_PUBLIC_MAPBOX_TOKEN.  CommunityCard (which
+ * calls buildAreaThumbnailMapUrl) is imported by SimilarCommunitiesSlider, a
+ * "use client" component, so the module graph must be client-compatible.
  */
-import "server-only";
 
 import { MAPBOX_TOKEN } from "@/lib/map/config";
 
-const MAPBOX_STATIC_BASE =
-  "https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/static";
+const MAPBOX_STATIC_BASE = "https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/static";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -96,8 +99,7 @@ interface StaticMapParams {
  * an optional geo-fence GeoJSON polygon overlay and a pin marker.
  */
 function buildStaticMapUrl(params: StaticMapParams): string {
-  const { latitude, longitude, geoFenceCoords, zoom, width, height, retina } =
-    params;
+  const { latitude, longitude, geoFenceCoords, zoom, width, height, retina } = params;
 
   const overlays: string[] = [];
 
@@ -128,8 +130,7 @@ function encodeGeoFencePath(coords: [number, number][]): string {
   // Ensure the polygon ring is closed (first === last coordinate)
   const ring =
     coords.length > 0 &&
-    (coords[0][0] !== coords[coords.length - 1][0] ||
-      coords[0][1] !== coords[coords.length - 1][1])
+    (coords[0][0] !== coords[coords.length - 1][0] || coords[0][1] !== coords[coords.length - 1][1])
       ? [...coords, coords[0]]
       : coords;
 

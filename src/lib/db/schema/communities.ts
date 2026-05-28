@@ -1,5 +1,13 @@
 import { sql } from "drizzle-orm";
-import { doublePrecision, integer, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  doublePrecision,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { areas } from "./areas";
 
 /** Curated community developments (RISE, Santa Elena Hills, etc.) */

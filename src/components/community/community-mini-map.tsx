@@ -28,11 +28,7 @@ interface CommunityMiniMapProps {
  * Returns null when latitude/longitude are missing (graceful degradation).
  * Uses native <img> since the Mapbox CDN URL is an external image source.
  */
-export async function CommunityMiniMap({
-  community,
-  areaName,
-  locale,
-}: CommunityMiniMapProps) {
+export async function CommunityMiniMap({ community, areaName, locale }: CommunityMiniMapProps) {
   // Graceful handling: if coordinates are missing, render nothing
   if (!community.latitude || !community.longitude) {
     return null;
@@ -43,10 +39,7 @@ export async function CommunityMiniMap({
   const staticMapUrl = buildCommunityMiniMapUrl({
     latitude: community.latitude,
     longitude: community.longitude,
-    geoFenceCoords: community.geoFenceCoords as
-      | [number, number][]
-      | null
-      | undefined,
+    geoFenceCoords: community.geoFenceCoords as [number, number][] | null | undefined,
     communityName: community.name,
   });
 
