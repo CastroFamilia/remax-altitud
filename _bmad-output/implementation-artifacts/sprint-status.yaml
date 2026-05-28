@@ -102,7 +102,7 @@ development_status:
   epic-6-retrospective: done
 
   # Epic 7: Shortlist & Smart Agent Routing
-  epic-7: in-progress
+  epic-7: done
   7-1-save-and-shortlist-properties: done
   7-2-shortlist-comparison-page: done
   7-3-shareable-shortlist-url: done
