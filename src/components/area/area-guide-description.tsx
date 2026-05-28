@@ -1,7 +1,16 @@
 import { getTranslations } from "next-intl/server";
 import type { Area } from "@/lib/db/schema/areas";
 import Link from "next/link";
-import { Compass, ArrowRight, Plane, Bus, Activity, CreditCard, ShoppingBag } from "lucide-react";
+import {
+  Compass,
+  ArrowRight,
+  Plane,
+  Bus,
+  Activity,
+  CreditCard,
+  ShoppingBag,
+  GraduationCap,
+} from "lucide-react";
 
 interface DescriptionMetadata {
   nearestAirport?: string;
@@ -158,17 +167,24 @@ function ServicesList({ locale }: { locale: string }) {
       icon: Bus,
     },
     {
-      title: isEs ? "Salud de Primer Nivel" : "Everyday Healthcare",
+      title: isEs ? "Salud de Primer Nivel" : "Top-Tier Healthcare",
       desc: isEs
-        ? "Acceso a clínicas médicas privadas de primer nivel, doctores especialistas bilingües y el hospital regional mayor."
-        : "Immediate access to modern private medical clinics, bilingual specialized doctors, and the major regional hospital.",
+        ? "Acceso a clínicas médicas privadas modernas, médicos especialistas y el hospital regional principal."
+        : "Access to modern private medical clinics, specialized doctors, and the major regional hospital.",
       icon: Activity,
     },
     {
-      title: isEs ? "Servicios Profesionales" : "Professional & Financial",
+      title: isEs ? "Educación Privada Premium" : "Premium Private Education",
       desc: isEs
-        ? "Bancos nacionales e internacionales, bufetes legales de prestigio y una red de internet de fibra óptica de alta velocidad."
-        : "National and international banks, respected legal firms, and a highly stable high-speed fiber-optic internet infrastructure.",
+        ? "El valle es un centro en crecimiento para la educación de alta calidad, que cuenta con BMS (Bilingual Multidisciplinary School), una academia privada K-12 de primer nivel respaldada por el Ministerio de Educación Pública que ofrece programas académicos, artísticos y de robótica, junto con modelos alternativos innovadores como la escuela de inspiración Waldorf RISE para un aprendizaje experiencial basado en la naturaleza en preescolar y primaria."
+        : "The valley is a growing hub for high-quality education; featuring BMS (Bilingual Multidisciplinary School), a top-rated private K-12 academy endorsed by the Ministry of Public Education offering academic, artistic, and robotics programs, alongside innovative alternative models like the RISE Waldorf-inspired school for experiential, nature-based early childhood and elementary learning.",
+      icon: GraduationCap,
+    },
+    {
+      title: isEs ? "Servicios Financieros y Profesionales" : "Financial & Professional Services",
+      desc: isEs
+        ? "Bancos nacionales e internacionales, oficinas legales de prestigio e infraestructura de internet de fibra óptica de alta velocidad."
+        : "National and international banks, legal offices, and high-speed fiber-optic internet infrastructure.",
       icon: CreditCard,
     },
     {
