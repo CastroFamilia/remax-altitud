@@ -74,6 +74,7 @@ export function PropertyCard({
   unitSystem,
   onRemove,
   isSharedView = false,
+  readOnly = false,
 }: PropertyCardProps) {
   const t = useTranslations("PropertyCard");
   const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
@@ -192,7 +193,7 @@ export function PropertyCard({
       </Link>
 
       {/* Remove button — top-left overlay */}
-      {onRemove && (
+      {!readOnly && onRemove && (
         <button
           type="button"
           data-testid={`remove-${property.id}`}

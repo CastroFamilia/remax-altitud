@@ -15,6 +15,7 @@
 import { describe, expect, it, vi, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
 import React from "react";
+import type { PropertySearchItem } from "@/types/search";
 
 // ---------------------------------------------------------------------------
 // Module mocks — declared BEFORE any imports of the module under test
@@ -81,7 +82,7 @@ describe("SharedShortlistPageClient — Story 7.3 ATDD", () => {
     const mockProperties = [
       { id: "prop-1", titleEn: "House 1", latitude: 9.35, longitude: -83.7 },
       { id: "prop-2", titleEn: "House 2", latitude: 9.36, longitude: -83.8 },
-    ];
+    ] as unknown as PropertySearchItem[];
 
     const { getByTestId, getAllByTestId, getByText } = render(
       <SharedShortlistPageClient properties={mockProperties} isExpired={false} />
@@ -109,7 +110,7 @@ describe("SharedShortlistPageClient — Story 7.3 ATDD", () => {
     const mockProperties = [
       { id: "prop-1", titleEn: "Villa", latitude: 9.35, longitude: -83.7 },
       { id: "prop-2", titleEn: "Land", latitude: null, longitude: null },
-    ];
+    ] as unknown as PropertySearchItem[];
 
     const { getByTestId } = render(
       <SharedShortlistPageClient properties={mockProperties} isExpired={false} />
