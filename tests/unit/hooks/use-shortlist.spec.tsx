@@ -22,7 +22,6 @@ import { getShortlist, addToShortlist, removeFromShortlist } from "@/lib/utils/s
 // We run all tests in describe.skip to represent the RED phase of TDD
 describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
   const LOCAL_STORAGE_KEY = "remax-altitud-shortlist";
-  const SESSION_STORAGE_KEY = "remax-altitud-shortlist-tooltip-shown";
 
   beforeEach(() => {
     localStorage.clear();

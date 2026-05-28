@@ -19,7 +19,7 @@ export function getShortlist(): string[] {
       return parsed;
     }
     return [];
-  } catch (e) {
+  } catch {
     return [];
   }
 }
@@ -39,7 +39,7 @@ export function addToShortlist(id: string): { success: boolean; error?: "limit" 
     const updated = [...current, id];
     window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
     return { success: true };
-  } catch (e) {
+  } catch {
     return { success: false, error: "unknown" };
   }
 }
@@ -55,7 +55,7 @@ export function removeFromShortlist(id: string): void {
     }
     const updated = current.filter((item) => item !== id);
     window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
-  } catch (e) {
+  } catch {
     // Fail silently
   }
 }
@@ -66,7 +66,7 @@ export function hasShownTooltipThisSession(): boolean {
   }
   try {
     return window.sessionStorage.getItem(SESSION_STORAGE_KEY) === "true";
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -77,7 +77,7 @@ export function markTooltipShownThisSession(): void {
   }
   try {
     window.sessionStorage.setItem(SESSION_STORAGE_KEY, "true");
-  } catch (e) {
+  } catch {
     // Fail silently
   }
 }
