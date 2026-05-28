@@ -38,7 +38,8 @@ export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsPro
   const chipLabel = (tag: string): string => {
     const i18nKey = `lifestyleTags.chips.${tag}`;
     const translated = t(i18nKey);
-    return translated === i18nKey ? tagDisplayLabel(tag) : translated;
+    const isMissing = translated === i18nKey || translated === `SearchPage.${i18nKey}`;
+    return isMissing ? tagDisplayLabel(tag) : translated;
   };
 
   return (
@@ -57,10 +58,10 @@ export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsPro
             onClick={() => onToggle(tag)}
             aria-pressed={isActive}
             className={[
-              "min-h-[44px] px-3 py-1 rounded-full text-sm font-medium transition-colors",
+              "min-h-[44px] px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 shadow-sm border",
               isActive
-                ? "bg-brand-blue text-white"
-                : "border border-border bg-background text-foreground hover:bg-accent",
+                ? "bg-brand-blue text-white border-brand-blue"
+                : "border-brand-gold/30 bg-white text-brand-navy hover:bg-brand-gold/15 hover:border-brand-gold hover:text-brand-navy",
             ].join(" ")}
           >
             {chipLabel(tag)}
