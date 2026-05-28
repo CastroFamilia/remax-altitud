@@ -89,7 +89,12 @@ export async function upsertProperty(
     agentId: values.agentId,
     areaId: null,
     areaSlug: null,
-    communityId: null,
+    communityId: sql`CASE 
+      WHEN ${properties.latitude} IS DISTINCT FROM ${values.latitude} 
+        OR ${properties.longitude} IS DISTINCT FROM ${values.longitude} 
+      THEN NULL 
+      ELSE ${properties.communityId} 
+    END`,
     isVisible: true, // reactivation: restore is_visible=true (AC #7)
     apiHash: values.apiHash,
     apiRaw: values.apiRaw,

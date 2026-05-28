@@ -9,6 +9,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { areas } from "./areas";
+import { geographyPolygon } from "../types/postgis";
 
 /** Curated community developments (RISE, Santa Elena Hills, etc.) */
 export const communities = pgTable("communities", {
@@ -25,7 +26,7 @@ export const communities = pgTable("communities", {
   heroImageUrl: text("hero_image_url"),
   // geo_fence — Polygon 4326 for geo-fence matching (Story 6.5)
   // Placeholder: null until geo-fence data is populated
-  // geoFence: geography("geo_fence", { type: "Polygon", srid: 4326 }),
+  geoFence: geographyPolygon("geo_fence"),
   /** Community center-point latitude for mini-map pin (Story 6.3) */
   latitude: doublePrecision("latitude"),
   /** Community center-point longitude for mini-map pin (Story 6.3) */

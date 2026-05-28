@@ -1,0 +1,1 @@
+ALTER TABLE "communities" ADD COLUMN "geo_fence" geography(Polygon, 4326);

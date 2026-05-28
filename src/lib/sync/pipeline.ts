@@ -5,6 +5,7 @@ import { computePropertyHash, diffProperties } from "./differ";
 import { optimizePropertyImages } from "./image-optimizer";
 import { translateBatch } from "./translator";
 import { tagBatch } from "./lifestyle-tagger";
+import { autoTagCommunities } from "./geo-tagger";
 import { createSyncLog, updateSyncLog } from "@/lib/db/queries/sync-log";
 import {
   upsertProperty,
@@ -272,6 +273,11 @@ export async function runSyncPipeline(options?: {
         }
       }
     }
+
+    // Step 7d: Community geo-tagging (Story 6.5, AC #1, FR50)
+    info("Running community geo-fence auto-tagging...");
+    const autoTaggedCount = await autoTagCommunities();
+    info(`Community geo-fence auto-tagging complete: ${autoTaggedCount} properties tagged.`);
 
     // Step 8: Collect lotSizeUnitWarning errors (AC #12) — do NOT block upsert
     const warningErrors: ParseError[] = [...diff.new, ...diff.updated]
