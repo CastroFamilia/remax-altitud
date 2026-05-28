@@ -1,6 +1,6 @@
 import React from "react";
 import { setRequestLocale } from "next-intl/server";
-import { getCommunityById } from "@/lib/db/queries/communities";
+import { getCommunityById, getCommunityBySlug } from "@/lib/db/queries/communities";
 import { getAllAreas } from "@/lib/db/queries/areas";
 import { AdminCommunityForm, AreaOption } from "@/components/admin/admin-community-form";
 import { cookies } from "next/headers";
@@ -33,7 +33,8 @@ export default async function AdminEditCommunityPage({ params }: PageProps) {
   }
 
   // Fetch community
-  const community = await getCommunityById(id);
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  const community = isUuid ? await getCommunityById(id) : await getCommunityBySlug(id);
   if (!community) {
     notFound();
   }

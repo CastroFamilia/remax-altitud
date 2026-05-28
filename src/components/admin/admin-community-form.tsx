@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2, ArrowLeft, Trash2 } from "lucide-react";
 import { CommunityGeoFenceMap } from "@/components/map/community-geofence-map";
-import { createCommunityAction, updateCommunityAction } from "@/app/actions/admin-community-actions";
+import {
+  createCommunityAction,
+  updateCommunityAction,
+} from "@/app/actions/admin-community-actions";
 
 export interface AreaOption {
   id: string;
@@ -14,9 +17,29 @@ export interface AreaOption {
   slug: string;
 }
 
+export interface InitialCommunityData {
+  id: string;
+  name: string;
+  slug: string;
+  areaId: string;
+  taglineEn?: string | null;
+  taglineEs?: string | null;
+  descriptionEn?: string | null;
+  descriptionEs?: string | null;
+  heroImageUrl?: string | null;
+  siteMapImageUrl?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  quickFacts?: unknown;
+  geoFenceCoords?: {
+    type: "Polygon";
+    coordinates: [number, number][][];
+  } | null;
+}
+
 export interface CommunityFormProps {
   locale: string;
-  initialData?: any | null;
+  initialData?: InitialCommunityData | null;
   areas: AreaOption[];
 }
 
@@ -37,16 +60,45 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
   const [siteMapImageUrl, setSiteMapImageUrl] = useState(initialData?.siteMapImageUrl || "");
 
   // Coordinates
-  const [latitude, setLatitude] = useState<string>(initialData?.latitude !== undefined && initialData?.latitude !== null ? String(initialData.latitude) : "");
-  const [longitude, setLongitude] = useState<string>(initialData?.longitude !== undefined && initialData?.longitude !== null ? String(initialData.longitude) : "");
+  const [latitude, setLatitude] = useState<string>(
+    initialData?.latitude !== undefined && initialData?.latitude !== null
+      ? String(initialData.latitude)
+      : "",
+  );
+  const [longitude, setLongitude] = useState<string>(
+    initialData?.longitude !== undefined && initialData?.longitude !== null
+      ? String(initialData.longitude)
+      : "",
+  );
 
   // Quick facts
-  const [elevation, setElevation] = useState(initialData?.quickFacts?.elevation || "");
-  const [airportDistance, setAirportDistance] = useState(initialData?.quickFacts?.airportDistance || "");
-  const [amenities, setAmenities] = useState(Array.isArray(initialData?.quickFacts?.amenities) ? initialData.quickFacts.amenities.join(", ") : "");
-  const [developer, setDeveloper] = useState(initialData?.quickFacts?.developer || "");
-  const [establishedYear, setEstablishedYear] = useState(initialData?.quickFacts?.establishedYear || "");
-  const [infrastructure, setInfrastructure] = useState(initialData?.quickFacts?.infrastructure || "");
+  interface QuickFactsType {
+    elevation?: string;
+    airportDistance?: string;
+    amenities?: string[];
+    developer?: string;
+    establishedYear?: string;
+    established?: string;
+    infrastructure?: string;
+    internet?: string;
+  }
+  const quickFacts = initialData?.quickFacts as QuickFactsType | null | undefined;
+
+  const [elevation, setElevation] = useState(quickFacts?.elevation || "");
+  const [airportDistance, setAirportDistance] = useState(quickFacts?.airportDistance || "");
+  const [amenities, setAmenities] = useState(
+    Array.isArray(quickFacts?.amenities)
+      ? quickFacts.amenities.join(", ")
+      : typeof quickFacts?.amenities === "string"
+        ? quickFacts.amenities
+        : "",
+  );
+  const [developer, setDeveloper] = useState(quickFacts?.developer || "");
+  const [establishedYear, setEstablishedYear] = useState(
+    quickFacts?.establishedYear || quickFacts?.established || "",
+  );
+  const [infrastructure, setInfrastructure] = useState(quickFacts?.infrastructure || "");
+  const [internet, setInternet] = useState(quickFacts?.internet || "");
 
   // Geofence polygon points
   // Check if we have initial coordinates in geoFenceCoords
@@ -69,6 +121,31 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
   const [polygonPoints, setPolygonPoints] = useState<[number, number][]>(initialPoints);
   const [isSaving, setIsSaving] = useState(false);
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  const [geofenceText, setGeofenceText] = useState(JSON.stringify(polygonPoints));
+
+  useEffect(() => {
+    try {
+      const parsed = JSON.parse(geofenceText);
+      if (JSON.stringify(parsed) !== JSON.stringify(polygonPoints)) {
+        setGeofenceText(JSON.stringify(polygonPoints));
+      }
+    } catch {
+      setGeofenceText(JSON.stringify(polygonPoints));
+    }
+  }, [polygonPoints, geofenceText]);
+
+  const handleGeofenceTextChange = (val: string) => {
+    setGeofenceText(val);
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) {
+        setPolygonPoints(parsed);
+      }
+    } catch (e) {
+      // Ignore invalid JSON while user is typing
+    }
+  };
 
   // Auto-slug generation from English name (only on create)
   useEffect(() => {
@@ -99,7 +176,10 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !slug.trim() || !areaId) {
-      setAlert({ type: "error", message: "Please fill in all required fields (Name, Slug, Area)." });
+      setAlert({
+        type: "error",
+        message: "Please fill in all required fields (Name, Slug, Area).",
+      });
       return;
     }
 
@@ -116,6 +196,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
       const parsedDeveloper = developer.trim();
       const parsedEstablishedYear = establishedYear.trim();
       const parsedInfrastructure = infrastructure.trim();
+      const parsedInternet = internet.trim();
 
       const quickFactsObj = {
         elevation: parsedElevation,
@@ -123,7 +204,9 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
         amenities: parsedAmenities,
         developer: parsedDeveloper,
         establishedYear: parsedEstablishedYear,
+        established: parsedEstablishedYear, // support bothestablished formats
         infrastructure: parsedInfrastructure,
+        internet: parsedInternet,
       };
 
       const latNum = latitude.trim() !== "" ? parseFloat(latitude) : null;
@@ -134,17 +217,17 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
       const geoFence = isPolygonValid ? polygonPoints : null;
 
       const closedPoints = isPolygonValid
-        ? (polygonPoints[0][0] === polygonPoints[polygonPoints.length - 1][0] &&
-           polygonPoints[0][1] === polygonPoints[polygonPoints.length - 1][1]
-            ? polygonPoints
-            : [...polygonPoints, polygonPoints[0]])
+        ? polygonPoints[0][0] === polygonPoints[polygonPoints.length - 1][0] &&
+          polygonPoints[0][1] === polygonPoints[polygonPoints.length - 1][1]
+          ? polygonPoints
+          : [...polygonPoints, polygonPoints[0]]
         : null;
 
       const geoFenceCoords = isPolygonValid
         ? { type: "Polygon", coordinates: [closedPoints] }
         : null;
 
-      const payload: any = {
+      const payload: Record<string, unknown> = {
         name: name.trim(),
         slug: slug.trim(),
         areaId,
@@ -180,9 +263,10 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
       } else {
         setAlert({ type: "error", message: t("errorSaveFailed") });
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setAlert({ type: "error", message: err.message || t("errorSaveFailed") });
+      const errMsg = err instanceof Error ? err.message : String(err);
+      setAlert({ type: "error", message: errMsg || t("errorSaveFailed") });
     } finally {
       setIsSaving(false);
     }
@@ -203,7 +287,9 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
             {isEdit ? `Edit Community: ${initialData.name}` : t("btnCreateCommunity")}
           </h2>
           <p className="text-xs text-slate-400 font-semibold">
-            {isEdit ? "Update community details and geographic boundaries" : "Define metadata and custom boundaries for a new area"}
+            {isEdit
+              ? "Update community details and geographic boundaries"
+              : "Define metadata and custom boundaries for a new area"}
           </p>
         </div>
       </div>
@@ -237,6 +323,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Santa Elena Hills"
+                data-testid="community-name-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
               />
             </div>
@@ -252,6 +339,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="e.g. santa-elena-hills"
+                data-testid="community-slug-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
               />
             </div>
@@ -267,6 +355,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 required
                 value={areaId}
                 onChange={(e) => setAreaId(e.target.value)}
+                data-testid="community-area-select"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
               >
                 <option value="">Select Area...</option>
@@ -288,6 +377,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 value={heroImageUrl}
                 onChange={(e) => setHeroImageUrl(e.target.value)}
                 placeholder="https://example.com/hero.jpg"
+                data-testid="community-hero-image-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
               />
             </div>
@@ -304,6 +394,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 value={taglineEn}
                 onChange={(e) => setTaglineEn(e.target.value)}
                 placeholder="Tagline in English"
+                data-testid="community-tagline-en-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
               />
             </div>
@@ -316,6 +407,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 value={taglineEs}
                 onChange={(e) => setTaglineEs(e.target.value)}
                 placeholder="Tagline en Español"
+                data-testid="community-tagline-es-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
               />
             </div>
@@ -332,6 +424,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 onChange={(e) => setDescriptionEn(e.target.value)}
                 placeholder="Description in English..."
                 rows={4}
+                data-testid="community-desc-en-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold resize-none"
               />
             </div>
@@ -344,6 +437,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 onChange={(e) => setDescriptionEs(e.target.value)}
                 placeholder="Descripción en Español..."
                 rows={4}
+                data-testid="community-desc-es-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold resize-none"
               />
             </div>
@@ -359,6 +453,7 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
               value={siteMapImageUrl}
               onChange={(e) => setSiteMapImageUrl(e.target.value)}
               placeholder="https://example.com/sitemap.jpg"
+              data-testid="community-sitemap-image-input"
               className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
             />
           </div>
@@ -374,72 +469,105 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
 
             {/* elevation */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-400">{t("formLabelElevation")}</label>
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelElevation")}
+              </label>
               <input
                 type="text"
                 value={elevation}
                 onChange={(e) => setElevation(e.target.value)}
                 placeholder="e.g. 800m"
+                data-testid="quickfact-elevation"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
             {/* airportDistance */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-400">{t("formLabelAirport")}</label>
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelAirport")}
+              </label>
               <input
                 type="text"
                 value={airportDistance}
                 onChange={(e) => setAirportDistance(e.target.value)}
                 placeholder="e.g. 45 mins"
+                data-testid="quickfact-airportDistance"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
+              />
+            </div>
+
+            {/* internet */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400">
+                Internet / Connectivity
+              </label>
+              <input
+                type="text"
+                value={internet}
+                onChange={(e) => setInternet(e.target.value)}
+                placeholder="e.g. Fiber Optic, High Speed"
+                data-testid="quickfact-internet"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
             {/* amenities */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-400">{t("formLabelAmenities")}</label>
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelAmenities")}
+              </label>
               <input
                 type="text"
                 value={amenities}
                 onChange={(e) => setAmenities(e.target.value)}
                 placeholder="e.g. Pool, Security, Gym"
+                data-testid="quickfact-amenities"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
             {/* developer */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-400">{t("formLabelDeveloper")}</label>
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelDeveloper")}
+              </label>
               <input
                 type="text"
                 value={developer}
                 onChange={(e) => setDeveloper(e.target.value)}
                 placeholder="Developer Name"
+                data-testid="quickfact-developer"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
             {/* establishedYear */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-400">{t("formLabelEstablished")}</label>
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelEstablished")}
+              </label>
               <input
                 type="text"
                 value={establishedYear}
                 onChange={(e) => setEstablishedYear(e.target.value)}
                 placeholder="e.g. 2018"
+                data-testid="quickfact-established"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
             {/* infrastructure */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-400">{t("formLabelInfrastructure")}</label>
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelInfrastructure")}
+              </label>
               <input
                 type="text"
                 value={infrastructure}
                 onChange={(e) => setInfrastructure(e.target.value)}
                 placeholder="details..."
+                data-testid="quickfact-infrastructure"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
@@ -475,10 +603,27 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
               {t("geoFenceNote")}
             </p>
 
+            {/* Manual coordinates textarea override */}
+            <div className="space-y-1 pt-2 border-t border-slate-800">
+              <label className="text-xs font-semibold text-slate-400">
+                Manual Coordinates Override (JSON format)
+              </label>
+              <textarea
+                value={geofenceText}
+                onChange={(e) => handleGeofenceTextChange(e.target.value)}
+                placeholder="[[-84.15,9.93],[-84.16,9.94],[-84.17,9.93],[-84.15,9.93]]"
+                rows={3}
+                data-testid="community-geofence-input"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-red-500 resize-y"
+              />
+            </div>
+
             {/* Map center lat/lng overrides */}
             <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400">{t("formLabelLatitude")}</label>
+                <label className="text-xs font-semibold text-slate-400">
+                  {t("formLabelLatitude")}
+                </label>
                 <input
                   type="number"
                   step="any"
@@ -489,7 +634,9 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400">{t("formLabelLongitude")}</label>
+                <label className="text-xs font-semibold text-slate-400">
+                  {t("formLabelLongitude")}
+                </label>
                 <input
                   type="number"
                   step="any"

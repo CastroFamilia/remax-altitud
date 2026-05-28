@@ -3,7 +3,16 @@
 import React, { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Search, Loader2, Edit, Trash2, ChevronLeft, ChevronRight, AlertTriangle, Plus } from "lucide-react";
+import {
+  Search,
+  Loader2,
+  Edit,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  AlertTriangle,
+  Plus,
+} from "lucide-react";
 import { deleteCommunityAction } from "@/app/actions/admin-community-actions";
 
 export interface AdminCommunity {
@@ -142,7 +151,7 @@ export function AdminCommunitiesTable({
       {/* Table */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table data-testid="communities-admin-table" className="w-full text-left border-collapse">
+          <table data-testid="communities-table" className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-800 bg-slate-950 text-slate-400 text-xs font-bold uppercase tracking-wider">
                 <th className="px-6 py-4 w-24">Image</th>
@@ -179,7 +188,9 @@ export function AdminCommunitiesTable({
                       </td>
                       <td className="px-6 py-4 font-semibold text-slate-100">
                         <div className="flex flex-col">
-                          <span className="font-bold text-base text-slate-100">{community.name}</span>
+                          <span className="font-bold text-base text-slate-100">
+                            {community.name}
+                          </span>
                           <span className="text-xs text-slate-400 italic">
                             {locale === "es" ? community.taglineEs : community.taglineEn}
                           </span>
@@ -196,7 +207,9 @@ export function AdminCommunitiesTable({
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
                           <button
-                            onClick={() => router.push(`/${locale}/admin/communities/${community.id}`)}
+                            onClick={() =>
+                              router.push(`/${locale}/admin/communities/${community.id}`)
+                            }
                             data-testid="edit-community-btn"
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-850 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-800 rounded-lg transition-all cursor-pointer"
                           >
@@ -226,7 +239,8 @@ export function AdminCommunitiesTable({
       {communities.length > 0 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pb-12">
           <span className="text-xs text-slate-500 font-semibold">
-            Showing {(currentPage - 1) * 10 + 1} to {Math.min(currentPage * 10, total)} of {total} communities
+            Showing {(currentPage - 1) * 10 + 1} to {Math.min(currentPage * 10, total)} of {total}{" "}
+            communities
           </span>
 
           <div className="flex items-center gap-2">

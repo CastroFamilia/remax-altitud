@@ -24,7 +24,7 @@ export function CommunityGeoFenceMap({
     zoom: centerLat && centerLng ? 13 : DEFAULT_MAP_ZOOM,
   });
 
-  const handleMapClick = (evt: any) => {
+  const handleMapClick = (evt: { lngLat: { lng: number; lat: number } }) => {
     const { lng, lat } = evt.lngLat;
     onChange([...polygonPoints, [lng, lat]]);
   };
@@ -33,7 +33,9 @@ export function CommunityGeoFenceMap({
     type: "Feature" as const,
     geometry: {
       type: "Polygon" as const,
-      coordinates: [polygonPoints.length > 2 ? [...polygonPoints, polygonPoints[0]] : polygonPoints],
+      coordinates: [
+        polygonPoints.length > 2 ? [...polygonPoints, polygonPoints[0]] : polygonPoints,
+      ],
     },
     properties: {},
   };

@@ -1,9 +1,19 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Search, Loader2, Tags, ChevronLeft, ChevronRight, X, MapPin, AlertCircle, HelpCircle } from "lucide-react";
+import {
+  Search,
+  Loader2,
+  Tags,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  MapPin,
+  AlertCircle,
+  HelpCircle,
+} from "lucide-react";
 import { LIFESTYLE_TAGS, tagDisplayLabel } from "@/lib/constants/lifestyle-tags";
 import { updatePropertyTagsAction } from "@/app/actions/admin-tag-actions";
 import { updatePropertyCommunityAction } from "@/app/actions/admin-community-actions";
@@ -50,10 +60,11 @@ function isPointInPolygon(point: [number, number], polygon: [number, number][]):
   const [lng, lat] = point;
   let inside = false;
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const xi = polygon[i][0], yi = polygon[i][1];
-    const xj = polygon[j][0], yj = polygon[j][1];
-    const intersect = ((yi > lat) !== (yj > lat))
-        && (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi);
+    const xi = polygon[i][0],
+      yi = polygon[i][1];
+    const xj = polygon[j][0],
+      yj = polygon[j][1];
+    const intersect = yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi;
     if (intersect) inside = !inside;
   }
   return inside;
@@ -71,6 +82,13 @@ export function AdminTagsTable({
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Local state for properties to prevent prop mutations
+  const [localProperties, setLocalProperties] = useState<AdminProperty[]>(properties);
+
+  useEffect(() => {
+    setLocalProperties(properties);
+  }, [properties]);
+
   // Search input state
   const [searchVal, setSearchVal] = useState(searchParams.get("search") || "");
   const [isPending, startTransition] = useTransition();
@@ -82,10 +100,14 @@ export function AdminTagsTable({
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   // Communities Modal state
-  const [selectedPropertyForCommunity, setSelectedPropertyForCommunity] = useState<AdminProperty | null>(null);
+  const [selectedPropertyForCommunity, setSelectedPropertyForCommunity] =
+    useState<AdminProperty | null>(null);
   const [selectedCommunityId, setSelectedCommunityId] = useState<string>("");
   const [isSavingCommunity, setIsSavingCommunity] = useState(false);
-  const [communityAlert, setCommunityAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [communityAlert, setCommunityAlert] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,7 +171,12 @@ export function AdminTagsTable({
           }),
         });
         // Update local property tags list visually
-        selectedProperty.lifestyleTags = [...modalTags];
+        setLocalProperties((prev) =>
+          prev.map((p) =>
+            p.id === selectedProperty.id ? { ...p, lifestyleTags: [...modalTags] } : p
+          )
+        );
+        setSelectedProperty((prev) => prev ? { ...prev, lifestyleTags: [...modalTags] } : null);
         router.refresh();
         setTimeout(() => {
           handleCloseModal();
@@ -177,7 +204,13 @@ export function AdminTagsTable({
           type: "success",
           message: `Successfully updated community for property.`,
         });
-        selectedPropertyForCommunity.communityId = val;
+        // Update local property community assignment visually
+        setLocalProperties((prev) =>
+          prev.map((p) =>
+            p.id === selectedPropertyForCommunity.id ? { ...p, communityId: val } : p
+          )
+        );
+        setSelectedPropertyForCommunity((prev) => prev ? { ...prev, communityId: val } : null);
         router.refresh();
         setTimeout(() => {
           handleCloseCommunityModal();
@@ -193,8 +226,8 @@ export function AdminTagsTable({
     }
   };
 
-  // Perform coordinates geofence validation for warning box
-  const getGeofenceValidationResult = () => {
+  // Perform coordinates geofence validation for warning box (memoized)
+  const validationResult = useMemo(() => {
     if (!selectedPropertyForCommunity || !selectedCommunityId) return null;
     const { latitude, longitude } = selectedPropertyForCommunity;
     if (latitude === null || longitude === null) {
@@ -208,7 +241,8 @@ export function AdminTagsTable({
     if (!selectedComm || !selectedComm.geoFenceCoords?.coordinates?.[0]) {
       return {
         status: "no_geofence" as const,
-        message: "Selected community does not have a geo-fence defined. Geofence validation skipped.",
+        message:
+          "Selected community does not have a geo-fence defined. Geofence validation skipped.",
       };
     }
 
@@ -218,17 +252,17 @@ export function AdminTagsTable({
     if (isInside) {
       return {
         status: "inside" as const,
-        message: "Coordinates validated: The listing is successfully inside the community geofence.",
+        message:
+          "Coordinates validated: The listing is successfully inside the community geofence.",
       };
     } else {
       return {
         status: "outside" as const,
-        message: "Warning: The property's coordinates are outside the selected community's geo-fence boundary. Association is permitted but not recommended.",
+        message:
+          "Warning: The property's coordinates are outside the selected community's geo-fence boundary. Association is permitted but not recommended.",
       };
     }
-  };
-
-  const validationResult = getGeofenceValidationResult();
+  }, [selectedPropertyForCommunity, selectedCommunityId, communities]);
 
   return (
     <div className="space-y-6">
@@ -270,20 +304,22 @@ export function AdminTagsTable({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800 text-sm text-slate-300">
-              {properties.length === 0 ? (
+              {localProperties.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-slate-500 font-semibold">
                     {t("noProperties")}
                   </td>
                 </tr>
               ) : (
-                properties.map((property) => {
+                localProperties.map((property) => {
                   const title = locale === "es" ? property.titleEs : property.titleEn;
                   const imageSrc =
                     (Array.isArray(property.images) ? property.images[0]?.src : null) ??
                     "/property-placeholder.svg";
 
-                  const associatedCommunity = communities.find((c) => c.id === property.communityId);
+                  const associatedCommunity = communities.find(
+                    (c) => c.id === property.communityId,
+                  );
 
                   return (
                     <tr
@@ -412,11 +448,13 @@ export function AdminTagsTable({
 
             {/* Modal Header */}
             <div>
-              <h2 className="text-xl font-bold text-white pr-8">
-                Associate Community
-              </h2>
+              <h2 className="text-xl font-bold text-white pr-8">Associate Community</h2>
               <p className="text-xs text-slate-400 mt-2 leading-relaxed font-semibold">
-                Manually link "{locale === "es" ? selectedPropertyForCommunity.titleEs : selectedPropertyForCommunity.titleEn}" to a curated community development.
+                Manually link &quot;
+                {locale === "es"
+                  ? selectedPropertyForCommunity.titleEs
+                  : selectedPropertyForCommunity.titleEn}
+                &quot; to a curated community development.
               </p>
             </div>
 
@@ -461,8 +499,8 @@ export function AdminTagsTable({
                   validationResult.status === "inside"
                     ? "bg-green-500/5 text-green-400 border-green-500/15"
                     : validationResult.status === "outside"
-                    ? "bg-red-500/10 text-red-400 border-red-500/20 shadow-lg shadow-red-950/20"
-                    : "bg-slate-950/50 text-slate-400 border-slate-800"
+                      ? "bg-red-500/10 text-red-400 border-red-500/20 shadow-lg shadow-red-950/20"
+                      : "bg-slate-950/50 text-slate-400 border-slate-800"
                 }`}
               >
                 {validationResult.status === "inside" ? (
@@ -477,8 +515,8 @@ export function AdminTagsTable({
                     {validationResult.status === "inside"
                       ? "Geofence Match Success"
                       : validationResult.status === "outside"
-                      ? "Geofence Boundary Warning"
-                      : "Geofence Check"}
+                        ? "Geofence Boundary Warning"
+                        : "Geofence Check"}
                   </span>
                   <p className="leading-relaxed text-[11px] font-medium text-slate-300">
                     {validationResult.message}

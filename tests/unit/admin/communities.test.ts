@@ -1,17 +1,26 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 // Hoisted mocks for database client and next/cache
-const { mockInsert, mockUpdate, mockDelete, mockDb, mockRevalidatePath } = vi.hoisted(() => {
+const { mockInsert, mockUpdate, mockDelete, mockSelect, mockDb, mockRevalidatePath } = vi.hoisted(() => {
   const mockInsert = vi.fn();
   const mockUpdate = vi.fn();
   const mockDelete = vi.fn();
-  const mockDb = {
+  const mockSelect = vi.fn(() => ({
+    from: vi.fn(() => ({
+      where: vi.fn(() => ({
+        limit: vi.fn().mockResolvedValue([{ id: "community-1", name: "Reserva Conchal" }]),
+      })),
+    })),
+  }));
+  const mockDb: any = {
     insert: mockInsert,
     update: mockUpdate,
     delete: mockDelete,
+    select: mockSelect,
   };
+  mockDb.transaction = vi.fn((cb) => cb(mockDb));
   const mockRevalidatePath = vi.fn();
-  return { mockInsert, mockUpdate, mockDelete, mockDb, mockRevalidatePath };
+  return { mockInsert, mockUpdate, mockDelete, mockSelect, mockDb, mockRevalidatePath };
 });
 
 vi.mock("@/lib/db/client", () => ({
@@ -43,32 +52,34 @@ describe("Story 8.5: Community Administration - Unit Tests", () => {
 
       const { createCommunityAction } = await import("@/app/actions/admin-community-actions");
 
-      // When called / Then it should throw an auth error
-      await expect(
-        createCommunityAction({
-          name: "Test Community",
-          slug: "test-community",
-          areaId: "area-1",
-          taglineEn: "Tagline EN",
-          taglineEs: "Tagline ES",
-          descriptionEn: "Description EN",
-          descriptionEs: "Description ES",
-          heroImageUrl: "http://example.com/hero.jpg",
-          latitude: 9.93,
-          longitude: -84.15,
-          geoFence: [[-84.15, 9.93], [-84.16, 9.94], [-84.15, 9.93]],
-          geoFenceCoords: { type: "Polygon", coordinates: [[[-84.15, 9.93], [-84.16, 9.94], [-84.15, 9.93]]] },
-          quickFacts: {
-            elevation: "1000m",
-            airportDistance: "30 mins",
-            internet: "Fiber",
-            amenities: "Pool, Gym",
-            developer: "Developer Co",
-            established: "2020",
-          },
-          siteMapImageUrl: "http://example.com/sitemap.jpg",
-        })
-      ).rejects.toThrow("Unauthorized");
+      // When called
+      const result = await createCommunityAction({
+        name: "Test Community",
+        slug: "test-community",
+        areaId: "area-1",
+        taglineEn: "Tagline EN",
+        taglineEs: "Tagline ES",
+        descriptionEn: "Description EN",
+        descriptionEs: "Description ES",
+        heroImageUrl: "http://example.com/hero.jpg",
+        latitude: 9.93,
+        longitude: -84.15,
+        geoFence: [[-84.15, 9.93], [-84.16, 9.94], [-84.15, 9.93]],
+        geoFenceCoords: { type: "Polygon", coordinates: [[[-84.15, 9.93], [-84.16, 9.94], [-84.15, 9.93]]] },
+        quickFacts: {
+          elevation: "1000m",
+          airportDistance: "30 mins",
+          internet: "Fiber",
+          amenities: "Pool, Gym",
+          developer: "Developer Co",
+          established: "2020",
+        },
+        siteMapImageUrl: "http://example.com/sitemap.jpg",
+      });
+
+      // Then it should return success: false and error: Unauthorized
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("Unauthorized");
     });
 
     it("should successfully insert community and trigger revalidations when admin is authenticated", async () => {

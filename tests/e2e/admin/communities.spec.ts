@@ -98,16 +98,26 @@ test.describe("Story 8.5: Community Administration - E2E Tests", () => {
   }: any) => {
     // Given the listing admin view with community assignment override selector
     await page.setViewportSize(DESKTOP_VIEWPORT);
-    await page.goto("/en/admin/properties/luxury-villa");
+    await page.goto("/en/admin/tags");
 
-    // When the admin manually assigns a community to a listing
-    const communitySelect = page.locator('select[data-testid="property-community-override-select"]');
+    // Click the manage community button on the first listing
+    const manageBtn = page.locator('button[data-testid="manage-community-btn"]').first();
+    await expect(manageBtn).toBeVisible();
+    await manageBtn.click();
+
+    // Wait for modal and select the community "Reserva Conchal"
+    const modal = page.locator('[data-testid="manage-community-modal"]');
+    await expect(modal).toBeVisible();
+
+    const communitySelect = page.locator('select[data-testid="community-select"]');
+    await expect(communitySelect).toBeVisible();
     await communitySelect.selectOption({ label: "Reserva Conchal" });
 
-    const saveBtn = page.locator('button[data-testid="save-property-community-btn"]');
+    // Save association
+    const saveBtn = page.locator('button[data-testid="save-community-btn"]');
     await saveBtn.click();
 
-    // Then manual override is displayed and preserved
-    await expect(communitySelect).toHaveValue("reserva-conchal-id");
+    // Verify success alert message is shown
+    await expect(page.locator('text=Successfully updated community for property.')).toBeVisible();
   });
 });

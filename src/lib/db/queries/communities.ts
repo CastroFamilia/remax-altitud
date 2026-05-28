@@ -112,12 +112,11 @@ export async function updateCommunity(id: string, data: Partial<Community>) {
 }
 
 export async function deleteCommunity(id: string) {
-  await db
-    .update(properties)
-    .set({ communityId: null })
-    .where(eq(properties.communityId, id));
+  return db.transaction(async (tx) => {
+    await tx.update(properties).set({ communityId: null }).where(eq(properties.communityId, id));
 
-  return db.delete(communities).where(eq(communities.id, id));
+    return tx.delete(communities).where(eq(communities.id, id));
+  });
 }
 
 export async function getCommunityById(id: string) {
@@ -125,3 +124,7 @@ export async function getCommunityById(id: string) {
   return rows[0] ?? null;
 }
 
+export async function getCommunityBySlug(slug: string) {
+  const rows = await db.select().from(communities).where(eq(communities.slug, slug)).limit(1);
+  return rows[0] ?? null;
+}

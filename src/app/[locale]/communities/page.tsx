@@ -39,25 +39,45 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
   const t = await getTranslations({ locale, namespace: "CommunityPage" });
 
   // Fetch all communities joined with area to build accurate href
-  const dbCommunities = await db
-    .select({
-      id: communities.id,
-      slug: communities.slug,
-      name: communities.name,
-      taglineEn: communities.taglineEn,
-      taglineEs: communities.taglineEs,
-      heroImageUrl: communities.heroImageUrl,
-      priceMinUsd: communities.priceMinUsd,
-      priceMaxUsd: communities.priceMaxUsd,
-      listingCount: communities.listingCount,
-      latitude: communities.latitude,
-      longitude: communities.longitude,
-      geoFenceCoords: communities.geoFenceCoords,
-      areaSlug: areas.slug,
-    })
-    .from(communities)
-    .innerJoin(areas, eq(communities.areaId, areas.id))
-    .orderBy(asc(communities.name));
+  interface DBCommunityRow {
+    id: string;
+    slug: string;
+    name: string;
+    taglineEn: string | null;
+    taglineEs: string | null;
+    heroImageUrl: string | null;
+    priceMinUsd: number | null;
+    priceMaxUsd: number | null;
+    listingCount: number;
+    latitude: number | null;
+    longitude: number | null;
+    geoFenceCoords: unknown;
+    areaSlug: string;
+  }
+  let dbCommunities: DBCommunityRow[] = [];
+  try {
+    dbCommunities = await db
+      .select({
+        id: communities.id,
+        slug: communities.slug,
+        name: communities.name,
+        taglineEn: communities.taglineEn,
+        taglineEs: communities.taglineEs,
+        heroImageUrl: communities.heroImageUrl,
+        priceMinUsd: communities.priceMinUsd,
+        priceMaxUsd: communities.priceMaxUsd,
+        listingCount: communities.listingCount,
+        latitude: communities.latitude,
+        longitude: communities.longitude,
+        geoFenceCoords: communities.geoFenceCoords,
+        areaSlug: areas.slug,
+      })
+      .from(communities)
+      .innerJoin(areas, eq(communities.areaId, areas.id))
+      .orderBy(asc(communities.name));
+  } catch (error) {
+    console.error("Failed to fetch communities from DB:", error);
+  }
 
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: locale === "es" ? "Inicio" : "Home", href: `/${locale}`, position: 1 },
@@ -106,7 +126,7 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
                     listingCount={comm.listingCount}
                     latitude={comm.latitude}
                     longitude={comm.longitude}
-                    geoFenceCoords={comm.geoFenceCoords as any}
+                    geoFenceCoords={comm.geoFenceCoords as unknown as [number, number][] | null}
                   />
                 </div>
               );

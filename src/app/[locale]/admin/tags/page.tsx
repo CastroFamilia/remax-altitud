@@ -1,7 +1,11 @@
 import React from "react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { fetchAdminPropertiesData } from "@/app/actions/admin-tag-actions";
-import { AdminTagsTable, AdminProperty } from "@/components/admin/admin-tags-table";
+import {
+  AdminTagsTable,
+  AdminProperty,
+  DatabaseCommunity,
+} from "@/components/admin/admin-tags-table";
 import { getAllCommunities } from "@/lib/db/queries/communities";
 import { Tags } from "lucide-react";
 import { cookies } from "next/headers";
@@ -64,7 +68,7 @@ export default async function AdminTagsPage({ params, searchParams }: PageProps)
       <AdminTagsTable
         locale={locale}
         properties={properties as unknown as AdminProperty[]}
-        communities={communities as any}
+        communities={communities as unknown as DatabaseCommunity[]}
         total={total}
         currentPage={pageNum}
         hasMore={hasMore}
@@ -72,4 +76,3 @@ export default async function AdminTagsPage({ params, searchParams }: PageProps)
     </div>
   );
 }
-

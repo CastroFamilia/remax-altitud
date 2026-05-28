@@ -39,7 +39,10 @@ const CommunityGeoFenceMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div data-testid="geofence-map-loading" className="h-[400px] w-full bg-slate-900 rounded-lg animate-pulse border border-slate-800" />
+      <div
+        data-testid="geofence-map-loading"
+        className="h-[400px] w-full bg-slate-900 rounded-lg animate-pulse border border-slate-800"
+      />
     ),
   },
 );

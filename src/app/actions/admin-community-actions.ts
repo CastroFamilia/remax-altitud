@@ -6,7 +6,12 @@ import { db } from "@/lib/db/client";
 import { communities } from "@/lib/db/schema/communities";
 import { areas } from "@/lib/db/schema/areas";
 import { verifyAdminAuth } from "@/lib/auth/admin";
-import { createCommunity, updateCommunity, deleteCommunity } from "@/lib/db/queries/communities";
+import {
+  createCommunity,
+  updateCommunity,
+  deleteCommunity,
+  getCommunityById,
+} from "@/lib/db/queries/communities";
 import { updatePropertyCommunity } from "@/lib/db/queries/properties";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 
@@ -85,30 +90,84 @@ export async function fetchAdminCommunitiesData(params: { search?: string; page?
   };
 }
 
-export async function createCommunityAction(data: NewCommunity): Promise<{ success: boolean; community?: Community }> {
-  await verifyAdminAuth();
-  const community = await createCommunity(data);
-  triggerRevalidation();
-  return { success: true, community };
+export async function createCommunityAction(
+  data: NewCommunity,
+): Promise<{ success: boolean; community?: Community; error?: string }> {
+  try {
+    await verifyAdminAuth();
+    const community = await createCommunity(data);
+    triggerRevalidation();
+    return { success: true, community };
+  } catch (error) {
+    console.error("Failed to create community:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    if (
+      message.includes("UNIQUE") ||
+      message.includes("unique constraint") ||
+      message.includes("slug")
+    ) {
+      return { success: false, error: "Slug already exists. Please choose a unique slug." };
+    }
+    return { success: false, error: message };
+  }
 }
 
-export async function updateCommunityAction(id: string, data: Partial<Community>): Promise<{ success: boolean; community?: Community }> {
-  await verifyAdminAuth();
-  const community = await updateCommunity(id, data);
-  triggerRevalidation();
-  return { success: true, community };
+export async function updateCommunityAction(
+  id: string,
+  data: Partial<Community>,
+): Promise<{ success: boolean; community?: Community; error?: string }> {
+  try {
+    await verifyAdminAuth();
+    const community = await updateCommunity(id, data);
+    triggerRevalidation();
+    return { success: true, community };
+  } catch (error) {
+    console.error("Failed to update community:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    if (
+      message.includes("UNIQUE") ||
+      message.includes("unique constraint") ||
+      message.includes("slug")
+    ) {
+      return { success: false, error: "Slug already exists. Please choose a unique slug." };
+    }
+    return { success: false, error: message };
+  }
 }
 
-export async function deleteCommunityAction(id: string): Promise<{ success: boolean }> {
-  await verifyAdminAuth();
-  await deleteCommunity(id);
-  triggerRevalidation();
-  return { success: true };
+export async function deleteCommunityAction(
+  id: string,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await verifyAdminAuth();
+    await deleteCommunity(id);
+    triggerRevalidation();
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete community:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    return { success: false, error: message };
+  }
 }
 
-export async function updatePropertyCommunityAction(propertyId: string, communityId: string | null): Promise<{ success: boolean }> {
-  await verifyAdminAuth();
-  await updatePropertyCommunity(propertyId, communityId);
-  triggerRevalidation();
-  return { success: true };
+export async function updatePropertyCommunityAction(
+  propertyId: string,
+  communityId: string | null,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await verifyAdminAuth();
+    if (communityId !== null) {
+      const comm = await getCommunityById(communityId);
+      if (!comm) {
+        return { success: false, error: "Selected community does not exist." };
+      }
+    }
+    await updatePropertyCommunity(propertyId, communityId);
+    triggerRevalidation();
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update property community override:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    return { success: false, error: message };
+  }
 }
