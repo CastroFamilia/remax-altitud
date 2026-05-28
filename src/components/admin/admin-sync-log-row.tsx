@@ -56,7 +56,8 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
   const durationMs = end ? end.getTime() - start.getTime() : null;
 
   const formatDuration = (ms: number | null): string => {
-    if (ms === null) return "--";
+    if (ms === null || isNaN(ms)) return "--";
+    if (ms < 0) return "0s";
     if (ms < 1000) return "0s";
     const seconds = Math.floor(ms / 1000);
     const h = Math.floor(seconds / 3600);
@@ -118,13 +119,18 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
   };
 
   const formattedDate = (date: Date) => {
-    return date.toLocaleString(undefined, {
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
+    try {
+      if (!date || isNaN(date.getTime())) return "N/A";
+      return date.toLocaleString(undefined, {
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+    } catch (e) {
+      return "N/A";
+    }
   };
 
   const isFailed = log.status === "failure";

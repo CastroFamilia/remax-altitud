@@ -18,6 +18,8 @@ export async function fetchAdminSyncDashboardData(params: {
   let page = params.page ?? 1;
   if (isNaN(page) || page < 1) {
     page = 1;
+  } else {
+    page = Math.floor(page);
   }
 
   const limit = 20;

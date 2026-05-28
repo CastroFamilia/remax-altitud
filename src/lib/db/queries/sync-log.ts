@@ -50,8 +50,8 @@ export async function getSyncLogs(filters: {
   limit?: number;
   offset?: number;
 }): Promise<SyncLog[]> {
-  const limitVal = filters.limit ?? 20;
-  const offsetVal = filters.offset ?? 0;
+  const limitVal = Math.max(1, filters.limit ?? 20);
+  const offsetVal = Math.max(0, filters.offset ?? 0);
 
   const conditions = [];
   if (filters.status && filters.status !== "all") {

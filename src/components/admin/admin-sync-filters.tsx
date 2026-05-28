@@ -29,6 +29,12 @@ export function AdminSyncFilters({ locale, translations }: AdminSyncFiltersProps
   const [startDate, setStartDate] = useState(searchParams.get("startDate") || "");
   const [endDate, setEndDate] = useState(searchParams.get("endDate") || "");
 
+  React.useEffect(() => {
+    setStatus(searchParams.get("status") || "all");
+    setStartDate(searchParams.get("startDate") || "");
+    setEndDate(searchParams.get("endDate") || "");
+  }, [searchParams]);
+
   const handleApply = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
