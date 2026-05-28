@@ -20,7 +20,7 @@ interface GalleryImage {
 interface AreaGalleryCarouselProps {
   metadata: {
     galleryImages?: GalleryImage[];
-    [key: string]: any;
+    [key: string]: unknown;
   } | null;
   locale: string;
 }
