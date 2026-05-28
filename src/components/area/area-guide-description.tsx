@@ -478,7 +478,7 @@ function MetricsGrid({
 }: {
   metadata: DescriptionMetadata | null;
   locale: string;
-  t: any;
+  t: (key: string) => string;
 }) {
   if (!metadata || (!metadata.nearestAirport && !metadata.nearestHospital && !metadata.nearestBeach)) {
     return null;
