@@ -5,13 +5,24 @@ import { db } from "../src/lib/db/client";
 import { sql } from "drizzle-orm";
 
 async function main() {
-  console.log("Fetching areas from DB...");
-  const areas = await db.execute(sql`SELECT id, slug, name_en, region, property_count FROM areas`);
-  console.log("Areas in DB:", JSON.stringify(areas, null, 2));
+  console.log("=== DB Property Types ===");
+  const types = await db.execute(sql`SELECT property_type, COUNT(*) as count FROM properties GROUP BY property_type`);
+  console.log(JSON.stringify(types, null, 2));
 
-  console.log("Fetching unique property area slugs...");
-  const propSlugs = await db.execute(sql`SELECT area_slug, COUNT(*) as count FROM properties GROUP BY area_slug`);
-  console.log("Property area_slug counts:", JSON.stringify(propSlugs, null, 2));
+  console.log("=== DB Properties containing 'rio' or 'river' ===");
+  const containingRio = await db.execute(sql`
+    SELECT id, slug, title_en, title_es, property_type, lifestyle_tags, is_visible 
+    FROM properties 
+    WHERE title_en ILIKE '%river%' 
+       OR title_es ILIKE '%rio%' 
+       OR title_es ILIKE '%río%'
+       OR description_en ILIKE '%river%'
+       OR description_es ILIKE '%rio%'
+       OR description_es ILIKE '%río%'
+  `);
+  console.log(`Found ${containingRio.length} properties:`);
+  console.log(JSON.stringify(containingRio.slice(0, 10), null, 2));
+
   process.exit(0);
 }
 

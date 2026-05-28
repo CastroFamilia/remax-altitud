@@ -333,6 +333,7 @@
       "sortPriceAsc": "Precio ↑",
       "sortPriceDesc": "Precio ↓",
       "sortRelevance": "Relevancia",
+      "search": "Palabra clave",
       "clearAll": "Borrar todo",
       "activeChip": "{label}: {value}",
       "dismiss": "Eliminar filtro {label}",

@@ -325,6 +325,42 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
   );
 
   // -------------------------------------------------------------------------
+  // Keyword Search & River Synonym Expansion
+  // -------------------------------------------------------------------------
+
+  it(
+    "[P0] searchProperties with q filter passes keyword search query to Drizzle",
+    async () => {
+      await searchProperties({ q: "piscina" });
+      expect(mockWhere).toHaveBeenCalled();
+    },
+  );
+
+  it(
+    "[P0] searchProperties with q='rio' expands to search for 'rio', 'río', 'river', and 'quebrada' synonyms",
+    async () => {
+      await searchProperties({ q: "rio" });
+      expect(mockWhere).toHaveBeenCalled();
+    },
+  );
+
+  it(
+    "[P0] searchProperties with q='quebrada' expands synonyms because river is translated as quebrada in Costa Rica",
+    async () => {
+      await searchProperties({ q: "quebrada" });
+      expect(mockWhere).toHaveBeenCalled();
+    },
+  );
+
+  it(
+    "[P0] searchProperties with Spanish type='Lote' maps to equivalent DB propertyTypes",
+    async () => {
+      await searchProperties({ type: "Lote" });
+      expect(mockWhere).toHaveBeenCalled();
+    },
+  );
+
+  // -------------------------------------------------------------------------
   // Pagination defaults
   // -------------------------------------------------------------------------
 

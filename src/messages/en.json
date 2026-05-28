@@ -333,6 +333,7 @@
       "sortPriceAsc": "Price ↑",
       "sortPriceDesc": "Price ↓",
       "sortRelevance": "Relevance",
+      "search": "Keyword",
       "clearAll": "Clear all",
       "activeChip": "{label}: {value}",
       "dismiss": "Remove {label} filter",
