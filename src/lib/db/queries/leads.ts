@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
 
 import { and, desc, eq, gte } from "drizzle-orm";
@@ -115,5 +116,82 @@ export async function getLeadById(id: string) {
     ...lead,
     phone: decryptField(lead.phone),
     email: lead.email ? decryptField(lead.email) : null,
+  };
+}
+
+/**
+ * getShortlistLeadDetails — Story 7.4
+ * Groups lead's shortlisted properties by their listing agents.
+ */
+export async function getShortlistLeadDetails(leadId: string): Promise<any> {
+  const leadRows = await db.select().from(leads).where(eq(leads.id, leadId));
+  if (leadRows.length === 0) return null;
+  const lead = {
+    ...leadRows[0],
+    phone: decryptField(leadRows[0].phone),
+    email: leadRows[0].email ? decryptField(leadRows[0].email) : null,
+  };
+
+  const propIds = lead.shortlistPropertyIds || [];
+  if (propIds.length === 0) {
+    return {
+      ...lead,
+      groupedDetails: {
+        assignedAgentListings: [],
+        otherAgentListings: [],
+      },
+    };
+  }
+
+  const { properties } = await import("@/lib/db/schema/properties");
+  const { agents } = await import("@/lib/db/schema/agents");
+  const { inArray } = await import("drizzle-orm");
+
+  const propRows = await db
+    .select({
+      properties: {
+        id: properties.id,
+        titleEn: properties.titleEn,
+        titleEs: properties.titleEs,
+        apiId: properties.apiId,
+        agentId: properties.agentId,
+      },
+      agents: {
+        id: agents.id,
+        name: agents.name,
+      },
+    })
+    .from(properties)
+    .leftJoin(agents, eq(properties.agentId, agents.id))
+    .where(inArray(properties.id, propIds));
+
+  const assignedAgentListings: any[] = [];
+  const otherAgentListings: any[] = [];
+
+  for (const row of propRows) {
+    const propObj = {
+      id: row.properties.id,
+      titleEn: row.properties.titleEn,
+      titleEs: row.properties.titleEs,
+      apiId: row.properties.apiId,
+      agentId: row.properties.agentId,
+    };
+
+    if (row.properties.agentId === lead.assignedAgentId) {
+      assignedAgentListings.push(propObj);
+    } else {
+      otherAgentListings.push({
+        ...propObj,
+        agentName: row.agents?.name || "",
+      });
+    }
+  }
+
+  return {
+    ...lead,
+    groupedDetails: {
+      assignedAgentListings,
+      otherAgentListings,
+    },
   };
 }
