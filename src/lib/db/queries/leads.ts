@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
 
-import { and, desc, eq, gte } from "drizzle-orm";
+import { and, desc, eq, gte, lte, inArray } from "drizzle-orm";
+import { agents } from "@/lib/db/schema/agents";
+import { properties } from "@/lib/db/schema/properties";
+import { leadAssignmentLogs } from "@/lib/db/schema/lead-assignment-logs";
 import { db } from "@/lib/db/client";
 import { leads } from "@/lib/db/schema/leads";
 import { encryptField, decryptField, hashField } from "@/lib/utils/encryption";
@@ -195,3 +198,157 @@ export async function getShortlistLeadDetails(leadId: string): Promise<any> {
     },
   };
 }
+
+export interface GetLeadsFilters {
+  agentId?: string;
+  source?: string;
+  intent?: string;
+  status?: string;
+  startDate?: Date;
+  endDate?: Date;
+  limit?: number;
+  offset?: number;
+}
+
+/**
+ * getLeads — Story 8.2 (AC 1, AC 4, AC 5)
+ * Fetches leads with filtering and pagination, decrypting PII.
+ */
+export async function getLeads(filters: GetLeadsFilters) {
+  const conditions = [];
+
+  if (filters.agentId) {
+    conditions.push(eq(leads.assignedAgentId, filters.agentId));
+  }
+  if (filters.source) {
+    conditions.push(eq(leads.source, filters.source));
+  }
+  if (filters.intent) {
+    conditions.push(eq(leads.intent, filters.intent));
+  }
+  if (filters.status) {
+    conditions.push(eq(leads.status, filters.status));
+  }
+  if (filters.startDate) {
+    conditions.push(gte(leads.createdAt, filters.startDate));
+  }
+  if (filters.endDate) {
+    conditions.push(lte(leads.createdAt, filters.endDate));
+  }
+
+  const query = db
+    .select({
+      lead: leads,
+      agentName: agents.name,
+      propertyApiId: properties.apiId,
+    })
+    .from(leads)
+    .leftJoin(agents, eq(leads.assignedAgentId, agents.id))
+    .leftJoin(properties, eq(leads.propertyId, properties.id));
+
+  if (conditions.length > 0) {
+    query.where(and(...conditions));
+  }
+
+  const limit = filters.limit ?? 20;
+  const offset = filters.offset ?? 0;
+
+  const rows = await query
+    .orderBy(desc(leads.createdAt))
+    .limit(limit)
+    .offset(offset);
+
+  return rows.map((row) => {
+    return {
+      ...row.lead,
+      agentName: row.agentName,
+      propertyApiId: row.propertyApiId,
+      phone: decryptField(row.lead.phone),
+      email: row.lead.email ? decryptField(row.lead.email) : null,
+    };
+  });
+}
+
+/**
+ * reassignLead — Story 8.2 (AC 3)
+ * Updates the assigned coordinator agent for a lead and logs the action.
+ */
+export async function reassignLead(leadId: string, newAgentId: string | null) {
+  const leadRows = await db
+    .select({ assignedAgentId: leads.assignedAgentId })
+    .from(leads)
+    .where(eq(leads.id, leadId))
+    .limit(1);
+
+  if (leadRows.length === 0) {
+    throw new Error("Lead not found");
+  }
+
+  const previousAgentId = leadRows[0].assignedAgentId;
+
+  await db
+    .update(leads)
+    .set({ assignedAgentId: newAgentId })
+    .where(eq(leads.id, leadId));
+
+  await db.insert(leadAssignmentLogs).values({
+    leadId,
+    previousAgentId,
+    newAgentId,
+  });
+
+  return { success: true };
+}
+
+/**
+ * getLeadAssignmentLogs — Story 8.2 (AC 3)
+ * Retrieves lead assignment history logs for administrative auditing.
+ */
+export async function getLeadAssignmentLogs() {
+  const logsList = await db
+    .select()
+    .from(leadAssignmentLogs)
+    .orderBy(desc(leadAssignmentLogs.createdAt));
+
+  const leadIds = [...new Set(logsList.map((l) => l.leadId))];
+  const agentIds = [
+    ...new Set([
+      ...logsList.map((l) => l.previousAgentId).filter(Boolean),
+      ...logsList.map((l) => l.newAgentId).filter(Boolean),
+    ]),
+  ] as string[];
+
+  const [leadsList, agentsList] = await Promise.all([
+    leadIds.length > 0
+      ? db
+          .select({ id: leads.id, name: leads.name })
+          .from(leads)
+          .where(inArray(leads.id, leadIds))
+      : [],
+    agentIds.length > 0
+      ? db
+          .select({ id: agents.id, name: agents.name })
+          .from(agents)
+          .where(inArray(agents.id, agentIds))
+      : [],
+  ]);
+
+  const leadsMap = new Map(leadsList.map((l) => [l.id, l.name]));
+  const agentsMap = new Map(agentsList.map((a) => [a.id, a.name]));
+
+  return logsList.map((log) => ({
+    id: log.id,
+    leadId: log.leadId,
+    leadName: leadsMap.get(log.leadId) || "Unknown Lead",
+    previousAgentId: log.previousAgentId,
+    previousAgentName: log.previousAgentId
+      ? agentsMap.get(log.previousAgentId) || "Unknown Agent"
+      : "Unassigned",
+    newAgentId: log.newAgentId,
+    newAgentName: log.newAgentId
+      ? agentsMap.get(log.newAgentId) || "Unknown Agent"
+      : "Unassigned",
+    createdAt: log.createdAt,
+  }));
+}
+

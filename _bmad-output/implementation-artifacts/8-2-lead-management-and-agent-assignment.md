@@ -73,3 +73,25 @@ Ultimate context engine analysis completed - comprehensive developer guide creat
 - **Checklist**: _bmad-output/test-artifacts/atdd-checklist-8-2-lead-management-and-agent-assignment.md
 - **E2E tests**: tests/e2e/admin/leads.spec.ts
 - **Unit tests**: tests/unit/admin/leads.test.ts
+
+## Tasks/Subtasks
+
+- [ ] 1. Create `lead_assignment_logs` table schema in `src/lib/db/schema/leads.ts` or new file, export it, and generate migration.
+- [ ] 2. Create server actions to fetch leads and reassign lead agent.
+- [ ] 3. Create the shortlist logic to fetch property details and group them for display.
+- [ ] 4. Create UI for `src/app/[locale]/admin/leads/page.tsx` displaying the leads table with filters.
+- [ ] 5. Implement per-agent lead history view UI.
+- [ ] 6. Ensure PII is decrypted correctly for authorized users.
+- [ ] 7. Update translations in `src/messages/en.json` and `src/messages/es.json`.
+- [ ] 8. Add unit tests.
+
+## Dev Agent Record
+
+### Debug Log
+
+### Completion Notes
+
+## File List
+
+## Change Log
+

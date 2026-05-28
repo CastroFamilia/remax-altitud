@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// @ts-expect-error — @playwright/test not yet installed
 import { test, expect } from "@playwright/test";
 
 test.describe("Story 8.2: Lead Management & Agent Assignment", () => {
   test.describe("Admin Leads View", () => {
-    test.skip("displays all leads with required fields (AC1)", async ({ page }) => {
+    test.skip("displays all leads with required fields (AC1)", async ({ page }: any) => {
       // 1. Given the admin lead management view
       await page.goto("/admin/leads");
       
@@ -22,7 +24,7 @@ test.describe("Story 8.2: Lead Management & Agent Assignment", () => {
       await expect(leadRow.locator('td.lead-created-at')).toBeVisible();
     });
 
-    test.skip("shows shortlisted property refs grouped by assigned agent (AC2)", async ({ page }) => {
+    test.skip("shows shortlisted property refs grouped by assigned agent (AC2)", async ({ page }: any) => {
       // 1. Given a shortlist lead
       await page.goto("/admin/leads");
       const shortlistLead = page.locator('tr[data-testid="lead-shortlist-row"]');
@@ -36,7 +38,7 @@ test.describe("Story 8.2: Lead Management & Agent Assignment", () => {
       await expect(shortlistDetails).toContainText("Gustavo's: #");
     });
 
-    test.skip("updates assigned agent and logs reassignment (AC3)", async ({ page }) => {
+    test.skip("updates assigned agent and logs reassignment (AC3)", async ({ page }: any) => {
       // 1. Given a lead assigned to the wrong agent
       await page.goto("/admin/leads");
       const leadRow = page.locator('tr[data-testid="lead-reassign-row"]');
@@ -54,7 +56,7 @@ test.describe("Story 8.2: Lead Management & Agent Assignment", () => {
       await expect(page.locator('tr[data-testid="log-entry"]')).toContainText("New Agent");
     });
 
-    test.skip("filters lead list correctly (AC4)", async ({ page }) => {
+    test.skip("filters lead list correctly (AC4)", async ({ page }: any) => {
       // 1. Given the lead list
       await page.goto("/admin/leads");
       
@@ -71,7 +73,7 @@ test.describe("Story 8.2: Lead Management & Agent Assignment", () => {
       }
     });
 
-    test.skip("displays per-agent lead history (AC5)", async ({ page }) => {
+    test.skip("displays per-agent lead history (AC5)", async ({ page }: any) => {
       // 1. Given the per-agent lead history view
       await page.goto("/admin/agents/history");
       
@@ -86,7 +88,7 @@ test.describe("Story 8.2: Lead Management & Agent Assignment", () => {
       await expect(historyRow.locator('td.lead-source')).toBeVisible();
     });
 
-    test.skip("protects lead PII from unauthenticated users (AC6)", async ({ page }) => {
+    test.skip("protects lead PII from unauthenticated users (AC6)", async ({ page }: any) => {
       // 1. Given an unauthenticated user
       // (Assuming the test runner starts unauthenticated by default)
       

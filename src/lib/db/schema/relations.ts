@@ -6,6 +6,8 @@ import { leads } from "./leads";
 import { offices } from "./offices";
 import { properties } from "./properties";
 
+import { leadAssignmentLogs } from "./lead-assignment-logs";
+
 export const officesRelations = relations(offices, ({ many }) => ({
   properties: many(properties),
   agents: many(agents),
@@ -35,7 +37,15 @@ export const communitiesRelations = relations(communities, ({ one, many }) => ({
   properties: many(properties),
 }));
 
-export const leadsRelations = relations(leads, ({ one }) => ({
+export const leadsRelations = relations(leads, ({ one, many }) => ({
   agent: one(agents, { fields: [leads.assignedAgentId], references: [agents.id] }),
   property: one(properties, { fields: [leads.propertyId], references: [properties.id] }),
+  assignmentLogs: many(leadAssignmentLogs),
 }));
+
+export const leadAssignmentLogsRelations = relations(leadAssignmentLogs, ({ one }) => ({
+  lead: one(leads, { fields: [leadAssignmentLogs.leadId], references: [leads.id] }),
+  previousAgent: one(agents, { fields: [leadAssignmentLogs.previousAgentId], references: [agents.id] }),
+  newAgent: one(agents, { fields: [leadAssignmentLogs.newAgentId], references: [agents.id] }),
+}));
+

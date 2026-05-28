@@ -50,6 +50,13 @@
       "when": 1779945400744,
       "tag": "0006_faithful_mach_iv",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1779981490130,
+      "tag": "0007_ambitious_goblin_queen",
+      "breakpoints": true
     }
   ]
 }
