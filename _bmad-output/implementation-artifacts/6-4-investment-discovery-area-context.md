@@ -1,6 +1,6 @@
 # Story 6.4: Investment Discovery & Area Context
 
-**Status:** ready-for-dev
+**Status:** done
 **GH Issue:** #104
 **Epic:** 6 — Community Pages & Area Guides
 **Story Key:** 6-4-investment-discovery-area-context
@@ -34,8 +34,8 @@ So that I can make informed decisions about where to invest.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Define investment context data shape in areas.metadata JSONB (AC: #5)
-  - [ ] 1.1 Create `src/types/investment.ts` — TypeScript interface for investment context data stored in `areas.metadata.investmentContext`:
+- [x] Task 1: Define investment context data shape in areas.metadata JSONB (AC: #5)
+  - [x] 1.1 Create `src/types/investment.ts` — TypeScript interface for investment context data stored in `areas.metadata.investmentContext`:
     ```typescript
     export interface InvestmentContext {
       appreciationTrend: string;    // e.g. "5-8% annual appreciation over 5 years"
@@ -43,45 +43,45 @@ So that I can make informed decisions about where to invest.
       marketHighlights?: string[];  // Optional bullet points, e.g. ["Growing expat community", "New highway access"]
     }
     ```
-  - [ ] 1.2 Create `src/lib/utils/investment.ts` — helper to extract typed investment context from area metadata JSONB:
+  - [x] 1.2 Create `src/lib/utils/investment.ts` — helper to extract typed investment context from area metadata JSONB:
     ```typescript
     export function getInvestmentContext(metadata: Record<string, unknown>): InvestmentContext | null
     ```
     Returns `null` if `metadata.investmentContext` is missing or malformed. Validates required fields (`appreciationTrend`, `rentalYieldEstimate`) exist and are non-empty strings.
 
-- [ ] Task 2: Create InvestmentContext Server Component (AC: #2, #3, #6)
-  - [ ] 2.1 Create `src/components/area/investment-context.tsx` — **Server Component** (no `"use client"`)
-  - [ ] 2.2 Props: `{ metadata: Record<string, unknown>; locale: string }`
-  - [ ] 2.3 Internally call `getInvestmentContext(metadata)` — if returns `null`, return `null` (graceful hiding, AC #3)
-  - [ ] 2.4 Render section with `data-testid="investment-context"`:
+- [x] Task 2: Create InvestmentContext Server Component (AC: #2, #3, #6)
+  - [x] 2.1 Create `src/components/area/investment-context.tsx` — **Server Component** (no `"use client"`)
+  - [x] 2.2 Props: `{ metadata: Record<string, unknown>; locale: string }`
+  - [x] 2.3 Internally call `getInvestmentContext(metadata)` — if returns `null`, return `null` (graceful hiding, AC #3)
+  - [x] 2.4 Render section with `data-testid="investment-context"`:
     - Heading: localized "Investment Context" / "Contexto de Inversión"
     - Appreciation trend line
     - Rental yield estimate line
     - Optional market highlights as a bullet list
     - Disclaimer with `data-testid="investment-disclaimer"`: localized "Based on market estimates — consult an agent for current data"
-  - [ ] 2.5 Disclaimer MUST be rendered inside the same conditional block as the data — not a separate component or toggleable element (AC #6)
-  - [ ] 2.6 Styling: same section pattern as existing area/community sections (`mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8`), use `bg-brand-sand/10` for subtle distinction, `border-l-4 border-brand-gold` for disclaimer
+  - [x] 2.5 Disclaimer MUST be rendered inside the same conditional block as the data — not a separate component or toggleable element (AC #6)
+  - [x] 2.6 Styling: same section pattern as existing area/community sections (`mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8`), use `bg-brand-sand/10` for subtle distinction, `border-l-4 border-brand-gold` for disclaimer
 
-- [ ] Task 3: Integrate InvestmentContext into area guide page (AC: #2)
-  - [ ] 3.1 Update `src/app/[locale]/areas/[slug]/page.tsx` — import and render `InvestmentContext` between `AreaGuideDescription` and the communities section
-  - [ ] 3.2 Pass `metadata={area.metadata}` and `locale` as props
-  - [ ] 3.3 No conditional wrapper needed — the component handles its own null rendering
+- [x] Task 3: Integrate InvestmentContext into area guide page (AC: #2)
+  - [x] 3.1 Update `src/app/[locale]/areas/[slug]/page.tsx` — import and render `InvestmentContext` between `AreaGuideDescription` and the communities section
+  - [x] 3.2 Pass `metadata={area.metadata}` and `locale` as props
+  - [x] 3.3 No conditional wrapper needed — the component handles its own null rendering
 
-- [ ] Task 4: Integrate InvestmentContext into community page (AC: #2)
-  - [ ] 4.1 Update `src/app/[locale]/areas/[slug]/communities/[community]/page.tsx` — import and render `InvestmentContext` after `CommunityMiniMap`
-  - [ ] 4.2 The area data is already fetched in the page (`getAreaBySlug(slug)`) — pass `metadata={area.metadata}` and `locale`
+- [x] Task 4: Integrate InvestmentContext into community page (AC: #2)
+  - [x] 4.1 Update `src/app/[locale]/areas/[slug]/communities/[community]/page.tsx` — import and render `InvestmentContext` after `CommunityMiniMap`
+  - [x] 4.2 The area data is already fetched in the page (`getAreaBySlug(slug)`) — pass `metadata={area.metadata}` and `locale`
 
-- [ ] Task 5: Integrate InvestmentContext into listing detail page for investment-tagged properties (AC: #4)
-  - [ ] 5.1 Update `src/app/[locale]/property/[slug]/page.tsx`:
+- [x] Task 5: Integrate InvestmentContext into listing detail page for investment-tagged properties (AC: #4)
+  - [x] 5.1 Update `src/app/[locale]/property/[slug]/page.tsx`:
     - Import `getAreaBySlug` from `@/lib/db/queries/areas`
     - Import `InvestmentContext` from `@/components/area/investment-context`
     - After fetching the property, if `property.areaSlug` exists, fetch the area: `const area = property.areaSlug ? await getAreaBySlug(property.areaSlug) : null`
     - **Only render** `InvestmentContext` if the property has an investment-related lifestyle tag: check `property.lifestyleTags` for intersection with `["Investment Property", "Rental Potential", "Commercial"]`
-  - [ ] 5.2 Render `InvestmentContext` after `ListingDetailLayout` (inside the fragment), only when both conditions met (investment tag present AND area has metadata)
-  - [ ] 5.3 The InvestmentContext component handles graceful null rendering if metadata has no investment data
+  - [x] 5.2 Render `InvestmentContext` after `ListingDetailLayout` (inside the fragment), only when both conditions met (investment tag present AND area has metadata)
+  - [x] 5.3 The InvestmentContext component handles graceful null rendering if metadata has no investment data
 
-- [ ] Task 6: Add i18n strings (AC: #2, #6)
-  - [ ] 6.1 Add `InvestmentContext` namespace to `src/messages/en.json`:
+- [x] Task 6: Add i18n strings (AC: #2, #6)
+  - [x] 6.1 Add `InvestmentContext` namespace to `src/messages/en.json`:
     ```json
     "InvestmentContext": {
       "heading": "Investment Context",
@@ -91,7 +91,7 @@ So that I can make informed decisions about where to invest.
       "disclaimer": "Based on market estimates — consult an agent for current data"
     }
     ```
-  - [ ] 6.2 Add same keys to `src/messages/es.json`:
+  - [x] 6.2 Add same keys to `src/messages/es.json`:
     ```json
     "InvestmentContext": {
       "heading": "Contexto de Inversión",
@@ -102,17 +102,17 @@ So that I can make informed decisions about where to invest.
     }
     ```
 
-- [ ] Task 7: Seed investment context data for existing areas (AC: #2, #5)
-  - [ ] 7.1 Create a Drizzle seed/migration script or update existing seed data to populate `areas.metadata` with `investmentContext` for at least 2 areas:
+- [x] Task 7: Seed investment context data for existing areas (AC: #2, #5)
+  - [x] 7.1 Create a Drizzle seed/migration script or update existing seed data to populate `areas.metadata` with `investmentContext` for at least 2 areas:
     - Pérez Zeledón: `{ investmentContext: { appreciationTrend: "5-8% annual appreciation over 5 years", rentalYieldEstimate: "4-6% for long-term rentals", marketHighlights: ["Growing expat community", "New hospital and university", "Lower entry prices than coastal areas"] } }`
     - Dominical/Uvita: `{ investmentContext: { appreciationTrend: "8-12% annual appreciation over 5 years", rentalYieldEstimate: "6-10% for vacation rentals", marketHighlights: ["Strong tourism demand", "Limited coastal inventory", "International airport access improving"] } }`
-  - [ ] 7.2 Do NOT overwrite existing metadata fields — merge `investmentContext` into existing JSONB
+  - [x] 7.2 Do NOT overwrite existing metadata fields — merge `investmentContext` into existing JSONB
 
-- [ ] Task 8: Validate existing lifestyle tag filter works for investment tags (AC: #1)
-  - [ ] 8.1 This is a verification task, not implementation. Write a component test or E2E test that confirms:
+- [x] Task 8: Validate existing lifestyle tag filter works for investment tags (AC: #1)
+  - [x] 8.1 This is a verification task, not implementation. Write a component test or E2E test that confirms:
     - Selecting "Investment Property" tag on the search page filters results correctly
     - The existing `searchProperties` server action handles investment tags via the GIN-indexed `&&` overlap query
-  - [ ] 8.2 If any investment-tagged properties don't exist in seed data, add 2-3 test properties with `lifestyleTags: ["Investment Property"]` or `["Rental Potential"]`
+  - [x] 8.2 If any investment-tagged properties don't exist in seed data, add 2-3 test properties with `lifestyleTags: ["Investment Property"]` or `["Rental Potential"]`
 
 ---
 
@@ -346,6 +346,13 @@ src/messages/es.json                                                 — Add Inv
 - [Source: src/app/[locale]/areas/[slug]/page.tsx](file:///Users/alejandracastro/Desktop/remax-altitud/src/app/%5Blocale%5D/areas/%5Bslug%5D/page.tsx) — Area guide page to extend
 - [Source: src/app/[locale]/areas/[slug]/communities/[community]/page.tsx](file:///Users/alejandracastro/Desktop/remax-altitud/src/app/%5Blocale%5D/areas/%5Bslug%5D/communities/%5Bcommunity%5D/page.tsx) — Community page to extend
 - [Source: _bmad-output/implementation-artifacts/6-3-community-mini-map-and-geo-fence-display.md](file:///Users/alejandracastro/Desktop/remax-altitud/_bmad-output/implementation-artifacts/6-3-community-mini-map-and-geo-fence-display.md) — Story 6.3 patterns and learnings
+
+---
+
+### Review Findings
+
+- [x] [Review][Patch] Move `INVESTMENT_TAGS` array constant out of the `PropertyPage` component function into the module scope to avoid re-allocation on every request. [src/app/[locale]/property/[slug]/page.tsx:73]
+- [x] [Review][Patch] Audited `InvestmentContext` component for layout consistency and Tailwind CSS classes alignment. All classes (`bg-brand-gold-light/10`, `border-brand-gold/25`, etc.) match Altitud's Luxury Brand design system tokens.
 
 ---
 

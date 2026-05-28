@@ -70,6 +70,8 @@ export async function generateMetadata({
   };
 }
 
+const INVESTMENT_TAGS = ["Investment Property", "Rental Potential", "Commercial"];
+
 export default async function PropertyPage({
   params,
 }: {
@@ -160,7 +162,6 @@ export default async function PropertyPage({
   ]);
 
   // Query optimization: only fetch area metadata if the property is tagged for investment (AC #4)
-  const INVESTMENT_TAGS = ["Investment Property", "Rental Potential", "Commercial"];
   const hasInvestmentTag = property.lifestyleTags?.some((tag) => INVESTMENT_TAGS.includes(tag));
   const area =
     hasInvestmentTag && property.areaSlug ? await getAreaBySlug(property.areaSlug) : null;
