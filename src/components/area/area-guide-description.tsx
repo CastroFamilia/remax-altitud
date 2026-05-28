@@ -176,8 +176,8 @@ function ServicesList({ locale }: { locale: string }) {
     {
       title: isEs ? "Educación Privada Premium" : "Premium Private Education",
       desc: isEs
-        ? "El valle es un centro en crecimiento para la educación de alta calidad, que cuenta con BMS (Bilingual Multidisciplinary School), una academia privada K-12 de primer nivel respaldada por el Ministerio de Educación Pública que ofrece programas académicos, artísticos y de robótica, junto con modelos alternativos innovadores como la escuela de inspiración Waldorf RISE para un aprendizaje experiencial basado en la naturaleza en preescolar y primaria."
-        : "The valley is a growing hub for high-quality education; featuring BMS (Bilingual Multidisciplinary School), a top-rated private K-12 academy endorsed by the Ministry of Public Education offering academic, artistic, and robotics programs, alongside innovative alternative models like the RISE Waldorf-inspired school for experiential, nature-based early childhood and elementary learning.",
+        ? "Escuelas internacionales y bilingües como BMS o Colegio del Valle, así como educación alternativa Waldorf en RISE Waldorf Inspired School y diversas universidades."
+        : "International and Bilingual schools like BMS or Colegio del Valle as well as alternative Waldorf Education at the RISE Waldorf Inspired School and many Universities.",
       icon: GraduationCap,
     },
     {
@@ -233,7 +233,7 @@ function CardinalMap({ locale }: { locale: string }) {
         </div>
 
         {/* ROW 1: North */}
-        <div className="col-start-2 flex flex-col items-center">
+        <div className="row-start-1 col-start-2 flex flex-col items-center">
           <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
               ▲ {isEs ? "NORTE" : "NORTH"}
@@ -250,7 +250,7 @@ function CardinalMap({ locale }: { locale: string }) {
 
         {/* ROW 2: West | Center (San Isidro) | East */}
         {/* West */}
-        <div className="flex items-center">
+        <div className="row-start-2 col-start-1 flex items-center">
           <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-right">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
               {isEs ? "OESTE" : "WEST"} ◀
@@ -266,7 +266,7 @@ function CardinalMap({ locale }: { locale: string }) {
         </div>
 
         {/* Center Compass Needle */}
-        <div className="flex flex-col items-center justify-center p-6 rounded-full bg-brand-navy border-4 border-brand-gold text-white text-center w-44 h-44 mx-auto shadow-2xl relative z-10">
+        <div className="row-start-2 col-start-2 flex flex-col items-center justify-center p-6 rounded-full bg-brand-navy border-4 border-brand-gold text-white text-center w-44 h-44 mx-auto shadow-2xl relative z-10">
           <Compass className="w-8 h-8 text-brand-gold animate-[pulse_4s_ease-in-out_infinite]" />
           <span className="text-[10px] font-bold tracking-widest text-brand-gold/80 mt-2 block">
             {isEs ? "NÚCLEO URBANIZADO" : "CENTRAL URBAN HUB"}
@@ -277,7 +277,7 @@ function CardinalMap({ locale }: { locale: string }) {
         </div>
 
         {/* East */}
-        <div className="flex items-center">
+        <div className="row-start-2 col-start-3 flex items-center">
           <div className="w-8 h-0.5 bg-gradient-to-l from-brand-gold/45 to-transparent mr-2" />
           <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-left">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
@@ -293,7 +293,7 @@ function CardinalMap({ locale }: { locale: string }) {
         </div>
 
         {/* ROW 3: South */}
-        <div className="col-start-2 flex flex-col items-center">
+        <div className="row-start-3 col-start-2 flex flex-col items-center">
           <div className="w-0.5 h-8 bg-gradient-to-t from-brand-gold/45 to-transparent mb-2" />
           <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">

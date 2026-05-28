@@ -117,10 +117,12 @@ export default async function AreaGuidePage({
       />
       <AreaGuideHero area={area} locale={locale} />
       <AreaGuideDescription area={area} locale={locale} />
-      <InvestmentContext
-        metadata={area.metadata as Record<string, unknown> | null}
-        locale={locale}
-      />
+      {slug !== "perez-zeledon" && (
+        <InvestmentContext
+          metadata={area.metadata as Record<string, unknown> | null}
+          locale={locale}
+        />
+      )}
 
       {/* Communities belonging to this area */}
       {communities.length > 0 && (
@@ -149,12 +151,14 @@ export default async function AreaGuidePage({
           </div>
         </section>
       )}
-      <AreaGuideTabs
-        properties={areaProperties}
-        agents={agents}
-        similarAreas={similarAreas}
-        locale={locale}
-      />
+      {slug !== "perez-zeledon" && (
+        <AreaGuideTabs
+          properties={areaProperties}
+          agents={agents}
+          similarAreas={similarAreas}
+          locale={locale}
+        />
+      )}
 
       {/* Area Photo Gallery Carousel */}
       <AreaGalleryCarousel
