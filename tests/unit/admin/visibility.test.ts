@@ -127,6 +127,31 @@ describe("Story 8.6: Listing Visibility & SEO Monitoring - Unit Tests (ATDD RED)
       expect(result).toHaveProperty("totalPages");
       expect(Array.isArray(result.properties)).toBe(true);
     });
+
+    it("[P2] should handle invalid or fractional pagination page inputs gracefully", async () => {
+      // Given an authenticated admin and invalid page parameters
+      mockVerifyAdminAuth.mockResolvedValue(true);
+
+      const { fetchAdminVisibilityData } = await import("@/app/actions/admin-visibility-actions");
+
+      // When called with a fractional page
+      const resultFractional = await fetchAdminVisibilityData({
+        page: 2.7,
+        limit: 10,
+      });
+
+      // Then it should truncate the page to 2
+      expect(resultFractional.page).toBe(2);
+
+      // When called with an invalid/negative page
+      const resultNegative = await fetchAdminVisibilityData({
+        page: -5,
+        limit: 10,
+      });
+
+      // Then it should fallback to page 1
+      expect(resultNegative.page).toBe(1);
+    });
   });
 
   describe("database query updatePropertyVisibility", () => {
