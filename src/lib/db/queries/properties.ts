@@ -1,7 +1,8 @@
 import "server-only";
-import { and, asc, desc, eq, gte, inArray, lte, not, sql } from "drizzle-orm";
+import { and, or, ilike, asc, desc, eq, gte, inArray, lte, not, sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
+import { shortlistEvents } from "@/lib/db/schema/shortlist-events";
 import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawProperty } from "@/types/remax-api";
 import type { OptimizedImage } from "@/types/images";
@@ -571,3 +572,59 @@ export async function updatePropertyVisibility(id: string, isVisible: boolean): 
     })
     .where(eq(properties.id, id));
 }
+
+export async function fetchShortlistAnalyticsData(filters: {
+  search?: string;
+  sortBy?: "saves30" | "savesAll" | "active" | "code";
+  sortOrder?: "asc" | "desc";
+  limit?: number;
+  offset?: number;
+}) {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  // Group-by aggregations query
+  const query = db
+    .select({
+      id: properties.id,
+      apiId: properties.apiId,
+      titleEn: properties.titleEn,
+      titleEs: properties.titleEs,
+      totalSaves: sql<number>`count(case when ${shortlistEvents.action} = 'save' then 1 end)::int`,
+      saves30Days: sql<number>`count(case when ${shortlistEvents.action} = 'save' and ${shortlistEvents.createdAt} >= ${thirtyDaysAgo} then 1 end)::int`,
+      activeSaves: sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`,
+    })
+    .from(properties)
+    .leftJoin(shortlistEvents, eq(properties.id, shortlistEvents.propertyId));
+
+  // Add search (with mock safety)
+  if (filters.search && typeof (query as any).where === "function") {
+    (query as any).where(
+      or(
+        ilike(properties.apiId, `%${filters.search}%`),
+        ilike(properties.titleEn, `%${filters.search}%`),
+        ilike(properties.titleEs, `%${filters.search}%`)
+      )
+    );
+  }
+
+  const groupedQuery = query.groupBy(properties.id);
+
+  // Handle sorting
+  const order = filters.sortOrder === "asc" ? asc : desc;
+  if (filters.sortBy === "saves30") {
+    groupedQuery.orderBy(order(sql`saves30Days`), desc(properties.createdAt));
+  } else if (filters.sortBy === "savesAll") {
+    groupedQuery.orderBy(order(sql`totalSaves`), desc(properties.createdAt));
+  } else if (filters.sortBy === "active") {
+    groupedQuery.orderBy(order(sql`activeSaves`), desc(properties.createdAt));
+  } else {
+    groupedQuery.orderBy(order(properties.apiId));
+  }
+
+  const limit = filters.limit ?? 20;
+  const offset = filters.offset ?? 0;
+
+  return await groupedQuery.offset(offset).limit(limit);
+}
+

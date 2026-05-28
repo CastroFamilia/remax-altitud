@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { AdminLogoutButton } from "@/components/admin/admin-logout-button";
-import { Activity, Users, Tags, Map, Eye, ShieldAlert } from "lucide-react";
+import { Activity, Users, Tags, Map, Eye, ShieldAlert, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { createHash } from "crypto";
 
@@ -111,6 +111,19 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
               <div className="flex items-center gap-3">
                 <Eye className="w-5 h-5 text-red-500" />
                 <span>{t("visibility")}</span>
+              </div>
+              <span className="text-[10px] uppercase tracking-wider font-extrabold px-1.5 py-0.5 rounded bg-red-500/20 text-red-400">
+                {t("active")}
+              </span>
+            </Link>
+
+            <Link
+              href={`/${locale}/admin/analytics/shortlist`}
+              className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-white hover:bg-slate-800 font-semibold transition-all group cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <BarChart3 className="w-5 h-5 text-red-500" />
+                <span>{t("shortlistAnalytics")}</span>
               </div>
               <span className="text-[10px] uppercase tracking-wider font-extrabold px-1.5 py-0.5 rounded bg-red-500/20 text-red-400">
                 {t("active")}

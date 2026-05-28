@@ -25,7 +25,7 @@ vi.mock("@/lib/auth/admin", () => ({
   verifyAdminAuth: mockVerifyAdminAuth,
 }));
 
-describe.skip("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
+describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -48,7 +48,6 @@ describe.skip("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       const mockInsertValues = vi.fn().mockResolvedValue({ success: true });
       mockInsert.mockReturnValue({ values: mockInsertValues });
 
-      // @ts-expect-error - POST handler is not yet created
       const { POST } = await import("@/app/api/shortlist/events/route");
 
       const request = new Request("http://localhost/api/shortlist/events", {
@@ -92,7 +91,6 @@ describe.skip("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
         action: "invalid-action",
       };
 
-      // @ts-expect-error - POST handler is not yet created
       const { POST } = await import("@/app/api/shortlist/events/route");
 
       const request = new Request("http://localhost/api/shortlist/events", {
@@ -123,7 +121,6 @@ describe.skip("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
       mockSelect.mockReturnValue({ from: mockFrom });
 
-      // @ts-expect-error - POST handler is not yet created
       const { POST } = await import("@/app/api/shortlist/events/route");
 
       const request = new Request("http://localhost/api/shortlist/events", {
@@ -147,12 +144,12 @@ describe.skip("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       // Mock db.select/leftJoin/groupBy query chain
       const mockLimit = vi.fn().mockResolvedValue([]);
       const mockOffset = vi.fn().mockReturnValue({ limit: mockLimit });
-      const mockGroupBy = vi.fn().mockReturnValue({ offset: mockOffset });
+      const mockOrderBy = vi.fn().mockReturnValue({ offset: mockOffset, limit: mockLimit });
+      const mockGroupBy = vi.fn().mockReturnValue({ offset: mockOffset, limit: mockLimit, orderBy: mockOrderBy });
       const mockLeftJoin = vi.fn().mockReturnValue({ groupBy: mockGroupBy });
       const mockFrom = vi.fn().mockReturnValue({ leftJoin: mockLeftJoin });
       mockSelect.mockReturnValue({ from: mockFrom });
 
-      // @ts-expect-error - fetchShortlistAnalyticsData query is not yet created
       const { fetchShortlistAnalyticsData } = await import("@/lib/db/queries/properties");
 
       // When called
@@ -177,7 +174,6 @@ describe.skip("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       // Given an unauthenticated user
       mockVerifyAdminAuth.mockRejectedValue(new Error("Unauthorized"));
 
-      // @ts-expect-error - getShortlistAnalyticsAction server action is not yet created
       const { getShortlistAnalyticsAction } = await import("@/app/actions/admin-analytics-actions");
 
       // When/Then it should throw an auth error
@@ -203,12 +199,12 @@ describe.skip("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       // Mock database queries
       const mockLimit = vi.fn().mockResolvedValue(mockQueryResult);
       const mockOffset = vi.fn().mockReturnValue({ limit: mockLimit });
-      const mockGroupBy = vi.fn().mockReturnValue({ offset: mockOffset });
+      const mockOrderBy = vi.fn().mockReturnValue({ offset: mockOffset, limit: mockLimit });
+      const mockGroupBy = vi.fn().mockReturnValue({ offset: mockOffset, limit: mockLimit, orderBy: mockOrderBy });
       const mockLeftJoin = vi.fn().mockReturnValue({ groupBy: mockGroupBy });
       const mockFrom = vi.fn().mockReturnValue({ leftJoin: mockLeftJoin });
       mockSelect.mockReturnValue({ from: mockFrom });
 
-      // @ts-expect-error - getShortlistAnalyticsAction server action is not yet created
       const { getShortlistAnalyticsAction } = await import("@/app/actions/admin-analytics-actions");
 
       // When called
