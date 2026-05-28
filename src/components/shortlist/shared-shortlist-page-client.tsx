@@ -25,7 +25,9 @@ export function SharedShortlistPageClient({
       <div className="container mx-auto px-4 py-20 flex flex-col items-center justify-center min-h-[60vh]">
         <div className="max-w-md w-full bg-white rounded-2xl border border-brand-warm p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300">
           <div className="w-16 h-16 rounded-full bg-brand-burgundy/10 text-brand-burgundy flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <span className="text-3xl" role="img" aria-label="hourglass">⏳</span>
+            <span className="text-3xl" role="img" aria-label="hourglass">
+              ⏳
+            </span>
           </div>
           <h1 className="text-2xl md:text-3xl font-bold mb-3 text-brand-navy tracking-tight">
             {t("expiredTitle")}
@@ -106,4 +108,3 @@ export function SharedShortlistPageClient({
     </div>
   );
 }
-
