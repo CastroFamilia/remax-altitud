@@ -20,9 +20,10 @@ export async function getShortlistAnalyticsAction(params: {
   const offset = (page - 1) * limit;
 
   // Fetch count for pagination matching filters
+  const searchVal = params.search?.trim();
   let whereClause = undefined;
-  if (params.search && params.search.trim() !== "") {
-    const searchPattern = `%${params.search.trim()}%`;
+  if (searchVal && searchVal !== "") {
+    const searchPattern = `%${searchVal}%`;
     whereClause = or(
       ilike(properties.apiId, searchPattern),
       ilike(properties.titleEn, searchPattern),
@@ -41,7 +42,7 @@ export async function getShortlistAnalyticsAction(params: {
   }
 
   const data = await fetchShortlistAnalyticsData({
-    search: params.search,
+    search: searchVal,
     sortBy: params.sortBy,
     sortOrder: params.sortOrder,
     limit,

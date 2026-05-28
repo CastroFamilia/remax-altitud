@@ -584,12 +584,14 @@ export async function fetchShortlistAnalyticsData(filters: {
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
   // Group-by aggregations query
-  const query = db
+  let query = db
     .select({
       id: properties.id,
       apiId: properties.apiId,
       titleEn: properties.titleEn,
       titleEs: properties.titleEs,
+      slug: properties.slug,
+      images: properties.images,
       totalSaves: sql<number>`count(case when ${shortlistEvents.action} = 'save' then 1 end)::int`,
       saves30Days: sql<number>`count(case when ${shortlistEvents.action} = 'save' and ${shortlistEvents.createdAt} >= ${thirtyDaysAgo} then 1 end)::int`,
       activeSaves: sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`,
@@ -597,27 +599,29 @@ export async function fetchShortlistAnalyticsData(filters: {
     .from(properties)
     .leftJoin(shortlistEvents, eq(properties.id, shortlistEvents.propertyId));
 
-  // Add search (with mock safety)
-  if (filters.search && typeof (query as any).where === "function") {
-    (query as any).where(
-      or(
-        ilike(properties.apiId, `%${filters.search}%`),
-        ilike(properties.titleEn, `%${filters.search}%`),
-        ilike(properties.titleEs, `%${filters.search}%`)
-      )
-    );
+  // Add search (with mock safety and proper mutation reassignment)
+  if (filters.search) {
+    if (typeof (query as any).where === "function") {
+      query = (query as any).where(
+        or(
+          ilike(properties.apiId, `%${filters.search}%`),
+          ilike(properties.titleEn, `%${filters.search}%`),
+          ilike(properties.titleEs, `%${filters.search}%`)
+        )
+      ) as any;
+    }
   }
 
   const groupedQuery = query.groupBy(properties.id);
 
-  // Handle sorting
+  // Handle sorting (with case-sensitive PostgreSQL double-quoted identifier safety)
   const order = filters.sortOrder === "asc" ? asc : desc;
   if (filters.sortBy === "saves30") {
-    groupedQuery.orderBy(order(sql`saves30Days`), desc(properties.createdAt));
+    groupedQuery.orderBy(order(sql`"saves30Days"`), desc(properties.createdAt));
   } else if (filters.sortBy === "savesAll") {
-    groupedQuery.orderBy(order(sql`totalSaves`), desc(properties.createdAt));
+    groupedQuery.orderBy(order(sql`"totalSaves"`), desc(properties.createdAt));
   } else if (filters.sortBy === "active") {
-    groupedQuery.orderBy(order(sql`activeSaves`), desc(properties.createdAt));
+    groupedQuery.orderBy(order(sql`"activeSaves"`), desc(properties.createdAt));
   } else {
     groupedQuery.orderBy(order(properties.apiId));
   }

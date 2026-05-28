@@ -21,6 +21,7 @@ export interface Lead {
   assignedAgentId: string | null;
   agentName: string | null;
   propertyApiId: string | null;
+  propertyPopularityCount?: number;
   shortlistPropertyIds: string[] | null;
   utmSource: string | null;
   utmMedium: string | null;
@@ -215,6 +216,9 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                       <div className="text-[11px] text-red-400 mt-1">
                         Property Ref:{" "}
                         <span className="font-mono font-bold">#{lead.propertyApiId}</span>
+                        <span className="property-ref-popularity ml-1.5 text-xs text-slate-400">
+                          ({lead.propertyPopularityCount ?? 0} saves)
+                        </span>
                       </div>
                     )}
                   </td>

@@ -3,9 +3,8 @@ import { setRequestLocale } from "next-intl/server";
 import { getShortlistAnalyticsAction } from "@/app/actions/admin-analytics-actions";
 import { AdminShortlistAnalyticsDashboard } from "@/components/admin/admin-shortlist-analytics-dashboard";
 import { BarChart3 } from "lucide-react";
-import { cookies } from "next/headers";
-import { createHash } from "crypto";
 import { redirect } from "next/navigation";
+import { verifyAdminAuth } from "@/lib/auth/admin";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -22,23 +21,16 @@ export default async function AdminShortlistAnalyticsPage({ params, searchParams
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // Authenticate Admin
-  const cookieStore = await cookies();
-  const session = cookieStore.get("admin_session")?.value;
-  const adminPassword =
-    process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
-  const expectedSession = adminPassword
-    ? createHash("sha256").update(adminPassword).digest("hex")
-    : undefined;
-  const isAuthenticated = !!expectedSession && session === expectedSession;
-
-  if (!isAuthenticated) {
+  // Authenticate Admin using shared auth utility
+  try {
+    await verifyAdminAuth();
+  } catch {
     redirect(`/${locale}/admin?login=true`);
   }
 
   const resolvedSearchParams = await searchParams;
   const search = resolvedSearchParams.search || "";
-  const pageNum = Number(resolvedSearchParams.page || "1");
+  const pageNum = Math.max(1, Number(resolvedSearchParams.page) || 1);
   const sortBy = (resolvedSearchParams.sortBy as any) || "saves30";
   const sortOrder = (resolvedSearchParams.sortOrder as any) || "desc";
 

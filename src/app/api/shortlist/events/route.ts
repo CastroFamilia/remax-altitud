@@ -12,8 +12,14 @@ const eventInputSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  let rawBody: any;
   try {
-    const rawBody = await request.json();
+    rawBody = await request.json();
+  } catch (err) {
+    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+  }
+
+  try {
     const parseResult = eventInputSchema.safeParse(rawBody);
     if (!parseResult.success) {
       return NextResponse.json({ error: "Validation failed", issues: parseResult.error.issues }, { status: 400 });

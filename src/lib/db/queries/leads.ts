@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
 
-import { and, desc, eq, gte, lte, inArray, isNull, count } from "drizzle-orm";
+import { and, desc, eq, gte, lte, inArray, isNull, count, sql } from "drizzle-orm";
 import { agents } from "@/lib/db/schema/agents";
 import { properties } from "@/lib/db/schema/properties";
 import { leadAssignmentLogs } from "@/lib/db/schema/lead-assignment-logs";
 import { db } from "@/lib/db/client";
 import { leads } from "@/lib/db/schema/leads";
+import { shortlistEvents } from "@/lib/db/schema/shortlist-events";
 import { encryptField, decryptField, hashField } from "@/lib/utils/encryption";
 
 /**
@@ -240,15 +241,27 @@ export async function getLeads(filters: GetLeadsFilters) {
     conditions.push(lte(leads.createdAt, filters.endDate));
   }
 
+  // Create an active saves subquery
+  const propertySaves = db
+    .select({
+      propertyId: shortlistEvents.propertyId,
+      count: sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`.as("saves_count"),
+    })
+    .from(shortlistEvents)
+    .groupBy(shortlistEvents.propertyId)
+    .as("property_saves");
+
   const query = db
     .select({
       lead: leads,
       agentName: agents.name,
       propertyApiId: properties.apiId,
+      propertyPopularityCount: sql<number>`coalesce(${propertySaves.count}, 0)::int`,
     })
     .from(leads)
     .leftJoin(agents, eq(leads.assignedAgentId, agents.id))
-    .leftJoin(properties, eq(leads.propertyId, properties.id));
+    .leftJoin(properties, eq(leads.propertyId, properties.id))
+    .leftJoin(propertySaves, eq(properties.id, propertySaves.propertyId));
 
   if (conditions.length > 0) {
     query.where(and(...conditions));
@@ -264,6 +277,7 @@ export async function getLeads(filters: GetLeadsFilters) {
       ...row.lead,
       agentName: row.agentName,
       propertyApiId: row.propertyApiId,
+      propertyPopularityCount: (row as any).propertyPopularityCount ?? 0,
       phone: decryptField(row.lead.phone),
       email: row.lead.email ? decryptField(row.lead.email) : null,
     };

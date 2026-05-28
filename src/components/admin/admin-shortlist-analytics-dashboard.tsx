@@ -109,8 +109,8 @@ export function AdminShortlistAnalyticsDashboard({
       noProperties: "No properties found with shortlisting events.",
       colProperty: "Property",
       colCode: "Ref Code",
-      colSaves30: "Saves (Last 30d)",
-      colTotalSaves: "Total Saves",
+      colSaves30: "Saves (30 Days)",
+      colTotalSaves: "Saves (All Time)",
       colActiveSaves: "Active Saves",
       colActions: "Actions",
       statTotalSaves: "Total Shortlist Saves",
@@ -151,8 +151,8 @@ export function AdminShortlistAnalyticsDashboard({
     noProperties: "No properties found with shortlisting events.",
     colProperty: "Property",
     colCode: "Ref Code",
-    colSaves30: "Saves (Last 30d)",
-    colTotalSaves: "Total Saves",
+    colSaves30: "Saves (30 Days)",
+    colTotalSaves: "Saves (All Time)",
     colActiveSaves: "Active Saves",
     colActions: "Actions",
     statTotalSaves: "Total Shortlist Saves",
@@ -272,41 +272,49 @@ export function AdminShortlistAnalyticsDashboard({
               <thead>
                 <tr className="border-b border-slate-800 bg-slate-950/80 text-slate-400 text-xs font-bold uppercase tracking-wider select-none">
                   <th className="px-6 py-4">{labels.colProperty}</th>
-                  <th 
-                    className="px-6 py-4 cursor-pointer hover:text-white transition-colors"
-                    onClick={() => handleSortChange("code")}
-                  >
-                    <div className="flex items-center gap-1.5">
+                  <th className="px-6 py-4">
+                    <button 
+                      type="button"
+                      data-testid="sort-code"
+                      className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold text-xs uppercase tracking-wider text-slate-400 focus:outline-none"
+                      onClick={() => handleSortChange("code")}
+                    >
                       <span>{labels.colCode}</span>
                       <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
-                    </div>
+                    </button>
                   </th>
-                  <th 
-                    className="px-6 py-4 cursor-pointer hover:text-white transition-colors"
-                    onClick={() => handleSortChange("saves30")}
-                  >
-                    <div className="flex items-center gap-1.5">
+                  <th className="px-6 py-4">
+                    <button 
+                      type="button"
+                      data-testid="sort-saves30"
+                      className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold text-xs uppercase tracking-wider text-slate-400 focus:outline-none"
+                      onClick={() => handleSortChange("saves30")}
+                    >
                       <span>{labels.colSaves30}</span>
                       <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
-                    </div>
+                    </button>
                   </th>
-                  <th 
-                    className="px-6 py-4 cursor-pointer hover:text-white transition-colors"
-                    onClick={() => handleSortChange("savesAll")}
-                  >
-                    <div className="flex items-center gap-1.5">
+                  <th className="px-6 py-4">
+                    <button 
+                      type="button"
+                      data-testid="sort-savesAll"
+                      className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold text-xs uppercase tracking-wider text-slate-400 focus:outline-none"
+                      onClick={() => handleSortChange("savesAll")}
+                    >
                       <span>{labels.colTotalSaves}</span>
                       <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
-                    </div>
+                    </button>
                   </th>
-                  <th 
-                    className="px-6 py-4 cursor-pointer hover:text-white transition-colors"
-                    onClick={() => handleSortChange("active")}
-                  >
-                    <div className="flex items-center gap-1.5">
+                  <th className="px-6 py-4">
+                    <button 
+                      type="button"
+                      data-testid="sort-active"
+                      className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold text-xs uppercase tracking-wider text-slate-400 focus:outline-none"
+                      onClick={() => handleSortChange("active")}
+                    >
                       <span>{labels.colActiveSaves}</span>
                       <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
-                    </div>
+                    </button>
                   </th>
                   <th className="px-6 py-4 text-right">{labels.colActions}</th>
                 </tr>
@@ -328,6 +336,7 @@ export function AdminShortlistAnalyticsDashboard({
                     return (
                       <tr
                         key={row.id}
+                        data-testid={row.totalSaves === 0 ? "property-saves-zero" : "property-row"}
                         className="hover:bg-slate-800/30 transition-colors"
                       >
                         <td className="px-6 py-4">
@@ -364,7 +373,7 @@ export function AdminShortlistAnalyticsDashboard({
                           </div>
                         </td>
                         <td className="px-6 py-4 font-bold text-slate-200">
-                          {row.totalSaves}
+                          {row.totalSaves === 0 ? "0 saves" : row.totalSaves}
                         </td>
                         <td className="px-6 py-4">
                           <span
