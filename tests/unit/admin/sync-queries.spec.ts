@@ -111,6 +111,13 @@ describe("getSyncLogs", () => {
 
     expect(mockLimit).toHaveBeenCalledWith(10);
   });
+
+  it("[P2] 8.1-UNIT-007: guards limit and offset against NaN and negative values", async () => {
+    const { getSyncLogs } = await import("@/lib/db/queries/sync-log");
+    await getSyncLogs({ limit: NaN, offset: -5 });
+
+    expect(mockLimit).toHaveBeenCalledWith(20);
+  });
 });
 
 // ---------------------------------------------------------------------------
