@@ -11,7 +11,6 @@ import { PropertyCard } from "@/components/property/property-card";
 import { PropertyCardSkeleton } from "@/components/property/property-card-skeleton";
 import { MapView } from "@/components/map/map-view-loader";
 import { ModalShimmer } from "@/components/shortlist/modal-shimmer";
-import type { PropertySearchItem } from "@/types/search";
 
 const AgentSelectionModal = dynamic(() => import("@/components/shortlist/agent-selection-modal"), {
   ssr: false,
@@ -179,7 +178,7 @@ export function ShortlistPageClient() {
           phone: "+50600000000",
           email: "",
           intent: "buy",
-          source: channel === "whatsapp" ? "whatsapp_click" : "email_click",
+          source: channel === "whatsapp" ? "whatsapp_click" : "contact_form",
           assignedAgentId: agent.id,
           shortlistPropertyIds: shortlist,
         }),

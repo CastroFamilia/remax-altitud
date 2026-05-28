@@ -24,28 +24,31 @@ import React from "react";
 vi.mock("next-intl", () => {
   const translations: Record<string, string> = {
     // Shortlist
-    "title": "My Saved Properties",
-    "emptyState": "No properties saved yet. Browse listings and tap ♡ to save.",
-    "browseCta": "Browse Listings",
-    "askAgentCta": "Ask about these",
-    "shareShortlistCta": "Share my shortlist",
-    "whatsAppMessageHeader": "Hello, I'm interested in these properties from my shortlist:",
-    "shareMessageHeader": "Check out my property shortlist:",
+    title: "My Saved Properties",
+    emptyState: "No properties saved yet. Browse listings and tap ♡ to save.",
+    browseCta: "Browse Listings",
+    askAgentCta: "Ask about these",
+    shareShortlistCta: "Share my shortlist",
+    whatsAppMessageHeader: "Hello, I'm interested in these properties from my shortlist:",
+    shareMessageHeader: "Check out my property shortlist:",
 
     // ShortlistRouting
-    "autoSuggestText": "{name} specializes in the areas you're exploring. They can show you all {count} properties.",
-    "contactAgent": "Contact {name}",
-    "chooseDifferent": "Choose a different agent",
-    "modalTitle": "Select Your Coordinator Agent",
-    "educationInterstitial": "🏠 One agent, all your visits — your chosen agent will coordinate visits to all your saved properties, even those listed by other agents.",
-    "languages": "Languages Spoken:",
-    "listings": "listings",
-    "contactWhatsApp": "Contact via WhatsApp",
-    "contactEmail": "Contact via Email",
-    "whatsappMessageIntro": "Hi {agentName}, I'm interested in these properties from my shortlist:",
-    "whatsappMessageOutro": "Could we coordinate a visit? Thank you.",
-    "emailSubject": "Inquiry about property shortlist from ALT-ALTITUD",
-    "emailBody": "Hi {agentName},\n\nI am interested in viewing the following saved properties from my shortlist:\n\n{list}\n\nCould you coordinate these visits for me?\n\nThank you!",
+    autoSuggestText:
+      "{name} specializes in the areas you're exploring. They can show you all {count} properties.",
+    contactAgent: "Contact {name}",
+    chooseDifferent: "Choose a different agent",
+    modalTitle: "Select Your Coordinator Agent",
+    educationInterstitial:
+      "🏠 One agent, all your visits — your chosen agent will coordinate visits to all your saved properties, even those listed by other agents.",
+    languages: "Languages Spoken:",
+    listings: "listings",
+    contactWhatsApp: "Contact via WhatsApp",
+    contactEmail: "Contact via Email",
+    whatsappMessageIntro: "Hi {agentName}, I'm interested in these properties from my shortlist:",
+    whatsappMessageOutro: "Could we coordinate a visit? Thank you.",
+    emailSubject: "Inquiry about property shortlist from ALT-ALTITUD",
+    emailBody:
+      "Hi {agentName},\n\nI am interested in viewing the following saved properties from my shortlist:\n\n{list}\n\nCould you coordinate these visits for me?\n\nThank you!",
   };
 
   return {
@@ -98,15 +101,24 @@ vi.mock("@/components/shortlist/agent-selection-modal", () => ({
     return (
       <div data-testid="agent-selection-modal">
         <h2>Select Your Coordinator Agent</h2>
-        <div>🏠 One agent, all your visits — your chosen agent will coordinate visits to all your saved properties, even those listed by other agents.</div>
+        <div>
+          🏠 One agent, all your visits — your chosen agent will coordinate visits to all your saved
+          properties, even those listed by other agents.
+        </div>
         {agents.map((agent: any) => (
-          <button key={agent.id} onClick={() => { onSelectAgent(agent); onClose(); }}>
+          <button
+            key={agent.id}
+            onClick={() => {
+              onSelectAgent(agent);
+              onClose();
+            }}
+          >
             {agent.name}
           </button>
         ))}
       </div>
     );
-  }
+  },
 }));
 
 describe("Story 7.4: Smart Agent Routing Unit Tests (RED PHASE)", () => {
@@ -121,7 +133,7 @@ describe("Story 7.4: Smart Agent Routing Unit Tests (RED PHASE)", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ leadId: "lead-123", assignedAgentId: "agent-1" }),
-      } as any)
+      } as any),
     );
   });
 
@@ -209,9 +221,27 @@ describe("Story 7.4: Smart Agent Routing Unit Tests (RED PHASE)", () => {
     };
 
     mockGetShortlistPropertiesWithAgents.mockResolvedValue([
-      { id: "prop-1", titleEn: "House 1", apiId: "REF-001", agentId: "agent-emma", agent: agentEmma },
-      { id: "prop-2", titleEn: "House 2", apiId: "REF-002", agentId: "agent-emma", agent: agentEmma },
-      { id: "prop-3", titleEn: "House 3", apiId: "REF-003", agentId: "agent-gustavo", agent: agentGustavo },
+      {
+        id: "prop-1",
+        titleEn: "House 1",
+        apiId: "REF-001",
+        agentId: "agent-emma",
+        agent: agentEmma,
+      },
+      {
+        id: "prop-2",
+        titleEn: "House 2",
+        apiId: "REF-002",
+        agentId: "agent-emma",
+        agent: agentEmma,
+      },
+      {
+        id: "prop-3",
+        titleEn: "House 3",
+        apiId: "REF-003",
+        agentId: "agent-gustavo",
+        agent: agentGustavo,
+      },
     ]);
 
     const { ShortlistPageClient } = await import("@/components/shortlist/shortlist-page-client");
@@ -266,8 +296,20 @@ describe("Story 7.4: Smart Agent Routing Unit Tests (RED PHASE)", () => {
     };
 
     mockGetShortlistPropertiesWithAgents.mockResolvedValue([
-      { id: "prop-1", titleEn: "House 1", apiId: "REF-001", agentId: "agent-emma", agent: agentEmma },
-      { id: "prop-2", titleEn: "House 2", apiId: "REF-002", agentId: "agent-gustavo", agent: agentGustavo },
+      {
+        id: "prop-1",
+        titleEn: "House 1",
+        apiId: "REF-001",
+        agentId: "agent-emma",
+        agent: agentEmma,
+      },
+      {
+        id: "prop-2",
+        titleEn: "House 2",
+        apiId: "REF-002",
+        agentId: "agent-gustavo",
+        agent: agentGustavo,
+      },
     ]);
 
     const { ShortlistPageClient } = await import("@/components/shortlist/shortlist-page-client");
@@ -339,11 +381,13 @@ describe("Story 7.4: Smart Agent Routing Unit Tests (RED PHASE)", () => {
     expect(fetchUrl).toContain("/api/leads");
     const body = JSON.parse(fetchConfig.body);
     expect(body.assignedAgentId).toBe("agent-1");
-    expect(body.source).toBe("email_click");
+    expect(body.source).toBe("contact_form");
 
     // Should open mailto redirection
     const mailtoUrl = spyOpen.mock.calls[0][0];
     expect(mailtoUrl).toContain("mailto:emma@remax.com");
-    expect(mailtoUrl).toContain(encodeURIComponent("Inquiry about property shortlist from ALT-ALTITUD"));
+    expect(mailtoUrl).toContain(
+      encodeURIComponent("Inquiry about property shortlist from ALT-ALTITUD"),
+    );
   });
 });
