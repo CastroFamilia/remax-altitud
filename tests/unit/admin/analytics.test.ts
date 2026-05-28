@@ -31,7 +31,7 @@ describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
   });
 
   describe("API Endpoint: POST /api/shortlist/events", () => {
-    it("[P0] should record valid save/unsave anonymous events without storing PII (AC1, AC6)", async () => {
+    it("[P0] 8.7-UNIT-001: should record valid save/unsave anonymous events without storing PII (AC1, AC6)", async () => {
       // Given a valid shortlist event request body
       const mockRequestBody = {
         propertyId: "00000000-0000-0000-0000-000000000001",
@@ -84,7 +84,7 @@ describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       expect(insertedKeys).not.toContain("cookieId");
     });
 
-    it("[P1] should return 400 Bad Request when request input validation fails (Zod) (AC1)", async () => {
+    it("[P1] 8.7-UNIT-002: should return 400 Bad Request when request input validation fails (Zod) (AC1)", async () => {
       // Given an invalid request body (missing fields)
       const mockRequestBody = {
         propertyId: "not-a-uuid",
@@ -107,7 +107,7 @@ describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       expect(data.error).toBe("Validation failed");
     });
 
-    it("[P1] should return 404 Not Found when referenced property does not exist in DB (AC1)", async () => {
+    it("[P1] 8.7-UNIT-003: should return 404 Not Found when referenced property does not exist in DB (AC1)", async () => {
       // Given a property ID that does not exist in the properties table
       const mockRequestBody = {
         propertyId: "00000000-0000-0000-0000-999999999999",
@@ -140,7 +140,7 @@ describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
   });
 
   describe("Shortlist Analytics Queries: fetchShortlistAnalyticsData", () => {
-    it("[P0] should compile the aggregation query with correct metrics and outer joins (AC3, AC6)", async () => {
+    it("[P0] 8.7-UNIT-004: should compile the aggregation query with correct metrics and outer joins (AC3, AC6)", async () => {
       // Mock db.select/leftJoin/groupBy query chain
       const mockLimit = vi.fn().mockResolvedValue([]);
       const mockOffset = vi.fn().mockReturnValue({ limit: mockLimit });
@@ -170,7 +170,7 @@ describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
   });
 
   describe("Server Action: getShortlistAnalyticsAction", () => {
-    it("[P0] should fail if the caller is not authenticated as admin (AC2, AC3)", async () => {
+    it("[P0] 8.7-UNIT-005: should fail if the caller is not authenticated as admin (AC2, AC3)", async () => {
       // Given an unauthenticated user
       mockVerifyAdminAuth.mockRejectedValue(new Error("Unauthorized"));
 
@@ -180,7 +180,7 @@ describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       await expect(getShortlistAnalyticsAction({})).rejects.toThrow("Unauthorized");
     });
 
-    it("[P0] should fetch aggregated analytics when the caller is authenticated admin (AC3, AC4)", async () => {
+    it("[P0] 8.7-UNIT-006: should fetch aggregated analytics when the caller is authenticated admin (AC3, AC4)", async () => {
       // Given an authenticated admin
       mockVerifyAdminAuth.mockResolvedValue(true);
 

@@ -5,7 +5,7 @@ import { createHash } from "crypto";
 
 const DESKTOP_VIEWPORT = { width: 1280, height: 800 };
 
-test.describe.skip("Story 8.7: Shortlist Analytics (ATDD RED)", () => {
+test.describe("Story 8.7: Shortlist Analytics", () => {
   
   test.describe("Visitor shortlist events", () => {
     test("[P0] 8.7-E2E-001: records anonymous event on property save/unsave click (AC1)", async ({ page }: any) => {
@@ -35,6 +35,7 @@ test.describe.skip("Story 8.7: Shortlist Analytics (ATDD RED)", () => {
   });
 
   test.describe("Admin Analytics Portal", () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     test.beforeEach(async ({ context }: any) => {
       // Authenticate as Admin
       const sessionToken = createHash("sha256").update("admin").digest("hex");
@@ -78,9 +79,8 @@ test.describe.skip("Story 8.7: Shortlist Analytics (ATDD RED)", () => {
 
       // Properties with 0 saves must be visible
       const zeroSavesRow = page.locator('tr[data-testid="property-saves-zero"]').first();
-      if (await zeroSavesRow.isVisible()) {
-        await expect(zeroSavesRow).toContainText("0 saves");
-      }
+      await expect(zeroSavesRow).toBeVisible();
+      await expect(zeroSavesRow).toContainText("0 saves");
     });
 
     test("[P0] 8.7-E2E-004: ranks properties by 30-day save count when sorted by popularity (AC4)", async ({ page }: any) => {
