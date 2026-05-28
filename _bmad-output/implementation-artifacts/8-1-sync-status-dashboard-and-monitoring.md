@@ -207,6 +207,14 @@ so that I can monitor data freshness and quickly diagnose sync failures.
 - **Pages**: `src/app/[locale]/admin/page.tsx`, `src/app/[locale]/admin/layout.tsx`.
 - **Actions**: `src/app/actions/admin-sync-actions.ts`.
 
+### ATDD Artifacts
+
+- **Checklist**: `_bmad-output/implementation-artifacts/atdd-checklist-8-1-sync-status-dashboard-and-monitoring.md`
+- **Unit Queries Test**: `tests/unit/admin/sync-queries.spec.ts`
+- **Unit Actions Test**: `tests/unit/actions/admin-sync-actions.spec.ts`
+- **E2E Test**: `tests/e2e/admin/sync-dashboard.spec.ts`
+- **Test Fixture**: `tests/fixtures/sync-log-factories.ts`
+
 ---
 
 ## References
