@@ -91,7 +91,9 @@ Ultimate context engine analysis completed - comprehensive developer guide creat
 
 ### ATDD Artifacts
 
-- None yet (Step 1 creation completed)
+- [ATDD Checklist](file:///Users/alejandracastro/Desktop/remax-altitud/.worktrees/story-8.3-bulk-lead-reassignment-and-export/_bmad-output/test-artifacts/atdd-checklist-8-3-bulk-lead-reassignment-and-export.md)
+- [Unit Test Scaffold](file:///Users/alejandracastro/Desktop/remax-altitud/.worktrees/story-8.3-bulk-lead-reassignment-and-export/tests/unit/admin/bulk-reassign.test.ts)
+- [E2E Test Scaffold](file:///Users/alejandracastro/Desktop/remax-altitud/.worktrees/story-8.3-bulk-lead-reassignment-and-export/tests/e2e/admin/bulk-reassign.spec.ts)
 
 ## Tasks/Subtasks
 
