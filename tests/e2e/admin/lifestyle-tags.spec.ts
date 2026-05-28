@@ -5,7 +5,7 @@ import { createHash } from "crypto";
 
 const DESKTOP_VIEWPORT = { width: 1280, height: 800 };
 
-test.describe.skip("Story 8.4: Lifestyle Tag Administration - E2E Tests (TDD RED PHASE)", () => {
+test.describe("Story 8.4: Lifestyle Tag Administration - E2E Tests", () => {
   test.beforeEach(async ({ context }: any) => {
     const sessionToken = createHash("sha256").update("admin").digest("hex");
     await context.addCookies([
