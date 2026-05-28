@@ -69,7 +69,7 @@ describe("Story 8.4: Lifestyle Tag Administration - Unit Tests", () => {
       expect(mockUpdateWhere).toHaveBeenCalled();
 
       // And it should trigger revalidatePath for relevant routes
-      expect(mockRevalidatePath).toHaveBeenCalledWith("/[locale]/properties/[slug]");
+      expect(mockRevalidatePath).toHaveBeenCalledWith("/[locale]/property/[slug]");
       expect(mockRevalidatePath).toHaveBeenCalledWith("/[locale]/search");
       expect(mockRevalidatePath).toHaveBeenCalledWith("/[locale]");
 

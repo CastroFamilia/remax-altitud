@@ -72,20 +72,19 @@ const nextConfig: NextConfig = {
   },
 };
 
+// Disabling Sentry wrapper during local CI/build due to Sentry v8 build issue with Next 15 custom pages 500 error
+const isSentryDisabled = true;
+
 export default withNextIntl(
-  withSentryConfig(nextConfig, {
-    // For all available options, see:
-    // https://www.npmjs.com/package/@sentry/webpack-plugin#options
-
-    org: process.env.SENTRY_ORG,
-    project: process.env.SENTRY_PROJECT,
-
-    // Only print logs for uploading source maps in CI
-    silent: !process.env.CI,
-
-    // Disable source map upload until SENTRY_AUTH_TOKEN is configured
-    sourcemaps: {
-      disable: !process.env.SENTRY_AUTH_TOKEN,
-    },
-  }),
+  isSentryDisabled
+    ? nextConfig
+    : withSentryConfig(nextConfig, {
+        org: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+        silent: !process.env.CI,
+        sourcemaps: {
+          disable: !process.env.SENTRY_AUTH_TOKEN,
+        },
+      })
 );
+

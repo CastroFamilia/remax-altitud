@@ -87,7 +87,7 @@ export async function updatePropertyTagsAction(
   await updatePropertyTags(propertyId, tags);
 
   // Trigger path revalidations as specified in the Dev Notes
-  revalidatePath("/[locale]/properties/[slug]");
+  revalidatePath("/[locale]/property/[slug]");
   revalidatePath("/[locale]/search");
   revalidatePath("/[locale]");
 

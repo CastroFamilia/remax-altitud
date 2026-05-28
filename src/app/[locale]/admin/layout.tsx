@@ -7,6 +7,8 @@ import { Activity, Users, Tags, Map, Eye, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { createHash } from "crypto";
 
+export const dynamic = "force-dynamic";
+
 interface AdminLayoutProps {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;

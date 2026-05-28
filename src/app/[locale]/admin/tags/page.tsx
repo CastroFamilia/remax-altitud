@@ -3,6 +3,8 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { fetchAdminPropertiesData } from "@/app/actions/admin-tag-actions";
 import { AdminTagsTable, AdminProperty } from "@/components/admin/admin-tags-table";
 import { Tags } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 import { cookies } from "next/headers";
 import { createHash } from "crypto";
 import { redirect } from "next/navigation";
