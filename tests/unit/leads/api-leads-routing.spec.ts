@@ -57,7 +57,7 @@ function createMockRequest(body: unknown) {
   });
 }
 
-describe.skip("Story 7.4: POST /api/leads — Smart Agent Routing Integration (RED PHASE)", () => {
+describe("Story 7.4: POST /api/leads — Smart Agent Routing Integration (RED PHASE)", () => {
   beforeAll(() => {
     process.env.LEAD_ENCRYPTION_KEY = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
   });

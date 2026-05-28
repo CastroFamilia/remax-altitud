@@ -94,11 +94,74 @@ export async function getSharedShortlist(shareId: string) {
   };
 }
 
+import { agents } from "@/lib/db/schema/agents";
+import { normalizePropertyImages } from "@/lib/utils/normalize-images";
+
 /**
  * getShortlistPropertiesWithAgents — Story 7.4
  * Fetch shortlist properties joined with their listing agent details.
  */
 export async function getShortlistPropertiesWithAgents(ids: string[]): Promise<any[]> {
-  throw new Error("Not implemented");
+  if (!ids || ids.length === 0) return [];
+
+  const rows = await db
+    .select({
+      properties: {
+        id: properties.id,
+        slug: properties.slug,
+        titleEn: properties.titleEn,
+        titleEs: properties.titleEs,
+        priceUsd: properties.priceUsd,
+        apiId: properties.apiId,
+        agentId: properties.agentId,
+        isVisible: properties.isVisible,
+        images: properties.images,
+        latitude: properties.latitude,
+        longitude: properties.longitude,
+      },
+      agents: {
+        id: agents.id,
+        name: agents.name,
+        photoUrl: agents.photoUrl,
+        photoOptimizedUrl: agents.photoOptimizedUrl,
+        email: agents.email,
+        phone: agents.phone,
+        whatsapp: agents.whatsapp,
+        languages: agents.languages,
+        listingCount: agents.listingCount,
+      },
+    })
+    .from(properties)
+    .leftJoin(agents, eq(properties.agentId, agents.id))
+    .where(and(inArray(properties.id, ids), eq(properties.isVisible, true)));
+
+  return rows.map((row) => ({
+    id: row.properties.id,
+    slug: row.properties.slug,
+    titleEn: row.properties.titleEn,
+    titleEs: row.properties.titleEs,
+    priceUsd: row.properties.priceUsd,
+    apiId: row.properties.apiId,
+    agentId: row.properties.agentId,
+    isVisible: row.properties.isVisible,
+    images: normalizePropertyImages(row.properties.images, row.properties.titleEn),
+    latitude: row.properties.latitude,
+    longitude: row.properties.longitude,
+    agent: row.agents ? {
+      id: row.agents.id,
+      name: row.agents.name,
+      photoUrl: row.agents.photoUrl,
+      photoOptimizedUrl: row.agents.photoOptimizedUrl,
+      email: row.agents.email,
+      phone: row.agents.phone,
+      whatsapp: row.agents.whatsapp,
+      languages: Array.isArray(row.agents.languages)
+        ? row.agents.languages.join(", ")
+        : typeof row.agents.languages === "string"
+        ? row.agents.languages
+        : "",
+      listingCount: row.agents.listingCount,
+    } : null,
+  }));
 }
 

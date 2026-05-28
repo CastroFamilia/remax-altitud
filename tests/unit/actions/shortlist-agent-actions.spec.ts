@@ -31,7 +31,7 @@ vi.mock("@/lib/db/client", () => ({
 
 import { getShortlistPropertiesWithAgents } from "@/app/actions/shortlist-actions";
 
-describe.skip("Story 7.4: Shortlist Agent Actions Unit Tests (RED PHASE)", () => {
+describe("Story 7.4: Shortlist Agent Actions Unit Tests (RED PHASE)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockWhere.mockResolvedValue([]);

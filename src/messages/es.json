@@ -827,5 +827,20 @@
     "expiredMessage": "Esta lista compartida ha expirado. Comienza una nueva búsqueda.",
     "sharedBanner": "Viendo una lista compartida. ¡Comienza a guardar propiedades para crear la tuya!",
     "shareError": "Error al generar enlace de compartir. Copiando enlaces directos de propiedades."
+  },
+  "ShortlistRouting": {
+    "autoSuggestText": "{name} se especializa en las zonas que estás explorando. Puede mostrarte las {count} propiedades.",
+    "contactAgent": "Contactar a {name}",
+    "chooseDifferent": "Elegir un agente diferente",
+    "modalTitle": "Selecciona tu Agente Coordinador",
+    "educationInterstitial": "🏠 Un solo agente, todas tus visitas — el agente que elijas coordinará las visitas a todas tus propiedades guardadas, incluso las listadas por otros agentes.",
+    "languages": "Idiomas hablados:",
+    "listings": "propiedades",
+    "contactWhatsApp": "Contactar por WhatsApp",
+    "contactEmail": "Contactar por Correo",
+    "whatsappMessageIntro": "Hola {agentName}, me interesan estas propiedades de mi lista de favoritos:",
+    "whatsappMessageOutro": "¿Podríamos coordinar una visita? Gracias.",
+    "emailSubject": "Consulta sobre lista de propiedades guardadas de ALT-ALTITUD",
+    "emailBody": "Hola {agentName},\n\nMe interesa visitar las siguientes propiedades de mi lista de favoritos:\n\n{list}\n\n¿Podríamos coordinar estas visitas?\n\n¡Gracias!"
   }
 }

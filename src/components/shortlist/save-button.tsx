@@ -18,7 +18,7 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
   const [showToast, setShowToast] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const saved = isSaved(propertyId);
+  const saved = typeof isSaved === "function" ? isSaved(propertyId) : false;
 
   // Auto-dismiss toast after 3 seconds
   useEffect(() => {

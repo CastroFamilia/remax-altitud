@@ -13,11 +13,12 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 // Hoisted mocks for Drizzle client select/where chains
-const { mockWhere, mockFrom, mockSelect } = vi.hoisted(() => {
+const { mockWhere, mockLeftJoin, mockFrom, mockSelect } = vi.hoisted(() => {
   const mockWhere = vi.fn().mockResolvedValue([]);
-  const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+  const mockLeftJoin = vi.fn().mockReturnValue({ where: mockWhere });
+  const mockFrom = vi.fn().mockReturnValue({ leftJoin: mockLeftJoin, where: mockWhere });
   const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
-  return { mockWhere, mockFrom, mockSelect };
+  return { mockWhere, mockLeftJoin, mockFrom, mockSelect };
 });
 
 vi.mock("@/lib/db/client", () => ({
@@ -32,11 +33,12 @@ vi.mock("@/lib/utils/encryption", () => ({
 
 import { getShortlistLeadDetails } from "@/lib/db/queries/leads";
 
-describe.skip("Story 7.4: getShortlistLeadDetails — Grouping Query Helper (RED PHASE)", () => {
+describe("Story 7.4: getShortlistLeadDetails — Grouping Query Helper (RED PHASE)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockWhere.mockResolvedValue([]);
-    mockFrom.mockReturnValue({ where: mockWhere });
+    mockLeftJoin.mockReturnValue({ where: mockWhere });
+    mockFrom.mockReturnValue({ leftJoin: mockLeftJoin, where: mockWhere });
     mockSelect.mockReturnValue({ from: mockFrom });
   });
 

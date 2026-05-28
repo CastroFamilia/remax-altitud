@@ -68,6 +68,8 @@ const leadInputSchema = z.object({
     .optional()
     .default(null),
   referrer: z.string().max(2000).nullable().optional().default(null),
+  assignedAgentId: z.string().uuid().optional().nullable().default(null),
+  shortlistPropertyIds: z.array(z.string().uuid()).optional().default([]),
 });
 
 // ---------------------------------------------------------------------------
@@ -166,7 +168,7 @@ export async function POST(request: Request) {
     }
 
     // Agent routing
-    const assignedAgentId = await matchAgentByCoordinates(data.location.lat, data.location.lng);
+    const assignedAgentId = data.assignedAgentId || (await matchAgentByCoordinates(data.location.lat, data.location.lng));
 
     // Build notes from property details
     const noteParts: string[] = [];
@@ -189,6 +191,7 @@ export async function POST(request: Request) {
       intent: data.intent,
       language: data.preferredLanguage || null,
       assignedAgentId,
+      shortlistPropertyIds: data.shortlistPropertyIds || [],
       notes: noteParts.join(" | ") || null,
       utmSource: data.utm_source,
       utmMedium: data.utm_medium,
