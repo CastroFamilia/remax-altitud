@@ -94,20 +94,21 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
               const href = `/${locale}/areas/${comm.areaSlug}/communities/${comm.slug}`;
 
               return (
-                <CommunityCard
-                  key={comm.id}
-                  name={comm.name}
-                  tagline={tagline}
-                  heroImageUrl={comm.heroImageUrl}
-                  href={href}
-                  locale={locale}
-                  priceMin={comm.priceMinUsd}
-                  priceMax={comm.priceMaxUsd}
-                  listingCount={comm.listingCount}
-                  latitude={comm.latitude}
-                  longitude={comm.longitude}
-                  geoFenceCoords={comm.geoFenceCoords as any}
-                />
+                <div key={comm.id} data-testid="community-index-card">
+                  <CommunityCard
+                    name={comm.name}
+                    tagline={tagline}
+                    heroImageUrl={comm.heroImageUrl}
+                    href={href}
+                    locale={locale}
+                    priceMin={comm.priceMinUsd}
+                    priceMax={comm.priceMaxUsd}
+                    listingCount={comm.listingCount}
+                    latitude={comm.latitude}
+                    longitude={comm.longitude}
+                    geoFenceCoords={comm.geoFenceCoords as any}
+                  />
+                </div>
               );
             })}
           </div>

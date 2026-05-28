@@ -1,6 +1,6 @@
 # Story 8.5: Community Administration
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -36,25 +36,25 @@ So that I can curate premium development pages and control which properties are 
 
 ## Tasks / Subtasks
 
-- [ ] 1. Expose database queries `createCommunity`, `updateCommunity`, and `deleteCommunity` in `src/lib/db/queries/communities.ts`. (AC: 1, 6, 7)
+- [x] 1. Expose database queries `createCommunity`, `updateCommunity`, and `deleteCommunity` in `src/lib/db/queries/communities.ts`. (AC: 1, 6, 7)
   - Ensure `createCommunity` and `updateCommunity` accept `geoFence` coordinates (`[number, number][]` representing `[longitude, latitude]`) and pass them to the Drizzle custom type helper `geographyPolygon`.
   - In `deleteCommunity`, because `properties.communityId` has no formal foreign key constraint, first set `communityId = null` for all associated properties before deleting the community to prevent orphan community references.
-- [ ] 2. Expose `updatePropertyCommunity` query in `src/lib/db/queries/properties.ts` allowing a listing's `communityId` to be manually updated or cleared (set to NULL). (AC: 3, 4)
-- [ ] 3. Create server actions in a new file `src/app/actions/admin-community-actions.ts` protected by `verifyAdminAuth()`:
+- [x] 2. Expose `updatePropertyCommunity` query in `src/lib/db/queries/properties.ts` allowing a listing's `communityId` to be manually updated or cleared (set to NULL). (AC: 3, 4)
+- [x] 3. Create server actions in a new file `src/app/actions/admin-community-actions.ts` protected by `verifyAdminAuth()`:
   - `fetchAdminCommunitiesData(params: { search?: string; page?: number })`: returns a paginated list of communities with total count, reusing the pagination structure from `admin-tag-actions.ts`.
   - `createCommunityAction(data: NewCommunity)`: inserts a new community, then triggers path revalidation.
   - `updateCommunityAction(id: string, data: Partial<Community>)`: updates an existing community, then triggers path revalidation.
   - `deleteCommunityAction(id: string)`: deletes a community, then triggers path revalidation.
   - `updatePropertyCommunityAction(propertyId: string, communityId: string | null)`: manually overrides a property's community ID.
-- [ ] 4. Replace the placeholder communities sidebar item in `src/app/[locale]/admin/layout.tsx` with an active next-intl link to `/${locale}/admin/communities`. (AC: 1)
-- [ ] 5. Create communities list admin page `src/app/[locale]/admin/communities/page.tsx` displaying all communities in a paginated, searchable table with edit actions and a "Create New Community" CTA. (AC: 1)
-- [ ] 6. Create community form component/page `src/app/[locale]/admin/communities/[id]/page.tsx` (and a matching `/new` route) displaying input fields for EN/ES name, taglines, descriptions, hero/site map URLs, quick facts, and an interactive Mapbox polygon drawing canvas. (AC: 1, 2)
+- [x] 4. Replace the placeholder communities sidebar item in `src/app/[locale]/admin/layout.tsx` with an active next-intl link to `/${locale}/admin/communities`. (AC: 1)
+- [x] 5. Create communities list admin page `src/app/[locale]/admin/communities/page.tsx` displaying all communities in a paginated, searchable table with edit actions and a "Create New Community" CTA. (AC: 1)
+- [x] 6. Create community form component/page `src/app/[locale]/admin/communities/[id]/page.tsx` (and a matching `/new` route) displaying input fields for EN/ES name, taglines, descriptions, hero/site map URLs, quick facts, and an interactive Mapbox polygon drawing canvas. (AC: 1, 2)
   - Reuse the `getAllAreas()` query from `src/lib/db/queries/areas.ts` to populate the Area selector.
   - Re-use the existing Mapbox GL `react-map-gl` and token configs. Implement a clean custom click listener to draw the polygon on the map instead of installing external libraries like `@mapbox/mapbox-gl-draw`.
-- [ ] 7. Integrate a community selector dropdown in the listing administration view (either `/admin/tags` or a listing detail edit panel) to show the property's current community and let admins manually select a community override or clear it. (AC: 3, 4)
-- [ ] 8. Localize all form labels, validations, page titles, and toast messages in `src/messages/en.json` and `src/messages/es.json` under an `AdminCommunities` namespace. (AC: 1, 3)
-- [ ] 9. Add unit tests in `tests/unit/admin/communities.test.ts` verifying the DB queries, community CRUD operations, server actions authentication, and revalidation calls. (AC: 1, 4, 5)
-- [ ] 10. Add E2E tests in `tests/e2e/admin/communities.spec.ts` using Playwright verifying log in, navigating to "/admin/communities", creating a community with a drawn geo-fence, and manually overriding a property's community assignment. (AC: 1, 2, 3, 4)
+- [x] 7. Integrate a community selector dropdown in the listing administration view (either `/admin/tags` or a listing detail edit panel) to show the property's current community and let admins manually select a community override or clear it. (AC: 3, 4)
+- [x] 8. Localize all form labels, validations, page titles, and toast messages in `src/messages/en.json` and `src/messages/es.json` under an `AdminCommunities` namespace. (AC: 1, 3)
+- [x] 9. Add unit tests in `tests/unit/admin/communities.test.ts` verifying the DB queries, community CRUD operations, server actions authentication, and revalidation calls. (AC: 1, 4, 5)
+- [x] 10. Add E2E tests in `tests/e2e/admin/communities.spec.ts` using Playwright verifying log in, navigating to "/admin/communities", creating a community with a drawn geo-fence, and manually overriding a property's community assignment. (AC: 1, 2, 3, 4)
 
 ## Dev Notes
 
@@ -288,5 +288,10 @@ gemini-2.5-pro
 ### Debug Log References
 
 ### Completion Notes List
+
+### Review Findings
+
+1. **`patch`** findings (fixed):
+   - `- [x] [Review][Patch] Community index page component test support — Add data-testid="community-index-card" wrapper on community index page cards in src/app/[locale]/communities/page.tsx to support component unit testing.`
 
 ### File List
