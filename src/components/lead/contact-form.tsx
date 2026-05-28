@@ -382,6 +382,9 @@ export function RecruitmentForm() {
   const [license, setLicense] = useState("licensed");
   const [languages, setLanguages] = useState<Set<string>>(() => new Set(["languageEN"]));
   const [area, setArea] = useState("either");
+  const [hasCar, setHasCar] = useState("yes");
+  const [salesExperience, setSalesExperience] = useState("");
+  const [commissionOnly, setCommissionOnly] = useState("");
   const [message, setMessage] = useState("");
   const [honeypot, setHoneypot] = useState("");
 
@@ -428,6 +431,9 @@ export function RecruitmentForm() {
     setLicense("licensed");
     setLanguages(new Set(["languageEN"]));
     setArea("either");
+    setHasCar("yes");
+    setSalesExperience("");
+    setCommissionOnly("");
     setMessage("");
   }
 
@@ -457,6 +463,9 @@ export function RecruitmentForm() {
       `License status: ${license}`,
       `Languages: ${languageSummary}`,
       `Area of interest: ${area}`,
+      `Has vehicle: ${hasCar === "yes" ? "Yes" : "No"}`,
+      `Sales/RE Experience: ${salesExperience || "—"}`,
+      `Commission-only outlook: ${commissionOnly || "—"}`,
       "",
       "Message:",
       message || "—",
@@ -623,6 +632,47 @@ export function RecruitmentForm() {
               <option value="dom">{t("areaOptionDOM")}</option>
               <option value="either">{t("areaOptionEither")}</option>
             </select>
+          )}
+        </Field>
+
+        <Field label={t("carLabel")}>
+          {(id) => (
+            <select
+              id={id}
+              name="car"
+              value={hasCar}
+              onChange={(e) => setHasCar(e.target.value)}
+              className={selectClassName(false)}
+            >
+              <option value="yes">{t("carOptionYes")}</option>
+              <option value="no">{t("carOptionNo")}</option>
+            </select>
+          )}
+        </Field>
+
+        <Field label={t("experienceLabel")}>
+          {(id) => (
+            <textarea
+              id={id}
+              name="experience"
+              placeholder={t("experiencePlaceholder")}
+              value={salesExperience}
+              onChange={(e) => setSalesExperience(e.target.value)}
+              className={textareaClassName(false)}
+            />
+          )}
+        </Field>
+
+        <Field label={t("commissionLabel")}>
+          {(id) => (
+            <textarea
+              id={id}
+              name="commission"
+              placeholder={t("commissionPlaceholder")}
+              value={commissionOnly}
+              onChange={(e) => setCommissionOnly(e.target.value)}
+              className={textareaClassName(false)}
+            />
           )}
         </Field>
 
