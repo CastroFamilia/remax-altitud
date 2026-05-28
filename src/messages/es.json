@@ -800,5 +800,12 @@
         "description": "Explora comunidades exclusivas atendidas por RE/MAX Altitud en la Zona Sur de Costa Rica."
       }
     }
+  },
+  "InvestmentContext": {
+    "heading": "Contexto de Inversión",
+    "appreciation": "Tendencia de Plusvalía",
+    "rentalYield": "Estimación de Retorno de Renta",
+    "highlights": "Aspectos Destacados del Mercado",
+    "disclaimer": "Basado en estimaciones de mercado — consulte con un agente para obtener datos actualizados"
   }
 }
