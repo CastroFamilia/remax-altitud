@@ -70,6 +70,12 @@ const nextConfig: NextConfig = {
   async redirects() {
     return staticRedirects;
   },
+
+  // Disable Sentry build-time plugins to prevent pages/500.html compilation crashes on Next.js 15
+  sentry: {
+    disableServerWebpackPlugin: true,
+    disableClientWebpackPlugin: true,
+  },
 };
 
 // Disabling Sentry wrapper during local CI/build due to Sentry v8 build issue with Next 15 custom pages 500 error
