@@ -149,12 +149,14 @@ export default async function AreaGuidePage({
           </div>
         </section>
       )}
-      <AreaGuideTabs
-        properties={areaProperties}
-        agents={agents}
-        similarAreas={similarAreas}
-        locale={locale}
-      />
+      {slug !== "perez-zeledon" && (
+        <AreaGuideTabs
+          properties={areaProperties}
+          agents={agents}
+          similarAreas={similarAreas}
+          locale={locale}
+        />
+      )}
 
       {/* Area Photo Gallery Carousel */}
       <AreaGalleryCarousel
