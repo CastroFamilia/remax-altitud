@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Search, Loader2, Tags, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { LIFESTYLE_TAGS, tagDisplayLabel } from "@/lib/constants/lifestyle-tags";
 import { updatePropertyTagsAction } from "@/app/actions/admin-tag-actions";
+import { updatePropertyCommunityAction } from "@/app/actions/admin-community-actions";
 import { formatUSD } from "@/lib/utils/currency";
 
 export interface AdminProperty {
@@ -20,11 +21,13 @@ export interface AdminProperty {
   titleEs: string;
   images: { src: string }[] | null | undefined;
   isVisible: boolean;
+  communityId?: string | null;
 }
 
 interface AdminTagsTableProps {
   locale: string;
   properties: AdminProperty[];
+  communities?: { id: string; name: string }[] | null;
   total: number;
   currentPage: number;
   hasMore: boolean;
@@ -33,6 +36,7 @@ interface AdminTagsTableProps {
 export function AdminTagsTable({
   locale,
   properties,
+  communities = [],
   total,
   currentPage,
   hasMore,
@@ -48,6 +52,7 @@ export function AdminTagsTable({
   // Modal state
   const [selectedProperty, setSelectedProperty] = useState<AdminProperty | null>(null);
   const [modalTags, setModalTags] = useState<string[]>([]);
+  const [modalCommunityId, setModalCommunityId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
@@ -74,12 +79,14 @@ export function AdminTagsTable({
   const handleOpenModal = (property: AdminProperty) => {
     setSelectedProperty(property);
     setModalTags([...property.lifestyleTags]);
+    setModalCommunityId(property.communityId || null);
     setAlert(null);
   };
 
   const handleCloseModal = () => {
     setSelectedProperty(null);
     setModalTags([]);
+    setModalCommunityId(null);
     setAlert(null);
   };
 
@@ -93,15 +100,17 @@ export function AdminTagsTable({
     setAlert(null);
     try {
       const res = await updatePropertyTagsAction(selectedProperty.id, modalTags);
-      if (res.success) {
+      const resComm = await updatePropertyCommunityAction(selectedProperty.id, modalCommunityId);
+      if (res.success && resComm.success) {
         setAlert({
           type: "success",
           message: t("successMessage", {
             title: locale === "es" ? selectedProperty.titleEs : selectedProperty.titleEn,
           }),
         });
-        // Update local property tags list visually
+        // Update local property tags and communityId visually
         selectedProperty.lifestyleTags = [...modalTags];
+        selectedProperty.communityId = modalCommunityId;
         router.refresh();
         setTimeout(() => {
           handleCloseModal();
@@ -329,6 +338,26 @@ export function AdminTagsTable({
                   </label>
                 );
               })}
+            </div>
+
+            {/* Community Override Selector */}
+            <div className="space-y-2 border-t border-slate-800 pt-4">
+              <label className="block text-xs uppercase font-extrabold tracking-wider text-slate-400">
+                Community Assignment Override
+              </label>
+              <select
+                value={modalCommunityId || ""}
+                onChange={(e) => setModalCommunityId(e.target.value || null)}
+                data-testid="property-community-override-select"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
+              >
+                <option value="">No Community (Clear Assignment)</option>
+                {communities && communities.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Modal Footer Actions */}

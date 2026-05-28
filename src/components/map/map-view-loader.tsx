@@ -34,4 +34,14 @@ const MapViewLoader = dynamic(
   },
 );
 
-export { MapView, MapViewLoader };
+const CommunityGeoFenceMap = dynamic(
+  () => import("./community-geofence-map").then((m) => ({ default: m.CommunityGeoFenceMap })),
+  {
+    ssr: false,
+    loading: () => (
+      <div data-testid="geofence-map-loading" className="h-[400px] w-full bg-slate-900 rounded-lg animate-pulse border border-slate-800" />
+    ),
+  },
+);
+
+export { MapView, MapViewLoader, CommunityGeoFenceMap };

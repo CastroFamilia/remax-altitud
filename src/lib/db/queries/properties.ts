@@ -540,3 +540,17 @@ export async function getSimilarProperties(
     .orderBy(desc(properties.syncedAt))
     .limit(limit);
 }
+
+/**
+ * Manually updates or clears (set to NULL) a listing's communityId.
+ * AC: 3, 4
+ */
+export async function updatePropertyCommunity(propertyId: string, communityId: string | null): Promise<void> {
+  await db
+    .update(properties)
+    .set({
+      communityId,
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.id, propertyId));
+}

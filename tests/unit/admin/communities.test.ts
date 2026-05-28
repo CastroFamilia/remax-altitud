@@ -31,7 +31,7 @@ vi.mock("@/lib/auth/admin", () => ({
   verifyAdminAuth: mockVerifyAdminAuth,
 }));
 
-describe.skip("Story 8.5: Community Administration - Unit Tests", () => {
+describe("Story 8.5: Community Administration - Unit Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -75,7 +75,8 @@ describe.skip("Story 8.5: Community Administration - Unit Tests", () => {
       // Given an authenticated admin
       mockVerifyAdminAuth.mockResolvedValue(true);
 
-      const mockInsertValues = vi.fn().mockResolvedValue({ success: true });
+      const mockReturning = vi.fn().mockResolvedValue([{ id: "community-1", name: "Test Community" }]);
+      const mockInsertValues = vi.fn().mockReturnValue({ returning: mockReturning });
       mockInsert.mockReturnValue({ values: mockInsertValues });
 
       const { createCommunityAction } = await import("@/app/actions/admin-community-actions");
@@ -123,7 +124,8 @@ describe.skip("Story 8.5: Community Administration - Unit Tests", () => {
       // Given an authenticated admin
       mockVerifyAdminAuth.mockResolvedValue(true);
 
-      const mockUpdateWhere = vi.fn().mockResolvedValue({ success: true });
+      const mockReturning = vi.fn().mockResolvedValue([{ id: "community-1", name: "Updated Community Name" }]);
+      const mockUpdateWhere = vi.fn().mockReturnValue({ returning: mockReturning });
       const mockUpdateSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
       mockUpdate.mockReturnValue({ set: mockUpdateSet });
 
@@ -208,7 +210,8 @@ describe.skip("Story 8.5: Community Administration - Unit Tests", () => {
 
   describe("database query CRUD", () => {
     it("should correctly compile Drizzle insert query for createCommunity", async () => {
-      const mockInsertValues = vi.fn().mockResolvedValue({ success: true });
+      const mockReturning = vi.fn().mockResolvedValue([{ id: "community-1" }]);
+      const mockInsertValues = vi.fn().mockReturnValue({ returning: mockReturning });
       mockInsert.mockReturnValue({ values: mockInsertValues });
 
       const { createCommunity } = await import("@/lib/db/queries/communities");
