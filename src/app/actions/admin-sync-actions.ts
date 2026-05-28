@@ -29,6 +29,7 @@ export async function fetchAdminSyncDashboardData(params: {
   if (params.endDateStr) {
     const parsed = new Date(params.endDateStr);
     if (!isNaN(parsed.getTime())) {
+      parsed.setHours(23, 59, 59, 999);
       endDate = parsed;
     }
   }
@@ -54,7 +55,11 @@ export async function fetchAdminSyncDashboardData(params: {
  * Server Action to authenticate admin using a simple cookie-based session.
  */
 export async function loginAdmin(password: string): Promise<{ success: boolean }> {
-  const adminPassword = process.env.ADMIN_PASSWORD || "admin";
+  const adminPassword = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
+  if (!adminPassword) {
+    console.warn("WARNING: ADMIN_PASSWORD environment variable is not configured. Admin access is disabled in production.");
+    return { success: false };
+  }
   if (password === adminPassword) {
     const cookieStore = await cookies();
     cookieStore.set("admin_session", adminPassword, {

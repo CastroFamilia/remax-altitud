@@ -17,8 +17,8 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
 
   const cookieStore = await cookies();
   const session = cookieStore.get("admin_session")?.value;
-  const adminPassword = process.env.ADMIN_PASSWORD || "admin";
-  const isAuthenticated = session === adminPassword;
+  const adminPassword = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
+  const isAuthenticated = !!adminPassword && session === adminPassword;
 
   if (!isAuthenticated) {
     return <AdminLoginForm />;

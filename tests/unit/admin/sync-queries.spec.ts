@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Story 8.1: Sync Status Dashboard & Monitoring — DB Query Helpers Unit Tests
  * Module: src/lib/db/queries/sync-log.ts

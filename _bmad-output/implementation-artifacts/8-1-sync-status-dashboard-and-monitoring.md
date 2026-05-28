@@ -1,6 +1,6 @@
 # Story 8.1: Sync Status Dashboard & Monitoring
 
-Status: review
+Status: done
 
 ## Story
 
@@ -130,6 +130,11 @@ so that I can monitor data freshness and quickly diagnose sync failures.
 - [x] **Task 6: Setup Unit and E2E Tests** (AC: #1, #2, #3, #4)
   - [x] 6.1 Create `tests/unit/admin/sync-queries.spec.ts` using Vitest
   - [x] 6.2 Create `tests/e2e/admin/sync-dashboard.spec.ts` using Playwright
+
+### Review Findings
+
+- [x] [Review][Patch] Inclusive end date boundary filtering [src/app/actions/admin-sync-actions.ts:32]
+- [x] [Review][Patch] Avoid hardcoded production admin password fallback [src/app/actions/admin-sync-actions.ts:56, src/app/[locale]/admin/layout.tsx:20]
 
 ---
 

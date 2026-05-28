@@ -169,11 +169,11 @@ vi.mock("@/lib/db/client", () => ({
 ### File Metadata
 
 - **DB Queries Unit Test**: `tests/unit/admin/sync-queries.spec.ts`
-  - **File Size**: 141 lines, 4.8 KB
+  - **File Size**: 142 lines, 4.9 KB
   - **Test Framework**: Vitest (node)
   - **Language**: TypeScript
 - **Server Actions Unit Test**: `tests/unit/actions/admin-sync-actions.spec.ts`
-  - **File Size**: 79 lines, 2.3 KB
+  - **File Size**: 210 lines, 6.5 KB
   - **Test Framework**: Vitest (node)
   - **Language**: TypeScript
 - **Sync Log Lifecycle DB Test**: `tests/unit/db/sync-log.spec.ts`
@@ -181,7 +181,7 @@ vi.mock("@/lib/db/client", () => ({
   - **Test Framework**: Vitest (node)
   - **Language**: TypeScript
 - **E2E Test File**: `tests/e2e/admin/sync-dashboard.spec.ts`
-  - **File Size**: 113 lines, 4.6 KB
+  - **File Size**: 114 lines, 4.7 KB
   - **Test Framework**: Playwright
   - **Language**: TypeScript
 - **Sync Log Factory**: `tests/fixtures/sync-log-factories.ts`
@@ -191,25 +191,25 @@ vi.mock("@/lib/db/client", () => ({
 
 ### Test Structure
 
-- **Describe Blocks**: 7
-- **Test Cases (it/test)**: 18 total (6 Queries Unit, 2 Server Action, 6 DB Lifecycle, 4 E2E)
-- **Average Test Length**: ~14 lines per test
+- **Describe Blocks**: 9
+- **Test Cases (it/test)**: 23 total (6 Queries Unit, 7 Server Action, 6 DB Lifecycle, 4 E2E)
+- **Average Test Length**: ~15 lines per test
 - **Fixtures Used**: Dedicated `createMockSyncLog` factory with overrides support.
 
 ### Test Scope
 
-- **Test IDs**: `8.1-UNIT-001` through `8.1-UNIT-008`, `8.1-E2E-001` through `8.1-E2E-004`, and sync-log core tests.
+- **Test IDs**: `8.1-UNIT-001` through `8.1-UNIT-013`, `8.1-E2E-001` through `8.1-E2E-004`, and sync-log core tests.
 - **Priority Distribution**:
-  - P0 (Critical): 12 tests (Given-When-Then happy path logic)
-  - P1 (High): 5 tests (Error resilience, date filters, validation overrides)
-  - P2 (Medium): 1 test (Duration formatter verification)
+  - P0 (Critical): 14 tests (Given-When-Then happy path logic + login/logout success)
+  - P1 (High): 7 tests (Error resilience, date filters, validation overrides, security invalid credentials)
+  - P2 (Medium): 2 tests (Duration formatter verification + local fallback admin mode)
   - P3 (Low): 0 tests
 
 ### Assertions Analysis
 
-- **Total Assertions**: 24 explicit assertions in active unit suites
-- **Assertions per Test**: ~1.7 (avg)
-- **Assertion Types**: `.toHaveBeenCalledOnce()`, `.toEqual()`, `.toHaveProperty()`, `.toBe()`, `.toBeInstanceOf()`
+- **Total Assertions**: 36 explicit assertions in active unit suites
+- **Assertions per Test**: ~1.9 (avg)
+- **Assertion Types**: `.toHaveBeenCalledOnce()`, `.toEqual()`, `.toHaveProperty()`, `.toBe()`, `.toBeInstanceOf()`, `.toHaveBeenCalledWith()`
 
 ---
 

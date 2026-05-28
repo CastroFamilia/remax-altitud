@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Story 8.1: Sync Status Dashboard & Monitoring — E2E Integration Tests
  *
