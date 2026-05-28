@@ -104,9 +104,7 @@ export function AreaGalleryCarousel({ metadata, locale }: AreaGalleryCarouselPro
                 {/* Localized Caption */}
                 {caption && (
                   <div className="p-4 border-t border-border/30 bg-gradient-to-r from-background to-secondary/5">
-                    <p className="text-sm font-semibold text-brand-navy tracking-wide">
-                      {caption}
-                    </p>
+                    <p className="text-sm font-semibold text-brand-navy tracking-wide">{caption}</p>
                   </div>
                 )}
               </div>

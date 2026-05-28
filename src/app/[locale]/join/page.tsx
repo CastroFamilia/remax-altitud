@@ -72,12 +72,8 @@ function JoinPageContent() {
                     {n}
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-brand-navy">
-                      {t(`benefit${n}Title`)}
-                    </h3>
-                    <p className="mt-1 text-text-muted leading-relaxed">
-                      {t(`benefit${n}Body`)}
-                    </p>
+                    <h3 className="text-lg font-bold text-brand-navy">{t(`benefit${n}Title`)}</h3>
+                    <p className="mt-1 text-text-muted leading-relaxed">{t(`benefit${n}Body`)}</p>
                   </div>
                 </div>
               ))}
@@ -100,7 +96,10 @@ function JoinPageContent() {
       </section>
 
       {/* Recruitment Form Section */}
-      <section aria-labelledby="join-form-heading" className="mx-auto max-w-3xl border-t border-brand-warm pt-16">
+      <section
+        aria-labelledby="join-form-heading"
+        className="mx-auto max-w-3xl border-t border-brand-warm pt-16"
+      >
         <h2
           id="join-form-heading"
           className="text-center text-2xl font-extrabold text-brand-navy tracking-tight md:text-3xl"

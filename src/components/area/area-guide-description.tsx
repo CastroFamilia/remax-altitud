@@ -97,14 +97,7 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
 
           // 7. Custom metrics grid token inline
           if (block === "[METRICS_GRID]") {
-            return (
-              <MetricsGrid
-                key={idx}
-                metadata={metadata}
-                locale={locale}
-                t={t}
-              />
-            );
+            return <MetricsGrid key={idx} metadata={metadata} locale={locale} t={t} />;
           }
 
           // Default: Paragraph with inline bold parsing
@@ -119,7 +112,8 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
       </div>
 
       {/* Nearest services quick metrics grid (fallback if not placed explicitly) */}
-      {!hasExplicitMetricsGrid && metadata &&
+      {!hasExplicitMetricsGrid &&
+        metadata &&
         (metadata.nearestAirport || metadata.nearestHospital || metadata.nearestBeach) && (
           <MetricsGrid metadata={metadata} locale={locale} t={t} />
         )}
@@ -480,7 +474,10 @@ function MetricsGrid({
   locale: string;
   t: (key: string) => string;
 }) {
-  if (!metadata || (!metadata.nearestAirport && !metadata.nearestHospital && !metadata.nearestBeach)) {
+  if (
+    !metadata ||
+    (!metadata.nearestAirport && !metadata.nearestHospital && !metadata.nearestBeach)
+  ) {
     return null;
   }
   return (
