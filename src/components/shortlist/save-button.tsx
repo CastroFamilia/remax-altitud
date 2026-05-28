@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Heart } from "lucide-react";
 import { useShortlist } from "@/hooks/use-shortlist";
 import { hasShownTooltipThisSession, markTooltipShownThisSession } from "@/lib/utils/shortlist";
@@ -13,6 +13,7 @@ interface SaveButtonProps {
 
 export function SaveButton({ propertyId }: SaveButtonProps) {
   const t = useTranslations("Shortlist");
+  const locale = useLocale() as "en" | "es";
   const { shortlist, isSaved, save, remove, isLoaded } = useShortlist();
 
   const [showToast, setShowToast] = useState(false);
@@ -40,9 +41,20 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
 
     if (saved) {
       remove(propertyId);
+      fetch("/api/shortlist/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ propertyId, action: "unsave", locale }),
+      }).catch((err) => console.error("Failed to track shortlist event:", err));
     } else {
       const res = save(propertyId);
       if (res.success) {
+        fetch("/api/shortlist/events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ propertyId, action: "save", locale }),
+        }).catch((err) => console.error("Failed to track shortlist event:", err));
+
         // Since we saved it, shortlist.length + 1 will reflect the count.
         // If length is now 2, trigger tooltip once per session.
         const currentLength = shortlist.length + 1;
@@ -90,7 +102,7 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
       >
         <Heart
           className={`h-5 w-5 transition-colors ${
-            saved ? "fill-[#660000] stroke-[#660000] fill-accent" : "stroke-[#888] stroke-current"
+            saved ? "fill-accent stroke-accent" : "stroke-[#888] stroke-current"
           }`}
           strokeWidth={2}
         />
