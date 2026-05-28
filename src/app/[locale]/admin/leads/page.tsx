@@ -6,6 +6,9 @@ import { AdminLeadsTable } from "@/components/admin/admin-leads-table";
 import { AdminLeadsPagination } from "@/components/admin/admin-leads-pagination";
 import { Users, History } from "lucide-react";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { createHash } from "crypto";
+import { redirect } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -23,6 +26,21 @@ interface PageProps {
 export default async function AdminLeadsPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
+
+  // Authenticate Admin
+  const cookieStore = await cookies();
+  const session = cookieStore.get("admin_session")?.value;
+  const adminPassword =
+    process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
+  const expectedSession = adminPassword
+    ? createHash("sha256").update(adminPassword).digest("hex")
+    : undefined;
+  const isAuthenticated = !!expectedSession && session === expectedSession;
+
+  if (!isAuthenticated) {
+    redirect(`/${locale}/admin?login=true`);
+  }
+
 
   const resolvedSearchParams = await searchParams;
   const agentId = resolvedSearchParams.agentId || "";

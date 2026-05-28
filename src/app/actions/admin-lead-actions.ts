@@ -3,6 +3,25 @@
 import { getLeads, reassignLead, getLeadAssignmentLogs, getShortlistLeadDetails } from "@/lib/db/queries/leads";
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { createHash } from "crypto";
+
+/**
+ * Helper to enforce admin authorization in server actions.
+ */
+async function verifyAdminAuth() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("admin_session")?.value;
+  const adminPassword =
+    process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
+  const expectedSession = adminPassword
+    ? createHash("sha256").update(adminPassword).digest("hex")
+    : undefined;
+  const isAuthenticated = !!expectedSession && session === expectedSession;
+  if (!isAuthenticated) {
+    throw new Error("Unauthorized");
+  }
+}
 
 /**
  * Server Action for fetching admin leads with pagination and filtering.
@@ -16,6 +35,8 @@ export async function fetchAdminLeadsData(params: {
   endDateStr?: string;
   page?: number;
 }) {
+  await verifyAdminAuth();
+
   let page = typeof params.page === "number" ? params.page : parseInt(String(params.page), 10);
   if (isNaN(page) || page < 1) {
     page = 1;
@@ -72,6 +93,7 @@ export async function fetchAdminLeadsData(params: {
  * Server Action to reassign agent of a lead.
  */
 export async function reassignLeadAction(leadId: string, newAgentId: string | null, locale: string) {
+  await verifyAdminAuth();
   const result = await reassignLead(leadId, newAgentId);
   revalidatePath(`/${locale}/admin/leads`);
   return result;
@@ -81,6 +103,7 @@ export async function reassignLeadAction(leadId: string, newAgentId: string | nu
  * Server Action to fetch lead assignment history logs.
  */
 export async function fetchLeadAssignmentLogsAction() {
+  await verifyAdminAuth();
   return getLeadAssignmentLogs();
 }
 
@@ -88,6 +111,8 @@ export async function fetchLeadAssignmentLogsAction() {
  * Server Action to fetch shortlist lead details.
  */
 export async function fetchShortlistDetailsAction(leadId: string) {
+  await verifyAdminAuth();
   return getShortlistLeadDetails(leadId);
 }
+
 

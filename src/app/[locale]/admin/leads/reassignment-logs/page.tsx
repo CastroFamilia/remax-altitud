@@ -3,6 +3,9 @@ import { setRequestLocale } from "next-intl/server";
 import { fetchLeadAssignmentLogsAction } from "@/app/actions/admin-lead-actions";
 import { History, ArrowLeft, ShieldAlert } from "lucide-react";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { createHash } from "crypto";
+import { redirect } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -11,6 +14,21 @@ interface PageProps {
 export default async function ReassignmentLogsPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
+
+  // Authenticate Admin
+  const cookieStore = await cookies();
+  const session = cookieStore.get("admin_session")?.value;
+  const adminPassword =
+    process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
+  const expectedSession = adminPassword
+    ? createHash("sha256").update(adminPassword).digest("hex")
+    : undefined;
+  const isAuthenticated = !!expectedSession && session === expectedSession;
+
+  if (!isAuthenticated) {
+    redirect(`/${locale}/admin?login=true`);
+  }
+
 
   const logs = await fetchLeadAssignmentLogsAction();
 

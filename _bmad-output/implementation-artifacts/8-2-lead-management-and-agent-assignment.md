@@ -85,6 +85,13 @@ Ultimate context engine analysis completed - comprehensive developer guide creat
 - [x] 7. Update translations in `src/messages/en.json` and `src/messages/es.json`.
 - [x] 8. Add unit tests.
 
+### Review Findings
+
+- [x] [Review][Patch] Missing Authentication Guard on Server Actions [src/app/actions/admin-lead-actions.ts:1]
+- [x] [Review][Patch] Missing Authentication Check in Leads and Reassignment Logs Server Pages [src/app/[locale]/admin/leads/page.tsx:1]
+- [x] [Review][Patch] Missing Defensive Guard in formatShortlistText [src/components/admin/admin-leads-table.tsx:88]
+
+
 ## Dev Agent Record
 
 ### Debug Log

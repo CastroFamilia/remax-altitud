@@ -86,12 +86,16 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
   };
 
   const formatShortlistText = (details: any) => {
+    if (!details || !details.groupedDetails) {
+      return "No details available";
+    }
     const parts: string[] = [];
 
     // Assigned Agent Listings
-    if (details.groupedDetails.assignedAgentListings.length > 0) {
+    const assignedListings = details.groupedDetails.assignedAgentListings || [];
+    if (assignedListings.length > 0) {
       const agentName = details.agentName || "Assigned Agent";
-      const refs = details.groupedDetails.assignedAgentListings
+      const refs = assignedListings
         .map((p: any) => `#${p.apiId || p.id}`)
         .join(", ");
       parts.push(`${agentName}'s: ${refs}`);
@@ -99,7 +103,8 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
 
     // Other Agent Listings grouped by listing agent name
     const othersByAgent: Record<string, any[]> = {};
-    details.groupedDetails.otherAgentListings.forEach((p: any) => {
+    const otherListings = details.groupedDetails.otherAgentListings || [];
+    otherListings.forEach((p: any) => {
       const name = p.agentName || "Other Agent";
       if (!othersByAgent[name]) {
         othersByAgent[name] = [];
@@ -112,7 +117,7 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
       parts.push(`${name}'s: ${refs}`);
     });
 
-    return parts.join(" | ");
+    return parts.join(" | ") || "No listings in shortlist";
   };
 
   if (leads.length === 0) {
