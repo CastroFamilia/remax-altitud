@@ -81,4 +81,3 @@ export function markTooltipShownThisSession(): void {
     // Fail silently
   }
 }
-

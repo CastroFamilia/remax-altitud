@@ -14,7 +14,7 @@ interface SaveButtonProps {
 export function SaveButton({ propertyId }: SaveButtonProps) {
   const t = useTranslations("Shortlist");
   const { shortlist, isSaved, save, remove, isLoaded } = useShortlist();
-  
+
   const [showToast, setShowToast] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -59,7 +59,10 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
   // Safe SSR placeholder for hydration
   if (!isLoaded) {
     return (
-      <span data-testid="save-property-button" className="relative inline-flex items-center justify-center w-11 h-11">
+      <span
+        data-testid="save-property-button"
+        className="relative inline-flex items-center justify-center w-11 h-11"
+      >
         <button
           type="button"
           disabled
@@ -74,7 +77,10 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
   }
 
   return (
-    <span data-testid="save-property-button" className="relative inline-flex items-center justify-center w-11 h-11">
+    <span
+      data-testid="save-property-button"
+      className="relative inline-flex items-center justify-center w-11 h-11"
+    >
       <button
         type="button"
         data-testid="save-button"
@@ -82,11 +88,9 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
         onClick={handleToggle}
         className="flex h-11 w-11 items-center justify-center rounded-full bg-white/80 backdrop-blur-xs shadow-xs hover:scale-105 transition-transform cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold"
       >
-        <Heart 
+        <Heart
           className={`h-5 w-5 transition-colors ${
-            saved 
-              ? "fill-[#660000] stroke-[#660000] fill-accent" 
-              : "stroke-[#888] stroke-current"
+            saved ? "fill-[#660000] stroke-[#660000] fill-accent" : "stroke-[#888] stroke-current"
           }`}
           strokeWidth={2}
         />

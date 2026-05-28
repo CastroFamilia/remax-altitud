@@ -16,9 +16,7 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 
-// @ts-ignore
 import { useShortlist } from "@/hooks/use-shortlist";
-// @ts-ignore
 import { getShortlist, addToShortlist, removeFromShortlist } from "@/lib/utils/shortlist";
 
 // We run all tests in describe.skip to represent the RED phase of TDD
@@ -75,7 +73,7 @@ describe("Story 7.1: Shortlist Hook and Utilities Unit Tests", () => {
     it("[P2] 7.1-UNIT-005: should handle server-side rendering safely when window is undefined", () => {
       // Temporarily mock window as undefined
       const originalWindow = globalThis.window;
-      // @ts-ignore
+      // @ts-expect-error - deleting window is not allowed in typescript
       delete globalThis.window;
 
       try {

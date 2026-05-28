@@ -18,7 +18,7 @@ export function ShortlistIcon() {
       className="relative flex h-10 w-10 items-center justify-center rounded-lg text-white hover:bg-white/10 transition-colors"
     >
       <Heart className="h-5 w-5" strokeWidth={2} />
-      
+
       {isLoaded && count > 0 && (
         <span
           data-testid="header-shortlist-count"
@@ -27,11 +27,9 @@ export function ShortlistIcon() {
           {count}
         </span>
       )}
-      
+
       {!isLoaded && (
-        <span
-          className="absolute -top-1.5 -right-1.5 h-4 min-w-[16px] rounded-full bg-transparent"
-        />
+        <span className="absolute -top-1.5 -right-1.5 h-4 min-w-[16px] rounded-full bg-transparent" />
       )}
     </Link>
   );
