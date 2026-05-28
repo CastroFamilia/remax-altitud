@@ -1,6 +1,6 @@
 # Story 8.4: Lifestyle Tag Administration
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
