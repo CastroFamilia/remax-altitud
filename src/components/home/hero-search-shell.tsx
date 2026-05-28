@@ -183,16 +183,34 @@ function parseQuery(queryText: string): Record<string, string> {
     remainingText = remainingText.replace(/\b\d+\s*k\b/gi, " ");
     remainingText = remainingText.replace(/\b\d+\b/gi, " ");
     remainingText = remainingText.replace(/\$/g, " ");
-    remainingText = remainingText.replace(/(?:under|max|less|below|hasta|menos|over|above|min|more|desde|mas|más|[<>])/gi, " ");
+    remainingText = remainingText.replace(
+      /(?:under|max|less|below|hasta|menos|over|above|min|more|desde|mas|más|[<>])/gi,
+      " ",
+    );
   }
 
   // Filter stop words and pull out keyword query q
   const STOP_WORDS = new Set([
-    "con", "de", "in", "with", "and", "a", "en", "la", "el", "un", "una", "for", "para", "los", "las", "del"
+    "con",
+    "de",
+    "in",
+    "with",
+    "and",
+    "a",
+    "en",
+    "la",
+    "el",
+    "un",
+    "una",
+    "for",
+    "para",
+    "los",
+    "las",
+    "del",
   ]);
 
   const words = remainingText.split(/[\s,.\-/?!|;:]+/);
-  const filteredWords = words.filter(w => w.length > 0 && !STOP_WORDS.has(w));
+  const filteredWords = words.filter((w) => w.length > 0 && !STOP_WORDS.has(w));
   if (filteredWords.length > 0) {
     params.q = filteredWords.join(" ");
   }

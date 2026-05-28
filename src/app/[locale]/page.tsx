@@ -1,10 +1,7 @@
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { SplitHero } from "@/components/home/split-hero";
-import {
-  FeaturedPropertiesShell,
-  SellCtaShell,
-} from "@/components/home/homepage-sections";
+import { FeaturedPropertiesShell, SellCtaShell } from "@/components/home/homepage-sections";
 import { FeaturedCommunities } from "@/components/home/featured-communities";
 import { FeaturedAreas } from "@/components/home/featured-areas";
 
