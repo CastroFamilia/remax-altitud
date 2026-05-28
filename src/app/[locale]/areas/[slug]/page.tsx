@@ -21,6 +21,8 @@ import { AreaGuideTabs } from "@/components/area/area-guide-tabs";
 import { CommunityCard } from "@/components/area/community-card";
 import { InvestmentContext } from "@/components/area/investment-context";
 import { FeaturedAreas } from "@/components/home/featured-areas";
+import { AreaGalleryCarousel } from "@/components/area/area-gallery-carousel";
+import { AreaVideos } from "@/components/area/area-videos";
 
 /**
  * Area Guide Page — SSG (no ISR)
@@ -153,6 +155,15 @@ export default async function AreaGuidePage({
         similarAreas={similarAreas}
         locale={locale}
       />
+
+      {/* Area Photo Gallery Carousel */}
+      <AreaGalleryCarousel
+        metadata={area.metadata as Record<string, unknown> | null}
+        locale={locale}
+      />
+
+      {/* Featured YouTube Videos (Pérez Zeledón Only) */}
+      {slug === "perez-zeledon" && <AreaVideos locale={locale} />}
 
       {/* Premium Featured Areas Section */}
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 border-t border-border mt-12">
