@@ -125,6 +125,9 @@ export default async function AreaGuidePage({
                   priceMin={community.priceMinUsd}
                   priceMax={community.priceMaxUsd}
                   listingCount={community.listingCount}
+                  latitude={community.latitude}
+                  longitude={community.longitude}
+                  geoFenceCoords={community.geoFenceCoords as [number, number][] | null}
                 />
               );
             })}

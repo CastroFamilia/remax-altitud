@@ -787,6 +787,11 @@
     "similarCommunities": {
       "heading": "Comunidades Similares"
     },
+    "miniMap": {
+      "heading": "Ubicación de la Comunidad",
+      "alt": "Mapa de {community} en {area}",
+      "geoFenceLabel": "Límite de la comunidad mostrado"
+    },
     "index": {
       "title": "Explora Nuestras Comunidades",
       "description": "Desarrollos exclusivos en la montaña y en la costa — vida premium en Costa Rica.",

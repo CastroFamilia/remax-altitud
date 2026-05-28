@@ -1,5 +1,13 @@
 import { sql } from "drizzle-orm";
-import { integer, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  doublePrecision,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { areas } from "./areas";
 
 /** Curated community developments (RISE, Santa Elena Hills, etc.) */
@@ -18,6 +26,12 @@ export const communities = pgTable("communities", {
   // geo_fence — Polygon 4326 for geo-fence matching (Story 6.5)
   // Placeholder: null until geo-fence data is populated
   // geoFence: geography("geo_fence", { type: "Polygon", srid: 4326 }),
+  /** Community center-point latitude for mini-map pin (Story 6.3) */
+  latitude: doublePrecision("latitude"),
+  /** Community center-point longitude for mini-map pin (Story 6.3) */
+  longitude: doublePrecision("longitude"),
+  /** GeoJSON polygon coordinates for display-only geo-fence overlay (Story 6.3) */
+  geoFenceCoords: jsonb("geo_fence_coords"),
   priceMinUsd: integer("price_min_usd"),
   priceMaxUsd: integer("price_max_usd"),
   listingCount: integer("listing_count").notNull().default(0),
