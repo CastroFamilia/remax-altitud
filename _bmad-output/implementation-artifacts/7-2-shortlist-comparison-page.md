@@ -1,6 +1,6 @@
 # Story 7.2: Shortlist Comparison Page
 
-**Status:** review
+**Status:** done
 **GH Issue:** #107
 **Epic:** 7 — Shortlist & Smart Agent Routing
 **Story Key:** 7-2-shortlist-comparison-page
@@ -155,7 +155,13 @@ So that I can evaluate my options side-by-side before contacting an agent.
     - Renders empty state elements when no properties are saved.
     - Renders skeletons during loading state.
     - Renders saved list items and passes them accurately to the map components.
-    - Removal trigger executes expected handlers and clears visual nodes instantly.
+
+### Review Findings
+
+- [x] [Review][Patch] Type-safe MapView coordinates filtering to prevent Mapbox runtime crashes [src/components/shortlist/shortlist-page-client.tsx:97]
+- [x] [Review][Patch] Dynamic multilingual localization of the WhatsApp agent message depending on user locale, using localized property titles [src/components/shortlist/shortlist-page-client.tsx:50]
+- [x] [Review][Patch] Dynamic multilingual localization of the Clipboard sharing message depending on user locale [src/components/shortlist/shortlist-page-client.tsx:58]
+- [x] [Review][Patch] Add fallback warning/alert if navigator.clipboard is unavailable [src/components/shortlist/shortlist-page-client.tsx:67]
 
 ---
 

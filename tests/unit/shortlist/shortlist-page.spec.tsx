@@ -30,6 +30,8 @@ vi.mock("next-intl", () => ({
       "Shortlist.browseCta": "Browse Listings",
       "Shortlist.askAgentCta": "Ask about these",
       "Shortlist.shareShortlistCta": "Share my shortlist",
+      "Shortlist.whatsAppMessageHeader": "Hello, I'm interested in these properties from my shortlist:",
+      "Shortlist.shareMessageHeader": "Check out my property shortlist:",
     };
     return translations[key] || key;
   }),
@@ -159,5 +161,73 @@ describe("ShortlistPageClient — Story 7.2 ATDD (GREEN PHASE)", () => {
 
     expect(await findByText("Ask about these")).toBeTruthy();
     expect(await findByText("Share my shortlist")).toBeTruthy();
+  });
+
+  it("[P0] 7.2-UNIT-009: filters out properties with null coordinates before passing them to MapView", async () => {
+    mockUseShortlist.mockReturnValue({
+      isLoaded: true,
+      shortlist: ["prop-1", "prop-2"],
+      remove: vi.fn(),
+    });
+
+    mockGetShortlistProperties.mockResolvedValue([
+      { id: "prop-1", titleEn: "House with coordinates", latitude: 9.35, longitude: -83.7 },
+      { id: "prop-2", titleEn: "House without coordinates", latitude: null, longitude: null },
+    ]);
+
+    const { getByTestId, findByTestId } = render(<ShortlistPageClient />);
+
+    await findByTestId("property-card-prop-1");
+    expect(getByTestId("property-card-prop-2")).toBeTruthy();
+
+    const mapView = getByTestId("map-view");
+    // Only 1 pin (prop-1) should be passed to MapView because prop-2 has null coordinates
+    expect(mapView.textContent).toContain("Map with 1 pins");
+  });
+
+  it("[P1] 7.2-UNIT-010: triggers window.open with localized message for WhatsApp and clipboard copy for sharing", async () => {
+    mockUseShortlist.mockReturnValue({
+      isLoaded: true,
+      shortlist: ["prop-1"],
+      remove: vi.fn(),
+    });
+
+    mockGetShortlistProperties.mockResolvedValue([
+      { id: "prop-1", titleEn: "House 1", slug: "house-1", latitude: 9.35, longitude: -83.7 },
+    ]);
+
+    const { findByText } = render(<ShortlistPageClient />);
+
+    const askBtn = await findByText("Ask about these");
+    const shareBtn = await findByText("Share my shortlist");
+
+    // Spy on window.open
+    const spyOpen = vi.spyOn(window, "open").mockImplementation(() => null);
+
+    // Spy on navigator.clipboard.writeText
+    const mockWriteText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: {
+        writeText: mockWriteText,
+      },
+      writable: true,
+      configurable: true,
+    });
+
+    // Click Ask Agent
+    fireEvent.click(askBtn);
+    expect(spyOpen).toHaveBeenCalledOnce();
+    const whatsappCallUrl = spyOpen.mock.calls[0][0];
+    expect(whatsappCallUrl).toContain("wa.me/50688888888");
+    expect(whatsappCallUrl).toContain(encodeURIComponent("Hello, I'm interested in these properties from my shortlist:\n- House 1 (prop-1)"));
+
+    // Click Share my shortlist
+    fireEvent.click(shareBtn);
+    expect(mockWriteText).toHaveBeenCalledOnce();
+    const shareText = mockWriteText.mock.calls[0][0];
+    expect(shareText).toContain("Check out my property shortlist:\n");
+    expect(shareText).toContain("/property/house-1");
+
+    spyOpen.mockRestore();
   });
 });
