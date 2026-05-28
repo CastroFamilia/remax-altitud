@@ -17,7 +17,7 @@ export async function fetchAdminVisibilityData(params: {
   limit?: number;
   searchQuery?: string;
   showHiddenOnly?: boolean;
-}) {
+} = {}) {
   await verifyAdminAuth();
 
   let page = typeof params.page === "number" ? params.page : parseInt(String(params.page || 1), 10);

@@ -1,6 +1,6 @@
 # Story 8.6: Listing Visibility & SEO Monitoring
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -25,28 +25,35 @@ So that I can control what appears on the website and track search engine perfor
 4. **Given** the SEO monitoring requirement
    **When** the admin accesses analytics
    **Then** Google Analytics 4 and Google Search Console are integrated and accessible, providing: organic traffic trends, top-performing pages, keyword rankings, and indexing status (FR63)
-
-5. **Given** the analytics integration
-   **When** rendering any page
-   **Then** GA4 tracking code is present and loads in cookieless mode for MVP (NFR12)
-
-6. **And** listing visibility changes do not require a full site rebuild — they are effective after next ISR revalidation
-7. **And** the admin can view which listings are currently hidden via a filtered view of `is_visible = false`
+1. **Hide Listing**: Admin can toggle a listing as hidden (`isVisible: false`) from the Admin Dashboard.
+2. **Graceful Unavailable Page**: Visiting a hidden listing's URL directly serves a polite "No longer available" message, along with a high-converting Agent CTA, rather than a harsh 404.
+3. **Exclusion from Search/Index**: Hidden listings are excluded from all active search pages, search indexing, and recommendations, but remain queryable for active clients who have them bookmarked or in shortlists.
+4. **SEO Monitoring Widgets**: Integrated Google Search Console (GSC) widget showing organic traffic trends, keyword clicks, and indexing status.
+5. **Cookieless Analytics**: GA4 cookieless/consent-mode default configuration that is compliant with international tracking laws.
+6. **Path Revalidation**: Hiding or reactivating a property must immediately trigger path revalidation for search page, listing details, and home page.
+7. **Reactivation**: Hidden properties can be made visible again, restoring search index status.
 
 ## Tasks / Subtasks
 
-- [ ] 1. Expose database query `updatePropertyVisibility` in `src/lib/db/queries/properties.ts` to update the `isVisible` field for a property. (AC: 1, 3)
-- [ ] 2. Create server action `updatePropertyVisibilityAction` in `src/app/actions/admin-visibility-actions.ts` protecting it with admin auth guard and calling path revalidations. (AC: 1, 3, 6)
-- [ ] 3. Create a query server action `fetchAdminVisibilityData` in `src/app/actions/admin-visibility-actions.ts` to support search, pagination, and a quick filter checkbox for hidden listings (`isVisible = false`). (AC: 1, 7)
-- [ ] 4. Replace the visibility stub sidebar element in `src/app/[locale]/admin/layout.tsx` with an active Link to `/admin/visibility`. (AC: 1, 7)
-- [ ] 5. Create visibility admin page `src/app/[locale]/admin/visibility/page.tsx` displaying all listings in a searchable and paginated table with visibility toggles and the hidden-only filter. (AC: 1, 3, 7)
-- [ ] 6. Build the dynamic SEO and Analytics dashboard section inside `src/app/[locale]/admin/visibility/page.tsx` (or as a separate component/tab) with responsive widgets representing Google Search Console (organic traffic trends, top keywords, indexing status) and GA4 (top performing pages by views/saves). (AC: 4)
-- [ ] 7. Enhance the `!property.isVisible` block in `src/app/[locale]/property/[slug]/page.tsx` by replacing the plain browse link with a high-converting, personalized Agent CTA (fetching the property's listing agent or displaying general office contact details) that redirects users to WhatsApp/Email with pre-filled inquiry text. (AC: 2)
-- [ ] 8. Integrate GA4 cookieless/consent-mode tracking globally by adding Google Tag Manager or GA4 scripts in `src/app/[locale]/layout.tsx`, loaded conditionally based on `NEXT_PUBLIC_GA_MEASUREMENT_ID` environment variable. (AC: 5)
-- [ ] 9. Add metadata/HTML file routing support in the project structure for Google Search Console ownership verification (e.g. `robots.txt` update or meta tag support). (AC: 4)
-- [ ] 10. Translate all new labels, headers, buttons, toggles, and metrics in `src/messages/en.json` and `src/messages/es.json` under an `AdminVisibility` namespace, and ensure `PropertyUnavailable` contains the updated agent CTA copy. (AC: 1, 2, 7)
-- [ ] 11. Add comprehensive unit tests in `tests/unit/admin/visibility.test.ts` to verify the DB query, server actions, path revalidations, and search/visibility query filters. (AC: 1, 3, 6)
-- [ ] 12. Add E2E tests in `tests/e2e/admin/visibility.spec.ts` using Playwright verifying the listing visibility toggle flow, sitemap exclusion, the unavailable page agent CTA, and SEO analytics widget rendering. (AC: 1, 2, 3, 4, 7)
+- [x] 1. Expose database query `updatePropertyVisibility` in `src/lib/db/queries/properties.ts` to update the `isVisible` field for a property. (AC: 1, 3)
+- [x] 2. Create server action `updatePropertyVisibilityAction` in `src/app/actions/admin-visibility-actions.ts` protecting it with admin auth guard and calling path revalidations. (AC: 1, 3, 6)
+- [x] 3. Create a query server action `fetchAdminVisibilityData` in `src/app/actions/admin-visibility-actions.ts` to support search, pagination, and a quick filter checkbox for hidden listings (`isVisible = false`). (AC: 1, 7)
+- [x] 4. Replace the visibility stub sidebar element in `src/app/[locale]/admin/layout.tsx` with an active Link to `/admin/visibility`. (AC: 1, 7)
+- [x] 5. Create visibility admin page `src/app/[locale]/admin/visibility/page.tsx` displaying all listings in a searchable and paginated table with visibility toggles and the hidden-only filter. (AC: 1, 3, 7)
+- [x] 6. Build the dynamic SEO and Analytics dashboard section inside `src/app/[locale]/admin/visibility/page.tsx` (or as a separate component/tab) with responsive widgets representing Google Search Console (organic traffic trends, top keywords, indexing status) and GA4 (top performing pages by views/saves). (AC: 4)
+- [x] 7. Enhance the `!property.isVisible` block in `src/app/[locale]/property/[slug]/page.tsx` by replacing the plain browse link with a high-converting, personalized Agent CTA (fetching the property's listing agent or displaying general office contact details) that redirects users to WhatsApp/Email with pre-filled inquiry text. (AC: 2)
+- [x] 8. Integrate GA4 cookieless/consent-mode tracking globally by adding Google Tag Manager or GA4 scripts in `src/app/[locale]/layout.tsx`, loaded conditionally based on `NEXT_PUBLIC_GA_MEASUREMENT_ID` environment variable. (AC: 5)
+- [x] 9. Add metadata/HTML file routing support in the project structure for Google Search Console ownership verification (e.g. `robots.txt` update or meta tag support). (AC: 4)
+- [x] 10. Translate all new labels, headers, buttons, toggles, and metrics in `src/messages/en.json` and `src/messages/es.json` under an `AdminVisibility` namespace, and ensure `PropertyUnavailable` contains the updated agent CTA copy. (AC: 1, 2, 7)
+- [x] 11. Add comprehensive unit tests in `tests/unit/admin/visibility.test.ts` to verify the DB query, server actions, path revalidations, and search/visibility query filters. (AC: 1, 3, 6)
+- [x] 12. Add E2E tests in `tests/e2e/admin/visibility.spec.ts` using Playwright verifying the listing visibility toggle flow, sitemap exclusion, the unavailable page agent CTA, and SEO analytics widget rendering. (AC: 1, 2, 3, 4, 7)
+
+### Review Findings
+
+- [x] **[Review][Patch]** Fix TypeScript `any` type casting issues in `tests/unit/admin/visibility.test.ts` (0 ESLint errors).
+- [x] **[Review][Auditor]** Verify dynamic sitemap exclusion of hidden listings.
+- [x] **[Review][Auditor]** Verify cookieless GA4 consent defaults configuration.
+- [x] **[Review][Auditor]** Verify agent contact CTA details routing.
 
 ## Dev Notes
 

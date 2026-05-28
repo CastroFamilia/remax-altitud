@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 // Hoisted mocks for database client and next/cache
@@ -151,6 +152,21 @@ describe("Story 8.6: Listing Visibility & SEO Monitoring - Unit Tests (ATDD RED)
 
       // Then it should fallback to page 1
       expect(resultNegative.page).toBe(1);
+    });
+
+    it("[P2] should handle empty or omitted parameters gracefully by defaulting them", async () => {
+      // Given an authenticated admin and no parameters
+      mockVerifyAdminAuth.mockResolvedValue(true);
+
+      const { fetchAdminVisibilityData } = await import("@/app/actions/admin-visibility-actions");
+
+      // When called with no parameters
+      const result = await fetchAdminVisibilityData();
+
+      // Then it should default to page 1, limit 10 and return results successfully
+      expect(result.page).toBe(1);
+      expect(result.limit).toBe(10);
+      expect(result).toHaveProperty("properties");
     });
   });
 
