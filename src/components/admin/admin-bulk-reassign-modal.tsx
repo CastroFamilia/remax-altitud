@@ -58,6 +58,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
 
   // Fetch count when source agent changes
   useEffect(() => {
+    let active = true;
     if (!sourceAgentId) {
       setLeadsCount(null);
       setValidationError("");
@@ -70,21 +71,28 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
       setLeadsCount(null);
       try {
         const count = await fetchAgentLeadsCountAction(sourceAgentId);
+        if (!active) return;
         setLeadsCount(count);
         if (count === 0) {
           const sourceAgent = agents.find((a) => a.id === sourceAgentId);
           const sourceName = sourceAgent ? sourceAgent.name : "Unknown Agent";
           setValidationError(t("bulkNoLeadsError", { agentName: sourceName }));
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error("Failed to fetch lead count", err);
-        setValidationError("Could not verify lead count");
+        if (!active) return;
+        setValidationError(t("bulkErrorVerifyCountFailed"));
       } finally {
-        setLoadingCount(false);
+        if (active) {
+          setLoadingCount(false);
+        }
       }
     };
 
     loadLeadsCount();
+    return () => {
+      active = false;
+    };
   }, [sourceAgentId, agents, t]);
 
   // Clean form states when modal is toggled
@@ -119,31 +127,31 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
     setErrorMessage("");
     
     if (!sourceAgentId) {
-      setErrorMessage("Please select a source agent.");
+      setErrorMessage(t("bulkErrorSelectSource"));
       return;
     }
 
     if (leadsCount === 0 || leadsCount === null) {
-      setErrorMessage("Source agent has no active leads.");
+      setErrorMessage(t("bulkErrorNoActiveLeads"));
       return;
     }
 
     if (operationType === "single") {
       if (!singleTargetAgentId) {
-        setErrorMessage("Please select a target agent.");
+        setErrorMessage(t("bulkErrorSelectTarget"));
         return;
       }
       if (singleTargetAgentId === sourceAgentId) {
-        setErrorMessage("Target agent cannot be the same as the source agent.");
+        setErrorMessage(t("bulkErrorSameAgent"));
         return;
       }
     } else {
       if (selectedTargetAgentIds.length === 0) {
-        setErrorMessage("Please select at least one target agent for distribution.");
+        setErrorMessage(t("bulkErrorSelectTargetDistribute"));
         return;
       }
       if (selectedTargetAgentIds.includes(sourceAgentId)) {
-        setErrorMessage("Target distribution cannot include the source agent.");
+        setErrorMessage(t("bulkErrorDistributeIncludeSource"));
         return;
       }
     }
@@ -168,12 +176,12 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
           handleToggleModal();
         }, 3000);
       } else {
-        const errorRes = res as { success: false; error: any };
-        setErrorMessage(errorRes.error || "Reassignment failed");
+        const errorRes = res as { success: false; error: string };
+        setErrorMessage(errorRes.error || t("bulkErrorUnexpectedReassignment"));
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setErrorMessage("An unexpected error occurred during lead reassignment.");
+      setErrorMessage(t("bulkErrorUnexpectedReassignment"));
     } finally {
       setIsSubmitting(false);
     }
@@ -183,7 +191,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
   const handleExportContacts = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!exportAgentId) {
-      setErrorMessage("Please select an agent to export contacts.");
+      setErrorMessage(t("bulkErrorSelectExportAgent"));
       return;
     }
 
@@ -191,6 +199,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
     setErrorMessage("");
     setSuccessMessage("");
 
+    let url = "";
     try {
       const csvContent = await exportAgentLeadsCSVAction(exportAgentId);
       const agent = agents.find((a) => a.id === exportAgentId);
@@ -198,9 +207,9 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
       const sanitizedName = agentName.toLowerCase().replace(/[^a-z0-9]/g, "-");
       const filename = `leads-export-${sanitizedName}-${new Date().toISOString().split("T")[0]}.csv`;
 
-      // Trigger file download on client side
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
+      // Trigger file download on client side with UTF-8 BOM to prevent accent corruption in Excel
+      const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+      url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", filename);
@@ -212,11 +221,14 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
       setTimeout(() => {
         setSuccessMessage("");
       }, 4000);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setErrorMessage("Failed to export contacts. Verify authentication and try again.");
+      setErrorMessage(t("bulkErrorExportFailed"));
     } finally {
       setIsExporting(false);
+      if (url) {
+        URL.revokeObjectURL(url);
+      }
     }
   };
 
@@ -249,7 +261,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
   return (
     <div className="flex items-center gap-3">
       <button
-        data-testid="bulk-ops-btn"
+        data-testid="bulk-reassign-btn"
         onClick={handleToggleModal}
         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition-all cursor-pointer shadow-lg shadow-red-900/20"
       >
@@ -260,7 +272,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
       {/* Backdrop & Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+          <div data-testid="bulk-reassign-modal" className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 bg-slate-950/60 border-b border-slate-800">
               <h2 className="text-lg font-bold text-white flex items-center gap-2.5">
@@ -344,12 +356,13 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                         </label>
                         <select
                           id="source-agent"
+                          data-testid="source-agent-select"
                           value={sourceAgentId}
                           onChange={(e) => setSourceAgentId(e.target.value)}
                           className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                           required
                         >
-                          <option value="">Select Agent...</option>
+                          <option value="">{t("selectAgentPlaceholder")}</option>
                           {agents.map((a) => (
                             <option key={a.id} value={a.id}>
                               {a.name}
@@ -366,13 +379,13 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                         )}
 
                         {leadsCount !== null && !loadingCount && leadsCount > 0 && (
-                          <div className="mt-2 text-xs text-green-400 font-bold bg-green-500/5 border border-green-500/10 px-3 py-1.5 rounded-lg inline-block">
-                            📊 {leadsCount} leads assigned to this agent
+                          <div data-testid="leads-count-display" className="mt-2 text-xs text-green-400 font-bold bg-green-500/5 border border-green-500/10 px-3 py-1.5 rounded-lg inline-block">
+                            {t("bulkLeadsCountBadge", { count: leadsCount })}
                           </div>
                         )}
 
                         {validationError && (
-                          <div className="mt-2 text-xs text-red-400 font-bold bg-red-500/5 border border-red-500/10 px-3 py-1.5 rounded-lg inline-block">
+                          <div data-testid="no-leads-validation-msg" className="mt-2 text-xs text-red-400 font-bold bg-red-500/5 border border-red-500/10 px-3 py-1.5 rounded-lg inline-block">
                             ⚠️ {validationError}
                           </div>
                         )}
@@ -396,6 +409,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                                 <input
                                   type="radio"
                                   name="operationType"
+                                  data-testid="reassign-mode-single"
                                   checked={operationType === "single"}
                                   onChange={() => setOperationType("single")}
                                   className="sr-only"
@@ -413,6 +427,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                                 <input
                                   type="radio"
                                   name="operationType"
+                                  data-testid="reassign-mode-distribute"
                                   checked={operationType === "distribute"}
                                   onChange={() => setOperationType("distribute")}
                                   className="sr-only"
@@ -433,12 +448,13 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                               </label>
                               <select
                                 id="target-agent"
+                                data-testid="target-agent-select"
                                 value={singleTargetAgentId}
                                 onChange={(e) => setSingleTargetAgentId(e.target.value)}
                                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                                 required
                               >
-                                <option value="">Select Agent...</option>
+                                <option value="">{t("selectAgentPlaceholder")}</option>
                                 {agents
                                   .filter((a) => a.id !== sourceAgentId)
                                   .map((a) => (
@@ -469,6 +485,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                                       >
                                         <input
                                           type="checkbox"
+                                          data-testid={`target-agent-checkbox-${agent.id}`}
                                           checked={isChecked}
                                           onChange={() => handleToggleTargetAgent(agent.id)}
                                           className="rounded border-slate-700 bg-slate-950 text-red-600 focus:ring-0 focus:ring-offset-0"
@@ -488,13 +505,14 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                               onClick={resetForm}
                               className="px-4 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-colors cursor-pointer font-semibold"
                             >
-                              Reset
+                              {t("resetBtn")}
                             </button>
                             <button
                               type="submit"
+                              data-testid="execute-reassign-btn"
                               className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-sm transition-all shadow-md shadow-red-950/20 cursor-pointer"
                             >
-                              Continue
+                              {t("continueBtn")}
                             </button>
                           </div>
                         </>
@@ -503,7 +521,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                   ) : (
                     /* Step 2: Explicit Confirmation Prompt */
                     <div className="space-y-6">
-                      <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/25 flex items-start gap-4">
+                      <div data-testid="confirmation-dialog" className="p-4 rounded-xl bg-red-500/5 border border-red-500/25 flex items-start gap-4">
                         <AlertTriangle className="w-10 h-10 text-red-500 shrink-0 mt-0.5" />
                         <div>
                           <h3 className="font-bold text-white text-base mb-1.5">
@@ -517,7 +535,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
 
                       <div className="flex gap-4 pt-2">
                         <button
-                          data-testid="cancel-reassign"
+                          data-testid="cancel-reassign-dialog-btn"
                           disabled={isSubmitting}
                           onClick={() => setShowConfirm(false)}
                           className="flex-1 py-2.5 rounded-lg border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 text-sm font-bold transition-all disabled:opacity-50 cursor-pointer"
@@ -525,13 +543,13 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                           {t("bulkCancel")}
                         </button>
                         <button
-                          data-testid="confirm-bulk-reassign"
+                          data-testid="confirm-reassign-dialog-btn"
                           disabled={isSubmitting}
                           onClick={handleExecuteReassignment}
                           className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-red-950/30"
                         >
                           {isSubmitting && <Loader2 className="w-4 h-4 animate-spin text-white" />}
-                          <span>{isSubmitting ? "Processing..." : t("bulkConfirm")}</span>
+                          <span>{isSubmitting ? t("processingState") : t("bulkConfirm")}</span>
                         </button>
                       </div>
                     </div>
@@ -545,9 +563,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                   <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20 flex items-start gap-3.5 text-blue-400 text-xs font-semibold leading-relaxed">
                     <HelpCircle className="w-5.5 h-5.5 text-blue-400 shrink-0 mt-0.5" />
                     <p>
-                      Export client leads assigned to a departing agent into a highly formatted CSV
-                      containing client Name, Email, and Phone. PII data is securely decrypted on
-                      transmission.
+                      {t("bulkExportDescription")}
                     </p>
                   </div>
 
@@ -565,7 +581,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
                       required
                     >
-                      <option value="">Select Agent...</option>
+                      <option value="">{t("selectAgentPlaceholder")}</option>
                       {agents.map((a) => (
                         <option key={a.id} value={a.id}>
                           {a.name}
@@ -581,10 +597,11 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                       onClick={resetForm}
                       className="px-4 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-colors cursor-pointer font-semibold"
                     >
-                      Reset
+                      {t("resetBtn")}
                     </button>
                     <button
                       type="submit"
+                      data-testid="export-contacts-btn"
                       disabled={isExporting}
                       className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm transition-all disabled:opacity-50 cursor-pointer shadow-md shadow-blue-950/20"
                     >
@@ -593,7 +610,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                       ) : (
                         <Download className="w-4 h-4" />
                       )}
-                      <span>{isExporting ? "Exporting..." : t("exportContactsBtn")}</span>
+                      <span>{isExporting ? t("exportingState") : t("exportContactsBtn")}</span>
                     </button>
                   </div>
                 </form>

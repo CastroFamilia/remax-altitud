@@ -140,8 +140,9 @@ export async function bulkReassignLeadsAction(
     const result = await bulkReassignLeads(sourceAgentId, targetAgentIds);
     revalidatePath(`/${locale}/admin/leads`);
     return result;
-  } catch (error: any) {
-    return { success: false, error: error.message || "Failed to bulk reassign leads" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to bulk reassign leads";
+    return { success: false, error: message };
   }
 }
 
@@ -173,10 +174,10 @@ export async function exportAgentLeadsCSVAction(agentId: string) {
       escapeCSVField(lead.name),
       escapeCSVField(lead.email),
       escapeCSVField(lead.phone),
-    ].join(",");
+    ].join(", ");
   });
 
-  return [headers.join(","), ...rows].join("\n");
+  return [headers.join(", "), ...rows].join("\n");
 }
 
 /**

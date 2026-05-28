@@ -19,7 +19,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment & Export", () => {
       ]);
     });
 
-    test.skip("[P0] 8.3-E2E-001: opens bulk reassignment modal and displays active lead counts (AC6)", async ({ page }: any) => {
+    test("[P0] 8.3-E2E-001: opens bulk reassignment modal and displays active lead counts (AC6)", async ({ page }: any) => {
       // 1. Given the admin leads management panel
       await page.setViewportSize(DESKTOP_VIEWPORT);
       await page.goto("/en/admin/leads");
@@ -41,7 +41,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment & Export", () => {
       await expect(leadCountDisplay).toContainText(/leads found/i);
     });
 
-    test.skip("[P0] 8.3-E2E-002: performs bulk reassignment to single target agent with explicit confirmation (AC1, AC2, AC6)", async ({ page }: any) => {
+    test("[P0] 8.3-E2E-002: performs bulk reassignment to single target agent with explicit confirmation (AC1, AC2, AC6)", async ({ page }: any) => {
       // 1. Given the bulk reassignment modal open
       await page.setViewportSize(DESKTOP_VIEWPORT);
       await page.goto("/en/admin/leads");
@@ -72,7 +72,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment & Export", () => {
       await expect(page.locator('tr[data-testid="log-entry"]').first()).toBeVisible();
     });
 
-    test.skip("[P0] 8.3-E2E-003: distributes leads round-robin across multiple target agents (AC3)", async ({ page }: any) => {
+    test("[P0] 8.3-E2E-003: distributes leads round-robin across multiple target agents (AC3)", async ({ page }: any) => {
       // 1. Given the bulk reassignment modal open
       await page.setViewportSize(DESKTOP_VIEWPORT);
       await page.goto("/en/admin/leads");
@@ -94,7 +94,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment & Export", () => {
       await expect(toast).toBeVisible();
     });
 
-    test.skip("[P0] 8.3-E2E-004: exports decrypted client contacts as CSV (AC4)", async ({ page }: any) => {
+    test("[P0] 8.3-E2E-004: exports decrypted client contacts as CSV (AC4)", async ({ page }: any) => {
       // 1. Given the admin leads view
       await page.setViewportSize(DESKTOP_VIEWPORT);
       await page.goto("/en/admin/leads");
@@ -114,7 +114,7 @@ test.describe("Story 8.3: Bulk Lead Reassignment & Export", () => {
       expect(path).toBeTruthy();
     });
 
-    test.skip("[P0] 8.3-E2E-005: shows validation error when reassigning leads for source agent with zero leads (AC5)", async ({ page }: any) => {
+    test("[P0] 8.3-E2E-005: shows validation error when reassigning leads for source agent with zero leads (AC5)", async ({ page }: any) => {
       // 1. Given the bulk reassignment modal
       await page.setViewportSize(DESKTOP_VIEWPORT);
       await page.goto("/en/admin/leads");

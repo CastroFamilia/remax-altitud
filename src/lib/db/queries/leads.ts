@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
 
-import { and, desc, eq, gte, lte, inArray, isNull } from "drizzle-orm";
+import { and, desc, eq, gte, lte, inArray, isNull, count } from "drizzle-orm";
 import { agents } from "@/lib/db/schema/agents";
 import { properties } from "@/lib/db/schema/properties";
 import { leadAssignmentLogs } from "@/lib/db/schema/lead-assignment-logs";
@@ -346,13 +346,26 @@ export async function getLeadAssignmentLogs() {
 }
 
 /**
+ * Helper to safely decrypt values, falling back to plaintext on error or nulls.
+ */
+function safeDecrypt(val: string | null | undefined): string | null {
+  if (!val) return null;
+  try {
+    return decryptField(val);
+  } catch {
+    return val;
+  }
+}
+
+/**
  * bulkReassignLeads — Story 8.3 (AC 1, 2, 3, 5, 7)
  * Bulk reassigns leads from a source agent to target agent(s) using round-robin distribution.
  * Implemented inside a transaction and records assignment logs.
  */
 export async function bulkReassignLeads(sourceAgentId: string, targetAgentIds: string[]) {
-  if (!targetAgentIds || targetAgentIds.length === 0) {
-    throw new Error("No target agents selected for reassignment");
+  const filteredTargetAgentIds = (targetAgentIds || []).filter((id) => id !== sourceAgentId);
+  if (filteredTargetAgentIds.length === 0) {
+    throw new Error("No valid target agents selected for reassignment (leads cannot be reassigned back to the source agent)");
   }
 
   return await db.transaction(async (tx) => {
@@ -365,31 +378,50 @@ export async function bulkReassignLeads(sourceAgentId: string, targetAgentIds: s
 
     const sourceAgentName = agentRows[0]?.name || "Unknown Agent";
 
-    // 2. Retrieve all leads for the source agent
+    // 2. Retrieve all leads for the source agent (using FOR UPDATE to prevent race conditions)
     const leadRows = await tx
       .select({ id: leads.id })
       .from(leads)
-      .where(eq(leads.assignedAgentId, sourceAgentId));
+      .where(eq(leads.assignedAgentId, sourceAgentId))
+      .for("update");
 
     if (leadRows.length === 0) {
       throw new Error(`No leads to reassign for ${sourceAgentName}`);
     }
 
-    // 3. Update leads and insert immutable logs
+    // 3. Group updates and logs by targetAgentId to minimize database roundtrips and lock contention
+    const updatesMap = new Map<string, string[]>();
+    const logsToInsert: { leadId: string; previousAgentId: string; newAgentId: string; createdAt: Date }[] = [];
+    const now = new Date();
+
     for (let i = 0; i < leadRows.length; i++) {
       const leadId = leadRows[i].id;
-      const targetAgentId = targetAgentIds[i % targetAgentIds.length];
+      const targetAgentId = filteredTargetAgentIds[i % filteredTargetAgentIds.length];
 
-      await tx
-        .update(leads)
-        .set({ assignedAgentId: targetAgentId })
-        .where(eq(leads.id, leadId));
+      if (!updatesMap.has(targetAgentId)) {
+        updatesMap.set(targetAgentId, []);
+      }
+      updatesMap.get(targetAgentId)!.push(leadId);
 
-      await tx.insert(leadAssignmentLogs).values({
+      logsToInsert.push({
         leadId,
         previousAgentId: sourceAgentId,
         newAgentId: targetAgentId,
+        createdAt: now,
       });
+    }
+
+    // Perform grouped update queries instead of N individual updates
+    for (const [targetAgentId, leadIds] of updatesMap.entries()) {
+      await tx
+        .update(leads)
+        .set({ assignedAgentId: targetAgentId })
+        .where(inArray(leads.id, leadIds));
+    }
+
+    // Bulk insert all assignment log entries in a single query
+    if (logsToInsert.length > 0) {
+      await tx.insert(leadAssignmentLogs).values(logsToInsert);
     }
 
     return { success: true, count: leadRows.length };
@@ -409,8 +441,8 @@ export async function getLeadsForExport(agentId: string) {
 
   return rows.map((lead) => ({
     ...lead,
-    phone: decryptField(lead.phone),
-    email: lead.email ? decryptField(lead.email) : null,
+    phone: safeDecrypt(lead.phone) || "",
+    email: safeDecrypt(lead.email),
   }));
 }
 
@@ -419,7 +451,6 @@ export async function getLeadsForExport(agentId: string) {
  * Returns the total number of leads assigned to a specific agent.
  */
 export async function getAgentLeadsCount(agentId: string) {
-  const { count } = await import("drizzle-orm");
   const [row] = await db
     .select({ count: count() })
     .from(leads)

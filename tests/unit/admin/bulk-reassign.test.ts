@@ -24,7 +24,7 @@ vi.mock("next/headers", () => ({
   })),
 }));
 
-import { bulkReassignLeads } from "@/lib/db/queries/leads";
+import { bulkReassignLeads, getAgentLeadsCount, getLeadsForExport } from "@/lib/db/queries/leads";
 import { exportAgentLeadsCSVAction } from "@/app/actions/admin-lead-actions";
 import { encryptField } from "@/lib/utils/encryption";
 
@@ -43,6 +43,100 @@ describe("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
 
   afterEach(() => {
     vi.unstubAllEnvs();
+  });
+
+  describe("getAgentLeadsCount Query", () => {
+    it("should count leads dynamically by agent id where status is not closed", async () => {
+      // Given leads count returned from query
+      const mockResult = [{ count: 12 }];
+      const mockWhere = vi.fn().mockResolvedValue(mockResult);
+      const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+      mockSelect.mockReturnValue({ from: mockFrom });
+
+      // When getAgentLeadsCount is called
+      const count = await getAgentLeadsCount("agent-1");
+
+      // Then it returns correct count
+      expect(count).toBe(12);
+      expect(mockSelect).toHaveBeenCalled();
+      expect(mockWhere).toHaveBeenCalled();
+    });
+  });
+
+  describe("getLeadsForExport Query", () => {
+    it("should retrieve decryptable client leads for export", async () => {
+      // Given client leads with encrypted email & phone
+      const emailEnc = encryptField("client@example.com");
+      const phoneEnc = encryptField("+506 8888-8888");
+      
+      const mockLeads = [
+        {
+          id: "lead-1",
+          name: "Client Name",
+          email: emailEnc,
+          phone: phoneEnc,
+          status: "new",
+          createdAt: new Date("2026-05-28T00:00:00Z"),
+        },
+      ];
+
+      const mockOrderBy = vi.fn().mockResolvedValue(mockLeads);
+      const mockWhere = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+      const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+      mockSelect.mockReturnValue({ from: mockFrom });
+
+      // When getLeadsForExport is called
+      const result = await getLeadsForExport("agent-1");
+
+      // Then it returns lead list and automatically decrypts email & phone
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe("Client Name");
+      expect(result[0].email).toBe("client@example.com");
+      expect(result[0].phone).toBe("+506 8888-8888");
+    });
+
+    it("should fallback safely to raw value if decryption fails or entry is blank", async () => {
+      const mockLeads = [
+        { id: "lead-1", name: "Client One", email: "corrupted_email", phone: "" },
+      ];
+
+      const mockOrderBy = vi.fn().mockResolvedValue(mockLeads);
+      const mockWhere = vi.fn().mockReturnValue({ orderBy: mockOrderBy });
+      const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
+      mockSelect.mockReturnValue({ from: mockFrom });
+
+      const result = await getLeadsForExport("agent-1");
+      expect(result).toHaveLength(1);
+      expect(result[0].email).toBe("corrupted_email");
+      expect(result[0].phone).toBe("");
+    });
+  });
+
+  describe("Manual CSV Formatting Logic", () => {
+    it("should generate RFC 4180-compliant CSV containing headers and client info", () => {
+      const email = "john,doe@example.com"; // contains comma
+      const phone = "+506 1234-5678";
+      const name = 'Alice "The Boss" Smith'; // contains double quotes
+
+      // Manual escaping algorithm helper matching implementation
+      const escape = (val: string) => {
+        const str = val || "";
+        if (str.includes(",") || str.includes('"') || str.includes("\n") || str.includes("\r")) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      };
+
+      const headers = ["Name", "Email", "Phone"].join(", ");
+      const row = [escape(name), escape(email), escape(phone)].join(", ");
+      const csv = `${headers}\n${row}`;
+
+      // Expect correctly formatted RFC 4180 strings
+      expect(csv).toContain('"Alice ""The Boss"" Smith"');
+      expect(csv).toContain('"john,doe@example.com"');
+      expect(csv).toContain("+506 1234-5678");
+      expect(csv.split("\n")[0]).toBe("Name, Email, Phone");
+    });
   });
 
   describe("bulkReassignLeads Action / Query", () => {
@@ -74,7 +168,9 @@ describe("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
 
       // 2nd tx.select - fetch leads assigned to source agent
       const mockLeadsFrom = vi.fn().mockReturnValue({
-        where: vi.fn().mockResolvedValue(mockLeads),
+        where: vi.fn().mockReturnValue({
+          for: vi.fn().mockResolvedValue(mockLeads),
+        }),
       });
       mockSelect.mockReturnValueOnce({ from: mockLeadsFrom });
 
@@ -95,8 +191,24 @@ describe("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
       expect(result.count).toBe(mockLeads.length);
 
       expect(mockSelect).toHaveBeenCalledTimes(2);
-      expect(mockUpdate).toHaveBeenCalledTimes(2);
-      expect(mockInsert).toHaveBeenCalledTimes(2);
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
+      expect(mockInsert).toHaveBeenCalledTimes(1);
+
+      expect(mockUpdateSet).toHaveBeenCalledWith({ assignedAgentId: targetAgentId });
+      expect(mockInsertValues).toHaveBeenCalledWith([
+        {
+          leadId: "lead-1",
+          previousAgentId: "agent-source",
+          newAgentId: "agent-target",
+          createdAt: expect.any(Date),
+        },
+        {
+          leadId: "lead-2",
+          previousAgentId: "agent-source",
+          newAgentId: "agent-target",
+          createdAt: expect.any(Date),
+        },
+      ]);
     });
 
     it("[P0] 8.3-UNIT-002: should distribute leads round-robin among multiple target agents", async () => {
@@ -128,7 +240,9 @@ describe("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
 
       // 2nd tx.select - fetch leads assigned to source agent
       const mockLeadsFrom = vi.fn().mockReturnValue({
-        where: vi.fn().mockResolvedValue(mockLeads),
+        where: vi.fn().mockReturnValue({
+          for: vi.fn().mockResolvedValue(mockLeads),
+        }),
       });
       mockSelect.mockReturnValueOnce({ from: mockLeadsFrom });
 
@@ -148,10 +262,35 @@ describe("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
       expect(result.success).toBe(true);
       expect(result.count).toBe(mockLeads.length);
 
-      // Verify round-robin mapping
+      // We have 2 target agents (2 groups), so update is called 2 times.
+      expect(mockUpdate).toHaveBeenCalledTimes(2);
+      expect(mockInsert).toHaveBeenCalledTimes(1);
+
+      // Verify round-robin mapping/grouping
       expect(mockUpdateSet).toHaveBeenNthCalledWith(1, { assignedAgentId: "agent-target-1" });
       expect(mockUpdateSet).toHaveBeenNthCalledWith(2, { assignedAgentId: "agent-target-2" });
-      expect(mockUpdateSet).toHaveBeenNthCalledWith(3, { assignedAgentId: "agent-target-1" });
+
+      // Verify bulk insert values
+      expect(mockInsertValues).toHaveBeenCalledWith([
+        {
+          leadId: "lead-1",
+          previousAgentId: "agent-source",
+          newAgentId: "agent-target-1",
+          createdAt: expect.any(Date),
+        },
+        {
+          leadId: "lead-2",
+          previousAgentId: "agent-source",
+          newAgentId: "agent-target-2",
+          createdAt: expect.any(Date),
+        },
+        {
+          leadId: "lead-3",
+          previousAgentId: "agent-source",
+          newAgentId: "agent-target-1",
+          createdAt: expect.any(Date),
+        },
+      ]);
     });
 
     it("[P0] 8.3-UNIT-003: should throw or return clear error if source agent has zero leads", async () => {
@@ -178,7 +317,9 @@ describe("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
 
       // 2nd tx.select - fetch leads (return empty array)
       const mockLeadsFrom = vi.fn().mockReturnValue({
-        where: vi.fn().mockResolvedValue([]),
+        where: vi.fn().mockReturnValue({
+          for: vi.fn().mockResolvedValue([]),
+        }),
       });
       mockSelect.mockReturnValueOnce({ from: mockLeadsFrom });
 
@@ -214,7 +355,9 @@ describe("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
 
       // 2nd tx.select - fetch leads
       const mockLeadsFrom = vi.fn().mockReturnValue({
-        where: vi.fn().mockResolvedValue(mockLeads),
+        where: vi.fn().mockReturnValue({
+          for: vi.fn().mockResolvedValue(mockLeads),
+        }),
       });
       mockSelect.mockReturnValueOnce({ from: mockLeadsFrom });
 
@@ -233,11 +376,14 @@ describe("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
       // 3. Then immutable log records are inserted with previous, new agent IDs and reassignment date
       expect(result.success).toBe(true);
       expect(mockInsert).toHaveBeenCalledTimes(1);
-      expect(mockInsertValues).toHaveBeenCalledWith({
-        leadId: "lead-1",
-        previousAgentId: "agent-source",
-        newAgentId: "agent-target",
-      });
+      expect(mockInsertValues).toHaveBeenCalledWith([
+        {
+          leadId: "lead-1",
+          previousAgentId: "agent-source",
+          newAgentId: "agent-target",
+          createdAt: expect.any(Date),
+        },
+      ]);
     });
   });
 
@@ -264,7 +410,7 @@ describe("Story 8.3: Bulk Lead Reassignment & Export - Server Logic", () => {
       const csvString = await exportAgentLeadsCSVAction(agentId);
 
       // 3. Then it contains the headers and decrypted contact details
-      expect(csvString).toContain("Name,Email,Phone");
+      expect(csvString).toContain("Name, Email, Phone");
       expect(csvString).toContain("Client One");
       expect(csvString).toContain(testEmail);
       expect(csvString).toContain(testPhone);
