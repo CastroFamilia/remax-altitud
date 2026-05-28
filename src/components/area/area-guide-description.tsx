@@ -61,6 +61,15 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
             );
           }
 
+          // 1.5. Heading H4
+          if (block.startsWith("#### ")) {
+            return (
+              <h4 key={idx} className="text-xl font-bold text-brand-navy pt-4 pb-1">
+                {block.replace("#### ", "")}
+              </h4>
+            );
+          }
+
           // 2. Heading H2
           if (block.startsWith("## ")) {
             return (
@@ -75,17 +84,22 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
 
           // 3. Custom services card list token
           if (block === "[SERVICES_LIST]") {
-            return <ServicesList key={idx} locale={locale} />;
+            return <ServicesList key={idx} locale={locale} areaSlug={area.slug} />;
           }
 
           // 4. Custom cardinal compass visual map token
           if (block === "[CARDINAL_MAP]") {
-            return <CardinalMap key={idx} locale={locale} />;
+            return <CardinalMap key={idx} locale={locale} areaSlug={area.slug} />;
           }
 
           // 5. Custom cardinal cards detailed sectors token
           if (block === "[CARDINAL_CARDS]") {
-            return <CardinalCards key={idx} locale={locale} />;
+            return <CardinalCards key={idx} locale={locale} areaSlug={area.slug} />;
+          }
+
+          // 5.5. Custom pricing table token
+          if (block === "[PRICING_TABLE]") {
+            return <PricingTable key={idx} locale={locale} />;
           }
 
           // 6. Custom high-converting properties search CTA token
@@ -93,11 +107,11 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
             return <CtaButton key={idx} locale={locale} areaSlug={area.slug} />;
           }
 
-          // Default: Paragraph with inline bold parsing
+          // Default: Paragraph and list elements with advanced parsing
           return (
-            <p
+            <div
               key={idx}
-              className="leading-relaxed text-text-primary text-[17px]"
+              className="leading-relaxed text-text-primary text-[17px] space-y-4"
               dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(block) }}
             />
           );
@@ -140,18 +154,55 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
   );
 }
 
-/** Helper to parse standard bold `**text**` inline markers */
+/** Helper to parse standard bold `**text**` and list inline markers */
 function formatInlineMarkdown(text: string): string {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-brand-navy">$1</strong>')
-    .replace(/\n/g, "<br />");
+  const lines = text.split("\n");
+  const processedLines = lines.map((line) => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("* ") || trimmed.startsWith("- ")) {
+      const content = trimmed.replace(/^[*+-]\s+/, "");
+      return `<li class="ml-6 list-disc text-text-primary text-[17px] mb-2">${formatInlineMarkdownHelper(content)}</li>`;
+    }
+    return `<p class="leading-relaxed text-text-primary text-[17px] mb-4">${formatInlineMarkdownHelper(line)}</p>`;
+  });
+
+  // Wrap consecutive list items in <ul>
+  let html = "";
+  let inList = false;
+
+  for (const line of processedLines) {
+    if (line.startsWith("<li")) {
+      if (!inList) {
+        html += `<ul class="my-4 space-y-1">`;
+        inList = true;
+      }
+      html += line;
+    } else {
+      if (inList) {
+        html += `</ul>`;
+        inList = false;
+      }
+      html += line;
+    }
+  }
+  if (inList) {
+    html += `</ul>`;
+  }
+  return html;
+}
+
+function formatInlineMarkdownHelper(text: string): string {
+  return text.replace(
+    /\*\*(.*?)\*\*/g,
+    '<strong class="font-semibold text-brand-navy">$1</strong>',
+  );
 }
 
 /** 1. Travel Logistics & everyday services component */
-function ServicesList({ locale }: { locale: string }) {
+function ServicesList({ locale, areaSlug }: { locale: string; areaSlug: string }) {
   const isEs = locale === "es";
 
-  const services = [
+  const perezZeledonServices = [
     {
       title: isEs ? "Acceso Aéreo Premium" : "Premium Aviation Access",
       desc: isEs
@@ -196,6 +247,32 @@ function ServicesList({ locale }: { locale: string }) {
     },
   ];
 
+  const dominicalServices = [
+    {
+      title: isEs ? "Carretera Costanera" : "The Costanera Highway",
+      desc: isEs
+        ? "Una autopista costera de clase mundial completamente pavimentada que conecta directamente con aeropuertos regionales y centros urbanos."
+        : "A fully paved, world-class coastal highway linking you directly to regional airports, pristine beaches, and neighboring hubs.",
+      icon: Plane,
+    },
+    {
+      title: isEs ? "Acceso Rápido a la Ciudad" : "Rapid City Access",
+      desc: isEs
+        ? "A tan solo 1 hora de San Isidro de El General, brindando acceso inmediato a hospitales privados, bancos y servicios urbanos."
+        : "Situated just 1 hour away from San Isidro de El General, allowing instant access to private hospitals, international banks, and major services.",
+      icon: Bus,
+    },
+    {
+      title: isEs ? "Alquileres de Alto Rendimiento" : "High-Yield Vacation Rentals",
+      desc: isEs
+        ? "Gracias a su reputación internacional, las propiedades en Dominical generan algunas de las tarifas nocturnas y niveles de ocupación más altos de Centroamérica."
+        : "Because of its elite reputation, Dominical properties command some of the highest nightly rental rates and occupancy percentages in Central America.",
+      icon: CreditCard,
+    },
+  ];
+
+  const services = areaSlug === "dominical" ? dominicalServices : perezZeledonServices;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
       {services.map((srv, idx) => {
@@ -220,9 +297,141 @@ function ServicesList({ locale }: { locale: string }) {
 }
 
 /** 2. Cardinal directions interactive responsive compass grid */
-function CardinalMap({ locale }: { locale: string }) {
+function CardinalMap({ locale, areaSlug }: { locale: string; areaSlug: string }) {
   const isEs = locale === "es";
 
+  if (areaSlug === "dominical") {
+    return (
+      <div className="my-10 relative">
+        {/* Desktop compass visual grid */}
+        <div className="hidden lg:grid grid-cols-3 gap-6 items-center justify-center max-w-4xl mx-auto p-8 rounded-3xl bg-brand-navy/5 border border-border/50 relative overflow-hidden">
+          {/* Decorative background circle */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+            <div className="w-80 h-80 rounded-full border-4 border-dashed border-brand-gold/30 animate-[spin_180s_linear_infinite]" />
+          </div>
+
+          {/* ROW 1: North */}
+          <div className="col-start-2 flex flex-col items-center">
+            <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
+                ▲ {isEs ? "NORTE" : "NORTH"}
+              </span>
+              <h4 className="font-semibold text-brand-navy text-sm">Upper Escaleras & Costaña</h4>
+              <p className="text-[11px] text-text-muted mt-1 leading-snug">
+                {isEs
+                  ? "Fincas de ultra lujo, helipuertos, vistas de 180° al mar"
+                  : "Ultra-Luxury Estates, helipads, 180° ocean views"}
+              </p>
+            </div>
+            <div className="w-0.5 h-8 bg-gradient-to-b from-brand-gold/45 to-transparent mt-2" />
+          </div>
+
+          {/* ROW 2: West | Center (Dominical) | East */}
+          {/* West */}
+          <div className="flex items-center">
+            <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-right">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
+                {isEs ? "OESTE" : "WEST"} ◀
+              </span>
+              <h4 className="font-semibold text-brand-navy text-sm">Lagunas Mountain Ridge</h4>
+              <p className="text-[11px] text-text-muted mt-1 leading-snug">
+                {isEs
+                  ? "Alturas frescas, naturaleza virgen, cascadas"
+                  : "Cool altitudes, pristine jungle, waterfalls"}
+              </p>
+            </div>
+            <div className="w-8 h-0.5 bg-gradient-to-r from-brand-gold/45 to-transparent ml-2" />
+          </div>
+
+          {/* Center Compass Needle */}
+          <div className="flex flex-col items-center justify-center p-6 rounded-full bg-brand-navy border-4 border-brand-gold text-white text-center w-44 h-44 mx-auto shadow-2xl relative z-10">
+            <Compass className="w-8 h-8 text-brand-gold animate-[pulse_4s_ease-in-out_infinite]" />
+            <span className="text-[10px] font-bold tracking-widest text-brand-gold/80 mt-2 block">
+              {isEs ? "PORTAL COSTEÑO" : "COASTAL HUB"}
+            </span>
+            <span className="text-xs font-extrabold leading-tight mt-1">Dominical Centro</span>
+          </div>
+
+          {/* East */}
+          <div className="flex items-center">
+            <div className="w-8 h-0.5 bg-gradient-to-l from-brand-gold/45 to-transparent mr-2" />
+            <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-left">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
+                ▶ {isEs ? "ESTE" : "EAST"}
+              </span>
+              <h4 className="font-semibold text-brand-navy text-sm">Dulce Pacífico & Élan</h4>
+              <p className="text-[11px] text-text-muted mt-1 leading-snug">
+                {isEs
+                  ? "Obras maestras inmobiliarias planificadas"
+                  : "Master-planned residential masterpieces"}
+              </p>
+            </div>
+          </div>
+
+          {/* ROW 3: South */}
+          <div className="col-start-2 flex flex-col items-center">
+            <div className="w-0.5 h-8 bg-gradient-to-t from-brand-gold/45 to-transparent mb-2" />
+            <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
+                ▼ {isEs ? "SUR" : "SOUTH"}
+              </span>
+              <h4 className="font-semibold text-brand-navy text-sm">Dominicalito Bay</h4>
+              <p className="text-[11px] text-text-muted mt-1 leading-snug">
+                {isEs
+                  ? "Aguas tranquilas, fondeo de botes, villas personalizadas"
+                  : "Calm waters, boat anchorage, custom villas"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile stacked visual list */}
+        <div className="grid grid-cols-2 gap-4 lg:hidden max-w-lg mx-auto">
+          <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
+            <span className="text-xs font-bold text-brand-gold block">
+              ▲ {isEs ? "NORTE" : "NORTH"}
+            </span>
+            <h4 className="font-bold text-brand-navy text-sm mt-1">Upper Escaleras</h4>
+            <p className="text-[11px] text-text-muted mt-1 leading-tight">
+              {isEs ? "Ultra-lujo, mar" : "Ultra-luxury modern villas"}
+            </p>
+          </div>
+          <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
+            <span className="text-xs font-bold text-brand-gold block">
+              ▶ {isEs ? "ESTE" : "EAST"}
+            </span>
+            <h4 className="font-bold text-brand-navy text-sm mt-1">Dulce & Élan</h4>
+            <p className="text-[11px] text-text-muted mt-1 leading-tight">
+              {isEs ? "Master-planned" : "Condos & developments"}
+            </p>
+          </div>
+          <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
+            <span className="text-xs font-bold text-brand-gold block">
+              ▼ {isEs ? "SUR" : "SOUTH"}
+            </span>
+            <h4 className="font-bold text-brand-navy text-sm mt-1">Dominicalito</h4>
+            <p className="text-[11px] text-text-muted mt-1 leading-tight">
+              {isEs ? "Bahía tranquila" : "Calm bay & anchorages"}
+            </p>
+          </div>
+          <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
+            <span className="text-xs font-bold text-brand-gold block">
+              ◀ {isEs ? "OESTE" : "WEST"}
+            </span>
+            <h4 className="font-bold text-brand-navy text-sm mt-1">Lagunas</h4>
+            <p className="text-[11px] text-text-muted mt-1 leading-tight">
+              {isEs ? "Bosque, manantiales" : "Cool elevations & springs"}
+            </p>
+          </div>
+          <div className="col-span-2 p-3 rounded-xl bg-brand-navy text-white text-center text-xs font-semibold shadow-inner">
+            📍 {isEs ? "Núcleo Central: Dominical Centro" : "Central Hub: Dominical Centro"}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback to Pérez Zeledón
   return (
     <div className="my-10 relative">
       {/* Desktop compass visual grid */}
@@ -359,10 +568,10 @@ function CardinalMap({ locale }: { locale: string }) {
 }
 
 /** 3. Premium detailed cardinal cards layout */
-function CardinalCards({ locale }: { locale: string }) {
+function CardinalCards({ locale, areaSlug }: { locale: string; areaSlug: string }) {
   const isEs = locale === "es";
 
-  const sectors = [
+  const perezZeledonSectors = [
     {
       title: isEs
         ? "1. El Norte (Rivas y San Gerardo de Rivas)"
@@ -413,6 +622,67 @@ function CardinalCards({ locale }: { locale: string }) {
     },
   ];
 
+  const dominicalSectors = [
+    {
+      title: isEs
+        ? "1. Las Escaleras y las Cordilleras Costeras"
+        : "1. Las Escaleras & The Coastal Ridges",
+      direction: isEs ? "NORTE — Alturas Exclusivas" : "NORTH — Ultra-Luxury Estates",
+      vibe: isEs
+        ? "El pináculo del lujo en el Pacífico Sur. Prestigioso, altamente seguro y excepcionalmente privado."
+        : "The pinnacle of luxury in the South Pacific. Prestigious, highly secure, and exceptionally private.",
+      properties: isEs
+        ? "Masterpieces arquitectónicos contemporáneos de vidrio y acero de millones de dólares, casas inteligentes con piscinas infinitas y lotes con acceso para helipuertos y vistas de 180 grados al atardecer."
+        : "Multi-million dollar contemporary glass-and-steel architectural masterpieces, luxury smart-homes with expansive infinity pools, and oceanview lots featuring helipad access and 180° sunset views.",
+    },
+    {
+      title: isEs ? "2. Lagunas de Barú" : "2. Lagunas de Barú",
+      direction: isEs ? "OESTE — Selva y Altura Fresca" : "WEST — Cool Jungle Ridges",
+      vibe: isEs
+        ? "Una comunidad residencial de montaña establecida y muy cotizada a solo 10 minutos de Dominical. Conocida por su clima fresco y privacidad absoluta."
+        : "A highly sought-after, established mountain residential community rising just 10 minutes behind Dominical. Known for cool elevation, absolute privacy, and jungle elegance.",
+      properties: isEs
+        ? "Expansivas propiedades con vistas al mar y a las montañas. Destacan por contar con nacientes de agua dulce propias, quebradas y cascadas privadas con excelentes accesos y agua de ASADA."
+        : "Expansive oceanview and mountainview estates nestled in primary forest. Noted for private natural springs, rushing creeks, hidden waterfalls, and legal ASADA water connection.",
+    },
+    {
+      title: isEs ? "3. Desarrollos Premium Icónicos" : "3. Iconic Premium Developments",
+      direction: isEs ? "ESTE — Comunidades Planificadas" : "EAST — Master-Planned Communities",
+      vibe: isEs
+        ? "Dulce Pacífico es un referente de vida sostenible con servicios subterráneos, iluminación solar y cascadas. Élan define el lujo frente al mar listo para disfrutar."
+        : "Dulce Pacífico sets a benchmark for sustainable luxury living with underground utilities and solar lighting. Élan defines turn-key luxury directly bordering the golden sand beach.",
+      properties: isEs
+        ? "Lotes listos para construir y condominios de lujo de 2 y 3 habitaciones de un solo nivel con piscinas estilo resort, club de playa y altos rendimientos de alquiler."
+        : "Infrastructure-ready development lots at Dulce Pacífico, and single-level 2/3 bedroom beachfront condos at Élan with resort pools, beach-club amenities, and high rental yields.",
+    },
+    {
+      title: isEs
+        ? "4. Dominicalito y Cordillera La Parcela"
+        : "4. Dominicalito & La Parcela Ridge",
+      direction: isEs ? "SUR — Bahía Protegida" : "SOUTH — Protected Bay & Calmer Waters",
+      vibe: isEs
+        ? "Una bahía más tranquila y protegida justo al sur de Dominical, popular por sus aguas calmas y puerto pesquero artesanal."
+        : "A quieter, more protected horseshoe bay just south of main Dominical; popular for calmer waters and its local artisanal fishing port.",
+      properties: isEs
+        ? "Villas residenciales de lujo personalizadas integradas en el dosel forestal con vistas directas al mar, condominios en comunidades cerradas como Canto Del Mar, Las Olas o Marisol, y parcelas frente al mar."
+        : "Custom luxury villas nestled in the canopy, secure gated developments like Canto Del Mar, Las Olas, or Marisol Condominiums, and premium oceanfront land parcels.",
+    },
+    {
+      title: isEs
+        ? "5. Dominical Centro y Zona Marítimo-Terrestre"
+        : "5. Dominical Centro & The Maritime Zone",
+      direction: isEs ? "CENTRO — Lujo Peatonal" : "CENTER — Beachfront Walkability",
+      vibe: isEs
+        ? "Una franja costera peatonal exclusiva llena de restaurantes al aire libre, cervecerías artesanales y mercados orgánicos."
+        : "A walkable, beachfront strip filled with open-air fine dining restaurants, boutique craft breweries, and organic markets.",
+      properties: isEs
+        ? "Locales comerciales premium, condominios listos para rentar con alto tráfico peatonal y excelente rentabilidad comercial."
+        : "Premium commercial storefronts, luxury turn-key vacation rental condos, and highly lucrative commercial investments with premier foot traffic.",
+    },
+  ];
+
+  const sectors = areaSlug === "dominical" ? dominicalSectors : perezZeledonSectors;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
       {sectors.map((sec, idx) => (
@@ -459,11 +729,115 @@ function CtaButton({ locale, areaSlug }: { locale: string; areaSlug: string }) {
       >
         <span>
           {isEs
-            ? "👉 Ver todas las propiedades en venta en Pérez Zeledón"
-            : "👉 View All Properties For Sale in Pérez Zeledón"}
+            ? areaSlug === "dominical"
+              ? "👉 Ver todas las propiedades de lujo en venta en Dominical"
+              : "👉 Ver todas las propiedades en venta en Pérez Zeledón"
+            : areaSlug === "dominical"
+              ? "👉 View All Luxury Properties For Sale in Dominical"
+              : "👉 View All Properties For Sale in Pérez Zeledón"}
         </span>
         <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300 text-brand-gold" />
       </Link>
+    </div>
+  );
+}
+
+/** 5. Premium custom pricing table component */
+function PricingTable({ locale }: { locale: string }) {
+  const isEs = locale === "es";
+
+  const rows = [
+    {
+      tier: isEs
+        ? "Mansiones y Obras Maestras Arquitectónicas"
+        : "Elite Compound & Architectural Masterpieces",
+      price: "$3,500,000 – $6,500,000+",
+      locations: "Upper Escaleras, Costaña",
+      features: isEs
+        ? "Villas inteligentes de ultra lujo, arquitectura moderna de acero y vidrio, vistas de 180° al mar, helipuertos, privacidad absoluta."
+        : "Ultra-luxury smart villas, glass/steel modern architecture, 180° whitewater views, helipads, ultimate privacy.",
+    },
+    {
+      tier: isEs ? "Casas y Fincas de Lujo Unifamiliares" : "Luxury Single-Family Homes & Estates",
+      price: "$1,200,000 – $3,000,000",
+      locations: "Lower Escaleras, Lagunas, Dominicalito",
+      features: isEs
+        ? "Villas personalizadas a nivel de dosel, piscinas infinitas, grandes fincas con cascadas o arroyos privados, enclaves seguros."
+        : "Custom canopy-level villas, infinity pools, large acreage lots with private waterfalls or creeks, secure gated enclaves.",
+    },
+    {
+      tier: isEs ? "Condominios y Townhomes Listos para Usar" : "Turn-key Condos & Townhomes",
+      price: "$500,000 – $1,100,000",
+      locations: "Dominical Centro, Élan Beachfront, Canto Del Mar",
+      features: isEs
+        ? "Residencias de un solo nivel con altos ingresos, piscinas estilo resort, a pasos de las playas de surf premium."
+        : "High-yield single-level residences, resort-style shared infrastructure, walking distance to premium surf beaches.",
+    },
+    {
+      tier: isEs ? "Lotes Premium con Vistas al Mar" : "Premium Ocean-View Land Parcels",
+      price: "$300,000 – $800,000",
+      locations: "Dulce Pacífico, Lagunas Ridges",
+      features: isEs
+        ? "Lotes con infraestructura lista, agua legal (ASADA), caminos internos y terrazas de construcción listas."
+        : "Infrastructure-ready development lots with legal water hookups (ASADA), internal road cuts, and designated building pads.",
+    },
+  ];
+
+  return (
+    <div className="my-8 overflow-hidden rounded-2xl border border-border/80 shadow-md">
+      {/* Desktop Table View */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full text-left border-collapse bg-background">
+          <thead>
+            <tr className="bg-brand-navy text-white text-xs font-bold uppercase tracking-wider">
+              <th className="px-6 py-4">{isEs ? "NIVEL DE INVERSIÓN" : "INVESTMENT TIER"}</th>
+              <th className="px-6 py-4">{isEs ? "RANGO DE PRECIOS" : "PRICING RANGE"}</th>
+              <th className="px-6 py-4">{isEs ? "UBICACIONES" : "DOMINANT LOCATIONS"}</th>
+              <th className="px-6 py-4">{isEs ? "CARACTERÍSTICAS" : "KEY CHARACTERISTICS"}</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border/60 text-sm">
+            {rows.map((row, idx) => (
+              <tr key={idx} className="hover:bg-brand-navy/5 transition-colors duration-200">
+                <td className="px-6 py-4 font-bold text-brand-navy leading-tight">{row.tier}</td>
+                <td className="px-6 py-4 font-extrabold text-brand-gold whitespace-nowrap">
+                  {row.price}
+                </td>
+                <td className="px-6 py-4 text-text-primary">{row.locations}</td>
+                <td className="px-6 py-4 text-text-secondary leading-relaxed">{row.features}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile Card-based View */}
+      <div className="block md:hidden divide-y divide-border/60 bg-background">
+        {rows.map((row, idx) => (
+          <div key={idx} className="p-5 space-y-3">
+            <div className="flex justify-between items-start gap-2">
+              <h4 className="text-base font-extrabold text-brand-navy leading-tight">{row.tier}</h4>
+              <span className="text-[11px] font-extrabold tracking-wider text-brand-gold bg-brand-navy/5 px-2 py-0.5 rounded whitespace-nowrap">
+                {row.price}
+              </span>
+            </div>
+            <div className="space-y-1 text-xs text-text-muted">
+              <p>
+                <strong className="text-text-primary">
+                  {isEs ? "Ubicaciones: " : "Locations: "}
+                </strong>
+                {row.locations}
+              </p>
+              <p className="leading-relaxed">
+                <strong className="text-text-primary">
+                  {isEs ? "Características: " : "Characteristics: "}
+                </strong>
+                {row.features}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
