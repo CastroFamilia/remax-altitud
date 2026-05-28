@@ -1,4 +1,4 @@
-import { vi, describe, it, expect, beforeEach, beforeAll } from "vitest";
+import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 
 // Hoisted mocks for database client
 const { mockSelect, mockUpdate, mockInsert } = vi.hoisted(() => ({
@@ -15,21 +15,24 @@ vi.mock("@/lib/db/client", () => ({
   },
 }));
 
-beforeAll(() => {
-  process.env.LEAD_ENCRYPTION_KEY =
-    "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
-});
-
 import { reassignLead } from "@/lib/db/queries/leads";
 import { encryptField, decryptField } from "@/lib/utils/encryption";
 
 describe("Story 8.2: Lead Management & Agent Assignment - Server Logic", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv(
+      "LEAD_ENCRYPTION_KEY",
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   describe("reassignLead Action", () => {
-    it("should update assignedAgentId and create a lead_assignment_logs entry", async () => {
+    it("[P0] 8.2-UNIT-001: should update assignedAgentId and create a lead_assignment_logs entry", async () => {
       // 1. Given a lead and two agents
       const mockLead = { assignedAgentId: "agent-old" };
       const mockLimit = vi.fn().mockResolvedValue([mockLead]);
@@ -62,7 +65,7 @@ describe("Story 8.2: Lead Management & Agent Assignment - Server Logic", () => {
   });
 
   describe("Shortlist Grouping Logic", () => {
-    it("should group shortlisted properties by assigned agent vs other agents", () => {
+    it("[P0] 8.2-UNIT-002: should group shortlisted properties by assigned agent vs other agents", () => {
       // 1. Given a list of shortlisted property IDs
       const assignedAgentId = "agent-emma";
       const shortlistProperties = [
@@ -90,7 +93,7 @@ describe("Story 8.2: Lead Management & Agent Assignment - Server Logic", () => {
   });
 
   describe("Encryption Utility", () => {
-    it("should correctly decrypt email and phone fields", () => {
+    it("[P0] 8.2-UNIT-003: should correctly decrypt email and phone fields", () => {
       // 1. Given encrypted email and phone strings
       const testEmail = "test@example.com";
       const testPhone = "+50688888888";
@@ -108,3 +111,4 @@ describe("Story 8.2: Lead Management & Agent Assignment - Server Logic", () => {
     });
   });
 });
+

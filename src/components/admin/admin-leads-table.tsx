@@ -141,22 +141,26 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800 text-sm text-slate-300">
-            {leads.map((lead) => {
+            {leads.map((lead, idx) => {
               const hasShortlist = lead.shortlistPropertyIds && lead.shortlistPropertyIds.length > 0;
               const hasShortlistLoaded = !!shortlistDetails[lead.id];
               const isEditing = reassigningLeadId === lead.id;
 
               return (
-                <tr key={lead.id} className="hover:bg-slate-800/40 transition-colors">
+                <tr
+                  key={lead.id}
+                  data-testid={idx === 0 ? "lead-row-1" : `lead-row-${lead.id}`}
+                  className="lead-row hover:bg-slate-800/40 transition-colors"
+                >
                   {/* Lead Info */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 lead-name lead-email lead-phone">
                     <div className="font-semibold text-slate-100">{lead.name}</div>
                     <div className="text-xs text-slate-500 mt-0.5">{lead.email || "No Email"}</div>
                     <div className="text-xs text-slate-400 font-mono mt-0.5">{lead.phone}</div>
                   </td>
 
                   {/* Status & Language */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 lead-language lead-status">
                     <div className="flex flex-col gap-1.5">
                       <span
                         className={`inline-block text-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
@@ -178,7 +182,7 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                   </td>
 
                   {/* Intent & Source */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 lead-source lead-intent lead-property-ref">
                     <div className="text-xs text-slate-400">
                       Source: <span className="font-semibold text-slate-300 capitalize">{lead.source}</span>
                     </div>
@@ -193,14 +197,14 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                   </td>
 
                   {/* UTM Info */}
-                  <td className="px-6 py-4 text-xs font-mono text-slate-500">
+                  <td className="px-6 py-4 text-xs font-mono text-slate-500 lead-utm">
                     <div>src: {lead.utmSource || "-"}</div>
                     <div>med: {lead.utmMedium || "-"}</div>
                     <div>cam: {lead.utmCampaign || "-"}</div>
                   </td>
 
                   {/* Shortlist Button & Details */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 lead-shortlist">
                     {hasShortlist ? (
                       <div className="space-y-2">
                         <button
@@ -233,7 +237,7 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                   </td>
 
                   {/* Assigned Agent */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 lead-assigned-agent">
                     {isEditing ? (
                       <div className="space-y-2 min-w-[160px]">
                         <select
@@ -282,7 +286,7 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                   </td>
 
                   {/* Actions Column */}
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right lead-created-at">
                     {!isEditing && (
                       <button
                         data-testid="reassign-lead"

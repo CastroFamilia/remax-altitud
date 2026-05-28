@@ -19,7 +19,7 @@
  * Environment: node (.spec.ts → node project via vitest.config.mts)
  */
 
-import { describe, it, expect, beforeAll } from "vitest";
+import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 
 // ---------------------------------------------------------------------------
 // Set up test encryption key before importing the module
@@ -29,8 +29,12 @@ import { describe, it, expect, beforeAll } from "vitest";
 const TEST_ENCRYPTION_KEY =
   "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 
-beforeAll(() => {
-  process.env.LEAD_ENCRYPTION_KEY = TEST_ENCRYPTION_KEY;
+beforeEach(() => {
+  vi.stubEnv("LEAD_ENCRYPTION_KEY", TEST_ENCRYPTION_KEY);
+});
+
+afterEach(() => {
+  vi.unstubAllEnvs();
 });
 
 // ---------------------------------------------------------------------------
@@ -126,19 +130,14 @@ describe("PII Encryption — encryptField / decryptField (5.3-UNIT-001)", () => 
   });
 
   it("[P0] 5.3-UNIT-001h: encryptField() throws when LEAD_ENCRYPTION_KEY is missing", async () => {
-    // Temporarily remove the key
-    const savedKey = process.env.LEAD_ENCRYPTION_KEY;
-    delete process.env.LEAD_ENCRYPTION_KEY;
+    // Temporarily remove the key using stubEnv
+    vi.stubEnv("LEAD_ENCRYPTION_KEY", "");
 
-    try {
-      // Force fresh import to pick up missing env var
-      // Since the module is cached, we test getKey() indirectly via the function
-      // The key is read on each call, so removing it should cause a throw
-      const { encryptField } = await import("@/lib/utils/encryption");
-      expect(() => encryptField("test")).toThrow(/LEAD_ENCRYPTION_KEY/);
-    } finally {
-      process.env.LEAD_ENCRYPTION_KEY = savedKey;
-    }
+    // Force fresh import to pick up missing env var
+    // Since the module is cached, we test getKey() indirectly via the function
+    // The key is read on each call, so removing it should cause a throw
+    const { encryptField } = await import("@/lib/utils/encryption");
+    expect(() => encryptField("test")).toThrow(/LEAD_ENCRYPTION_KEY/);
   });
 });
 

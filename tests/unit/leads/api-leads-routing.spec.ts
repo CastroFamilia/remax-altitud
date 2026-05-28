@@ -13,7 +13,7 @@
  * Marked with describe.skip for the TDD RED phase.
  */
 
-import { vi, describe, it, expect, beforeEach, beforeAll } from "vitest";
+import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 
 // Mock server-only
 vi.mock("server-only", () => ({}));
@@ -58,15 +58,19 @@ function createMockRequest(body: unknown) {
 }
 
 describe("Story 7.4: POST /api/leads — Smart Agent Routing Integration (RED PHASE)", () => {
-  beforeAll(() => {
-    process.env.LEAD_ENCRYPTION_KEY = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
-  });
-
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv(
+      "LEAD_ENCRYPTION_KEY",
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+    );
     mockMatchAgentByCoordinates.mockResolvedValue("agent-coordinates-fallback");
     mockFindRecentDuplicate.mockResolvedValue(null);
     mockCreateLead.mockResolvedValue({ id: "lead-routing-123", assignedAgentId: "agent-emma" });
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it("[P0] 7.4-UNIT-008: accepts assignedAgentId and shortlistPropertyIds, and bypasses coordinates matching (AC #5)", async () => {

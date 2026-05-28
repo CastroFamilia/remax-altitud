@@ -58,7 +58,7 @@ export default async function ReassignmentLogsPage({ params }: PageProps) {
               </thead>
               <tbody className="divide-y divide-slate-800 text-sm text-slate-300">
                 {logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-800/40 transition-colors">
+                  <tr key={log.id} data-testid="log-entry" className="hover:bg-slate-800/40 transition-colors">
                     {/* Timestamp */}
                     <td className="px-6 py-4 font-mono text-slate-400 text-xs">
                       {new Date(log.createdAt).toLocaleString()}
