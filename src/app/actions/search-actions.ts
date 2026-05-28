@@ -12,6 +12,7 @@
 
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
+import { communities } from "@/lib/db/schema/communities";
 import { and, eq, gte, lte, isNotNull, desc, asc, sql, or, ilike, inArray } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
@@ -31,35 +32,38 @@ function sanitizeNumber(value: number | undefined): number | undefined {
 }
 
 const TYPE_EQUIVALENTS: Record<string, string[]> = {
-  casa: ["Casa", "House", "Residential"],
-  house: ["Casa", "House", "Residential"],
-  home: ["Casa", "House", "Residential"],
+  casa: ["Casa", "House", "Residential", "House/Villa"],
+  house: ["Casa", "House", "Residential", "House/Villa"],
+  home: ["Casa", "House", "Residential", "House/Villa"],
   apartamento: ["Apartamento", "Apartment", "Condominium", "Condo"],
   apartment: ["Apartamento", "Apartment", "Condominium", "Condo"],
   condo: ["Apartamento", "Apartment", "Condominium", "Condo"],
   condominio: ["Apartamento", "Apartment", "Condominium", "Condo"],
-  lote: ["Lote", "Lot", "Land"],
-  lot: ["Lote", "Lot", "Land"],
-  terreno: ["Terreno", "Terrenos", "Land", "Lot"],
-  land: ["Terreno", "Terrenos", "Land", "Lot"],
+  lote: ["Lote", "Lot", "Land", "Lot/Land"],
+  lot: ["Lote", "Lot", "Land", "Lot/Land"],
+  terreno: ["Terreno", "Terrenos", "Land", "Lot", "Lot/Land"],
+  land: ["Terreno", "Terrenos", "Land", "Lot", "Lot/Land"],
   comercial: ["Comercial", "Commercial", "Business"],
   commercial: ["Comercial", "Commercial", "Business"],
-  finca: ["Finca", "Farm", "Ranch"],
-  farm: ["Finca", "Farm", "Ranch"],
-  ranch: ["Finca", "Farm", "Ranch"],
+  finca: ["Finca", "Farm", "Ranch", "Rural area"],
+  farm: ["Finca", "Farm", "Ranch", "Rural area"],
+  ranch: ["Finca", "Farm", "Ranch", "Rural area"],
 };
 
 const DB_TYPE_TO_SPANISH: Record<string, string> = {
   House: "Casa",
+  "House/Villa": "Casa",
   Residential: "Casa",
   Apartment: "Apartamento",
   Condominium: "Apartamento",
   Condo: "Apartamento",
   Lot: "Lote",
+  "Lot/Land": "Lote",
   Land: "Terreno",
   Commercial: "Comercial",
   Farm: "Finca",
   Ranch: "Finca",
+  "Rural area": "Finca",
 };
 
 function getPropertyTypeEquivalents(type: string): string[] {
@@ -121,31 +125,100 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       ? lotSizeMin
       : lotSizeMax;
 
-  // Build keyword search conditions with river synonym expansion
+  // Build keyword search conditions with feature synonym expansion
   let searchCondition: SQL | undefined = undefined;
   if (filters.q && filters.q.trim().length > 0) {
     const queryTerm = filters.q.trim();
-    const isRiverQuery = /r[ií]o|river|quebrada/i.test(queryTerm);
-    if (isRiverQuery) {
-      const riverSynonyms = ["rio", "río", "river", "quebrada"];
-      const synonymConditions = riverSynonyms.flatMap((term) => {
-        const matchPattern = `%${term}%`;
-        return [
-          ilike(properties.titleEn, matchPattern),
-          ilike(properties.titleEs, matchPattern),
-          ilike(properties.descriptionEn, matchPattern),
-          ilike(properties.descriptionEs, matchPattern),
-        ];
+
+    // Define synonym expansion groups
+    const SYNONYM_GROUPS = [
+      {
+        keywords: /r[ií]o|river|quebrada|creek|stream/i,
+        synonyms: ["rio", "río", "river", "quebrada", "creek", "stream"],
+      },
+      {
+        keywords: /waterfall|cascada|catarata/i,
+        synonyms: ["waterfall", "waterfalls", "cascada", "cascadas", "catarata", "cataratas"],
+      },
+      {
+        keywords: /view|vista|panorama|mirador|paisaje/i,
+        synonyms: [
+          "view",
+          "views",
+          "vista",
+          "vistas",
+          "panorama",
+          "panorámica",
+          "panoramica",
+          "mirador",
+          "paisaje",
+        ],
+      },
+      {
+        keywords: /beach|playa|ocean|sea|mar|oc[eé]ano/i,
+        synonyms: ["beach", "playa", "ocean", "sea", "mar", "océano", "oceano", "costa"],
+      },
+    ];
+
+    const QUERY_STOP_WORDS = new Set([
+      "con",
+      "de",
+      "in",
+      "with",
+      "and",
+      "a",
+      "en",
+      "la",
+      "el",
+      "un",
+      "una",
+      "for",
+      "para",
+      "los",
+      "las",
+      "del",
+      "y",
+      "o",
+      "or",
+      "to",
+      "at",
+      "by",
+      "of",
+    ]);
+
+    // Split by whitespace and punctuation, map to lowercase and filter out stop words
+    const tokens = queryTerm
+      .split(/[\s,.\-/?!|;:]+/)
+      .map((t) => t.toLowerCase())
+      .filter((t) => t.length > 0 && !QUERY_STOP_WORDS.has(t));
+
+    if (tokens.length > 0) {
+      const tokenConditions = tokens.map((token) => {
+        const matchedGroup = SYNONYM_GROUPS.find((group) => group.keywords.test(token));
+        if (matchedGroup) {
+          const synonymConditions = matchedGroup.synonyms.flatMap((term) => {
+            const matchPattern = `%${term}%`;
+            return [
+              ilike(properties.titleEn, matchPattern),
+              ilike(properties.titleEs, matchPattern),
+              ilike(properties.descriptionEn, matchPattern),
+              ilike(properties.descriptionEs, matchPattern),
+              ilike(communities.name, matchPattern),
+            ];
+          });
+          return or(...synonymConditions);
+        } else {
+          const matchPattern = `%${token}%`;
+          return or(
+            ilike(properties.titleEn, matchPattern),
+            ilike(properties.titleEs, matchPattern),
+            ilike(properties.descriptionEn, matchPattern),
+            ilike(properties.descriptionEs, matchPattern),
+            ilike(communities.name, matchPattern),
+          );
+        }
       });
-      searchCondition = or(...synonymConditions);
-    } else {
-      const matchPattern = `%${queryTerm}%`;
-      searchCondition = or(
-        ilike(properties.titleEn, matchPattern),
-        ilike(properties.titleEs, matchPattern),
-        ilike(properties.descriptionEn, matchPattern),
-        ilike(properties.descriptionEs, matchPattern),
-      );
+      searchCondition = and(...tokenConditions);
     }
   }
 
@@ -211,6 +284,7 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       longitude: properties.longitude,
     })
     .from(properties)
+    .leftJoin(communities, eq(properties.communityId, communities.id))
     .where(whereClause)
     .orderBy(orderByClause)
     .limit(20)
@@ -238,6 +312,7 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(properties)
+    .leftJoin(communities, eq(properties.communityId, communities.id))
     .where(facetWhere("type"))
     .groupBy(properties.propertyType);
 
@@ -248,6 +323,7 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(properties)
+    .leftJoin(communities, eq(properties.communityId, communities.id))
     .where(and(facetWhere("bedrooms"), isNotNull(properties.bedrooms)))
     .groupBy(properties.bedrooms);
 
@@ -258,6 +334,7 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(properties)
+    .leftJoin(communities, eq(properties.communityId, communities.id))
     .where(and(facetWhere("bathrooms"), isNotNull(properties.bathrooms)))
     .groupBy(properties.bathrooms);
 
@@ -266,6 +343,7 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
   const totalRows = await db
     .select({ count: sql<number>`cast(count(*) as integer)` })
     .from(properties)
+    .leftJoin(communities, eq(properties.communityId, communities.id))
     .where(whereClause);
   const total = totalRows[0]?.count ?? propertyItems.length;
 

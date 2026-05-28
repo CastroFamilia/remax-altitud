@@ -30,21 +30,25 @@ type TabId = (typeof TAB_IDS)[number];
 
 export function AreaGuideTabs({ properties, agents, similarAreas, locale }: AreaGuideTabsProps) {
   const t = useTranslations("AreaGuide");
-  const [activeTab, setActiveTab] = useState<TabId>("properties");
+  const availableTabs = (
+    properties.length > 0 ? TAB_IDS : TAB_IDS.filter((id) => id !== "properties")
+  ) as TabId[];
+
+  const [activeTab, setActiveTab] = useState<TabId>(availableTabs[0] || "agents");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      const currentIndex = TAB_IDS.indexOf(activeTab);
+      const currentIndex = availableTabs.indexOf(activeTab);
       let newIndex = currentIndex;
 
       switch (e.key) {
         case "ArrowRight":
-          newIndex = (currentIndex + 1) % TAB_IDS.length;
+          newIndex = (currentIndex + 1) % availableTabs.length;
           e.preventDefault();
           break;
         case "ArrowLeft":
-          newIndex = (currentIndex - 1 + TAB_IDS.length) % TAB_IDS.length;
+          newIndex = (currentIndex - 1 + availableTabs.length) % availableTabs.length;
           e.preventDefault();
           break;
         case "Home":
@@ -52,17 +56,17 @@ export function AreaGuideTabs({ properties, agents, similarAreas, locale }: Area
           e.preventDefault();
           break;
         case "End":
-          newIndex = TAB_IDS.length - 1;
+          newIndex = availableTabs.length - 1;
           e.preventDefault();
           break;
         default:
           return;
       }
 
-      setActiveTab(TAB_IDS[newIndex]);
+      setActiveTab(availableTabs[newIndex]);
       tabRefs.current[newIndex]?.focus();
     },
-    [activeTab],
+    [activeTab, availableTabs],
   );
 
   const tabLabels: Record<TabId, string> = {
@@ -80,7 +84,7 @@ export function AreaGuideTabs({ properties, agents, similarAreas, locale }: Area
         className="flex gap-1 border-b border-border"
         onKeyDown={handleKeyDown}
       >
-        {TAB_IDS.map((tabId, index) => (
+        {availableTabs.map((tabId, index) => (
           <button
             key={tabId}
             ref={(el) => {

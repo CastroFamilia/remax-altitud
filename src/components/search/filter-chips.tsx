@@ -121,7 +121,8 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
   const chipValueForTag = (tag: string): string => {
     const i18nKey = `lifestyleTags.chips.${tag}`;
     const translated = t(i18nKey);
-    return translated === i18nKey ? tagDisplayLabel(tag) : translated;
+    const isMissing = translated === i18nKey || translated === `SearchPage.${i18nKey}`;
+    return isMissing ? tagDisplayLabel(tag) : translated;
   };
   (filters.tags ?? []).forEach((tag) => {
     chips.push({
@@ -162,7 +163,7 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
         <span
           key={chip.reactKey}
           data-testid="filter-chip"
-          className="inline-flex items-center gap-1 rounded-full bg-brand-blue px-3 py-1 text-sm font-medium text-white min-h-[2.75rem]"
+          className="inline-flex items-center gap-1 rounded-full bg-brand-blue border border-brand-blue px-4 py-1.5 text-sm font-semibold text-white min-h-[2.75rem] shadow-sm transition-all duration-200"
         >
           <span>
             {chip.label}: {chip.value}
