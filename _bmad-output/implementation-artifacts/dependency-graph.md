@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-28T00:41:00-06:00_
+_Last updated: 2026-05-28T09:35:00-06:00_
 
 ## Stories
 
@@ -45,8 +45,8 @@ _Last updated: 2026-05-28T00:41:00-06:00_
 | 7.3   | 7    | Shareable Shortlist URL | done | #108 | #164 | merged | 7.2 | ✅ Yes (done) |
 | 7.4   | 7    | Smart Agent Routing from Shortlist | done | #109 | #165 | merged | 7.2 | ✅ Yes (done) |
 | 8.1   | 8    | Sync Status Dashboard & Monitoring | done | #110 | #166 | merged | none | ✅ Yes (done) |
-| 8.2   | 8    | Lead Management & Agent Assignment | backlog | #111 | — | — | none | ✅ Yes |
-| 8.3   | 8    | Bulk Lead Reassignment & Export | backlog | #112 | — | — | 8.2 | ❌ No (8.2 not merged) |
+| 8.2   | 8    | Lead Management & Agent Assignment | done | #111 | #167 | merged | none | ✅ Yes (done) |
+| 8.3   | 8    | Bulk Lead Reassignment & Export | backlog | #112 | — | — | 8.2 | ✅ Yes |
 | 8.4   | 8    | Lifestyle Tag Administration | backlog | #113 | — | — | none | ✅ Yes |
 | 8.5   | 8    | Community Administration | backlog | #114 | — | — | none | ✅ Yes |
 | 8.6   | 8    | Listing Visibility & SEO Monitoring | backlog | #115 | — | — | none | ✅ Yes |
@@ -103,9 +103,9 @@ _Last updated: 2026-05-28T00:41:00-06:00_
 ## Notes
 
 - Epics 1–7 are fully complete (all stories done and merged).
-- Epic 8 is in progress. Story 8.1 PR #166 merged 2026-05-28.
-- Epic 8 parallelization opportunities: Stories 8.2, 8.4, 8.5, 8.6, and 8.7 are all unblocked and Ready to Work.
+- Epic 8 is in progress. Story 8.1 PR #166 and Story 8.2 PR #167 are merged on 2026-05-28.
+- Epic 8 parallelization opportunities: Stories 8.3, 8.4, 8.5, 8.6, and 8.7 are all unblocked and Ready to Work.
 - Base branch: `development` (not `main`). All worktrees and PRs target `development`.
 - No open story PRs. PR #155 (Release) is open but not story-related.
-- Cleaned up story-8.1 worktree and remote/local branch.
+- Cleaned up story-8.1 and story-8.2 worktrees and remote/local branches.
 - Epic ordering strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
