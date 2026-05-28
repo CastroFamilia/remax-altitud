@@ -45,7 +45,9 @@ export const leadsRelations = relations(leads, ({ one, many }) => ({
 
 export const leadAssignmentLogsRelations = relations(leadAssignmentLogs, ({ one }) => ({
   lead: one(leads, { fields: [leadAssignmentLogs.leadId], references: [leads.id] }),
-  previousAgent: one(agents, { fields: [leadAssignmentLogs.previousAgentId], references: [agents.id] }),
+  previousAgent: one(agents, {
+    fields: [leadAssignmentLogs.previousAgentId],
+    references: [agents.id],
+  }),
   newAgent: one(agents, { fields: [leadAssignmentLogs.newAgentId], references: [agents.id] }),
 }));
-

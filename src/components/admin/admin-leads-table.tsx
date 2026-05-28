@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import { fetchShortlistDetailsAction, reassignLeadAction } from "@/app/actions/admin-lead-actions";
 import { UserCheck, ShieldAlert, BookOpen, Loader2 } from "lucide-react";
 
-interface Agent {
+export interface Agent {
   id: string;
   name: string;
 }
 
-interface Lead {
+export interface Lead {
   id: string;
   name: string;
   email: string | null;
@@ -28,6 +28,22 @@ interface Lead {
   createdAt: Date;
 }
 
+export interface Listing {
+  id: string;
+  apiId?: string | null;
+  agentName?: string | null;
+}
+
+export interface GroupedDetails {
+  assignedAgentListings?: Listing[];
+  otherAgentListings?: Listing[];
+}
+
+export interface ShortlistDetails {
+  agentName?: string | null;
+  groupedDetails?: GroupedDetails;
+}
+
 interface AdminLeadsTableProps {
   locale: string;
   leads: Lead[];
@@ -41,7 +57,7 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
   const [isSubmitReassign, setIsSubmitReassign] = useState(false);
 
   // Shortlist details state
-  const [shortlistDetails, setShortlistDetails] = useState<Record<string, any>>({});
+  const [shortlistDetails, setShortlistDetails] = useState<Record<string, ShortlistDetails>>({});
   const [loadingShortlistId, setLoadingShortlistId] = useState<string | null>(null);
 
   const handleOpenReassign = (lead: Lead) => {
@@ -85,7 +101,7 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
     }
   };
 
-  const formatShortlistText = (details: any) => {
+  const formatShortlistText = (details: ShortlistDetails) => {
     if (!details || !details.groupedDetails) {
       return "No details available";
     }
@@ -95,16 +111,14 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
     const assignedListings = details.groupedDetails.assignedAgentListings || [];
     if (assignedListings.length > 0) {
       const agentName = details.agentName || "Assigned Agent";
-      const refs = assignedListings
-        .map((p: any) => `#${p.apiId || p.id}`)
-        .join(", ");
+      const refs = assignedListings.map((p) => `#${p.apiId || p.id}`).join(", ");
       parts.push(`${agentName}'s: ${refs}`);
     }
 
     // Other Agent Listings grouped by listing agent name
-    const othersByAgent: Record<string, any[]> = {};
+    const othersByAgent: Record<string, Listing[]> = {};
     const otherListings = details.groupedDetails.otherAgentListings || [];
-    otherListings.forEach((p: any) => {
+    otherListings.forEach((p) => {
       const name = p.agentName || "Other Agent";
       if (!othersByAgent[name]) {
         othersByAgent[name] = [];
@@ -113,7 +127,7 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
     });
 
     Object.entries(othersByAgent).forEach(([name, props]) => {
-      const refs = props.map((p: any) => `#${p.apiId || p.id}`).join(", ");
+      const refs = props.map((p) => `#${p.apiId || p.id}`).join(", ");
       parts.push(`${name}'s: ${refs}`);
     });
 
@@ -147,7 +161,8 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
           </thead>
           <tbody className="divide-y divide-slate-800 text-sm text-slate-300">
             {leads.map((lead, idx) => {
-              const hasShortlist = lead.shortlistPropertyIds && lead.shortlistPropertyIds.length > 0;
+              const hasShortlist =
+                lead.shortlistPropertyIds && lead.shortlistPropertyIds.length > 0;
               const hasShortlistLoaded = !!shortlistDetails[lead.id];
               const isEditing = reassigningLeadId === lead.id;
 
@@ -172,10 +187,10 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                           lead.status === "new"
                             ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                             : lead.status === "contacted"
-                            ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
-                            : lead.status === "qualified"
-                            ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
-                            : "bg-green-500/20 text-green-400 border border-green-500/30"
+                              ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+                              : lead.status === "qualified"
+                                ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                                : "bg-green-500/20 text-green-400 border border-green-500/30"
                         }`}
                       >
                         {lead.status}
@@ -189,14 +204,17 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                   {/* Intent & Source */}
                   <td className="px-6 py-4 lead-source lead-intent lead-property-ref">
                     <div className="text-xs text-slate-400">
-                      Source: <span className="font-semibold text-slate-300 capitalize">{lead.source}</span>
+                      Source:{" "}
+                      <span className="font-semibold text-slate-300 capitalize">{lead.source}</span>
                     </div>
                     <div className="text-xs text-slate-400 mt-1">
-                      Intent: <span className="font-semibold text-slate-300 capitalize">{lead.intent}</span>
+                      Intent:{" "}
+                      <span className="font-semibold text-slate-300 capitalize">{lead.intent}</span>
                     </div>
                     {lead.propertyApiId && (
                       <div className="text-[11px] text-red-400 mt-1">
-                        Property Ref: <span className="font-mono font-bold">#{lead.propertyApiId}</span>
+                        Property Ref:{" "}
+                        <span className="font-mono font-bold">#{lead.propertyApiId}</span>
                       </div>
                     )}
                   </td>
@@ -223,7 +241,9 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                             <BookOpen className="w-3.5 h-3.5 text-blue-400" />
                           )}
                           <span>
-                            {hasShortlistLoaded ? "Hide Shortlist" : `View Shortlist (${lead.shortlistPropertyIds?.length})`}
+                            {hasShortlistLoaded
+                              ? "Hide Shortlist"
+                              : `View Shortlist (${lead.shortlistPropertyIds?.length})`}
                           </span>
                         </button>
 

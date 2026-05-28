@@ -77,7 +77,9 @@ export default async function AgentHistoryPage({ params, searchParams }: PagePro
           <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center text-slate-400">
             <ShieldAlert className="w-12 h-12 text-slate-500 mx-auto mb-3" />
             <p className="font-semibold text-lg text-slate-300">No leads found for this agent</p>
-            <p className="text-sm text-slate-500 mt-1">This agent hasn't been assigned any leads yet.</p>
+            <p className="text-sm text-slate-500 mt-1">
+              This agent hasn&apos;t been assigned any leads yet.
+            </p>
           </div>
         ) : (
           <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
@@ -123,10 +125,10 @@ export default async function AgentHistoryPage({ params, searchParams }: PagePro
                             lead.status === "new"
                               ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                               : lead.status === "contacted"
-                              ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
-                              : lead.status === "qualified"
-                              ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
-                              : "bg-green-500/20 text-green-400 border border-green-500/30"
+                                ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+                                : lead.status === "qualified"
+                                  ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                                  : "bg-green-500/20 text-green-400 border border-green-500/30"
                           }`}
                         >
                           {lead.status}
@@ -146,7 +148,9 @@ export default async function AgentHistoryPage({ params, searchParams }: PagePro
         )
       ) : (
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center text-slate-400">
-          <p className="font-semibold text-slate-300">Please choose an agent from the dropdown above to view their lead history.</p>
+          <p className="font-semibold text-slate-300">
+            Please choose an agent from the dropdown above to view their lead history.
+          </p>
         </div>
       )}
     </div>

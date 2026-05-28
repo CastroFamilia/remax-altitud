@@ -160,7 +160,12 @@ export default async function AdminPage({ params, searchParams }: PageProps) {
           </div>
         ) : (
           logs.map((log) => (
-            <AdminSyncLogRow key={log.id} log={log} locale={locale} translations={rowTranslations} />
+            <AdminSyncLogRow
+              key={log.id}
+              log={log}
+              locale={locale}
+              translations={rowTranslations}
+            />
           ))
         )}
       </div>

@@ -311,7 +311,11 @@ export function AdminSyncLogRow({ log, locale, translations }: AdminSyncLogRowPr
                     Error Array Stack
                   </span>
                   <pre className="w-full bg-slate-950 text-red-300 font-mono text-xs p-4 rounded-lg overflow-x-auto border border-slate-800 max-h-60 scrollbar-thin select-all">
-                    {JSON.stringify(log.errors, (_, v) => typeof v === "bigint" ? v.toString() : v, 2)}
+                    {JSON.stringify(
+                      log.errors,
+                      (_, v) => (typeof v === "bigint" ? v.toString() : v),
+                      2,
+                    )}
                   </pre>
                 </div>
               )}

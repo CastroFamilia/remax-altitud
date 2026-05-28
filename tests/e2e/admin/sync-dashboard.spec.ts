@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // @ts-expect-error — @playwright/test not yet installed
 import { test, expect } from "@playwright/test";
+import { createHash } from "crypto";
 
 const ADMIN_SYNC_PAGE_URL_EN = "/en/admin";
 const DESKTOP_VIEWPORT = { width: 1280, height: 800 };
 
 test.describe("Story 8.1: Sync Status Dashboard E2E Tests", () => {
   test.beforeEach(async ({ context }: any) => {
-    const { createHash } = require("crypto");
     const sessionToken = createHash("sha256").update("admin").digest("hex");
     await context.addCookies([
       {

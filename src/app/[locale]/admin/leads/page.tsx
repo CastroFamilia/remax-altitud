@@ -2,7 +2,7 @@ import React from "react";
 import { setRequestLocale } from "next-intl/server";
 import { fetchAdminLeadsData } from "@/app/actions/admin-lead-actions";
 import { AdminLeadsFilters } from "@/components/admin/admin-leads-filters";
-import { AdminLeadsTable } from "@/components/admin/admin-leads-table";
+import { AdminLeadsTable, Lead } from "@/components/admin/admin-leads-table";
 import { AdminLeadsPagination } from "@/components/admin/admin-leads-pagination";
 import { Users, History } from "lucide-react";
 import Link from "next/link";
@@ -40,7 +40,6 @@ export default async function AdminLeadsPage({ params, searchParams }: PageProps
   if (!isAuthenticated) {
     redirect(`/${locale}/admin?login=true`);
   }
-
 
   const resolvedSearchParams = await searchParams;
   const agentId = resolvedSearchParams.agentId || "";
@@ -88,7 +87,7 @@ export default async function AdminLeadsPage({ params, searchParams }: PageProps
       <AdminLeadsFilters locale={locale} agents={agents} />
 
       {/* Table */}
-      <AdminLeadsTable locale={locale} leads={leads as any} agents={agents} />
+      <AdminLeadsTable locale={locale} leads={leads as Lead[]} agents={agents} />
 
       {/* Pagination */}
       <AdminLeadsPagination locale={locale} currentPage={pageNum} hasMore={hasMore} />

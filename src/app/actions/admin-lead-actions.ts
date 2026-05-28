@@ -1,6 +1,11 @@
 "use server";
 
-import { getLeads, reassignLead, getLeadAssignmentLogs, getShortlistLeadDetails } from "@/lib/db/queries/leads";
+import {
+  getLeads,
+  reassignLead,
+  getLeadAssignmentLogs,
+  getShortlistLeadDetails,
+} from "@/lib/db/queries/leads";
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
@@ -92,7 +97,11 @@ export async function fetchAdminLeadsData(params: {
 /**
  * Server Action to reassign agent of a lead.
  */
-export async function reassignLeadAction(leadId: string, newAgentId: string | null, locale: string) {
+export async function reassignLeadAction(
+  leadId: string,
+  newAgentId: string | null,
+  locale: string,
+) {
   await verifyAdminAuth();
   const result = await reassignLead(leadId, newAgentId);
   revalidatePath(`/${locale}/admin/leads`);
@@ -114,5 +123,3 @@ export async function fetchShortlistDetailsAction(leadId: string) {
   await verifyAdminAuth();
   return getShortlistLeadDetails(leadId);
 }
-
-

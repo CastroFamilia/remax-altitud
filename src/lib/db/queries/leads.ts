@@ -257,10 +257,7 @@ export async function getLeads(filters: GetLeadsFilters) {
   const limit = filters.limit ?? 20;
   const offset = filters.offset ?? 0;
 
-  const rows = await query
-    .orderBy(desc(leads.createdAt))
-    .limit(limit)
-    .offset(offset);
+  const rows = await query.orderBy(desc(leads.createdAt)).limit(limit).offset(offset);
 
   return rows.map((row) => {
     return {
@@ -290,10 +287,7 @@ export async function reassignLead(leadId: string, newAgentId: string | null) {
 
   const previousAgentId = leadRows[0].assignedAgentId;
 
-  await db
-    .update(leads)
-    .set({ assignedAgentId: newAgentId })
-    .where(eq(leads.id, leadId));
+  await db.update(leads).set({ assignedAgentId: newAgentId }).where(eq(leads.id, leadId));
 
   await db.insert(leadAssignmentLogs).values({
     leadId,
@@ -324,10 +318,7 @@ export async function getLeadAssignmentLogs() {
 
   const [leadsList, agentsList] = await Promise.all([
     leadIds.length > 0
-      ? db
-          .select({ id: leads.id, name: leads.name })
-          .from(leads)
-          .where(inArray(leads.id, leadIds))
+      ? db.select({ id: leads.id, name: leads.name }).from(leads).where(inArray(leads.id, leadIds))
       : [],
     agentIds.length > 0
       ? db
@@ -349,10 +340,7 @@ export async function getLeadAssignmentLogs() {
       ? agentsMap.get(log.previousAgentId) || "Unknown Agent"
       : "Unassigned",
     newAgentId: log.newAgentId,
-    newAgentName: log.newAgentId
-      ? agentsMap.get(log.newAgentId) || "Unknown Agent"
-      : "Unassigned",
+    newAgentName: log.newAgentId ? agentsMap.get(log.newAgentId) || "Unknown Agent" : "Unassigned",
     createdAt: log.createdAt,
   }));
 }
-

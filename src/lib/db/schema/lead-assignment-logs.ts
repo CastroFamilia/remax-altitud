@@ -7,10 +7,8 @@ export const leadAssignmentLogs = pgTable("lead_assignment_logs", {
   leadId: uuid("lead_id")
     .notNull()
     .references(() => leads.id, { onDelete: "cascade" }),
-  previousAgentId: uuid("previous_agent_id")
-    .references(() => agents.id, { onDelete: "set null" }),
-  newAgentId: uuid("new_agent_id")
-    .references(() => agents.id, { onDelete: "set null" }),
+  previousAgentId: uuid("previous_agent_id").references(() => agents.id, { onDelete: "set null" }),
+  newAgentId: uuid("new_agent_id").references(() => agents.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -29,7 +29,6 @@ export default async function ReassignmentLogsPage({ params }: PageProps) {
     redirect(`/${locale}/admin?login=true`);
   }
 
-
   const logs = await fetchLeadAssignmentLogsAction();
 
   return (
@@ -76,7 +75,11 @@ export default async function ReassignmentLogsPage({ params }: PageProps) {
               </thead>
               <tbody className="divide-y divide-slate-800 text-sm text-slate-300">
                 {logs.map((log) => (
-                  <tr key={log.id} data-testid="log-entry" className="hover:bg-slate-800/40 transition-colors">
+                  <tr
+                    key={log.id}
+                    data-testid="log-entry"
+                    className="hover:bg-slate-800/40 transition-colors"
+                  >
                     {/* Timestamp */}
                     <td className="px-6 py-4 font-mono text-slate-400 text-xs">
                       {new Date(log.createdAt).toLocaleString()}
@@ -92,7 +95,9 @@ export default async function ReassignmentLogsPage({ params }: PageProps) {
                     <td className="px-6 py-4">
                       <div className="text-slate-300 font-medium">{log.previousAgentName}</div>
                       {log.previousAgentId && (
-                        <div className="text-[10px] text-slate-500 font-mono">ID: {log.previousAgentId}</div>
+                        <div className="text-[10px] text-slate-500 font-mono">
+                          ID: {log.previousAgentId}
+                        </div>
                       )}
                     </td>
 
@@ -100,7 +105,9 @@ export default async function ReassignmentLogsPage({ params }: PageProps) {
                     <td className="px-6 py-4">
                       <div className="text-red-400 font-bold">{log.newAgentName}</div>
                       {log.newAgentId && (
-                        <div className="text-[10px] text-slate-500 font-mono">ID: {log.newAgentId}</div>
+                        <div className="text-[10px] text-slate-500 font-mono">
+                          ID: {log.newAgentId}
+                        </div>
                       )}
                     </td>
                   </tr>
