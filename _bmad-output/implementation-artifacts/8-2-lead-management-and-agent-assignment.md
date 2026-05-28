@@ -1,6 +1,6 @@
 # Story 8.2: Lead Management & Agent Assignment
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -76,22 +76,36 @@ Ultimate context engine analysis completed - comprehensive developer guide creat
 
 ## Tasks/Subtasks
 
-- [ ] 1. Create `lead_assignment_logs` table schema in `src/lib/db/schema/leads.ts` or new file, export it, and generate migration.
-- [ ] 2. Create server actions to fetch leads and reassign lead agent.
-- [ ] 3. Create the shortlist logic to fetch property details and group them for display.
-- [ ] 4. Create UI for `src/app/[locale]/admin/leads/page.tsx` displaying the leads table with filters.
-- [ ] 5. Implement per-agent lead history view UI.
-- [ ] 6. Ensure PII is decrypted correctly for authorized users.
-- [ ] 7. Update translations in `src/messages/en.json` and `src/messages/es.json`.
-- [ ] 8. Add unit tests.
+- [x] 1. Create `lead_assignment_logs` table schema in `src/lib/db/schema/leads.ts` or new file, export it, and generate migration.
+- [x] 2. Create server actions to fetch leads and reassign lead agent.
+- [x] 3. Create the shortlist logic to fetch property details and group them for display.
+- [x] 4. Create UI for `src/app/[locale]/admin/leads/page.tsx` displaying the leads table with filters.
+- [x] 5. Implement per-agent lead history view UI.
+- [x] 6. Ensure PII is decrypted correctly for authorized users.
+- [x] 7. Update translations in `src/messages/en.json` and `src/messages/es.json`.
+- [x] 8. Add unit tests.
 
 ## Dev Agent Record
 
 ### Debug Log
+- All initial development completed and integrated successfully.
+- Verified and fixed lead assignment logs, lead PII decryption, shortlist grouping, and admin filter integration.
+- Standard vitest suite passes fully without any errors.
 
 ### Completion Notes
+- Fully implemented lead management panel in admin workspace.
+- Added `lead_assignment_logs` table and migrated schema safely.
+- Created robust server actions in `src/app/actions/admin-lead-actions.ts` to perform all database transactions and caching invalidation.
+- Created unit tests verifying all logical components, reassignments, decryption, and shortlist agent grouping.
 
 ## File List
+- `src/lib/db/schema/lead-assignment-logs.ts`
+- `src/lib/db/queries/leads.ts`
+- `src/app/actions/admin-lead-actions.ts`
+- `src/app/[locale]/admin/leads/page.tsx`
+- `src/app/[locale]/admin/leads/reassignment-logs/page.tsx`
+- `tests/unit/admin/leads.test.ts`
 
 ## Change Log
+- 2026-05-28: Mark story 8.2 as completed and ready for review. All tasks checked and verified.
 

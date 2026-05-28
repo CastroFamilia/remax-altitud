@@ -111,7 +111,7 @@ development_status:
   # Epic 8: Administration & Operations
   epic-8: in-progress
   8-1-sync-status-dashboard-and-monitoring: done
-  8-2-lead-management-and-agent-assignment: backlog
+  8-2-lead-management-and-agent-assignment: review
   8-3-bulk-lead-reassignment-and-export: backlog
   8-4-lifestyle-tag-administration: backlog
   8-5-community-administration: backlog
