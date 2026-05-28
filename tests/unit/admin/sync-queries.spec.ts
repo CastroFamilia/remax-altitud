@@ -23,17 +23,27 @@ const {
   mockFrom,
   mockDb,
 } = vi.hoisted(() => {
-  const mockLimit = vi.fn().mockResolvedValue([]);
-  const mockOrderBy = vi.fn().mockResolvedValue([]);
-  const mockWhere = vi.fn().mockReturnValue({
-    orderBy: vi.fn().mockResolvedValue([]),
-    limit: mockLimit,
-  });
-  const mockFrom = vi.fn().mockReturnValue({
+  const mockLimit = vi.fn();
+  const mockWhere = vi.fn();
+  const mockOrderBy = vi.fn();
+  const mockFrom = vi.fn();
+  const mockSelect = vi.fn();
+
+  const mockQuery: any = {
     where: mockWhere,
     orderBy: mockOrderBy,
-  });
-  const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+    limit: mockLimit,
+    offset: vi.fn().mockReturnThis(),
+    then: (onfulfilled: any) => Promise.resolve([]).then(onfulfilled),
+    catch: (onrejected: any) => Promise.resolve([]).catch(onrejected),
+  };
+
+  mockSelect.mockReturnValue({ from: mockFrom });
+  mockFrom.mockReturnValue(mockQuery);
+  mockWhere.mockReturnValue(mockQuery);
+  mockOrderBy.mockReturnValue(mockQuery);
+  mockLimit.mockReturnValue(mockQuery);
+
   const mockDb = { select: mockSelect };
 
   return { mockLimit, mockWhere, mockOrderBy, mockSelect, mockFrom, mockDb };
@@ -45,16 +55,21 @@ vi.mock("@/lib/db/client", () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockLimit.mockResolvedValue([]);
-  mockOrderBy.mockResolvedValue([]);
 
-  const whereChain = {
+  const mockQuery: any = {
+    where: mockWhere,
     orderBy: mockOrderBy,
     limit: mockLimit,
+    offset: vi.fn().mockReturnThis(),
+    then: (onfulfilled: any) => Promise.resolve([]).then(onfulfilled),
+    catch: (onrejected: any) => Promise.resolve([]).catch(onrejected),
   };
-  mockWhere.mockReturnValue(whereChain);
-  mockFrom.mockReturnValue({ where: mockWhere, orderBy: mockOrderBy });
+
   mockSelect.mockReturnValue({ from: mockFrom });
+  mockFrom.mockReturnValue(mockQuery);
+  mockWhere.mockReturnValue(mockQuery);
+  mockOrderBy.mockReturnValue(mockQuery);
+  mockLimit.mockReturnValue(mockQuery);
 });
 
 afterEach(() => {
@@ -64,7 +79,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 // getSyncLogs — RED PHASE
 // ---------------------------------------------------------------------------
-describe.skip("getSyncLogs (ATDD Red Phase)", () => {
+describe("getSyncLogs (ATDD Red Phase)", () => {
   it("[P0] 8.1-UNIT-001: fetches chronological sync logs successfully", async () => {
     const { getSyncLogs } = await import("@/lib/db/queries/sync-log");
     await getSyncLogs({});
@@ -100,7 +115,7 @@ describe.skip("getSyncLogs (ATDD Red Phase)", () => {
 // ---------------------------------------------------------------------------
 // getSyncDashboardStats — RED PHASE
 // ---------------------------------------------------------------------------
-describe.skip("getSyncDashboardStats (ATDD Red Phase)", () => {
+describe("getSyncDashboardStats (ATDD Red Phase)", () => {
   it("[P0] 8.1-UNIT-005: retrieves active listings count and last successful sync", async () => {
     const { getSyncDashboardStats } = await import("@/lib/db/queries/sync-log");
     const result = await getSyncDashboardStats();
@@ -114,13 +129,9 @@ describe.skip("getSyncDashboardStats (ATDD Red Phase)", () => {
 // ---------------------------------------------------------------------------
 // Formatting Helpers Unit Tests
 // ---------------------------------------------------------------------------
-describe.skip("formatSyncDuration Formatting Helper (ATDD Red Phase)", () => {
-  it("[P2] 8.1-UNIT-006: converts sync duration in milliseconds to human-readable format", () => {
-    // Note: formatSyncDuration might be exported from a helper file or the query file
-    const formatSyncDuration = (ms: number) => {
-      // Stub function since it's RED phase
-      return "";
-    };
+describe("formatSyncDuration Formatting Helper (ATDD Red Phase)", () => {
+  it("[P2] 8.1-UNIT-006: converts sync duration in milliseconds to human-readable format", async () => {
+    const { formatSyncDuration } = await import("@/lib/db/queries/sync-log");
 
     expect(formatSyncDuration(5000000)).toBe("1h 23m 20s");
     expect(formatSyncDuration(65000)).toBe("1m 5s");

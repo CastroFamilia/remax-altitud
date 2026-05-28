@@ -1,8 +1,9 @@
 import "server-only";
-import { eq } from "drizzle-orm";
+import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { syncLogs } from "@/lib/db/schema/sync-logs";
 import type { NewSyncLog, SyncLog } from "@/lib/db/schema/sync-logs";
+import { properties } from "@/lib/db/schema/properties";
 
 export type { SyncLog, NewSyncLog };
 
@@ -36,4 +37,88 @@ export async function createSyncLog(): Promise<SyncLog> {
  */
 export async function updateSyncLog(id: string, patch: Partial<NewSyncLog>): Promise<void> {
   await db.update(syncLogs).set(patch).where(eq(syncLogs.id, id));
+}
+
+/**
+ * getSyncLogs fetches chronological sync logs successfully.
+ * Supports status, date range filters, and pagination.
+ */
+export async function getSyncLogs(filters: {
+  status?: string;
+  startDate?: Date;
+  endDate?: Date;
+  limit?: number;
+  offset?: number;
+}): Promise<SyncLog[]> {
+  const limitVal = filters.limit ?? 20;
+  const offsetVal = filters.offset ?? 0;
+
+  const conditions = [];
+  if (filters.status && filters.status !== "all") {
+    conditions.push(eq(syncLogs.status, filters.status));
+  }
+  if (filters.startDate) {
+    conditions.push(gte(syncLogs.startedAt, filters.startDate));
+  }
+  if (filters.endDate) {
+    conditions.push(lte(syncLogs.startedAt, filters.endDate));
+  }
+
+  const query = db.select().from(syncLogs);
+
+  if (conditions.length > 0) {
+    query.where(and(...conditions));
+  }
+
+  return query
+    .orderBy(desc(syncLogs.startedAt))
+    .limit(limitVal)
+    .offset(offsetVal);
+}
+
+/**
+ * getSyncDashboardStats retrieves active listings count and last successful sync metadata.
+ */
+export async function getSyncDashboardStats(): Promise<{
+  activeListings: number;
+  lastSuccessfulSync: Date | null;
+}> {
+  const activeCountResult = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(properties)
+    .where(eq(properties.isVisible, true));
+
+  const activeListings = Number(activeCountResult[0]?.count ?? 0);
+
+  const lastSyncResult = await db
+    .select()
+    .from(syncLogs)
+    .where(eq(syncLogs.status, "success"))
+    .orderBy(desc(syncLogs.completedAt))
+    .limit(1);
+
+  const lastSuccessfulSync = lastSyncResult[0]?.completedAt ?? null;
+
+  return {
+    activeListings,
+    lastSuccessfulSync,
+  };
+}
+
+/**
+ * formatSyncDuration converts sync duration in milliseconds to human-readable format.
+ */
+export function formatSyncDuration(ms: number): string {
+  if (ms < 1000) return "0s";
+  const seconds = Math.floor(ms / 1000);
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+
+  const parts = [];
+  if (h > 0) parts.push(`${h}h`);
+  if (m > 0) parts.push(`${m}m`);
+  if (s > 0 || parts.length === 0) parts.push(`${s}s`);
+
+  return parts.join(" ");
 }

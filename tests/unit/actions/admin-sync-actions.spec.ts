@@ -20,7 +20,7 @@ vi.mock("@/lib/db/queries/sync-log", () => ({
 import { fetchAdminSyncDashboardData } from "@/app/actions/admin-sync-actions";
 import { getSyncLogs, getSyncDashboardStats } from "@/lib/db/queries/sync-log";
 
-describe.skip("Story 8.1: Admin Sync Actions Unit Tests (RED PHASE)", () => {
+describe("Story 8.1: Admin Sync Actions Unit Tests (RED PHASE)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
