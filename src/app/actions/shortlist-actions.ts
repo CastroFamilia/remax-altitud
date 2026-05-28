@@ -93,3 +93,12 @@ export async function getSharedShortlist(shareId: string) {
     properties: props,
   };
 }
+
+/**
+ * getShortlistPropertiesWithAgents — Story 7.4
+ * Fetch shortlist properties joined with their listing agent details.
+ */
+export async function getShortlistPropertiesWithAgents(ids: string[]): Promise<any[]> {
+  throw new Error("Not implemented");
+}
+

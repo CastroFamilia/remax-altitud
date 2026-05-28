@@ -117,3 +117,12 @@ export async function getLeadById(id: string) {
     email: lead.email ? decryptField(lead.email) : null,
   };
 }
+
+/**
+ * getShortlistLeadDetails — Story 7.4
+ * Groups lead's shortlisted properties by their listing agents.
+ */
+export async function getShortlistLeadDetails(leadId: string): Promise<any> {
+  throw new Error("Not implemented");
+}
+
