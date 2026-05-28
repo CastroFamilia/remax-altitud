@@ -12,6 +12,7 @@ interface PropertyCardProps {
   locale: string;
   variant?: "default" | "compact" | "horizontal";
   unitSystem?: UnitSystem;
+  onRemove?: (id: string) => void;
 }
 
 const BEACH_SLUGS = new Set([
@@ -69,6 +70,7 @@ export function PropertyCard({
   locale,
   variant = "default",
   unitSystem,
+  onRemove,
 }: PropertyCardProps) {
   const t = useTranslations("PropertyCard");
   const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
@@ -112,7 +114,7 @@ export function PropertyCard({
           {region && (
             <span
               data-testid="region-badge"
-              className={`absolute left-2 top-2 rounded px-2 py-0.5 text-xs font-semibold text-white ${region === "Mountain" ? "bg-brand-mountain" : "bg-brand-beach"}`}
+              className={`absolute ${onRemove ? "left-12" : "left-2"} top-2 rounded px-2 py-0.5 text-xs font-semibold text-white ${region === "Mountain" ? "bg-brand-mountain" : "bg-brand-beach"}`}
             >
               {t(`region.${region === "Mountain" ? "mountain" : "beach"}`)}
             </span>
@@ -185,6 +187,23 @@ export function PropertyCard({
           )}
         </div>
       </Link>
+
+      {/* Remove button — top-left overlay */}
+      {onRemove && (
+        <button
+          type="button"
+          data-testid={`remove-${property.id}`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onRemove(property.id);
+          }}
+          className="absolute left-2 top-2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-800 shadow-md hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+          aria-label={t("removeFromSaved")}
+        >
+          ✕
+        </button>
+      )}
 
       {/* Save button — absolute positioned top-right on image */}
       <div className="absolute right-2 top-2 z-10">

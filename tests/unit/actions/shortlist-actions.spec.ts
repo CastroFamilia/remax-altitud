@@ -30,7 +30,7 @@ vi.mock("@/lib/db/client", () => ({
 
 import { getShortlistProperties } from "@/app/actions/shortlist-actions";
 
-describe.skip("Story 7.2: Shortlist Server Actions Unit Tests", () => {
+describe("Story 7.2: Shortlist Server Actions Unit Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockWhere.mockResolvedValue([]);
@@ -43,7 +43,7 @@ describe.skip("Story 7.2: Shortlist Server Actions Unit Tests", () => {
   });
 
   it("[P0] should return an empty array if an empty or null array of IDs is provided without querying the database", async () => {
-    const resultNull = await getShortlistProperties(null as any);
+    const resultNull = await getShortlistProperties(null as unknown as string[]);
     expect(resultNull).toEqual([]);
     expect(mockSelect).not.toHaveBeenCalled();
 

@@ -104,7 +104,7 @@ development_status:
   # Epic 7: Shortlist & Smart Agent Routing
   epic-7: in-progress
   7-1-save-and-shortlist-properties: done
-  7-2-shortlist-comparison-page: backlog
+  7-2-shortlist-comparison-page: in-progress
   7-3-shareable-shortlist-url: backlog
   7-4-smart-agent-routing-from-shortlist: backlog
   epic-7-retrospective: optional

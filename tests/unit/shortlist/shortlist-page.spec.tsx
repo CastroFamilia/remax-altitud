@@ -33,6 +33,7 @@ vi.mock("next-intl", () => ({
     };
     return translations[key] || key;
   }),
+  useLocale: () => "en",
 }));
 
 const mockUseShortlist = vi.fn();
@@ -46,12 +47,14 @@ vi.mock("@/app/actions/shortlist-actions", () => ({
 }));
 
 vi.mock("@/components/map/map-view-loader", () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   MapView: ({ properties }: any) => (
     <div data-testid="map-view">Map with {properties ? properties.length : 0} pins</div>
   ),
 }));
 
 vi.mock("@/components/property/property-card", () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   PropertyCard: ({ property, onRemove }: any) => (
     <div data-testid={`property-card-${property.id}`}>
       <h3>{property.titleEn}</h3>
@@ -71,7 +74,7 @@ vi.mock("@/components/property/property-card-skeleton", () => ({
 // ---------------------------------------------------------------------------
 import { ShortlistPageClient } from "@/components/shortlist/shortlist-page-client";
 
-describe.skip("ShortlistPageClient — Story 7.2 ATDD (RED PHASE)", () => {
+describe("ShortlistPageClient — Story 7.2 ATDD (GREEN PHASE)", () => {
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
@@ -133,7 +136,7 @@ describe.skip("ShortlistPageClient — Story 7.2 ATDD (RED PHASE)", () => {
       { id: "prop-1", titleEn: "House 1" },
     ]);
 
-    const { getByTestId, findByTestId } = render(<ShortlistPageClient />);
+    const { findByTestId } = render(<ShortlistPageClient />);
 
     const removeBtn = await findByTestId("remove-prop-1");
     fireEvent.click(removeBtn);

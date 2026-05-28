@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Story 7.2: Shortlist Comparison Page — E2E Tests
  *
