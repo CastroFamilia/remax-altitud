@@ -599,16 +599,20 @@ export async function fetchShortlistAnalyticsData(filters: {
     .from(properties)
     .leftJoin(shortlistEvents, eq(properties.id, shortlistEvents.propertyId));
 
-  // Add search (with mock safety and proper mutation reassignment)
   if (filters.search) {
-    if (typeof (query as any).where === "function") {
-      query = (query as any).where(
+    const hasWhere = "where" in query && typeof (query as { where?: unknown }).where === "function";
+    if (hasWhere) {
+      query = (
+        query as unknown as {
+          where: (arg: unknown) => typeof query;
+        }
+      ).where(
         or(
           ilike(properties.apiId, `%${filters.search}%`),
           ilike(properties.titleEn, `%${filters.search}%`),
-          ilike(properties.titleEs, `%${filters.search}%`)
-        )
-      ) as any;
+          ilike(properties.titleEs, `%${filters.search}%`),
+        ),
+      );
     }
   }
 
@@ -631,4 +635,3 @@ export async function fetchShortlistAnalyticsData(filters: {
 
   return await groupedQuery.offset(offset).limit(limit);
 }
-

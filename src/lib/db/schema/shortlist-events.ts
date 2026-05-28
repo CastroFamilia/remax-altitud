@@ -13,9 +13,13 @@ export const shortlistEvents = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
-    propertyActionIdx: index("idx_shortlist_events_prop_action").on(table.propertyId, table.action, table.createdAt),
+    propertyActionIdx: index("idx_shortlist_events_prop_action").on(
+      table.propertyId,
+      table.action,
+      table.createdAt,
+    ),
     createdIdx: index("idx_shortlist_events_created").on(table.createdAt),
-  })
+  }),
 );
 
 export type ShortlistEvent = typeof shortlistEvents.$inferSelect;

@@ -26,7 +26,7 @@ export interface AnalyticsRow {
   activeSaves: number;
   slug?: string;
   priceUsd?: number;
-  images?: any;
+  images?: Array<{ src: string }>;
 }
 
 interface AdminShortlistAnalyticsDashboardProps {
@@ -57,9 +57,8 @@ export function AdminShortlistAnalyticsDashboard({
   const totalSavesSum = analytics.reduce((acc, curr) => acc + (curr.totalSaves || 0), 0);
   const saves30DaysSum = analytics.reduce((acc, curr) => acc + (curr.saves30Days || 0), 0);
   const activeSavesSum = analytics.reduce((acc, curr) => acc + (curr.activeSaves || 0), 0);
-  const topProperty = analytics.length > 0 
-    ? [...analytics].sort((a, b) => b.totalSaves - a.totalSaves)[0] 
-    : null;
+  const topProperty =
+    analytics.length > 0 ? [...analytics].sort((a, b) => b.totalSaves - a.totalSaves)[0] : null;
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,7 +141,7 @@ export function AdminShortlistAnalyticsDashboard({
       viewFront: "Ver Propiedad",
       paginationInfo: "Mostrando {start} al {end} de {total} propiedades",
       of: "de",
-    }
+    },
   }[locale as "en" | "es"] || {
     title: "Shortlist Analytics",
     subtitle: "Track property popularity and shortlist trends over time",
@@ -173,7 +172,9 @@ export function AdminShortlistAnalyticsDashboard({
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-md group hover:border-red-500/30 transition-all duration-300">
           <div className="absolute top-0 right-0 w-24 h-24 bg-red-600/5 rounded-full blur-xl group-hover:bg-red-600/10 transition-all duration-300"></div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{labels.statTotalSaves}</span>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              {labels.statTotalSaves}
+            </span>
             <div className="p-2 bg-red-500/10 text-red-500 rounded-xl">
               <Heart className="w-5 h-5 fill-current" />
             </div>
@@ -187,7 +188,9 @@ export function AdminShortlistAnalyticsDashboard({
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-md group hover:border-red-500/30 transition-all duration-300">
           <div className="absolute top-0 right-0 w-24 h-24 bg-red-650/5 rounded-full blur-xl group-hover:bg-red-650/10 transition-all duration-300"></div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{labels.statSaves30}</span>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              {labels.statSaves30}
+            </span>
             <div className="p-2 bg-red-650/10 text-red-500 rounded-xl">
               <TrendingUp className="w-5 h-5" />
             </div>
@@ -206,7 +209,9 @@ export function AdminShortlistAnalyticsDashboard({
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-md group hover:border-red-500/30 transition-all duration-300">
           <div className="absolute top-0 right-0 w-24 h-24 bg-red-650/5 rounded-full blur-xl group-hover:bg-red-650/10 transition-all duration-300"></div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{labels.statActiveSaves}</span>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              {labels.statActiveSaves}
+            </span>
             <div className="p-2 bg-red-500/10 text-red-400 rounded-xl">
               <Heart className="w-5 h-5" />
             </div>
@@ -220,7 +225,9 @@ export function AdminShortlistAnalyticsDashboard({
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-md group hover:border-red-500/30 transition-all duration-300">
           <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-full blur-xl group-hover:bg-red-500/10 transition-all duration-300"></div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{labels.statTopProperty}</span>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              {labels.statTopProperty}
+            </span>
             <div className="p-2 bg-red-500/10 text-red-500 rounded-xl">
               <BarChart3 className="w-5 h-5" />
             </div>
@@ -228,8 +235,12 @@ export function AdminShortlistAnalyticsDashboard({
           <div className="mt-3">
             {topProperty ? (
               <>
-                <p className="text-sm font-bold text-white truncate">{locale === "es" ? topProperty.titleEs : topProperty.titleEn}</p>
-                <p className="text-[10px] text-red-400 font-extrabold mt-1 font-mono">#{topProperty.apiId} ({topProperty.totalSaves} saves)</p>
+                <p className="text-sm font-bold text-white truncate">
+                  {locale === "es" ? topProperty.titleEs : topProperty.titleEn}
+                </p>
+                <p className="text-[10px] text-red-400 font-extrabold mt-1 font-mono">
+                  #{topProperty.apiId} ({topProperty.totalSaves} saves)
+                </p>
               </>
             ) : (
               <p className="text-xs font-medium text-slate-500 mt-2">N/A</p>
@@ -273,7 +284,7 @@ export function AdminShortlistAnalyticsDashboard({
                 <tr className="border-b border-slate-800 bg-slate-950/80 text-slate-400 text-xs font-bold uppercase tracking-wider select-none">
                   <th className="px-6 py-4">{labels.colProperty}</th>
                   <th className="px-6 py-4">
-                    <button 
+                    <button
                       type="button"
                       data-testid="sort-code"
                       className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold text-xs uppercase tracking-wider text-slate-400 focus:outline-none"
@@ -284,7 +295,7 @@ export function AdminShortlistAnalyticsDashboard({
                     </button>
                   </th>
                   <th className="px-6 py-4">
-                    <button 
+                    <button
                       type="button"
                       data-testid="sort-saves30"
                       className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold text-xs uppercase tracking-wider text-slate-400 focus:outline-none"
@@ -295,7 +306,7 @@ export function AdminShortlistAnalyticsDashboard({
                     </button>
                   </th>
                   <th className="px-6 py-4">
-                    <button 
+                    <button
                       type="button"
                       data-testid="sort-savesAll"
                       className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold text-xs uppercase tracking-wider text-slate-400 focus:outline-none"
@@ -306,7 +317,7 @@ export function AdminShortlistAnalyticsDashboard({
                     </button>
                   </th>
                   <th className="px-6 py-4">
-                    <button 
+                    <button
                       type="button"
                       data-testid="sort-active"
                       className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold text-xs uppercase tracking-wider text-slate-400 focus:outline-none"
@@ -364,9 +375,11 @@ export function AdminShortlistAnalyticsDashboard({
                             <span className="font-bold text-slate-200">{row.saves30Days}</span>
                             {row.saves30Days > 0 && (
                               <div className="w-16 h-1.5 bg-slate-850 rounded-full overflow-hidden">
-                                <div 
-                                  className="h-full bg-gradient-to-r from-red-650 to-red-500 rounded-full" 
-                                  style={{ width: `${Math.min((row.saves30Days / 10) * 100, 100)}%` }}
+                                <div
+                                  className="h-full bg-gradient-to-r from-red-650 to-red-500 rounded-full"
+                                  style={{
+                                    width: `${Math.min((row.saves30Days / 10) * 100, 100)}%`,
+                                  }}
                                 ></div>
                               </div>
                             )}

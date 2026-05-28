@@ -31,8 +31,9 @@ export default async function AdminShortlistAnalyticsPage({ params, searchParams
   const resolvedSearchParams = await searchParams;
   const search = resolvedSearchParams.search || "";
   const pageNum = Math.max(1, Number(resolvedSearchParams.page) || 1);
-  const sortBy = (resolvedSearchParams.sortBy as any) || "saves30";
-  const sortOrder = (resolvedSearchParams.sortOrder as any) || "desc";
+  const sortBy =
+    (resolvedSearchParams.sortBy as "saves30" | "savesAll" | "active" | "code") || "saves30";
+  const sortOrder = (resolvedSearchParams.sortOrder as "asc" | "desc") || "desc";
 
   const { analytics, total, limit } = await getShortlistAnalyticsAction({
     search,
@@ -46,9 +47,10 @@ export default async function AdminShortlistAnalyticsPage({ params, searchParams
 
   // Fallback labels for headers
   const title = locale === "es" ? "Analítica de Favoritos" : "Shortlist Analytics";
-  const subtitle = locale === "es" 
-    ? "Monitorea la popularidad de propiedades y tendencias de favoritos" 
-    : "Track property popularity and shortlist trends over time";
+  const subtitle =
+    locale === "es"
+      ? "Monitorea la popularidad de propiedades y tendencias de favoritos"
+      : "Track property popularity and shortlist trends over time";
 
   return (
     <div className="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">

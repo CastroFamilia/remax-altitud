@@ -27,19 +27,14 @@ export async function getShortlistAnalyticsAction(params: {
     whereClause = or(
       ilike(properties.apiId, searchPattern),
       ilike(properties.titleEn, searchPattern),
-      ilike(properties.titleEs, searchPattern)
+      ilike(properties.titleEs, searchPattern),
     );
   }
 
-  const countQuery = db
-    .select({ count: sql<number>`cast(count(*) as integer)` })
-    .from(properties);
+  const countQuery = db.select({ count: sql<number>`cast(count(*) as integer)` }).from(properties);
 
-  let total = 0;
-  if (typeof (countQuery as any).where === "function") {
-    const countResult = await (countQuery as any).where(whereClause);
-    total = countResult[0]?.count ?? 0;
-  }
+  const countResult = whereClause ? await countQuery.where(whereClause) : await countQuery;
+  const total = countResult[0]?.count ?? 0;
 
   const data = await fetchShortlistAnalyticsData({
     search: searchVal,
@@ -49,8 +44,13 @@ export async function getShortlistAnalyticsAction(params: {
     offset,
   });
 
+  const formattedData = data.map((row) => ({
+    ...row,
+    images: Array.isArray(row.images) ? (row.images as Array<{ src: string }>) : undefined,
+  }));
+
   return {
-    analytics: data,
+    analytics: formattedData,
     total,
     page,
     limit,

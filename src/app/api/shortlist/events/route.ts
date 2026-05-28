@@ -12,7 +12,7 @@ const eventInputSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  let rawBody: any;
+  let rawBody: unknown;
   try {
     rawBody = await request.json();
   } catch (err) {
@@ -22,13 +22,20 @@ export async function POST(request: Request) {
   try {
     const parseResult = eventInputSchema.safeParse(rawBody);
     if (!parseResult.success) {
-      return NextResponse.json({ error: "Validation failed", issues: parseResult.error.issues }, { status: 400 });
+      return NextResponse.json(
+        { error: "Validation failed", issues: parseResult.error.issues },
+        { status: 400 },
+      );
     }
 
     const { propertyId, action, locale } = parseResult.data;
 
     // Verify property exists
-    const propExists = await db.select({ id: properties.id }).from(properties).where(eq(properties.id, propertyId)).limit(1);
+    const propExists = await db
+      .select({ id: properties.id })
+      .from(properties)
+      .where(eq(properties.id, propertyId))
+      .limit(1);
     if (propExists.length === 0) {
       return NextResponse.json({ error: "Property not found" }, { status: 404 });
     }

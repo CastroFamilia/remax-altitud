@@ -245,7 +245,10 @@ export async function getLeads(filters: GetLeadsFilters) {
   const propertySaves = db
     .select({
       propertyId: shortlistEvents.propertyId,
-      count: sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`.as("saves_count"),
+      count:
+        sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`.as(
+          "saves_count",
+        ),
     })
     .from(shortlistEvents)
     .groupBy(shortlistEvents.propertyId)
