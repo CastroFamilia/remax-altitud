@@ -89,9 +89,12 @@
     },
     "areaHighlights": {
       "heading": "Explore Our Areas",
-      "description": "From mountain valleys to Pacific beaches.",
+      "description": "Find your ideal home in the South Pacific and mountains of Costa Rica. From \"barefoot\" luxury surrounded by rivers and valleys near the city, to high-end premium properties overlooking the ocean.",
       "viewAll": "View all areas",
-      "shellNotice": "Area highlights coming soon"
+      "shellNotice": "Area highlights coming soon",
+      "altitude": "Altitude",
+      "temperature": "Temp",
+      "explore": "Explore Area"
     },
     "sellCta": {
       "heading": "Ready to list your property?",

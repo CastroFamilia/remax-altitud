@@ -57,6 +57,13 @@
       "when": 1779981490130,
       "tag": "0007_ambitious_goblin_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1780000000000,
+      "tag": "0009_update_explore_areas",
+      "breakpoints": true
     }
   ]
 }

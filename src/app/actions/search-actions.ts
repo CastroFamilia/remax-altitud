@@ -247,6 +247,7 @@ function formatAreaLabel(slug: string): string {
     dominical: "Dominical",
     uvita: "Uvita",
     ojochal: "Ojochal",
+    "tinamastes-platanillo": "Tinamastes & Platanillo",
     quepos: "Quepos",
     "manuel-antonio": "Manuel Antonio",
     jaco: "Jacó",
