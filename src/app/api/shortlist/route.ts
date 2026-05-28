@@ -4,7 +4,9 @@ import * as Sentry from "@sentry/nextjs";
 import { createShortlistShare } from "@/app/actions/shortlist-actions";
 
 const shortlistInputSchema = z.object({
-  propertyIds: z.array(z.string().uuid("Invalid property ID format")).min(1, "Must select at least one property"),
+  propertyIds: z
+    .array(z.string().uuid("Invalid property ID format"))
+    .min(1, "Must select at least one property"),
   locale: z.enum(["en", "es"]),
 });
 
@@ -31,7 +33,7 @@ export async function POST(request: Request) {
 
   try {
     const shareRecord = await createShortlistShare({ propertyIds, locale });
-    
+
     // Construct absolute shareUrl
     const host = request.headers.get("host") ?? "localhost:3000";
     const protocol = host.includes("localhost") ? "http" : "https";

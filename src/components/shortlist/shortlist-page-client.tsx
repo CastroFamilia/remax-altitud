@@ -121,14 +121,16 @@ export function ShortlistPageClient() {
           }
 
           if (typeof navigator !== "undefined" && navigator.clipboard) {
-            navigator.clipboard.writeText(data.shareUrl)
+            navigator.clipboard
+              .writeText(data.shareUrl)
               .then(() => {
                 setCopied(true);
                 setToastMessage(t("shareCopied"));
               })
               .catch((err) => {
                 console.error("Failed to copy share link:", err);
-                navigator.clipboard.writeText(fallbackText)
+                navigator.clipboard
+                  .writeText(fallbackText)
                   .then(() => {
                     setCopied(true);
                     setToastMessage(t("shareError"));
@@ -143,7 +145,8 @@ export function ShortlistPageClient() {
         .catch((err) => {
           console.error("Failed to generate share link, falling back to legacy links:", err);
           if (typeof navigator !== "undefined" && navigator.clipboard) {
-            navigator.clipboard.writeText(fallbackText)
+            navigator.clipboard
+              .writeText(fallbackText)
               .then(() => {
                 setCopied(true);
                 setToastMessage(t("shareError"));
@@ -157,7 +160,8 @@ export function ShortlistPageClient() {
     } catch (err) {
       console.error("Error in outer share click handler:", err);
       if (typeof navigator !== "undefined" && navigator.clipboard) {
-        navigator.clipboard.writeText(fallbackText)
+        navigator.clipboard
+          .writeText(fallbackText)
           .then(() => {
             setCopied(true);
           })

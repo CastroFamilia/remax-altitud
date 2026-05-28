@@ -74,10 +74,7 @@ export async function createShortlistShare({
 }
 
 export async function getSharedShortlist(shareId: string) {
-  const rows = await db
-    .select()
-    .from(shortlistShares)
-    .where(eq(shortlistShares.shareId, shareId));
+  const rows = await db.select().from(shortlistShares).where(eq(shortlistShares.shareId, shareId));
 
   const share = rows[0];
 
@@ -96,5 +93,3 @@ export async function getSharedShortlist(shareId: string) {
     properties: props,
   };
 }
-
-
