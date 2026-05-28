@@ -30,7 +30,7 @@ interface AdminBulkReassignModalProps {
 
 export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModalProps) {
   const t = useTranslations("Admin");
-  
+
   // Modal states
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"reassign" | "export">("reassign");
@@ -40,7 +40,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
   const [operationType, setOperationType] = useState<"single" | "distribute">("single");
   const [singleTargetAgentId, setSingleTargetAgentId] = useState("");
   const [selectedTargetAgentIds, setSelectedTargetAgentIds] = useState<string[]>([]);
-  
+
   // Validation / Count state
   const [leadsCount, setLeadsCount] = useState<number | null>(null);
   const [loadingCount, setLoadingCount] = useState(false);
@@ -125,7 +125,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
   const handleProceedToConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
-    
+
     if (!sourceAgentId) {
       setErrorMessage(t("bulkErrorSelectSource"));
       return;
@@ -163,9 +163,8 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
   const handleExecuteReassignment = async () => {
     setIsSubmitting(true);
     setErrorMessage("");
-    
-    const targets =
-      operationType === "single" ? [singleTargetAgentId] : selectedTargetAgentIds;
+
+    const targets = operationType === "single" ? [singleTargetAgentId] : selectedTargetAgentIds;
 
     try {
       const res = await bulkReassignLeadsAction(sourceAgentId, targets, locale);
@@ -272,7 +271,10 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
       {/* Backdrop & Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div data-testid="bulk-reassign-modal" className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+          <div
+            data-testid="bulk-reassign-modal"
+            className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
+          >
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 bg-slate-950/60 border-b border-slate-800">
               <h2 className="text-lg font-bold text-white flex items-center gap-2.5">
@@ -379,13 +381,19 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                         )}
 
                         {leadsCount !== null && !loadingCount && leadsCount > 0 && (
-                          <div data-testid="leads-count-display" className="mt-2 text-xs text-green-400 font-bold bg-green-500/5 border border-green-500/10 px-3 py-1.5 rounded-lg inline-block">
+                          <div
+                            data-testid="leads-count-display"
+                            className="mt-2 text-xs text-green-400 font-bold bg-green-500/5 border border-green-500/10 px-3 py-1.5 rounded-lg inline-block"
+                          >
                             {t("bulkLeadsCountBadge", { count: leadsCount })}
                           </div>
                         )}
 
                         {validationError && (
-                          <div data-testid="no-leads-validation-msg" className="mt-2 text-xs text-red-400 font-bold bg-red-500/5 border border-red-500/10 px-3 py-1.5 rounded-lg inline-block">
+                          <div
+                            data-testid="no-leads-validation-msg"
+                            className="mt-2 text-xs text-red-400 font-bold bg-red-500/5 border border-red-500/10 px-3 py-1.5 rounded-lg inline-block"
+                          >
                             ⚠️ {validationError}
                           </div>
                         )}
@@ -521,7 +529,10 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                   ) : (
                     /* Step 2: Explicit Confirmation Prompt */
                     <div className="space-y-6">
-                      <div data-testid="confirmation-dialog" className="p-4 rounded-xl bg-red-500/5 border border-red-500/25 flex items-start gap-4">
+                      <div
+                        data-testid="confirmation-dialog"
+                        className="p-4 rounded-xl bg-red-500/5 border border-red-500/25 flex items-start gap-4"
+                      >
                         <AlertTriangle className="w-10 h-10 text-red-500 shrink-0 mt-0.5" />
                         <div>
                           <h3 className="font-bold text-white text-base mb-1.5">
@@ -562,9 +573,7 @@ export function AdminBulkReassignModal({ locale, agents }: AdminBulkReassignModa
                 <form onSubmit={handleExportContacts} className="space-y-5">
                   <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20 flex items-start gap-3.5 text-blue-400 text-xs font-semibold leading-relaxed">
                     <HelpCircle className="w-5.5 h-5.5 text-blue-400 shrink-0 mt-0.5" />
-                    <p>
-                      {t("bulkExportDescription")}
-                    </p>
+                    <p>{t("bulkExportDescription")}</p>
                   </div>
 
                   <div>

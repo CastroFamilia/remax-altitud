@@ -157,24 +157,27 @@ export async function exportAgentLeadsCSVAction(agentId: string) {
   // CSV formatting (RFC 4180 compliant)
   // Headers: Name, Email, Phone
   const headers = ["Name", "Email", "Phone"];
-  
+
   const escapeCSVField = (val: string | null | undefined): string => {
     if (val === null || val === undefined) {
       return "";
     }
     let escaped = val.replace(/"/g, '""');
-    if (escaped.includes(",") || escaped.includes('"') || escaped.includes("\n") || escaped.includes("\r")) {
+    if (
+      escaped.includes(",") ||
+      escaped.includes('"') ||
+      escaped.includes("\n") ||
+      escaped.includes("\r")
+    ) {
       escaped = `"${escaped}"`;
     }
     return escaped;
   };
 
   const rows = leadsList.map((lead) => {
-    return [
-      escapeCSVField(lead.name),
-      escapeCSVField(lead.email),
-      escapeCSVField(lead.phone),
-    ].join(", ");
+    return [escapeCSVField(lead.name), escapeCSVField(lead.email), escapeCSVField(lead.phone)].join(
+      ", ",
+    );
   });
 
   return [headers.join(", "), ...rows].join("\n");
@@ -187,5 +190,3 @@ export async function fetchAgentLeadsCountAction(agentId: string) {
   await verifyAdminAuth();
   return getAgentLeadsCount(agentId);
 }
-
-

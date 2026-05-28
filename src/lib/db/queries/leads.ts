@@ -365,7 +365,9 @@ function safeDecrypt(val: string | null | undefined): string | null {
 export async function bulkReassignLeads(sourceAgentId: string, targetAgentIds: string[]) {
   const filteredTargetAgentIds = (targetAgentIds || []).filter((id) => id !== sourceAgentId);
   if (filteredTargetAgentIds.length === 0) {
-    throw new Error("No valid target agents selected for reassignment (leads cannot be reassigned back to the source agent)");
+    throw new Error(
+      "No valid target agents selected for reassignment (leads cannot be reassigned back to the source agent)",
+    );
   }
 
   return await db.transaction(async (tx) => {
@@ -391,7 +393,12 @@ export async function bulkReassignLeads(sourceAgentId: string, targetAgentIds: s
 
     // 3. Group updates and logs by targetAgentId to minimize database roundtrips and lock contention
     const updatesMap = new Map<string, string[]>();
-    const logsToInsert: { leadId: string; previousAgentId: string; newAgentId: string; createdAt: Date }[] = [];
+    const logsToInsert: {
+      leadId: string;
+      previousAgentId: string;
+      newAgentId: string;
+      createdAt: Date;
+    }[] = [];
     const now = new Date();
 
     for (let i = 0; i < leadRows.length; i++) {
@@ -457,5 +464,3 @@ export async function getAgentLeadsCount(agentId: string) {
     .where(eq(leads.assignedAgentId, agentId));
   return row?.count || 0;
 }
-
-

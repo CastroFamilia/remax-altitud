@@ -1,6 +1,8 @@
 // @ts-expect-error — @playwright/test not yet installed
 import { test, expect } from "@playwright/test";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const LEADS_PAGE = "/en/admin/leads";
 const DESKTOP_VIEWPORT = { width: 1280, height: 800 };
 
