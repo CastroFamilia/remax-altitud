@@ -1,5 +1,5 @@
 # generated: 2026-04-10T12:39:46-03:00
-# last_updated: 2026-05-02T00:00:00-0600
+# last_updated: 2026-05-28T00:41:00-06:00
 # project: remax-altitud
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,9 +35,8 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-10T12:39:46-03:00
-last_updated: 2026-05-28T00:22:00-06:00
+last_updated: 2026-05-28T00:41:00-06:00
 project: remax-altitud
-project_key: NOKEY
 tracking_system: file-system
 story_location: "{project-root}/_bmad-output/implementation-artifacts"
 
@@ -112,7 +111,7 @@ development_status:
   # Epic 8: Administration & Operations
   epic-8: in-progress
   8-1-sync-status-dashboard-and-monitoring: done
-  8-2-lead-management-and-agent-assignment: backlog
+  8-2-lead-management-and-agent-assignment: done
   8-3-bulk-lead-reassignment-and-export: backlog
   8-4-lifestyle-tag-administration: backlog
   8-5-community-administration: backlog

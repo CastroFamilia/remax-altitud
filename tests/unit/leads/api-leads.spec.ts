@@ -31,7 +31,7 @@
 // vi.mock hoisting rule: ALL vi.mock() calls MUST appear before import statements
 // ---------------------------------------------------------------------------
 
-import { vi, describe, it, expect, beforeEach, beforeAll } from "vitest";
+import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 
 // Mock server-only
 vi.mock("server-only", () => ({}));
@@ -155,12 +155,9 @@ function createMockRequest(
 const TEST_ENCRYPTION_KEY =
   "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 
-beforeAll(() => {
-  process.env.LEAD_ENCRYPTION_KEY = TEST_ENCRYPTION_KEY;
-});
-
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubEnv("LEAD_ENCRYPTION_KEY", TEST_ENCRYPTION_KEY);
   // Default mock behaviors
   mockMatchAgent.mockResolvedValue("agent-pz-001");
   mockFindRecentDuplicate.mockResolvedValue(null); // no duplicate
@@ -168,6 +165,10 @@ beforeEach(() => {
     id: "lead-test-001",
     assignedAgentId: "agent-pz-001",
   });
+});
+
+afterEach(() => {
+  vi.unstubAllEnvs();
 });
 
 // ---------------------------------------------------------------------------

@@ -28,7 +28,7 @@ export default async function AdminPage({ params, searchParams }: PageProps) {
 
   const t = await getTranslations({ locale, namespace: "AdminSync" });
 
-  const { logs, stats } = await fetchAdminSyncDashboardData({
+  const { logs, stats, hasMore } = await fetchAdminSyncDashboardData({
     status,
     startDateStr,
     endDateStr,
@@ -47,10 +47,10 @@ export default async function AdminPage({ params, searchParams }: PageProps) {
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffSecs < 60) return "just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    return `${diffDays}d ago`;
+    if (diffSecs < 60) return t("justNow");
+    if (diffMins < 60) return t("mAgo", { mins: diffMins });
+    if (diffHours < 24) return t("hAgo", { hours: diffHours });
+    return t("dAgo", { days: diffDays });
   };
 
   const formattedDate = (date: Date | string | null, neverText: string) => {
@@ -58,15 +58,13 @@ export default async function AdminPage({ params, searchParams }: PageProps) {
     const parsedDate = new Date(date);
     if (isNaN(parsedDate.getTime())) return neverText;
 
-    return parsedDate.toLocaleString(undefined, {
+    return parsedDate.toLocaleString(locale, {
       month: "short",
       day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
     });
   };
-
-  const hasMore = logs.length === 20;
 
   // Build static translation objects for client components to maintain strict type safety and performance
   const filterTranslations = {
@@ -162,7 +160,12 @@ export default async function AdminPage({ params, searchParams }: PageProps) {
           </div>
         ) : (
           logs.map((log) => (
-            <AdminSyncLogRow key={log.id} log={log} translations={rowTranslations} />
+            <AdminSyncLogRow
+              key={log.id}
+              log={log}
+              locale={locale}
+              translations={rowTranslations}
+            />
           ))
         )}
       </div>

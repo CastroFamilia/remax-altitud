@@ -72,22 +72,23 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
         status: "success",
         startDate: expect.any(Date),
         endDate: expect.any(Date),
-        limit: 20,
+        limit: 21,
         offset: 20,
       });
 
       // Verify the precise parsing and timezone/hour boundary for end date (23:59:59.999)
       const callArgs = vi.mocked(getSyncLogs).mock.calls[0][0];
       expect(callArgs.startDate?.toISOString()).toBe(new Date("2026-05-01").toISOString());
-      expect(callArgs.endDate?.getHours()).toBe(23);
-      expect(callArgs.endDate?.getMinutes()).toBe(59);
-      expect(callArgs.endDate?.getSeconds()).toBe(59);
-      expect(callArgs.endDate?.getMilliseconds()).toBe(999);
+      expect(callArgs.endDate?.getUTCHours()).toBe(23);
+      expect(callArgs.endDate?.getUTCMinutes()).toBe(59);
+      expect(callArgs.endDate?.getUTCSeconds()).toBe(59);
+      expect(callArgs.endDate?.getUTCMilliseconds()).toBe(999);
 
       expect(getSyncDashboardStats).toHaveBeenCalledOnce();
       expect(result).toEqual({
         logs: mockLogs,
         stats: mockStats,
+        hasMore: false,
       });
     });
 
@@ -101,7 +102,7 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
       });
 
       expect(getSyncLogs).toHaveBeenCalledWith({
-        limit: 20,
+        limit: 21,
         offset: 0,
         startDate: undefined,
         endDate: undefined,
@@ -109,15 +110,15 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
     });
 
     it("[P2] 8.1-UNIT-008b: normalizes invalid, negative or NaN page numbers to page 1", async () => {
-      vi.mocked(getSyncLogs).mockResolvedValueOnce([]);
-      vi.mocked(getSyncDashboardStats).mockResolvedValueOnce({ activeListings: 0, lastSuccessfulSync: null });
+      vi.mocked(getSyncLogs).mockResolvedValue([]);
+      vi.mocked(getSyncDashboardStats).mockResolvedValue({ activeListings: 0, lastSuccessfulSync: null });
 
       await fetchAdminSyncDashboardData({
         page: NaN,
       });
 
       expect(getSyncLogs).toHaveBeenCalledWith({
-        limit: 20,
+        limit: 21,
         offset: 0,
         startDate: undefined,
         endDate: undefined,
@@ -128,7 +129,7 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
       });
 
       expect(getSyncLogs).toHaveBeenLastCalledWith({
-        limit: 20,
+        limit: 21,
         offset: 0,
         startDate: undefined,
         endDate: undefined,
@@ -145,7 +146,7 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
       });
 
       expect(getSyncLogs).toHaveBeenCalledWith({
-        limit: 20,
+        limit: 21,
         offset: 0,
         startDate: undefined,
         endDate: undefined,
@@ -168,12 +169,17 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
       const result = await loginAdmin("test-password");
 
       expect(result).toEqual({ success: true });
-      expect(mockCookieSet).toHaveBeenCalledWith("admin_session", "test-password", {
-        httpOnly: true,
-        secure: true,
-        maxAge: 60 * 60 * 24,
-        path: "/",
-      });
+      expect(mockCookieSet).toHaveBeenCalledWith(
+        "admin_session",
+        "c638833f69bbfb3c267afa0a74434812436b8f08a81fd263c6be6871de4f1265",
+        {
+          httpOnly: true,
+          secure: true,
+          maxAge: 60 * 60 * 24,
+          path: "/",
+          sameSite: "strict",
+        }
+      );
     });
 
     it("[P1] 8.1-UNIT-010: loginAdmin rejects invalid password", async () => {
@@ -204,12 +210,17 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
       const result = await loginAdmin("admin");
 
       expect(result).toEqual({ success: true });
-      expect(mockCookieSet).toHaveBeenCalledWith("admin_session", "admin", {
-        httpOnly: true,
-        secure: false,
-        maxAge: 60 * 60 * 24,
-        path: "/",
-      });
+      expect(mockCookieSet).toHaveBeenCalledWith(
+        "admin_session",
+        "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+        {
+          httpOnly: true,
+          secure: true,
+          maxAge: 60 * 60 * 24,
+          path: "/",
+          sameSite: "strict",
+        }
+      );
     });
   });
 
@@ -224,4 +235,3 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
     });
   });
 });
-

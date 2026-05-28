@@ -2,6 +2,7 @@
 
 import { getSyncLogs, getSyncDashboardStats } from "@/lib/db/queries/sync-log";
 import { cookies } from "next/headers";
+import { createHash } from "crypto";
 
 /**
  * Server Action for fetching sync dashboard data with pagination and filtering.
@@ -39,25 +40,30 @@ export async function fetchAdminSyncDashboardData(params: {
     const parsed = new Date(params.endDateStr);
     // Boundary check: ensure date is valid and within reasonable years to prevent DB errors
     if (!isNaN(parsed.getTime()) && parsed.getFullYear() >= 1970 && parsed.getFullYear() <= 2100) {
-      parsed.setHours(23, 59, 59, 999);
+      parsed.setUTCHours(23, 59, 59, 999);
       endDate = parsed;
     }
   }
 
+  // Fetch limit + 1 to determine true hasMore status
   const [logs, stats] = await Promise.all([
     getSyncLogs({
       status,
       startDate,
       endDate,
-      limit,
+      limit: limit + 1,
       offset,
     }),
     getSyncDashboardStats(),
   ]);
 
+  const hasMore = logs.length > limit;
+  const slicedLogs = hasMore ? logs.slice(0, limit) : logs;
+
   return {
-    logs,
+    logs: slicedLogs,
     stats,
+    hasMore,
   };
 }
 
@@ -75,11 +81,13 @@ export async function loginAdmin(password: string): Promise<{ success: boolean }
   }
   if (password === adminPassword) {
     const cookieStore = await cookies();
-    cookieStore.set("admin_session", adminPassword, {
+    const sessionToken = createHash("sha256").update(adminPassword).digest("hex");
+    cookieStore.set("admin_session", sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       maxAge: 60 * 60 * 24, // 1 day
       path: "/",
+      sameSite: "strict",
     });
     return { success: true };
   }

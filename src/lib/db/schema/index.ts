@@ -9,3 +9,4 @@ export * from "./relations";
 export type { GeoPoint } from "../types/postgis";
 export { geographyPoint } from "../types/postgis";
 export * from "./shortlist-shares";
+export * from "./lead-assignment-logs";
