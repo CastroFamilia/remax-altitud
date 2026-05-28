@@ -20,7 +20,7 @@ test.describe("Story 8.1: Sync Status Dashboard E2E Tests", () => {
   // ---------------------------------------------------------------------------
   // 8.1-E2E-001: Dashboard displays recent sync logs with correct statuses
   // ---------------------------------------------------------------------------
-  test.skip(
+  test(
     "[P0] 8.1-E2E-001: loads the dashboard and displays sync logs chronological list with status badges",
     async ({ page }: any) => {
       await page.setViewportSize(DESKTOP_VIEWPORT);
@@ -42,7 +42,7 @@ test.describe("Story 8.1: Sync Status Dashboard E2E Tests", () => {
   // ---------------------------------------------------------------------------
   // 8.1-E2E-002: Applying filters (status + date range)
   // ---------------------------------------------------------------------------
-  test.skip(
+  test(
     "[P1] 8.1-E2E-002: applying date range and status filters updates filtered logs list",
     async ({ page }: any) => {
       await page.setViewportSize(DESKTOP_VIEWPORT);
@@ -71,7 +71,7 @@ test.describe("Story 8.1: Sync Status Dashboard E2E Tests", () => {
   // ---------------------------------------------------------------------------
   // 8.1-E2E-003: Expand failure log and view diagnostic errors
   // ---------------------------------------------------------------------------
-  test.skip(
+  test(
     "[P0] 8.1-E2E-003: expanding a failed log displays diagnostic error text",
     async ({ page }: any) => {
       await page.setViewportSize(DESKTOP_VIEWPORT);
@@ -94,7 +94,7 @@ test.describe("Story 8.1: Sync Status Dashboard E2E Tests", () => {
   // ---------------------------------------------------------------------------
   // 8.1-E2E-004: Summary statistics loading
   // ---------------------------------------------------------------------------
-  test.skip(
+  test(
     "[P1] 8.1-E2E-004: loads and displays active listings count and last success timestamp",
     async ({ page }: any) => {
       await page.setViewportSize(DESKTOP_VIEWPORT);

@@ -14,7 +14,7 @@ interface SyncLogItem {
   agentsSynced: number;
   translationsQueued: number;
   imagesOptimized: number;
-  errors: any[];
+  errors: any;
   errorMessage: string | null;
 }
 
@@ -66,21 +66,21 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
     switch (status) {
       case "success":
         return (
-          <span className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-green-500/20 text-green-400">
+          <span data-testid="sync-status-badge" className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-green-500/20 text-green-400">
             <CheckCircle className="w-3.5 h-3.5" />
             {translations.success}
           </span>
         );
       case "failure":
         return (
-          <span className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/20 text-red-400">
+          <span data-testid="sync-status-badge" className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/20 text-red-400">
             <AlertCircle className="w-3.5 h-3.5" />
             {translations.failure}
           </span>
         );
       case "partial":
         return (
-          <span className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">
+          <span data-testid="sync-status-badge" className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">
             <AlertCircle className="w-3.5 h-3.5" />
             {translations.partial}
           </span>
@@ -88,7 +88,7 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
       case "running":
       default:
         return (
-          <span className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 animate-pulse">
+          <span data-testid="sync-status-badge" className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 animate-pulse">
             <Clock className="w-3.5 h-3.5 animate-spin" />
             {translations.running}
           </span>
@@ -110,6 +110,7 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
 
   return (
     <div
+      data-testid="sync-log-row"
       className={`border rounded-xl transition-all duration-200 overflow-hidden ${
         isFailed
           ? "border-red-500 bg-red-950/5 hover:border-red-400 shadow-lg shadow-red-950/5"
@@ -245,7 +246,7 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
 
           {/* Diagnostic logs & errors */}
           {(log.errorMessage || (log.errors && log.errors.length > 0)) && (
-            <div className="border border-red-500/20 bg-red-950/5 rounded-xl p-5 space-y-4">
+            <div data-testid="error-diagnostic-details" className="border border-red-500/20 bg-red-950/5 rounded-xl p-5 space-y-4">
               <h4 className="text-sm font-bold text-red-400 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 text-red-500" />
                 {translations.errorTitle}

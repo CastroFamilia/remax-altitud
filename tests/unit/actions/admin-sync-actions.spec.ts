@@ -35,8 +35,8 @@ describe("Story 8.1: Admin Sync Actions Unit Tests (RED PHASE)", () => {
     ];
     const mockStats = { activeListings: 15, lastSuccessfulSync: new Date() };
 
-    vi.mocked(getSyncLogs).mockResolvedValueOnce(mockLogs);
-    vi.mocked(getSyncDashboardStats).mockResolvedValueOnce(mockStats);
+    vi.mocked(getSyncLogs).mockResolvedValueOnce(mockLogs as any);
+    vi.mocked(getSyncDashboardStats).mockResolvedValueOnce(mockStats as any);
 
     const result = await fetchAdminSyncDashboardData({
       status: "success",
