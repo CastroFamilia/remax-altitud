@@ -35,13 +35,13 @@ export default async function AdminPage({ params, searchParams }: PageProps) {
     page: pageNum,
   });
 
-  const getRelativeTimeString = (dateStr: any, neverText: string): string => {
-    if (!dateStr) return neverText;
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return neverText;
+  const getRelativeTimeString = (date: Date | string | null, neverText: string): string => {
+    if (!date) return neverText;
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) return neverText;
 
     const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
+    const diffMs = now.getTime() - parsedDate.getTime();
     const diffSecs = Math.max(0, Math.floor(diffMs / 1000));
     const diffMins = Math.floor(diffSecs / 60);
     const diffHours = Math.floor(diffMins / 60);
@@ -53,12 +53,12 @@ export default async function AdminPage({ params, searchParams }: PageProps) {
     return `${diffDays}d ago`;
   };
 
-  const formattedDate = (dateStr: any, neverText: string) => {
-    if (!dateStr) return neverText;
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return neverText;
+  const formattedDate = (date: Date | string | null, neverText: string) => {
+    if (!date) return neverText;
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) return neverText;
 
-    return date.toLocaleString(undefined, {
+    return parsedDate.toLocaleString(undefined, {
       month: "short",
       day: "2-digit",
       hour: "2-digit",

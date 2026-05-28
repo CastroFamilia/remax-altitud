@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp, AlertCircle, CheckCircle, Clock, Database, Languages, Image, ArrowRight } from "lucide-react";
+import { ChevronDown, ChevronUp, AlertCircle, CheckCircle, Clock, Database, Languages, Image as ImageIcon } from "lucide-react";
 
 interface SyncLogItem {
   id: string;
-  startedAt: any; // Date or ISO string
-  completedAt: any; // Date or ISO string | null
+  startedAt: Date | string;
+  completedAt: Date | string | null;
   status: string;
   propertiesCreated: number;
   propertiesUpdated: number;
@@ -14,7 +14,7 @@ interface SyncLogItem {
   agentsSynced: number;
   translationsQueued: number;
   imagesOptimized: number;
-  errors: any;
+  errors: unknown;
   errorMessage: string | null;
 }
 
@@ -236,7 +236,7 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
               </div>
               <div className="bg-slate-900/30 rounded-lg px-3 py-2 border border-slate-800/30 text-center">
                 <span className="text-[10px] text-slate-500 block flex items-center justify-center gap-1">
-                  <Image className="w-3.5 h-3.5 text-slate-600" />
+                  <ImageIcon className="w-3.5 h-3.5 text-slate-600" />
                   {translations.images}
                 </span>
                 <span className="text-lg font-bold text-slate-200">{log.imagesOptimized}</span>
@@ -245,7 +245,7 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
           </div>
 
           {/* Diagnostic logs & errors */}
-          {(log.errorMessage || (log.errors && log.errors.length > 0)) && (
+          {(log.errorMessage || (Array.isArray(log.errors) && log.errors.length > 0)) && (
             <div data-testid="error-diagnostic-details" className="border border-red-500/20 bg-red-950/5 rounded-xl p-5 space-y-4">
               <h4 className="text-sm font-bold text-red-400 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 text-red-500" />
@@ -258,7 +258,7 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
                 </div>
               )}
 
-              {log.errors && log.errors.length > 0 && (
+              {Array.isArray(log.errors) && log.errors.length > 0 && (
                 <div className="space-y-2">
                   <span className="text-[10px] uppercase font-bold text-red-400/70 tracking-wider">
                     Error Array Stack

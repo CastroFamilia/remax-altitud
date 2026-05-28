@@ -23,7 +23,7 @@ export function AdminLoginForm() {
       } else {
         setError("Invalid password. Please try again.");
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
