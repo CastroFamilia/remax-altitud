@@ -144,7 +144,7 @@ vi.mock("@/lib/utils/currency", () => ({
 }));
 
 // Mock SaveButton and ShareButton as simple stubs
-vi.mock("@/components/property/save-button", () => ({
+vi.mock("@/components/shortlist/save-button", () => ({
   SaveButton: ({
     propertyId,
     propertyTitle,

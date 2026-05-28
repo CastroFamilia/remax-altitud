@@ -16,6 +16,7 @@ import { AgentCard } from "@/components/agent/agent-card";
 import { StickyMobileCTA } from "@/components/lead/sticky-mobile-cta";
 import { SimilarPropertiesLoader } from "@/components/listing/similar-properties-loader";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { SaveButton } from "@/components/shortlist/save-button";
 import type { Property } from "@/lib/db/schema/properties";
 import type { Agent } from "@/lib/db/schema/agents";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
@@ -109,25 +110,30 @@ export async function ListingDetailLayout({
 
         <div className="mx-auto max-w-7xl px-4 py-8 space-y-8">
           {/* Title */}
-          <div>
-            <h1 className="text-3xl font-bold text-brand-navy md:text-4xl">{title}</h1>
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-brand-navy md:text-4xl">{title}</h1>
 
-            {/* Region badge */}
-            {region && (
-              <span className="mt-2 inline-block rounded-full bg-brand-navy/10 px-3 py-1 text-sm font-medium text-brand-navy">
-                {region}
-              </span>
-            )}
+              {/* Region badge */}
+              {region && (
+                <span className="mt-2 inline-block rounded-full bg-brand-navy/10 px-3 py-1 text-sm font-medium text-brand-navy">
+                  {region}
+                </span>
+              )}
 
-            {/* ZMT badge (more prominent than in property card) */}
-            {zmtVisual && zmtStatusKey && (
-              <span
-                className={`ml-2 mt-2 inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold ${zmtVisual.classes}`}
-              >
-                <span aria-hidden="true">{zmtVisual.icon}</span>
-                {t(`zmtStatus.${zmtStatusKey}` as Parameters<typeof t>[0])}
-              </span>
-            )}
+              {/* ZMT badge (more prominent than in property card) */}
+              {zmtVisual && zmtStatusKey && (
+                <span
+                  className={`ml-2 mt-2 inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold ${zmtVisual.classes}`}
+                >
+                  <span aria-hidden="true">{zmtVisual.icon}</span>
+                  {t(`zmtStatus.${zmtStatusKey}` as Parameters<typeof t>[0])}
+                </span>
+              )}
+            </div>
+            <div className="flex-shrink-0 flex items-center">
+              <SaveButton propertyId={property.apiId ?? property.id} propertyTitle={title} />
+            </div>
           </div>
 
           {/* Property specs summary */}

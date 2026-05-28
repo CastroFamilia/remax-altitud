@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-10T12:39:46-03:00
-last_updated: 2026-05-28T04:10:00Z
+last_updated: 2026-05-28T04:30:00-06:00
 project: remax-altitud
 project_key: NOKEY
 tracking_system: file-system
@@ -93,17 +93,17 @@ development_status:
   epic-5-retrospective: done
 
   # Epic 6: Community Pages & Area Guides
-  epic-6: in-progress
+  epic-6: done
   6-1-area-guide-pages: done
   6-2-community-pages: done
   6-3-community-mini-map-and-geo-fence-display: done
-  6-4-investment-discovery-and-area-context: backlog
+  6-4-investment-discovery-and-area-context: done
   6-5-community-geo-fence-auto-tagging: done
-  epic-6-retrospective: optional
+  epic-6-retrospective: done
 
   # Epic 7: Shortlist & Smart Agent Routing
-  epic-7: backlog
-  7-1-save-and-shortlist-properties: backlog
+  epic-7: in-progress
+  7-1-save-and-shortlist-properties: done
   7-2-shortlist-comparison-page: backlog
   7-3-shareable-shortlist-url: backlog
   7-4-smart-agent-routing-from-shortlist: backlog
