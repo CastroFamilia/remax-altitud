@@ -39,6 +39,20 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
+function YoutubeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.508 9.388.508 9.388.508s7.518 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
 const quickLinks = [
   { key: "properties", href: "/search" },
   { key: "areas", href: "/areas" },
@@ -49,10 +63,23 @@ const quickLinks = [
 ] as const;
 
 const socialLinks = [
-  { key: "socialFacebook", href: "https://facebook.com", icon: FacebookIcon },
-  { key: "socialInstagram", href: "https://instagram.com", icon: InstagramIcon },
-  { key: "socialWhatsApp", href: "https://wa.me/50600000000", icon: MessageCircle },
-  { key: "socialEmail", href: "mailto:info@remaxaltitud.com", icon: Mail },
+  {
+    key: "socialFacebook",
+    href: "https://www.facebook.com/remaxaltitudcostarica/",
+    icon: FacebookIcon,
+  },
+  {
+    key: "socialInstagram",
+    href: "https://www.instagram.com/remaxaltitudcostarica",
+    icon: InstagramIcon,
+  },
+  {
+    key: "socialYoutube",
+    href: "https://www.youtube.com/@remaxaltitudcostarica",
+    icon: YoutubeIcon,
+  },
+  { key: "socialWhatsApp", href: "https://wa.me/50660788887", icon: MessageCircle },
+  { key: "socialEmail", href: "mailto:hola@remax-altitud.cr", icon: Mail },
 ] as const;
 
 const legalLinks = [
