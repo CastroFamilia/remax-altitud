@@ -557,3 +557,17 @@ export async function updatePropertyCommunity(
     })
     .where(eq(properties.id, propertyId));
 }
+
+/**
+ * Updates a listing's visibility in the database.
+ * AC: 1, 3
+ */
+export async function updatePropertyVisibility(id: string, isVisible: boolean): Promise<void> {
+  await db
+    .update(properties)
+    .set({
+      isVisible,
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.id, id));
+}

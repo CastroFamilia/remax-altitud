@@ -65,8 +65,38 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
 
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-E2EMOCK123";
+
   return (
     <html lang={locale} className={cn("font-sans", montserrat.variable)}>
+      <head>
+        {gaId && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+
+                  gtag('consent', 'default', {
+                    'ad_storage': 'denied',
+                    'analytics_storage': 'denied',
+                    'personalization_storage': 'denied',
+                    'wait_for_update': 500
+                  });
+
+                  gtag('config', '${gaId}', {
+                    'client_storage': 'none',
+                    'anonymize_ip': true
+                  });
+                `,
+              }}
+            />
+          </>
+        )}
+      </head>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SkipToContent />
