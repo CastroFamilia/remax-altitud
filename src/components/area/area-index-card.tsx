@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Area } from "@/lib/db/schema/areas";
+import { getAreaHeroImage } from "@/lib/utils";
 
 interface AreaIndexCardProps {
   area: Area;
@@ -21,6 +22,7 @@ export async function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
   const description = locale === "es" ? area.descriptionEs : area.descriptionEn;
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
+  const heroImageUrl = getAreaHeroImage(area.heroImageUrl, area.region);
 
   const regionBadgeClass =
     area.region === "Mountain"
@@ -37,9 +39,9 @@ export async function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
     >
       {/* Hero image */}
       <div className="relative aspect-[16/9] overflow-hidden">
-        {area.heroImageUrl ? (
+        {heroImageUrl ? (
           <Image
-            src={area.heroImageUrl}
+            src={heroImageUrl}
             alt={areaName}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"

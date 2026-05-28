@@ -11,6 +11,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { Area } from "@/lib/db/schema/areas";
+import { getAreaHeroImage } from "@/lib/utils";
 
 interface SimilarAreasSliderProps {
   areas: Area[];
@@ -62,6 +63,7 @@ export function SimilarAreasSlider({ areas, locale }: SimilarAreasSliderProps) {
           const areaName = locale === "es" ? area.nameEs : area.nameEn;
           const description = locale === "es" ? area.descriptionEs : area.descriptionEn;
           const regionLabel = t(`region.${area.region === "Mountain" ? "Mountain" : "Coast"}`);
+          const heroImageUrl = getAreaHeroImage(area.heroImageUrl, area.region);
 
           return (
             <a
@@ -71,9 +73,9 @@ export function SimilarAreasSlider({ areas, locale }: SimilarAreasSliderProps) {
             >
               {/* Area hero image */}
               <div className="relative aspect-[16/9] overflow-hidden">
-                {area.heroImageUrl ? (
+                {heroImageUrl ? (
                   <Image
-                    src={area.heroImageUrl}
+                    src={heroImageUrl}
                     alt={areaName}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"

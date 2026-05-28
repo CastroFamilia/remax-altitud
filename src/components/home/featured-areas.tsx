@@ -2,9 +2,11 @@ import { getTranslations } from "next-intl/server";
 import { getAllAreas } from "@/lib/db/queries/areas";
 import Image from "next/image";
 import Link from "next/link";
+import { getAreaHeroImage } from "@/lib/utils";
 
 interface FeaturedAreasProps {
   locale: string;
+  showSectionHeader?: boolean;
 }
 
 // Technical specifications and SEO copy mapping for fallback / static rendering
@@ -17,7 +19,7 @@ const staticAreas = [
     descriptionEn:
       "True mountain barefoot luxury, famous for its crystal-clear rivers, majestic waterfalls, and lush green landscapes. It offers the perfect balance: living immersed in pure nature while remaining minutes away from San Isidro de El General, the largest service hub in the south with private hospitals, banks, shopping, and top connectivity. Ideal for those seeking privacy, a refreshing high-altitude climate, and complete logistical convenience.",
     descriptionEs:
-      "El verdadero lujo barefoot de montaña, famoso por sus ríos cristalinos, majestuosas cataratas y exuberantes paisajes verdes. Ofrece el equilibrio perfecto: una vida sumergida en la naturaleza pura pero con acceso inmediato a San Isidro de El General, el centro de servicios más grande del sur con hospitales privados, bancos, centros comerciales y excelente conectividad. Ideal para quienes buscan privacidad, un clima fresco de altura y total comodidad logística.",
+      "El verdadero lujo barefoot de montaña, famoso por sus ríos cristalinos, majestuosas cataratas y exuberantes paisajes verdes. Ofrece el equilibrio perfecto: una vida sumergida en la naturaleza pura pero con acceso inmediato a San Isidro de El General, the largest service hub in the south with private hospitals, banks, shopping, and top connectivity. Ideal for those seeking privacy, un clima fresco de altura y total comodidad logística.",
     heroImageUrl: "/images/areas/perez-zeledon-hero.webp",
     propertyCount: 0,
     metadata: {
@@ -35,7 +37,7 @@ const staticAreas = [
     descriptionEn:
       "The epicenter of absolute oceanfront luxury, where untamed tropical rainforest meets powerful coastal rivers and world-class surf breaks. Its exclusive hillsides shelter jaw-dropping, premium architectural villas with complete privacy and infinite ocean views, while remaining just 30 minutes from major city infrastructure. The ultimate destination for high-end global investors demanding security, lush nature, and top-tier real estate appreciation.",
     descriptionEs:
-      "El epicentro del lujo absoluto frente al mar, donde la selva tropical indomable se encuentra con imponentes ríos y olas de surf de clase mundial. Sus exclusivas colinas albergan impresionantes villas arquitectónicas premium con total privacidad y vistas infinitas al océano, estando a solo 30 minutos de los principales servicios de la ciudad. El destino definitivo para inversionistas globales de alta gama que buscan seguridad, naturaleza exuberante y alta plusvalía.",
+      "El epicentro del lujo absoluto frente al mar, donde la selva tropical indomable se encuentra con imponentes ríos y olas de surf de clase mundial. Sus exclusivas colinas albergan impresionante villas arquitectónicas premium con total privacidad y vistas infinitas al océano, estando a solo 30 minutos de los principales servicios de la ciudad. El destino definitivo para inversionistas globales de alta gama que buscan seguridad, naturaleza exuberante y alta plusvalía.",
     heroImageUrl: "/images/areas/dominical-hero.webp",
     propertyCount: 0,
     metadata: {
@@ -101,7 +103,7 @@ const staticAreas = [
   },
 ];
 
-export async function FeaturedAreas({ locale }: FeaturedAreasProps) {
+export async function FeaturedAreas({ locale, showSectionHeader = true }: FeaturedAreasProps) {
   const t = await getTranslations({ locale, namespace: "HomePage.areaHighlights" });
   const tGlobal = await getTranslations({ locale, namespace: "AreaGuide" });
 
@@ -124,7 +126,10 @@ export async function FeaturedAreas({ locale }: FeaturedAreasProps) {
         ? dbArea?.descriptionEs || staticArea.descriptionEs
         : dbArea?.descriptionEn || staticArea.descriptionEn;
     const region = dbArea?.region || staticArea.region;
-    const heroImageUrl = dbArea?.heroImageUrl || staticArea.heroImageUrl;
+    const heroImageUrl = getAreaHeroImage(
+      dbArea?.heroImageUrl || staticArea.heroImageUrl,
+      region,
+    );
     const propertyCount = dbArea?.propertyCount || 0;
 
     // Gracefully handle database JSONB metadata typing
@@ -157,26 +162,28 @@ export async function FeaturedAreas({ locale }: FeaturedAreasProps) {
       className="scroll-mt-16"
     >
       {/* Section Header */}
-      <div className="mb-6 flex items-end justify-between gap-4 md:mb-8">
-        <div className="max-w-2xl">
-          <h2
-            id="featured-areas-heading"
-            className="text-3xl font-bold tracking-tight text-brand-navy md:text-4xl"
+      {showSectionHeader && (
+        <div className="mb-6 flex items-end justify-between gap-4 md:mb-8">
+          <div className="max-w-2xl">
+            <h2
+              id="featured-areas-heading"
+              className="text-3xl font-bold tracking-tight text-brand-navy md:text-4xl"
+            >
+              {t("heading")}
+            </h2>
+            <p className="mt-2 text-sm text-text-secondary md:text-base leading-relaxed">
+              {t("description")}
+            </p>
+          </div>
+          <Link
+            href={`/${locale}/areas`}
+            className="hidden shrink-0 items-center gap-1.5 text-sm font-semibold text-brand-navy underline-offset-4 hover:underline md:inline-flex"
           >
-            {t("heading")}
-          </h2>
-          <p className="mt-2 text-sm text-text-secondary md:text-base leading-relaxed">
-            {t("description")}
-          </p>
+            {t("viewAll")}
+            <span className="text-brand-gold font-bold">→</span>
+          </Link>
         </div>
-        <Link
-          href={`/${locale}/areas`}
-          className="hidden shrink-0 items-center gap-1.5 text-sm font-semibold text-brand-navy underline-offset-4 hover:underline md:inline-flex"
-        >
-          {t("viewAll")}
-          <span className="text-brand-gold font-bold">→</span>
-        </Link>
-      </div>
+      )}
 
       {/* Grid of Areas: Horizontal Scroll on Mobile, 5 Columns Grid on Large Screens */}
       <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-3 lg:grid lg:grid-cols-5 lg:gap-5 lg:overflow-visible lg:pb-0">
@@ -244,7 +251,7 @@ export async function FeaturedAreas({ locale }: FeaturedAreasProps) {
               {/* Content Panel */}
               <div className="p-4 md:p-5 flex flex-col justify-end text-white">
                 {/* Title */}
-                <h3 className="text-xl font-bold tracking-tight text-white group-hover:text-[#C2A661] transition-colors duration-300 line-clamp-1">
+                <h3 className="text-lg md:text-xl font-bold tracking-tight text-white group-hover:text-[#C2A661] transition-colors duration-300 line-clamp-2">
                   {area.name}
                 </h3>
 
