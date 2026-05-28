@@ -30,9 +30,9 @@ type TabId = (typeof TAB_IDS)[number];
 
 export function AreaGuideTabs({ properties, agents, similarAreas, locale }: AreaGuideTabsProps) {
   const t = useTranslations("AreaGuide");
-  const availableTabs = ((properties.length > 0)
-    ? TAB_IDS
-    : TAB_IDS.filter(id => id !== "properties")) as TabId[];
+  const availableTabs = (
+    properties.length > 0 ? TAB_IDS : TAB_IDS.filter((id) => id !== "properties")
+  ) as TabId[];
 
   const [activeTab, setActiveTab] = useState<TabId>(availableTabs[0] || "agents");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);

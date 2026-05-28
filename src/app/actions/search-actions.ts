@@ -129,7 +129,7 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
   let searchCondition: SQL | undefined = undefined;
   if (filters.q && filters.q.trim().length > 0) {
     const queryTerm = filters.q.trim();
-    
+
     // Define synonym expansion groups
     const SYNONYM_GROUPS = [
       {
@@ -142,7 +142,17 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       },
       {
         keywords: /view|vista|panorama|mirador|paisaje/i,
-        synonyms: ["view", "views", "vista", "vistas", "panorama", "panorámica", "panoramica", "mirador", "paisaje"],
+        synonyms: [
+          "view",
+          "views",
+          "vista",
+          "vistas",
+          "panorama",
+          "panorámica",
+          "panoramica",
+          "mirador",
+          "paisaje",
+        ],
       },
       {
         keywords: /beach|playa|ocean|sea|mar|oc[eé]ano/i,
@@ -151,8 +161,29 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
     ];
 
     const QUERY_STOP_WORDS = new Set([
-      "con", "de", "in", "with", "and", "a", "en", "la", "el", "un", "una", 
-      "for", "para", "los", "las", "del", "y", "o", "or", "to", "at", "by", "of"
+      "con",
+      "de",
+      "in",
+      "with",
+      "and",
+      "a",
+      "en",
+      "la",
+      "el",
+      "un",
+      "una",
+      "for",
+      "para",
+      "los",
+      "las",
+      "del",
+      "y",
+      "o",
+      "or",
+      "to",
+      "at",
+      "by",
+      "of",
     ]);
 
     // Split by whitespace and punctuation, map to lowercase and filter out stop words
