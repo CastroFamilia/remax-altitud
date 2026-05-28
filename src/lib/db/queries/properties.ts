@@ -571,4 +571,3 @@ export async function updatePropertyVisibility(id: string, isVisible: boolean): 
     })
     .where(eq(properties.id, id));
 }
-

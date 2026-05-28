@@ -72,10 +72,7 @@ export default async function LocaleLayout({
       <head>
         {gaId && (
           <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-            />
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
             <script
               dangerouslySetInnerHTML={{
                 __html: `

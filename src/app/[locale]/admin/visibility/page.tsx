@@ -1,7 +1,10 @@
 import React from "react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { fetchAdminVisibilityData } from "@/app/actions/admin-visibility-actions";
-import { AdminVisibilityDashboard, AdminProperty } from "@/components/admin/admin-visibility-dashboard";
+import {
+  AdminVisibilityDashboard,
+  AdminProperty,
+} from "@/components/admin/admin-visibility-dashboard";
 import { Eye } from "lucide-react";
 import { cookies } from "next/headers";
 import { createHash } from "crypto";

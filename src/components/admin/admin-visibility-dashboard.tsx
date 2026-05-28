@@ -14,7 +14,7 @@ import {
   Globe,
   LineChart,
   Lock,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 import { updatePropertyVisibilityAction } from "@/app/actions/admin-visibility-actions";
 import { formatUSD } from "@/lib/utils/currency";
@@ -114,12 +114,12 @@ export function AdminVisibilityDashboard({
           type: "success",
           message: nextVisibility ? t("successVisible") : t("successHidden"),
         });
-        
+
         // Update local state visually
         setLocalProperties((prev) =>
-          prev.map((p) => (p.id === property.id ? { ...p, isVisible: nextVisibility } : p))
+          prev.map((p) => (p.id === property.id ? { ...p, isVisible: nextVisibility } : p)),
         );
-        
+
         router.refresh();
       } else {
         setAlert({ type: "error", message: t("errorUpdate") });
@@ -196,7 +196,10 @@ export function AdminVisibilityDashboard({
         {/* Table */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
-            <table data-testid="listings-visibility-table" className="w-full text-left border-collapse">
+            <table
+              data-testid="listings-visibility-table"
+              className="w-full text-left border-collapse"
+            >
               <thead>
                 <tr className="border-b border-slate-800 bg-slate-950 text-slate-400 text-xs font-bold uppercase tracking-wider">
                   <th className="px-6 py-4 w-20">{t("tableThumbnail")}</th>
@@ -238,7 +241,9 @@ export function AdminVisibilityDashboard({
                         <td className="px-6 py-4">
                           <div className="flex flex-col">
                             <span className="font-bold text-slate-100">{title}</span>
-                            <span className="text-[10px] text-slate-500 font-semibold mt-0.5">/{property.slug}</span>
+                            <span className="text-[10px] text-slate-500 font-semibold mt-0.5">
+                              /{property.slug}
+                            </span>
                           </div>
                         </td>
                         <td className="px-6 py-4 font-mono font-bold text-slate-400">
@@ -277,9 +282,7 @@ export function AdminVisibilityDashboard({
                             ) : (
                               <Eye className="w-3.5 h-3.5" />
                             )}
-                            <span>
-                              {property.isVisible ? t("btnHide") : t("btnShow")}
-                            </span>
+                            <span>{property.isVisible ? t("btnHide") : t("btnShow")}</span>
                           </button>
                         </td>
                       </tr>
@@ -311,7 +314,9 @@ export function AdminVisibilityDashboard({
                 <ChevronLeft className="w-5 h-5" />
               </button>
 
-              <span className="text-sm font-semibold text-slate-400">{currentPage} of {totalPages}</span>
+              <span className="text-sm font-semibold text-slate-400">
+                {currentPage} of {totalPages}
+              </span>
 
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
@@ -372,7 +377,9 @@ export function AdminVisibilityDashboard({
                     {t("gscImpressions")}
                   </span>
                   <p className="text-2xl font-black text-slate-100">42,850</p>
-                  <span className="text-[10px] font-bold text-green-400">▲ +12.3% vs prev month</span>
+                  <span className="text-[10px] font-bold text-green-400">
+                    ▲ +12.3% vs prev month
+                  </span>
                 </div>
 
                 <div
@@ -383,7 +390,9 @@ export function AdminVisibilityDashboard({
                     {t("gscCtr")}
                   </span>
                   <p className="text-2xl font-black text-slate-100">3.82%</p>
-                  <span className="text-[10px] font-bold text-green-400">▲ +0.45% vs prev month</span>
+                  <span className="text-[10px] font-bold text-green-400">
+                    ▲ +0.45% vs prev month
+                  </span>
                 </div>
               </div>
 
@@ -441,8 +450,14 @@ export function AdminVisibilityDashboard({
             <div className="pt-4 border-t border-slate-800 flex justify-between text-xs font-semibold text-slate-400">
               <span>{t("gscIndexing")}:</span>
               <div className="flex gap-4">
-                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 bg-green-500 rounded-full"></span> {t("gscIndexed")}: 128</span>
-                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 bg-red-500 rounded-full"></span> {t("gscExcluded")}: 12</span>
+                <span className="flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 bg-green-500 rounded-full"></span> {t("gscIndexed")}:
+                  128
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 bg-red-500 rounded-full"></span> {t("gscExcluded")}:
+                  12
+                </span>
               </div>
             </div>
           </div>
@@ -458,7 +473,9 @@ export function AdminVisibilityDashboard({
                   <LineChart className="w-5 h-5 text-red-500" />
                   <span>{t("ga4Title")}</span>
                 </h3>
-                <span className="text-xs text-slate-500 font-semibold">Real-Time User Engagement</span>
+                <span className="text-xs text-slate-500 font-semibold">
+                  Real-Time User Engagement
+                </span>
               </div>
 
               {/* Popular Pages List */}
@@ -470,25 +487,51 @@ export function AdminVisibilityDashboard({
                 >
                   {[
                     { path: "/en/property/ocean-view-condo", views: 2450, saves: 142, rate: "76%" },
-                    { path: "/en/property/mountain-sanctuary", views: 1890, saves: 98, rate: "81%" },
-                    { path: "/en/property/valle-de-el-general-finca", views: 1540, saves: 65, rate: "69%" },
+                    {
+                      path: "/en/property/mountain-sanctuary",
+                      views: 1890,
+                      saves: 98,
+                      rate: "81%",
+                    },
+                    {
+                      path: "/en/property/valle-de-el-general-finca",
+                      views: 1540,
+                      saves: 65,
+                      rate: "69%",
+                    },
                     { path: "/en/search?q=uvita", views: 1200, saves: 0, rate: "58%" },
-                    { path: "/en/property/tropical-modern-villa", views: 980, saves: 54, rate: "82%" },
+                    {
+                      path: "/en/property/tropical-modern-villa",
+                      views: 980,
+                      saves: 54,
+                      rate: "82%",
+                    },
                   ].map((page, i) => (
-                    <div key={i} className="flex justify-between items-center px-4 py-3 hover:bg-slate-900/50">
+                    <div
+                      key={i}
+                      className="flex justify-between items-center px-4 py-3 hover:bg-slate-900/50"
+                    >
                       <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-slate-200 font-mono break-all">{page.path}</span>
-                        <span className="text-[10px] text-slate-500 font-medium">Engagement Rate: {page.rate}</span>
+                        <span className="font-semibold text-slate-200 font-mono break-all">
+                          {page.path}
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-medium">
+                          Engagement Rate: {page.rate}
+                        </span>
                       </div>
                       <div className="flex items-center gap-4 text-right flex-shrink-0">
                         <div className="flex flex-col">
                           <span className="font-extrabold text-slate-100">{page.views}</span>
-                          <span className="text-[9px] uppercase tracking-wider text-slate-500">{t("ga4Views")}</span>
+                          <span className="text-[9px] uppercase tracking-wider text-slate-500">
+                            {t("ga4Views")}
+                          </span>
                         </div>
                         {page.saves > 0 && (
                           <div className="flex flex-col">
                             <span className="font-extrabold text-red-400">♥ {page.saves}</span>
-                            <span className="text-[9px] uppercase tracking-wider text-slate-500">{t("ga4Saves")}</span>
+                            <span className="text-[9px] uppercase tracking-wider text-slate-500">
+                              {t("ga4Saves")}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -501,7 +544,9 @@ export function AdminVisibilityDashboard({
               <div className="p-3 bg-slate-950 border border-slate-850 rounded-lg flex items-start gap-2 text-[11px] font-semibold text-slate-400">
                 <Lock className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
                 <p className="leading-relaxed">
-                  This website implements Cookieless tracking & default Denied consent mode. GA4 is configured with client storage disabled to respect visitor privacy laws while preserving aggregate analytics.
+                  This website implements Cookieless tracking & default Denied consent mode. GA4 is
+                  configured with client storage disabled to respect visitor privacy laws while
+                  preserving aggregate analytics.
                 </p>
               </div>
             </div>

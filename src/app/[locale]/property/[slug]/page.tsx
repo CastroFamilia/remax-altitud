@@ -105,30 +105,40 @@ export default async function PropertyPage({
     const propertyRef = property.apiId;
 
     // Build WhatsApp URL with "no longer available" mentioned
-    const whatsappDigits = assignedAgent?.whatsapp ? assignedAgent.whatsapp.replace(/\D/g, "") : "50627710000";
-    const waMessage = locale === "es"
-      ? `Hola ${assignedAgent?.name ?? "Agente"}, me interesa encontrar alternativas ya que la propiedad "${propertyTitle}" (Ref: ${propertyRef}) ya no está disponible.`
-      : `Hi ${assignedAgent?.name ?? "Agent"}, I'm interested in finding alternative properties since "${propertyTitle}" (Ref: ${propertyRef}) is no longer available.`;
+    const whatsappDigits = assignedAgent?.whatsapp
+      ? assignedAgent.whatsapp.replace(/\D/g, "")
+      : "50627710000";
+    const waMessage =
+      locale === "es"
+        ? `Hola ${assignedAgent?.name ?? "Agente"}, me interesa encontrar alternativas ya que la propiedad "${propertyTitle}" (Ref: ${propertyRef}) ya no está disponible.`
+        : `Hi ${assignedAgent?.name ?? "Agent"}, I'm interested in finding alternative properties since "${propertyTitle}" (Ref: ${propertyRef}) is no longer available.`;
     const whatsappUrl = `https://wa.me/${whatsappDigits}?text=${encodeURIComponent(waMessage)}`;
 
     // Build email URL
-    const emailSubject = locale === "es"
-      ? `Consulta sobre alternativas a ${propertyTitle} (Ref: ${propertyRef})`
-      : `Inquiry regarding alternatives to ${propertyTitle} (Ref: ${propertyRef})`;
-    const emailBody = locale === "es"
-      ? `Hola ${assignedAgent?.name ?? "Agente"},\n\nVi que la propiedad "${propertyTitle}" (Ref: ${propertyRef}) ya no está disponible. Me gustaría recibir opciones de propiedades similares.\n\nSaludos.`
-      : `Hi ${assignedAgent?.name ?? "Agent"},\n\nI noticed that "${propertyTitle}" (Ref: ${propertyRef}) is no longer available. I would love to receive some similar property recommendations.\n\nBest regards.`;
+    const emailSubject =
+      locale === "es"
+        ? `Consulta sobre alternativas a ${propertyTitle} (Ref: ${propertyRef})`
+        : `Inquiry regarding alternatives to ${propertyTitle} (Ref: ${propertyRef})`;
+    const emailBody =
+      locale === "es"
+        ? `Hola ${assignedAgent?.name ?? "Agente"},\n\nVi que la propiedad "${propertyTitle}" (Ref: ${propertyRef}) ya no está disponible. Me gustaría recibir opciones de propiedades similares.\n\nSaludos.`
+        : `Hi ${assignedAgent?.name ?? "Agent"},\n\nI noticed that "${propertyTitle}" (Ref: ${propertyRef}) is no longer available. I would love to receive some similar property recommendations.\n\nBest regards.`;
     const emailUrl = `mailto:${assignedAgent?.email || "info@remax-altitud.cr"}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
     const agentPhotoSrc =
       (assignedAgent?.photoOptimizedUrl && assignedAgent.photoOptimizedUrl.length > 0
         ? assignedAgent.photoOptimizedUrl
         : null) ??
-      (assignedAgent?.photoUrl && assignedAgent.photoUrl.length > 0 ? assignedAgent.photoUrl : null) ??
+      (assignedAgent?.photoUrl && assignedAgent.photoUrl.length > 0
+        ? assignedAgent.photoUrl
+        : null) ??
       "/images/agent-placeholder.svg";
 
     return (
-      <div data-testid="listing-unavailable-page" className="bg-slate-50 min-h-screen py-16 px-4 md:px-8">
+      <div
+        data-testid="listing-unavailable-page"
+        className="bg-slate-50 min-h-screen py-16 px-4 md:px-8"
+      >
         <div className="max-w-4xl mx-auto space-y-12">
           {/* Glassmorphic/Premium Unavailable Announcement Banner */}
           <div className="bg-white rounded-2xl shadow-xl border border-red-100 overflow-hidden">
@@ -137,7 +147,10 @@ export default async function PropertyPage({
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-red-100 text-red-650">
                 Unavailable
               </span>
-              <h1 data-testid="unavailable-heading" className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-none">
+              <h1
+                data-testid="unavailable-heading"
+                className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-none"
+              >
                 {t("heading")}
               </h1>
               <p className="text-slate-500 text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
@@ -150,7 +163,10 @@ export default async function PropertyPage({
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
             <div className="md:col-span-3 space-y-6">
               {similar.length > 0 ? (
-                <section aria-labelledby="similar-heading" className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 md:p-8 space-y-6">
+                <section
+                  aria-labelledby="similar-heading"
+                  className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 md:p-8 space-y-6"
+                >
                   <h2
                     id="similar-heading"
                     className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2"
@@ -160,10 +176,7 @@ export default async function PropertyPage({
                   <ul data-testid="similar-properties-list" className="divide-y divide-slate-100">
                     {similar.map((p) => (
                       <li key={p.slug} className="py-4 first:pt-0 last:pb-0">
-                        <Link
-                          href={`/property/${p.slug}`}
-                          className="group block space-y-1.5"
-                        >
+                        <Link href={`/property/${p.slug}`} className="group block space-y-1.5">
                           <div className="flex justify-between items-center">
                             <h3 className="font-bold text-slate-800 group-hover:text-red-600 transition-colors">
                               {locale === "es" ? p.titleEs : p.titleEn}
@@ -177,7 +190,9 @@ export default async function PropertyPage({
                               </span>
                             )}
                             <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                            <span className="underline group-hover:text-red-500">{t("similarCta")}</span>
+                            <span className="underline group-hover:text-red-500">
+                              {t("similarCta")}
+                            </span>
                           </div>
                         </Link>
                       </li>
@@ -186,7 +201,9 @@ export default async function PropertyPage({
                 </section>
               ) : (
                 <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8 text-center space-y-4">
-                  <p className="text-slate-500 font-semibold">Explore our active listing catalog to find your perfect property in Costa Rica.</p>
+                  <p className="text-slate-500 font-semibold">
+                    Explore our active listing catalog to find your perfect property in Costa Rica.
+                  </p>
                   <Link
                     href="/search"
                     data-testid="agent-cta"
@@ -206,7 +223,7 @@ export default async function PropertyPage({
                 className="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 md:p-8 space-y-6 text-center md:text-left relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-red-50/40 to-transparent rounded-bl-full pointer-events-none" />
-                
+
                 <h3 className="text-xs uppercase tracking-wider font-extrabold text-red-600">
                   Assigned Agent
                 </h3>
@@ -224,7 +241,10 @@ export default async function PropertyPage({
                       <p className="text-xs font-semibold text-slate-450">{officeName}</p>
                       {assignedAgent.languages && (
                         <p className="text-xs text-slate-500 font-medium">
-                          Speaks: {Array.isArray(assignedAgent.languages) ? (assignedAgent.languages as string[]).join(", ") : ""}
+                          Speaks:{" "}
+                          {Array.isArray(assignedAgent.languages)
+                            ? (assignedAgent.languages as string[]).join(", ")
+                            : ""}
                         </p>
                       )}
                     </div>
@@ -232,7 +252,8 @@ export default async function PropertyPage({
                 )}
 
                 <div className="text-xs font-medium text-slate-505 leading-relaxed pt-2 border-t border-slate-100">
-                  Looking for something similar? Our local experts specialize in finding off-market opportunities tailored to your needs.
+                  Looking for something similar? Our local experts specialize in finding off-market
+                  opportunities tailored to your needs.
                 </div>
 
                 {/* Contact CTA buttons */}

@@ -12,12 +12,14 @@ import { verifyAdminAuth } from "@/lib/auth/admin";
  * filtering, and pagination.
  * AC: 1, 7
  */
-export async function fetchAdminVisibilityData(params: {
-  page?: number;
-  limit?: number;
-  searchQuery?: string;
-  showHiddenOnly?: boolean;
-} = {}) {
+export async function fetchAdminVisibilityData(
+  params: {
+    page?: number;
+    limit?: number;
+    searchQuery?: string;
+    showHiddenOnly?: boolean;
+  } = {},
+) {
   await verifyAdminAuth();
 
   let page = typeof params.page === "number" ? params.page : parseInt(String(params.page || 1), 10);
@@ -43,7 +45,7 @@ export async function fetchAdminVisibilityData(params: {
         ilike(properties.titleEn, searchPattern),
         ilike(properties.titleEs, searchPattern),
         ilike(properties.apiId, searchPattern),
-      )
+      ),
     );
   }
 
