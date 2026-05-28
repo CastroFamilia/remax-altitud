@@ -125,33 +125,69 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       ? lotSizeMin
       : lotSizeMax;
 
-  // Build keyword search conditions with river synonym expansion
+  // Build keyword search conditions with feature synonym expansion
   let searchCondition: SQL | undefined = undefined;
   if (filters.q && filters.q.trim().length > 0) {
     const queryTerm = filters.q.trim();
-    const isRiverQuery = /r[ií]o|river|quebrada/i.test(queryTerm);
-    if (isRiverQuery) {
-      const riverSynonyms = ["rio", "río", "river", "quebrada"];
-      const synonymConditions = riverSynonyms.flatMap((term) => {
-        const matchPattern = `%${term}%`;
-        return [
-          ilike(properties.titleEn, matchPattern),
-          ilike(properties.titleEs, matchPattern),
-          ilike(properties.descriptionEn, matchPattern),
-          ilike(properties.descriptionEs, matchPattern),
-          ilike(communities.name, matchPattern),
-        ];
+    
+    // Define synonym expansion groups
+    const SYNONYM_GROUPS = [
+      {
+        keywords: /r[ií]o|river|quebrada|creek|stream/i,
+        synonyms: ["rio", "río", "river", "quebrada", "creek", "stream"],
+      },
+      {
+        keywords: /waterfall|cascada|catarata/i,
+        synonyms: ["waterfall", "waterfalls", "cascada", "cascadas", "catarata", "cataratas"],
+      },
+      {
+        keywords: /view|vista|panorama|mirador|paisaje/i,
+        synonyms: ["view", "views", "vista", "vistas", "panorama", "panorámica", "panoramica", "mirador", "paisaje"],
+      },
+      {
+        keywords: /beach|playa|ocean|sea|mar|oc[eé]ano/i,
+        synonyms: ["beach", "playa", "ocean", "sea", "mar", "océano", "oceano", "costa"],
+      },
+    ];
+
+    const QUERY_STOP_WORDS = new Set([
+      "con", "de", "in", "with", "and", "a", "en", "la", "el", "un", "una", 
+      "for", "para", "los", "las", "del", "y", "o", "or", "to", "at", "by", "of"
+    ]);
+
+    // Split by whitespace and punctuation, map to lowercase and filter out stop words
+    const tokens = queryTerm
+      .split(/[\s,.\-/?!|;:]+/)
+      .map((t) => t.toLowerCase())
+      .filter((t) => t.length > 0 && !QUERY_STOP_WORDS.has(t));
+
+    if (tokens.length > 0) {
+      const tokenConditions = tokens.map((token) => {
+        const matchedGroup = SYNONYM_GROUPS.find((group) => group.keywords.test(token));
+        if (matchedGroup) {
+          const synonymConditions = matchedGroup.synonyms.flatMap((term) => {
+            const matchPattern = `%${term}%`;
+            return [
+              ilike(properties.titleEn, matchPattern),
+              ilike(properties.titleEs, matchPattern),
+              ilike(properties.descriptionEn, matchPattern),
+              ilike(properties.descriptionEs, matchPattern),
+              ilike(communities.name, matchPattern),
+            ];
+          });
+          return or(...synonymConditions);
+        } else {
+          const matchPattern = `%${token}%`;
+          return or(
+            ilike(properties.titleEn, matchPattern),
+            ilike(properties.titleEs, matchPattern),
+            ilike(properties.descriptionEn, matchPattern),
+            ilike(properties.descriptionEs, matchPattern),
+            ilike(communities.name, matchPattern),
+          );
+        }
       });
-      searchCondition = or(...synonymConditions);
-    } else {
-      const matchPattern = `%${queryTerm}%`;
-      searchCondition = or(
-        ilike(properties.titleEn, matchPattern),
-        ilike(properties.titleEs, matchPattern),
-        ilike(properties.descriptionEn, matchPattern),
-        ilike(properties.descriptionEs, matchPattern),
-        ilike(communities.name, matchPattern),
-      );
+      searchCondition = and(...tokenConditions);
     }
   }
 
