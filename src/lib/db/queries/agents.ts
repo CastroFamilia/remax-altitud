@@ -6,6 +6,40 @@ import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawAgent } from "@/types/remax-api";
 import { mapPropertyRowToSearchItem } from "./properties";
 
+const AGENT_LANGUAGES_MAP: Record<string, string[]> = {
+  "gustavo valverde": ["es", "en"],
+  "natalia leon": ["es", "en"],
+  "gerardo gonzalez": ["es", "en"],
+  "krisley pereira": ["es", "en"],
+  "omar gonzalez": ["es", "en"],
+  "yeudi cisneros": ["es"],
+  "mauricio espinoza": ["es", "en"],
+  "carlos mora": ["es", "en"],
+  "tatiana estrada": ["es"],
+  "klary perez": ["es"],
+  "alejandra castro": ["es", "pt", "en"],
+  "cesar negrette": ["es", "en"],
+  "debra west": ["en"],
+  "david west": ["en"],
+  "ismara ubeda": ["es"],
+  "ralff abarca": ["es"],
+  "josue alvarado": ["es", "en"],
+  "rafael lee": ["es", "en"],
+  "kevin alvarez": ["es", "en"],
+  "andrey perez": ["es"],
+};
+
+export function getAgentLanguages(name: string, fallbackLang: string | null): string[] {
+  const normalized = name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+  const override = AGENT_LANGUAGES_MAP[normalized];
+  if (override) return override;
+  return fallbackLang ? [fallbackLang] : ["es"];
+}
+
 /**
  * Upserts a single agent into the database using Drizzle's
  * `onConflictDoUpdate` on the `api_id` unique constraint.
@@ -31,7 +65,7 @@ export async function upsertAgent(raw: RawAgent, officeId: string): Promise<void
     phone: raw.phone ?? null,
     whatsapp: raw.whatsapp ?? null,
     photoUrl: raw.photoUrl ?? null,
-    languages: raw.primaryLang ? [raw.primaryLang] : [],
+    languages: getAgentLanguages(raw.name, raw.primaryLang),
     specializations: [],
     isActive: true,
     syncedAt: new Date(),

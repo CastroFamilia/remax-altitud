@@ -126,7 +126,7 @@ CREATE INDEX "idx_properties_geo" ON "properties" USING gist ("geo");--> stateme
 CREATE INDEX "idx_properties_tags" ON "properties" USING gin ("lifestyle_tags");--> statement-breakpoint
 CREATE INDEX "idx_properties_search" ON "properties" USING btree ("is_visible","property_type","price_usd","area_slug") WHERE "properties"."is_visible" = true;--> statement-breakpoint
 CREATE INDEX "idx_properties_community" ON "properties" USING btree ("community_id") WHERE "properties"."community_id" IS NOT NULL;--> statement-breakpoint
-INSERT INTO "offices" ("api_guid", "name", "area") VALUES
-  ('FEA8746D-CC1D-41B8-89F3-D04AC98274AF', 'RE/MAX Altitud', 'Pérez Zeledón'),
-  ('4AD5AE8F-5B47-4A1A-A953-40445F2B4940', 'RE/MAX Altitud Cero', 'Dominical/Uvita')
+INSERT INTO "offices" ("api_guid", "name", "area", "phone", "email", "address", "latitude", "longitude") VALUES
+  ('FEA8746D-CC1D-41B8-89F3-D04AC98274AF', 'RE/MAX Altitud', 'Pérez Zeledón', '+506 6078 8887', 'hola@remax-altitud.cr', 'Detras de la escuela 12 de Marzo, Perez Zeledon', 9.3725, -83.7011),
+  ('4AD5AE8F-5B47-4A1A-A953-40445F2B4940', 'RE/MAX Altitud Cero', 'Dominical/Uvita', '+506 6103 2936', 'cero@remax-altitud.cr', 'Calle principal frente a la cancha de Futbol de Playa Dominical', 9.257, -83.885)
 ON CONFLICT ("api_guid") DO NOTHING;
