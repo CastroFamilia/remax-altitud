@@ -68,11 +68,11 @@
       "coastCta": "Explorar Casas en la Playa",
       "coastAlt": "Costa pacífica prístina cerca de Dominical, Costa Rica",
       "searchPlaceholder": "Busca propiedades, zonas o estilos de vida…",
-      "searchAriaLabel": "Buscar propiedades (próximamente)",
+      "searchAriaLabel": "Buscar propiedades",
       "searchSubmit": "Buscar",
       "smartToggle": "Búsqueda Inteligente",
       "traditionalToggle": "Búsqueda Tradicional",
-      "shellNotice": "Búsqueda próximamente"
+      "shellNotice": ""
     },
     "featuredProperties": {
       "heading": "Propiedades Destacadas",

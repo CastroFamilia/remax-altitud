@@ -68,11 +68,11 @@
       "coastCta": "Explore Beach Homes",
       "coastAlt": "Pristine Pacific coast beach near Dominical, Costa Rica",
       "searchPlaceholder": "Search properties, areas, or lifestyles…",
-      "searchAriaLabel": "Search properties (coming soon)",
+      "searchAriaLabel": "Search properties",
       "searchSubmit": "Search",
       "smartToggle": "Smart Search",
       "traditionalToggle": "Traditional Search",
-      "shellNotice": "Search coming soon"
+      "shellNotice": ""
     },
     "featuredProperties": {
       "heading": "Featured Properties",
