@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-28T12:08:00-06:00_
+_Last updated: 2026-05-28T12:31:00-06:00_
 
 ## Stories
 
@@ -50,7 +50,7 @@ _Last updated: 2026-05-28T12:08:00-06:00_
 | 8.4   | 8    | Lifestyle Tag Administration | done | #113 | #169 | merged | none | ✅ Yes (done) |
 | 8.5   | 8    | Community Administration | done | #114 | #172 | merged | none | ✅ Yes (done) |
 | 8.6   | 8    | Listing Visibility & SEO Monitoring | done | #115 | #173 | merged | none | ✅ Yes (done) |
-| 8.7   | 8    | Shortlist Analytics | backlog | #116 | — | — | none | ✅ Yes |
+| 8.7   | 8    | Shortlist Analytics | done | #116 | #174 | merged | none | ✅ Yes (done) |
 
 ## Dependency Chains
 
@@ -102,10 +102,8 @@ _Last updated: 2026-05-28T12:08:00-06:00_
 
 ## Notes
 
-- Epics 1–7 are fully complete (all stories done and merged).
-- Epic 8 is in progress. Stories 8.1 (#166), 8.2 (#167), 8.3 (#168), 8.4 (#169), 8.5 (#172), and 8.6 (#173) are merged.
-- Story 8.7 is the only remaining story in Epic 8 and is Ready to Work.
+- Epics 1–8 are fully complete (all stories done and merged).
 - Base branch: `development` (not `main`). All worktrees and PRs target `development`.
 - No open story PRs.
-- Cleaned up story-8.1 to story-8.6 worktrees and remote/local branches.
+- Cleaned up story-8.1 to story-8.7 worktrees and remote/local branches.
 - Epic ordering strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
