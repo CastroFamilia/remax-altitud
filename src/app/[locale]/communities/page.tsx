@@ -1,24 +1,23 @@
+import React from "react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getAllCommunities } from "@/lib/db/queries/communities";
-import { getAllAreas } from "@/lib/db/queries/areas";
-import { generateBreadcrumbJsonLd, serializeJsonLd } from "@/lib/seo/structured-data";
-import { buildAlternatesMetadata } from "@/lib/seo/metadata";
+import { db } from "@/lib/db/client";
+import { communities } from "@/lib/db/schema/communities";
+import { areas } from "@/lib/db/schema/areas";
+import { eq, asc } from "drizzle-orm";
 import { CommunityCard } from "@/components/area/community-card";
+import { buildAlternatesMetadata } from "@/lib/seo/metadata";
+import { generateBreadcrumbJsonLd, serializeJsonLd } from "@/lib/seo/structured-data";
 
-/**
- * Community Index Page — SSG + ISR
- *
- * Lists all communities with hero cards (AC #10).
- */
-
-export const revalidate = 3600;
-
-export async function generateMetadata({
-  params,
-}: {
+interface PageProps {
   params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+}
+
+export async function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "es" }];
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "CommunityPage" });
 
@@ -29,80 +28,90 @@ export async function generateMetadata({
     openGraph: {
       title: t("index.meta.title"),
       description: t("index.meta.description"),
-      type: "website",
     },
   };
 }
 
-export default async function CommunitiesIndexPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function CommunitiesIndexPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "CommunityPage" });
 
-  let communities: Awaited<ReturnType<typeof getAllCommunities>> = [];
-  let areaMap: Record<string, string> = {};
-  try {
-    const [communitiesData, areasData] = await Promise.all([getAllCommunities(), getAllAreas()]);
-    communities = communitiesData;
-    areaMap = Object.fromEntries(areasData.map((a) => [a.id, a.slug]));
-  } catch {
-    // DB unavailable — render empty grid (CI build with dummy DATABASE_URL)
-  }
+  // Fetch all communities joined with area to build accurate href
+  const dbCommunities = await db
+    .select({
+      id: communities.id,
+      slug: communities.slug,
+      name: communities.name,
+      taglineEn: communities.taglineEn,
+      taglineEs: communities.taglineEs,
+      heroImageUrl: communities.heroImageUrl,
+      priceMinUsd: communities.priceMinUsd,
+      priceMaxUsd: communities.priceMaxUsd,
+      listingCount: communities.listingCount,
+      latitude: communities.latitude,
+      longitude: communities.longitude,
+      geoFenceCoords: communities.geoFenceCoords,
+      areaSlug: areas.slug,
+    })
+    .from(communities)
+    .innerJoin(areas, eq(communities.areaId, areas.id))
+    .orderBy(asc(communities.name));
 
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
-    {
-      name: locale === "es" ? "Inicio" : "Home",
-      href: `/${locale}`,
-      position: 1,
-    },
-    {
-      name: t("index.title"),
-      href: `/${locale}/communities`,
-      position: 2,
-    },
+    { name: locale === "es" ? "Inicio" : "Home", href: `/${locale}`, position: 1 },
+    { name: t("index.title"), href: `/${locale}/communities`, position: 2 },
   ]);
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[var(--color-bg-white,#fff)] pt-24 pb-20">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: serializeJsonLd(breadcrumbJsonLd),
-        }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
 
-      {/* Page header */}
-      <div className="mb-12 text-center">
-        <h1 className="text-4xl font-extrabold text-brand-navy md:text-5xl">{t("index.title")}</h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-text-muted">{t("index.description")}</p>
-      </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Page Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-brand-navy tracking-tight">
+            {t("index.title")}
+          </h1>
+          <p className="text-lg text-text-muted leading-relaxed font-medium">
+            {t("index.description")}
+          </p>
+        </div>
 
-      {/* Community cards grid */}
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {communities.map((community) => {
-          const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
-          const areaSlug = areaMap[community.areaId] ?? "";
+        {/* Communities Grid */}
+        {dbCommunities.length === 0 ? (
+          <div className="text-center py-20 bg-slate-50 rounded-2xl border border-slate-100 max-w-xl mx-auto">
+            <p className="text-text-muted font-bold text-lg">No communities found.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {dbCommunities.map((comm) => {
+              const tagline = locale === "es" ? comm.taglineEs : comm.taglineEn;
+              const href = `/${locale}/areas/${comm.areaSlug}/communities/${comm.slug}`;
 
-          return (
-            <div key={community.slug} data-testid="community-index-card">
-              <CommunityCard
-                name={community.name}
-                tagline={tagline}
-                heroImageUrl={community.heroImageUrl}
-                href={`/${locale}/areas/${areaSlug}/communities/${community.slug}`}
-                locale={locale}
-                priceMin={community.priceMinUsd}
-                priceMax={community.priceMaxUsd}
-                listingCount={community.listingCount}
-              />
-            </div>
-          );
-        })}
+              return (
+                <CommunityCard
+                  key={comm.id}
+                  name={comm.name}
+                  tagline={tagline}
+                  heroImageUrl={comm.heroImageUrl}
+                  href={href}
+                  locale={locale}
+                  priceMin={comm.priceMinUsd}
+                  priceMax={comm.priceMaxUsd}
+                  listingCount={comm.listingCount}
+                  latitude={comm.latitude}
+                  longitude={comm.longitude}
+                  geoFenceCoords={comm.geoFenceCoords as any}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     </main>
   );
