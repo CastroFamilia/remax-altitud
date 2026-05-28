@@ -30,6 +30,7 @@ const CHIP_KEYS: Array<keyof SearchFilters> = [
   "lotSizeMin",
   "lotSizeMax",
   "areaSlug",
+  "q",
 ];
 
 interface ChipInfo {
@@ -101,6 +102,15 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
       reactKey: "areaSlug",
       label: t("filters.location"),
       value: filters.areaSlug,
+    });
+  }
+
+  if (filters.q) {
+    chips.push({
+      key: "q",
+      reactKey: "q",
+      label: t("filters.search"),
+      value: `"${filters.q}"`,
     });
   }
 

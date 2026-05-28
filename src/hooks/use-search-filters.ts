@@ -42,6 +42,7 @@ const PARAM_MAP: Record<keyof SearchFilters, string> = {
   view: "view",
   // Story 3.4: tags — comma-separated string (?tags=Investment+Property,Rental+Potential)
   tags: "tags",
+  q: "q",
 };
 
 /**
@@ -77,6 +78,7 @@ const FILTER_KEYS: Array<keyof SearchFilters> = [
   "lotSizeMin",
   "lotSizeMax",
   "areaSlug",
+  "q",
 ];
 
 /** Valid sort options */
@@ -137,6 +139,9 @@ function parseFilters(params: URLSearchParams): SearchFilters {
       .filter(Boolean);
     if (parsed.length > 0) filters.tags = parsed;
   }
+
+  const q = params.get("q");
+  if (q) filters.q = q;
 
   return filters;
 }

@@ -31,7 +31,7 @@ const BEACH_SLUGS = new Set([
   "playa-hermosa",
 ]);
 
-const MOUNTAIN_SLUGS = new Set(["perez-zeledon"]);
+const MOUNTAIN_SLUGS = new Set(["perez-zeledon", "tinamastes-platanillo"]);
 
 const LAND_TYPES = new Set(["Lote", "Terreno", "Finca"]);
 

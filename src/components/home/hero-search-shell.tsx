@@ -81,21 +81,33 @@ function parseQuery(queryText: string): Record<string, string> {
   const normalized = queryText.toLowerCase().trim();
   if (!normalized) return params;
 
+  let remainingText = normalized;
+
   // 1. Match Area
+  let matchedAreaKey = "";
   for (const [key, slug] of Object.entries(AREA_KEYWORDS)) {
     if (normalized.includes(key)) {
       params.area = slug;
+      matchedAreaKey = key;
       break;
     }
   }
+  if (matchedAreaKey) {
+    remainingText = remainingText.replace(matchedAreaKey, " ");
+  }
 
   // 2. Match Property Type
+  let matchedTypeKey = "";
   for (const [key, type] of Object.entries(TYPE_KEYWORDS)) {
     const regex = new RegExp(`\\b${key}\\b|${key}`);
     if (regex.test(normalized)) {
       params.type = type;
+      matchedTypeKey = key;
       break;
     }
+  }
+  if (matchedTypeKey) {
+    remainingText = remainingText.replace(matchedTypeKey, " ");
   }
 
   // 3. Match Lifestyle Tags
@@ -105,6 +117,7 @@ function parseQuery(queryText: string): Record<string, string> {
       if (!tags.includes(tag)) {
         tags.push(tag);
       }
+      remainingText = remainingText.replace(key, " ");
     }
   }
   if (tags.length > 0) {
@@ -118,6 +131,7 @@ function parseQuery(queryText: string): Record<string, string> {
     if (beds >= 1 && beds <= 5) {
       params.bedrooms = String(beds);
     }
+    remainingText = remainingText.replace(bedMatch[0], " ");
   }
 
   const bathMatch = normalized.match(/(\d+)\s*(?:bath|bathroom|baño|bañ)/);
@@ -126,6 +140,7 @@ function parseQuery(queryText: string): Record<string, string> {
     if (baths >= 1 && baths <= 4) {
       params.bathrooms = String(baths);
     }
+    remainingText = remainingText.replace(bathMatch[0], " ");
   }
 
   // 5. Match Price limits
@@ -164,6 +179,40 @@ function parseQuery(queryText: string): Record<string, string> {
     } else {
       params.price_max = String(priceValues[0]);
     }
+    // Remove price numbers and symbols from remainingText
+    remainingText = remainingText.replace(/\b\d+\s*k\b/gi, " ");
+    remainingText = remainingText.replace(/\b\d+\b/gi, " ");
+    remainingText = remainingText.replace(/\$/g, " ");
+    remainingText = remainingText.replace(
+      /(?:under|max|less|below|hasta|menos|over|above|min|more|desde|mas|más|[<>])/gi,
+      " ",
+    );
+  }
+
+  // Filter stop words and pull out keyword query q
+  const STOP_WORDS = new Set([
+    "con",
+    "de",
+    "in",
+    "with",
+    "and",
+    "a",
+    "en",
+    "la",
+    "el",
+    "un",
+    "una",
+    "for",
+    "para",
+    "los",
+    "las",
+    "del",
+  ]);
+
+  const words = remainingText.split(/[\s,.\-/?!|;:]+/);
+  const filteredWords = words.filter((w) => w.length > 0 && !STOP_WORDS.has(w));
+  if (filteredWords.length > 0) {
+    params.q = filteredWords.join(" ");
   }
 
   return params;

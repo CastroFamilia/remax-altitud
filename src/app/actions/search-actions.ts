@@ -12,7 +12,7 @@
 
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
-import { and, eq, gte, lte, isNotNull, desc, asc, sql } from "drizzle-orm";
+import { and, eq, gte, lte, isNotNull, desc, asc, sql, or, ilike, inArray } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
 import { mapPropertyRowToSearchItem } from "@/lib/db/queries/properties";
@@ -28,6 +28,48 @@ function sanitizeNumber(value: number | undefined): number | undefined {
   if (!Number.isFinite(value)) return undefined;
   if (value < 0) return undefined;
   return value;
+}
+
+const TYPE_EQUIVALENTS: Record<string, string[]> = {
+  casa: ["Casa", "House", "Residential"],
+  house: ["Casa", "House", "Residential"],
+  home: ["Casa", "House", "Residential"],
+  apartamento: ["Apartamento", "Apartment", "Condominium", "Condo"],
+  apartment: ["Apartamento", "Apartment", "Condominium", "Condo"],
+  condo: ["Apartamento", "Apartment", "Condominium", "Condo"],
+  condominio: ["Apartamento", "Apartment", "Condominium", "Condo"],
+  lote: ["Lote", "Lot", "Land"],
+  lot: ["Lote", "Lot", "Land"],
+  terreno: ["Terreno", "Terrenos", "Land", "Lot"],
+  land: ["Terreno", "Terrenos", "Land", "Lot"],
+  comercial: ["Comercial", "Commercial", "Business"],
+  commercial: ["Comercial", "Commercial", "Business"],
+  finca: ["Finca", "Farm", "Ranch"],
+  farm: ["Finca", "Farm", "Ranch"],
+  ranch: ["Finca", "Farm", "Ranch"],
+};
+
+const DB_TYPE_TO_SPANISH: Record<string, string> = {
+  House: "Casa",
+  Residential: "Casa",
+  Apartment: "Apartamento",
+  Condominium: "Apartamento",
+  Condo: "Apartamento",
+  Lot: "Lote",
+  Land: "Terreno",
+  Commercial: "Comercial",
+  Farm: "Finca",
+  Ranch: "Finca",
+};
+
+function getPropertyTypeEquivalents(type: string): string[] {
+  const normalized = type.toLowerCase().trim();
+  const equivalents = TYPE_EQUIVALENTS[normalized];
+  if (equivalents) {
+    return equivalents;
+  }
+  const capitalized = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+  return [type, normalized, capitalized];
 }
 
 /**
@@ -79,12 +121,42 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       ? lotSizeMin
       : lotSizeMax;
 
+  // Build keyword search conditions with river synonym expansion
+  let searchCondition: SQL | undefined = undefined;
+  if (filters.q && filters.q.trim().length > 0) {
+    const queryTerm = filters.q.trim();
+    const isRiverQuery = /r[ií]o|river|quebrada/i.test(queryTerm);
+    if (isRiverQuery) {
+      const riverSynonyms = ["rio", "río", "river", "quebrada"];
+      const synonymConditions = riverSynonyms.flatMap((term) => {
+        const matchPattern = `%${term}%`;
+        return [
+          ilike(properties.titleEn, matchPattern),
+          ilike(properties.titleEs, matchPattern),
+          ilike(properties.descriptionEn, matchPattern),
+          ilike(properties.descriptionEs, matchPattern),
+        ];
+      });
+      searchCondition = or(...synonymConditions);
+    } else {
+      const matchPattern = `%${queryTerm}%`;
+      searchCondition = or(
+        ilike(properties.titleEn, matchPattern),
+        ilike(properties.titleEs, matchPattern),
+        ilike(properties.descriptionEn, matchPattern),
+        ilike(properties.descriptionEs, matchPattern),
+      );
+    }
+  }
+
   // Build a per-dimension condition map so we can compose facet WHERE clauses
   // that exclude the dimension being faceted. Each entry is the SQL filter
   // that would be applied if that dimension is set.
   const dimConditions: Record<string, SQL | undefined> = {
     visible: eq(properties.isVisible, true),
-    type: filters.type ? eq(properties.propertyType, filters.type) : undefined,
+    type: filters.type
+      ? inArray(properties.propertyType, getPropertyTypeEquivalents(filters.type))
+      : undefined,
     priceMin: safePriceMin !== undefined ? gte(properties.priceUsd, safePriceMin) : undefined,
     priceMax: safePriceMax !== undefined ? lte(properties.priceUsd, safePriceMax) : undefined,
     bedrooms: bedrooms !== undefined ? gte(properties.bedrooms, bedrooms) : undefined,
@@ -97,6 +169,7 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
     tags: sanitizedTags?.length
       ? sql`${properties.lifestyleTags} && ARRAY[${sql.join(sanitizedTags, sql`, `)}]::text[]`
       : undefined,
+    q: searchCondition,
   };
 
   // Compose conditions for the main query — every set dimension applies.
@@ -196,10 +269,19 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
     .where(whereClause);
   const total = totalRows[0]?.count ?? propertyItems.length;
 
+  const spanishTypeCounts: Record<string, number> = {};
+  for (const row of byTypeRows) {
+    if (row.value === null) continue;
+    const spanishType = DB_TYPE_TO_SPANISH[row.value] || row.value;
+    spanishTypeCounts[spanishType] = (spanishTypeCounts[spanishType] || 0) + row.count;
+  }
+  const byTypeFacets = Object.entries(spanishTypeCounts).map(([value, count]) => ({
+    value,
+    count,
+  }));
+
   const facets: FilterFacets = {
-    byType: byTypeRows
-      .filter((r) => r.value !== null)
-      .map((r) => ({ value: r.value as string, count: r.count })),
+    byType: byTypeFacets,
     byBedrooms: byBedroomsRows
       .filter((r) => r.value !== null)
       .map((r) => ({ value: r.value as number, count: r.count })),
@@ -247,6 +329,7 @@ function formatAreaLabel(slug: string): string {
     dominical: "Dominical",
     uvita: "Uvita",
     ojochal: "Ojochal",
+    "tinamastes-platanillo": "Tinamastes, Platanillo & Barú",
     quepos: "Quepos",
     "manuel-antonio": "Manuel Antonio",
     jaco: "Jacó",
