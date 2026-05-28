@@ -80,7 +80,7 @@ describe("ShortlistPageClient — Story 7.2 ATDD (GREEN PHASE)", () => {
     vi.clearAllMocks();
   });
 
-  it("[P0] renders skeletons during loading state (AC #8)", () => {
+  it("[P0] 7.2-UNIT-004: renders skeletons during loading state (AC #8)", () => {
     mockUseShortlist.mockReturnValue({
       isLoaded: false,
       shortlist: [],
@@ -91,7 +91,7 @@ describe("ShortlistPageClient — Story 7.2 ATDD (GREEN PHASE)", () => {
     expect(getAllByTestId("property-card-skeleton").length).toBeGreaterThanOrEqual(3);
   });
 
-  it("[P0] renders empty state elements when no properties are saved (AC #3)", () => {
+  it("[P0] 7.2-UNIT-005: renders empty state elements when no properties are saved (AC #3)", () => {
     mockUseShortlist.mockReturnValue({
       isLoaded: true,
       shortlist: [],
@@ -102,7 +102,7 @@ describe("ShortlistPageClient — Story 7.2 ATDD (GREEN PHASE)", () => {
     expect(getByText("No properties saved yet. Browse listings and tap ♡ to save.")).toBeTruthy();
   });
 
-  it("[P0] renders saved list items and passes them to map when shortlist has items (AC #1, #2)", async () => {
+  it("[P0] 7.2-UNIT-006: renders saved list items and passes them to map when shortlist has items (AC #1, #2)", async () => {
     mockUseShortlist.mockReturnValue({
       isLoaded: true,
       shortlist: ["prop-1", "prop-2"],
@@ -124,7 +124,7 @@ describe("ShortlistPageClient — Story 7.2 ATDD (GREEN PHASE)", () => {
     expect(mapView.textContent).toContain("Map with 2 pins");
   });
 
-  it("[P0] removal trigger executes expected handlers (AC #4)", async () => {
+  it("[P0] 7.2-UNIT-007: removal trigger executes expected handlers (AC #4)", async () => {
     const mockRemove = vi.fn();
     mockUseShortlist.mockReturnValue({
       isLoaded: true,
@@ -144,7 +144,7 @@ describe("ShortlistPageClient — Story 7.2 ATDD (GREEN PHASE)", () => {
     expect(mockRemove).toHaveBeenCalledWith("prop-1");
   });
 
-  it("[P1] renders CTAs askAgentCta and shareShortlistCta when shortlist has items (AC #5)", async () => {
+  it("[P1] 7.2-UNIT-008: renders CTAs askAgentCta and shareShortlistCta when shortlist has items (AC #5)", async () => {
     mockUseShortlist.mockReturnValue({
       isLoaded: true,
       shortlist: ["prop-1"],

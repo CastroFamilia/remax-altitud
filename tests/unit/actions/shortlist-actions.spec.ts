@@ -42,7 +42,7 @@ describe("Story 7.2: Shortlist Server Actions Unit Tests", () => {
     vi.restoreAllMocks();
   });
 
-  it("[P0] should return an empty array if an empty or null array of IDs is provided without querying the database", async () => {
+  it("[P0] 7.2-UNIT-001: should return an empty array if an empty or null array of IDs is provided without querying the database", async () => {
     const resultNull = await getShortlistProperties(null as unknown as string[]);
     expect(resultNull).toEqual([]);
     expect(mockSelect).not.toHaveBeenCalled();
@@ -52,7 +52,7 @@ describe("Story 7.2: Shortlist Server Actions Unit Tests", () => {
     expect(mockSelect).not.toHaveBeenCalled();
   });
 
-  it("[P0] should accurately query the database using the provided IDs", async () => {
+  it("[P0] 7.2-UNIT-002: should accurately query the database using the provided IDs", async () => {
     const mockRows = [
       {
         id: "prop-1",
@@ -85,7 +85,7 @@ describe("Story 7.2: Shortlist Server Actions Unit Tests", () => {
     expect(result[0].titleEn).toBe("Mountain House");
   });
 
-  it("[P1] should filter out soft-deleted properties (isVisible = false)", async () => {
+  it("[P1] 7.2-UNIT-003: should filter out soft-deleted properties (isVisible = false)", async () => {
     // The server action implementation must query with eq(properties.isVisible, true)
     // The test asserts that getShortlistProperties resolves the query matching the condition.
     mockWhere.mockResolvedValueOnce([]);
