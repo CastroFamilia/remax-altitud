@@ -107,6 +107,50 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
         endDate: undefined,
       });
     });
+
+    it("[P2] 8.1-UNIT-008b: normalizes invalid, negative or NaN page numbers to page 1", async () => {
+      vi.mocked(getSyncLogs).mockResolvedValueOnce([]);
+      vi.mocked(getSyncDashboardStats).mockResolvedValueOnce({ activeListings: 0, lastSuccessfulSync: null });
+
+      await fetchAdminSyncDashboardData({
+        page: NaN,
+      });
+
+      expect(getSyncLogs).toHaveBeenCalledWith({
+        limit: 20,
+        offset: 0,
+        startDate: undefined,
+        endDate: undefined,
+      });
+
+      await fetchAdminSyncDashboardData({
+        page: -5,
+      });
+
+      expect(getSyncLogs).toHaveBeenLastCalledWith({
+        limit: 20,
+        offset: 0,
+        startDate: undefined,
+        endDate: undefined,
+      });
+    });
+
+    it("[P2] 8.1-UNIT-008c: filters out dates outside 1970-2100 range to prevent DB range errors", async () => {
+      vi.mocked(getSyncLogs).mockResolvedValueOnce([]);
+      vi.mocked(getSyncDashboardStats).mockResolvedValueOnce({ activeListings: 0, lastSuccessfulSync: null });
+
+      await fetchAdminSyncDashboardData({
+        startDateStr: "1850-01-01",
+        endDateStr: "2150-12-31",
+      });
+
+      expect(getSyncLogs).toHaveBeenCalledWith({
+        limit: 20,
+        offset: 0,
+        startDate: undefined,
+        endDate: undefined,
+      });
+    });
   });
 
   // ---------------------------------------------------------------------------
@@ -116,13 +160,21 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
     const originalEnv = process.env.NODE_ENV;
 
     afterEach(() => {
-      process.env.NODE_ENV = originalEnv;
+      Object.defineProperty(process.env, "NODE_ENV", {
+        value: originalEnv,
+        configurable: true,
+        writable: true,
+      });
       delete process.env.ADMIN_PASSWORD;
     });
 
     it("[P0] 8.1-UNIT-009: loginAdmin sets httpOnly secure cookie when password matches ADMIN_PASSWORD", async () => {
       process.env.ADMIN_PASSWORD = "test-password";
-      process.env.NODE_ENV = "production";
+      Object.defineProperty(process.env, "NODE_ENV", {
+        value: "production",
+        configurable: true,
+        writable: true,
+      });
 
       const result = await loginAdmin("test-password");
 
@@ -145,7 +197,11 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
     });
 
     it("[P1] 8.1-UNIT-011: loginAdmin returns success=false if ADMIN_PASSWORD is not configured in production", async () => {
-      process.env.NODE_ENV = "production";
+      Object.defineProperty(process.env, "NODE_ENV", {
+        value: "production",
+        configurable: true,
+        writable: true,
+      });
       delete process.env.ADMIN_PASSWORD;
 
       const result = await loginAdmin("admin");
@@ -155,7 +211,11 @@ describe("Story 8.1: Admin Sync Actions Unit Tests", () => {
     });
 
     it("[P2] 8.1-UNIT-012: loginAdmin falls back to default 'admin' password in non-production", async () => {
-      process.env.NODE_ENV = "development";
+      Object.defineProperty(process.env, "NODE_ENV", {
+        value: "development",
+        configurable: true,
+        writable: true,
+      });
       delete process.env.ADMIN_PASSWORD;
 
       const result = await loginAdmin("admin");

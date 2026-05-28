@@ -17,7 +17,8 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
 
   const cookieStore = await cookies();
   const session = cookieStore.get("admin_session")?.value;
-  const adminPassword = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
+  const adminPassword =
+    process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
   const isAuthenticated = !!adminPassword && session === adminPassword;
 
   if (!isAuthenticated) {
@@ -104,9 +105,7 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 bg-slate-950 text-slate-100">
-        {children}
-      </main>
+      <main className="flex-1 flex flex-col min-w-0 bg-slate-950 text-slate-100">{children}</main>
     </div>
   );
 }

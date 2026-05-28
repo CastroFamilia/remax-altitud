@@ -109,9 +109,7 @@ export default async function AdminPage({ params, searchParams }: PageProps) {
           <Database className="w-8 h-8 text-red-500" />
           <span>{t("dashboardTitle")}</span>
         </h1>
-        <p className="text-slate-400 mt-2 text-sm md:text-base">
-          {t("subtitle")}
-        </p>
+        <p className="text-slate-400 mt-2 text-sm md:text-base">{t("subtitle")}</p>
       </div>
 
       {/* Summary Statistics Cards */}

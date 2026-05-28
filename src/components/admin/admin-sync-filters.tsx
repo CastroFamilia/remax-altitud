@@ -48,7 +48,10 @@ export function AdminSyncFilters({ locale, translations }: AdminSyncFiltersProps
   };
 
   return (
-    <form onSubmit={handleApply} className="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-8 space-y-4">
+    <form
+      onSubmit={handleApply}
+      className="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-8 space-y-4"
+    >
       <div className="flex items-center gap-2 text-slate-200 font-semibold mb-2">
         <Filter className="w-5 h-5 text-red-500" />
         <span>{translations.filterTitle}</span>
@@ -57,7 +60,10 @@ export function AdminSyncFilters({ locale, translations }: AdminSyncFiltersProps
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Status Dropdown */}
         <div>
-          <label htmlFor="filter-status" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+          <label
+            htmlFor="filter-status"
+            className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2"
+          >
             {translations.status}
           </label>
           <select
@@ -76,7 +82,10 @@ export function AdminSyncFilters({ locale, translations }: AdminSyncFiltersProps
 
         {/* Start Date */}
         <div>
-          <label htmlFor="filter-start-date" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+          <label
+            htmlFor="filter-start-date"
+            className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2"
+          >
             {translations.startDate}
           </label>
           <div className="relative">
@@ -93,7 +102,10 @@ export function AdminSyncFilters({ locale, translations }: AdminSyncFiltersProps
 
         {/* End Date */}
         <div>
-          <label htmlFor="filter-end-date" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+          <label
+            htmlFor="filter-end-date"
+            className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2"
+          >
             {translations.endDate}
           </label>
           <div className="relative">

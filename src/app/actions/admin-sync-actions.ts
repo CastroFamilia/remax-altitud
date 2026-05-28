@@ -13,14 +13,21 @@ export async function fetchAdminSyncDashboardData(params: {
   page?: number;
 }) {
   const status = params.status;
-  const page = params.page ?? 1;
+
+  // Normalize page parameter to prevent NaN or negative/zero values causing DB offset errors
+  let page = params.page ?? 1;
+  if (isNaN(page) || page < 1) {
+    page = 1;
+  }
+
   const limit = 20;
   const offset = (page - 1) * limit;
 
   let startDate: Date | undefined;
   if (params.startDateStr) {
     const parsed = new Date(params.startDateStr);
-    if (!isNaN(parsed.getTime())) {
+    // Boundary check: ensure date is valid and within reasonable years to prevent DB errors
+    if (!isNaN(parsed.getTime()) && parsed.getFullYear() >= 1970 && parsed.getFullYear() <= 2100) {
       startDate = parsed;
     }
   }
@@ -28,7 +35,8 @@ export async function fetchAdminSyncDashboardData(params: {
   let endDate: Date | undefined;
   if (params.endDateStr) {
     const parsed = new Date(params.endDateStr);
-    if (!isNaN(parsed.getTime())) {
+    // Boundary check: ensure date is valid and within reasonable years to prevent DB errors
+    if (!isNaN(parsed.getTime()) && parsed.getFullYear() >= 1970 && parsed.getFullYear() <= 2100) {
       parsed.setHours(23, 59, 59, 999);
       endDate = parsed;
     }
@@ -55,9 +63,12 @@ export async function fetchAdminSyncDashboardData(params: {
  * Server Action to authenticate admin using a simple cookie-based session.
  */
 export async function loginAdmin(password: string): Promise<{ success: boolean }> {
-  const adminPassword = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
+  const adminPassword =
+    process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? undefined : "admin");
   if (!adminPassword) {
-    console.warn("WARNING: ADMIN_PASSWORD environment variable is not configured. Admin access is disabled in production.");
+    console.warn(
+      "WARNING: ADMIN_PASSWORD environment variable is not configured. Admin access is disabled in production.",
+    );
     return { success: false };
   }
   if (password === adminPassword) {

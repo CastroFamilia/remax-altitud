@@ -135,6 +135,8 @@ so that I can monitor data freshness and quickly diagnose sync failures.
 
 - [x] [Review][Patch] Inclusive end date boundary filtering [src/app/actions/admin-sync-actions.ts:32]
 - [x] [Review][Patch] Avoid hardcoded production admin password fallback [src/app/actions/admin-sync-actions.ts:56, src/app/[locale]/admin/layout.tsx:20]
+- [x] [Review][Patch] Validate and normalize page number parameters to prevent NaN database query errors [src/app/actions/admin-sync-actions.ts:16]
+- [x] [Review][Patch] Constrain date range filters to reasonable year boundaries to avoid database parsing exceptions [src/app/actions/admin-sync-actions.ts:20-35]
 
 ---
 

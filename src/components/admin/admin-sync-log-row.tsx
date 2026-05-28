@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp, AlertCircle, CheckCircle, Clock, Database, Languages, Image as ImageIcon } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Database,
+  Languages,
+  Image as ImageIcon,
+} from "lucide-react";
 
 interface SyncLogItem {
   id: string;
@@ -66,21 +75,30 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
     switch (status) {
       case "success":
         return (
-          <span data-testid="sync-status-badge" className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-green-500/20 text-green-400">
+          <span
+            data-testid="sync-status-badge"
+            className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-green-500/20 text-green-400"
+          >
             <CheckCircle className="w-3.5 h-3.5" />
             {translations.success}
           </span>
         );
       case "failure":
         return (
-          <span data-testid="sync-status-badge" className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/20 text-red-400">
+          <span
+            data-testid="sync-status-badge"
+            className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/20 text-red-400"
+          >
             <AlertCircle className="w-3.5 h-3.5" />
             {translations.failure}
           </span>
         );
       case "partial":
         return (
-          <span data-testid="sync-status-badge" className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">
+          <span
+            data-testid="sync-status-badge"
+            className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-400"
+          >
             <AlertCircle className="w-3.5 h-3.5" />
             {translations.partial}
           </span>
@@ -88,7 +106,10 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
       case "running":
       default:
         return (
-          <span data-testid="sync-status-badge" className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 animate-pulse">
+          <span
+            data-testid="sync-status-badge"
+            className="flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 animate-pulse"
+          >
             <Clock className="w-3.5 h-3.5 animate-spin" />
             {translations.running}
           </span>
@@ -124,16 +145,10 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
       >
         <div className="flex flex-wrap items-center gap-3">
           {getStatusBadge(log.status)}
-          <span className="text-sm font-semibold text-slate-300">
-            {formattedDate(start)}
-          </span>
+          <span className="text-sm font-semibold text-slate-300">{formattedDate(start)}</span>
+          {end && <span className="hidden lg:inline text-slate-600">|</span>}
           {end && (
-            <span className="hidden lg:inline text-slate-600">|</span>
-          )}
-          {end && (
-            <span className="text-xs text-slate-500">
-              Duration: {formatDuration(durationMs)}
-            </span>
+            <span className="text-xs text-slate-500">Duration: {formatDuration(durationMs)}</span>
           )}
         </div>
 
@@ -141,24 +156,40 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-400">
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-            <span>{translations.propertiesAdded}: <strong className="text-slate-200">{log.propertiesCreated}</strong></span>
+            <span>
+              {translations.propertiesAdded}:{" "}
+              <strong className="text-slate-200">{log.propertiesCreated}</strong>
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-            <span>{translations.propertiesUpdated}: <strong className="text-slate-200">{log.propertiesUpdated}</strong></span>
+            <span>
+              {translations.propertiesUpdated}:{" "}
+              <strong className="text-slate-200">{log.propertiesUpdated}</strong>
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-            <span>{translations.propertiesRemoved}: <strong className="text-slate-200">{log.propertiesRemoved}</strong></span>
+            <span>
+              {translations.propertiesRemoved}:{" "}
+              <strong className="text-slate-200">{log.propertiesRemoved}</strong>
+            </span>
           </div>
 
           <div className="hidden sm:flex items-center gap-1 text-slate-500">
             <span>•</span>
-            <span>{translations.agentsSynced}: <strong className="text-slate-400">{log.agentsSynced}</strong></span>
+            <span>
+              {translations.agentsSynced}:{" "}
+              <strong className="text-slate-400">{log.agentsSynced}</strong>
+            </span>
           </div>
 
           <div className="flex items-center gap-1 text-slate-400 ml-auto lg:ml-0">
-            {isOpen ? <ChevronUp className="w-5 h-5 text-slate-500" /> : <ChevronDown className="w-5 h-5 text-slate-500" />}
+            {isOpen ? (
+              <ChevronUp className="w-5 h-5 text-slate-500" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-slate-500" />
+            )}
           </div>
         </div>
       </button>
@@ -171,9 +202,7 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
               <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block mb-1">
                 {translations.startedAt}
               </span>
-              <span className="text-sm font-semibold text-slate-300">
-                {formattedDate(start)}
-              </span>
+              <span className="text-sm font-semibold text-slate-300">{formattedDate(start)}</span>
             </div>
 
             <div className="bg-slate-900/60 rounded-lg p-4 border border-slate-800/40">
@@ -212,19 +241,27 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               <div className="bg-slate-900/30 rounded-lg px-3 py-2 border border-slate-800/30 text-center">
-                <span className="text-[10px] text-slate-500 block">{translations.propertiesAdded}</span>
+                <span className="text-[10px] text-slate-500 block">
+                  {translations.propertiesAdded}
+                </span>
                 <span className="text-lg font-bold text-slate-200">{log.propertiesCreated}</span>
               </div>
               <div className="bg-slate-900/30 rounded-lg px-3 py-2 border border-slate-800/30 text-center">
-                <span className="text-[10px] text-slate-500 block">{translations.propertiesUpdated}</span>
+                <span className="text-[10px] text-slate-500 block">
+                  {translations.propertiesUpdated}
+                </span>
                 <span className="text-lg font-bold text-slate-200">{log.propertiesUpdated}</span>
               </div>
               <div className="bg-slate-900/30 rounded-lg px-3 py-2 border border-slate-800/30 text-center">
-                <span className="text-[10px] text-slate-500 block">{translations.propertiesRemoved}</span>
+                <span className="text-[10px] text-slate-500 block">
+                  {translations.propertiesRemoved}
+                </span>
                 <span className="text-lg font-bold text-slate-200">{log.propertiesRemoved}</span>
               </div>
               <div className="bg-slate-900/30 rounded-lg px-3 py-2 border border-slate-800/30 text-center">
-                <span className="text-[10px] text-slate-500 block">{translations.agentsSynced}</span>
+                <span className="text-[10px] text-slate-500 block">
+                  {translations.agentsSynced}
+                </span>
                 <span className="text-lg font-bold text-slate-200">{log.agentsSynced}</span>
               </div>
               <div className="bg-slate-900/30 rounded-lg px-3 py-2 border border-slate-800/30 text-center">
@@ -246,7 +283,10 @@ export function AdminSyncLogRow({ log, translations }: AdminSyncLogRowProps) {
 
           {/* Diagnostic logs & errors */}
           {(log.errorMessage || (Array.isArray(log.errors) && log.errors.length > 0)) && (
-            <div data-testid="error-diagnostic-details" className="border border-red-500/20 bg-red-950/5 rounded-xl p-5 space-y-4">
+            <div
+              data-testid="error-diagnostic-details"
+              className="border border-red-500/20 bg-red-950/5 rounded-xl p-5 space-y-4"
+            >
               <h4 className="text-sm font-bold text-red-400 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 text-red-500" />
                 {translations.errorTitle}

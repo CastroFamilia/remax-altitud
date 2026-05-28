@@ -70,10 +70,7 @@ export async function getSyncLogs(filters: {
     query.where(and(...conditions));
   }
 
-  return query
-    .orderBy(desc(syncLogs.startedAt))
-    .limit(limitVal)
-    .offset(offsetVal);
+  return query.orderBy(desc(syncLogs.startedAt)).limit(limitVal).offset(offsetVal);
 }
 
 /**
