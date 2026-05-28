@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Area } from "@/lib/db/schema/areas";
+import { getAreaHeroImage } from "@/lib/utils";
 
 interface AreaGuideHeroProps {
   area: Area;
@@ -17,6 +18,7 @@ export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
   const metadata = area.metadata as Record<string, string> | null;
   const hasHeroImage = !!area.heroImageUrl;
+  const heroImageUrl = getAreaHeroImage(area.heroImageUrl, area.region);
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
 
   const regionBadgeClass =
@@ -34,7 +36,7 @@ export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
       {/* Background: image or gradient fallback */}
       {hasHeroImage ? (
         <Image
-          src={area.heroImageUrl!}
+          src={heroImageUrl}
           alt={areaName}
           fill
           className="object-cover"

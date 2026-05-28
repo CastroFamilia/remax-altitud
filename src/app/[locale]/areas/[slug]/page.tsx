@@ -20,6 +20,7 @@ import { AreaGuideDescription } from "@/components/area/area-guide-description";
 import { AreaGuideTabs } from "@/components/area/area-guide-tabs";
 import { CommunityCard } from "@/components/area/community-card";
 import { InvestmentContext } from "@/components/area/investment-context";
+import { FeaturedAreas } from "@/components/home/featured-areas";
 
 /**
  * Area Guide Page — SSG (no ISR)
@@ -145,6 +146,11 @@ export default async function AreaGuidePage({
         similarAreas={similarAreas}
         locale={locale}
       />
+
+      {/* Premium Featured Areas Section */}
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 border-t border-border mt-12">
+        <FeaturedAreas locale={locale} />
+      </section>
     </main>
   );
 }
