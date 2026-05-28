@@ -32,6 +32,18 @@ export default function AgentSelectionModal({
 }: AgentSelectionModalProps) {
   const t = useTranslations("ShortlistRouting");
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const hasLangMatch = (agentLanguages: string, currentLocale: string) => {
@@ -65,7 +77,7 @@ export default function AgentSelectionModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
     >
       {/* Backdrop click close */}
-      <div className="absolute inset-0" onClick={onClose}></div>
+      <div className="absolute inset-0" onClick={onClose} aria-hidden="true"></div>
 
       {/* Modal Content */}
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
@@ -115,6 +127,9 @@ export default function AgentSelectionModal({
                       src={photoSrc}
                       alt={agent.name}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/agent-placeholder.jpg";
+                      }}
                     />
                   </div>
 

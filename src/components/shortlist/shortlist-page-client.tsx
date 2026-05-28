@@ -178,7 +178,7 @@ export function ShortlistPageClient() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: "Shortlist User",
+          name: "Shortlist Lead",
           phone: "+50600000000",
           email: "",
           intent: "buy",
