@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-28T10:42:00-06:00_
+_Last updated: 2026-05-28T12:08:00-06:00_
 
 ## Stories
 
@@ -48,8 +48,8 @@ _Last updated: 2026-05-28T10:42:00-06:00_
 | 8.2   | 8    | Lead Management & Agent Assignment | done | #111 | #167 | merged | none | ✅ Yes (done) |
 | 8.3   | 8    | Bulk Lead Reassignment & Export | done | #112 | #168 | merged | 8.2 | ✅ Yes (done) |
 | 8.4   | 8    | Lifestyle Tag Administration | done | #113 | #169 | merged | none | ✅ Yes (done) |
-| 8.5   | 8    | Community Administration | backlog | #114 | — | — | none | ✅ Yes |
-| 8.6   | 8    | Listing Visibility & SEO Monitoring | backlog | #115 | — | — | none | ✅ Yes |
+| 8.5   | 8    | Community Administration | done | #114 | #172 | merged | none | ✅ Yes (done) |
+| 8.6   | 8    | Listing Visibility & SEO Monitoring | done | #115 | #173 | merged | none | ✅ Yes (done) |
 | 8.7   | 8    | Shortlist Analytics | backlog | #116 | — | — | none | ✅ Yes |
 
 ## Dependency Chains
@@ -103,9 +103,9 @@ _Last updated: 2026-05-28T10:42:00-06:00_
 ## Notes
 
 - Epics 1–7 are fully complete (all stories done and merged).
-- Epic 8 is in progress. Stories 8.1 (#166), 8.2 (#167), 8.3 (#168), and 8.4 (#169) are merged.
-- Epic 8 parallelization opportunities: Stories 8.5, 8.6, and 8.7 are all unblocked and Ready to Work.
+- Epic 8 is in progress. Stories 8.1 (#166), 8.2 (#167), 8.3 (#168), 8.4 (#169), 8.5 (#172), and 8.6 (#173) are merged.
+- Story 8.7 is the only remaining story in Epic 8 and is Ready to Work.
 - Base branch: `development` (not `main`). All worktrees and PRs target `development`.
 - No open story PRs.
-- Cleaned up story-8.1, story-8.2, story-8.3, and story-8.4 worktrees and remote/local branches.
+- Cleaned up story-8.1 to story-8.6 worktrees and remote/local branches.
 - Epic ordering strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
