@@ -262,13 +262,12 @@ describe("getAllCommunityParams — SSG path generation (AC #9, 6.2-INT-001)", (
         "@/lib/db/queries/communities"
       );
 
-      const mockJoinResult = vi.fn().mockResolvedValueOnce([
-        { community: "rise", slug: "perez-zeledon" },
-        { community: "santa-elena-hills", slug: "perez-zeledon" },
-        { community: "serena-del-mar", slug: "dominical" },
-      ]);
       const mockJoinFrom = vi.fn().mockReturnValue({
-        innerJoin: vi.fn().mockReturnValue(mockJoinResult),
+        innerJoin: vi.fn().mockResolvedValueOnce([
+          { community: "rise", slug: "perez-zeledon" },
+          { community: "santa-elena-hills", slug: "perez-zeledon" },
+          { community: "serena-del-mar", slug: "dominical" },
+        ]),
       });
       mockSelect.mockReturnValueOnce({ from: mockJoinFrom });
 
@@ -289,9 +288,8 @@ describe("getAllCommunityParams — SSG path generation (AC #9, 6.2-INT-001)", (
         "@/lib/db/queries/communities"
       );
 
-      const mockJoinResult = vi.fn().mockResolvedValueOnce([]);
       const mockJoinFrom = vi.fn().mockReturnValue({
-        innerJoin: vi.fn().mockReturnValue(mockJoinResult),
+        innerJoin: vi.fn().mockResolvedValueOnce([]),
       });
       mockSelect.mockReturnValueOnce({ from: mockJoinFrom });
 
@@ -309,11 +307,10 @@ describe("getAllCommunityParams — SSG path generation (AC #9, 6.2-INT-001)", (
         "@/lib/db/queries/communities"
       );
 
-      const mockJoinResult = vi.fn().mockResolvedValueOnce([
-        { community: "rise", slug: "perez-zeledon" },
-      ]);
       const mockJoinFrom = vi.fn().mockReturnValue({
-        innerJoin: vi.fn().mockReturnValue(mockJoinResult),
+        innerJoin: vi.fn().mockResolvedValueOnce([
+          { community: "rise", slug: "perez-zeledon" },
+        ]),
       });
       mockSelect.mockReturnValueOnce({ from: mockJoinFrom });
 
