@@ -2,6 +2,16 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Area } from "@/lib/db/schema/areas";
 
+interface AreaMetadata {
+  h1Es?: string;
+  h1En?: string;
+  elevation?: string | number;
+  climate?: string;
+  nearestBeach?: string;
+  nearestHospital?: string;
+  [key: string]: unknown;
+}
+
 interface AreaGuideHeroProps {
   area: Area;
   locale: string;
@@ -15,9 +25,9 @@ interface AreaGuideHeroProps {
  */
 export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
-  const metadata = area.metadata as Record<string, any> | null;
+  const metadata = area.metadata as AreaMetadata | null;
   const h1Key = locale === "es" ? "h1Es" : "h1En";
-  const displayTitle = metadata?.[h1Key] || areaName;
+  const displayTitle = (metadata?.[h1Key] as string | undefined) || areaName;
 
   const hasHeroImage = !!area.heroImageUrl;
   const t = await getTranslations({ locale, namespace: "AreaGuide" });

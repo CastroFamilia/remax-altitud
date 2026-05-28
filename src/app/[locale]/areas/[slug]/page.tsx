@@ -55,7 +55,7 @@ export async function generateMetadata({
 
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
-  const metadata = area.metadata as Record<string, any> | null;
+  const metadata = area.metadata as Record<string, string | undefined> | null;
 
   const seoTitleKey = locale === "es" ? "seoTitleEs" : "seoTitleEn";
   const seoDescKey = locale === "es" ? "seoDescriptionEs" : "seoDescriptionEn";
