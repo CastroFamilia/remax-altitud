@@ -40,6 +40,7 @@ import { describe, expect, it, vi, afterEach } from "vitest";
 const {
   mockSelect,
   mockFrom,
+  mockLeftJoin,
   mockWhere,
   mockOrderBy,
   mockLimit,
@@ -52,6 +53,7 @@ const {
   const mockLimit = vi.fn();
   const mockOrderBy = vi.fn();
   const mockWhere = vi.fn();
+  const mockLeftJoin = vi.fn();
   const mockFrom = vi.fn();
   const mockSelect = vi.fn();
 
@@ -61,6 +63,7 @@ const {
   // Both must resolve as arrays to allow .filter()/.map() on the result.
   const mockQueryBuilder: Record<string, unknown> = {
     from: mockFrom,
+    leftJoin: mockLeftJoin,
     where: mockWhere,
     orderBy: mockOrderBy,
     limit: mockLimit,
@@ -70,6 +73,7 @@ const {
 
   // Chain: each method returns the same builder for fluent API
   mockFrom.mockReturnValue(mockQueryBuilder);
+  mockLeftJoin.mockReturnValue(mockQueryBuilder);
   mockWhere.mockReturnValue(mockQueryBuilder);
   mockOrderBy.mockReturnValue(mockQueryBuilder);
   mockLimit.mockReturnValue(mockQueryBuilder);
@@ -86,6 +90,7 @@ const {
   return {
     mockSelect,
     mockFrom,
+    mockLeftJoin,
     mockWhere,
     mockOrderBy,
     mockLimit,
@@ -138,6 +143,7 @@ afterEach(() => {
   vi.clearAllMocks();
   // Re-establish mock chain returns after clearAllMocks resets them
   mockFrom.mockReturnValue(mockQueryBuilder);
+  mockLeftJoin.mockReturnValue(mockQueryBuilder);
   mockWhere.mockReturnValue(mockQueryBuilder);
   mockOrderBy.mockReturnValue(mockQueryBuilder);
   mockLimit.mockReturnValue(mockQueryBuilder);
@@ -325,6 +331,17 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
 
   it("[P0] searchProperties with Spanish type='Lote' maps to equivalent DB propertyTypes", async () => {
     await searchProperties({ type: "Lote" });
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
+  it("[P0] searchProperties with type='lote' includes 'Lot/Land' equivalent", async () => {
+    await searchProperties({ type: "lote" });
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
+  it("[P0] searchProperties left-joins communities and searches community name when q is provided", async () => {
+    await searchProperties({ q: "Santa Elena" });
+    expect(mockLeftJoin).toHaveBeenCalled();
     expect(mockWhere).toHaveBeenCalled();
   });
 
