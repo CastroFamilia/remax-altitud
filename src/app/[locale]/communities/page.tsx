@@ -110,7 +110,7 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
         ) : (
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {dbCommunities.map((comm) => {
-              const tagline = locale === "es" ? comm.taglineEs : comm.taglineEn;
+              const tagline = (locale === "es" ? comm.taglineEs : comm.taglineEn) || undefined;
               const href = `/${locale}/areas/${comm.areaSlug}/communities/${comm.slug}`;
 
               return (

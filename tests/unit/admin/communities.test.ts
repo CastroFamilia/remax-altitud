@@ -1,7 +1,7 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 // Hoisted mocks for database client and next/cache
-const { mockInsert, mockUpdate, mockDelete, mockSelect, mockDb, mockRevalidatePath } = vi.hoisted(() => {
+const { mockInsert, mockUpdate, mockDelete, mockDb, mockRevalidatePath } = vi.hoisted(() => {
   const mockInsert = vi.fn();
   const mockUpdate = vi.fn();
   const mockDelete = vi.fn();
@@ -12,6 +12,7 @@ const { mockInsert, mockUpdate, mockDelete, mockSelect, mockDb, mockRevalidatePa
       })),
     })),
   }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mockDb: any = {
     insert: mockInsert,
     update: mockUpdate,
@@ -20,7 +21,7 @@ const { mockInsert, mockUpdate, mockDelete, mockSelect, mockDb, mockRevalidatePa
   };
   mockDb.transaction = vi.fn((cb) => cb(mockDb));
   const mockRevalidatePath = vi.fn();
-  return { mockInsert, mockUpdate, mockDelete, mockSelect, mockDb, mockRevalidatePath };
+  return { mockInsert, mockUpdate, mockDelete, mockDb, mockRevalidatePath };
 });
 
 vi.mock("@/lib/db/client", () => ({

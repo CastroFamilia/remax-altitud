@@ -9,6 +9,7 @@ import {
   createCommunityAction,
   updateCommunityAction,
 } from "@/app/actions/admin-community-actions";
+import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 
 export interface AreaOption {
   id: string;
@@ -31,10 +32,7 @@ export interface InitialCommunityData {
   latitude?: number | null;
   longitude?: number | null;
   quickFacts?: unknown;
-  geoFenceCoords?: {
-    type: "Polygon";
-    coordinates: [number, number][][];
-  } | null;
+  geoFenceCoords?: unknown;
 }
 
 export interface CommunityFormProps {
@@ -103,8 +101,15 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
   // Geofence polygon points
   // Check if we have initial coordinates in geoFenceCoords
   const initialPoints = (() => {
-    if (initialData?.geoFenceCoords?.coordinates?.[0]) {
-      const coords = initialData.geoFenceCoords.coordinates[0];
+    const geoCoords = initialData?.geoFenceCoords as
+      | {
+          type: "Polygon";
+          coordinates: [number, number][][];
+        }
+      | null
+      | undefined;
+    if (geoCoords?.coordinates?.[0]) {
+      const coords = geoCoords.coordinates[0];
       // Filter out last closed point if it matches the first one to avoid duplicate on render click
       if (coords.length > 2) {
         const first = coords[0];
@@ -227,14 +232,14 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
         ? { type: "Polygon", coordinates: [closedPoints] }
         : null;
 
-      const payload: Record<string, unknown> = {
+      const payload = {
         name: name.trim(),
         slug: slug.trim(),
         areaId,
-        taglineEn: taglineEn.trim(),
-        taglineEs: taglineEs.trim(),
-        descriptionEn: descriptionEn.trim(),
-        descriptionEs: descriptionEs.trim(),
+        taglineEn: taglineEn.trim() || null,
+        taglineEs: taglineEs.trim() || null,
+        descriptionEn: descriptionEn.trim() || null,
+        descriptionEs: descriptionEs.trim() || null,
         heroImageUrl: heroImageUrl.trim() || null,
         siteMapImageUrl: siteMapImageUrl.trim() || null,
         latitude: latNum,
@@ -246,9 +251,9 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
 
       let res;
       if (isEdit) {
-        res = await updateCommunityAction(initialData.id, payload);
+        res = await updateCommunityAction(initialData.id, payload as Partial<Community>);
       } else {
-        res = await createCommunityAction(payload);
+        res = await createCommunityAction(payload as NewCommunity);
       }
 
       if (res.success) {

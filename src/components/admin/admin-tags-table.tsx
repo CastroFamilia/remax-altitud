@@ -173,10 +173,10 @@ export function AdminTagsTable({
         // Update local property tags list visually
         setLocalProperties((prev) =>
           prev.map((p) =>
-            p.id === selectedProperty.id ? { ...p, lifestyleTags: [...modalTags] } : p
-          )
+            p.id === selectedProperty.id ? { ...p, lifestyleTags: [...modalTags] } : p,
+          ),
         );
-        setSelectedProperty((prev) => prev ? { ...prev, lifestyleTags: [...modalTags] } : null);
+        setSelectedProperty((prev) => (prev ? { ...prev, lifestyleTags: [...modalTags] } : null));
         router.refresh();
         setTimeout(() => {
           handleCloseModal();
@@ -207,10 +207,10 @@ export function AdminTagsTable({
         // Update local property community assignment visually
         setLocalProperties((prev) =>
           prev.map((p) =>
-            p.id === selectedPropertyForCommunity.id ? { ...p, communityId: val } : p
-          )
+            p.id === selectedPropertyForCommunity.id ? { ...p, communityId: val } : p,
+          ),
         );
-        setSelectedPropertyForCommunity((prev) => prev ? { ...prev, communityId: val } : null);
+        setSelectedPropertyForCommunity((prev) => (prev ? { ...prev, communityId: val } : null));
         router.refresh();
         setTimeout(() => {
           handleCloseCommunityModal();
