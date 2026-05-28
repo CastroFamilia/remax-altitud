@@ -1,6 +1,6 @@
 # Story 7.4: Smart Agent Routing from Shortlist
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -160,6 +160,12 @@ so that I get a single point of contact who coordinates all viewings — even fo
   - [ ] 7.2 Create `tests/unit/actions/shortlist-agent-actions.spec.ts` to assert:
     - `getShortlistPropertiesWithAgents` Server Action joins tables and retrieves details correctly.
   - [ ] 7.3 Create endpoint tests inside `tests/unit/leads/route.spec.ts` or `tests/unit/actions/leads.spec.ts` to verify the modified Zod validation schema successfully handles the new UUID list and assigned agent input.
+
+### Review Findings
+
+- [x] [Review][Patch] Escape Key Modal Dismissal & Backdrop Accessibility [src/components/shortlist/agent-selection-modal.tsx:L25]
+- [x] [Review][Patch] Broken Image Fallback in Selection List [src/components/shortlist/agent-selection-modal.tsx:L114]
+- [x] [Review][Patch] Shortlist Lead Capture Payload Name Alignment [src/components/shortlist/shortlist-page-client.tsx:L181]
 
 ---
 
