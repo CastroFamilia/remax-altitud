@@ -104,15 +104,18 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
               </span>
             </Link>
 
-            <div className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-slate-500 cursor-not-allowed select-none font-semibold group">
+            <Link
+              href={`/${locale}/admin/visibility`}
+              className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-white hover:bg-slate-800 font-semibold transition-all group cursor-pointer"
+            >
               <div className="flex items-center gap-3">
-                <Eye className="w-5 h-5 text-slate-600" />
+                <Eye className="w-5 h-5 text-red-500" />
                 <span>{t("visibility")}</span>
               </div>
-              <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-600">
-                {t("stub")}
+              <span className="text-[10px] uppercase tracking-wider font-extrabold px-1.5 py-0.5 rounded bg-red-500/20 text-red-400">
+                {t("active")}
               </span>
-            </div>
+            </Link>
           </nav>
         </div>
 

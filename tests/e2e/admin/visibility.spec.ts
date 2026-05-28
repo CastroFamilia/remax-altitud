@@ -18,7 +18,7 @@ test.describe("Story 8.6: Listing Visibility & SEO Monitoring - E2E Tests (ATDD 
     ]);
   });
 
-  test.skip("[P0] 8.6-E2E-001: displays listings with visibility toggles and active admin hidden filter (AC1, AC7)", async ({
+  test("[P0] 8.6-E2E-001: displays listings with visibility toggles and active admin hidden filter (AC1, AC7)", async ({
     page,
   }: any) => {
     // Given the admin visibility view
@@ -38,7 +38,7 @@ test.describe("Story 8.6: Listing Visibility & SEO Monitoring - E2E Tests (ATDD 
     await expect(firstListingRow.locator('[data-testid="visibility-toggle-btn"]')).toBeVisible();
   });
 
-  test.skip("[P0] 8.6-E2E-002: admin toggles property visibility to hidden and verifies exclusion (AC1, AC3, AC6)", async ({
+  test("[P0] 8.6-E2E-002: admin toggles property visibility to hidden and verifies exclusion (AC1, AC3, AC6)", async ({
     page,
   }: any) => {
     // Given the admin visibility view
@@ -62,7 +62,7 @@ test.describe("Story 8.6: Listing Visibility & SEO Monitoring - E2E Tests (ATDD 
     await expect(noResults).toBeVisible();
   });
 
-  test.skip("[P0] 8.6-E2E-003: directly accessing a hidden listing displays a high-converting Agent CTA (AC2)", async ({
+  test("[P0] 8.6-E2E-003: directly accessing a hidden listing displays a high-converting Agent CTA (AC2)", async ({
     page,
   }: any) => {
     // Given a listing that has been set to hidden (e.g. slug: "ocean-view-condo")
@@ -88,7 +88,7 @@ test.describe("Story 8.6: Listing Visibility & SEO Monitoring - E2E Tests (ATDD 
     expect(href).toContain("no longer available");
   });
 
-  test.skip("[P1] 8.6-E2E-004: displays integrated GSC and GA4 analytics metrics on the SEO Dashboard (AC4, AC5)", async ({
+  test("[P1] 8.6-E2E-004: displays integrated GSC and GA4 analytics metrics on the SEO Dashboard (AC4, AC5)", async ({
     page,
   }: any) => {
     // Given the admin visibility and SEO dashboard
