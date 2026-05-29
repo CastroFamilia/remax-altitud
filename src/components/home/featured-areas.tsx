@@ -172,13 +172,6 @@ export async function FeaturedAreas({ locale, showSectionHeader = true }: Featur
               {t("description")}
             </p>
           </div>
-          <Link
-            href={`/${locale}/areas`}
-            className="hidden shrink-0 items-center gap-1.5 text-sm font-semibold text-brand-navy underline-offset-4 hover:underline md:inline-flex"
-          >
-            {t("viewAll")}
-            <span className="text-brand-gold font-bold">→</span>
-          </Link>
         </div>
       )}
 
@@ -307,17 +300,6 @@ export async function FeaturedAreas({ locale, showSectionHeader = true }: Featur
             </Link>
           );
         })}
-      </div>
-
-      {/* View All areas link on mobile */}
-      <div className="mt-4 md:hidden">
-        <Link
-          href={`/${locale}/areas`}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-navy underline-offset-4 hover:underline"
-        >
-          {t("viewAll")}
-          <span className="text-brand-gold font-bold">→</span>
-        </Link>
       </div>
     </section>
   );
