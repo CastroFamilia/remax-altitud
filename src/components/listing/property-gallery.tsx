@@ -11,7 +11,6 @@
  */
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { PropertyImage } from "@/components/property/property-image";
 import { useTranslations } from "next-intl";
 import * as Dialog from "@radix-ui/react-dialog";
