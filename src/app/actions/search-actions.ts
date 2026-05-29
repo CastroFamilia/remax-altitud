@@ -296,9 +296,10 @@ export async function searchProperties(
       ? sql`${properties.lifestyleTags} && ARRAY[${sql.join(sanitizedTags, sql`, `)}]::text[]`
       : undefined,
     q: searchCondition,
-    bounds: safeBounds != null
-      ? sql`${properties.geo} && ST_MakeEnvelope(${safeBounds.west}, ${safeBounds.south}, ${safeBounds.east}, ${safeBounds.north}, 4326)::geography`
-      : undefined,
+    bounds:
+      safeBounds != null
+        ? sql`${properties.geo} && ST_MakeEnvelope(${safeBounds.west}, ${safeBounds.south}, ${safeBounds.east}, ${safeBounds.north}, 4326)::geography`
+        : undefined,
   };
 
   // Compose conditions for the main query — every set dimension applies.
