@@ -46,7 +46,7 @@ export function resolveAreaSlug(raw: {
   publicRemarksEn: string | null;
   publicRemarksEs: string | null;
 }): string {
-  if (raw.officeApiId === 235) {
+  if (raw.officeApiId === 218) {
     return "perez-zeledon";
   }
 
