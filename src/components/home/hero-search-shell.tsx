@@ -429,7 +429,11 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                         {tSearch("filters.locationAll")}
                       </option>
                       {(areas.length > 0 ? areas : FALLBACK_AREAS).map((area) => (
-                        <option key={area.slug} value={area.slug} className="bg-brand-navy text-white">
+                        <option
+                          key={area.slug}
+                          value={area.slug}
+                          className="bg-brand-navy text-white"
+                        >
                           {area.label}
                         </option>
                       ))}
@@ -450,7 +454,9 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                       min="0"
                       value={priceMin ?? ""}
                       onChange={(e) =>
-                        setPriceMin(e.target.value ? Math.max(0, parseInt(e.target.value, 10)) : undefined)
+                        setPriceMin(
+                          e.target.value ? Math.max(0, parseInt(e.target.value, 10)) : undefined,
+                        )
                       }
                       placeholder="Min"
                       className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -470,7 +476,9 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                       min="0"
                       value={priceMax ?? ""}
                       onChange={(e) =>
-                        setPriceMax(e.target.value ? Math.max(0, parseInt(e.target.value, 10)) : undefined)
+                        setPriceMax(
+                          e.target.value ? Math.max(0, parseInt(e.target.value, 10)) : undefined,
+                        )
                       }
                       placeholder="Max"
                       className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
