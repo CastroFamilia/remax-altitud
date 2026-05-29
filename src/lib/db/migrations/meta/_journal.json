@@ -85,6 +85,20 @@
       "when": 1780447000000,
       "tag": "0012_update_tinamastes_platanillo_area_guide",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1780448000000,
+      "tag": "0013_fix_three_areas_metadata",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1780450000000,
+      "tag": "0014_add_new_communities",
+      "breakpoints": true
     }
   ]
 }

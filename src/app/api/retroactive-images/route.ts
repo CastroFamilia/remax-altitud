@@ -19,9 +19,6 @@ export async function GET(req: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[retroactive-images] Sync pipeline failed:", message);
-    return NextResponse.json(
-      { error: "Sync pipeline failed", detail: message },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Sync pipeline failed", detail: message }, { status: 500 });
   }
 }

@@ -26,7 +26,7 @@ The Tinamastes & Platanillo Lifestyle: Wellness, Waterfalls, and Waldorf Educati
 
 Living in this corridor means surrounding yourself with a vibrant, self-sustaining community focused on health, clean food, and pristine nature. It is dominated by natural freshwater springs, crystal-clear mountain streams, and the famous, breathtaking Nauyaca Waterfalls.
 
-The geography here is your greatest asset. Rising from 400 meters up to 900 meters (1,300 to 3,000 feet) above sea level, you experience a dynamic thermal shift. By day, enjoy immediate access to coastal beaches like Dominical, Hermosa, and Uvita. By afternoon, ascend back up the ridge to where the coastal heat dissipates, replaced by crisp mountain breezes that completely eliminate the need for indoor air conditioning.
+The geography here is your greatest asset. Rising from 600 meters up to 900 meters (2,000 to 3,000 feet) above sea level, you experience a dynamic thermal shift. By day, enjoy immediate access to coastal beaches like Dominical, Hermosa, and Uvita. By afternoon, ascend back up the ridge to where the coastal heat dissipates, replaced by crisp mountain breezes that completely eliminate the need for indoor air conditioning.
 
 At the heart of the community is alternative education and sustainable innovation. Families from all over the world flock to this specific region to enroll their children in RISE, a legendary nature-based, Waldorf-inspired school. Additionally, the weekly Tinamastes Organic Farmers' Market (Feria) serves as a vibrant, weekly social hub, offering locally grown organic produce, artisan crafts, and healthy foods.
 
@@ -112,7 +112,7 @@ El Estilo de Vida en Tinamastes y Platanillo: Bienestar, Cataratas y Educación 
 
 Vivir en este corredor significa rodearse de una comunidad vibrante y autosostenible enfocada en la salud, la alimentación limpia y la naturaleza virgen. La zona está dominada por nacientes de agua dulce naturales, ríos cristalinos de montaña y las famosas y majestuosas Cataratas de Nauyaca.
 
-La geografía aquí es su mayor activo. Elevándose desde los 400 metros hasta los 900 metros (1,300 a 3,000 pies) sobre el nivel del mar, se experimenta un cambio térmico dinámico. Durante el día, disfrute de acceso inmediato a las playas de la costa como Dominical, Hermosa y Uvita. Por la tarde, ascienda de regreso a la cordillera donde el calor costero se disipa, reemplazado por brisas frescas de montaña que eliminan por completo la necesidad de aire acondicionado interior.
+La geografía aquí es su mayor activo. Elevándose desde los 600 metros hasta los 900 metros (2,000 a 3,000 pies) sobre el nivel del mar, se experimenta un cambio térmico dinámico. Durante el día, disfrute de acceso inmediato a las playas de la costa como Dominical, Hermosa y Uvita. Por la tarde, ascienda de regreso a la cordillera donde el calor costero se disipa, reemplazado por brisas frescas de montaña que eliminan por completo la necesidad de aire acondicionado interior.
 
 En el corazón de la comunidad está la educación alternativa y la innovación sostenible. Familias de todo el mundo acuden a esta región específica para inscribir a sus hijos en RISE, una escuela legendaria inspirada en Waldorf enfocada en la naturaleza. Además, la Feria Orgánica de Tinamastes sirve como un vibrante centro social semanal, ofreciendo productos orgánicos de cultivo local, artesanías y alimentos saludables.
 
@@ -199,8 +199,12 @@ const metadata = {
     "Explore real estate in Tinamastes, Platanillo, and Barú. Discover off-grid wellness communities, permaculture estates, and eco-homes near the Nauyaca Waterfalls.",
   seoDescriptionEs:
     "Explore bienes raíces en Tinamastes, Platanillo y Barú. Descubra comunidades ecológicas, fincas de permacultura y casas cerca de las Cataratas de Nauyaca.",
-  elevation: "400m - 900m (1,300ft - 3,000ft)",
-  climate: "Cool mountain breezes / Fresco y templado (18°C - 26°C)",
+  elevation: "600 m – 900 m (2,000 ft – 3,000 ft)",
+  climate: "18°C – 26°C (64°F – 78°F)",
+  altitudeEn: "600 m – 900 m (2,000 ft – 3,000 ft)",
+  altitudeEs: "600 m – 900 m (2.000 ft – 3.000 ft)",
+  tempEn: "18°C – 26°C (64°F – 78°F)",
+  tempEs: "18°C – 26°C (64°F – 78°F)",
   nearestAirport: "Pérez Zeledón Airport (30 min) / San José (SJO) — 3.5 hours",
   nearestHospital: "Hospital Escalante Pradilla (San Isidro) — 30 min",
   nearestBeach: "Dominical Beach — 15-20 min",
