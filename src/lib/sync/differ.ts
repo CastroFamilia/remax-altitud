@@ -15,7 +15,7 @@ export interface DbPropertySnapshot {
   apiId: string;
   apiHash: string | null;
   isVisible: boolean;
-  images: unknown;
+  images?: unknown;
 }
 
 /**
@@ -122,7 +122,12 @@ export function diffProperties(
         !("src" in (dbImages[0] as Record<string, unknown>)) ||
         !(dbImages[0] as Record<string, unknown>).src);
 
-    if (!db.isVisible || db.apiHash === null || db.apiHash !== currentHash || needsImageOptimization) {
+    if (
+      !db.isVisible ||
+      db.apiHash === null ||
+      db.apiHash !== currentHash ||
+      needsImageOptimization
+    ) {
       result.updated.push(raw);
     } else {
       result.unchanged.push(raw);

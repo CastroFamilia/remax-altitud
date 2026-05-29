@@ -317,28 +317,31 @@ export async function runSyncPipeline(options?: {
     });
 
     // Step 10: ISR revalidation — best-effort, non-blocking (AC #14, AR6)
-    try {
-      const revalidateUrl = new URL(
-        "/api/revalidate",
-        process.env.NEXTAUTH_URL ?? "http://localhost:3000",
-      ).href;
+    // Run as un-awaited floating promise to prevent single-threaded local server deadlocks.
+    (async () => {
+      try {
+        const revalidateUrl = new URL(
+          "/api/revalidate",
+          process.env.NEXTAUTH_URL ?? "http://localhost:3000",
+        ).href;
 
-      const res = await fetch(revalidateUrl, {
-        method: "POST",
-        headers: {
-          "x-api-secret": process.env.API_SECRET ?? "",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tags: ["properties", "agents"] }),
-        cache: "no-store",
-      });
+        const res = await fetch(revalidateUrl, {
+          method: "POST",
+          headers: {
+            "x-api-secret": process.env.API_SECRET ?? "",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tags: ["properties", "agents"] }),
+          cache: "no-store",
+        });
 
-      if (!res.ok) {
-        console.warn(`[sync] /api/revalidate returned non-2xx: ${res.status}`);
+        if (!res.ok) {
+          console.warn(`[sync] /api/revalidate returned non-2xx: ${res.status}`);
+        }
+      } catch (revalErr) {
+        console.warn("[sync] /api/revalidate call failed (best-effort):", revalErr);
       }
-    } catch (revalErr) {
-      console.warn("[sync] /api/revalidate call failed (best-effort):", revalErr);
-    }
+    })();
 
     return {
       propertiesFetched,
