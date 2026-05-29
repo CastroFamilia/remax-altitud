@@ -6,7 +6,10 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useShortlist } from "@/hooks/use-shortlist";
-import { getShortlistPropertiesWithAgents, getActiveAgentsList } from "@/app/actions/shortlist-actions";
+import {
+  getShortlistPropertiesWithAgents,
+  getActiveAgentsList,
+} from "@/app/actions/shortlist-actions";
 import { PropertyCard } from "@/components/property/property-card";
 import { PropertyCardSkeleton } from "@/components/property/property-card-skeleton";
 import { MapView } from "@/components/map/map-view-loader";
@@ -169,6 +172,7 @@ export function ShortlistPageClient() {
     if (activeCoordinator && formAgentId === "office") {
       setFormAgentId(activeCoordinator.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCoordinator]);
 
   const handleSelectAgent = (agent: any) => {
@@ -291,7 +295,7 @@ export function ShortlistPageClient() {
       }
 
       const recipientAgentId = formAgentId === "office" ? null : formAgentId;
-      
+
       const apiPayload = {
         name: formName,
         phone: formPhone,
@@ -553,7 +557,9 @@ export function ShortlistPageClient() {
                   }}
                   className="text-xs text-brand-navy hover:underline font-semibold"
                 >
-                  {locale === "es" ? "O usar nuestro Formulario de Contacto" : "Or use our Contact Form instead"}
+                  {locale === "es"
+                    ? "O usar nuestro Formulario de Contacto"
+                    : "Or use our Contact Form instead"}
                 </button>
                 <button
                   onClick={() => setIsModalOpen(true)}
@@ -669,7 +675,8 @@ export function ShortlistPageClient() {
                         ))}
                       </optgroup>
                     )}
-                    {allAgents.filter((allA) => !uniqueAgents.some((uA) => uA.id === allA.id)).length > 0 && (
+                    {allAgents.filter((allA) => !uniqueAgents.some((uA) => uA.id === allA.id))
+                      .length > 0 && (
                       <optgroup label={t("otherAgentsGroup")}>
                         {allAgents
                           .filter((allA) => !uniqueAgents.some((uA) => uA.id === allA.id))
@@ -729,7 +736,11 @@ export function ShortlistPageClient() {
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4.5 12.75l6 6 9-13.5"
+                  ></path>
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-slate-900 mb-2">{t("successHeading")}</h2>
@@ -771,14 +782,12 @@ export function ShortlistPageClient() {
                           whatsapp: "50688888888",
                           email: "info@remax-altitud.cr",
                         },
-                        "whatsapp"
+                        "whatsapp",
                       )
                     }
                     className="flex-1 inline-flex h-10 items-center justify-center rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-4 shadow-sm transition-colors"
                   >
-                    {submittedLeadAgent
-                      ? tRouting("contactWhatsApp")
-                      : "WhatsApp"}
+                    {submittedLeadAgent ? tRouting("contactWhatsApp") : "WhatsApp"}
                   </button>
                   <button
                     onClick={() =>
@@ -789,7 +798,7 @@ export function ShortlistPageClient() {
                           whatsapp: "50688888888",
                           email: "info@remax-altitud.cr",
                         },
-                        "email"
+                        "email",
                       )
                     }
                     className="flex-1 inline-flex h-10 items-center justify-center rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm px-4 transition-colors"

@@ -10,7 +10,6 @@ import type { PropertySearchItem } from "@/types/search";
 import { randomBytes } from "crypto";
 import { getAllAgents } from "@/lib/db/queries/agents";
 
-
 /**
  * getShortlistProperties — Server Action for fetching properties on the shortlist page.
  * Maps database rows to PropertySearchItem objects.
@@ -191,4 +190,3 @@ export async function getActiveAgentsList(): Promise<any[]> {
     listingCount: a.listingCount,
   }));
 }
-
