@@ -213,6 +213,7 @@ export function ShortlistPageClient() {
           source: channel === "whatsapp" ? "whatsapp_click" : "contact_form",
           assignedAgentId: agent.id,
           shortlistPropertyIds: shortlist,
+          location: { text: "", lat: null, lng: null },
         }),
       });
     } catch (err) {
@@ -305,6 +306,7 @@ export function ShortlistPageClient() {
         assignedAgentId: recipientAgentId,
         shortlistPropertyIds: shortlist,
         notes: `${formMessage.trim() ? formMessage.trim() + " | " : ""}Shortlist Link: ${shareUrl}`,
+        location: { text: "", lat: null, lng: null },
       };
 
       const leadResponse = await fetch("/api/leads", {
@@ -318,11 +320,11 @@ export function ShortlistPageClient() {
         setSubmittedLeadAgent(chosen);
         setFormSubmitted(true);
       } else {
-        alert(t("shareError"));
+        alert(t("formSubmitError"));
       }
     } catch (err) {
       console.error("Form submission failed:", err);
-      alert(t("shareError"));
+      alert(t("formSubmitError"));
     } finally {
       setFormSubmitting(false);
     }
