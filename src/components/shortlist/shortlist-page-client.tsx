@@ -6,7 +6,10 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useShortlist } from "@/hooks/use-shortlist";
-import { getShortlistPropertiesWithAgents } from "@/app/actions/shortlist-actions";
+import {
+  getShortlistPropertiesWithAgents,
+  getActiveAgentsList,
+} from "@/app/actions/shortlist-actions";
 import { PropertyCard } from "@/components/property/property-card";
 import { PropertyCardSkeleton } from "@/components/property/property-card-skeleton";
 import { MapView } from "@/components/map/map-view-loader";
@@ -30,6 +33,28 @@ export function ShortlistPageClient() {
   const [showCoordinatorBanner, setShowCoordinatorBanner] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const fetchedShortlistRef = useRef<string[]>([]);
+
+  const [allAgents, setAllAgents] = useState<any[]>([]);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [formName, setFormName] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [formMessage, setFormMessage] = useState("");
+  const [formAgentId, setFormAgentId] = useState("office");
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [submittedLeadAgent, setSubmittedLeadAgent] = useState<any | null>(null);
+
+  useEffect(() => {
+    getActiveAgentsList()
+      .then((data) => {
+        setAllAgents(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching active agents list:", err);
+      });
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem("Altitud:chosenCoordinator");
@@ -143,6 +168,13 @@ export function ShortlistPageClient() {
   const chosenAgent = uniqueAgents.find((a) => a.id === chosenAgentId) || null;
   const activeCoordinator = chosenAgent ?? autoSelectedAgent;
 
+  useEffect(() => {
+    if (activeCoordinator && formAgentId === "office") {
+      setFormAgentId(activeCoordinator.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCoordinator]);
+
   const handleSelectAgent = (agent: any) => {
     setChosenAgentId(agent.id);
     localStorage.setItem("Altitud:chosenCoordinator", agent.id);
@@ -204,6 +236,95 @@ export function ShortlistPageClient() {
       const body = tRouting("emailBody", { agentName: agent.name, list: propertyLinesWithLinks });
       const mailtoUrl = `mailto:${agent.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.open(mailtoUrl, "_blank");
+    }
+  };
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    const PHONE_RE = /^\+?[\d\s\-()]+$/;
+    const phoneHasEnoughDigits = (v: string) => v.replace(/\D/g, "").length >= 7;
+
+    if (!formName.trim()) {
+      errors.name = t("nameError");
+    }
+    if (!formEmail.trim()) {
+      errors.email = t("emailError");
+    } else if (!EMAIL_RE.test(formEmail)) {
+      errors.email = t("emailError");
+    }
+    if (!formPhone.trim()) {
+      errors.phone = t("phoneError");
+    } else if (!PHONE_RE.test(formPhone) || !phoneHasEnoughDigits(formPhone)) {
+      errors.phone = t("phoneError");
+    }
+    return errors;
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    setFormErrors({});
+    setFormSubmitting(true);
+
+    try {
+      let shareUrl = "";
+      try {
+        const response = await fetch("/api/shortlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ propertyIds: shortlist, locale }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          shareUrl = data.shareUrl;
+        }
+      } catch (err) {
+        console.error("Failed to generate shortlist share url on form submit:", err);
+      }
+
+      if (!shareUrl) {
+        const header = t("shareMessageHeader");
+        shareUrl = `${header}\n${properties
+          .map((p) => `${window.location.origin}/${locale}/property/${p.slug}`)
+          .join("\n")}`;
+      }
+
+      const recipientAgentId = formAgentId === "office" ? null : formAgentId;
+
+      const apiPayload = {
+        name: formName,
+        phone: formPhone,
+        email: formEmail,
+        intent: "buy" as const,
+        source: "contact_form" as const,
+        assignedAgentId: recipientAgentId,
+        shortlistPropertyIds: shortlist,
+        notes: `${formMessage.trim() ? formMessage.trim() + " | " : ""}Shortlist Link: ${shareUrl}`,
+      };
+
+      const leadResponse = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(apiPayload),
+      });
+
+      if (leadResponse.status === 201 || leadResponse.status === 409) {
+        const chosen = allAgents.find((a) => a.id === formAgentId) || null;
+        setSubmittedLeadAgent(chosen);
+        setFormSubmitted(true);
+      } else {
+        alert(t("shareError"));
+      }
+    } catch (err) {
+      console.error("Form submission failed:", err);
+      alert(t("shareError"));
+    } finally {
+      setFormSubmitting(false);
     }
   };
 
@@ -375,7 +496,7 @@ export function ShortlistPageClient() {
           </div>
 
           {/* Coordinator Agent Interstitial Suggestion Banner */}
-          {showCoordinatorBanner && activeCoordinator && (
+          {showCoordinatorBanner && activeCoordinator && !showContactForm && !formSubmitted && (
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 mt-4">
               <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                 {/* Profile Photo */}
@@ -423,7 +544,23 @@ export function ShortlistPageClient() {
                 </button>
               </div>
 
-              <div className="text-center mt-4">
+              <div className="text-center mt-4 flex flex-col gap-2">
+                <button
+                  onClick={() => {
+                    setShowContactForm(true);
+                    setTimeout(() => {
+                      const formEl = document.getElementById("shortlist-contact-form");
+                      if (formEl && typeof formEl.scrollIntoView === "function") {
+                        formEl.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }
+                    }, 100);
+                  }}
+                  className="text-xs text-brand-navy hover:underline font-semibold"
+                >
+                  {locale === "es"
+                    ? "O usar nuestro Formulario de Contacto"
+                    : "Or use our Contact Form instead"}
+                </button>
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="text-xs text-blue-600 hover:text-blue-800 font-semibold underline"
@@ -434,23 +571,292 @@ export function ShortlistPageClient() {
             </div>
           )}
 
-          {/* Action CTAs Block */}
-          {!showCoordinatorBanner && (
-            <div className="flex flex-col sm:flex-row gap-4 mt-4 border-t pt-6 border-border">
+          {/* Shortlist Contact Form */}
+          {showContactForm && !formSubmitted && (
+            <div
+              id="shortlist-contact-form"
+              className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 md:p-8 mt-4 shadow-sm"
+            >
+              <h2 className="text-xl font-bold text-brand-navy mb-1">{t("contactFormHeading")}</h2>
+              <p className="text-sm text-muted-foreground mb-6">{t("contactFormSubheading")}</p>
+
+              {formErrors.form && (
+                <div className="mb-4 text-sm font-semibold text-red-600 bg-red-50 border border-red-100 p-3 rounded-lg">
+                  {formErrors.form}
+                </div>
+              )}
+
+              <form onSubmit={handleFormSubmit} noValidate className="space-y-4">
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="form-name" className="text-sm font-semibold text-brand-navy">
+                    {t("nameLabel")} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="form-name"
+                    type="text"
+                    required
+                    placeholder={t("namePlaceholder")}
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    className={`h-11 rounded-md border bg-white px-3 text-brand-navy shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-navy ${
+                      formErrors.name ? "border-red-500 focus:ring-red-500" : "border-slate-300"
+                    }`}
+                  />
+                  {formErrors.name && (
+                    <span role="alert" className="text-xs text-red-600 mt-0.5">
+                      {formErrors.name}
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="form-email" className="text-sm font-semibold text-brand-navy">
+                      {t("emailLabel")} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="form-email"
+                      type="email"
+                      required
+                      placeholder={t("emailPlaceholder")}
+                      value={formEmail}
+                      onChange={(e) => setFormEmail(e.target.value)}
+                      className={`h-11 rounded-md border bg-white px-3 text-brand-navy shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-navy ${
+                        formErrors.email ? "border-red-500 focus:ring-red-500" : "border-slate-300"
+                      }`}
+                    />
+                    {formErrors.email && (
+                      <span role="alert" className="text-xs text-red-600 mt-0.5">
+                        {formErrors.email}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="form-phone" className="text-sm font-semibold text-brand-navy">
+                      {t("phoneLabel")} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="form-phone"
+                      type="tel"
+                      required
+                      placeholder={t("phonePlaceholder")}
+                      value={formPhone}
+                      onChange={(e) => setFormPhone(e.target.value)}
+                      className={`h-11 rounded-md border bg-white px-3 text-brand-navy shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-navy ${
+                        formErrors.phone ? "border-red-500 focus:ring-red-500" : "border-slate-300"
+                      }`}
+                    />
+                    {formErrors.phone && (
+                      <span role="alert" className="text-xs text-red-600 mt-0.5">
+                        {formErrors.phone}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="form-agent" className="text-sm font-semibold text-brand-navy">
+                    {t("agentLabel")}
+                  </label>
+                  <select
+                    id="form-agent"
+                    value={formAgentId}
+                    onChange={(e) => setFormAgentId(e.target.value)}
+                    className="w-full h-11 rounded-md border border-slate-300 bg-white px-3 text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy"
+                  >
+                    <option value="office">{t("sendToOffice")}</option>
+                    {uniqueAgents.length > 0 && (
+                      <optgroup label={t("shortlistAgentsGroup")}>
+                        {uniqueAgents.map((agent) => (
+                          <option key={agent.id} value={agent.id}>
+                            {agent.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {allAgents.filter((allA) => !uniqueAgents.some((uA) => uA.id === allA.id))
+                      .length > 0 && (
+                      <optgroup label={t("otherAgentsGroup")}>
+                        {allAgents
+                          .filter((allA) => !uniqueAgents.some((uA) => uA.id === allA.id))
+                          .map((agent) => (
+                            <option key={agent.id} value={agent.id}>
+                              {agent.name}
+                            </option>
+                          ))}
+                      </optgroup>
+                    )}
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="form-message" className="text-sm font-semibold text-brand-navy">
+                    {t("messageLabel")}
+                  </label>
+                  <textarea
+                    id="form-message"
+                    rows={4}
+                    placeholder={t("messagePlaceholder")}
+                    value={formMessage}
+                    onChange={(e) => setFormMessage(e.target.value)}
+                    className="w-full rounded-md border border-slate-300 bg-white p-3 text-brand-navy shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-navy resize-none"
+                  />
+                </div>
+
+                <div className="flex gap-4 pt-2">
+                  <button
+                    type="submit"
+                    disabled={formSubmitting}
+                    className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-6 shadow-md transition-colors disabled:opacity-60"
+                  >
+                    {formSubmitting ? t("submittingForm") : t("submitForm")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowContactForm(false)}
+                    className="inline-flex h-11 items-center justify-center rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold px-6 transition-colors"
+                  >
+                    {locale === "es" ? "Cancelar" : "Cancel"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* Shortlist Success Screen */}
+          {formSubmitted && (
+            <div className="bg-slate-50 border border-emerald-200 rounded-2xl p-6 md:p-8 mt-4 shadow-sm text-center">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+                <svg
+                  className="w-8 h-8 text-emerald-600"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4.5 12.75l6 6 9-13.5"
+                  ></path>
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 mb-2">{t("successHeading")}</h2>
+              <p className="text-sm text-slate-600 max-w-md mx-auto mb-8">{t("successText")}</p>
+
+              {/* Recipient Details & Immediate WhatsApp / Email Fallbacks */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-5 max-w-md mx-auto text-left shadow-xs mb-8">
+                <div className="flex gap-4 items-center">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0">
+                    <img
+                      src={
+                        submittedLeadAgent?.photoOptimizedUrl ||
+                        submittedLeadAgent?.photoUrl ||
+                        "/images/agent-placeholder.jpg"
+                      }
+                      alt={submittedLeadAgent?.name || "RE/MAX Altitud"}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-base">
+                      {submittedLeadAgent?.name || "RE/MAX Altitud"}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      {submittedLeadAgent
+                        ? `${tRouting("languages")} ${submittedLeadAgent.languages}`
+                        : "Oficina Central"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 mt-5">
+                  <button
+                    onClick={() =>
+                      handleContactAgent(
+                        submittedLeadAgent || {
+                          id: "office",
+                          name: "RE/MAX Altitud",
+                          whatsapp: "50688888888",
+                          email: "info@remax-altitud.cr",
+                        },
+                        "whatsapp",
+                      )
+                    }
+                    className="flex-1 inline-flex h-10 items-center justify-center rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-4 shadow-sm transition-colors"
+                  >
+                    {submittedLeadAgent ? tRouting("contactWhatsApp") : "WhatsApp"}
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleContactAgent(
+                        submittedLeadAgent || {
+                          id: "office",
+                          name: "RE/MAX Altitud",
+                          whatsapp: "50688888888",
+                          email: "info@remax-altitud.cr",
+                        },
+                        "email",
+                      )
+                    }
+                    className="flex-1 inline-flex h-10 items-center justify-center rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm px-4 transition-colors"
+                  >
+                    {tRouting("contactEmail")}
+                  </button>
+                </div>
+              </div>
+
               <button
-                onClick={handleAskAgent}
-                className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-6 shadow-md transition-colors"
+                onClick={() => {
+                  setFormSubmitted(false);
+                  setFormName("");
+                  setFormEmail("");
+                  setFormPhone("");
+                  setFormMessage("");
+                  setShowContactForm(false);
+                }}
+                className="inline-flex h-10 items-center justify-center rounded-md bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm px-6 shadow-sm transition-colors"
               >
-                {t("askAgentCta")}
-              </button>
-              <button
-                onClick={handleShareShortlist}
-                className="flex-1 inline-flex h-11 items-center justify-center rounded-md border border-brand-navy/30 text-brand-navy hover:bg-brand-navy/5 font-semibold px-6 transition-colors relative"
-              >
-                {copied ? "Copied!" : t("shareShortlistCta")}
+                {t("backToShortlist")}
               </button>
             </div>
           )}
+
+          {/* Action buttons (Share Shortlist + optional Ask Agent + optional Contact Form toggle) */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-6 border-t pt-6 border-border">
+            {!showContactForm && !formSubmitted && (
+              <>
+                <button
+                  onClick={handleAskAgent}
+                  className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-6 shadow-md transition-colors"
+                >
+                  {t("askAgentCta")}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowContactForm(true);
+                    setTimeout(() => {
+                      const formEl = document.getElementById("shortlist-contact-form");
+                      if (formEl && typeof formEl.scrollIntoView === "function") {
+                        formEl.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }
+                    }, 100);
+                  }}
+                  className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-white border border-brand-navy text-brand-navy hover:bg-brand-navy/5 font-semibold px-6 transition-colors"
+                >
+                  {locale === "es" ? "Contactar por Formulario" : "Contact via Form"}
+                </button>
+              </>
+            )}
+            <button
+              onClick={handleShareShortlist}
+              className="flex-1 inline-flex h-11 items-center justify-center rounded-md border border-brand-navy/30 text-brand-navy hover:bg-brand-navy/5 font-semibold px-6 transition-colors relative"
+            >
+              {copied ? "Copied!" : t("shareShortlistCta")}
+            </button>
+          </div>
         </div>
 
         {/* Right Side: Mini-map showing saved property locations */}
