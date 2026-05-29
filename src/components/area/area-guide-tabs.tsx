@@ -23,16 +23,21 @@ interface AreaGuideTabsProps {
   agents: Agent[];
   similarAreas: Area[];
   locale: string;
+  slug?: string;
 }
 
 const TAB_IDS = ["properties", "agents", "similar"] as const;
 type TabId = (typeof TAB_IDS)[number];
 
-export function AreaGuideTabs({ properties, agents, similarAreas, locale }: AreaGuideTabsProps) {
+export function AreaGuideTabs({ properties, agents, similarAreas, locale, slug }: AreaGuideTabsProps) {
   const t = useTranslations("AreaGuide");
-  const availableTabs = (
+  let availableTabs = (
     properties.length > 0 ? TAB_IDS : TAB_IDS.filter((id) => id !== "properties")
   ) as TabId[];
+
+  if (slug === "dominical") {
+    availableTabs = availableTabs.filter((id) => id !== "agents" && id !== "similar");
+  }
 
   const [activeTab, setActiveTab] = useState<TabId>(availableTabs[0] || "agents");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);

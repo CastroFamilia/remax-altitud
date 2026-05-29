@@ -42,6 +42,7 @@ export function normalizePropertyImages(
           width: img.width || 400,
           height: img.height || 300,
           alt: img.alt || `${fallbackAlt} — Photo ${index + 1}`,
+          fallbackSrc: img.fallbackSrc || "",
         };
       }
 
@@ -54,6 +55,7 @@ export function normalizePropertyImages(
           width: 400,
           height: 300,
           alt: `${fallbackAlt} — Photo ${index + 1}`,
+          fallbackSrc: item,
         };
       }
 

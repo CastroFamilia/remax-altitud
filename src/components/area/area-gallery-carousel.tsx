@@ -23,9 +23,16 @@ interface AreaGalleryCarouselProps {
     [key: string]: unknown;
   } | null;
   locale: string;
+  areaNameEn?: string;
+  areaNameEs?: string;
 }
 
-export function AreaGalleryCarousel({ metadata, locale }: AreaGalleryCarouselProps) {
+export function AreaGalleryCarousel({
+  metadata,
+  locale,
+  areaNameEn,
+  areaNameEs,
+}: AreaGalleryCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   if (!metadata || !metadata.galleryImages || metadata.galleryImages.length === 0) {
@@ -44,6 +51,7 @@ export function AreaGalleryCarousel({ metadata, locale }: AreaGalleryCarouselPro
   };
 
   const isEs = locale === "es";
+  const name = isEs ? areaNameEs || "Dominical" : areaNameEn || "Dominical";
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 border-t border-border mt-12">
@@ -52,8 +60,8 @@ export function AreaGalleryCarousel({ metadata, locale }: AreaGalleryCarouselPro
       </h2>
       <p className="text-text-muted text-[17px] mb-8 max-w-2xl leading-relaxed">
         {isEs
-          ? "Explore la belleza escénica, el estilo de vida vibrante y los hermosos paisajes que hacen de Pérez Zeledón un lugar tan especial."
-          : "Explore the scenic beauty, vibrant lifestyle, and stunning landscapes that make Pérez Zeledón such a special place."}
+          ? `Explore la belleza escénica, el estilo de vida vibrante y los hermosos paisajes que hacen de ${name} un lugar tan especial.`
+          : `Explore the scenic beauty, vibrant lifestyle, and stunning landscapes that make ${name} such a special place.`}
       </p>
 
       <div className="relative group/carousel">

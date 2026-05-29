@@ -635,3 +635,31 @@ export async function fetchShortlistAnalyticsData(filters: {
 
   return await groupedQuery.offset(offset).limit(limit);
 }
+
+/**
+ * Fetches up to `limit` visible properties marked as featured.
+ * If none are marked as featured, falls back to the most recently synced visible properties.
+ *
+ * @param limit - Maximum number of properties to fetch (default 3)
+ */
+export async function getFeaturedProperties(limit = 3): Promise<PropertySearchItem[]> {
+  const rows = await db
+    .select(propertySearchColumns)
+    .from(properties)
+    .where(and(eq(properties.isVisible, true), eq(properties.isFeatured, true)))
+    .orderBy(desc(properties.syncedAt))
+    .limit(limit);
+
+  if (rows.length === 0) {
+    const fallbackRows = await db
+      .select(propertySearchColumns)
+      .from(properties)
+      .where(eq(properties.isVisible, true))
+      .orderBy(desc(properties.syncedAt))
+      .limit(limit);
+    return fallbackRows.map(mapPropertyRowToSearchItem);
+  }
+
+  return rows.map(mapPropertyRowToSearchItem);
+}
+
