@@ -32,7 +32,7 @@ The geography here is your greatest asset. Rising immediately from sea level up 
 
 The Dominical real estate market is highly prestigious and tightly held. The geographical layout moves from the immediate oceanfront town center up into the elite, gated ridges of the Fila Costeña mountain range and its surrounding premier developments.
 
-```
+${'\x60\x60\x60'}
                   UPPER ESCALERAS & COSTAÑA
              (Ultra-Luxury Estates, Helipads, 180° Ocean Views)
                            ▲
@@ -42,7 +42,7 @@ LAGUNAS MOUNTAIN RIDGE ◄───┼───► DULCE PACÍFICO
                            ▼
                     DOMINICALITO BAY
              (Calm Waters, Boat Anchorage, Custom Villas)
-```
+${'\x60\x60\x60'}
 
 1. **Las Escaleras & The Coastal Ridges**
 * **The Vibe**: The pinnacle of luxury in the South Pacific. Prestigious, highly secure, and exceptionally private.
@@ -115,7 +115,7 @@ La geografía aquí es su mayor activo. Elevándose inmediatamente desde el nive
 
 El mercado inmobiliario de Dominical es sumamente prestigioso y exclusivo. El diseño geográfico se mueve desde el centro del pueblo inmediatamente frente al mar hacia las colinas élite y cerradas de la fila costeña y sus desarrollos residenciales de primer nivel.
 
-```
+${'\x60\x60\x60'}
                   ALTO ESCALERAS Y COSTAÑA
          (Propiedades de Ultra Lujo, Helipuertos, Vistas de 180° al Mar)
                            ▲
@@ -125,7 +125,7 @@ LAGUNAS DE BARÚ ◄──────────┼─────────
                            ▼
                     BAHÍA DOMINICALITO
           (Aguas Tranquilas, Anclaje de Botes, Villas Personalizadas)
-```
+${'\x60\x60\x60'}
 
 1. **Las Escaleras y las Colinas Costeras**
 * **El Ambiente**: El pináculo del lujo en el Pacífico Sur. Prestigioso, altamente seguro y excepcionalmente privado.
