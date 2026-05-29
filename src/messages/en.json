@@ -837,6 +837,8 @@
     "title": "My Saved Properties",
     "emptyState": "No properties saved yet. Browse listings and tap ♡ to save.",
     "browseCta": "Browse Listings",
+    "keepSearching": "Keep searching for more properties",
+    "addMoreProperties": "Add more properties",
     "askAgentCta": "Ask about these",
     "shareShortlistCta": "Share my shortlist",
     "removeButtonLabel": "Remove property from saved",
@@ -869,7 +871,8 @@
     "formValidationError": "Please fill out all required fields.",
     "nameError": "Please enter your name",
     "emailError": "Please enter a valid email address",
-    "phoneError": "Please enter a valid phone number (min. 7 digits)"
+    "phoneError": "Please enter a valid phone number (min. 7 digits)",
+    "formSubmitError": "Failed to send form. Please try again."
   },
   "ShortlistRouting": {
     "autoSuggestText": "{name} specializes in the areas you're exploring. They can show you all {count} properties.",

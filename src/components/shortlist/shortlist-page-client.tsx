@@ -213,6 +213,7 @@ export function ShortlistPageClient() {
           source: channel === "whatsapp" ? "whatsapp_click" : "contact_form",
           assignedAgentId: agent.id,
           shortlistPropertyIds: shortlist,
+          location: { text: "", lat: null, lng: null },
         }),
       });
     } catch (err) {
@@ -305,6 +306,7 @@ export function ShortlistPageClient() {
         assignedAgentId: recipientAgentId,
         shortlistPropertyIds: shortlist,
         notes: `${formMessage.trim() ? formMessage.trim() + " | " : ""}Shortlist Link: ${shareUrl}`,
+        location: { text: "", lat: null, lng: null },
       };
 
       const leadResponse = await fetch("/api/leads", {
@@ -318,11 +320,11 @@ export function ShortlistPageClient() {
         setSubmittedLeadAgent(chosen);
         setFormSubmitted(true);
       } else {
-        alert(t("shareError"));
+        alert(t("formSubmitError"));
       }
     } catch (err) {
       console.error("Form submission failed:", err);
-      alert(t("shareError"));
+      alert(t("formSubmitError"));
     } finally {
       setFormSubmitting(false);
     }
@@ -479,7 +481,23 @@ export function ShortlistPageClient() {
   // Comparison grid + interactive map
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-brand-navy">{t("title")}</h1>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 border-b pb-4 border-slate-100">
+        <h1 className="text-3xl font-bold text-brand-navy">{t("title")}</h1>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href={`/${locale}/search`}
+            className="inline-flex h-11 items-center justify-center rounded-md bg-white border border-brand-navy/30 text-brand-navy hover:bg-brand-navy/5 font-semibold px-5 transition-colors shadow-xs"
+          >
+            {t("addMoreProperties")}
+          </Link>
+          <button
+            onClick={handleShareShortlist}
+            className="inline-flex h-11 items-center justify-center rounded-md bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-5 shadow-md transition-colors relative min-w-[150px]"
+          >
+            {copied ? (locale === "es" ? "¡Copiado!" : "Copied!") : t("shareShortlistCta")}
+          </button>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Side: Property list and Actions */}
@@ -824,39 +842,31 @@ export function ShortlistPageClient() {
             </div>
           )}
 
-          {/* Action buttons (Share Shortlist + optional Ask Agent + optional Contact Form toggle) */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-6 border-t pt-6 border-border">
-            {!showContactForm && !formSubmitted && (
-              <>
-                <button
-                  onClick={handleAskAgent}
-                  className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-6 shadow-md transition-colors"
-                >
-                  {t("askAgentCta")}
-                </button>
-                <button
-                  onClick={() => {
-                    setShowContactForm(true);
-                    setTimeout(() => {
-                      const formEl = document.getElementById("shortlist-contact-form");
-                      if (formEl && typeof formEl.scrollIntoView === "function") {
-                        formEl.scrollIntoView({ behavior: "smooth", block: "start" });
-                      }
-                    }, 100);
-                  }}
-                  className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-white border border-brand-navy text-brand-navy hover:bg-brand-navy/5 font-semibold px-6 transition-colors"
-                >
-                  {locale === "es" ? "Contactar por Formulario" : "Contact via Form"}
-                </button>
-              </>
-            )}
-            <button
-              onClick={handleShareShortlist}
-              className="flex-1 inline-flex h-11 items-center justify-center rounded-md border border-brand-navy/30 text-brand-navy hover:bg-brand-navy/5 font-semibold px-6 transition-colors relative"
-            >
-              {copied ? "Copied!" : t("shareShortlistCta")}
-            </button>
-          </div>
+          {/* Action buttons (Ask Agent + optional Contact Form toggle) */}
+          {!showContactForm && !formSubmitted && (
+            <div className="flex flex-col sm:flex-row gap-4 mt-6 border-t pt-6 border-border">
+              <button
+                onClick={handleAskAgent}
+                className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-6 shadow-md transition-colors"
+              >
+                {t("askAgentCta")}
+              </button>
+              <button
+                onClick={() => {
+                  setShowContactForm(true);
+                  setTimeout(() => {
+                    const formEl = document.getElementById("shortlist-contact-form");
+                    if (formEl && typeof formEl.scrollIntoView === "function") {
+                      formEl.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                  }, 100);
+                }}
+                className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-white border border-brand-navy text-brand-navy hover:bg-brand-navy/5 font-semibold px-6 transition-colors"
+              >
+                {locale === "es" ? "Contactar por Formulario" : "Contact via Form"}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Right Side: Mini-map showing saved property locations */}

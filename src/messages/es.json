@@ -837,6 +837,8 @@
     "title": "Mis Propiedades Guardadas",
     "emptyState": "No tienes propiedades guardadas. Explora listados y toca ♡ para guardar.",
     "browseCta": "Explorar Propiedades",
+    "keepSearching": "Seguir buscando más propiedades",
+    "addMoreProperties": "Agregar más propiedades",
     "askAgentCta": "Consultar por estas",
     "shareShortlistCta": "Compartir mi lista",
     "removeButtonLabel": "Eliminar propiedad de guardados",
@@ -869,7 +871,8 @@
     "formValidationError": "Por favor completa todos los campos requeridos.",
     "nameError": "Por favor ingresa tu nombre",
     "emailError": "Por favor ingresa un correo electrónico válido",
-    "phoneError": "Por favor ingresa un número de teléfono válido (mín. 7 dígitos)"
+    "phoneError": "Por favor ingresa un número de teléfono válido (mín. 7 dígitos)",
+    "formSubmitError": "Error al enviar el formulario. Por favor, inténtelo de nuevo."
   },
   "ShortlistRouting": {
     "autoSuggestText": "{name} se especializa en las zonas que estás explorando. Puede mostrarte las {count} propiedades.",
