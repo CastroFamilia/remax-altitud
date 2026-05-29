@@ -66,6 +66,9 @@ export async function ListingDetailLayout({
   const description = locale === "es" ? property.descriptionEs : property.descriptionEn;
   const images = normalizePropertyImages(property.images, title);
 
+  const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
+  const originalPriceColones = apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
+
   // ZMT badge
   const zmtVisual = property.zmtStatus ? ZMT_VISUAL[property.zmtStatus] : null;
   const zmtStatusKey = property.zmtStatus as "titled" | "concession" | "zmt_restricted" | null;
@@ -106,6 +109,8 @@ export async function ListingDetailLayout({
           constructionM2={property.constructionM2}
           zmtStatus={property.zmtStatus ?? "titled"}
           locale={locale}
+          currency={property.currency}
+          originalPriceColones={originalPriceColones}
         />
 
         <div className="mx-auto max-w-7xl px-4 py-8 space-y-8">
@@ -145,6 +150,11 @@ export async function ListingDetailLayout({
                 </p>
                 <p className="mt-1 text-lg font-bold text-brand-navy">
                   ${property.priceUsd.toLocaleString("en-US")}
+                  {property.currency === "CRC" && originalPriceColones != null && (
+                    <span className="ml-2 text-sm font-medium text-text-muted">
+                      (₡{originalPriceColones.toLocaleString("es-CR")})
+                    </span>
+                  )}
                 </p>
               </div>
             )}

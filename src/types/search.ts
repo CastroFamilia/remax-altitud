@@ -43,6 +43,8 @@ export interface PropertySearchItem {
   images: OptimizedImage[];
   latitude: number | null;
   longitude: number | null;
+  currency?: string | null;
+  apiRaw?: Record<string, unknown> | null;
 }
 
 export interface FilterFacets {

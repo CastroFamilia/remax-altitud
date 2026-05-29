@@ -157,6 +157,7 @@ export async function upsertProperty(
     slug: baseSlug || raw.apiId, // fallback to apiId if title produces empty slug
     propertyType: raw.propertyTypeEn,
     priceUsd: Math.round(raw.priceUsd),
+    currency: raw.currency ?? "USD",
     bedrooms: raw.bedrooms ?? null,
     bathrooms: raw.bathrooms ?? null,
     lotSizeM2: raw.lotSizeM2 ?? null,
@@ -186,6 +187,7 @@ export async function upsertProperty(
   const mutableSet = {
     propertyType: values.propertyType,
     priceUsd: values.priceUsd,
+    currency: values.currency,
     bedrooms: values.bedrooms,
     bathrooms: values.bathrooms,
     lotSizeM2: values.lotSizeM2,
@@ -463,6 +465,8 @@ export function mapPropertyRowToSearchItem(row: {
   images: unknown;
   latitude: number | null;
   longitude: number | null;
+  currency?: string | null;
+  apiRaw?: unknown;
 }): PropertySearchItem {
   return {
     id: row.id,
@@ -481,6 +485,8 @@ export function mapPropertyRowToSearchItem(row: {
     images: normalizePropertyImages(row.images, row.titleEn),
     latitude: row.latitude,
     longitude: row.longitude,
+    currency: row.currency,
+    apiRaw: row.apiRaw as Record<string, unknown> | null,
   };
 }
 
@@ -502,6 +508,8 @@ export const propertySearchColumns = {
   images: properties.images,
   latitude: properties.latitude,
   longitude: properties.longitude,
+  currency: properties.currency,
+  apiRaw: properties.apiRaw,
 } as const;
 
 /**

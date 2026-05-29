@@ -15,6 +15,23 @@
 export const EUR_RATE = 0.92;
 
 /**
+ * Default CRC -> USD exchange rate (approximate).
+ * Can be overridden by the CRC_TO_USD_RATE environment variable.
+ */
+export const DEFAULT_CRC_TO_USD_RATE = 515;
+
+export function getCrcToUsdRate(): number {
+  const envRate = process.env.CRC_TO_USD_RATE;
+  if (envRate) {
+    const rate = Number(envRate);
+    if (Number.isFinite(rate) && rate > 0) {
+      return rate;
+    }
+  }
+  return DEFAULT_CRC_TO_USD_RATE;
+}
+
+/**
  * Safely build a currency Intl.NumberFormat. Falls back to 'en-US' on a
  * malformed locale tag (Intl throws RangeError on invalid BCP-47 input).
  */
