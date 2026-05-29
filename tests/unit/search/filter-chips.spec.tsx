@@ -290,9 +290,8 @@ describe("FilterChips — Story 3.4: active lifestyle tag chips (AC #6)", () => 
   it(
     "[P0] renders one chip per active tag in filters.tags array",
     () => {
-      // THIS TEST WILL FAIL — FilterChips not yet extended to handle tags array
       const filters: SearchFilters = {
-        tags: ["Investment Property", "Rental Potential"],
+        tags: ["Con río", "Con cascada"],
       };
       renderChips(filters);
 
@@ -303,41 +302,24 @@ describe("FilterChips — Story 3.4: active lifestyle tag chips (AC #6)", () => 
   );
 
   it(
-    "[P0] renders tag chip with display label containing 'Investment Property'",
+    "[P0] renders tag chip with display label containing 'Con río'",
     () => {
-      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
       const filters: SearchFilters = {
-        tags: ["Investment Property"],
+        tags: ["Con río"],
       };
       renderChips(filters);
 
       const chipsContainer = document.querySelector('[data-testid="filter-chips"]');
-      expect(chipsContainer?.textContent).toContain("Investment Property");
-    },
-  );
-
-  it(
-    "[P0] 'Retire' tag chip displays 'Retirement Paradise' as the display label (TAG_DISPLAY_LABELS)",
-    () => {
-      // THIS TEST WILL FAIL — TAG_DISPLAY_LABELS mapping not yet in FilterChips
-      const filters: SearchFilters = {
-        tags: ["Retire"],
-      };
-      renderChips(filters);
-
-      const chipsContainer = document.querySelector('[data-testid="filter-chips"]');
-      // Must show the display label, not the raw stored value
-      expect(chipsContainer?.textContent).toContain("Retirement Paradise");
+      expect(chipsContainer?.textContent).toContain("Con río");
     },
   );
 
   it(
     "[P0] renders both scalar and tag chips when both are active",
     () => {
-      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
       const filters: SearchFilters = {
         type: "Casa",
-        tags: ["Investment Property"],
+        tags: ["Con río"],
       };
       renderChips(filters);
 
@@ -350,9 +332,8 @@ describe("FilterChips — Story 3.4: active lifestyle tag chips (AC #6)", () => 
   it(
     "[P0] 'Clear all' appears when tags count pushes activeFilterCount to >= 2",
     () => {
-      // THIS TEST WILL FAIL — activeFilterCount in FilterChips not yet extended for tags
       const filters: SearchFilters = {
-        tags: ["Investment Property", "Rental Potential"],
+        tags: ["Con río", "Con cascada"],
       };
       renderChips(filters);
 
@@ -365,10 +346,9 @@ describe("FilterChips — Story 3.4: active lifestyle tag chips (AC #6)", () => 
   it(
     "[P0] clicking × on a tag chip calls onClearFilter with 'tags' key (MVP: clears all tags)",
     () => {
-      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
       const onClearFilter = vi.fn();
       const filters: SearchFilters = {
-        tags: ["Investment Property"],
+        tags: ["Con río"],
       };
       renderChips(filters, onClearFilter);
 
@@ -384,10 +364,8 @@ describe("FilterChips — Story 3.4: active lifestyle tag chips (AC #6)", () => 
   it(
     "[P1] no tag chips render when filters.tags is undefined",
     () => {
-      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
       const filters: SearchFilters = {
         type: "Casa",
-        // tags is intentionally absent
       };
       renderChips(filters);
 
@@ -400,7 +378,6 @@ describe("FilterChips — Story 3.4: active lifestyle tag chips (AC #6)", () => 
   it(
     "[P1] no tag chips render when filters.tags is an empty array",
     () => {
-      // THIS TEST WILL FAIL — FilterChips tags extension not yet implemented
       const filters: SearchFilters = {
         tags: [],
       };
@@ -414,15 +391,11 @@ describe("FilterChips — Story 3.4: active lifestyle tag chips (AC #6)", () => 
   it(
     "[P1] tag chips have unique React keys (no duplicate key warnings for multiple tags)",
     () => {
-      // THIS TEST WILL FAIL — ChipInfo reactKey field not yet added to FilterChips
-      // This is verified by rendering multiple tags without React key warnings
-      // Using 2 tags with the same 'key: "tags"' field would cause React key collision
       const filters: SearchFilters = {
-        tags: ["Investment Property", "Rental Potential", "Vacation Home"],
+        tags: ["Con río", "Con cascada", "Con vista al mar"],
       };
       renderChips(filters);
 
-      // 3 tag chips must render (not deduplicated due to key collision)
       const chips = document.querySelectorAll('[data-testid="filter-chip"]');
       expect(chips).toHaveLength(3);
     },

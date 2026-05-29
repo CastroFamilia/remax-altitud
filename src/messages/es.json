@@ -379,20 +379,23 @@
     "lifestyleTags": {
       "label": "Estilo de vida",
       "chips": {
-        "Rental Potential": "Potencial de renta",
-        "Investment Property": "Propiedad de inversión",
-        "Vacation Home": "Casa vacacional",
-        "Retire": "Paraíso de retiro",
-        "Commercial": "Comercial",
-        "Luxury Property": "Propiedad de lujo"
+        "Casa": "Casa",
+        "Lote": "Lote",
+        "Finca": "Finca",
+        "Con río": "Con río",
+        "Con cascada": "Con cascada",
+        "Con vista al mar": "Con vista al mar",
+        "Con vista a la montaña": "Con vista a la montaña"
       }
     },
     "presets": {
       "label": "Búsquedas rápidas",
-      "mountainRetirement": "Casas de retiro en la montaña",
-      "beachInvestment": "Terrenos de inversión en la playa",
-      "rentalPotential": "Propiedades para renta",
-      "vacationHome": "Casas vacacionales"
+      "fincasConRio": "Fincas con río",
+      "lotesVistaMar": "Lotes con vista al mar",
+      "casasVistaMar": "Casas con vista al mar",
+      "casasVistaMontana": "Casas con vista a la montaña",
+      "lotesVistaMontana": "Lotes con vista a la montaña",
+      "lotesConCascada": "Lotes con cascada"
     },
     "MapView": {
       "ariaLabel": "Mapa de ubicaciones de propiedades",
