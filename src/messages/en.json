@@ -379,20 +379,23 @@
     "lifestyleTags": {
       "label": "Lifestyle",
       "chips": {
-        "Rental Potential": "Rental Potential",
-        "Investment Property": "Investment Property",
-        "Vacation Home": "Vacation Home",
-        "Retire": "Retirement Paradise",
-        "Commercial": "Commercial",
-        "Luxury Property": "Luxury Property"
+        "Casa": "House",
+        "Lote": "Lot",
+        "Finca": "Farm",
+        "Con río": "With river",
+        "Con cascada": "With waterfall",
+        "Con vista al mar": "Ocean view",
+        "Con vista a la montaña": "Mountain view"
       }
     },
     "presets": {
       "label": "Quick Searches",
-      "mountainRetirement": "Mountain Retirement Homes",
-      "beachInvestment": "Beach Investment Land",
-      "rentalPotential": "Rental Income Properties",
-      "vacationHome": "Vacation Homes"
+      "fincasConRio": "Farms with river",
+      "lotesVistaMar": "Lots with ocean view",
+      "casasVistaMar": "Houses with ocean view",
+      "casasVistaMontana": "Houses with mountain view",
+      "lotesVistaMontana": "Lots with mountain view",
+      "lotesConCascada": "Lots with waterfall"
     },
     "MapView": {
       "ariaLabel": "Property locations map",
