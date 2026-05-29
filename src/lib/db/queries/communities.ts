@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, gt, not } from "drizzle-orm";
+import { and, asc, desc, eq, gte, not } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { communities } from "@/lib/db/schema/communities";
 import { areas } from "@/lib/db/schema/areas";
@@ -80,8 +80,8 @@ export async function getFeaturedCommunities(limit = 3) {
   return db
     .select()
     .from(communities)
-    .where(gt(communities.listingCount, 0))
-    .orderBy(desc(communities.listingCount))
+    .where(gte(communities.listingCount, 0))
+    .orderBy(desc(communities.listingCount), desc(communities.createdAt))
     .limit(limit);
 }
 

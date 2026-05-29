@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import {
-  getAreaBySlug,
-  getAllAreaSlugs,
-  getPropertiesByAreaSlug,
-  getSimilarAreas,
-} from "@/lib/db/queries/areas";
-import { getAllAgents } from "@/lib/db/queries/agents";
+import { getAreaBySlug, getAllAreaSlugs, getPropertiesByAreaSlug } from "@/lib/db/queries/areas";
 import { getCommunitiesByAreaId } from "@/lib/db/queries/communities";
 import {
   generatePlaceJsonLd,
@@ -19,7 +13,6 @@ import { AreaGuideHero } from "@/components/area/area-guide-hero";
 import { AreaGuideDescription } from "@/components/area/area-guide-description";
 import { AreaGuideTabs } from "@/components/area/area-guide-tabs";
 import { CommunityCard } from "@/components/area/community-card";
-import { InvestmentContext } from "@/components/area/investment-context";
 import { FeaturedAreas } from "@/components/home/featured-areas";
 import { AreaGalleryCarousel } from "@/components/area/area-gallery-carousel";
 import { AreaVideos } from "@/components/area/area-videos";
@@ -90,10 +83,8 @@ export default async function AreaGuidePage({
 
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
 
-  const [areaProperties, agents, similarAreas, communities] = await Promise.all([
+  const [areaProperties, communities] = await Promise.all([
     getPropertiesByAreaSlug(slug),
-    getAllAgents(),
-    getSimilarAreas(area.region, slug),
     getCommunitiesByAreaId(area.id),
   ]);
 
@@ -117,12 +108,6 @@ export default async function AreaGuidePage({
       />
       <AreaGuideHero area={area} locale={locale} />
       <AreaGuideDescription area={area} locale={locale} />
-      {slug !== "perez-zeledon" && slug !== "dominical" && (
-        <InvestmentContext
-          metadata={area.metadata as Record<string, unknown> | null}
-          locale={locale}
-        />
-      )}
 
       {/* Communities belonging to this area */}
       {communities.length > 0 && (
@@ -151,15 +136,7 @@ export default async function AreaGuidePage({
           </div>
         </section>
       )}
-      {slug !== "perez-zeledon" && slug !== "dominical" && (
-        <AreaGuideTabs
-          properties={areaProperties}
-          agents={agents}
-          similarAreas={similarAreas}
-          locale={locale}
-          slug={slug}
-        />
-      )}
+      <AreaGuideTabs properties={areaProperties} locale={locale} />
 
       {/* Area Photo Gallery Carousel */}
       <AreaGalleryCarousel
