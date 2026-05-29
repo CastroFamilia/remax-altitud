@@ -18,6 +18,52 @@ import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
 import { mapPropertyRowToSearchItem } from "@/lib/db/queries/properties";
 
+export type RawBounds = {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+};
+
+/**
+ * Validates a client-supplied bounds object. Returns sanitized bounds when
+ * valid, or null when the input fails any guard (caller falls back to the
+ * unfiltered query).
+ */
+function sanitizeBounds(bounds: RawBounds): RawBounds | null {
+  const { north, south, east, west } = bounds;
+
+  // Must all be finite numbers (guards against NaN, Infinity, non-numbers
+  // sneaking past TypeScript at the Server Action boundary).
+  if (
+    !Number.isFinite(north) ||
+    !Number.isFinite(south) ||
+    !Number.isFinite(east) ||
+    !Number.isFinite(west)
+  ) {
+    return null;
+  }
+
+  // Clamp to valid Earth coordinates.
+  const clampedNorth = Math.min(90, Math.max(-90, north));
+  const clampedSouth = Math.min(90, Math.max(-90, south));
+  const clampedEast = Math.min(180, Math.max(-180, east));
+  const clampedWest = Math.min(180, Math.max(-180, west));
+
+  // Reject inverted / degenerate envelopes — these cause ST_MakeEnvelope to
+  // either return empty results or throw, depending on PostGIS version.
+  if (clampedNorth <= clampedSouth || clampedEast <= clampedWest) {
+    return null;
+  }
+
+  return {
+    north: clampedNorth,
+    south: clampedSouth,
+    east: clampedEast,
+    west: clampedWest,
+  };
+}
+
 /**
  * Sanitize a numeric value — returns undefined if the value is not a finite,
  * non-negative number, paralleling the sanitizeBounds pattern in map-actions.ts
@@ -85,9 +131,16 @@ function getPropertyTypeEquivalents(type: string): string[] {
  *
  * AC: #1, #2, #6, #9, #10
  */
-export async function searchProperties(filters: SearchFilters, page = 1): Promise<SearchResult> {
+export async function searchProperties(
+  filters: SearchFilters,
+  page = 1,
+  bounds?: RawBounds,
+): Promise<SearchResult> {
   // Sanitize page parameter — clamp to >= 1
   const safePage = Math.max(1, Math.floor(sanitizeNumber(page) ?? 1));
+
+  // If bounds are provided, filter properties inside the bounds
+  const safeBounds = bounds != null ? sanitizeBounds(bounds) : null;
 
   // Sanitize all numeric inputs (guard against NaN, Infinity — ADR-5 compliance)
   const priceMin = sanitizeNumber(filters.priceMin);
@@ -243,6 +296,10 @@ export async function searchProperties(filters: SearchFilters, page = 1): Promis
       ? sql`${properties.lifestyleTags} && ARRAY[${sql.join(sanitizedTags, sql`, `)}]::text[]`
       : undefined,
     q: searchCondition,
+    bounds:
+      safeBounds != null
+        ? sql`${properties.geo} && ST_MakeEnvelope(${safeBounds.west}, ${safeBounds.south}, ${safeBounds.east}, ${safeBounds.north}, 4326)::geography`
+        : undefined,
   };
 
   // Compose conditions for the main query — every set dimension applies.

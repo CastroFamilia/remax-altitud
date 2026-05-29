@@ -86,7 +86,7 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
         <PropertyImage
           src={activeImage.src}
           alt={activeImage.alt || propertyTitle}
-          fallbackSrc={activeImage.fallbackSrc}
+          fallbackSrc={activeImage.fallbackSrc || "/property-placeholder.svg"}
           fill
           sizes="100vw"
           priority={activeIndex === 0}
@@ -140,7 +140,7 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
             <PropertyImage
               src={image.src}
               alt={image.alt || propertyTitle}
-              fallbackSrc={image.fallbackSrc}
+              fallbackSrc={image.fallbackSrc || "/property-placeholder.svg"}
               fill
               className="object-cover"
             />
@@ -175,7 +175,7 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
                 <PropertyImage
                   src={activeImage.src}
                   alt={activeImage.alt || propertyTitle}
-                  fallbackSrc={activeImage.fallbackSrc}
+                  fallbackSrc={activeImage.fallbackSrc || "/property-placeholder.svg"}
                   fill
                   sizes="100vw"
                   {...(activeImage.blurDataUrl

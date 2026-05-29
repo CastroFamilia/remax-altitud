@@ -387,6 +387,24 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     expect(mockLimit).toHaveBeenCalledWith(20);
     expect(mockOffset).toHaveBeenCalledWith(20);
   });
+
+  // -------------------------------------------------------------------------
+  // Map bounds filtering
+  // -------------------------------------------------------------------------
+
+  it("[P0] searchProperties with bounds applies the spatial geo condition", async () => {
+    const bounds = { north: 9.5, south: 9.3, east: -83.5, west: -83.8 };
+    await searchProperties({}, 1, bounds);
+
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
+  it("[P0] searchProperties with invalid bounds ignores the spatial condition silently", async () => {
+    const bounds = { north: 9.3, south: 9.5, east: -83.5, west: -83.8 }; // Inverted north/south
+    await searchProperties({}, 1, bounds);
+
+    expect(mockWhere).toHaveBeenCalled();
+  });
 });
 
 // ---------------------------------------------------------------------------

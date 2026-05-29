@@ -80,11 +80,12 @@ export function PropertyCard({
   const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
   const activeUnitSystem = unitSystem ?? "metric";
   const imageSrc =
-    (Array.isArray(property.images) ? property.images[0]?.src : null) ??
+    (Array.isArray(property.images) && property.images[0]?.src ? property.images[0].src : null) ??
     "/property-placeholder.svg";
   const fallbackSrc =
-    (Array.isArray(property.images) ? property.images[0]?.fallbackSrc : null) ??
-    "/property-placeholder.svg";
+    (Array.isArray(property.images) && property.images[0]?.fallbackSrc
+      ? property.images[0].fallbackSrc
+      : null) ?? "/property-placeholder.svg";
   const imageAlt = (Array.isArray(property.images) ? property.images[0]?.alt : null) ?? title;
   const region = getRegionFromAreaSlug(property.areaSlug || null);
   const isLand = LAND_TYPES.has(property.propertyType || "");
