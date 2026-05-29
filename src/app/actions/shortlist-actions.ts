@@ -8,6 +8,8 @@ import { inArray, eq, and } from "drizzle-orm";
 import { mapPropertyRowToSearchItem, propertySearchColumns } from "@/lib/db/queries/properties";
 import type { PropertySearchItem } from "@/types/search";
 import { randomBytes } from "crypto";
+import { getAllAgents } from "@/lib/db/queries/agents";
+
 
 /**
  * getShortlistProperties — Server Action for fetching properties on the shortlist page.
@@ -167,3 +169,26 @@ export async function getShortlistPropertiesWithAgents(ids: string[]): Promise<a
       : null,
   }));
 }
+
+/**
+ * getActiveAgentsList — Fetch all active agents for the shortlist contact form dropdown.
+ */
+export async function getActiveAgentsList(): Promise<any[]> {
+  const rows = await getAllAgents();
+  return rows.map((a) => ({
+    id: a.id,
+    name: a.name,
+    photoUrl: a.photoUrl,
+    photoOptimizedUrl: a.photoOptimizedUrl,
+    email: a.email,
+    phone: a.phone,
+    whatsapp: a.whatsapp,
+    languages: Array.isArray(a.languages)
+      ? a.languages.join(", ")
+      : typeof a.languages === "string"
+        ? a.languages
+        : "",
+    listingCount: a.listingCount,
+  }));
+}
+

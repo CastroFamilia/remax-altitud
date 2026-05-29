@@ -82,6 +82,7 @@ const mockGetShortlistPropertiesWithAgents = vi.fn();
 vi.mock("@/app/actions/shortlist-actions", () => ({
   getShortlistPropertiesWithAgents: (ids: string[]) => mockGetShortlistPropertiesWithAgents(ids),
   getShortlistProperties: vi.fn(),
+  getActiveAgentsList: () => Promise.resolve([]),
 }));
 
 // Mock MapView
