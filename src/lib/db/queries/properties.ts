@@ -55,8 +55,10 @@ export function resolveAreaSlug(raw: {
     raw.titleEn,
     raw.titleEs,
     raw.publicRemarksEn ?? "",
-    raw.publicRemarksEs ?? ""
-  ].join(" ").toLowerCase();
+    raw.publicRemarksEs ?? "",
+  ]
+    .join(" ")
+    .toLowerCase();
 
   if (
     textToSearch.includes("uvita") ||
@@ -633,7 +635,9 @@ export async function updatePropertyCommunity(
   if (communityId && typeof db.select === "function") {
     const { communities } = await import("@/lib/db/schema/communities");
     const { areas } = await import("@/lib/db/schema/areas");
-    const fromObj = db.select({ areaId: communities.areaId, areaSlug: areas.slug }).from(communities);
+    const fromObj = db
+      .select({ areaId: communities.areaId, areaSlug: areas.slug })
+      .from(communities);
 
     if (typeof fromObj.innerJoin === "function") {
       const rows = await fromObj

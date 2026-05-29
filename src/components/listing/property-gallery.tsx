@@ -112,9 +112,6 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
           onClick={() => setLightboxOpen(true)}
           className="absolute top-4 right-4 bg-black/60 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-black/80 transition-colors"
         >
-<<<<<<< Updated upstream
-          {t("openLightbox")}
-=======
           {/* Mobile Text */}
           <span className="md:hidden">{t("openLightbox")}</span>
 
@@ -137,7 +134,6 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
               {t("openLightbox")} ({total})
             </span>
           </span>
->>>>>>> Stashed changes
         </button>
       </div>
 

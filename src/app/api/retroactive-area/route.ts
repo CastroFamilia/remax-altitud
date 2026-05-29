@@ -118,6 +118,12 @@ export async function GET(req: Request) {
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[retroactive-area] Error:", msg);
-    return NextResponse.json({ error: msg, detail: err instanceof Error && err.cause instanceof Error ? err.cause.message : undefined }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: msg,
+        detail: err instanceof Error && err.cause instanceof Error ? err.cause.message : undefined,
+      },
+      { status: 500 },
+    );
   }
 }
