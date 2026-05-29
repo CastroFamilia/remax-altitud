@@ -24,6 +24,84 @@ import { normalizePropertyImages } from "@/lib/utils/normalize-images";
  * @param agentId  - UUID of the agent (resolved from agents table lookup), or null
  * @param apiHash  - Pre-computed SHA-256 hash from differ.ts
  */
+let areaCache: Map<string, string> | null = null;
+
+async function getAreaIdBySlug(slug: string): Promise<string | null> {
+  if (typeof db.select !== "function") {
+    return null;
+  }
+  if (!areaCache) {
+    const { areas } = await import("@/lib/db/schema/areas");
+    const rows = await db.select({ id: areas.id, slug: areas.slug }).from(areas);
+    areaCache = new Map(rows.map((r) => [r.slug, r.id]));
+  }
+  return areaCache.get(slug) ?? null;
+}
+
+export function resolveAreaSlug(raw: {
+  officeApiId: number;
+  location: string | null;
+  titleEn: string;
+  titleEs: string;
+  publicRemarksEn: string | null;
+  publicRemarksEs: string | null;
+}): string {
+  if (raw.officeApiId === 235) {
+    return "perez-zeledon";
+  }
+
+  const textToSearch = [
+    raw.location ?? "",
+    raw.titleEn,
+    raw.titleEs,
+    raw.publicRemarksEn ?? "",
+    raw.publicRemarksEs ?? "",
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (
+    textToSearch.includes("uvita") ||
+    textToSearch.includes("bahia ballena") ||
+    textToSearch.includes("bahía ballena") ||
+    textToSearch.includes("ballena") ||
+    textToSearch.includes("marino ballena") ||
+    textToSearch.includes("whale tail")
+  ) {
+    return "uvita";
+  }
+
+  if (
+    textToSearch.includes("ojochal") ||
+    textToSearch.includes("coronado") ||
+    textToSearch.includes("cortes") ||
+    textToSearch.includes("cortés") ||
+    textToSearch.includes("ojo de agua") ||
+    textToSearch.includes("chontales") ||
+    textToSearch.includes("tres rios") ||
+    textToSearch.includes("tres ríos")
+  ) {
+    return "ojochal";
+  }
+
+  if (
+    textToSearch.includes("tinamaste") ||
+    textToSearch.includes("platanillo") ||
+    textToSearch.includes("baru") ||
+    textToSearch.includes("barú") ||
+    textToSearch.includes("alto de san juan") ||
+    textToSearch.includes("san juan") ||
+    textToSearch.includes("lagunas") ||
+    textToSearch.includes("chimirol") ||
+    textToSearch.includes("rio nuevo") ||
+    textToSearch.includes("río nuevo")
+  ) {
+    return "tinamastes-platanillo";
+  }
+
+  return "dominical";
+}
+
 export async function upsertProperty(
   raw: RawProperty,
   officeId: string,
@@ -37,6 +115,9 @@ export async function upsertProperty(
 
   const baseSlug = slugify(raw.titleEn);
   const slugWithSuffix = slugify(raw.titleEn, raw.apiId);
+
+  const resolvedAreaSlug = resolveAreaSlug(raw);
+  const resolvedAreaId = await getAreaIdBySlug(resolvedAreaSlug);
 
   const values = {
     apiId: raw.apiId,
@@ -59,8 +140,8 @@ export async function upsertProperty(
     images: raw.images,
     youtubeUrl: raw.videoUrl ?? null,
     agentId,
-    areaId: null,
-    areaSlug: null,
+    areaId: resolvedAreaId,
+    areaSlug: resolvedAreaSlug,
     communityId: null,
     lifestyleTags: [],
     zmtStatus: "titled" as const,
@@ -88,8 +169,8 @@ export async function upsertProperty(
     images: values.images,
     youtubeUrl: values.youtubeUrl,
     agentId: values.agentId,
-    areaId: null,
-    areaSlug: null,
+    areaId: resolvedAreaId,
+    areaSlug: resolvedAreaSlug,
     communityId: sql`CASE 
       WHEN ${properties.latitude} IS DISTINCT FROM ${values.latitude} 
         OR ${properties.longitude} IS DISTINCT FROM ${values.longitude} 
@@ -544,12 +625,41 @@ export async function getSimilarProperties(
 
 /**
  * Manually updates or clears (set to NULL) a listing's communityId.
+ * Also inherits the community's areaId and areaSlug if assigned.
  * AC: 3, 4
  */
 export async function updatePropertyCommunity(
   propertyId: string,
   communityId: string | null,
 ): Promise<void> {
+  if (communityId && typeof db.select === "function") {
+    const { communities } = await import("@/lib/db/schema/communities");
+    const { areas } = await import("@/lib/db/schema/areas");
+    const fromObj = db
+      .select({ areaId: communities.areaId, areaSlug: areas.slug })
+      .from(communities);
+
+    if (typeof fromObj.innerJoin === "function") {
+      const rows = await fromObj
+        .innerJoin(areas, eq(communities.areaId, areas.id))
+        .where(eq(communities.id, communityId))
+        .limit(1);
+
+      if (rows[0]) {
+        await db
+          .update(properties)
+          .set({
+            communityId,
+            areaId: rows[0].areaId,
+            areaSlug: rows[0].areaSlug,
+            updatedAt: new Date(),
+          })
+          .where(eq(properties.id, propertyId));
+        return;
+      }
+    }
+  }
+
   await db
     .update(properties)
     .set({

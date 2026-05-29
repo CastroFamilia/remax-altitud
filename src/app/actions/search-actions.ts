@@ -17,6 +17,7 @@ import { and, eq, gte, lte, isNotNull, desc, asc, sql, or, ilike, inArray } from
 import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
 import { mapPropertyRowToSearchItem } from "@/lib/db/queries/properties";
+import { trackSearchInBackground } from "@/lib/services/tracking";
 
 export type RawBounds = {
   north: number;
@@ -424,6 +425,15 @@ export async function searchProperties(
       .filter((r) => r.value !== null)
       .map((r) => ({ value: r.value as number, count: r.count })),
   };
+
+  // Trigger tracking asynchronously in the background (fire and forget)
+  const searchMode = filters.q ? "smart" : "traditional";
+  trackSearchInBackground({
+    rawQuery: filters.q,
+    parsedFilters: filters,
+    searchMode,
+    resultsCount: total,
+  });
 
   return {
     properties: propertyItems,
