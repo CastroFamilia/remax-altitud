@@ -75,7 +75,9 @@
       "searchSubmit": "Search",
       "smartToggle": "Smart Search",
       "traditionalToggle": "Traditional Search",
-      "shellNotice": ""
+      "shellNotice": "",
+      "vipPrompt": "Looking in other areas of the country or the world?",
+      "vipCta": "Connect with our VIP Buyers Service"
     },
     "featuredProperties": {
       "heading": "Featured Properties",

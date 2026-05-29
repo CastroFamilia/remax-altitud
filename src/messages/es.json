@@ -75,7 +75,9 @@
       "searchSubmit": "Buscar",
       "smartToggle": "Búsqueda Inteligente",
       "traditionalToggle": "Búsqueda Tradicional",
-      "shellNotice": ""
+      "shellNotice": "",
+      "vipPrompt": "¿Busca en otras zonas del país o del mundo?",
+      "vipCta": "Conozca nuestro Servicio de Comprador VIP"
     },
     "featuredProperties": {
       "heading": "Propiedades Destacadas",

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Sparkles, SlidersHorizontal, ChevronDown } from "lucide-react";
+import { Search, Sparkles, SlidersHorizontal, ChevronDown, Globe } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter, Link } from "@/i18n/navigation";
 import { getAvailableAreas } from "@/app/actions/search-actions";
 
 type Variant = "desktop-overlay" | "mobile-inline";
@@ -500,6 +500,21 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
               </div>
             </div>
           )}
+
+          {/* VIP Buyer Section Link */}
+          <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-center gap-1.5 text-center text-xs text-white/70">
+            <Globe className="h-3.5 w-3.5 text-brand-gold/80 shrink-0" aria-hidden="true" />
+            <span>
+              {t("vipPrompt")}{" "}
+              <Link
+                href="/find-your-dream-property"
+                className="text-brand-gold hover:text-brand-gold-light hover:underline font-bold transition-colors inline-flex items-center gap-0.5"
+              >
+                {t("vipCta")}
+                <span className="no-underline">→</span>
+              </Link>
+            </span>
+          </div>
         </div>
       </div>
     </div>
