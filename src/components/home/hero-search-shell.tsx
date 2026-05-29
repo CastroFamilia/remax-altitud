@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Sparkles, SlidersHorizontal } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Sparkles, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useRouter } from "@/i18n/navigation";
+import { getAvailableAreas } from "@/app/actions/search-actions";
 
 type Variant = "desktop-overlay" | "mobile-inline";
 
@@ -75,6 +76,19 @@ const LIFESTYLE_KEYWORDS: Record<string, string> = {
   comercio: "Commercial",
   business: "Commercial",
 };
+
+const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Terreno", "Comercial", "Finca"];
+
+const FALLBACK_AREAS = [
+  { slug: "perez-zeledon", label: "Pérez Zeledón" },
+  { slug: "dominical", label: "Dominical" },
+  { slug: "uvita", label: "Uvita" },
+  { slug: "ojochal", label: "Ojochal" },
+  { slug: "tinamastes-platanillo", label: "Tinamastes, Platanillo & Barú" },
+  { slug: "quepos", label: "Quepos" },
+  { slug: "manuel-antonio", label: "Manuel Antonio" },
+  { slug: "jaco", label: "Jacó" },
+];
 
 function parseQuery(queryText: string): Record<string, string> {
   const params: Record<string, string> = {};
@@ -220,10 +234,35 @@ function parseQuery(queryText: string): Record<string, string> {
 
 export function HeroSearchShell({ variant }: { variant: Variant }) {
   const t = useTranslations("HomePage.hero");
+  const tSearch = useTranslations("SearchPage");
+  const tEmpty = useTranslations("EmptyStates.noResults");
   const router = useRouter();
 
   const [searchMode, setSearchMode] = useState<"smart" | "traditional">("smart");
   const [query, setQuery] = useState("");
+
+  // Traditional Search filter states
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedArea, setSelectedArea] = useState("");
+  const [priceMin, setPriceMin] = useState<number | undefined>(undefined);
+  const [priceMax, setPriceMax] = useState<number | undefined>(undefined);
+  const [areas, setAreas] = useState<{ slug: string; label: string }[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    getAvailableAreas()
+      .then((data) => {
+        if (active && data && data.length > 0) {
+          setAreas(data);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load areas in HeroSearchShell", err);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const containerClass =
     variant === "desktop-overlay"
@@ -236,14 +275,36 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
       : "rounded-2xl bg-brand-navy/90 backdrop-blur-lg border border-brand-gold/25 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.2)]";
 
   const handleSearch = () => {
-    const params = parseQuery(query);
+    if (searchMode === "smart") {
+      const params = parseQuery(query);
 
-    // Add view=split to ensure consistent split layout
-    params.view = "split";
+      // Add view=split to ensure consistent split layout
+      params.view = "split";
 
-    const qString = new URLSearchParams(params).toString();
-    const searchUrl = qString ? `/search?${qString}` : "/search";
-    router.push(searchUrl);
+      const qString = new URLSearchParams(params).toString();
+      const searchUrl = qString ? `/search?${qString}` : "/search";
+      router.push(searchUrl);
+    } else {
+      const params: Record<string, string> = {
+        view: "split",
+      };
+      if (selectedType) {
+        params.type = selectedType;
+      }
+      if (selectedArea) {
+        params.area = selectedArea;
+      }
+      if (priceMin !== undefined && priceMin !== null && !isNaN(priceMin)) {
+        params.price_min = String(priceMin);
+      }
+      if (priceMax !== undefined && priceMax !== null && !isNaN(priceMax)) {
+        params.price_max = String(priceMax);
+      }
+
+      const qString = new URLSearchParams(params).toString();
+      const searchUrl = qString ? `/search?${qString}` : "/search";
+      router.push(searchUrl);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -302,28 +363,143 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
             </button>
           </div>
 
-          {/* Interactive Input and Submit Button */}
-          <div className="flex items-center gap-2 bg-black/30 border border-white/15 rounded-xl pl-3 pr-1.5 py-1 focus-within:border-brand-gold/60 focus-within:ring-1 focus-within:ring-brand-gold/30 transition-all duration-200">
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={t("searchPlaceholder")}
-              aria-label={t("searchPlaceholder")}
-              className={cn(
-                "min-h-10 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/45",
-              )}
-            />
-            <button
-              type="button"
-              onClick={handleSearch}
-              aria-label={t("searchSubmit")}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-gold text-brand-navy shadow-md hover:bg-brand-gold-light hover:scale-105 active:scale-95 transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 focus-visible:ring-brand-gold"
-            >
-              <Search className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </div>
+          {searchMode === "smart" ? (
+            /* Smart Search mode: Simple, premium text query input */
+            <div className="flex items-center gap-2 bg-black/30 border border-white/15 rounded-xl pl-3 pr-1.5 py-1 focus-within:border-brand-gold/60 focus-within:ring-1 focus-within:ring-brand-gold/30 transition-all duration-200">
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={t("searchPlaceholder")}
+                aria-label={t("searchPlaceholder")}
+                className={cn(
+                  "min-h-10 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/45",
+                )}
+              />
+              <button
+                type="button"
+                onClick={handleSearch}
+                aria-label={t("searchSubmit")}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-gold text-brand-navy shadow-md hover:bg-brand-gold-light hover:scale-105 active:scale-95 transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 focus-visible:ring-brand-gold"
+              >
+                <Search className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+          ) : (
+            /* Traditional Search mode: Premium, advanced filters grid */
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 items-end">
+                {/* Property Type Filter */}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-white/60">
+                    {tSearch("filters.type")}
+                  </label>
+                  <div className="relative flex items-center bg-black/40 border border-white/20 rounded-xl px-3 py-2.5 focus-within:border-brand-gold/70 focus-within:ring-1 focus-within:ring-brand-gold/30 transition-all duration-200">
+                    <select
+                      value={selectedType}
+                      onChange={(e) => setSelectedType(e.target.value)}
+                      className="w-full bg-transparent text-sm text-white outline-none cursor-pointer appearance-none pr-8 select-none"
+                    >
+                      <option value="" className="bg-brand-navy text-white">
+                        {tSearch("filters.typeAll")}
+                      </option>
+                      {PROPERTY_TYPES.map((type) => (
+                        <option key={type} value={type} className="bg-brand-navy text-white">
+                          {tSearch(`filters.propertyTypes.${type}`)}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 h-4 w-4 text-white/50 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Area / Location Filter */}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-white/60">
+                    {tSearch("filters.location")}
+                  </label>
+                  <div className="relative flex items-center bg-black/40 border border-white/20 rounded-xl px-3 py-2.5 focus-within:border-brand-gold/70 focus-within:ring-1 focus-within:ring-brand-gold/30 transition-all duration-200">
+                    <select
+                      value={selectedArea}
+                      onChange={(e) => setSelectedArea(e.target.value)}
+                      className="w-full bg-transparent text-sm text-white outline-none cursor-pointer appearance-none pr-8 select-none"
+                    >
+                      <option value="" className="bg-brand-navy text-white">
+                        {tSearch("filters.locationAll")}
+                      </option>
+                      {(areas.length > 0 ? areas : FALLBACK_AREAS).map((area) => (
+                        <option
+                          key={area.slug}
+                          value={area.slug}
+                          className="bg-brand-navy text-white"
+                        >
+                          {area.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 h-4 w-4 text-white/50 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Minimum Price Filter */}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-white/60">
+                    {tEmpty("criteriaMinPrice")}
+                  </label>
+                  <div className="flex items-center bg-black/40 border border-white/20 rounded-xl px-3 py-2.5 focus-within:border-brand-gold/70 focus-within:ring-1 focus-within:ring-brand-gold/30 transition-all duration-200">
+                    <span className="text-white/40 text-sm select-none mr-1">$</span>
+                    <input
+                      type="number"
+                      min="0"
+                      value={priceMin ?? ""}
+                      onChange={(e) =>
+                        setPriceMin(
+                          e.target.value ? Math.max(0, parseInt(e.target.value, 10)) : undefined,
+                        )
+                      }
+                      placeholder="Min"
+                      className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Maximum Price Filter */}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-white/60">
+                    {tEmpty("criteriaMaxPrice")}
+                  </label>
+                  <div className="flex items-center bg-black/40 border border-white/20 rounded-xl px-3 py-2.5 focus-within:border-brand-gold/70 focus-within:ring-1 focus-within:ring-brand-gold/30 transition-all duration-200">
+                    <span className="text-white/40 text-sm select-none mr-1">$</span>
+                    <input
+                      type="number"
+                      min="0"
+                      value={priceMax ?? ""}
+                      onChange={(e) =>
+                        setPriceMax(
+                          e.target.value ? Math.max(0, parseInt(e.target.value, 10)) : undefined,
+                        )
+                      }
+                      placeholder="Max"
+                      className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Submit Search Button Row */}
+              <div className="flex justify-end mt-1">
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-brand-gold text-brand-navy font-bold hover:bg-brand-gold-light hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 cursor-pointer shadow-lg text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 focus-visible:ring-brand-gold"
+                >
+                  <Search className="h-4 w-4" />
+                  <span>{t("searchSubmit")}</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -151,7 +151,7 @@ export default async function AreaGuidePage({
           </div>
         </section>
       )}
-      {slug !== "perez-zeledon" && (
+      {slug !== "perez-zeledon" && slug !== "dominical" && (
         <AreaGuideTabs
           properties={areaProperties}
           agents={agents}
