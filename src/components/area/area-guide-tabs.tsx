@@ -94,7 +94,10 @@ export function AreaGuideTabs({
   }
 
   return (
-    <section data-testid="area-guide-tabs" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 border-t border-border/40 mt-8">
+    <section
+      data-testid="area-guide-tabs"
+      className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 border-t border-border/40 mt-8"
+    >
       {/* Tab list — only rendered if there are multiple tabs at runtime */}
       {availableTabs.length > 1 && (
         <div

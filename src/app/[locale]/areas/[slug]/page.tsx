@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import {
-  getAreaBySlug,
-  getAllAreaSlugs,
-  getPropertiesByAreaSlug,
-} from "@/lib/db/queries/areas";
+import { getAreaBySlug, getAllAreaSlugs, getPropertiesByAreaSlug } from "@/lib/db/queries/areas";
 import { getCommunitiesByAreaId } from "@/lib/db/queries/communities";
 import {
   generatePlaceJsonLd,
@@ -140,10 +136,7 @@ export default async function AreaGuidePage({
           </div>
         </section>
       )}
-      <AreaGuideTabs
-        properties={areaProperties}
-        locale={locale}
-      />
+      <AreaGuideTabs properties={areaProperties} locale={locale} />
 
       {/* Area Photo Gallery Carousel */}
       <AreaGalleryCarousel
