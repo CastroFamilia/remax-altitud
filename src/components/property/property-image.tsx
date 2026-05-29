@@ -34,6 +34,7 @@ export function PropertyImage({
       {...props}
       src={imgSrc}
       alt={alt}
+      unoptimized={props.unoptimized || fallbackAttempted}
       onError={() => {
         if (!fallbackAttempted && fallbackSrc && fallbackSrc !== "/property-placeholder.svg") {
           setImgSrc(fallbackSrc);
