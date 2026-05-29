@@ -13,7 +13,9 @@ export function PropertyImage({
   fallbackSrc = "/property-placeholder.svg",
   ...props
 }: PropertyImageProps) {
-  const [imgSrc, setImgSrc] = useState<string>(typeof src === "string" ? src : "/property-placeholder.svg");
+  const [imgSrc, setImgSrc] = useState<string>(
+    typeof src === "string" ? src : "/property-placeholder.svg",
+  );
   const [fallbackAttempted, setFallbackAttempted] = useState(false);
 
   // Sync state if src changes dynamically

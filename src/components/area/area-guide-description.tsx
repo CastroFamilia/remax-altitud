@@ -116,20 +116,35 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
 
           // Table parsing
           if (block.includes("\n|") || block.startsWith("|")) {
-            const lines = block.split("\n").map((l) => l.trim()).filter(Boolean);
-            const headers = lines[0].split("|").map((h) => h.trim()).filter(Boolean);
+            const lines = block
+              .split("\n")
+              .map((l) => l.trim())
+              .filter(Boolean);
+            const headers = lines[0]
+              .split("|")
+              .map((h) => h.trim())
+              .filter(Boolean);
             const bodyLines = lines.slice(2); // Skip header and separator line
             const rows = bodyLines.map((line) =>
-              line.split("|").map((cell) => cell.trim()).filter(Boolean)
+              line
+                .split("|")
+                .map((cell) => cell.trim())
+                .filter(Boolean),
             );
 
             return (
-              <div key={idx} className="my-8 overflow-x-auto rounded-xl border border-border/80 shadow-md">
+              <div
+                key={idx}
+                className="my-8 overflow-x-auto rounded-xl border border-border/80 shadow-md"
+              >
                 <table className="w-full text-left border-collapse text-[15px]">
                   <thead>
                     <tr className="bg-brand-navy text-white font-semibold">
                       {headers.map((h, i) => (
-                        <th key={i} className="p-4 border-b border-border/20 uppercase tracking-wider text-xs">
+                        <th
+                          key={i}
+                          className="p-4 border-b border-border/20 uppercase tracking-wider text-xs"
+                        >
                           {h}
                         </th>
                       ))}
@@ -137,9 +152,15 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
                   </thead>
                   <tbody className="divide-y divide-border/60">
                     {rows.map((row, rIdx) => (
-                      <tr key={rIdx} className={rIdx % 2 === 0 ? "bg-background" : "bg-brand-navy/5"}>
+                      <tr
+                        key={rIdx}
+                        className={rIdx % 2 === 0 ? "bg-background" : "bg-brand-navy/5"}
+                      >
                         {row.map((cell, cIdx) => (
-                          <td key={cIdx} className="p-4 text-text-primary leading-normal font-medium">
+                          <td
+                            key={cIdx}
+                            className="p-4 text-text-primary leading-normal font-medium"
+                          >
                             {cell}
                           </td>
                         ))}

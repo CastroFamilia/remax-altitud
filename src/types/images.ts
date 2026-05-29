@@ -20,4 +20,3 @@ export interface OptimizedImage {
   /** Fallback URL pointing to the original unoptimized remote image (e.g. Azure CDN) */
   fallbackSrc?: string;
 }
-

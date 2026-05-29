@@ -137,7 +137,13 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
             aria-label={t("photoCount", { current: index + 1, total })}
             aria-current={index === activeIndex ? "true" : undefined}
           >
-            <PropertyImage src={image.src} alt={image.alt || propertyTitle} fallbackSrc={image.fallbackSrc} fill className="object-cover" />
+            <PropertyImage
+              src={image.src}
+              alt={image.alt || propertyTitle}
+              fallbackSrc={image.fallbackSrc}
+              fill
+              className="object-cover"
+            />
           </button>
         ))}
       </div>

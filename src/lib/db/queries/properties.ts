@@ -662,4 +662,3 @@ export async function getFeaturedProperties(limit = 3): Promise<PropertySearchIt
 
   return rows.map(mapPropertyRowToSearchItem);
 }
-

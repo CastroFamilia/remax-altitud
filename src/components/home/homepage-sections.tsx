@@ -78,7 +78,8 @@ export async function FeaturedPropertiesShell({ locale }: { locale: string }) {
 
   if (properties.length === 0) {
     const cards = [0, 1, 2];
-    const cardClass = "relative flex aspect-[4/3] w-[80%] shrink-0 snap-start items-center justify-center overflow-hidden rounded-lg bg-muted text-sm text-text-muted md:w-auto";
+    const cardClass =
+      "relative flex aspect-[4/3] w-[80%] shrink-0 snap-start items-center justify-center overflow-hidden rounded-lg bg-muted text-sm text-text-muted md:w-auto";
 
     return (
       <section aria-labelledby="HomePage.featuredProperties-heading" className="scroll-mt-16">

@@ -29,7 +29,13 @@ interface AreaGuideTabsProps {
 const TAB_IDS = ["properties", "agents", "similar"] as const;
 type TabId = (typeof TAB_IDS)[number];
 
-export function AreaGuideTabs({ properties, agents, similarAreas, locale, slug }: AreaGuideTabsProps) {
+export function AreaGuideTabs({
+  properties,
+  agents,
+  similarAreas,
+  locale,
+  slug,
+}: AreaGuideTabsProps) {
   const t = useTranslations("AreaGuide");
   let availableTabs = (
     properties.length > 0 ? TAB_IDS : TAB_IDS.filter((id) => id !== "properties")
