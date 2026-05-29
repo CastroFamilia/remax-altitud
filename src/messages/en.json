@@ -837,6 +837,7 @@
     "title": "My Saved Properties",
     "emptyState": "No properties saved yet. Browse listings and tap ♡ to save.",
     "browseCta": "Browse Listings",
+    "keepSearching": "Keep searching for more properties",
     "askAgentCta": "Ask about these",
     "shareShortlistCta": "Share my shortlist",
     "removeButtonLabel": "Remove property from saved",

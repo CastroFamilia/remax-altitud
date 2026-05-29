@@ -479,7 +479,25 @@ export function ShortlistPageClient() {
   // Comparison grid + interactive map
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-brand-navy">{t("title")}</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 border-b pb-4 border-slate-100">
+        <h1 className="text-3xl font-bold text-brand-navy">{t("title")}</h1>
+        <Link
+          href={`/${locale}/search`}
+          className="inline-flex items-center text-sm font-semibold text-brand-navy hover:text-brand-red transition-all duration-200 group"
+        >
+          <svg
+            className="w-4 h-4 mr-1.5 transition-transform duration-200 group-hover:-translate-x-0.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+          {t("keepSearching")}
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Side: Property list and Actions */}
