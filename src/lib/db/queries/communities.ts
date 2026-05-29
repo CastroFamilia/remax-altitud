@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, gt, gte, not } from "drizzle-orm";
+import { and, asc, desc, eq, gte, not } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { communities } from "@/lib/db/schema/communities";
 import { areas } from "@/lib/db/schema/areas";

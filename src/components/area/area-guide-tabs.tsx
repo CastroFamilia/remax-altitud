@@ -10,7 +10,7 @@
  * - Arrow key navigation between tabs
  */
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { PropertyCard } from "@/components/property/property-card";
 import { SimilarAreasSlider } from "@/components/area/similar-areas-slider";
@@ -26,6 +26,7 @@ interface AreaGuideTabsProps {
   slug?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const TAB_IDS = ["properties", "agents", "similar"] as const;
 type TabId = (typeof TAB_IDS)[number];
 
@@ -34,6 +35,7 @@ export function AreaGuideTabs({
   agents,
   similarAreas,
   locale,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   slug,
 }: AreaGuideTabsProps) {
   const t = useTranslations("AreaGuide");
@@ -41,7 +43,9 @@ export function AreaGuideTabs({
   // Force ONLY the properties tab to be active and visible at runtime as requested.
   // We keep the structural definitions statically present in the file so the
   // WAI-ARIA static-analysis test suites continue to pass seamlessly.
-  const availableTabs = (properties.length > 0 ? ["properties"] : []) as TabId[];
+  const availableTabs = useMemo(() => {
+    return (properties.length > 0 ? ["properties"] : []) as TabId[];
+  }, [properties.length]);
 
   const [activeTab, setActiveTab] = useState<TabId>("properties");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
