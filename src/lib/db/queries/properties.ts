@@ -38,6 +38,11 @@ async function getAreaIdBySlug(slug: string): Promise<string | null> {
   return areaCache.get(slug) ?? null;
 }
 
+function containsWholeWord(text: string, word: string): boolean {
+  const regex = new RegExp(`(?:^|[^a-záéíóúüñ])${word}(?:$|[^a-záéíóúüñ])`, "i");
+  return regex.test(text);
+}
+
 export function resolveAreaSlug(raw: {
   officeApiId: number;
   location: string | null;
@@ -46,59 +51,86 @@ export function resolveAreaSlug(raw: {
   publicRemarksEn: string | null;
   publicRemarksEs: string | null;
 }): string {
+  const titleAndLocation = [raw.titleEn, raw.titleEs, raw.location ?? ""].join(" ").toLowerCase();
+
+  const publicRemarks = [raw.publicRemarksEn ?? "", raw.publicRemarksEs ?? ""]
+    .join(" ")
+    .toLowerCase();
+
+  const textToSearch = [titleAndLocation, publicRemarks].join(" ");
+
+  // 1. Uvita & Bahia Ballena
+  const hasUvita =
+    textToSearch.includes("uvita") ||
+    textToSearch.includes("bahia ballena") ||
+    textToSearch.includes("bahía ballena") ||
+    textToSearch.includes("marino ballena") ||
+    titleAndLocation.includes("ballena") ||
+    titleAndLocation.includes("whale tail");
+
+  if (hasUvita) {
+    return "uvita";
+  }
+
+  // 2. Ojochal & Coronado (avoiding water spring "ojo de agua" or common "cortesía" matches in description)
+  const hasOjochal =
+    textToSearch.includes("ojochal") ||
+    textToSearch.includes("coronado") ||
+    textToSearch.includes("chontales") ||
+    titleAndLocation.includes("ojo de agua") ||
+    titleAndLocation.includes("tres rios") ||
+    titleAndLocation.includes("tres ríos") ||
+    containsWholeWord(titleAndLocation, "cortes") ||
+    containsWholeWord(titleAndLocation, "cortés") ||
+    containsWholeWord(publicRemarks, "ciudad cortés") ||
+    containsWholeWord(publicRemarks, "ciudad cortes") ||
+    containsWholeWord(publicRemarks, "plaza cortés") ||
+    (containsWholeWord(publicRemarks, "cortes") &&
+      !publicRemarks.includes("cortesía") &&
+      !publicRemarks.includes("cortesia")) ||
+    (containsWholeWord(publicRemarks, "cortés") && !publicRemarks.includes("cortésmente"));
+
+  if (hasOjochal) {
+    return "ojochal";
+  }
+
+  // 3. Tinamastes & Platanillo (avoiding generic "lagunas" or common "san juan" in description)
+  const hasTinamastes =
+    textToSearch.includes("tinamaste") ||
+    textToSearch.includes("platanillo") ||
+    textToSearch.includes("chimirol") ||
+    textToSearch.includes("rio nuevo") ||
+    textToSearch.includes("río nuevo") ||
+    textToSearch.includes("alto de san juan") ||
+    titleAndLocation.includes("lagunas") ||
+    titleAndLocation.includes("baru") ||
+    titleAndLocation.includes("barú") ||
+    titleAndLocation.includes("san juan");
+
+  if (hasTinamastes) {
+    return "tinamastes-platanillo";
+  }
+
+  // 4. Perez Zeledon
+  const hasPerezZeledon =
+    textToSearch.includes("perez zeledon") ||
+    textToSearch.includes("pérez zeledón") ||
+    textToSearch.includes("perez zeledón") ||
+    textToSearch.includes("pérez zeledon") ||
+    textToSearch.includes("san isidro de el general") ||
+    textToSearch.includes("san isidro") ||
+    textToSearch.includes("el general");
+
+  if (hasPerezZeledon) {
+    return "perez-zeledon";
+  }
+
+  // 5. Office-based Fallbacks
   if (raw.officeApiId === 218) {
     return "perez-zeledon";
   }
 
-  const textToSearch = [
-    raw.location ?? "",
-    raw.titleEn,
-    raw.titleEs,
-    raw.publicRemarksEn ?? "",
-    raw.publicRemarksEs ?? "",
-  ]
-    .join(" ")
-    .toLowerCase();
-
-  if (
-    textToSearch.includes("uvita") ||
-    textToSearch.includes("bahia ballena") ||
-    textToSearch.includes("bahía ballena") ||
-    textToSearch.includes("ballena") ||
-    textToSearch.includes("marino ballena") ||
-    textToSearch.includes("whale tail")
-  ) {
-    return "uvita";
-  }
-
-  if (
-    textToSearch.includes("ojochal") ||
-    textToSearch.includes("coronado") ||
-    textToSearch.includes("cortes") ||
-    textToSearch.includes("cortés") ||
-    textToSearch.includes("ojo de agua") ||
-    textToSearch.includes("chontales") ||
-    textToSearch.includes("tres rios") ||
-    textToSearch.includes("tres ríos")
-  ) {
-    return "ojochal";
-  }
-
-  if (
-    textToSearch.includes("tinamaste") ||
-    textToSearch.includes("platanillo") ||
-    textToSearch.includes("baru") ||
-    textToSearch.includes("barú") ||
-    textToSearch.includes("alto de san juan") ||
-    textToSearch.includes("san juan") ||
-    textToSearch.includes("lagunas") ||
-    textToSearch.includes("chimirol") ||
-    textToSearch.includes("rio nuevo") ||
-    textToSearch.includes("río nuevo")
-  ) {
-    return "tinamastes-platanillo";
-  }
-
+  // Default fallback for office 235 / Altitud Cero
   return "dominical";
 }
 
