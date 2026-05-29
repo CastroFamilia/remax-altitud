@@ -15,6 +15,7 @@ export interface DbPropertySnapshot {
   apiId: string;
   apiHash: string | null;
   isVisible: boolean;
+  images: unknown;
 }
 
 /**
@@ -108,7 +109,20 @@ export function diffProperties(
 
     // Reactivation (AC #7): was soft-deleted → must upsert to restore is_visible
     // Null apiHash: cannot confirm unchanged → treat as UPDATED
-    if (!db.isVisible || db.apiHash === null || db.apiHash !== currentHash) {
+    // Missing optimized images in DB: force retry optimization if API lists raw images
+    const dbImages = db.images;
+    const needsImageOptimization =
+      dbImages !== undefined &&
+      Array.isArray(raw.images) &&
+      raw.images.length > 0 &&
+      (!Array.isArray(dbImages) ||
+        dbImages.length === 0 ||
+        typeof dbImages[0] !== "object" ||
+        dbImages[0] === null ||
+        !("src" in (dbImages[0] as Record<string, unknown>)) ||
+        !(dbImages[0] as Record<string, unknown>).src);
+
+    if (!db.isVisible || db.apiHash === null || db.apiHash !== currentHash || needsImageOptimization) {
       result.updated.push(raw);
     } else {
       result.unchanged.push(raw);

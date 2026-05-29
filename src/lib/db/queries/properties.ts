@@ -239,13 +239,14 @@ export async function softDeleteProperties(apiIds: string[]): Promise<number> {
  * `api_raw` for hundreds of listings (NFR15 anti-pattern guardrail).
  */
 export async function fetchPropertySnapshot(): Promise<
-  { apiId: string; apiHash: string | null; isVisible: boolean }[]
+  { apiId: string; apiHash: string | null; isVisible: boolean; images: unknown }[]
 > {
   const rows = await db
     .select({
       apiId: properties.apiId,
       apiHash: properties.apiHash,
       isVisible: properties.isVisible,
+      images: properties.images,
     })
     .from(properties);
 
