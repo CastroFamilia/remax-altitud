@@ -13,7 +13,7 @@
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { communities } from "@/lib/db/schema/communities";
-import { and, eq, gte, lte, isNotNull, desc, asc, sql, or, ilike, inArray } from "drizzle-orm";
+import { and, eq, gte, lte, isNotNull, desc, asc, sql, or, inArray } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
 import { mapPropertyRowToSearchItem } from "@/lib/db/queries/properties";
