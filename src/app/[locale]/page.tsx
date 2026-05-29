@@ -19,7 +19,7 @@ function HomeContent({ locale }: { locale: string }) {
       <h1 className="sr-only">{t("title")}</h1>
       <SplitHero />
       <div className="container space-y-16 py-16">
-        <FeaturedPropertiesShell />
+        <FeaturedPropertiesShell locale={locale} />
         <FeaturedCommunities locale={locale} />
         <FeaturedAreas locale={locale} />
       </div>

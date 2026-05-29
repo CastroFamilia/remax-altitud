@@ -92,7 +92,86 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
 
           // 6. Custom high-converting properties search CTA token
           if (block === "[CTA_BUTTON]") {
-            return <CtaButton key={idx} locale={locale} areaSlug={area.slug} />;
+            return (
+              <CtaButton
+                key={idx}
+                locale={locale}
+                areaSlug={area.slug}
+                areaNameEn={area.nameEn}
+                areaNameEs={area.nameEs}
+              />
+            );
+          }
+
+          // Code block / ASCII Art parsing
+          if (block.startsWith("```")) {
+            const content = block.replace(/```[a-zA-Z]*/g, "").trim();
+            return (
+              <pre
+                key={idx}
+                className="font-mono bg-brand-navy/5 text-brand-navy p-6 rounded-2xl border border-border/60 overflow-x-auto text-xs sm:text-sm leading-relaxed my-6 flex justify-center text-center shadow-inner"
+              >
+                <code className="text-left inline-block">{content}</code>
+              </pre>
+            );
+          }
+
+          // Table parsing
+          if (block.includes("\n|") || block.startsWith("|")) {
+            const lines = block
+              .split("\n")
+              .map((l) => l.trim())
+              .filter(Boolean);
+            const headers = lines[0]
+              .split("|")
+              .map((h) => h.trim())
+              .filter(Boolean);
+            const bodyLines = lines.slice(2); // Skip header and separator line
+            const rows = bodyLines.map((line) =>
+              line
+                .split("|")
+                .map((cell) => cell.trim())
+                .filter(Boolean),
+            );
+
+            return (
+              <div
+                key={idx}
+                className="my-8 overflow-x-auto rounded-xl border border-border/80 shadow-md"
+              >
+                <table className="w-full text-left border-collapse text-[15px]">
+                  <thead>
+                    <tr className="bg-brand-navy text-white font-semibold">
+                      {headers.map((h, i) => (
+                        <th
+                          key={i}
+                          className="p-4 border-b border-border/20 uppercase tracking-wider text-xs"
+                        >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/60">
+                    {rows.map((row, rIdx) => (
+                      <tr
+                        key={rIdx}
+                        className={rIdx % 2 === 0 ? "bg-background" : "bg-brand-navy/5"}
+                      >
+                        {row.map((cell, cIdx) => (
+                          <td
+                            key={cIdx}
+                            className="p-4 text-text-primary leading-normal font-medium"
+                          >
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
           }
 
           // 7. Custom metrics grid token inline
@@ -428,9 +507,20 @@ function CardinalCards({ locale }: { locale: string }) {
 }
 
 /** 4. Premium dynamic call to action button linking to search */
-function CtaButton({ locale, areaSlug }: { locale: string; areaSlug: string }) {
+function CtaButton({
+  locale,
+  areaSlug,
+  areaNameEn,
+  areaNameEs,
+}: {
+  locale: string;
+  areaSlug: string;
+  areaNameEn: string;
+  areaNameEs: string;
+}) {
   const isEs = locale === "es";
   const searchHref = `/${locale}/search?area=${areaSlug}`;
+  const areaName = isEs ? areaNameEs : areaNameEn;
 
   return (
     <div className="flex justify-center items-center py-8">
@@ -440,8 +530,8 @@ function CtaButton({ locale, areaSlug }: { locale: string; areaSlug: string }) {
       >
         <span>
           {isEs
-            ? "👉 Ver todas las propiedades en venta en Pérez Zeledón"
-            : "👉 View All Properties For Sale in Pérez Zeledón"}
+            ? `👉 Ver todas las propiedades en venta en ${areaName}`
+            : `👉 View All Properties For Sale in ${areaName}`}
         </span>
         <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300 text-brand-gold" />
       </Link>

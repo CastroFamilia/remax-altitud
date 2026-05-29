@@ -117,7 +117,7 @@ export default async function AreaGuidePage({
       />
       <AreaGuideHero area={area} locale={locale} />
       <AreaGuideDescription area={area} locale={locale} />
-      {slug !== "perez-zeledon" && (
+      {slug !== "perez-zeledon" && slug !== "dominical" && (
         <InvestmentContext
           metadata={area.metadata as Record<string, unknown> | null}
           locale={locale}
@@ -157,6 +157,7 @@ export default async function AreaGuidePage({
           agents={agents}
           similarAreas={similarAreas}
           locale={locale}
+          slug={slug}
         />
       )}
 
@@ -164,6 +165,8 @@ export default async function AreaGuidePage({
       <AreaGalleryCarousel
         metadata={area.metadata as Record<string, unknown> | null}
         locale={locale}
+        areaNameEn={area.nameEn}
+        areaNameEs={area.nameEs}
       />
 
       {/* Featured YouTube Videos (Pérez Zeledón Only) */}

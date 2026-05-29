@@ -11,7 +11,7 @@
  */
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import { PropertyImage } from "@/components/property/property-image";
 import { useTranslations } from "next-intl";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useDrag } from "@use-gesture/react";
@@ -83,9 +83,10 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
         data-testid="gallery-hero"
         className="relative w-full aspect-[4/3] overflow-hidden bg-gray-100"
       >
-        <Image
+        <PropertyImage
           src={activeImage.src}
           alt={activeImage.alt || propertyTitle}
+          fallbackSrc={activeImage.fallbackSrc}
           fill
           sizes="100vw"
           priority={activeIndex === 0}
@@ -136,7 +137,13 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
             aria-label={t("photoCount", { current: index + 1, total })}
             aria-current={index === activeIndex ? "true" : undefined}
           >
-            <Image src={image.src} alt={image.alt || propertyTitle} fill className="object-cover" />
+            <PropertyImage
+              src={image.src}
+              alt={image.alt || propertyTitle}
+              fallbackSrc={image.fallbackSrc}
+              fill
+              className="object-cover"
+            />
           </button>
         ))}
       </div>
@@ -165,9 +172,10 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
             <div className="relative w-full h-full flex items-center justify-center" {...bind()}>
               {/* Lightbox image */}
               <div className="relative w-full max-w-5xl h-[80vh]">
-                <Image
+                <PropertyImage
                   src={activeImage.src}
                   alt={activeImage.alt || propertyTitle}
+                  fallbackSrc={activeImage.fallbackSrc}
                   fill
                   sizes="100vw"
                   {...(activeImage.blurDataUrl
