@@ -65,6 +65,36 @@ describe("parsePropertyArray", () => {
     expect(records[0].isExpired).toBe(false);
   });
 
+  it("converts CRC properties to USD using exchange rate", () => {
+    const rawCrcProp = {
+      ListingId: 163897,
+      ListingKey: "400343886054",
+      PropertyTypeName_en: "Lot/Land",
+      PropertyTypeName_es: "Lote/Terreno",
+      ListingTitle_en: "Beautiful land",
+      Status: "Active",
+      Furnishedyn: "N",
+      Garage: "N",
+      MaidRoom: "N",
+      Cooling: "N",
+      PoolPrivate: "N",
+      Viewyn: "N",
+      GatedCommunity: "N",
+      ListPrice: 5000000,
+      CurrencyId: 12,
+      CurrencyListPrice: "(CRC) Costa Rican Colon",
+      AssociateId: 3886,
+      OfficeID: 218,
+    };
+    
+    const { records, parseErrors } = parsePropertyArray([rawCrcProp]);
+    expect(parseErrors).toHaveLength(0);
+    expect(records).toHaveLength(1);
+    expect(records[0].currency).toBe("CRC");
+    // 5000000 / 515 = 9708.73... Math.round gives 9709
+    expect(records[0].priceUsd).toBe(9709);
+  });
+
   it("returns an error payload when the root is not an array", () => {
     const result = parsePropertyArray({ oops: "not an array" });
     expect(result.records).toEqual([]);

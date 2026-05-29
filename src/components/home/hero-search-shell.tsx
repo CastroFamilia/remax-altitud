@@ -124,8 +124,39 @@ function parseQuery(queryText: string): Record<string, string> {
     remainingText = remainingText.replace(matchedTypeKey, " ");
   }
 
-  // 3. Match Lifestyle Tags
+  // 3. Match DB Lifestyle Tags
   const tags: string[] = [];
+
+  // Ocean View
+  const oceanViewRegex = /ocean\s*view|vista\s*al\s*mar|vista\s*del\s*mar|sea\s*view|ocean-view/gi;
+  if (oceanViewRegex.test(normalized)) {
+    tags.push("Con vista al mar");
+    remainingText = remainingText.replace(oceanViewRegex, " ");
+  }
+
+  // Mountain View
+  const mountainViewRegex =
+    /mountain\s*view|vista\s*a\s*la\s*montaña|vista\s*de\s*montaña|vistas\s*a\s*las\s*montañas|mountain-view/gi;
+  if (mountainViewRegex.test(normalized)) {
+    tags.push("Con vista a la montaña");
+    remainingText = remainingText.replace(mountainViewRegex, " ");
+  }
+
+  // River
+  const riverRegex = /\b(?:river|rio|río|quebrada|creek|stream)\b/gi;
+  if (riverRegex.test(normalized)) {
+    tags.push("Con río");
+    remainingText = remainingText.replace(riverRegex, " ");
+  }
+
+  // Waterfall
+  const waterfallRegex = /\b(?:waterfall|cascada|catarata|waterfalls)\b/gi;
+  if (waterfallRegex.test(normalized)) {
+    tags.push("Con cascada");
+    remainingText = remainingText.replace(waterfallRegex, " ");
+  }
+
+  // Legacy LIFESTYLE_KEYWORDS matching fallback
   for (const [key, tag] of Object.entries(LIFESTYLE_KEYWORDS)) {
     if (normalized.includes(key)) {
       if (!tags.includes(tag)) {
@@ -134,11 +165,90 @@ function parseQuery(queryText: string): Record<string, string> {
       remainingText = remainingText.replace(key, " ");
     }
   }
+
   if (tags.length > 0) {
     params.tags = tags.join(",");
   }
 
-  // 4. Match Bedrooms / Bathrooms count
+  // 4. Parse Hectares / Acres / Size
+
+  // 4a. Acres parsing (e.g. "1 acre", "2 acres", "half acre", "0.5 acres", "medio acre", "1.5 acres")
+  const acreRegex = /\b(\d+(?:\.\d+)?|half|quarter|medio|media|un|uno|dos|tres|cinco)\s*acres?\b/gi;
+  const acreMatch = normalized.match(acreRegex);
+  if (acreMatch) {
+    const matchedStr = acreMatch[0].toLowerCase();
+    let acresValue = 1;
+    if (
+      matchedStr.includes("half") ||
+      matchedStr.includes("medio") ||
+      matchedStr.includes("media") ||
+      matchedStr.includes("0.5")
+    ) {
+      acresValue = 0.5;
+    } else if (matchedStr.includes("quarter") || matchedStr.includes("0.25")) {
+      acresValue = 0.25;
+    } else {
+      const numMatch = matchedStr.match(/\d+(?:\.\d+)?/);
+      if (numMatch) {
+        acresValue = parseFloat(numMatch[0]);
+      } else if (matchedStr.includes("dos")) {
+        acresValue = 2;
+      } else if (matchedStr.includes("tres")) {
+        acresValue = 3;
+      } else if (matchedStr.includes("cinco")) {
+        acresValue = 5;
+      }
+    }
+
+    // 1 acre = 4047 m2
+    const m2Value = acresValue * 4047;
+    // Set min and max with ±20% range for flexible matching
+    params.lot_min = String(Math.round(m2Value * 0.8));
+    params.lot_max = String(Math.round(m2Value * 1.2));
+
+    remainingText = remainingText.replace(acreRegex, " ");
+  }
+
+  // 4b. Hectares parsing (e.g. "1 hectare", "2 hectares", "5 ha", "una hectarea")
+  const hectareRegex = /\b(\d+(?:\.\d+)?|una|dos|tres|cinco)\s*(?:hectareas?|hectáreas?|ha)\b/gi;
+  const hectareMatch = normalized.match(hectareRegex);
+  if (hectareMatch) {
+    const matchedStr = hectareMatch[0].toLowerCase();
+    let hectaresValue = 1;
+    const numMatch = matchedStr.match(/\d+(?:\.\d+)?/);
+    if (numMatch) {
+      hectaresValue = parseFloat(numMatch[0]);
+    } else if (matchedStr.includes("dos")) {
+      hectaresValue = 2;
+    } else if (matchedStr.includes("tres")) {
+      hectaresValue = 3;
+    } else if (matchedStr.includes("cinco")) {
+      hectaresValue = 5;
+    }
+
+    // 1 hectare = 10000 m2
+    const m2Value = hectaresValue * 10000;
+    params.lot_min = String(Math.round(m2Value * 0.8));
+    params.lot_max = String(Math.round(m2Value * 1.2));
+
+    remainingText = remainingText.replace(hectareRegex, " ");
+  }
+
+  // 4c. Square meters parsing (e.g. "5000 m2", "1000m2", "500 metros cuadrados", "1000 mt2")
+  const m2Regex = /\b(\d+(?:\s*\d+)?)\s*(?:m2|m²|sq\s*mt|sqm|metros\s*cuadrados|mt2|mts2)\b/gi;
+  const m2Match = normalized.match(m2Regex);
+  if (m2Match) {
+    const matchedStr = m2Match[0].toLowerCase();
+    const numStr = matchedStr.replace(/[^\d]/g, "");
+    const m2Value = parseInt(numStr, 10);
+    if (Number.isFinite(m2Value) && m2Value > 0) {
+      params.lot_min = String(Math.round(m2Value * 0.8));
+      params.lot_max = String(Math.round(m2Value * 1.2));
+    }
+    remainingText = remainingText.replace(m2Regex, " ");
+  }
+
+  // 5. Match Bedrooms / Bathrooms count
   const bedMatch = normalized.match(/(\d+)\s*(?:bed|bedroom|hab|dormitorio)/);
   if (bedMatch && bedMatch[1]) {
     const beds = parseInt(bedMatch[1], 10);
@@ -157,7 +267,7 @@ function parseQuery(queryText: string): Record<string, string> {
     remainingText = remainingText.replace(bathMatch[0], " ");
   }
 
-  // 5. Match Price limits
+  // 6. Match Price limits
   const cleanedForPrice = normalized.replace(/\$/g, "").replace(/(\d+)[.,](\d{3})\b/g, "$1$2");
 
   const numbers = cleanedForPrice.match(/\b\d+\b/g);
@@ -221,6 +331,13 @@ function parseQuery(queryText: string): Record<string, string> {
     "los",
     "las",
     "del",
+    "y",
+    "o",
+    "or",
+    "to",
+    "at",
+    "by",
+    "of",
   ]);
 
   const words = remainingText.split(/[\s,.\-/?!|;:]+/);

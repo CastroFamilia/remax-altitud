@@ -96,6 +96,9 @@ export function PropertyCard({
 
   const usdPrice = formatUSD(property.priceUsd || 0, locale);
 
+  const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
+  const originalPriceColones = apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
+
   return (
     <article
       data-testid={isSharedView ? `property-card-${property.id}` : "property-card"}
@@ -137,8 +140,16 @@ export function PropertyCard({
           className={`flex flex-col gap-2 ${isCompact ? "p-3" : "p-4"} ${isHorizontal ? "w-[60%]" : ""}`}
         >
           {/* Price */}
-          <p data-testid="property-price" className="font-bold text-xl text-[--color-accent]">
-            {usdPrice}
+          <p
+            data-testid="property-price"
+            className="font-bold text-xl text-[--color-accent] flex flex-wrap items-baseline gap-1.5"
+          >
+            <span>{usdPrice}</span>
+            {property.currency === "CRC" && originalPriceColones != null && (
+              <span className="text-xs font-semibold text-muted-foreground">
+                (₡{originalPriceColones.toLocaleString("es-CR")})
+              </span>
+            )}
           </p>
           {isNonUSLocale(locale) && (
             <p data-testid="property-price-eur" className="text-xs text-muted-foreground">

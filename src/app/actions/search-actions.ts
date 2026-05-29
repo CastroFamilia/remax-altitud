@@ -124,6 +124,13 @@ function getPropertyTypeEquivalents(type: string): string[] {
 }
 
 /**
+ * Escapes special regex characters in a query token to prevent regex injection.
+ */
+function escapeRegex(text: string): string {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
+/**
  * searchProperties — Server Action for filter queries.
  *
  * Executes a filtered property search against PostgreSQL using Drizzle ORM.
@@ -250,25 +257,24 @@ export async function searchProperties(
       const tokenConditions = tokens.map((token) => {
         const matchedGroup = SYNONYM_GROUPS.find((group) => group.keywords.test(token));
         if (matchedGroup) {
-          const synonymConditions = matchedGroup.synonyms.flatMap((term) => {
-            const matchPattern = `%${term}%`;
-            return [
-              ilike(properties.titleEn, matchPattern),
-              ilike(properties.titleEs, matchPattern),
-              ilike(properties.descriptionEn, matchPattern),
-              ilike(properties.descriptionEs, matchPattern),
-              ilike(communities.name, matchPattern),
-            ];
-          });
-          return or(...synonymConditions);
-        } else {
-          const matchPattern = `%${token}%`;
+          const escapedSynonyms = matchedGroup.synonyms.map(escapeRegex);
+          const pattern = `\\y(${escapedSynonyms.join("|")})\\y`;
           return or(
-            ilike(properties.titleEn, matchPattern),
-            ilike(properties.titleEs, matchPattern),
-            ilike(properties.descriptionEn, matchPattern),
-            ilike(properties.descriptionEs, matchPattern),
-            ilike(communities.name, matchPattern),
+            sql`${properties.titleEn} ~* ${pattern}`,
+            sql`${properties.titleEs} ~* ${pattern}`,
+            sql`${properties.descriptionEn} ~* ${pattern}`,
+            sql`${properties.descriptionEs} ~* ${pattern}`,
+            sql`${communities.name} ~* ${pattern}`,
+          );
+        } else {
+          const escapedToken = escapeRegex(token);
+          const pattern = `\\y(${escapedToken})\\y`;
+          return or(
+            sql`${properties.titleEn} ~* ${pattern}`,
+            sql`${properties.titleEs} ~* ${pattern}`,
+            sql`${properties.descriptionEn} ~* ${pattern}`,
+            sql`${properties.descriptionEs} ~* ${pattern}`,
+            sql`${communities.name} ~* ${pattern}`,
           );
         }
       });

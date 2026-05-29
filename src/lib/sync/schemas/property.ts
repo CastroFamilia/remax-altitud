@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { splitAndEncodeImages } from "../utils/images";
+import { getCrcToUsdRate } from "../../utils/currency";
 
 /**
  * Zod schema for a single record in the RE/MAX CCA `PropertiesPerOffice` feed.
@@ -120,6 +121,9 @@ export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
   // soft-deletion is disabled; removal is driven solely by absence from the feed.
   const isExpired = false;
 
+  const isCrc = p.CurrencyId === 12 || /crc|colon/i.test(p.CurrencyListPrice ?? "");
+  const priceUsd = isCrc ? Math.round(p.ListPrice / getCrcToUsdRate()) : p.ListPrice;
+
   return {
     apiId: p.ListingId,
     apiKey: p.ListingKey,
@@ -131,7 +135,8 @@ export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
     publicRemarksEs: p.publicRemarks_es ?? null,
     latitude: p.Latitude,
     longitude: p.Longitude,
-    priceUsd: p.ListPrice,
+    priceUsd,
+    currency: isCrc ? "CRC" : "USD",
     currencyId: p.CurrencyId,
     currencyListPrice: p.CurrencyListPrice,
     bedrooms: p.BedroomsTotal ?? null,
