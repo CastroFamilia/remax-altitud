@@ -329,11 +329,7 @@ export default async function PropertyPage({
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
         data-testid="breadcrumb-jsonld"
       />
-      <PropertyViewTracker
-        propertyId={property.id}
-        slug={slug}
-        locale={locale as "en" | "es"}
-      />
+      <PropertyViewTracker propertyId={property.id} slug={slug} locale={locale as "en" | "es"} />
       <ListingDetailLayout
         property={property}
         agent={agent}

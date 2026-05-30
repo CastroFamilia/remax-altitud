@@ -51,7 +51,9 @@ export function PropertyInquiryForm({
   });
   const [honeypot, setHoneypot] = useState("");
 
-  const [errors, setErrors] = useState<Partial<Record<"name" | "email" | "phone" | "message", string>>>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<"name" | "email" | "phone" | "message", string>>
+  >({});
   const [submitting, setSubmitting] = useState(false);
   const [submitState, setSubmitState] = useState<"idle" | "success" | "error">("idle");
 
@@ -61,9 +63,7 @@ export function PropertyInquiryForm({
   const messageRef = useRef<HTMLTextAreaElement>(null);
 
   // 1. WhatsApp Details
-  const whatsappDigits = agent?.whatsapp
-    ? agent.whatsapp.replace(/\D/g, "")
-    : OFFICE_WHATSAPP;
+  const whatsappDigits = agent?.whatsapp ? agent.whatsapp.replace(/\D/g, "") : OFFICE_WHATSAPP;
   const agentName = agent?.name ?? "RE/MAX Altitud";
   const title = (locale === "es" ? property.titleEs : property.titleEn) ?? "";
   const ref = property.apiId ?? property.id;
@@ -83,14 +83,13 @@ export function PropertyInquiryForm({
   const emailUrl = `mailto:${emailAddress}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
   // 3. Languages Spoken
-  const languageCodes: string[] = agent && Array.isArray(agent.languages)
-    ? (agent.languages as string[])
-    : [];
+  const languageCodes: string[] =
+    agent && Array.isArray(agent.languages) ? (agent.languages as string[]) : [];
   const languages = languageCodes
     .map((lang) =>
       KNOWN_LANGUAGES.has(lang)
         ? tAgent(`language.${lang}` as Parameters<typeof tAgent>[0])
-        : lang.toUpperCase()
+        : lang.toUpperCase(),
     )
     .join(", ");
 
@@ -173,7 +172,11 @@ export function PropertyInquiryForm({
           utm_campaign: utm.campaign ?? null,
           referrer: typeof document !== "undefined" ? document.referrer || null : null,
           preferredLanguage: locale,
-          location: { text: property.areaSlug || "", lat: property.latitude, lng: property.longitude },
+          location: {
+            text: property.areaSlug || "",
+            lat: property.latitude,
+            lng: property.longitude,
+          },
           assignedAgentId: agent?.id || null,
         }),
       });
@@ -203,9 +206,7 @@ export function PropertyInquiryForm({
         <div className="space-y-2">
           <h3 className="text-2xl font-black text-slate-900">{t("successHeading")}</h3>
           <p className="text-slate-600 text-sm font-medium leading-relaxed">
-            {agent
-              ? t("successMessage", { agentName: agent.name })
-              : t("successOfficeMessage")}
+            {agent ? t("successMessage", { agentName: agent.name }) : t("successOfficeMessage")}
           </p>
         </div>
 
@@ -222,7 +223,9 @@ export function PropertyInquiryForm({
                 className="flex items-center justify-center gap-2 rounded-xl bg-brand-whatsapp px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90 transition-opacity"
               >
                 <WhatsAppIcon className="h-5 w-5" />
-                <span>{t("whatsappCTA")} {agentName}</span>
+                <span>
+                  {t("whatsappCTA")} {agentName}
+                </span>
               </a>
             )}
             <a
@@ -230,7 +233,9 @@ export function PropertyInquiryForm({
               className="flex items-center justify-center gap-2 rounded-xl bg-brand-navy px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90 transition-opacity"
             >
               <Mail className="h-4 w-4" />
-              <span>{t("emailCTA")} {agentName}</span>
+              <span>
+                {t("emailCTA")} {agentName}
+              </span>
             </a>
           </div>
         </div>
@@ -266,9 +271,7 @@ export function PropertyInquiryForm({
             {agentName}
           </h3>
           {languages && (
-            <p className="text-xs text-text-muted mt-0.5 font-medium truncate">
-              {languages}
-            </p>
+            <p className="text-xs text-text-muted mt-0.5 font-medium truncate">{languages}</p>
           )}
           <p className="text-[11px] text-text-muted font-bold mt-0.5 truncate uppercase">
             {officeName || "RE/MAX Altitud"}
@@ -303,9 +306,7 @@ export function PropertyInquiryForm({
 
       {/* Form Section */}
       <form onSubmit={handleSubmit} noValidate className="space-y-4 pt-2">
-        <h4 className="text-sm font-extrabold text-brand-navy tracking-tight">
-          {t("title")}
-        </h4>
+        <h4 className="text-sm font-extrabold text-brand-navy tracking-tight">{t("title")}</h4>
 
         {submitState === "error" && (
           <div className="flex gap-2 rounded-lg border border-red-200 bg-red-50/50 p-3 text-xs text-red-700">
@@ -347,9 +348,7 @@ export function PropertyInquiryForm({
               errors.name ? "border-red-500" : "border-brand-warm"
             }`}
           />
-          {errors.name && (
-            <p className="text-[10px] text-red-500 font-semibold">{errors.name}</p>
-          )}
+          {errors.name && <p className="text-[10px] text-red-500 font-semibold">{errors.name}</p>}
         </div>
 
         {/* Phone */}
@@ -370,9 +369,7 @@ export function PropertyInquiryForm({
               errors.phone ? "border-red-500" : "border-brand-warm"
             }`}
           />
-          {errors.phone && (
-            <p className="text-[10px] text-red-500 font-semibold">{errors.phone}</p>
-          )}
+          {errors.phone && <p className="text-[10px] text-red-500 font-semibold">{errors.phone}</p>}
         </div>
 
         {/* Email */}
@@ -392,9 +389,7 @@ export function PropertyInquiryForm({
               errors.email ? "border-red-500" : "border-brand-warm"
             }`}
           />
-          {errors.email && (
-            <p className="text-[10px] text-red-500 font-semibold">{errors.email}</p>
-          )}
+          {errors.email && <p className="text-[10px] text-red-500 font-semibold">{errors.email}</p>}
         </div>
 
         {/* Message */}

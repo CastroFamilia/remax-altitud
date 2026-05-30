@@ -91,7 +91,9 @@ export async function trackShortlistEventInBackground(payload: TrackShortlistPay
     const apiKey = process.env.ALTITUD_HUB_API_SECRET;
 
     if (!hubUrl || !apiKey) {
-      console.log("Shortlist event tracking skipped: ALTITUD_HUB_URL or ALTITUD_HUB_API_SECRET not set.");
+      console.log(
+        "Shortlist event tracking skipped: ALTITUD_HUB_URL or ALTITUD_HUB_API_SECRET not set.",
+      );
       return;
     }
 
@@ -141,7 +143,9 @@ export async function trackPropertyViewInBackground(payload: TrackPropertyViewPa
     const apiKey = process.env.ALTITUD_HUB_API_SECRET;
 
     if (!hubUrl || !apiKey) {
-      console.log("Property view tracking skipped: ALTITUD_HUB_URL or ALTITUD_HUB_API_SECRET not set.");
+      console.log(
+        "Property view tracking skipped: ALTITUD_HUB_URL or ALTITUD_HUB_API_SECRET not set.",
+      );
       return;
     }
 
@@ -179,7 +183,9 @@ export async function forwardLeadToHubInBackground(leadPayload: Record<string, u
     const apiKey = process.env.ALTITUD_HUB_API_SECRET;
 
     if (!hubUrl || !apiKey) {
-      console.log("Lead forwarding to Altitud Hub skipped: ALTITUD_HUB_URL or ALTITUD_HUB_API_SECRET not set.");
+      console.log(
+        "Lead forwarding to Altitud Hub skipped: ALTITUD_HUB_URL or ALTITUD_HUB_API_SECRET not set.",
+      );
       return;
     }
 
