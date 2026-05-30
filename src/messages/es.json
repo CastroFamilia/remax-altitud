@@ -499,6 +499,33 @@
       "pt": "Portugués"
     }
   },
+  "PropertyInquiryForm": {
+    "title": "Consultar sobre esta propiedad",
+    "nameLabel": "Nombre Completo",
+    "namePlaceholder": "Su nombre completo",
+    "nameError": "Por favor ingrese su nombre.",
+    "emailLabel": "Correo Electrónico",
+    "emailPlaceholder": "su@correo.com",
+    "emailError": "Por favor ingrese un correo válido.",
+    "phoneLabel": "Número de Teléfono",
+    "phonePlaceholder": "+506 8888-8888",
+    "phoneError": "Por favor ingrese un teléfono válido (mín. 7 dígitos).",
+    "messageLabel": "Mensaje",
+    "messagePlaceholder": "Cuéntenos cómo podemos ayudarle...",
+    "messageDefault": "Hola, estoy interesado en {title} (Ref: {ref}). Por favor envíeme más detalles.",
+    "messageError": "El mensaje debe tener al menos 10 caracteres.",
+    "submit": "Enviar Consulta",
+    "submitting": "Enviando...",
+    "successHeading": "¡Consulta Enviada!",
+    "successMessage": "¡Gracias! Su mensaje ha sido enviado a {agentName}. Se pondrá en contacto pronto.",
+    "successOfficeMessage": "¡Gracias! Su mensaje ha sido enviado. Nuestro equipo se pondrá en contacto pronto.",
+    "errorHeading": "Error al Enviar",
+    "errorMessage": "Algo salió mal. Por favor intente de nuevo o contacte al agente directamente.",
+    "or": "O contacte directamente:",
+    "whatsappCTA": "WhatsApp",
+    "emailCTA": "Correo",
+    "transparencyNote": "Su consulta se enviará directamente al agente encargado de esta propiedad."
+  },
   "AgentProfile": {
     "listings": "propiedades",
     "whatsapp": "WhatsApp",

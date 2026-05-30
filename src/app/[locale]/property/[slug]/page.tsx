@@ -12,6 +12,7 @@ import { getOfficeById } from "@/lib/db/queries/offices";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { Mail, ArrowRight } from "lucide-react";
 import { ListingDetailLayout } from "@/components/listing/listing-detail-layout";
+import { PropertyViewTracker } from "@/components/listing/property-view-tracker";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import { getAreaBySlug } from "@/lib/db/queries/areas";
 import { InvestmentContext } from "@/components/area/investment-context";
@@ -327,6 +328,11 @@ export default async function PropertyPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
         data-testid="breadcrumb-jsonld"
+      />
+      <PropertyViewTracker
+        propertyId={property.id}
+        slug={slug}
+        locale={locale as "en" | "es"}
       />
       <ListingDetailLayout
         property={property}

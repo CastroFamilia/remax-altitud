@@ -4,6 +4,7 @@ import { db } from "@/lib/db/client";
 import { shortlistEvents } from "@/lib/db/schema/shortlist-events";
 import { eq } from "drizzle-orm";
 import { properties } from "@/lib/db/schema/properties";
+import { trackShortlistEventInBackground } from "@/lib/services/tracking";
 
 const eventInputSchema = z.object({
   propertyId: z.string().uuid("Invalid property ID format"),
@@ -41,6 +42,12 @@ export async function POST(request: Request) {
     }
 
     await db.insert(shortlistEvents).values({
+      propertyId,
+      action,
+      locale,
+    });
+
+    trackShortlistEventInBackground({
       propertyId,
       action,
       locale,
