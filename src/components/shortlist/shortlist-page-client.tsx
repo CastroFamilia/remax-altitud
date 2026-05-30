@@ -6,9 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useShortlist } from "@/hooks/use-shortlist";
-import {
-  getShortlistPropertiesWithAgents,
-} from "@/app/actions/shortlist-actions";
+import { getShortlistPropertiesWithAgents } from "@/app/actions/shortlist-actions";
 import { PropertyCard } from "@/components/property/property-card";
 import { PropertyCardSkeleton } from "@/components/property/property-card-skeleton";
 import { MapView } from "@/components/map/map-view-loader";
@@ -113,7 +111,11 @@ export function ShortlistPageClient() {
     setProperties((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const handleContactAgent = async (agent: any | null, agentProperties: any[], channel: "whatsapp" | "email") => {
+  const handleContactAgent = async (
+    agent: any | null,
+    agentProperties: any[],
+    channel: "whatsapp" | "email",
+  ) => {
     const isOffice = !agent;
     const agentName = isOffice ? "RE/MAX Altitud" : agent.name;
     const agentEmail = isOffice ? "info@remax-altitud.cr" : agent.email;
@@ -130,7 +132,9 @@ export function ShortlistPageClient() {
       })
       .join("\n");
 
-    const fullMessage = isOffice ? `${intro}\n${propertyLines}` : `${intro}\n${propertyLines}\n${outro}`;
+    const fullMessage = isOffice
+      ? `${intro}\n${propertyLines}`
+      : `${intro}\n${propertyLines}\n${outro}`;
 
     // Lead Capture POST request
     fetch("/api/leads", {
@@ -533,7 +537,9 @@ export function ShortlistPageClient() {
                   <span className="text-base leading-none">ℹ️</span>
                   <div>
                     <span className="font-semibold text-slate-800">
-                      {locale === "es" ? "Enrutamiento inteligente directo: " : "Direct agent routing: "}
+                      {locale === "es"
+                        ? "Enrutamiento inteligente directo: "
+                        : "Direct agent routing: "}
                     </span>
                     {t("contactFormSubheading")}
                   </div>
@@ -629,7 +635,9 @@ export function ShortlistPageClient() {
                           </h3>
                           <p className="text-[11px] text-slate-500 mt-0.5">
                             {isOffice
-                              ? (locale === "es" ? "Oficina Central" : "Central Office")
+                              ? locale === "es"
+                                ? "Oficina Central"
+                                : "Central Office"
                               : `${tRouting("languages")} ${languages}`}
                           </p>
                           <p className="text-[10px] text-slate-400 font-semibold mt-0.5">

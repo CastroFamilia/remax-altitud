@@ -83,7 +83,11 @@ export default function AgentSelectionModal({
     return a.agent.name.localeCompare(b.agent.name);
   });
 
-  const handleTriggerContact = (agent: Agent | null, properties: any[], channel: "whatsapp" | "email") => {
+  const handleTriggerContact = (
+    agent: Agent | null,
+    properties: any[],
+    channel: "whatsapp" | "email",
+  ) => {
     const key = agent ? agent.id : "office";
     if (!contactedKeys.includes(key)) {
       setContactedKeys((prev) => [...prev, key]);
@@ -137,9 +141,7 @@ export default function AgentSelectionModal({
               <p className="font-semibold text-blue-950 mb-0.5">
                 {locale === "es" ? "Enrutamiento Directo a Agentes" : "Direct Agent Routing"}
               </p>
-              <p className="text-blue-900/90 text-xs">
-                {t("educationInterstitial")}
-              </p>
+              <p className="text-blue-900/90 text-xs">{t("educationInterstitial")}</p>
             </div>
           </div>
 
@@ -192,8 +194,12 @@ export default function AgentSelectionModal({
                         ) : (
                           <span className="bg-slate-100 text-slate-600 text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">
                             {isOffice
-                              ? (locale === "es" ? "Oficina Central" : "Central Office")
-                              : (locale === "es" ? "Agente a cargo" : "Listing Agent")}
+                              ? locale === "es"
+                                ? "Oficina Central"
+                                : "Central Office"
+                              : locale === "es"
+                                ? "Agente a cargo"
+                                : "Listing Agent"}
                           </span>
                         )}
                       </div>
