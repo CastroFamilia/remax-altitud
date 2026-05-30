@@ -499,6 +499,33 @@
       "pt": "Portuguese"
     }
   },
+  "PropertyInquiryForm": {
+    "title": "Inquire About This Property",
+    "nameLabel": "Full Name",
+    "namePlaceholder": "Your full name",
+    "nameError": "Please enter your name.",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "emailError": "Please enter a valid email.",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "+506 8888-8888",
+    "phoneError": "Please enter a valid phone number (min. 7 digits).",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Tell us how we can help...",
+    "messageDefault": "Hi, I am interested in {title} (Ref: {ref}). Please provide more details.",
+    "messageError": "Message must be at least 10 characters.",
+    "submit": "Send Inquiry",
+    "submitting": "Sending...",
+    "successHeading": "Inquiry Sent!",
+    "successMessage": "Thank you! Your message has been sent to {agentName}. They will contact you shortly.",
+    "successOfficeMessage": "Thank you! Your message has been sent. Our team will contact you shortly.",
+    "errorHeading": "Submission Failed",
+    "errorMessage": "Something went wrong. Please try again or contact the agent directly.",
+    "or": "Or contact directly:",
+    "whatsappCTA": "WhatsApp",
+    "emailCTA": "Email",
+    "transparencyNote": "Your inquiry will be routed directly to the listing agent for this property."
+  },
   "AgentProfile": {
     "listings": "listings",
     "whatsapp": "WhatsApp",

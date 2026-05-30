@@ -16,6 +16,7 @@ import { z } from "zod";
 import * as Sentry from "@sentry/nextjs";
 import { createLead, findRecentDuplicate } from "@/lib/db/queries/leads";
 import { matchAgentByCoordinates } from "@/lib/leads/route-agent";
+import { forwardLeadToHubInBackground } from "@/lib/services/tracking";
 
 // ---------------------------------------------------------------------------
 // Zod input schema
@@ -185,6 +186,25 @@ export async function POST(request: Request) {
 
     // Create lead (encryption happens inside createLead)
     const lead = await createLead({
+      name: data.name,
+      phone: data.phone,
+      email: data.email || null,
+      source: data.source,
+      intent: data.intent,
+      language: data.preferredLanguage || null,
+      assignedAgentId,
+      shortlistPropertyIds: data.shortlistPropertyIds || [],
+      notes: noteParts.join(" | ") || null,
+      utmSource: data.utm_source,
+      utmMedium: data.utm_medium,
+      utmCampaign: data.utm_campaign,
+      referrer,
+      status: "new",
+    });
+
+    // Forward lead details to Altitud Hub in the background (Option B)
+    forwardLeadToHubInBackground({
+      id: lead.id,
       name: data.name,
       phone: data.phone,
       email: data.email || null,
