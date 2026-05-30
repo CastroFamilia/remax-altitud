@@ -850,7 +850,7 @@
     "sharedBanner": "Viendo una lista compartida. ¡Comienza a guardar propiedades para crear la tuya!",
     "shareError": "Error al generar enlace de compartir. Copiando enlaces directos de propiedades.",
     "contactFormHeading": "Contactar a un Agente",
-    "contactFormSubheading": "Envía tus propiedades guardadas a un agente o a la oficina para coordinar tu visita.",
+    "contactFormSubheading": "Tus consultas se dividirán automáticamente y se enviarán directamente a los agentes a cargo de cada propiedad guardada.",
     "nameLabel": "Tu Nombre Completo",
     "namePlaceholder": "Ingresa tu nombre",
     "emailLabel": "Correo Electrónico",
@@ -875,19 +875,19 @@
     "formSubmitError": "Error al enviar el formulario. Por favor, inténtelo de nuevo."
   },
   "ShortlistRouting": {
-    "autoSuggestText": "{name} se especializa en las zonas que estás explorando. Puede mostrarte las {count} propiedades.",
+    "autoSuggestText": "{name} representa las propiedades que estás explorando. El contacto directo garantiza una planificación más rápida.",
     "contactAgent": "Contactar a {name}",
-    "chooseDifferent": "Elegir un agente diferente",
-    "modalTitle": "Selecciona tu Agente Coordinador",
-    "educationInterstitial": "🏠 Un solo agente, todas tus visitas — el agente que elijas coordinará las visitas a todas tus propiedades guardadas, incluso las listadas por otros agentes.",
+    "chooseDifferent": "Contactar agentes individualmente",
+    "modalTitle": "Contactar a los Agentes de las Propiedades",
+    "educationInterstitial": "🏠 Enrutamiento Directo a Agentes — Para coordinar tus visitas, contactarás directamente al agente a cargo de cada propiedad. ¡Esto asegura una coordinación directa, rápida y precisa!",
     "languages": "Idiomas hablados:",
     "listings": "propiedades",
     "contactWhatsApp": "Contactar por WhatsApp",
     "contactEmail": "Contactar por Correo",
-    "whatsappMessageIntro": "Hola {agentName}, me interesan estas propiedades de mi lista de favoritos:",
+    "whatsappMessageIntro": "Hola {agentName}, me interesan estas propiedades que representas de mi lista de favoritos:",
     "whatsappMessageOutro": "¿Podríamos coordinar una visita? Gracias.",
-    "emailSubject": "Consulta sobre lista de propiedades guardadas de ALT-ALTITUD",
-    "emailBody": "Hola {agentName},\n\nMe interesa visitar las siguientes propiedades de mi lista de favoritos:\n\n{list}\n\n¿Podríamos coordinar estas visitas?\n\n¡Gracias!"
+    "emailSubject": "Consulta sobre tus propiedades listadas de mi lista de favoritos",
+    "emailBody": "Hola {agentName},\n\nMe interesa visitar las siguientes propiedades que representas:\n\n{list}\n\n¿Podríamos coordinar estas visitas?\n\n¡Gracias!"
   },
   "AdminSync": {
     "dashboardTitle": "Estado de Sincronización",

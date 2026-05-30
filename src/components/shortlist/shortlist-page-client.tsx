@@ -6,10 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useShortlist } from "@/hooks/use-shortlist";
-import {
-  getShortlistPropertiesWithAgents,
-  getActiveAgentsList,
-} from "@/app/actions/shortlist-actions";
+import { getShortlistPropertiesWithAgents } from "@/app/actions/shortlist-actions";
 import { PropertyCard } from "@/components/property/property-card";
 import { PropertyCardSkeleton } from "@/components/property/property-card-skeleton";
 import { MapView } from "@/components/map/map-view-loader";
@@ -29,12 +26,9 @@ export function ShortlistPageClient() {
   const [properties, setProperties] = useState<any[]>([]);
   const [copied, setCopied] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [chosenAgentId, setChosenAgentId] = useState<string | null>(null);
-  const [showCoordinatorBanner, setShowCoordinatorBanner] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const fetchedShortlistRef = useRef<string[]>([]);
 
-  const [allAgents, setAllAgents] = useState<any[]>([]);
   const [showContactForm, setShowContactForm] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formSubmitting, setFormSubmitting] = useState(false);
@@ -42,26 +36,7 @@ export function ShortlistPageClient() {
   const [formEmail, setFormEmail] = useState("");
   const [formPhone, setFormPhone] = useState("");
   const [formMessage, setFormMessage] = useState("");
-  const [formAgentId, setFormAgentId] = useState("office");
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [submittedLeadAgent, setSubmittedLeadAgent] = useState<any | null>(null);
-
-  useEffect(() => {
-    getActiveAgentsList()
-      .then((data) => {
-        setAllAgents(data);
-      })
-      .catch((err) => {
-        console.error("Error fetching active agents list:", err);
-      });
-  }, []);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("Altitud:chosenCoordinator");
-    if (saved) {
-      setChosenAgentId(saved);
-    }
-  }, []);
 
   useEffect(() => {
     if (copied) {
@@ -113,119 +88,80 @@ export function ShortlistPageClient() {
       });
   }, [shortlist, isLoaded]);
 
-  // Compute unique agents present in fetched shortlist
-  const uniqueAgents = Array.from(
-    new Map(
-      properties
-        .map((p) => p.agent)
-        .filter((a): a is NonNullable<typeof a> => !!a)
-        .map((a) => [a.id, a]),
-    ).values(),
-  );
-
-  // Compute Auto-Selected Coordinator Agent dynamically
-  const getAutoSelectedAgent = () => {
-    const counts: Record<string, number> = {};
-    const agentMap: Record<string, any> = {};
+  // Compute properties grouped by listing agent (null represents the office)
+  const agentGroups = (() => {
+    const groupsMap = new Map<string | "office", { agent: any | null; properties: any[] }>();
 
     for (const p of properties) {
-      if (p.agent) {
-        counts[p.agent.id] = (counts[p.agent.id] || 0) + 1;
-        agentMap[p.agent.id] = p.agent;
+      const key = p.agent?.id || "office";
+      if (!groupsMap.has(key)) {
+        groupsMap.set(key, {
+          agent: p.agent || null,
+          properties: [],
+        });
       }
+      groupsMap.get(key)!.properties.push(p);
     }
 
-    const agentIds = Object.keys(counts);
-    if (agentIds.length === 0) return null;
-
-    agentIds.sort((idA, idB) => {
-      if (counts[idB] !== counts[idA]) {
-        return counts[idB] - counts[idA];
-      }
-      const agentA = agentMap[idA];
-      const agentB = agentMap[idB];
-      if (agentB.listingCount !== agentA.listingCount) {
-        return agentB.listingCount - agentA.listingCount;
-      }
-      return agentA.name.localeCompare(agentB.name);
-    });
-
-    const bestId = agentIds[0];
-    const bestAgent = agentMap[bestId];
-
-    // Tie detection: highest property count matches another agent
-    const maxCount = counts[bestId];
-    const tiedAgentIds = agentIds.filter((id) => counts[id] === maxCount);
-    const hasTie = tiedAgentIds.length > 1;
-
-    return { bestAgent, hasTie };
-  };
-
-  const autoSelectResult = getAutoSelectedAgent();
-  const autoSelectedAgent = autoSelectResult?.bestAgent || null;
-  const hasTie = autoSelectResult?.hasTie || false;
-
-  const chosenAgent = uniqueAgents.find((a) => a.id === chosenAgentId) || null;
-  const activeCoordinator = chosenAgent ?? autoSelectedAgent;
-
-  useEffect(() => {
-    if (activeCoordinator && formAgentId === "office") {
-      setFormAgentId(activeCoordinator.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeCoordinator]);
-
-  const handleSelectAgent = (agent: any) => {
-    setChosenAgentId(agent.id);
-    localStorage.setItem("Altitud:chosenCoordinator", agent.id);
-    setShowCoordinatorBanner(true);
-  };
+    return Array.from(groupsMap.values());
+  })();
 
   const handleRemove = (id: string) => {
     remove(id);
     setProperties((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const handleContactAgent = async (agent: any, channel: "whatsapp" | "email") => {
-    const intro = tRouting("whatsappMessageIntro", { agentName: agent.name });
-    const outro = tRouting("whatsappMessageOutro");
-    const propertyLines = properties
+  const handleContactAgent = async (
+    agent: any | null,
+    agentProperties: any[],
+    channel: "whatsapp" | "email",
+  ) => {
+    const isOffice = !agent;
+    const agentName = isOffice ? "RE/MAX Altitud" : agent.name;
+    const agentEmail = isOffice ? "info@remax-altitud.cr" : agent.email;
+    const agentWhatsapp = isOffice ? "50688888888" : agent.whatsapp;
+
+    const intro = isOffice
+      ? t("whatsAppMessageHeader")
+      : tRouting("whatsappMessageIntro", { agentName });
+    const outro = isOffice ? "" : tRouting("whatsappMessageOutro");
+    const propertyLines = agentProperties
       .map((p) => {
         const title = locale === "es" ? p.titleEs || p.titleEn : p.titleEn;
-        return `- ${title} (Ref: ${p.apiId})`;
+        return isOffice ? `- ${title} (${p.id})` : `- ${title} (Ref: ${p.apiId})`;
       })
       .join("\n");
 
-    const fullMessage = `${intro}\n${propertyLines}\n${outro}`;
+    const fullMessage = isOffice
+      ? `${intro}\n${propertyLines}`
+      : `${intro}\n${propertyLines}\n${outro}`;
 
     // Lead Capture POST request
-    try {
-      await fetch("/api/leads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: "Shortlist Lead",
-          phone: "+50600000000",
-          email: "",
-          intent: "buy",
-          source: channel === "whatsapp" ? "whatsapp_click" : "contact_form",
-          assignedAgentId: agent.id,
-          shortlistPropertyIds: shortlist,
-          location: { text: "", lat: null, lng: null },
-        }),
-      });
-    } catch (err) {
-      console.error("Lead capture failed:", err);
-    }
+    fetch("/api/leads", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "Shortlist Lead",
+        phone: "+50600000000",
+        email: "",
+        intent: "buy",
+        source: channel === "whatsapp" ? "whatsapp_click" : "contact_form",
+        assignedAgentId: isOffice ? null : agent.id,
+        shortlistPropertyIds: agentProperties.map((p) => p.id),
+        location: { text: "", lat: null, lng: null },
+      }),
+    }).catch((err) => {
+      console.error("Lead capture failed in background:", err);
+    });
 
     if (channel === "whatsapp") {
-      const cleanWhatsApp = (agent.whatsapp || "").replace(/\D/g, "");
+      const cleanWhatsApp = (agentWhatsapp || "").replace(/\D/g, "");
       const whatsappUrl = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(fullMessage)}`;
       window.open(whatsappUrl, "_blank");
     } else {
-      const propertyLinesWithLinks = properties
+      const propertyLinesWithLinks = agentProperties
         .map((p) => {
           const title = locale === "es" ? p.titleEs || p.titleEn : p.titleEn;
           const link = `${window.location.origin}/${locale}/property/${p.slug}`;
@@ -234,8 +170,8 @@ export function ShortlistPageClient() {
         .join("\n");
 
       const subject = tRouting("emailSubject");
-      const body = tRouting("emailBody", { agentName: agent.name, list: propertyLinesWithLinks });
-      const mailtoUrl = `mailto:${agent.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const body = tRouting("emailBody", { agentName, list: propertyLinesWithLinks });
+      const mailtoUrl = `mailto:${agentEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.open(mailtoUrl, "_blank");
     }
   };
@@ -295,33 +231,36 @@ export function ShortlistPageClient() {
           .join("\n")}`;
       }
 
-      const recipientAgentId = formAgentId === "office" ? null : formAgentId;
+      // Parallel submission of split inquiries for each agent group
+      const leadPromises = agentGroups.map(async (group) => {
+        const recipientAgentId = group.agent?.id || null;
+        const groupPropertyIds = group.properties.map((p) => p.id);
 
-      const apiPayload = {
-        name: formName,
-        phone: formPhone,
-        email: formEmail,
-        intent: "buy" as const,
-        source: "contact_form" as const,
-        assignedAgentId: recipientAgentId,
-        shortlistPropertyIds: shortlist,
-        notes: `${formMessage.trim() ? formMessage.trim() + " | " : ""}Shortlist Link: ${shareUrl}`,
-        location: { text: "", lat: null, lng: null },
-      };
+        const apiPayload = {
+          name: formName,
+          phone: formPhone,
+          email: formEmail,
+          intent: "buy" as const,
+          source: "contact_form" as const,
+          assignedAgentId: recipientAgentId,
+          shortlistPropertyIds: groupPropertyIds,
+          notes: `${formMessage.trim() ? formMessage.trim() + " | " : ""}Shortlist Link: ${shareUrl}`,
+          location: { text: "", lat: null, lng: null },
+        };
 
-      const leadResponse = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(apiPayload),
+        const leadResponse = await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(apiPayload),
+        });
+
+        if (!leadResponse.ok && leadResponse.status !== 409) {
+          throw new Error(`Lead submission failed for agent ${recipientAgentId}`);
+        }
       });
 
-      if (leadResponse.status === 201 || leadResponse.status === 409) {
-        const chosen = allAgents.find((a) => a.id === formAgentId) || null;
-        setSubmittedLeadAgent(chosen);
-        setFormSubmitted(true);
-      } else {
-        alert(t("formSubmitError"));
-      }
+      await Promise.all(leadPromises);
+      setFormSubmitted(true);
     } catch (err) {
       console.error("Form submission failed:", err);
       alert(t("formSubmitError"));
@@ -331,7 +270,7 @@ export function ShortlistPageClient() {
   };
 
   const handleAskAgent = async () => {
-    if (uniqueAgents.length === 0) {
+    if (agentGroups.length === 0) {
       // Fallback office WhatsApp message
       const header = t("whatsAppMessageHeader");
       const message = `${header}\n${properties
@@ -345,17 +284,14 @@ export function ShortlistPageClient() {
       return;
     }
 
-    if (uniqueAgents.length === 1) {
-      await handleContactAgent(uniqueAgents[0], "whatsapp");
-    } else if (hasTie && !chosenAgent) {
-      setIsModalOpen(true);
+    if (agentGroups.length === 1) {
+      await handleContactAgent(agentGroups[0].agent, agentGroups[0].properties, "whatsapp");
     } else {
-      setShowCoordinatorBanner(true);
+      setIsModalOpen(true);
     }
   };
 
   const handleShareShortlist = () => {
-    // Legacy fallback text block
     const header = t("shareMessageHeader");
     const fallbackText = `${header}\n${properties
       .map((p) => `${window.location.origin}/${locale}/property/${p.slug}`)
@@ -513,87 +449,11 @@ export function ShortlistPageClient() {
             ))}
           </div>
 
-          {/* Coordinator Agent Interstitial Suggestion Banner */}
-          {showCoordinatorBanner && activeCoordinator && !showContactForm && !formSubmitted && (
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 mt-4">
-              <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-                {/* Profile Photo */}
-                <div className="w-20 h-20 rounded-full overflow-hidden border border-slate-200 bg-white flex-shrink-0">
-                  <img
-                    src={
-                      activeCoordinator.photoOptimizedUrl ||
-                      activeCoordinator.photoUrl ||
-                      "/images/agent-placeholder.jpg"
-                    }
-                    alt={activeCoordinator.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* Info & Auto-Suggest Text */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-bold text-slate-900">{activeCoordinator.name}</h3>
-                  <p className="text-sm text-slate-500 mt-0.5">
-                    <span className="font-semibold text-slate-600">{tRouting("languages")}</span>{" "}
-                    {activeCoordinator.languages}
-                  </p>
-                  <p className="text-sm text-slate-700 mt-3 font-medium bg-blue-50/50 border border-blue-100/50 text-blue-900 p-3 rounded-lg leading-relaxed">
-                    {tRouting("autoSuggestText", {
-                      name: activeCoordinator.name,
-                      count: properties.length,
-                    })}
-                  </p>
-                </div>
-              </div>
-
-              {/* Contact Actions */}
-              <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                <button
-                  onClick={() => handleContactAgent(activeCoordinator, "whatsapp")}
-                  className="flex-1 inline-flex h-11 items-center justify-center rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 shadow-md transition-colors"
-                >
-                  {tRouting("contactAgent", { name: activeCoordinator.name })}
-                </button>
-                <button
-                  onClick={() => handleContactAgent(activeCoordinator, "email")}
-                  className="flex-1 inline-flex h-11 items-center justify-center rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold px-6 transition-colors"
-                >
-                  {tRouting("contactEmail")}
-                </button>
-              </div>
-
-              <div className="text-center mt-4 flex flex-col gap-2">
-                <button
-                  onClick={() => {
-                    setShowContactForm(true);
-                    setTimeout(() => {
-                      const formEl = document.getElementById("shortlist-contact-form");
-                      if (formEl && typeof formEl.scrollIntoView === "function") {
-                        formEl.scrollIntoView({ behavior: "smooth", block: "start" });
-                      }
-                    }, 100);
-                  }}
-                  className="text-xs text-brand-navy hover:underline font-semibold"
-                >
-                  {locale === "es"
-                    ? "O usar nuestro Formulario de Contacto"
-                    : "Or use our Contact Form instead"}
-                </button>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="text-xs text-blue-600 hover:text-blue-800 font-semibold underline"
-                >
-                  {tRouting("chooseDifferent")}
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Shortlist Contact Form */}
           {showContactForm && !formSubmitted && (
             <div
               id="shortlist-contact-form"
-              className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 md:p-8 mt-4 shadow-sm"
+              className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 md:p-8 mt-4 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300"
             >
               <h2 className="text-xl font-bold text-brand-navy mb-1">{t("contactFormHeading")}</h2>
               <p className="text-sm text-muted-foreground mb-6">{t("contactFormSubheading")}</p>
@@ -673,39 +533,16 @@ export function ShortlistPageClient() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="form-agent" className="text-sm font-semibold text-brand-navy">
-                    {t("agentLabel")}
-                  </label>
-                  <select
-                    id="form-agent"
-                    value={formAgentId}
-                    onChange={(e) => setFormAgentId(e.target.value)}
-                    className="w-full h-11 rounded-md border border-slate-300 bg-white px-3 text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy"
-                  >
-                    <option value="office">{t("sendToOffice")}</option>
-                    {uniqueAgents.length > 0 && (
-                      <optgroup label={t("shortlistAgentsGroup")}>
-                        {uniqueAgents.map((agent) => (
-                          <option key={agent.id} value={agent.id}>
-                            {agent.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    )}
-                    {allAgents.filter((allA) => !uniqueAgents.some((uA) => uA.id === allA.id))
-                      .length > 0 && (
-                      <optgroup label={t("otherAgentsGroup")}>
-                        {allAgents
-                          .filter((allA) => !uniqueAgents.some((uA) => uA.id === allA.id))
-                          .map((agent) => (
-                            <option key={agent.id} value={agent.id}>
-                              {agent.name}
-                            </option>
-                          ))}
-                      </optgroup>
-                    )}
-                  </select>
+                <div className="bg-slate-100/60 border border-slate-200/50 p-4 rounded-xl text-xs text-slate-600 flex items-start gap-2.5 leading-relaxed">
+                  <span className="text-base leading-none">ℹ️</span>
+                  <div>
+                    <span className="font-semibold text-slate-800">
+                      {locale === "es"
+                        ? "Enrutamiento inteligente directo: "
+                        : "Direct agent routing: "}
+                    </span>
+                    {t("contactFormSubheading")}
+                  </div>
                 </div>
 
                 <div className="flex flex-col gap-1.5">
@@ -744,8 +581,8 @@ export function ShortlistPageClient() {
 
           {/* Shortlist Success Screen */}
           {formSubmitted && (
-            <div className="bg-slate-50 border border-emerald-200 rounded-2xl p-6 md:p-8 mt-4 shadow-sm text-center">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+            <div className="bg-slate-50 border border-emerald-200 rounded-2xl p-6 md:p-8 mt-4 shadow-sm text-center animate-in zoom-in-95 duration-300">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200 shadow-xs">
                 <svg
                   className="w-8 h-8 text-emerald-600"
                   fill="none"
@@ -764,66 +601,70 @@ export function ShortlistPageClient() {
               <h2 className="text-2xl font-bold text-slate-900 mb-2">{t("successHeading")}</h2>
               <p className="text-sm text-slate-600 max-w-md mx-auto mb-8">{t("successText")}</p>
 
-              {/* Recipient Details & Immediate WhatsApp / Email Fallbacks */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-5 max-w-md mx-auto text-left shadow-xs mb-8">
-                <div className="flex gap-4 items-center">
-                  <div className="w-14 h-14 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0">
-                    <img
-                      src={
-                        submittedLeadAgent?.photoOptimizedUrl ||
-                        submittedLeadAgent?.photoUrl ||
-                        "/images/agent-placeholder.jpg"
-                      }
-                      alt={submittedLeadAgent?.name || "RE/MAX Altitud"}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-base">
-                      {submittedLeadAgent?.name || "RE/MAX Altitud"}
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      {submittedLeadAgent
-                        ? `${tRouting("languages")} ${submittedLeadAgent.languages}`
-                        : "Oficina Central"}
-                    </p>
-                  </div>
-                </div>
+              {/* Grid of notified agents & direct contact fallbacks */}
+              <div className="space-y-4 max-w-lg mx-auto text-left mb-8">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider text-center mb-2">
+                  {locale === "es" ? "Agentes Notificados" : "Listing Agents Notified"}
+                </p>
+                {agentGroups.map((group) => {
+                  const { agent, properties: groupProps } = group;
+                  const isOffice = !agent;
+                  const key = isOffice ? "office" : agent.id;
+                  const photoSrc = isOffice
+                    ? "/images/agent-placeholder.jpg"
+                    : agent.photoOptimizedUrl || agent.photoUrl || "/images/agent-placeholder.jpg";
+                  const agentName = isOffice ? "RE/MAX Altitud" : agent.name;
+                  const languages = isOffice ? "" : agent.languages;
 
-                <div className="flex flex-col sm:flex-row gap-3 mt-5">
-                  <button
-                    onClick={() =>
-                      handleContactAgent(
-                        submittedLeadAgent || {
-                          id: "office",
-                          name: "RE/MAX Altitud",
-                          whatsapp: "50688888888",
-                          email: "info@remax-altitud.cr",
-                        },
-                        "whatsapp",
-                      )
-                    }
-                    className="flex-1 inline-flex h-10 items-center justify-center rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-4 shadow-sm transition-colors"
-                  >
-                    {submittedLeadAgent ? tRouting("contactWhatsApp") : "WhatsApp"}
-                  </button>
-                  <button
-                    onClick={() =>
-                      handleContactAgent(
-                        submittedLeadAgent || {
-                          id: "office",
-                          name: "RE/MAX Altitud",
-                          whatsapp: "50688888888",
-                          email: "info@remax-altitud.cr",
-                        },
-                        "email",
-                      )
-                    }
-                    className="flex-1 inline-flex h-10 items-center justify-center rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm px-4 transition-colors"
-                  >
-                    {tRouting("contactEmail")}
-                  </button>
-                </div>
+                  return (
+                    <div
+                      key={key}
+                      className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs"
+                    >
+                      <div className="flex gap-4 items-center">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0">
+                          <img
+                            src={photoSrc}
+                            alt={agentName}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-slate-900 text-sm leading-snug">
+                            {agentName}
+                          </h3>
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            {isOffice
+                              ? locale === "es"
+                                ? "Oficina Central"
+                                : "Central Office"
+                              : `${tRouting("languages")} ${languages}`}
+                          </p>
+                          <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
+                            {locale === "es"
+                              ? `Asignado para ${groupProps.length} ${groupProps.length === 1 ? "propiedad" : "propiedades"}`
+                              : `Assigned for ${groupProps.length} ${groupProps.length === 1 ? "property" : "properties"}`}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                        <button
+                          onClick={() => handleContactAgent(agent, groupProps, "whatsapp")}
+                          className="flex-1 inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 shadow-sm transition-colors"
+                        >
+                          WhatsApp
+                        </button>
+                        <button
+                          onClick={() => handleContactAgent(agent, groupProps, "email")}
+                          className="flex-1 inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-xs px-4 transition-colors"
+                        >
+                          {tRouting("contactEmail")}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
               <button
@@ -879,9 +720,17 @@ export function ShortlistPageClient() {
         <AgentSelectionModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          agents={uniqueAgents}
-          activeCoordinatorId={activeCoordinator?.id || null}
-          onSelectAgent={handleSelectAgent}
+          agentGroups={agentGroups}
+          onContactAgent={handleContactAgent}
+          onOpenContactForm={() => {
+            setShowContactForm(true);
+            setTimeout(() => {
+              const formEl = document.getElementById("shortlist-contact-form");
+              if (formEl && typeof formEl.scrollIntoView === "function") {
+                formEl.scrollIntoView({ behavior: "smooth", block: "start" });
+              }
+            }, 100);
+          }}
           locale={locale}
         />
       )}
