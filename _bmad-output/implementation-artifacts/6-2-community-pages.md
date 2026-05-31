@@ -76,7 +76,7 @@ So that I can evaluate premium developments and check which lots/homes are avail
 - [ ] Task 3: Create community page route (AC: #1, #2, #3, #9, #11, #12, #13)
   - [ ] 3.1 Create `src/app/[locale]/areas/[slug]/communities/[community]/page.tsx` — SSG + ISR page
   - [ ] 3.2 Implement `generateStaticParams()` returning all `{ slug, community }` pairs from `getAllCommunityParams()`. Wrap in try/catch like the area guide page.
-  - [ ] 3.3 Implement `generateMetadata()` with localized title/description, `alternates` using `buildAlternatesMetadata`, and OpenGraph tags. Title format: `"{Community} — {Area} | RE/MAX Altitud"`
+  - [ ] 3.3 Implement `generateMetadata()` with localized title/description, `alternates` using `buildAlternatesMetadata`, and OpenGraph tags. Title format: `"{Community} — {Area} | REMAX Altitud"`
   - [ ] 3.4 Set ISR revalidation: `export const revalidate = 3600` (1 hour fallback, but primarily relies on on-demand revalidation via `revalidateTag('communities')` from sync pipeline)
   - [ ] 3.5 Render hero, quick facts, description (always visible — Server Component), tabbed sections (Properties, Site Map), and SimilarCommunitiesSlider
   - [ ] 3.6 Inject JSON-LD `<script>` using new `generateCommunityJsonLd` + `serializeJsonLd` from `src/lib/seo/structured-data.ts`

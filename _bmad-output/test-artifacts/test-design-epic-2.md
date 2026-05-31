@@ -35,7 +35,7 @@ epicScope:
 
 **Scope:** Epic-level test design for Stories 2.3–2.7 of Epic 2 (Stories 2.1 and 2.2 are done and merged; their schema and API-client tests are treated as implemented prerequisites).
 
-The Data Pipeline is the nervous system of the RE/MAX Altitud platform. It orchestrates a daily 8-step sync from the RE/MAX CCA API: fetch → validate → diff → translate → optimize → upsert → cleanup → revalidate. Failures here propagate to every downstream epic. The risk profile is dominated by **data integrity**, **external service reliability**, and **operational observability** concerns.
+The Data Pipeline is the nervous system of the REMAX Altitud platform. It orchestrates a daily 8-step sync from the REMAX CCA API: fetch → validate → diff → translate → optimize → upsert → cleanup → revalidate. Failures here propagate to every downstream epic. The risk profile is dominated by **data integrity**, **external service reliability**, and **operational observability** concerns.
 
 **Risk Summary:**
 
@@ -112,7 +112,7 @@ The Data Pipeline is the nervous system of the RE/MAX Altitud platform. It orche
 - [x] PostgreSQL + PostGIS running in CI/dev environment
 - [x] Drizzle migrations applied to test database
 - [ ] Story under test (2.3–2.7) is implemented and branch is open for review
-- [ ] External services (DeepL, OpenAI, RE/MAX API) are mockable/stubbable in test environment
+- [ ] External services (DeepL, OpenAI, REMAX API) are mockable/stubbable in test environment
 - [ ] `DATABASE_URL` and relevant API keys available as env vars in CI (or stubbed)
 
 ## Exit Criteria
@@ -235,7 +235,7 @@ The Data Pipeline is the nervous system of the RE/MAX Altitud platform. It orche
 - [ ] PostGIS extension enabled + GiST index exists (`EXPLAIN` query) (30s)
 - [ ] `npm run db:migrate` runs without error (45s)
 - [ ] `/api/health` returns 200 (15s)
-- [ ] RE/MAX API mock client returns valid response (30s)
+- [ ] REMAX API mock client returns valid response (30s)
 
 **Total:** 4 checks, ~2 min
 
@@ -307,7 +307,7 @@ The Data Pipeline is the nervous system of the RE/MAX Altitud platform. It orche
 
 **External Service Mocks:**
 
-- RE/MAX CCA API: MSW or test double returning `PropertyFactory` arrays for both office GUIDs; separate stub for empty Altitud Cero
+- REMAX CCA API: MSW or test double returning `PropertyFactory` arrays for both office GUIDs; separate stub for empty Altitud Cero
 - DeepL API: MSW stub returning translated text; 429 stub for rate-limit tests
 - OpenAI API: MSW stub for creative translation scenarios
 - `/api/revalidate`: Spy/interceptor to assert it was called with correct paths
@@ -414,7 +414,7 @@ The Data Pipeline is the nervous system of the RE/MAX Altitud platform. It orche
 
 ### Assumptions
 
-1. External services (DeepL, RE/MAX API, OpenAI) will be stubbed with MSW in CI — no real API calls in automated tests.
+1. External services (DeepL, REMAX API, OpenAI) will be stubbed with MSW in CI — no real API calls in automated tests.
 2. Testcontainers or an equivalent PostgreSQL+PostGIS service is available in CI (confirmed by Story 2.1 setup).
 3. The sync pipeline is implemented as a set of discrete, composable step functions (making unit testing of individual steps feasible).
 4. `CRON_SECRET` and `API_SECRET` are available as CI env vars for endpoint testing.

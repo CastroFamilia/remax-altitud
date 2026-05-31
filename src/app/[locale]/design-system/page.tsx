@@ -4,7 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
-  title: "Design System — RE/MAX Altitud",
+  title: "Design System — REMAX Altitud",
   description: "Token preview page (dev-only).",
 };
 
@@ -190,7 +190,7 @@ export default async function DesignSystemPage({
           </p>
           <h1 className="text-brand-navy">Design System · Token Preview</h1>
           <p className="mt-4 max-w-[720px] text-muted-foreground">
-            Visual validation of the RE/MAX Altitud design token foundation: colors, typography,
+            Visual validation of the REMAX Altitud design token foundation: colors, typography,
             spacing, shadows, glassmorphism, and region themes. Removed or gated before production
             launch.
           </p>
@@ -208,7 +208,7 @@ export default async function DesignSystemPage({
             <div className="flex h-48 items-center justify-center rounded-xl bg-brand-dark shadow-lg">
               <Image
                 src="/images/brand/logo-remax-altitud.png"
-                alt="RE/MAX Altitud logo on dark background"
+                alt="REMAX Altitud logo on dark background"
                 width={320}
                 height={96}
                 priority
@@ -217,7 +217,7 @@ export default async function DesignSystemPage({
             <div className="flex h-48 items-center justify-center rounded-xl bg-brand-crema shadow-sm ring-1 ring-border">
               <Image
                 src="/images/brand/logo-remax-altitud.png"
-                alt="RE/MAX Altitud logo on cream background (low-contrast check)"
+                alt="REMAX Altitud logo on cream background (low-contrast check)"
                 width={320}
                 height={96}
               />
@@ -246,7 +246,7 @@ export default async function DesignSystemPage({
         {/* Brand palette */}
         <Section
           id="brand"
-          title="RE/MAX Brand Palette"
+          title="REMAX Brand Palette"
           description="--brand-* tokens used directly in custom marketing surfaces."
         >
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">

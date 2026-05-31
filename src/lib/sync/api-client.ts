@@ -11,7 +11,7 @@ type SleepFn = (ms: number) => Promise<void>;
 
 let sleepImpl: SleepFn = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/** Error thrown by the RE/MAX API client after exhausting the retry budget. */
+/** Error thrown by the REMAX API client after exhausting the retry budget. */
 export class RemaxApiError extends Error {
   readonly endpoint: string;
   readonly status?: number;
@@ -27,7 +27,7 @@ export class RemaxApiError extends Error {
 }
 
 /**
- * Issue a GET against the RE/MAX CCA API with exponential-backoff retries
+ * Issue a GET against the REMAX CCA API with exponential-backoff retries
  * (`2s → 4s` between attempts, 3 attempts total per NFR17). Treats non-2xx,
  * non-JSON, and non-array bodies as failures. Each attempt is bounded by a
  * `FETCH_TIMEOUT_MS` AbortSignal so a hung connection cannot stall the sync.
@@ -78,7 +78,7 @@ export async function fetchWithRetry(url: string): Promise<unknown> {
   }
 
   throw new RemaxApiError(
-    `RE/MAX API request failed after ${MAX_ATTEMPTS} attempts: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
+    `REMAX API request failed after ${MAX_ATTEMPTS} attempts: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
     { endpoint: url, status: lastStatus, cause: lastError },
   );
 }

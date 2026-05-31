@@ -93,9 +93,9 @@ While Dominical feels like an untamed tropical paradise, it features premium inf
 * **Rapid City Access**: Situated just 1 hour away from San Isidro de El General, residents can access private hospitals, international banks, and major urban services in a moment's notice.
 * **High-Yield Vacation Rentals**: Because of its international reputation, Dominical properties command some of the highest nightly rental rates and occupancy percentages in Central America, ensuring immediate cash-flow potential for investors.
 
-### Find Your Property with RE/MAX Altitud Cero
+### Find Your Property with REMAX Altitud Cero
 
-Whether your goal is a modern architectural masterpiece perched high on an exclusive oceanview ridge, a turnkey luxury condo walking distance to the beach, or a hidden estate in Lagunas with its own private waterfalls, our specialized team at RE/MAX Altitud Cero in Dominical is your premier local authority. We provide discrete, expert guidance to match global investors with the region's finest properties.
+Whether your goal is a modern architectural masterpiece perched high on an exclusive oceanview ridge, a turnkey luxury condo walking distance to the beach, or a hidden estate in Lagunas with its own private waterfalls, our specialized team at REMAX Altitud Cero in Dominical is your premier local authority. We provide discrete, expert guidance to match global investors with the region's finest properties.
 
 [CTA_BUTTON]`;
 
@@ -176,17 +176,17 @@ Aunque Dominical se siente como un paraíso tropical inexplorado, cuenta con inf
 * **Acceso Rápido a la Ciudad**: Situado a solo 1 hora de San Isidro de El General, los residentes pueden acceder a hospitales privados, bancos internacionales y servicios urbanos principales en cuestión de minutos.
 * **Alquileres Vacacionales de Alto Rendimiento**: Debido a su reputación internacional, las propiedades en Dominical registran algunas de las tarifas de alquiler nocturno y porcentajes de ocupación más altos de Centroamérica, lo que garantiza un flujo de caja inmediato para los inversionistas.
 
-### Encuentre su Propiedad con RE/MAX Altitud Cero
+### Encuentre su Propiedad con REMAX Altitud Cero
 
-Ya sea que su objetivo sea una obra maestra arquitectónica moderna en lo alto de una colina exclusiva con vista al océano, un condominio de lujo listo para usar a poca distancia de la playa, o una propiedad oculta en Lagunas con sus propias cascadas privadas, nuestro equipo especializado en RE/MAX Altitud Cero en Dominical es su principal autoridad local. Brindamos asesoría experta y discreta para conectar a inversionistas globales con las mejores propiedades de la región.
+Ya sea que su objetivo sea una obra maestra arquitectónica moderna en lo alto de una colina exclusiva con vista al océano, un condominio de lujo listo para usar a poca distancia de la playa, o una propiedad oculta en Lagunas con sus propias cascadas privadas, nuestro equipo especializado en REMAX Altitud Cero en Dominical es su principal autoridad local. Brindamos asesoría experta y discreta para conectar a inversionistas globales con las mejores propiedades de la región.
 
 [CTA_BUTTON]`;
 
 const metadata = {
   h1En: "Elite Coastal Luxury: Discover Dominical, Costa Rica",
   h1Es: "Lujo Costero de Élite: Descubra Dominical, Costa Rica",
-  seoTitleEn: "Luxury Real Estate & Developments for Sale in Dominical | RE/MAX Altitud",
-  seoTitleEs: "Bienes Raíces y Desarrollos de Lujo en Venta en Dominical | RE/MAX Altitud",
+  seoTitleEn: "Luxury Real Estate & Developments for Sale in Dominical | REMAX Altitud",
+  seoTitleEs: "Bienes Raíces y Desarrollos de Lujo en Venta en Dominical | REMAX Altitud",
   seoDescriptionEn:
     "Explore elite coastal luxury in Dominical, Costa Rica. View property pricing tiers and microclimates across premium oceanview villas in Escaleras, Lagunas, and developments like Dulce Pacífico.",
   seoDescriptionEs:

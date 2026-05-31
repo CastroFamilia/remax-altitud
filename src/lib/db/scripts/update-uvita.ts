@@ -18,179 +18,99 @@ if (!connectionString) {
 const client = postgres(connectionString, { prepare: false, max: 1 });
 const db = drizzle(client);
 
-const descriptionEn = `Elite Coastal Discovery: Discover Uvita & Bahía Ballena, Costa Rica
+const descriptionEn = `## Discover Uvita & Bahía Ballena: Where Luxury Meets Untamed Paradise
 
-Welcome to Uvita and Bahía Ballena, the residential, commercial, and tourism powerhouse of Costa Rica’s South Pacific coast. Where neighboring beach towns favor a more rustic or strictly secluded approach, Uvita stands as a thriving, self-sustaining coastal community that perfectly balances world-famous natural wonders with top-tier modern infrastructure.
+Welcome to Uvita, the crown jewel of Costa Rica’s Southern Zone and the vibrant heart of Costa Ballena. Nestled where the dramatic, emerald-green mountains sweep down to meet the Pacific Ocean, Uvita offers an unparalleled lifestyle for investors, expatriates, and visionaries alike.
 
-It is home to the legendary Marino Ballena National Park, where the ocean reveals its signature masterpiece: a perfect, natural sandbar formation resembling a giant Whale Tail. This region is a magnetic destination for active international families, remote executives, and wellness seekers who demand premium modern services, top-tier bilingual schools, and high-yielding vacation real estate.
+Famous for the iconic Whale Tail sandbar formation at the Marino Ballena National Park, this region has evolved from a serene coastal escape into one of the world's most sought-after destinations for luxury eco-living, sustainable development, and high-yielding vacation investments.
 
-The Uvita & Bahía Ballena Lifestyle: Whale Tails, Waterfalls, and Modern Convenience
+## The Uvita Lifestyle: Three Distinct Real Estate Markets
 
-Living in Uvita means immersing yourself in a highly active and integrated coastal lifestyle. Here, you don't have to sacrifice urban logistics for tropical beauty. The town center features two major supermarkets, national bank branches, gourmet organic grocers, medical clinics, and a vibrant international dining scene that rivals the country's best culinary hubs.
+Whether you dream of waking up to 180° ocean views above the clouds, walking to a pristine surf beach, or being steps away from a thriving community, Uvita offers a micro-market tailored exactly to your vision:
 
-For families, the region is highly coveted due to its premium private educational options, including bilingual K-12 international academies like Uvita Christian Academy and local green schools. 
+### 1. High-End Mountain Living & Luxury Estates
 
-The geography here is highly dynamic. Rising immediately from the flat, pristine coastline up into the dramatic, jungle-draped ridges of the Fila Costeña mountain range, Uvita offers a rich variety of microclimates and residential options. Whether you want to live steps from the soft sand inside the maritime zone or prefer to ascend 200 meters up the ridges to catch constant ocean breezes and jaw-dropping sunset views over the Whale Tail, Uvita delivers the ultimate coastal experience.
+**The Neighborhoods:** Escaleras, San Josecito, Las Brisas, and the ridges of Hermosa & San Martín.
+**The Experience:** Perched on the coastal mountain ridges, these exclusive enclaves host some of the country’s most breathtaking contemporary eco-mansions. Here, privacy is absolute, the mountain breezes are refreshing, and the 180° panoramic views of the ocean, sunsets, and the Whale Tail are unmatched.
+**Best For:** Discerning buyers looking for ultimate luxury, architectural masterpieces, and ultra-premium vacation rental properties.
 
-### High-End Coastal Real Estate: Where to Invest
+### 2. Beachside Vibrancy & Vacation Rentals
 
-The Uvita real estate market is one of the fastest-growing and most robust in Central America. Properties are highly diverse, segmented by elevation, closeness to the beach, and rental potential.
+**The Neighborhoods:** Bahía Ballena Centro, Playa Hermosa (lower), and Chamán.
+**The Experience:** Life in the lower coastal flats is defined by immediate proximity to the ocean. Imagine walking or taking a short golf-cart ride straight to the golden sands of Playa Hermosa or the protected reefs of the National Park.
+**Best For:** Investors targeting high-occupancy Airbnb properties, surf enthusiasts, and those who want a laid-back, car-free coastal lifestyle.
 
-\`\`\`
-                           THE UPPER HERMOSA & SAN MARTIN RIDGES
-              (Contemporary Luxury Estates, Infinity Pools, 180° Whale Tail Views)
-                                             ▲
-                                             │ (10 min)
-                                             ▼
-                             UVITA COMMERCIAL TOWN CENTER
-                (Gourmet Markets, Banks, Bilingual Schools, Medical Plaza)
-                                             ▲
-                      ┌──────────────────────┴──────────────────────┐
-                      │ (5 min)                                     │ (5 min)
-                      ▼                                             ▼
-          MARINO BALLENA NATIONAL PARK                       PLAYA HERMOSA
-          (Whale Tail Beach, Whales, Reefs)                 (Surf Coast, Sunsets)
-\`\`\`
+### 3. Town Convenience & Family Communities
 
-1. **The Hermosa & San Martin Ridges**
-* **The Vibe**: Elite luxury and dramatic scale. These steep, primary-forest ridges rise directly behind Playa Hermosa and Uvita, offering unmatched bird's-eye views of the Whale Tail and the endless Pacific horizon.
-* **Property Types**: Multi-million dollar contemporary glass-and-steel architectural masterpieces, high-end solar smart-homes with expansive infinity pools, and exclusive mountain-ridge lots with large, flat building pads and secure gated access.
+**The Neighborhoods:** Uvita Centro, La Unión, and Calle Mariposario.
+**The Experience:** Uvita is a fully-equipped, modern hub that offers seamless convenience without losing its tropical soul. The town center boasts gourmet supermarkets, banks, premium medical clinics, artisanal bakeries, and a thriving international culinary scene. It is also the epicenter for world-class alternative education models, including renowned Waldorf and bilingual schools, making it a magnet for relocating families.
+**Best For:** Full-time residents, families, digital nomads, and commercial developers looking for flat, easily accessible properties.
 
-2. **Uvita Town Center & Flatlands**
-* **The Vibe**: Highly walkable, active, and convenient. Close to all everyday services, restaurants, and schools.
-* **Property Types**: Modern single-family homes with private pools, gated townhome communities perfect for expat families, and secure, high-yield vacation rental properties.
+## Why Partner with REMAX Altitud?
 
-3. **Playa Bahia Ballena (The National Park Area)**
-* **The Vibe**: Relaxed, coastal, and nature-first. Walking or biking distance to the Marino Ballena National Park entrance.
-* **Property Types**: Eco-villas nestled in secondary growth forests, highly lucrative boutique bed-and-breakfasts, and rare concession properties in close proximity to the park boundaries.
+At REMAX Altitud, we don't just list properties; we build lifelong relationships grounded in trust, market intelligence, and deep-rooted local expertise. Navigating the Southern Zone's real estate market requires an experienced hand, and our team is uniquely positioned to guide you through every step—from finding pristine luxury land parcels to understanding local infrastructure, segregation limits, and sustainable development.
 
-4. **Whale Tail View Communities**
-* **The Vibe**: Secure, community-centric luxury living. High-elevation enclaves with panoramic ocean views and shared jungle infrastructure.
-* **Property Types**: Custom luxury homes built with local hardwoods and sustainable materials, offering legal ASADA water connections and high-speed fiber internet.
+We leverage cutting-edge technology and data-driven market metrics to ensure your investment is sound, secure, and positioned for long-term appreciation.
 
-### Climate & Market Economics: Weather Patterns and Property Tiers
+## Your Dream in Costa Ballena Awaits
 
-Investing in Uvita offers an exceptional blend of lifestyle utility and strong financial returns. As the commercial anchor of the Costa Ballena region, Uvita experiences year-round tourism demand, ensuring premium rental rates and exceptionally high occupancy percentages for vacation properties.
+Whether you are looking to invest in a high-yield rental villa, relocate your family to a progressive community, or build your own architectural masterpiece in the jungle, Uvita is the canvas for your next chapter.
 
-**The Microclimate & Coastal Warmth**
-
-Uvita enjoys a warm, tropical beach climate with an average temperature of 24°C to 32°C (75°F to 90°F). While the lowlands receive warm coastal sun and pleasant ocean breezes, ascending just 100 to 200 meters up the mountainside creates a highly refreshing temperature drop. The cool mountain air flowing down the ridges at night eliminates the need for air conditioning, providing a perfect natural climate balance.
-
-**Property Pricing Tiers & Investment Landscape**
-
-The real estate market is highly structured, offering diverse entry points with exceptionally high ROI potential:
-
-| Investment Tier | Pricing Range (USD) | Dominant Locations | Key Property Characteristics |
-| --- | --- | --- | --- |
-| Ocean-View Contemporary Estates | $1,200,000 – $3,500,000+ | Hermosa Ridges, San Martín | Ultra-luxury smart homes, infinity pools, panoramic Whale Tail views, absolute privacy, high-end finishes. |
-| Modern Family Homes & Villas | $550,000 – $950,000 | Uvita Flatlands, Bahia | 3-4 bedroom custom builds, private pools, tropical landscaping, close to international schools and services. |
-| High-Yield Vacation Rentals | $450,000 – $850,000 | Town Center, Marino Ballena | Turn-key 2-3 bedroom villas, proven rental history, walking distance to beaches, private pools, high-speed fiber. |
-| Premium Ocean-View Lots | $180,000 – $450,000 | Mountain Ridges, Gated | Infrastructure-ready oceanview building pads with legal water (ASADA), internal road cuts, and designated building pads. |
-
-### Strategic Infrastructure and Logistical Power
-
-Uvita is the undisputed logistical hub of the South Pacific:
-* **The Costanera Highway**: A fully paved, state-of-the-art highway that provides clean, high-speed connection north to Quepos (and its regional airport) and Manuel Antonio in just 45 minutes, and SJO International Airport in 3.5 hours.
-* **Excellent Everyday Services**: The town features multiple major banks, pharmacies, premium organic markets, modern hardware stores, and the Coast Ballena's premier private medical centers.
-* **High-Yield Rental Performance**: Boasting dual whale-watching seasons (December to April and July to October), Uvita maintains an exceptionally high year-round vacation rental occupancy, making it a highly attractive destination for passive-income investors.
-
-### Find Your Property with RE/MAX Altitud
-
-Whether your goal is a contemporary architectural masterpiece perched high on an exclusive oceanview ridge with a view of the Whale Tail, a modern family villa close to bilingual schools, or a high-yielding turn-key vacation rental near the national park, our team at RE/MAX Altitud in Uvita is your premier local authority. We specialize in matching international families, remote executives, and luxury investors with properties that elevate their lifestyle and secure their future.
+Let's start the conversation. Contact REMAX Altitud today to explore our exclusive portfolio of properties in Uvita and Bahía Ballena.
 
 [CTA_BUTTON]`;
 
-const descriptionEs = `Descubra Uvita y Bahía Ballena: El Motor Costero y Santuario Natural
+const descriptionEs = `## Descubra Uvita y Bahía Ballena: Donde el lujo se encuentra con el paraíso indómito
 
-Bienvenido a Uvita y Bahía Ballena, el motor residencial, comercial y turístico de la costa del Pacífico Sur de Costa Rica. Mientras que los pueblos playeros vecinos favorecen un enfoque más rústico o estrictamente aislado, Uvita se erige como una próspera comunidad costera autosostenible que equilibra perfectamente las maravillas naturales de fama mundial con una infraestructura moderna de primer nivel.
+Bienvenido a Uvita, la joya de la corona de la Zona Sur de Costa Rica y el vibrante corazón de Costa Ballena. Ubicada donde las imponentes montañas de color verde esmeralda descienden majestuosamente para encontrarse con el Océano Pacífico, Uvita ofrece un estilo de vida incomparable para inversionistas, expatriados y visionarios por igual.
 
-Es el hogar del legendario Parque Nacional Marino Ballena, donde el océano revela su obra maestra: una formación natural de arena perfecta que se asemeja a una Cola de Ballena gigante. Esta región es un destino magnético para familias internacionales activas, ejecutivos remotos y buscadores de bienestar que exigen servicios modernos de primera calidad, excelentes escuelas bilingües y bienes raíces vacacionales de alto rendimiento.
+Famosa por la icónica formación de arena en forma de Cola de Ballena en el Parque Nacional Marino Ballena, esta región ha evolucionado de ser un sereno escape costero a convertirse en uno de los destinos más codiciados del mundo para el eco-lujo, el desarrollo sostenible y las inversiones vacacionales de alto rendimiento.
 
-El estilo de vida de Uvita y Bahía Ballena: Cola de Ballena, Cataratas y Conveniencia Moderna
+## El estilo de vida de Uvita: Tres mercados inmobiliarios distintos
 
-Vivir en Uvita significa sumergirse en un estilo de vida costero altamente activo e integrado. Aquí no tiene que sacrificar la logística urbana por la belleza tropical. El centro del pueblo cuenta con dos grandes supermercados, sucursales bancarias nacionales, tiendas orgánicas gourmet, clínicas médicas y una vibrante oferta gastronómica internacional que rivaliza con los mejores centros culinarios del país.
+Ya sea que sueñe con despertar con vistas de 180° al océano sobre las nubes, caminar hacia una playa de surf prístina o estar a pocos pasos de una próspera comunidad, Uvita ofrece un micromercado diseñado exactamente a la medida de su visión:
 
-Para las familias, la región es muy codiciada debido a sus opciones educativas privadas de alta calidad, que incluyen academias internacionales K-12 bilingües como Uvita Christian Academy y escuelas ecológicas locales.
+### 1. Vida de montaña de alta gama y propiedades de lujo
 
-La geografía aquí es altamente dinámica. Elevándose inmediatamente desde la costa plana y virgen hacia las espectaculares colinas cubiertas de selva de la Fila Costeña, Uvita ofrece una rica variedad de microclimates y opciones residenciales. Ya sea que desee vivir a pocos pasos de la suave arena dentro de la zona marítima o prefiera ascender 200 metros por las colinas para disfrutar de constantes brisas marinas y vistas espectaculares del atardecer sobre la Cola de Ballena, Uvita ofrece la experiencia costera definitiva.
+**Los Vecindarios:** Escaleras, San Josecito, Las Brisas y las colinas de Hermosa y San Martín.
+**La Experiencia:** Perchados en las colinas de la cordillera costera, estos enclaves exclusivos albergan algunas de las eco-mansiones contemporáneas más impresionantes del país. Aquí, la privacidad es absoluta, las brisas de montaña son refrescantes y las vistas panorámicas de 180° al océano, los atardeceres y la Cola de Ballena son inigualables.
+**Ideal Para:** Compradores exigentes que buscan el lujo supremo, obras maestras de la arquitectura y propiedades de alquiler vacacional ultra-premium.
 
-### Bienes Raíces Costeros de Alta Gama: Dónde Invertir
+### 2. Vibrante vida junto a la playa y alquileres vacacionales
 
-El mercado inmobiliario de Uvita es uno de los de más rápido crecimiento y más robustos de Centroamérica. Las propiedades son muy diversas, segmentadas por elevación, cercanía a la playa y potencial de alquiler.
+**Los Vecindarios:** Bahía Ballena Centro, Playa Hermosa (zona baja) y Chamán.
+**La Experiencia:** La vida en las planicies costeras bajas se define por la proximidad inmediata al océano. Imagine caminar o dar un corto paseo en carrito de golf directamente hacia las arenas doradas de Playa Hermosa o los arrecifes protegidos del Parque Nacional.
+**Ideal Para:** Inversionistas que buscan propiedades en Airbnb con alta ocupación, entusiastas del surf y aquellos que desean un estilo de vida costero relajado y libre de automóviles.
 
-\`\`\`
-                           LAS COLINAS DE HERMOSA Y SAN MARTIN
-             (Eco-Mansiones Contemporáneas, Piscinas Infinitas, Vista 180° Cola Ballena)
-                                             ▲
-                                             │ (10 min)
-                                             ▼
-                              CENTRO COMERCIAL DE UVITA
-               (Supermercados Gourmet, Bancos, Colegios Bilingües, Clínicas)
-                                             ▲
-                      ┌──────────────────────┴──────────────────────┐
-                      │ (5 min)                                     │ (5 min)
-                      ▼                                             ▼
-          PARQUE NACIONAL MARINO BALLENA                       PLAYA HERMOSA
-          (Playa Cola de Ballena, Ballenas, Arrecifes)        (Costa de Surf, Atardeceres)
-\`\`\`
+### 3. Conveniencia del pueblo y comunidades familiares
 
-1. **Las Colinas de Hermosa y San Martín**
-* **El Ambiente**: Lujo de élite y escala espectacular. Estas empinadas colinas cubiertas de bosque primario se elevan directamente detrás de Playa Hermosa y Uvita, ofreciendo vistas inigualables de la Cola de Ballena y el infinito horizonte del Pacífico.
-* **Tipos de Propiedad**: Masterpieces arquitectónicas de millones de dólares en vidrio y acero de diseño contemporáneo, casas inteligentes de lujo con amplias piscinas infinitas y lotes en las cumbres con amplias terrazas listas para construir y acceso controlado seguro.
+**Los Vecindarios:** Uvita Centro, La Unión y Calle Mariposario.
+**La Experiencia:** Uvita es un centro moderno y completamente equipado que ofrece una conveniencia perfecta sin perder su alma tropical. El centro del pueblo cuenta con supermercados gourmet, bancos, clínicas médicas premium, panaderías artesanales y una próspera escena culinaria internacional. También es el epicentro de modelos educativos alternativos de clase mundial, incluyendo reconocidas escuelas Waldorf y colegios bilingües, lo que lo convierte en un imán para familias que se trasladan a la zona.
+**Ideal Para:** Residentes de tiempo completo, familias, nómadas digitales y desarrolladores comerciales que buscan propiedades planas y de fácil acceso.
 
-2. **Centro de Uvita y Planicies**
-* **El Ambiente**: Altamente transitable, activo y conveniente. Cerca de todos los servicios diarios, restaurantes y colegios.
-* **Tipos de Propiedad**: Casas familiares modernas con piscina privada, comunidades de townhomes cerradas perfectas para familias expatriadas y propiedades de alquiler vacacional seguras y de alto rendimiento.
+## ¿Por qué asociarse con REMAX Altitud?
 
-3. **Playa Bahía Ballena (Zona del Parque Nacional)**
-* **El Ambiente**: Relajado, costero y enfocado en la naturaleza. A poca distancia a pie o en bicicleta de la entrada del Parque Nacional Marino Ballena.
-* **Tipos de Propiedad**: Ecoalbergues y eco-villas integradas en la selva, hoteles boutique altamente lucrativos y raras propiedades en concesión en las proximidades del parque nacional.
+En REMAX Altitud, no solo listamos propiedades; construimos relaciones para toda la vida basadas en la confianza, la inteligencia de mercado y una profunda experiencia local. Navegar por el mercado inmobiliario de la Zona Sur requiere una mano experimentada, y nuestro equipo está en una posición única para guiarle en cada paso: desde encontrar terrenos de lujo prístinos hasta comprender la infraestructura local, los límites de segregación y el desarrollo sostenible.
 
-4. **Comunidades con Vista a la Cola de Ballena**
-* **El Ambiente**: Vida residencial de lujo segura y de ambiente comunitario. Colinas elevadas con vistas panorámicas al océano y áreas comunes en la jungla.
-* **Tipos de Propiedad**: Casas de lujo personalizadas construidas con maderas locales y materiales sostenibles, que ofrecen conexiones legales de agua (ASADA) e internet de fibra óptica de alta velocidad.
+Aprovechamos la tecnología de vanguardia y las métricas de mercado basadas en datos para garantizar que su inversión sea sólida, segura y esté posicionada para una valorización a largo plazo.
 
-### Clima y Economía de Mercado: Patrones Climáticos y Niveles de Propiedad
+## Su sueño en Costa Ballena le espera
 
-Invertir en Uvita ofrece una combinación excepcional de calidad de vida y sólidos rendimientos financieros. Como el centro comercial de la Costa Ballena, Uvita experimenta una demanda turística constante durante todo el año, lo que garantiza tarifas de alquiler vacacional premium y altos porcentajes de ocupación.
+Ya sea que esté buscando invertir en una villa de alquiler de alto rendimiento, reubicar a su familia en una comunidad progresiva o construir su propia obra maestra arquitectónica en la jungla, Uvita es el lienzo para su próximo capítulo.
 
-**El Microclima y el Cálido Confort Costero**
-
-Uvita disfruta de un clima tropical de playa con una temperatura promedio de 24°C a 32°C (75°F a 90°F). Mientras que las tierras bajas reciben el sol costero y brisas marinas agradables, ascender solo 100 a 200 metros por la colina crea un descenso térmico sumamente refrescante. El aire fresco de la montaña que fluye por las colinas por la noche reduce la necesidad de aire acondicionado, brindando un perfecto equilibrio climático natural.
-
-**Niveles de Precios de Propiedades y Panorama de Inversión**
-
-El mercado de propiedades está altamente estructurado, ofreciendo diversos puntos de entrada con un potencial de retorno de inversión excepcionalmente alto:
-
-| Nivel de Inversión | Rango de Precios (USD) | Ubicaciones Dominantes | Características Clave de las Propiedades |
-| --- | --- | --- | --- |
-| Eco-Mansiones Contemporáneas Élite | $1,200,000 – $3,500,000+ | Colinas de Hermosa, San Martín | Casas inteligentes de ultra lujo, piscinas infinitas, vistas de 180° a la Cola de Ballena, privacidad absoluta. |
-| Casas Familiares y Villas Modernas | $550,000 – $950,000 | Planicie de Uvita, Bahía | Construcciones personalizadas de 3-4 habitaciones, piscinas privadas, jardines tropicales, cerca de escuelas y servicios. |
-| Alquileres Vacacionales de Alta Rentabilidad | $450,000 – $850,000 | Centro de Uvita, Bahía Ballena | Villas llave en mano de 2-3 habitaciones, historial de alquiler comprobado, cerca de la playa, piscinas privadas, fibra óptica. |
-| Terrenos Premium con Vista al Mar | $180,000 – $450,000 | Colinas Elevadas, Comunidades | Terrazas de construcción con vistas espectaculares, agua legal (ASADA), accesos internos e infraestructura eléctrica lista. |
-
-### Infraestructura Estratégica y Conectividad Logística
-
-Uvita es el centro logístico indiscutible del Pacífico Sur:
-* **La Carretera Costanera**: Una autopista costera de primer nivel que proporciona una conexión rápida y pavimentada hacia el norte a Quepos (con su aeropuerto regional) y Manuel Antonio en solo 45 minutos, y al Aeropuerto Internacional SJO en 3.5 horas.
-* **Excelentes Servicios Diarios**: El pueblo cuenta con múltiples bancos principales, farmacias, supermercados gourmet, ferreterías modernas y los centros médicos privados más prestigiosos de la Costa Ballena.
-* **Rendimiento de Alquiler de Alta Gama**: Con dos temporadas anuales de avistamiento de ballenas (de diciembre a abril y de julio a octubre), Uvita mantiene una ocupación de alquiler vacacional excepcionalmente alta durante todo el año, lo que la convierte en una opción sumamente atractiva para inversionistas de ingresos pasivos.
-
-### Encuentre su Propiedad con RE/MAX Altitud
-
-Ya sea que su objetivo sea una obra maestra arquitectónica moderna en lo alto de una colina exclusiva con vista al océano y a la Cola de Ballena, una villa familiar moderna cerca de escuelas bilingües, o una propiedad llave en mano de alto rendimiento cerca del parque nacional, nuestro equipo en RE/MAX Altitud en Uvita es su principal autoridad local. Nos especializamos en conectar a familias internacionales, ejecutivos remotos e inversionistas de lujo con propiedades que elevan su estilo de vida y aseguran su futuro.
+Comencemos la conversación. Póngase en contacto con REMAX Altitud hoy mismo para explorar nuestra exclusiva cartera de propiedades en Uvita y Bahía Ballena.
 
 [CTA_BUTTON]`;
 
 const metadata = {
   h1En: "The Coastal Hub of the South Pacific: Discover Uvita & Bahía Ballena, Costa Rica",
   h1Es: "El Centro Costero del Pacífico Sur: Descubra Uvita y Bahía Ballena, Costa Rica",
-  seoTitleEn: "Real Estate & Homes for Sale in Uvita & Bahía Ballena | RE/MAX Altitud",
-  seoTitleEs: "Bienes Raíces y Casas en Venta en Uvita y Bahía Ballena | RE/MAX Altitud",
+  seoTitleEn: "Real Estate & Homes for Sale in Uvita & Bahía Ballena | REMAX Altitud",
+  seoTitleEs: "Bienes Raíces y Casas en Venta en Uvita y Bahía Ballena | REMAX Altitud",
   seoDescriptionEn:
-    "Explore real estate in Uvita and Bahía Ballena. Discover beach-side villas, oceanview estates on the Hermosa ridges, and luxury homes near the Marino Ballena Whale Tail.",
+    "Explore luxury real estate, eco-mansions, and vacation rentals in Uvita & Bahía Ballena with REMAX Altitud. Discover your paradise today.",
   seoDescriptionEs:
-    "Explore bienes raíces en Uvita y Bahía Ballena. Descubra villas cerca de la playa, quintas con vista al mar y casas de lujo cerca de la Cola de Ballena.",
+    "Explore bienes raíces de lujo, eco-mansiones y alquileres vacacionales en Uvita y Bahía Ballena con REMAX Altitud. Descubra su paraíso hoy.",
   elevation: "0 m – 200 m (0 ft – 650 ft)",
   climate: "24°C – 32°C (75°F – 90°F)",
   altitudeEn: "0 m – 200 m (0 ft – 650 ft)",

@@ -45,7 +45,7 @@ workflowStatus: completed
 
 - **Detected stack:** `fullstack` (Next.js 15 + Vitest + no Playwright config)
 - **Test execution:** Vitest with Node environment (no browser, no Playwright)
-- **Pact.js Utils:** Enabled in TEA config but not applicable — this story has no consumer/provider contract boundary (the RE/MAX CCA API is an external HTTP API, not a Pact-compatible provider)
+- **Pact.js Utils:** Enabled in TEA config but not applicable — this story has no consumer/provider contract boundary (the REMAX CCA API is an external HTTP API, not a Pact-compatible provider)
 - **Browser automation:** Not applicable for this story (pure server-side sync pipeline)
 
 ### Prerequisites Verified

@@ -1,6 +1,6 @@
 # BMAD Method — Progress Tracker
 
-> **Project:** RE/MAX Altitud Website
+> **Project:** REMAX Altitud Website
 > **Started:** 2026-03-20
 > **Last Updated:** 2026-04-08 (Architecture document created — 15 steps complete)
 

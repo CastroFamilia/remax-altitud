@@ -238,10 +238,10 @@ so that I can find an agent who speaks my language and see their expertise.
     const t = await getTranslations({ locale, namespace: "AgentProfile" });
     const bio = locale === "es" ? agent.bioEs : agent.bioEn;
     return {
-      title: `${agent.name} | RE/MAX Altitud`,
+      title: `${agent.name} | REMAX Altitud`,
       description: bio.slice(0, 160) || t("defaultMetaDescription", { name: agent.name }),
       openGraph: {
-        title: `${agent.name} | RE/MAX Altitud`,
+        title: `${agent.name} | REMAX Altitud`,
         description: bio.slice(0, 160) || t("defaultMetaDescription", { name: agent.name }),
         images: agent.photoOptimizedUrl ? [{ url: agent.photoOptimizedUrl }] : [],
       },
@@ -287,7 +287,7 @@ so that I can find an agent who speaks my language and see their expertise.
     const { locale } = await params;
     const t = await getTranslations({ locale, namespace: "AgentProfile" });
     return {
-      title: `${t("indexPageTitle")} | RE/MAX Altitud`,
+      title: `${t("indexPageTitle")} | REMAX Altitud`,
       description: t("indexPageDescription"),
     };
   }
@@ -397,12 +397,12 @@ so that I can find an agent who speaks my language and see their expertise.
     "noAgentsMatch": "No agents match your filters.",
     "clearFilters": "Clear filters",
     "indexPageTitle": "Meet Our Agents",
-    "indexPageDescription": "Browse RE/MAX Altitud agents — find an agent who speaks your language and knows your area.",
+    "indexPageDescription": "Browse REMAX Altitud agents — find an agent who speaks your language and knows your area.",
     "filterByOffice": "Filter by office",
     "filterByLanguage": "Filter by language",
     "allOffices": "All offices",
     "allLanguages": "All languages",
-    "defaultMetaDescription": "View {name}'s listings and contact information at RE/MAX Altitud.",
+    "defaultMetaDescription": "View {name}'s listings and contact information at REMAX Altitud.",
     "agentNoLongerActive": "This agent is no longer active.",
     "backToAgents": "Browse all agents",
     "language": {
@@ -428,12 +428,12 @@ so that I can find an agent who speaks my language and see their expertise.
     "noAgentsMatch": "Ningún agente coincide con tus filtros.",
     "clearFilters": "Limpiar filtros",
     "indexPageTitle": "Conoce a Nuestros Agentes",
-    "indexPageDescription": "Explora los agentes de RE/MAX Altitud — encuentra uno que hable tu idioma y conozca tu área.",
+    "indexPageDescription": "Explora los agentes de REMAX Altitud — encuentra uno que hable tu idioma y conozca tu área.",
     "filterByOffice": "Filtrar por oficina",
     "filterByLanguage": "Filtrar por idioma",
     "allOffices": "Todas las oficinas",
     "allLanguages": "Todos los idiomas",
-    "defaultMetaDescription": "Ver las propiedades e información de contacto de {name} en RE/MAX Altitud.",
+    "defaultMetaDescription": "Ver las propiedades e información de contacto de {name} en REMAX Altitud.",
     "agentNoLongerActive": "Este agente ya no está activo.",
     "backToAgents": "Ver todos los agentes",
     "language": {
@@ -554,7 +554,7 @@ so that I can find an agent who speaks my language and see their expertise.
       syncedAt: new Date(), createdAt: new Date(), updatedAt: new Date(),
     },
   ];
-  const mockOfficeMap = { "office-pz": "RE/MAX Altitud", "office-dom": "RE/MAX Altitud Cero" };
+  const mockOfficeMap = { "office-pz": "REMAX Altitud", "office-dom": "REMAX Altitud Cero" };
   ```
 - [ ] **Tests to write:**
   - `[P0]` renders `data-testid="agent-index-list"` element

@@ -34,8 +34,8 @@
     "legal": "Legal",
     "connect": "Connect",
     "menu": "Menu",
-    "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
-    "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
+    "perezZeledonOffice": "REMAX Altitud — Pérez Zeledón",
+    "dominicalOffice": "REMAX Altitud Cero — Dominical",
     "followUs": "Follow Us",
     "allRightsReserved": "All rights reserved",
     "sellWithUs": "Sell with Us",
@@ -52,14 +52,14 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "sitemap": "Sitemap",
-    "socialFacebook": "Visit RE/MAX Altitud on Facebook",
-    "socialInstagram": "Visit RE/MAX Altitud on Instagram",
-    "socialYoutube": "Visit RE/MAX Altitud on YouTube",
-    "socialWhatsApp": "Contact RE/MAX Altitud via WhatsApp",
-    "socialEmail": "Email RE/MAX Altitud"
+    "socialFacebook": "Visit REMAX Altitud on Facebook",
+    "socialInstagram": "Visit REMAX Altitud on Instagram",
+    "socialYoutube": "Visit REMAX Altitud on YouTube",
+    "socialWhatsApp": "Contact REMAX Altitud via WhatsApp",
+    "socialEmail": "Email REMAX Altitud"
   },
   "HomePage": {
-    "title": "RE/MAX Altitud",
+    "title": "REMAX Altitud",
     "subtitle": "Costa Rica's Southern Zone — Real Estate Platform",
     "scaffoldingNote": "Foundation scaffolding complete. Content coming in Stories 1.5–1.7.",
     "hero": {
@@ -103,7 +103,7 @@
     },
     "sellCta": {
       "heading": "Ready to list your property?",
-      "description": "Partner with RE/MAX Altitud's expert agents across Pérez Zeledón, Dominical, and Uvita.",
+      "description": "Partner with REMAX Altitud's expert agents across Pérez Zeledón, Dominical, and Uvita.",
       "cta": "List with Us"
     },
     "vipSearchBanner": {
@@ -114,10 +114,10 @@
     }
   },
   "AboutPage": {
-    "metaTitle": "About RE/MAX Altitud — Costa Rica's Southern Zone",
-    "metaDescription": "Learn about RE/MAX Altitud and Altitud Cero — the premier real estate team serving Pérez Zeledón, Dominical, and Uvita.",
-    "pageTitle": "About RE/MAX Altitud",
-    "intro": "RE/MAX Altitud and RE/MAX Altitud Cero unite two offices under one promise: guide international and local clients through buying, selling, and investing in Costa Rica's Southern Zone — in the language they prefer.",
+    "metaTitle": "About REMAX Altitud — Costa Rica's Southern Zone",
+    "metaDescription": "Learn about REMAX Altitud and Altitud Cero — the premier real estate team serving Pérez Zeledón, Dominical, and Uvita.",
+    "pageTitle": "About REMAX Altitud",
+    "intro": "REMAX Altitud and REMAX Altitud Cero unite two offices under one promise: guide international and local clients through buying, selling, and investing in Costa Rica's Southern Zone — in the language they prefer.",
     "officesHeading": "Our Offices",
     "officesIntro": "Two offices, one team — covering the mountains of Pérez Zeledón and the Pacific coast from Dominical to Uvita.",
     "office": {
@@ -142,9 +142,9 @@
   },
   "ServicesPage": {
     "metaTitle": "Our Services — Buy, Sell, Invest in Costa Rica",
-    "metaDescription": "RE/MAX Altitud helps you buy your dream home, sell with confidence, or invest in Costa Rica's Southern Zone.",
+    "metaDescription": "REMAX Altitud helps you buy your dream home, sell with confidence, or invest in Costa Rica's Southern Zone.",
     "pageTitle": "How We Help",
-    "intro": "Three services, one team. Every client of RE/MAX Altitud gets a bilingual agent, local knowledge, and a seamless path from first search to closing.",
+    "intro": "Three services, one team. Every client of REMAX Altitud gets a bilingual agent, local knowledge, and a seamless path from first search to closing.",
     "servicesHeading": "Our Services",
     "buy": {
       "heading": "Buy",
@@ -175,8 +175,8 @@
     }
   },
   "ContactPage": {
-    "metaTitle": "Contact RE/MAX Altitud",
-    "metaDescription": "Reach RE/MAX Altitud in Pérez Zeledón or RE/MAX Altitud Cero in Dominical/Uvita — by phone, email, WhatsApp, or contact form.",
+    "metaTitle": "Contact REMAX Altitud",
+    "metaDescription": "Reach REMAX Altitud in Pérez Zeledón or REMAX Altitud Cero in Dominical/Uvita — by phone, email, WhatsApp, or contact form.",
     "pageTitle": "Contact Us",
     "intro": "We reply within 24 hours. Reach us by WhatsApp, phone, or the form below — in English or Spanish.",
     "officesHeading": "Our Offices",
@@ -193,8 +193,8 @@
       "phonePlaceholder": "+506 0000-0000",
       "officeLabel": "Preferred office",
       "officeOptionAny": "Either office",
-      "officeOptionPZ": "RE/MAX Altitud — Pérez Zeledón",
-      "officeOptionDOM": "RE/MAX Altitud Cero — Dominical / Uvita",
+      "officeOptionPZ": "REMAX Altitud — Pérez Zeledón",
+      "officeOptionDOM": "REMAX Altitud Cero — Dominical / Uvita",
       "languageLabel": "Preferred language",
       "languageOptionEN": "English",
       "languageOptionES": "Spanish",
@@ -210,17 +210,17 @@
     }
   },
   "JoinPage": {
-    "metaTitle": "Join Our Team — RE/MAX Altitud Careers",
-    "metaDescription": "Become a RE/MAX Altitud agent. Multilingual lead generation, training, and the RE/MAX brand — in Costa Rica's Southern Zone.",
+    "metaTitle": "Join Our Team — REMAX Altitud Careers",
+    "metaDescription": "Become a REMAX Altitud agent. Multilingual lead generation, training, and the REMAX brand — in Costa Rica's Southern Zone.",
     "pageTitle": "Join Our Team",
-    "intro": "Grow your real estate career with RE/MAX Altitud. Leads in six languages, proven tools, and offices in Pérez Zeledón and Dominical/Uvita.",
-    "benefitsHeading": "Why RE/MAX Altitud",
+    "intro": "Grow your real estate career with REMAX Altitud. Leads in six languages, proven tools, and offices in Pérez Zeledón and Dominical/Uvita.",
+    "benefitsHeading": "Why REMAX Altitud",
     "benefit1Title": "Global brand",
     "benefit1Body": "Backed by the world's most recognized real estate brand.",
     "benefit2Title": "Multilingual lead flow",
     "benefit2Body": "Reach six language markets from day one.",
     "benefit3Title": "Training & mentorship",
-    "benefit3Body": "RE/MAX University plus in-office coaching.",
+    "benefit3Body": "REMAX University plus in-office coaching.",
     "benefit4Title": "Two-office reach",
     "benefit4Body": "Serve clients across mountain and coastal Costa Rica.",
     "formHeading": "Interested? Tell us about yourself.",
@@ -265,7 +265,7 @@
     }
   },
   "Metadata": {
-    "title": "RE/MAX Altitud — Costa Rica Real Estate",
+    "title": "REMAX Altitud — Costa Rica Real Estate",
     "description": "Discover properties in Costa Rica's Southern Zone. Map-first search, multilingual support, and expert agents across Pérez Zeledón and Dominical/Uvita."
   },
   "MobileNav": {
@@ -482,9 +482,9 @@
       "concession": "Concession",
       "zmt_restricted": "ZMT Restricted"
     },
-    "noAgentAssigned": "Contact RE/MAX Altitud",
+    "noAgentAssigned": "Contact REMAX Altitud",
     "agentSection": "Listing Agent",
-    "unknownOffice": "RE/MAX Altitud"
+    "unknownOffice": "REMAX Altitud"
   },
   "AgentCard": {
     "agentCardLabel": "Listing agent: {name}",
@@ -543,12 +543,12 @@
     "noAgentsMatch": "No agents match your filters.",
     "clearFilters": "Clear filters",
     "indexPageTitle": "Meet Our Agents",
-    "indexPageDescription": "Browse RE/MAX Altitud agents — find an agent who speaks your language and knows your area.",
+    "indexPageDescription": "Browse REMAX Altitud agents — find an agent who speaks your language and knows your area.",
     "filterByOffice": "Filter by office",
     "filterByLanguage": "Filter by language",
     "allOffices": "All offices",
     "allLanguages": "All languages",
-    "defaultMetaDescription": "View {name}'s listings and contact information at RE/MAX Altitud.",
+    "defaultMetaDescription": "View {name}'s listings and contact information at REMAX Altitud.",
     "agentNoLongerActive": "This agent is no longer active.",
     "backToAgents": "Browse all agents",
     "language": {
@@ -597,19 +597,19 @@
   },
   "SellerPage": {
     "meta": {
-      "title": "List Your Property | RE/MAX Altitud",
-      "description": "List your Costa Rica property with RE/MAX Altitud — Southern Zone's #1 real estate team. Fill our simple 3-step form to connect with an area expert.",
-      "ogTitle": "Sell Your Property with RE/MAX Altitud",
-      "ogDescription": "Connect with a local RE/MAX agent in 3 minutes. No account needed."
+      "title": "List Your Property | REMAX Altitud",
+      "description": "List your Costa Rica property with REMAX Altitud — Southern Zone's #1 real estate team. Fill our simple 3-step form to connect with an area expert.",
+      "ogTitle": "Sell Your Property with REMAX Altitud",
+      "ogDescription": "Connect with a local REMAX agent in 3 minutes. No account needed."
     },
     "hero": {
       "heading": "List Your Property with the Southern Zone's #1 Team",
       "subheading": "From Pérez Zeledón to Dominical — our agents know every hectare.",
-      "benefit1": "Global RE/MAX network exposure",
+      "benefit1": "Global REMAX network exposure",
       "benefit2": "Local market expertise since 2008",
       "benefit3": "No upfront fees — commission only",
       "process": "How it works: Fill our 3-step form → Get matched with an area agent → Schedule a property visit",
-      "testimonial1": "\"RE/MAX Altitud sold our finca in 3 months at asking price.\" — Carlos, Rivas",
+      "testimonial1": "\"REMAX Altitud sold our finca in 3 months at asking price.\" — Carlos, Rivas",
       "startButton": "Get Started",
       "startButtonAriaLabel": "Start the property listing form"
     },
@@ -763,17 +763,17 @@
   },
   "AreaGuide": {
     "meta": {
-      "title": "{area} — Area Guide | RE/MAX Altitud",
+      "title": "{area} — Area Guide | REMAX Altitud",
       "description": "Explore {area}: real estate listings, lifestyle info, climate data, and local agents. Your guide to living in {area}, Costa Rica.",
-      "ogTitle": "{area} — Area Guide | RE/MAX Altitud",
-      "ogDescription": "Discover properties and lifestyle in {area}, Costa Rica — from RE/MAX Altitud."
+      "ogTitle": "{area} — Area Guide | REMAX Altitud",
+      "ogDescription": "Discover properties and lifestyle in {area}, Costa Rica — from REMAX Altitud."
     },
     "index": {
       "title": "Explore Our Areas",
       "description": "From mountain valleys to Pacific beaches — discover the Southern Zone of Costa Rica.",
       "meta": {
-        "title": "Areas — RE/MAX Altitud",
-        "description": "Explore all areas served by RE/MAX Altitud in the Southern Zone of Costa Rica — Pérez Zeledón, Dominical, Uvita, and more."
+        "title": "Areas — REMAX Altitud",
+        "description": "Explore all areas served by REMAX Altitud in the Southern Zone of Costa Rica — Pérez Zeledón, Dominical, Uvita, and more."
       }
     },
     "tabs": {
@@ -801,9 +801,9 @@
   },
   "CommunityPage": {
     "meta": {
-      "title": "{community} — Community | RE/MAX Altitud",
+      "title": "{community} — Community | REMAX Altitud",
       "description": "Explore {community}: curated homes, lot availability, quick facts, and lifestyle details. Your guide to living in this premium Costa Rica community.",
-      "ogTitle": "{community} — Community | RE/MAX Altitud",
+      "ogTitle": "{community} — Community | REMAX Altitud",
       "ogDescription": "Discover {community} — a curated community in Costa Rica with premium homes and lots."
     },
     "tabs": {
@@ -850,8 +850,8 @@
       "title": "Explore Our Communities",
       "description": "Curated developments in the mountains and on the coast — premium living in Costa Rica.",
       "meta": {
-        "title": "Communities — RE/MAX Altitud",
-        "description": "Explore curated community developments served by RE/MAX Altitud in the Southern Zone of Costa Rica."
+        "title": "Communities — REMAX Altitud",
+        "description": "Explore curated community developments served by REMAX Altitud in the Southern Zone of Costa Rica."
       }
     }
   },
@@ -894,7 +894,7 @@
     "messageLabel": "Personal Message",
     "messagePlaceholder": "Tell us about your schedule preference or questions...",
     "agentLabel": "Send inquiry to:",
-    "sendToOffice": "Office (RE/MAX Altitud)",
+    "sendToOffice": "Office (REMAX Altitud)",
     "shortlistAgentsGroup": "Agents for your saved properties",
     "otherAgentsGroup": "Other Office Agents",
     "submitForm": "Send My Shortlist",
@@ -1018,7 +1018,7 @@
   },
   "Admin": {
     "portalTitle": "Admin Portal",
-    "portalSubtitle": "RE/MAX Altitud Administration",
+    "portalSubtitle": "REMAX Altitud Administration",
     "password": "Password",
     "passwordPlaceholder": "••••••••",
     "unlockButton": "Unlock Dashboard",
@@ -1116,7 +1116,7 @@
     "errorSaveFailed": "Failed to save community. Please try again."
   },
   "VipBuyerPage": {
-    "metaTitle": "Find Your Dream Property - RE/MAX Altitud",
+    "metaTitle": "Find Your Dream Property - REMAX Altitud",
     "metaDescription": "Exclusive Property Search Service: You describe the life you want, we'll show you where it can happen. We’ll help you discover the place in Costa Rica that truly fits your life.",
     "hero": {
       "title": "Exclusive Property Search Service",
@@ -1196,7 +1196,7 @@
         "body": "Transparent numbers: clear costs, timelines, and next steps."
       },
       "pillar6": {
-        "title": "RE/MAX Power",
+        "title": "REMAX Power",
         "body": "The brand you already trust, now right here guiding your move."
       }
     },

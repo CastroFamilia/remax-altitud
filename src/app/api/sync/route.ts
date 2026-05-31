@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 /**
  * POST /api/sync
  *
- * Cron-triggered endpoint that runs the full RE/MAX CCA sync pipeline.
+ * Cron-triggered endpoint that runs the full REMAX CCA sync pipeline.
  * Auth: requires `Authorization: Bearer <CRON_SECRET>` header (AC #13, AR16).
  * Returns 200 + summary JSON on success; 401 if unauthorized; 500 on error.
  */

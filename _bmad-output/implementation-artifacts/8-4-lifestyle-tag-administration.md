@@ -89,7 +89,7 @@ so that I can curate which properties appear under specific discovery categories
 ### Previous Story Learning & Continuity
 
 - Follow the pattern established in lead management for pagination, filters, and admin authentication guards (`verifyAdminAuth`).
-- Ensure all Tailwind classes remain consistent with the dark slate (`slate-950`/`slate-900`) and RE/MAX red border highlights utilized across the dashboard center.
+- Ensure all Tailwind classes remain consistent with the dark slate (`slate-950`/`slate-900`) and REMAX red border highlights utilized across the dashboard center.
 
 ### References
 

@@ -123,8 +123,8 @@ const mockAgents = [
 ];
 
 const mockOfficeMap: Record<string, string> = {
-  "office-pz": "RE/MAX Altitud",
-  "office-dom": "RE/MAX Altitud Cero",
+  "office-pz": "REMAX Altitud",
+  "office-dom": "REMAX Altitud Cero",
 };
 
 afterEach(() => {
@@ -210,7 +210,7 @@ describe("Story 4.3: AgentIndexFilters component (ATDD Red Phase)", () => {
     const officeFilter = screen.getByTestId("agent-office-filter");
     fireEvent.change(officeFilter, { target: { value: "office-pz" } });
 
-    // After filtering by office-pz (RE/MAX Altitud), only Emma Smith should show
+    // After filtering by office-pz (REMAX Altitud), only Emma Smith should show
     const cards = screen.getAllByTestId("agent-index-card");
     expect(cards).toHaveLength(1);
     expect(screen.getByText("Emma Smith")).toBeTruthy();

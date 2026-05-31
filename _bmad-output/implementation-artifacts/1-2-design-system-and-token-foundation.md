@@ -65,7 +65,7 @@ So that the site feels trustworthy and professionally designed on any device.
 - [x] Task 3: Define the complete color system in `globals.css` (AC: #1, #2, #3, #8)
   - [x] Define all brand primaries, brand brights, gold accents, surfaces, glassmorphism, text, region themes, and semantic colors as CSS custom properties in `:root`
   - [x] Map CSS custom properties to Tailwind theme via `@theme inline` block — every token must be usable as `bg-primary`, `text-accent`, etc.
-  - [x] Define shadcn/ui semantic slots (`--background`, `--foreground`, `--primary`, `--primary-foreground`, `--accent`, `--accent-foreground`, `--muted`, `--muted-foreground`, `--card`, `--card-foreground`, `--popover`, `--popover-foreground`, `--destructive`, `--border`, `--input`, `--ring`) mapped to RE/MAX brand values
+  - [x] Define shadcn/ui semantic slots (`--background`, `--foreground`, `--primary`, `--primary-foreground`, `--accent`, `--accent-foreground`, `--muted`, `--muted-foreground`, `--card`, `--card-foreground`, `--popover`, `--popover-foreground`, `--destructive`, `--border`, `--input`, `--ring`) mapped to REMAX brand values
   - [x] Confirm the `@media (prefers-color-scheme: dark)` block was already removed in Task 0
   - [x] Verify these color application rules:
     - Page canvas: `--background` (shadcn) / `--brand-crema` (brand) → #F7F5EE
@@ -97,7 +97,7 @@ So that the site feels trustworthy and professionally designed on any device.
     --input:                #EFECE4
     --ring:                 #0043FF
 
-    ── RE/MAX brand tokens (--brand-* prefix) ──
+    ── REMAX brand tokens (--brand-* prefix) ──
     --brand-navy:           #000E35   (Azul Oscuro — nav, headings)
     --brand-navy-light:     #0B1E43   (hover states, cards)
     --brand-burgundy:       #660000   (Rojo Oscuro — premium CTA)
@@ -230,7 +230,7 @@ So that the site feels trustworthy and professionally designed on any device.
 
 - [x] Task 7: Create a visual token preview page (AC: all)
   - [x] Create `src/app/design-system/page.tsx` — a dev-only page showing all tokens in action
-  - [x] Sections: Logo showcase, shadcn slots, RE/MAX brand palette, Region themes (mountain/coast), Typography, Spacing, Radius, Shadows, Glassmorphism, Button variants, Region theme demo cards, cn() smoke test
+  - [x] Sections: Logo showcase, shadcn slots, REMAX brand palette, Region themes (mountain/coast), Typography, Spacing, Radius, Shadows, Glassmorphism, Button variants, Region theme demo cards, cn() smoke test
   - [x] **Logo section:** Displays logo at `public/images/brand/logo-remax-altitud.png` on both dark (`--brand-dark`) and cream (`--brand-crema`) backgrounds with `next/image`
   - [x] Uses `cn()` utility from `@/lib/utils` in Swatch and multiple sections — dedicated cn() smoke test verifies tailwind-merge dedupes `p-4 p-6` → `p-6`
   - [x] Page includes header copy confirming "Removed or gated before production launch"
@@ -348,7 +348,7 @@ Tailwind v4 replaces `tailwind.config.js` with CSS-first configuration. Design t
   /* Base radius for shadcn calculations */
   --radius: 0.75rem; /* 12px — maps to --radius-lg */
 
-  /* shadcn semantic slots mapped to RE/MAX brand */
+  /* shadcn semantic slots mapped to REMAX brand */
   --background: #F7F5EE;       /* Crema canvas */
   --foreground: #202020;       /* Text primary */
   --primary: #000E35;          /* Azul Oscuro */
@@ -370,7 +370,7 @@ Tailwind v4 replaces `tailwind.config.js` with CSS-first configuration. Design t
   --ring: #0043FF;
 
   /*
-   * RE/MAX brand tokens (--brand-* prefix).
+   * REMAX brand tokens (--brand-* prefix).
    * These are separate from shadcn's bare names above to prevent collision.
    * Use via Tailwind: bg-brand-navy, text-brand-gold, etc.
    * Use via CSS: var(--brand-navy), var(--brand-gold), etc.
@@ -427,7 +427,7 @@ Tailwind v4 replaces `tailwind.config.js` with CSS-first configuration. Design t
 }
 ```
 
-**IMPORTANT:** The shadcn `init` command will modify `globals.css`. It will inject its own `:root` variables (in oklch color space) and `@theme inline` block. You MUST replace the shadcn defaults with RE/MAX brand values. Do NOT leave the generic neutral palette — the entire point of this story is the custom brand theme.
+**IMPORTANT:** The shadcn `init` command will modify `globals.css`. It will inject its own `:root` variables (in oklch color space) and `@theme inline` block. You MUST replace the shadcn defaults with REMAX brand values. Do NOT leave the generic neutral palette — the entire point of this story is the custom brand theme.
 
 ### Critical: shadcn/ui Initialization
 
@@ -488,12 +488,12 @@ These contrast ratios are pre-validated — do NOT change the color values:
 
 ### Logo Asset & Brand Mark
 
-The official RE/MAX Altitud logo has been added to the project:
+The official REMAX Altitud logo has been added to the project:
 
 **File:** `public/images/brand/logo-remax-altitud.png` (18KB, transparent background)
 
 **Logo anatomy:**
-- **Balloon icon** (left): Classic RE/MAX hot air balloon — red top, white middle, blue bottom
+- **Balloon icon** (left): Classic REMAX hot air balloon — red top, white middle, blue bottom
 - **"REMAX" wordmark** (right): Bold condensed uppercase, off-white (~`#F2EDE3`)
 - **"ALTITUD" subtext** (bottom-right): Lighter weight, same off-white, letter-spaced
 
@@ -600,7 +600,7 @@ Tailwind v4 uses `--spacing-*` (not `--space-*`) as its theme key for spacing ut
   - AC11 — `src/lib/utils.ts` exports `cn()` via `clsx` + `tailwind-merge`.
   - AC12 — `npm run build` passes (0 type errors), `npm run lint` passes (0 errors), `npm run typecheck` clean, `npm run format:check` clean.
 
-- Preview page at `/design-system` renders all token categories: logo on both backgrounds, shadcn slots, RE/MAX palette, region themes, full typography scale, spacing visualization, radius + shadow samples, glassmorphism on gradient backdrop, button variant preview, region theme demo cards, and a cn() smoke test.
+- Preview page at `/design-system` renders all token categories: logo on both backgrounds, shadcn slots, REMAX palette, region themes, full typography scale, spacing visualization, radius + shadow samples, glassmorphism on gradient backdrop, button variant preview, region theme demo cards, and a cn() smoke test.
 
 - Production CSS output: 10.3 kB (well under the 30 kB gzipped budget from story's Performance Budget section).
 
@@ -627,7 +627,7 @@ Tailwind v4 uses `--spacing-*` (not `--space-*`) as its theme key for spacing ut
 
 ## Change Log
 
-- 2026-04-22 — Story 1.2 implementation complete. shadcn/ui initialized (radix-nova style, RSC enabled, lucide icons). Full RE/MAX brand token system authored in `src/styles/globals.css`: shadcn semantic slots + `--brand-*` namespace, 4px-grid spacing, 6-level shadow scale, responsive type scale (mobile/desktop), region themes (mountain + coast), glass tokens, z-index scale, dual-ring focus, reduced-motion support, skeleton shimmer. Montserrat wired via `next/font` (4 weights, latin + latin-ext subsets). Dev-only `/design-system` preview route exercises every token. Build / lint / typecheck / prettier all green.
+- 2026-04-22 — Story 1.2 implementation complete. shadcn/ui initialized (radix-nova style, RSC enabled, lucide icons). Full REMAX brand token system authored in `src/styles/globals.css`: shadcn semantic slots + `--brand-*` namespace, 4px-grid spacing, 6-level shadow scale, responsive type scale (mobile/desktop), region themes (mountain + coast), glass tokens, z-index scale, dual-ring focus, reduced-motion support, skeleton shimmer. Montserrat wired via `next/font` (4 weights, latin + latin-ext subsets). Dev-only `/design-system` preview route exercises every token. Build / lint / typecheck / prettier all green.
 
 ### Review Findings
 - [x] [Review][Patch] Remove Hallucinated Dependencies [`package.json`]

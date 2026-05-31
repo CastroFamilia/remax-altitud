@@ -11,6 +11,12 @@ interface AreaInfo {
   nameEs: string;
 }
 
+interface AreaInfo {
+  slug: string;
+  nameEn: string;
+  nameEs: string;
+}
+
 interface CommunityRow {
   slug: string;
   name: string;

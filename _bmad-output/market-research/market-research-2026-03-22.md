@@ -6,10 +6,10 @@ input_documents: ['_bmad-output/brainstorming/brainstorming-session-2026-03-20-0
 workflow_completed: true
 ---
 
-# Market Research — RE/MAX Altitud
+# Market Research — REMAX Altitud
 
 **Date:** 2026-03-22
-**Purpose:** Competitive analysis and market landscape for the RE/MAX Altitud website project
+**Purpose:** Competitive analysis and market landscape for the REMAX Altitud website project
 
 ---
 
@@ -72,7 +72,7 @@ workflow_completed: true
 
 **Regional takeaways:**
 
-> RE/MAX Altitud operates in one of the fastest-growing zones in Costa Rica. The Southern Pacific has seen up to **100% property value growth in 3 years**. The combination of Pérez Zeledón (affordable mountain hub) + Dominical/Uvita (appreciating coast) gives RE/MAX Altitud a unique dual-market positioning.
+> REMAX Altitud operates in one of the fastest-growing zones in Costa Rica. The Southern Pacific has seen up to **100% property value growth in 3 years**. The combination of Pérez Zeledón (affordable mountain hub) + Dominical/Uvita (appreciating coast) gives REMAX Altitud a unique dual-market positioning.
 
 ---
 
@@ -80,9 +80,9 @@ workflow_completed: true
 
 ### 3.1 Direct Competitors (Branded Real Estate)
 
-| | LX Costa Rica | Century 21 CR | Coldwell Banker CR | RE/MAX Altitud |
+| | LX Costa Rica | Century 21 CR | Coldwell Banker CR | REMAX Altitud |
 |---|---|---|---|---|
-| **Brand** | The Agency franchise | Century 21 global | Coldwell Banker global | RE/MAX global |
+| **Brand** | The Agency franchise | Century 21 global | Coldwell Banker global | REMAX global |
 | **Focus** | Luxury only (Central Valley) | Broad market, nationwide | Broad market, 9 offices | Southern Zone specialist |
 | **Geo** | Escazú, Santa Ana, Cariari | Nosara, La Fortuna, Santa Teresa, etc. | Jaco, Tamarindo, nationwide | Pérez Zeledón + Dominical/Uvita |
 | **Agents** | Small, curated team | 150K+ agents globally | Certified (NAR, CIPS) | 15+ bilingual agents |
@@ -102,7 +102,7 @@ workflow_completed: true
 
 | Competitor | Notes |
 |------------|-------|
-| RE/MAX Costa del Sol (CDS) | Active in Dominical/Uvita, RE/MAX sister office |
+| REMAX Costa del Sol (CDS) | Active in Dominical/Uvita, REMAX sister office |
 | Blue Zone Realty | Strong Uvita presence, eco-focused brand |
 | Osa Tropical Properties | Osa/Uvita specialist, strong content marketing |
 | Costa Rica Expat Properties | Pérez Zeledón specialist for expat market |
@@ -121,7 +121,7 @@ workflow_completed: true
 
 ### What competitors do poorly
 
-| Gap | Opportunity for RE/MAX Altitud |
+| Gap | Opportunity for REMAX Altitud |
 |-----|-------------------------------|
 | **No multilingual beyond EN/ES** | **6-language AI translation** is a massive differentiator — no competitor does this |
 | **No map-first search** | Most use basic list/grid views with filters; interactive map search is rare |
@@ -170,7 +170,7 @@ workflow_completed: true
 
 ### Core positioning (validated)
 
-> **RE/MAX Altitud is a multilingual relocation gateway to Costa Rica's Southern Zone** — not just a listings site, but an integrated ecosystem connecting property search, area guides, visa information, and cost-of-living tools with bilingual agents who speak the buyer's language.
+> **REMAX Altitud is a multilingual relocation gateway to Costa Rica's Southern Zone** — not just a listings site, but an integrated ecosystem connecting property search, area guides, visa information, and cost-of-living tools with bilingual agents who speak the buyer's language.
 
 ### Key strategic advantages
 
@@ -179,7 +179,7 @@ workflow_completed: true
 | **6-language AI translation** | No competitor offers more than EN/ES — captures IT, DE, FR, PT buyers |
 | **Dual-market positioning** | Mountain (Pérez Zeledón) + Coast (Dominical/Uvita) covers diverse buyer needs |
 | **Relocation hub** | Unique value-add that turns a listings site into a relocation platform |
-| **RE/MAX brand trust** | Global recognition (balloon logo, 140+ countries) builds instant credibility |
+| **REMAX brand trust** | Global recognition (balloon logo, 140+ countries) builds instant credibility |
 | **SEO-first architecture** | Daily-regenerated static pages from API data = superior search rankings |
 | **Map-first UX** | Interactive map search is the #1 identified gap in competitor websites |
 | **Agent-language matching** | Connect buyers with agents who speak their language — critical for internationals |
@@ -203,7 +203,7 @@ workflow_completed: true
 | Risk | Mitigation |
 |------|------------|
 | AI translation quality for legal/real estate terms | Curated glossary + human review for critical content |
-| API dependency (single source, RE/MAX CCA) | Accepted risk; daily sync covers freshness needs |
+| API dependency (single source, REMAX CCA) | Accepted risk; daily sync covers freshness needs |
 | Regional competitors with deeper local SEO | Content strategy targeting area-specific long-tail keywords |
 | Currency conversion accuracy | Use reliable API (e.g., exchangerate-api.com), display "approximate" disclaimers |
 | Multilingual SEO complexity | Proper hreflang implementation, language-specific sitemaps |
@@ -223,7 +223,7 @@ workflow_completed: true
 ### Competitive validation
 
 ✅ **6-language support** would be a first-of-its-kind in Costa Rica real estate
-✅ **Relocation hub** is an unoccupied niche — competitors sell properties, RE/MAX Altitud can sell a lifestyle
+✅ **Relocation hub** is an unoccupied niche — competitors sell properties, REMAX Altitud can sell a lifestyle
 ✅ **Map-first search** directly addresses the #1 user pain point identified in brainstorming
 ✅ **SEO-first architecture** with daily regeneration creates a sustainable competitive moat
 

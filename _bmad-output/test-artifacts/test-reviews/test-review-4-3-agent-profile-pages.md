@@ -146,7 +146,7 @@ E2E tests remain skipped pending Playwright configuration and DB seeding (correc
 ## Edge Cases Not Yet Covered (recommendations, not blockers)
 
 - Inactive agent (`isActive: false`) on profile page — story spec calls for an "agent no longer active" page (parallel of property "no longer available"), but no unit test asserts this branch. The E2E suite also doesn't cover it. Recommend adding a small unit test at the page level once Story 4.4 lands (or a follow-up unit test that imports the page module and asserts the branch). Not blocking 4.3 since the branch is straightforward and AC #1 doesn't enforce it explicitly.
-- `generateMetadata` for the agent profile page — not unit-tested. Same trade-off as Story 4.1 (SEO metadata is exercised via E2E `4.3-E2E-001b` which asserts page title contains "RE/MAX Altitud"). Acceptable.
+- `generateMetadata` for the agent profile page — not unit-tested. Same trade-off as Story 4.1 (SEO metadata is exercised via E2E `4.3-E2E-001b` which asserts page title contains "REMAX Altitud"). Acceptable.
 - `bioEs` being empty while `bioEn` is non-empty (or vice versa) — only the both-empty case is tested. Low priority since the suppression logic is `{bio && <p>{bio}</p>}` and is symmetric in both branches.
 
 ## i18n Coverage
@@ -175,9 +175,9 @@ E2E tests remain skipped pending Playwright configuration and DB seeding (correc
 ## Recommendations
 
 1. **When activating E2E tests**: ensure `playwright.config.ts` is configured and DB is seeded with at least:
-   - Agent slug `emma-smith` with `whatsapp` set, `email` set, `languages` containing `en` and `es`, `listingCount` ≥ 1, and `officeId` resolving to "RE/MAX Altitud".
+   - Agent slug `emma-smith` with `whatsapp` set, `email` set, `languages` containing `en` and `es`, `listingCount` ≥ 1, and `officeId` resolving to "REMAX Altitud".
    - Agent slug `agent-with-no-listings` with `listingCount: 0` (for `4.3-E2E-002b` — R-010 empty listings case).
-   - At least one agent assigned to "RE/MAX Altitud Cero" so `4.3-E2E-004b` (R-013 office switch) has both offices populated.
+   - At least one agent assigned to "REMAX Altitud Cero" so `4.3-E2E-004b` (R-013 office switch) has both offices populated.
 2. **`generateMetadata` unit test (P2 follow-up)**: If desired, add a unit test that imports the page module and asserts the metadata for a known slug. Otherwise rely on E2E `4.3-E2E-001b` (title contains brand name).
 3. **Inactive-agent branch (P2 follow-up)**: Add a unit-level test that asserts the "no longer active" branch in `src/app/[locale]/agents/[slug]/page.tsx` once Story 4.4 (JSON-LD) introduces page-level testability for SEO. Not blocking 4.3.
 4. **Tighten `where` arg assertions (LOW)**: Optional. If desired in a future test-quality sprint, switch from `toHaveBeenCalledOnce()` to `toHaveBeenCalledWith(expect.anything())` with explicit drizzle `eq`/`and` imports — matches the strictest pattern in `tests/unit/db/sync-log.spec.ts`. Low value vs. churn.

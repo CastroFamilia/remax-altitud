@@ -108,7 +108,7 @@ interface CmaFormProps {
   officeName?: string;
 }
 
-export function CmaForm({ locale, fallbackAgent, officeName = 'RE/MAX Altitud' }: CmaFormProps) {
+export function CmaForm({ locale, fallbackAgent, officeName = 'REMAX Altitud' }: CmaFormProps) {
   // Implementation follows seller-form.tsx patterns
 }
 ```

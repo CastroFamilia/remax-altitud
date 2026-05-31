@@ -64,7 +64,7 @@ export function PropertyInquiryForm({
 
   // 1. WhatsApp Details
   const whatsappDigits = agent?.whatsapp ? agent.whatsapp.replace(/\D/g, "") : OFFICE_WHATSAPP;
-  const agentName = agent?.name ?? "RE/MAX Altitud";
+  const agentName = agent?.name ?? "REMAX Altitud";
   const title = (locale === "es" ? property.titleEs : property.titleEn) ?? "";
   const ref = property.apiId ?? property.id;
 
@@ -274,7 +274,7 @@ export function PropertyInquiryForm({
             <p className="text-xs text-text-muted mt-0.5 font-medium truncate">{languages}</p>
           )}
           <p className="text-[11px] text-text-muted font-bold mt-0.5 truncate uppercase">
-            {officeName || "RE/MAX Altitud"}
+            {officeName || "REMAX Altitud"}
           </p>
         </div>
       </div>

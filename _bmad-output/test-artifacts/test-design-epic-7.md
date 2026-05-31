@@ -35,7 +35,7 @@ epicScope:
 
 Epic 7 is the **visitor collaboration and smart lead routing layer** of the platform. It introduces no-auth localStorage persistence for saving properties (up to 20), visual shortlist comparison, unique shareable shortlist links (with 30-day expiration stored in `shortlist_shares`), and a highly tailored smart agent routing engine. Based on the composition of the visitor's saved properties, the routing engine dynamically determines whether to directly contact a single agent, suggest a majority agent, or offer an agent selection screen (complete with language matching and one-agent coordination messaging).
 
-This epic completes the core **buyer conversion funnel** for RE/MAX Altitud. It bridges passive property search with active agent relationship building. If the shortlist comparison crashes, visitors cannot review their selections. If the share link fails, they cannot collaborate with co-buyers. If the smart routing engine drops a lead payload or truncates the WhatsApp message, high-intent buyers are lost at the very bottom of the funnel.
+This epic completes the core **buyer conversion funnel** for REMAX Altitud. It bridges passive property search with active agent relationship building. If the shortlist comparison crashes, visitors cannot review their selections. If the share link fails, they cannot collaborate with co-buyers. If the smart routing engine drops a lead payload or truncates the WhatsApp message, high-intent buyers are lost at the very bottom of the funnel.
 
 **Risk Summary:**
 

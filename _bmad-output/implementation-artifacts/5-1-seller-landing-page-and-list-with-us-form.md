@@ -12,7 +12,7 @@
 
 As a **seller**,
 I want to submit my property for listing through a simple, progressive form on a dedicated seller page,
-So that I can connect with an area-specific RE/MAX agent without needing an account or technical knowledge.
+So that I can connect with an area-specific REMAX agent without needing an account or technical knowledge.
 
 ---
 
@@ -362,19 +362,19 @@ src/
 {
   "SellerPage": {
     "meta": {
-      "title": "List Your Property | RE/MAX Altitud",
-      "description": "List your Costa Rica property with RE/MAX Altitud — Southern Zone's #1 real estate team. Fill our simple 3-step form to connect with an area expert.",
-      "ogTitle": "Sell Your Property with RE/MAX Altitud",
-      "ogDescription": "Connect with a local RE/MAX agent in 3 minutes. No account needed."
+      "title": "List Your Property | REMAX Altitud",
+      "description": "List your Costa Rica property with REMAX Altitud — Southern Zone's #1 real estate team. Fill our simple 3-step form to connect with an area expert.",
+      "ogTitle": "Sell Your Property with REMAX Altitud",
+      "ogDescription": "Connect with a local REMAX agent in 3 minutes. No account needed."
     },
     "hero": {
       "heading": "List Your Property with the Southern Zone's #1 Team",
       "subheading": "From Pérez Zeledón to Dominical — our agents know every hectare.",
-      "benefit1": "Global RE/MAX network exposure",
+      "benefit1": "Global REMAX network exposure",
       "benefit2": "Local market expertise since 2008",
       "benefit3": "No upfront fees — commission only",
       "process": "How it works: Fill our 3-step form → Get matched with an area agent → Schedule a property visit",
-      "testimonial1": "\"RE/MAX Altitud sold our finca in 3 months at asking price.\" — Carlos, Rivas",
+      "testimonial1": "\"REMAX Altitud sold our finca in 3 months at asking price.\" — Carlos, Rivas",
       "startButton": "Get Started",
       "startButtonAriaLabel": "Start the property listing form"
     },

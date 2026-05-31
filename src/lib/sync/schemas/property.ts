@@ -4,7 +4,7 @@ import { splitAndEncodeImages } from "../utils/images";
 import { getCrcToUsdRate } from "../../utils/currency";
 
 /**
- * Zod schema for a single record in the RE/MAX CCA `PropertiesPerOffice` feed.
+ * Zod schema for a single record in the REMAX CCA `PropertiesPerOffice` feed.
  * Accepts the API's literal field set (including the lowercase-`p`
  * `publicRemarks_es` key — API1) and emits a normalized `RawProperty` via a
  * single chained `.transform(...)` call so there is no separate hand-rolled
@@ -116,7 +116,7 @@ export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
   const mentionsLargeUnit = /hectare|hectárea|manzana/i.test(description);
   const lotSizeUnitWarning = mentionsLargeUnit && lotSizeM2 !== null && lotSizeM2 < 1000;
 
-  // ExpirationDate is unreliable in the RE/MAX CCA feed — all properties
+  // ExpirationDate is unreliable in the REMAX CCA feed — all properties
   // present in the API response are considered active. Expiration-based
   // soft-deletion is disabled; removal is driven solely by absence from the feed.
   const isExpired = false;
@@ -177,7 +177,7 @@ type RawPropertySchemaOutput = z.infer<typeof rawPropertyApiSchema>;
 export type RawPropertyAmenities = RawPropertySchemaOutput["amenities"];
 
 /**
- * Normalized, downstream-safe shape of a RE/MAX property record. Coordinates
+ * Normalized, downstream-safe shape of a REMAX property record. Coordinates
  * are numbers (or `null`), images are split and URL-encoded, and `apiRaw`
  * preserves the untouched original payload for Story 2.3's JSONB column.
  * Derived via `z.infer` on the schema (single source of truth) plus the

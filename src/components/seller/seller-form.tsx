@@ -170,7 +170,7 @@ interface SellerFormProps {
 export function SellerForm({
   locale,
   fallbackAgent,
-  officeName = "RE/MAX Altitud",
+  officeName = "REMAX Altitud",
 }: SellerFormProps) {
   const t = useTranslations("SellerPage");
   const { unitSystem, toggleUnits } = useLocaleUnits(locale);

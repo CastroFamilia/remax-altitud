@@ -96,9 +96,9 @@ Tinamastes and Platanillo represent the ultimate strategic compromise:
 * **San Isidro City Access**: A 30-minute drive in the opposite direction brings you to Pérez Zeledón's major urban core, private hospitals, banks, and shopping.
 * **High-Quality Infrastructure**: The area features stable high-speed fiber-optic internet, excellent 4WD roads, and reliable community-managed ASADA water systems.
 
-### Find Your Property with RE/MAX Altitud
+### Find Your Property with REMAX Altitud
 
-Whether you are looking for a sprawling country farm with private spring water to build a permaculture paradise, a modern mountain estate with cool air and ocean views, or a custom home inside a secure regenerative community, our team at RE/MAX Altitud is deeply rooted in the local market. We specialize in matching international families and eco-investors with properties that elevate their lifestyle and secure their future.
+Whether you are looking for a sprawling country farm with private spring water to build a permaculture paradise, a modern mountain estate with cool air and ocean views, or a custom home inside a secure regenerative community, our team at REMAX Altitud is deeply rooted in the local market. We specialize in matching international families and eco-investors with properties that elevate their lifestyle and secure their future.
 
 [CTA_BUTTON]`;
 
@@ -182,19 +182,17 @@ Tinamastes y Platanillo representan la opción estratégica definitiva:
 * **Acceso a San Isidro**: Un viaje de 30 minutos en la dirección opuesta lo lleva al núcleo urbano principal de Pérez Zeledón, con hospitales privados, bancos y centros comerciales.
 * **Infraestructura de Alta Calidad**: El área cuenta con internet estable de fibra óptica de alta velocidad, excelentes caminos para vehículos 4x4 y sistemas confiables de agua ASADA administrados por la comunidad.
 
-### Encuentre su Propiedad con RE/MAX Altitud
+### Encuentre su Propiedad con REMAX Altitud
 
-Ya sea que busque una gran finca de campo con agua de naciente privada para construir un paraíso de permacultura, una moderna propiedad de montaña con aire fresco y vista al mar, o una casa personalizada dentro de una comunidad regenerativa segura, nuestro equipo en RE/MAX Altitud está profundamente arraigado en el mercado local. Nos especializamos en conectar a familias internacionales y eco-inversionistas con propiedades que elevan su estilo de vida y aseguran su futuro.
+Ya sea que busque una gran finca de campo con agua de naciente privada para construir un paraíso de permacultura, una moderna propiedad de montaña con aire fresco y vista al mar, o una casa personalizada dentro de una comunidad regenerativa segura, nuestro equipo en REMAX Altitud está profundamente arraigado en el mercado local. Nos especializamos en conectar a familias internacionales y eco-inversionistas con propiedades que elevan su estilo de vida y aseguran su futuro.
 
 [CTA_BUTTON]`;
 
 const metadata = {
   h1En: "Sustainable Living & Mountain Cool: Discover Tinamastes, Platanillo & Barú, Costa Rica",
   h1Es: "Vida Sostenible y Frescura de Montaña: Descubra Tinamastes, Platanillo y Barú, Costa Rica",
-  seoTitleEn:
-    "Eco-Friendly Properties & Farms for Sale in Tinamastes & Platanillo | RE/MAX Altitud",
-  seoTitleEs:
-    "Propiedades y Fincas Ecológicas en Venta en Tinamastes y Platanillo | RE/MAX Altitud",
+  seoTitleEn: "Eco-Friendly Properties & Farms for Sale in Tinamastes & Platanillo | REMAX Altitud",
+  seoTitleEs: "Propiedades y Fincas Ecológicas en Venta en Tinamastes y Platanillo | REMAX Altitud",
   seoDescriptionEn:
     "Explore real estate in Tinamastes, Platanillo, and Barú. Discover off-grid wellness communities, permaculture estates, and eco-homes near the Nauyaca Waterfalls.",
   seoDescriptionEs:

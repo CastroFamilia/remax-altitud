@@ -45,7 +45,7 @@ export type SyncProgressEvent =
   | { type: "property_tag"; apiId: string };
 
 /**
- * Orchestrates the full sync pipeline against the RE/MAX CCA API.
+ * Orchestrates the full sync pipeline against the REMAX CCA API.
  *
  * Steps:
  * 1. Create sync_log with status="running" (AC #1)
@@ -76,7 +76,7 @@ export async function runSyncPipeline(options?: {
     const pzGuid = process.env.PZ_OFFICE_GUID ?? "";
     const domGuid = process.env.DOM_OFFICE_GUID ?? "";
 
-    info("Fetching data from RE/MAX CCA API...");
+    info("Fetching data from REMAX CCA API...");
     // Step 2: Fetch all 4 endpoints concurrently (AC Architecture §5 Step 1)
     const [pzPropsResult, domPropsResult, pzAgentsResult, domAgentsResult] = await Promise.all([
       fetchPropertiesForOffice(pzGuid),
@@ -94,7 +94,7 @@ export async function runSyncPipeline(options?: {
     ];
 
     // Track originating office GUID alongside each record. The parser's
-    // `officeApiId` is a numeric RE/MAX OfficeID (e.g. 218, 235) — NOT a GUID —
+    // `officeApiId` is a numeric REMAX OfficeID (e.g. 218, 235) — NOT a GUID —
     // so we cannot use it as a key into `officeMap` (whose keys are GUIDs).
     // The fetch source is the canonical office identity.
     const allProps = [
