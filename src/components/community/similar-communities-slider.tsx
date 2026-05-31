@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import type { Community } from "@/lib/db/schema/communities";
 import { CommunityCard } from "@/components/area/community-card";
-import { sortCommunitiesCustom } from "@/lib/db/queries/communities";
+import { sortCommunitiesCustom } from "@/lib/community/sort";
 
 interface SimilarCommunitiesSliderProps {
   communities: Community[];

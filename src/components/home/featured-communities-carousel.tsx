@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CommunityCard } from "@/components/area/community-card";
-import { sortCommunitiesCustom } from "@/lib/db/queries/communities";
+import { sortCommunitiesCustom } from "@/lib/community/sort";
 
 interface AreaInfo {
   slug: string;
