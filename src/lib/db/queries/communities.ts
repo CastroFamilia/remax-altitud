@@ -128,3 +128,5 @@ export async function getCommunityBySlug(slug: string) {
   const rows = await db.select().from(communities).where(eq(communities.slug, slug)).limit(1);
   return rows[0] ?? null;
 }
+
+export { sortCommunitiesCustom } from "@/lib/community/sort";

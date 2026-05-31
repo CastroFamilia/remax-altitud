@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { getAreaBySlug, getAllAreaSlugs, getPropertiesByAreaSlug } from "@/lib/db/queries/areas";
-import { getCommunitiesByAreaId } from "@/lib/db/queries/communities";
+import { getCommunitiesByAreaId, sortCommunitiesCustom } from "@/lib/db/queries/communities";
 import {
   generatePlaceJsonLd,
   generateBreadcrumbJsonLd,
@@ -114,8 +114,23 @@ export default async function AreaGuidePage({
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <h2 className="mb-6 text-2xl font-bold text-brand-navy">{t("communities.heading")}</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {communities.map((community) => {
+            {sortCommunitiesCustom(communities).map((community) => {
               const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
+              const location = locale === "es" ? area.nameEs : area.nameEn;
+
+              const qf = (community.quickFacts || {}) as Record<string, unknown>;
+
+              const propertyTypes = (
+                locale === "es"
+                  ? community.propertyTypesEs || qf.propertyTypesEs || qf.propertyTypes || ""
+                  : community.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || ""
+              ) as string;
+
+              const sizeMin =
+                community.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
+              const sizeMax =
+                community.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
+
               return (
                 <CommunityCard
                   key={community.slug}
@@ -130,6 +145,10 @@ export default async function AreaGuidePage({
                   latitude={community.latitude}
                   longitude={community.longitude}
                   geoFenceCoords={community.geoFenceCoords as [number, number][] | null}
+                  location={location}
+                  propertyTypes={propertyTypes}
+                  sizeMin={sizeMin}
+                  sizeMax={sizeMax}
                 />
               );
             })}
