@@ -45,6 +45,8 @@ export interface PropertySearchItem {
   longitude: number | null;
   currency?: string | null;
   apiRaw?: Record<string, unknown> | null;
+  descriptionEn?: string;
+  descriptionEs?: string;
 }
 
 export interface FilterFacets {
