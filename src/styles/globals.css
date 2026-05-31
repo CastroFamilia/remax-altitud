@@ -503,3 +503,14 @@
     }
   }
 }
+
+/* Custom Viewport Locking for Map Search Page (Zillow/Airbnb feel) */
+body.no-footer {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
+body.no-footer footer {
+  display: none !important;
+}
+

@@ -50,6 +50,14 @@ export function SearchPageClient() {
   // Read current filter state from URL (hook reads useSearchParams internally)
   const { filters } = useSearchFilters();
 
+  // Lock viewport height and hide global footer on Mount to provide a professional, full-screen map experience
+  useEffect(() => {
+    document.body.classList.add("no-footer");
+    return () => {
+      document.body.classList.remove("no-footer");
+    };
+  }, []);
+
   // Initial load — fetch all visible properties with coordinates for the map
   useEffect(() => {
     let cancelled = false;

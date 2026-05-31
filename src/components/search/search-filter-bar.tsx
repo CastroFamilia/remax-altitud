@@ -175,17 +175,17 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
         data-testid="search-filter-bar"
         className="sticky top-[var(--header-height)] z-10 py-2 md:py-3 bg-background border-b border-border flex flex-col"
       >
-        <div className="flex items-center px-4 gap-3 h-full">
+        <div className="flex items-stretch px-4 gap-3 h-full">
           {/* Mobile compact bar — visible below md breakpoint */}
           <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
             <SheetTrigger asChild>
               <button
                 type="button"
                 data-testid="mobile-filters-button"
-                className="flex md:hidden items-center gap-2 text-sm font-medium"
+                className="flex md:hidden items-center gap-2 text-sm font-semibold text-brand-navy"
                 aria-label={t("filterBar.label")}
               >
-                <SlidersHorizontal size={16} aria-hidden="true" />
+                <SlidersHorizontal size={16} aria-hidden="true" className="text-brand-gold" />
                 <span>{t("filterBar.label")}</span>
                 {activeFilterCount > 0 && (
                   <span className="inline-flex items-center justify-center rounded-full bg-brand-blue text-white text-xs w-5 h-5 font-bold shadow-sm">
@@ -194,17 +194,125 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
                 )}
               </button>
             </SheetTrigger>
-            <SheetContent side="left">
+            <SheetContent side="left" className="w-[320px] sm:w-[400px]">
               <SheetHeader>
-                <SheetTitle>{t("filterBar.label")}</SheetTitle>
+                <SheetTitle className="text-brand-navy font-bold">{t("filterBar.label")}</SheetTitle>
               </SheetHeader>
-              <div className="p-4">{filterControls}</div>
+              <div className="py-6 px-1 h-[calc(100vh-80px)] overflow-y-auto no-scrollbar">
+                {filterControls}
+              </div>
             </SheetContent>
           </Sheet>
 
           {/* Desktop/tablet filter controls — visible at md: and above */}
-          <div className="hidden md:flex items-center gap-3 w-full overflow-x-auto">
-            {filterControls}
+          <div className="hidden md:flex flex-col gap-4 w-full">
+            {/* Row 1: Lifestyle Tags (Scrollable, full-width, clean bottom border) */}
+            <div className="w-full pb-2.5 border-b border-border/40 overflow-x-auto no-scrollbar">
+              <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
+            </div>
+
+            {/* Row 2: Structured inputs, perfectly balanced to fill the horizontal space */}
+            <div className="flex flex-wrap lg:flex-nowrap items-end gap-5 w-full">
+              {/* Type dropdown */}
+              <div className="flex flex-col gap-1.5 flex-1 min-w-[150px]">
+                <label className="text-xs font-semibold text-brand-navy/80">{t("filters.type")}</label>
+                <select
+                  data-testid="type-filter"
+                  className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
+                  value={filters.type ?? ""}
+                  onChange={(e) => setFilter("type", e.target.value || undefined)}
+                >
+                  <option value="">{t("filters.typeAll")}</option>
+                  {PROPERTY_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {typeLabel(type)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Bedrooms dropdown — hidden for land types */}
+              {!isLandType && (
+                <div data-testid="bedrooms-filter" className="flex flex-col gap-1.5 flex-1 min-w-[120px]">
+                  <label className="text-xs font-semibold text-brand-navy/80">
+                    {t("filters.bedrooms")}
+                  </label>
+                  <select
+                    className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
+                    value={filters.bedrooms?.toString() ?? ""}
+                    onChange={(e) =>
+                      setFilter("bedrooms", e.target.value ? parseInt(e.target.value, 10) : undefined)
+                    }
+                  >
+                    <option value="">{t("filters.bedroomsAny")}</option>
+                    {BEDROOM_OPTIONS.map((n) => (
+                      <option key={n} value={n}>
+                        {n}+
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Bathrooms dropdown — hidden for land types */}
+              {!isLandType && (
+                <div data-testid="bathrooms-filter" className="flex flex-col gap-1.5 flex-1 min-w-[120px]">
+                  <label className="text-xs font-semibold text-brand-navy/80">
+                    {t("filters.bathrooms")}
+                  </label>
+                  <select
+                    className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
+                    value={filters.bathrooms?.toString() ?? ""}
+                    onChange={(e) =>
+                      setFilter("bathrooms", e.target.value ? parseInt(e.target.value, 10) : undefined)
+                    }
+                  >
+                    <option value="">{t("filters.bathroomsAny")}</option>
+                    {BATHROOM_OPTIONS.map((n) => (
+                      <option key={n} value={n}>
+                        {n}+
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Price Range slider (flex-[2] to give it proportional prominence) */}
+              <div className="flex flex-col gap-1.5 flex-[2] min-w-[280px]">
+                <label className="text-xs font-semibold text-brand-navy/80">{t("filters.price")}</label>
+                <div className="bg-background border border-brand-gold/20 rounded-lg px-4 py-2.5 shadow-sm hover:border-brand-gold/40 transition-colors w-full">
+                  <PriceRangeSlider
+                    value={priceValue}
+                    onChange={([min, max]) => {
+                      setFilter("priceMin", min > 0 ? min : undefined);
+                      setFilter("priceMax", max < 5_000_000 ? max : undefined);
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Location dropdown */}
+              {areas.length > 0 && (
+                <div className="flex flex-col gap-1.5 flex-1 min-w-[180px]">
+                  <label className="text-xs font-semibold text-brand-navy/80">
+                    {t("filters.location")}
+                  </label>
+                  <select
+                    data-testid="area-filter"
+                    className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
+                    value={filters.areaSlug ?? ""}
+                    onChange={(e) => setFilter("areaSlug", e.target.value || undefined)}
+                  >
+                    <option value="">{t("filters.locationAll")}</option>
+                    {areas.map((area) => (
+                      <option key={area.slug} value={area.slug}>
+                        {area.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
