@@ -8,6 +8,10 @@ FROM node:24-alpine@sha256:d1b3b4da11eefd5941e7f0b9cf17783fc99d9c6fc34884a665f40
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+RUN if [ -n "$DATABASE_URL" ]; then npx tsx src/lib/db/migrate.ts; else echo "DATABASE_URL not set, skipping build-time migration"; fi
+
 RUN npm run build
 RUN npm run scripts:build
 
