@@ -63,7 +63,12 @@ function safeFormatter(locale: string, options: Intl.NumberFormatOptions): Intl.
  *
  * Returns formatted strings like: "1.5 ha", "350 m²", "2.3 acres", "3,767 ft²"
  */
-export function convertArea(m2: number, system: UnitSystem, locale: string = "en-US"): string {
+export function convertArea(
+  m2: number,
+  system: UnitSystem,
+  locale: string = "en-US",
+  isLand: boolean = false
+): string {
   if (!Number.isFinite(m2)) return "—";
 
   if (system === "metric") {
@@ -79,6 +84,14 @@ export function convertArea(m2: number, system: UnitSystem, locale: string = "en
   }
 
   // Imperial
+  if (isLand) {
+    const acres = m2 / M2_PER_ACRE;
+    // Format to 2 decimal places if very small (e.g. 0.25 acres), else 1 decimal place
+    const decimals = acres < 1 ? 2 : 1;
+    const formatted = safeFormatter(locale, { maximumFractionDigits: decimals }).format(acres);
+    return `${formatted} acres`;
+  }
+
   const ACRE_THRESHOLD = M2_PER_ACRE * 10; // 10 acres = 40468.6 m²
   if (m2 >= ACRE_THRESHOLD) {
     const acres = m2 / M2_PER_ACRE;
