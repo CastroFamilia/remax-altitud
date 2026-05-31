@@ -65,7 +65,9 @@ export async function CommunityQuickFacts({ community, locale }: CommunityQuickF
             <span className="mt-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
               {t(fact.labelKey)}
             </span>
-            <span className="mt-1 text-sm font-medium text-brand-navy">{fact.value}</span>
+            <span className="mt-1 text-sm font-medium text-brand-navy">
+              {Array.isArray(fact.value) ? fact.value.join(", ") : fact.value}
+            </span>
           </div>
         ))}
       </div>
