@@ -23,7 +23,8 @@ export function PropertyPriceDisplay({
   const { currency, formatPrice } = useLocaleCurrency(locale);
 
   const primaryPrice = formatPrice(priceUsd, originalPriceColones);
-  const isCrcOriginal = originalCurrency === "CRC" && originalPriceColones != null && originalPriceColones > 0;
+  const isCrcOriginal =
+    originalCurrency === "CRC" && originalPriceColones != null && originalPriceColones > 0;
 
   // Render simple variant
   if (variant === "simple") {
