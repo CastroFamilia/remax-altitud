@@ -187,8 +187,10 @@ const metadata = {
   h1Es: "El Centro Costero del Pacífico Sur: Descubra Uvita y Bahía Ballena, Costa Rica",
   seoTitleEn: "Real Estate & Homes for Sale in Uvita & Bahía Ballena | RE/MAX Altitud",
   seoTitleEs: "Bienes Raíces y Casas en Venta en Uvita y Bahía Ballena | RE/MAX Altitud",
-  seoDescriptionEn: "Explore real estate in Uvita and Bahía Ballena. Discover beach-side villas, oceanview estates on the Hermosa ridges, and luxury homes near the Marino Ballena Whale Tail.",
-  seoDescriptionEs: "Explore bienes raíces en Uvita y Bahía Ballena. Descubra villas cerca de la playa, quintas con vista al mar y casas de lujo cerca de la Cola de Ballena.",
+  seoDescriptionEn:
+    "Explore real estate in Uvita and Bahía Ballena. Discover beach-side villas, oceanview estates on the Hermosa ridges, and luxury homes near the Marino Ballena Whale Tail.",
+  seoDescriptionEs:
+    "Explore bienes raíces en Uvita y Bahía Ballena. Descubra villas cerca de la playa, quintas con vista al mar y casas de lujo cerca de la Cola de Ballena.",
   elevation: "0 m – 200 m (0 ft – 650 ft)",
   climate: "24°C – 32°C (75°F – 90°F)",
   altitudeEn: "0 m – 200 m (0 ft – 650 ft)",
@@ -199,26 +201,28 @@ const metadata = {
   nearestHospital: "Hospital de Osa (Cortés) — 15 min / Uvita Medical Centers — 2 min",
   nearestBeach: "Playa Uvita (Marino Ballena) — 5 min",
   investmentContext: {
-    appreciationTrend: "Solid 8-12% annual appreciation over 5 years driven by booming tourism and expat families",
+    appreciationTrend:
+      "Solid 8-12% annual appreciation over 5 years driven by booming tourism and expat families",
     rentalYieldEstimate: "7-11% high-yield vacation rentals and long-term expat housing",
     marketHighlights: [
       "Marino Ballena National Park & world-famous Whale Tail sandbar",
       "Exceptional commercial and service infrastructure (banks, gourmet grocery, schools)",
-      "High demand for luxury vacation rentals with stable occupancy"
-    ]
+      "High demand for luxury vacation rentals with stable occupancy",
+    ],
   },
   galleryImages: [
     {
       url: "/images/areas/uvita-gallery-1.jpg",
       captionEn: "The famous natural sandbar Whale Tail formation in Marino Ballena National Park.",
-      captionEs: "La famosa formación natural de Cola de Ballena en el Parque Nacional Marino Ballena."
+      captionEs:
+        "La famosa formación natural de Cola de Ballena en el Parque Nacional Marino Ballena.",
     },
     {
       url: "/images/areas/uvita-gallery-2.jpg",
       captionEn: "Uvita Waterfall (Catarata Uvita) tucked away in the lush jungle canopy.",
-      captionEs: "Catarata Uvita escondida en el exuberante dosel de la selva."
-    }
-  ]
+      captionEs: "Catarata Uvita escondida en el exuberante dosel de la selva.",
+    },
+  ],
 };
 
 async function main() {
