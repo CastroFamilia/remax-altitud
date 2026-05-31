@@ -105,6 +105,12 @@
       "heading": "Ready to list your property?",
       "description": "Partner with RE/MAX Altitud's expert agents across Pérez Zeledón, Dominical, and Uvita.",
       "cta": "List with Us"
+    },
+    "vipSearchBanner": {
+      "title": "Looking for a property? We will find it for you, free of charge.",
+      "body": "You only see what is published; we know what is about to hit the market. We search our database, connect with other agencies, and scout the areas you love to bring you the perfect option.",
+      "ctaText": "We make buying or renting simple.",
+      "ctaButton": "VIP Search"
     }
   },
   "AboutPage": {
