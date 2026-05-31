@@ -1,6 +1,6 @@
 {
-  "id": "424b2bc8-4506-491d-ae97-9f9c205b3dda",
-  "prevId": "5f2dd1a8-c7c8-4afe-bfdd-19481b200094",
+  "id": "f17db468-d309-41bb-ac2b-8dc3042d36dc",
+  "prevId": "f90d6106-6e89-4c51-b6e4-83e1dcdf5c70",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -441,6 +441,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "listing_type": {
+          "name": "listing_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'Sale'"
+        },
         "status": {
           "name": "status",
           "type": "text",
@@ -696,6 +703,12 @@
             },
             {
               "expression": "area_slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "listing_type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"

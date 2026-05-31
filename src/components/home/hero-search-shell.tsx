@@ -810,6 +810,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
   const { history, addEntry, removeEntry, clearHistory } = useSearchHistory();
 
   const [searchMode, setSearchMode] = useState<"smart" | "traditional">("smart");
+  const [selectedListingType, setSelectedListingType] = useState<"Sale" | "Lease">("Sale");
   const [query, setQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -894,6 +895,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
     if (searchMode === "smart") {
       const { params } = parseQuery(query, locale);
       params.view = "split";
+      params.listing_type = selectedListingType;
 
       // Save to search history
       if (query.trim()) {
@@ -906,6 +908,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
     } else {
       const params: Record<string, string> = {
         view: "split",
+        listing_type: selectedListingType,
       };
       if (selectedType) {
         params.type = selectedType;
@@ -923,6 +926,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
       // Save to search history (traditional mode)
       const desc =
         [
+          selectedListingType === "Lease" ? "Rent" : "Buy",
           selectedType,
           selectedArea ? AREA_LABELS[selectedArea] || selectedArea : "",
           priceMin ? `$${priceMin}+` : "",
@@ -936,7 +940,18 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
       const searchUrl = qString ? `/search?${qString}` : "/search";
       router.push(searchUrl);
     }
-  }, [searchMode, query, locale, router, selectedType, selectedArea, priceMin, priceMax, addEntry]);
+  }, [
+    searchMode,
+    query,
+    locale,
+    router,
+    selectedType,
+    selectedArea,
+    priceMin,
+    priceMax,
+    addEntry,
+    selectedListingType,
+  ]);
 
   const handleSuggestionClick = useCallback(
     (suggestion: Suggestion) => {
@@ -995,49 +1010,77 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
     <div className={containerClass}>
       <div role="search" aria-label={t("searchAriaLabel")} className={shellClass}>
         <div>
-          {/* Interactive Search Mode Toggles */}
-          <div
-            className="mb-3 flex gap-2.5 text-xs font-semibold"
-            aria-label="Search mode selector"
-          >
-            <button
-              type="button"
-              onClick={() => setSearchMode("smart")}
-              className={cn(
-                "flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-gold",
-                searchMode === "smart"
-                  ? "bg-brand-gold/20 text-brand-gold ring-1 ring-brand-gold/55 shadow-[0_0_12px_rgba(194,166,97,0.25)]"
-                  : "text-white/70 hover:text-white hover:bg-white/10",
-              )}
-            >
-              <Sparkles
+          {/* Transaction Type (Buy/Rent) and Search Mode Toggles Row */}
+          <div className="mb-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
+            {/* Transaction Type (Buy / Rent) Toggles */}
+            <div className="flex gap-1 p-0.5 rounded-lg bg-black/20 border border-white/10 shadow-inner">
+              <button
+                type="button"
+                onClick={() => setSelectedListingType("Sale")}
                 className={cn(
-                  "h-3.5 w-3.5 transition-all duration-300",
-                  searchMode === "smart" ? "animate-pulse text-brand-gold" : "text-white/70",
+                  "py-1 px-4 rounded-md text-xs font-bold transition-all duration-200 cursor-pointer focus:outline-none",
+                  selectedListingType === "Sale"
+                    ? "bg-brand-gold text-brand-navy shadow-sm font-extrabold"
+                    : "text-white/60 hover:text-white hover:bg-white/5",
                 )}
-                aria-hidden="true"
-              />
-              {t("smartToggle")}
-            </button>
-            <button
-              type="button"
-              onClick={() => setSearchMode("traditional")}
-              className={cn(
-                "flex items-center gap-1.5 py-1.5 px-3.5 rounded-full text-xs font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-smooth)] cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-gold",
-                searchMode === "traditional"
-                  ? "bg-brand-gold/20 text-brand-gold ring-1 ring-brand-gold/55 shadow-[0_0_12px_rgba(194,166,97,0.25)]"
-                  : "text-white/70 hover:text-white hover:bg-white/10",
-              )}
-            >
-              <SlidersHorizontal
+              >
+                {t("buyOption")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedListingType("Lease")}
                 className={cn(
-                  "h-3.5 w-3.5 transition-all duration-300",
-                  searchMode === "traditional" ? "text-brand-gold" : "text-white/70",
+                  "py-1 px-4 rounded-md text-xs font-bold transition-all duration-200 cursor-pointer focus:outline-none",
+                  selectedListingType === "Lease"
+                    ? "bg-brand-gold text-brand-navy shadow-sm font-extrabold"
+                    : "text-white/60 hover:text-white hover:bg-white/5",
                 )}
-                aria-hidden="true"
-              />
-              {t("traditionalToggle")}
-            </button>
+              >
+                {t("rentOption")}
+              </button>
+            </div>
+
+            {/* Interactive Search Mode Toggles */}
+            <div className="flex gap-2 text-xs font-semibold" aria-label="Search mode selector">
+              <button
+                type="button"
+                onClick={() => setSearchMode("smart")}
+                className={cn(
+                  "flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer focus:outline-none",
+                  searchMode === "smart"
+                    ? "bg-brand-gold/20 text-brand-gold ring-1 ring-brand-gold/45 shadow-[0_0_8px_rgba(194,166,97,0.15)]"
+                    : "text-white/70 hover:text-white hover:bg-white/10",
+                )}
+              >
+                <Sparkles
+                  className={cn(
+                    "h-3.5 w-3.5 transition-all duration-300",
+                    searchMode === "smart" ? "animate-pulse text-brand-gold" : "text-white/70",
+                  )}
+                  aria-hidden="true"
+                />
+                {t("smartToggle")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setSearchMode("traditional")}
+                className={cn(
+                  "flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer focus:outline-none",
+                  searchMode === "traditional"
+                    ? "bg-brand-gold/20 text-brand-gold ring-1 ring-brand-gold/45 shadow-[0_0_8px_rgba(194,166,97,0.15)]"
+                    : "text-white/70 hover:text-white hover:bg-white/10",
+                )}
+              >
+                <SlidersHorizontal
+                  className={cn(
+                    "h-3.5 w-3.5 transition-all duration-300",
+                    searchMode === "traditional" ? "text-brand-gold" : "text-white/70",
+                  )}
+                  aria-hidden="true"
+                />
+                {t("traditionalToggle")}
+              </button>
+            </div>
           </div>
 
           {searchMode === "smart" ? (

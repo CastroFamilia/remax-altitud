@@ -10,6 +10,7 @@ export type SortOption = "newest" | "price_asc" | "price_desc" | "relevance";
 
 export interface SearchFilters {
   type?: string;
+  listingType?: string;
   priceMin?: number;
   priceMax?: number;
   bedrooms?: number;
@@ -38,6 +39,7 @@ export interface PropertySearchItem {
   constructionM2: number | null;
   zmtStatus: string;
   propertyType: string;
+  listingType?: string;
   status: string;
   areaSlug: string | null;
   images: OptimizedImage[];
@@ -53,6 +55,7 @@ export interface FilterFacets {
   byType: { value: string; count: number }[];
   byBedrooms: { value: number; count: number }[];
   byBathrooms: { value: number; count: number }[];
+  byListingType?: { value: string; count: number }[];
 }
 
 export interface SearchResult {

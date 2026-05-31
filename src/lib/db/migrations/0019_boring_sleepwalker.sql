@@ -6,10 +6,13 @@ CREATE TABLE "shortlist_events" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+DROP INDEX "idx_properties_search";--> statement-breakpoint
+ALTER TABLE "properties" ADD COLUMN "listing_type" text DEFAULT 'Sale' NOT NULL;--> statement-breakpoint
 ALTER TABLE "communities" ADD COLUMN "property_types_en" text DEFAULT '' NOT NULL;--> statement-breakpoint
 ALTER TABLE "communities" ADD COLUMN "property_types_es" text DEFAULT '' NOT NULL;--> statement-breakpoint
 ALTER TABLE "communities" ADD COLUMN "size_min_m2" double precision;--> statement-breakpoint
 ALTER TABLE "communities" ADD COLUMN "size_max_m2" double precision;--> statement-breakpoint
 ALTER TABLE "shortlist_events" ADD CONSTRAINT "shortlist_events_property_id_properties_id_fk" FOREIGN KEY ("property_id") REFERENCES "public"."properties"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "idx_shortlist_events_prop_action" ON "shortlist_events" USING btree ("property_id","action","created_at");--> statement-breakpoint
-CREATE INDEX "idx_shortlist_events_created" ON "shortlist_events" USING btree ("created_at");
+CREATE INDEX "idx_shortlist_events_created" ON "shortlist_events" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "idx_properties_search" ON "properties" USING btree ("is_visible","property_type","price_usd","area_slug","listing_type") WHERE "properties"."is_visible" = true;

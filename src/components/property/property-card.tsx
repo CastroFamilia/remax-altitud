@@ -305,6 +305,18 @@ export function PropertyCard({
               {t(`zmtStatus.${property.zmtStatus as "titled" | "concession" | "zmt_restricted"}`)}
             </span>
           )}
+
+          {/* Transaction type badge (placed on image bottom-right overlay) */}
+          {property.listingType && (
+            <span
+              data-testid="listing-type-badge"
+              className={`absolute right-3 bottom-3 inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm border border-transparent backdrop-blur-sm ${
+                property.listingType === "Lease" ? "bg-brand-blue" : "bg-brand-navy"
+              }`}
+            >
+              {t(`listingType.${property.listingType as "Sale" | "Lease"}`)}
+            </span>
+          )}
         </div>
 
         {/* Card Body */}

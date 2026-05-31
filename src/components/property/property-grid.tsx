@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
 import { PropertyCard } from "@/components/property/property-card";
 import { NoResultsState } from "@/components/property/no-results-state";
@@ -19,6 +20,7 @@ interface PropertyGridProps {
   unitSystem?: UnitSystem;
   /** Story 3.8: Active search filters to forward to NoResultsState */
   filters?: SearchFilters;
+  className?: string;
 }
 
 export function PropertyGrid({
@@ -30,11 +32,12 @@ export function PropertyGrid({
   onPageChange,
   unitSystem,
   filters,
+  className,
 }: PropertyGridProps) {
   const tGrid = useTranslations("SearchPage.grid");
 
   if (isLoading) {
-    return <SearchResultsSkeleton />;
+    return <SearchResultsSkeleton className={className} />;
   }
 
   const totalCount = total ?? properties.length;
@@ -52,7 +55,10 @@ export function PropertyGrid({
   return (
     <div
       data-testid="property-grid"
-      className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6"
+      className={cn(
+        "grid gap-4 p-4 lg:gap-6",
+        className || "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+      )}
     >
       {currentPageItems.map((property) => (
         <PropertyCard

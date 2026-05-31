@@ -16,7 +16,7 @@ import { communities } from "@/lib/db/schema/communities";
 import { and, eq, gte, lte, isNotNull, desc, asc, sql, or, inArray } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
-import { mapPropertyRowToSearchItem } from "@/lib/db/queries/properties";
+import { mapPropertyRowToSearchItem, propertySearchColumns } from "@/lib/db/queries/properties";
 import { trackSearchInBackground } from "@/lib/services/tracking";
 
 export type RawBounds = {
@@ -367,6 +367,7 @@ export async function searchProperties(
     type: filters.type
       ? inArray(properties.propertyType, getPropertyTypeEquivalents(filters.type))
       : undefined,
+    listingType: filters.listingType ? eq(properties.listingType, filters.listingType) : undefined,
     priceMin: safePriceMin !== undefined ? gte(properties.priceUsd, safePriceMin) : undefined,
     priceMax: safePriceMax !== undefined ? lte(properties.priceUsd, safePriceMax) : undefined,
     bedrooms: bedrooms !== undefined ? gte(properties.bedrooms, bedrooms) : undefined,
@@ -406,24 +407,7 @@ export async function searchProperties(
 
   // Main properties query — limit 20 per page with offset for pagination (Story 3.5)
   const rows = await db
-    .select({
-      id: properties.id,
-      slug: properties.slug,
-      titleEn: properties.titleEn,
-      titleEs: properties.titleEs,
-      priceUsd: properties.priceUsd,
-      bedrooms: properties.bedrooms,
-      bathrooms: properties.bathrooms,
-      lotSizeM2: properties.lotSizeM2,
-      constructionM2: properties.constructionM2,
-      zmtStatus: properties.zmtStatus,
-      propertyType: properties.propertyType,
-      status: properties.status,
-      areaSlug: properties.areaSlug,
-      images: properties.images,
-      latitude: properties.latitude,
-      longitude: properties.longitude,
-    })
+    .select(propertySearchColumns)
     .from(properties)
     .leftJoin(communities, eq(properties.communityId, communities.id))
     .where(whereClause)
@@ -479,6 +463,17 @@ export async function searchProperties(
     .where(and(facetWhere("bathrooms"), isNotNull(properties.bathrooms)))
     .groupBy(properties.bathrooms);
 
+  // byListingType: apply every filter except `listingType`
+  const byListingTypeRows = await db
+    .select({
+      value: properties.listingType,
+      count: sql<number>`cast(count(*) as integer)`,
+    })
+    .from(properties)
+    .leftJoin(communities, eq(properties.communityId, communities.id))
+    .where(and(facetWhere("listingType"), isNotNull(properties.listingType)))
+    .groupBy(properties.listingType);
+
   // Total count — separate aggregation so `total` reflects the true result
   // count (not just the page slice). Pagination is Story 3.5.
   const totalRows = await db
@@ -507,6 +502,9 @@ export async function searchProperties(
     byBathrooms: byBathroomsRows
       .filter((r) => r.value !== null)
       .map((r) => ({ value: r.value as number, count: r.count })),
+    byListingType: byListingTypeRows
+      .filter((r) => r.value !== null)
+      .map((r) => ({ value: r.value as string, count: r.count })),
   };
 
   // Trigger tracking asynchronously in the background (fire and forget)
