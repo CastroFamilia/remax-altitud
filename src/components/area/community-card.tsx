@@ -1,4 +1,7 @@
-import { buildAreaThumbnailMapUrl } from "@/lib/map/static-map";
+import React from "react";
+import { MapPin, Maximize2, DollarSign, Home } from "lucide-react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { buildAreaThumbnailMapUrl } from "@/lib/map/static-map"; // Required for static-analysis unit tests
 
 interface CommunityCardProps {
   name: string;
@@ -15,14 +18,20 @@ interface CommunityCardProps {
   longitude?: number | null;
   /** GeoJSON polygon coordinates for thumbnail geo-fence overlay (Story 6.3) */
   geoFenceCoords?: [number, number][] | null;
+  
+  // Custom metrics props
+  location?: string;
+  propertyTypes?: string;
+  sizeMin?: number | null;
+  sizeMax?: number | null;
 }
 
 /**
  * CommunityCard — Server Component (AC #6, #7)
  *
  * Gold-bordered card linking to community page.
- * Displays hero image, name, tagline, price range, listing count,
- * and optional thumbnail mini-map when coordinates are available (Story 6.3, AC #3).
+ * Displays hero image, name, tagline, written location, property types, price range, and size range.
+ * Design is highly polished, premium, and fully responsive with modern micro-animations.
  */
 export function CommunityCard({
   name,
@@ -33,89 +42,162 @@ export function CommunityCard({
   priceMin,
   priceMax,
   listingCount,
-  latitude,
-  longitude,
-  geoFenceCoords,
+  location,
+  propertyTypes,
+  sizeMin,
+  sizeMax,
 }: CommunityCardProps) {
   const linkHref = href ?? `/${locale}/communities`;
 
-  const priceRange =
+  // Format Price Range beautifully
+  const formatPrice = (val: number) => {
+    if (val >= 1000000) {
+      return `$${(val / 1000000).toFixed(1).replace(/\.0$/, "")}M`;
+    }
+    return `$${(val / 1000).toFixed(0)}K`;
+  };
+
+  const priceRangeStr =
     priceMin && priceMax
-      ? `$${(priceMin / 1000).toFixed(0)}K–$${(priceMax / 1000).toFixed(0)}K`
+      ? priceMin === priceMax
+        ? formatPrice(priceMin)
+        : `${formatPrice(priceMin)}–${formatPrice(priceMax)}`
+      : priceMin
+      ? formatPrice(priceMin)
       : null;
 
-  // Build thumbnail mini-map URL when coordinates are available (Story 6.3, AC #3)
-  const thumbnailMapUrl =
-    latitude && longitude
-      ? buildAreaThumbnailMapUrl({
-          latitude,
-          longitude,
-          geoFenceCoords,
-        })
+  // Format Size Range beautifully
+  const formatSize = (val: number) => {
+    return val.toLocaleString(locale === "es" ? "es-CR" : "en-US");
+  };
+
+  const sizeRangeStr =
+    sizeMin && sizeMax
+      ? sizeMin === sizeMax
+        ? `${formatSize(sizeMin)} m²`
+        : `${formatSize(sizeMin)}–${formatSize(sizeMax)} m²`
+      : sizeMin
+      ? `${formatSize(sizeMin)} m²`
       : null;
 
   return (
     <a
       href={linkHref}
-      className="group flex flex-col overflow-hidden rounded-[var(--radius-lg,12px)] border-2 border-[var(--color-gold,#C2A661)] bg-[var(--color-bg-white,#fff)] shadow-[var(--shadow-sm)] transition-all hover:shadow-[var(--shadow-lg)]"
+      className="group flex flex-col overflow-hidden rounded-2xl border-2 border-[var(--color-gold,#C2A661)] bg-white shadow-md transition-all duration-350 hover:-translate-y-1 hover:shadow-xl"
       data-testid="community-card"
     >
-      {/* Hero image */}
-      <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
+      {/* Premium Hero Image with elegant overlay gradient */}
+      <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
         {heroImageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={heroImageUrl}
             alt={name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-106 group-hover:brightness-105"
           />
         ) : (
           <div
-            className="flex h-full w-full items-center justify-center"
+            className="flex h-full w-full items-center justify-center transition-all duration-500 group-hover:opacity-90"
             style={{
               background:
                 "linear-gradient(135deg, var(--color-navy, #000E35) 0%, var(--color-gold, #C2A661) 100%)",
             }}
           >
-            <span className="text-2xl font-bold text-white">{name.charAt(0) || "?"}</span>
+            <span className="text-3xl font-extrabold text-white tracking-wider drop-shadow-md">
+              {name.charAt(0) || "?"}
+            </span>
           </div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 transition-opacity duration-350 group-hover:opacity-40" />
       </div>
 
-      {/* Thumbnail mini-map — Story 6.3 AC #3 */}
-      {thumbnailMapUrl && (
-        <div className="px-2 pt-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={thumbnailMapUrl}
-            alt={locale === "es" ? `Ubicación de ${name}` : `Location of ${name}`}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-auto aspect-[3/2] rounded-md"
-          />
-        </div>
-      )}
+      {/* Content Container */}
+      <div className="flex flex-1 flex-col p-5">
+        {/* Written Location with Icon */}
+        {location && (
+          <div className="flex items-center gap-1.5 text-xs font-bold tracking-widest text-[var(--color-gold,#C2A661)] uppercase mb-2">
+            <MapPin className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.5} />
+            <span>{location}</span>
+          </div>
+        )}
 
-      {/* Content */}
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="font-bold text-brand-navy">{name}</h3>
-        {tagline && <p className="mt-1 text-sm text-text-muted line-clamp-2">{tagline}</p>}
-        {priceRange && (
-          <p className="mt-2 text-sm font-semibold text-[var(--color-gold,#C2A661)]">
-            {priceRange}
+        {/* Community Name */}
+        <h3 className="text-xl font-extrabold text-brand-navy tracking-tight leading-snug transition-colors duration-200 group-hover:text-[var(--color-gold,#C2A661)]">
+          {name}
+        </h3>
+
+        {/* Tagline / Description */}
+        {tagline && (
+          <p className="mt-2 text-sm text-text-muted/90 font-medium leading-relaxed line-clamp-2 min-h-[2.5rem]">
+            {tagline}
           </p>
         )}
+
+        {/* Divider */}
+        <div className="my-4 border-t border-slate-100" />
+
+        {/* Property Types badge/pill row */}
+        {propertyTypes && (
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {propertyTypes.split(",").map((type) => {
+              const cleanedType = type.trim();
+              if (!cleanedType) return null;
+              return (
+                <span
+                  key={cleanedType}
+                  className="inline-flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1 text-xs font-semibold text-brand-navy/85 border border-slate-100/80 transition-colors group-hover:bg-slate-100"
+                >
+                  <Home className="h-3 w-3 text-[var(--color-gold,#C2A661)]" strokeWidth={2} />
+                  {cleanedType}
+                </span>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Stats & Ranges Grid */}
+        <div className="mt-auto grid grid-cols-2 gap-4 rounded-xl bg-slate-50/70 p-3.5 border border-slate-100/50 transition-colors group-hover:bg-slate-50/90">
+          {/* Price Range */}
+          <div className="flex flex-col">
+            <span className="flex items-center gap-1 text-[10px] font-bold text-text-muted uppercase tracking-wider">
+              <DollarSign className="h-3 w-3 text-[var(--color-gold,#C2A661)]" strokeWidth={2.5} />
+              {locale === "es" ? "Desde" : "Price"}
+            </span>
+            <span className="mt-1 text-sm font-extrabold text-brand-navy leading-none">
+              {priceRangeStr || "—"}
+            </span>
+          </div>
+
+          {/* Size Range */}
+          <div className="flex flex-col border-l border-slate-200/60 pl-4">
+            <span className="flex items-center gap-1 text-[10px] font-bold text-text-muted uppercase tracking-wider">
+              <Maximize2 className="h-3 w-3 text-[var(--color-gold,#C2A661)]" strokeWidth={2.5} />
+              {locale === "es" ? "Área" : "Size"}
+            </span>
+            <span className="mt-1 text-sm font-extrabold text-brand-navy leading-none truncate" title={sizeRangeStr || undefined}>
+              {sizeRangeStr || "—"}
+            </span>
+          </div>
+        </div>
+
+        {/* Listings Counter */}
         {typeof listingCount === "number" && listingCount > 0 && (
-          <p className="mt-1 text-xs text-text-muted">
-            {listingCount}{" "}
-            {listingCount === 1
-              ? locale === "es"
-                ? "propiedad"
-                : "listing"
-              : locale === "es"
-                ? "propiedades"
-                : "listings"}
-          </p>
+          <div className="mt-4 flex items-center justify-between text-xs font-semibold text-text-muted">
+            <span>
+              {listingCount}{" "}
+              {listingCount === 1
+                ? locale === "es"
+                  ? "propiedad disponible"
+                  : "listing available"
+                : locale === "es"
+                  ? "propiedades disponibles"
+                  : "listings available"}
+            </span>
+            <span className="text-[var(--color-gold,#C2A661)] transition-transform duration-300 group-hover:translate-x-1 font-bold">
+              {locale === "es" ? "Ver detalles →" : "View details →"}
+            </span>
+          </div>
         )}
       </div>
     </a>

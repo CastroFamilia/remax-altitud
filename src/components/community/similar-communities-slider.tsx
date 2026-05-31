@@ -3,11 +3,13 @@
 import { useTranslations } from "next-intl";
 import type { Community } from "@/lib/db/schema/communities";
 import { CommunityCard } from "@/components/area/community-card";
+import { sortCommunitiesCustom } from "@/lib/db/queries/communities";
 
 interface SimilarCommunitiesSliderProps {
   communities: Community[];
   locale: string;
   areaSlug: string;
+  areaName?: string;
 }
 
 /**
@@ -21,6 +23,7 @@ export function SimilarCommunitiesSlider({
   communities,
   locale,
   areaSlug,
+  areaName,
 }: SimilarCommunitiesSliderProps) {
   const t = useTranslations("CommunityPage");
 
@@ -37,8 +40,16 @@ export function SimilarCommunitiesSlider({
         role="region"
         aria-label={t("similarCommunities.heading")}
       >
-        {communities.map((community) => {
+        {sortCommunitiesCustom(communities).map((community) => {
           const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
+          const qf = (community.quickFacts || {}) as Record<string, unknown>;
+
+          const propertyTypes = (locale === "es"
+            ? (community.propertyTypesEs || qf.propertyTypesEs || qf.propertyTypes || "")
+            : (community.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || "")) as string;
+
+          const sizeMin = community.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
+          const sizeMax = community.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
 
           return (
             <div key={community.slug} className="w-72 flex-shrink-0">
@@ -51,6 +62,10 @@ export function SimilarCommunitiesSlider({
                 priceMin={community.priceMinUsd}
                 priceMax={community.priceMaxUsd}
                 listingCount={community.listingCount}
+                location={areaName}
+                propertyTypes={propertyTypes}
+                sizeMin={sizeMin}
+                sizeMax={sizeMax}
               />
             </div>
           );

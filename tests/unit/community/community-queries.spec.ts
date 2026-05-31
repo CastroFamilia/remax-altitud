@@ -659,3 +659,50 @@ describe("getCommunitiesByAreaId — communities for area guide (AC #7)", () => 
     },
   );
 });
+
+// ---------------------------------------------------------------------------
+// sortCommunitiesCustom — dynamic custom community sorting (User Request)
+// ---------------------------------------------------------------------------
+
+describe("sortCommunitiesCustom — custom community sorting order", () => {
+  it("should sort communities in the exact order requested by the user", async () => {
+    const { sortCommunitiesCustom } = await import(
+      "@/lib/db/queries/communities"
+    );
+
+    const unsorted = [
+      { slug: "villas-san-miguel", name: "Villas San Miguel" },
+      { slug: "rise-costa-rica", name: "RISE" },
+      { slug: "residencial-la-piedra", name: "Residencial La Piedra" },
+      { slug: "harmony-heights", name: "Harmony Heights" },
+      { slug: "santa-elena-hills", name: "Santa Elena Hills" },
+      { slug: "serena-san-mateo", name: "SERENA" },
+    ];
+
+    const sorted = sortCommunitiesCustom(unsorted);
+
+    expect(sorted).toHaveLength(6);
+    expect(sorted[0].slug).toBe("rise-costa-rica");
+    expect(sorted[1].slug).toBe("santa-elena-hills");
+    expect(sorted[2].slug).toBe("harmony-heights");
+    expect(sorted[3].slug).toBe("serena-san-mateo");
+    expect(sorted[4].slug).toBe("residencial-la-piedra");
+    expect(sorted[5].slug).toBe("villas-san-miguel");
+  });
+
+  it("should place unrecognized community slugs at the end of the list", async () => {
+    const { sortCommunitiesCustom } = await import(
+      "@/lib/db/queries/communities"
+    );
+
+    const list = [
+      { slug: "unknown-community", name: "Unknown" },
+      { slug: "rise-costa-rica", name: "RISE" },
+    ];
+
+    const sorted = sortCommunitiesCustom(list);
+
+    expect(sorted[0].slug).toBe("rise-costa-rica");
+    expect(sorted[1].slug).toBe("unknown-community");
+  });
+});

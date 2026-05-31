@@ -3,6 +3,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CommunityCard } from "@/components/area/community-card";
+import { sortCommunitiesCustom } from "@/lib/db/queries/communities";
+
+interface AreaInfo {
+  slug: string;
+  nameEn: string;
+  nameEs: string;
+}
 
 interface CommunityRow {
   slug: string;
@@ -13,17 +20,23 @@ interface CommunityRow {
   priceMinUsd: number | null;
   priceMaxUsd: number | null;
   listingCount: number;
+  areaId: string;
+  propertyTypesEn?: string | null;
+  propertyTypesEs?: string | null;
+  sizeMinM2?: number | null;
+  sizeMaxM2?: number | null;
+  quickFacts?: unknown;
 }
 
 interface FeaturedCommunitiesCarouselProps {
   communities: CommunityRow[];
-  areaMap: Record<string, string>;
+  areaInfoMap: Record<string, AreaInfo>;
   locale: string;
 }
 
 export function FeaturedCommunitiesCarousel({
   communities,
-  areaMap,
+  areaInfoMap,
   locale,
 }: FeaturedCommunitiesCarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,6 +76,7 @@ export function FeaturedCommunitiesCarousel({
         container.removeEventListener("scroll", handleScroll);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [communities.length]);
 
   // Scroll function
@@ -109,10 +123,23 @@ export function FeaturedCommunitiesCarousel({
         className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-6 pt-2 px-1 scroll-smooth"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {communities.map((community) => {
+        {sortCommunitiesCustom(communities).map((community) => {
           const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
-          // Look up area slug (default to perez-zeledon if not resolved)
-          const areaSlug = "perez-zeledon";
+          
+          // Resolve area info from areaInfoMap
+          const areaInfo = areaInfoMap[community.areaId];
+          const areaSlug = areaInfo?.slug || "perez-zeledon";
+          const location = locale === "es" ? areaInfo?.nameEs : areaInfo?.nameEn;
+
+          // Parse fallbacks from quickFacts
+          const qf = (community.quickFacts || {}) as Record<string, unknown>;
+
+          const propertyTypes = (locale === "es"
+            ? (community.propertyTypesEs || qf.propertyTypesEs || qf.propertyTypes || "")
+            : (community.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || "")) as string;
+
+          const sizeMin = community.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
+          const sizeMax = community.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
 
           return (
             <div
@@ -129,6 +156,10 @@ export function FeaturedCommunitiesCarousel({
                   priceMin={community.priceMinUsd}
                   priceMax={community.priceMaxUsd}
                   listingCount={community.listingCount}
+                  location={location}
+                  propertyTypes={propertyTypes}
+                  sizeMin={sizeMin}
+                  sizeMax={sizeMax}
                 />
               </div>
             </div>

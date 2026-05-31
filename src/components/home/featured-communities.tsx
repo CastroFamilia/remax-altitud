@@ -17,14 +17,24 @@ export async function FeaturedCommunities({ locale }: FeaturedCommunitiesProps) 
   const t = await getTranslations({ locale, namespace: "HomePage.featuredCommunities" });
 
   let communities: Awaited<ReturnType<typeof getFeaturedCommunities>> = [];
-  let areaMap: Record<string, string> = {};
+  interface AreaInfo {
+    slug: string;
+    nameEn: string;
+    nameEs: string;
+  }
+  let areaInfoMap: Record<string, AreaInfo> = {};
   try {
     const [communitiesData, areasData] = await Promise.all([
       getFeaturedCommunities(6),
       getAllAreas(),
     ]);
     communities = communitiesData;
-    areaMap = Object.fromEntries(areasData.map((a) => [a.id, a.slug]));
+    areaInfoMap = Object.fromEntries(
+      areasData.map((a) => [
+        a.id,
+        { slug: a.slug, nameEn: a.nameEn, nameEs: a.nameEs },
+      ])
+    );
   } catch {
     // DB unavailable — render shell fallback
   }
@@ -71,7 +81,7 @@ export async function FeaturedCommunities({ locale }: FeaturedCommunitiesProps) 
         </a>
       </div>
 
-      <FeaturedCommunitiesCarousel communities={communities} areaMap={areaMap} locale={locale} />
+      <FeaturedCommunitiesCarousel communities={communities} areaInfoMap={areaInfoMap} locale={locale} />
     </section>
   );
 }

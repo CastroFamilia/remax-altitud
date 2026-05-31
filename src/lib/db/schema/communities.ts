@@ -36,6 +36,10 @@ export const communities = pgTable("communities", {
   priceMinUsd: integer("price_min_usd"),
   priceMaxUsd: integer("price_max_usd"),
   listingCount: integer("listing_count").notNull().default(0),
+  propertyTypesEn: text("property_types_en").notNull().default(""),
+  propertyTypesEs: text("property_types_es").notNull().default(""),
+  sizeMinM2: doublePrecision("size_min_m2"),
+  sizeMaxM2: doublePrecision("size_max_m2"),
   quickFacts: jsonb("quick_facts")
     .notNull()
     .default(sql`'{}'::jsonb`),
