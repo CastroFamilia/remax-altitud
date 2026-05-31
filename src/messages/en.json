@@ -79,6 +79,8 @@
       "searchSubmit": "Search",
       "smartToggle": "Smart Search",
       "traditionalToggle": "Traditional Search",
+      "buyOption": "Buy",
+      "rentOption": "Rent",
       "shellNotice": "",
       "vipPrompt": "Looking in other areas of the country or the world?",
       "vipCta": "Connect with our VIP Buyers Service"
@@ -358,6 +360,10 @@
       "clearAll": "Clear all",
       "activeChip": "{label}: {value}",
       "dismiss": "Remove {label} filter",
+      "listingType": "Listing Type",
+      "listingTypeAll": "All Transactions",
+      "listingTypeSale": "For Sale",
+      "listingTypeLease": "For Lease",
       "propertyTypes": {
         "Casa": "House",
         "Apartamento": "Apartment",
@@ -425,6 +431,10 @@
     }
   },
   "PropertyCard": {
+    "listingType": {
+      "Sale": "For Sale",
+      "Lease": "For Lease"
+    },
     "saveProperty": "Save property",
     "removeFromSaved": "Remove from saved",
     "shortlistFull": "Shortlist full (20 max)",
@@ -470,6 +480,10 @@
     "thumbnailStripLabel": "{title} photos"
   },
   "ListingDetail": {
+    "listingType": {
+      "Sale": "For Sale",
+      "Lease": "For Lease"
+    },
     "description": "Description",
     "features": "Features & Amenities",
     "specs": {

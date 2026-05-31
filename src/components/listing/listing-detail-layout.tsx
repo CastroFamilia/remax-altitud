@@ -139,6 +139,22 @@ export async function ListingDetailLayout({
                       {t(`zmtStatus.${zmtStatusKey}` as Parameters<typeof t>[0])}
                     </span>
                   )}
+
+                  {/* Transaction type badge */}
+                  {property.listingType && (
+                    <span
+                      data-testid="listing-type-detail-badge"
+                      className={`ml-2 mt-2 inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold text-white ${
+                        property.listingType === "Lease" ? "bg-brand-blue" : "bg-brand-navy"
+                      }`}
+                    >
+                      {t(
+                        `listingType.${property.listingType as "Sale" | "Lease"}` as Parameters<
+                          typeof t
+                        >[0],
+                      )}
+                    </span>
+                  )}
                 </div>
                 <div className="flex-shrink-0 flex items-center">
                   <SaveButton propertyId={property.id} propertyTitle={title} />

@@ -31,6 +31,7 @@ export interface UseSearchFiltersReturn {
 /** URL param names — short, human-readable, lowercase (UX spec §9 SEO) */
 const PARAM_MAP: Record<keyof SearchFilters, string> = {
   type: "type",
+  listingType: "listing_type",
   priceMin: "price_min",
   priceMax: "price_max",
   bedrooms: "bedrooms",
@@ -71,6 +72,7 @@ export function buildSearchUrl(pathname: string, filters: SearchFilters): string
 /** Filter keys that count toward activeFilterCount (exclude view and sort) */
 const FILTER_KEYS: Array<keyof SearchFilters> = [
   "type",
+  "listingType",
   "priceMin",
   "priceMax",
   "bedrooms",
@@ -98,6 +100,9 @@ function parseFilters(params: URLSearchParams): SearchFilters {
 
   const type = params.get("type");
   if (type) filters.type = type;
+
+  const listingType = params.get("listing_type");
+  if (listingType) filters.listingType = listingType;
 
   const priceMin = parseInt(params.get("price_min") ?? "", 10);
   if (Number.isFinite(priceMin) && priceMin >= 0) filters.priceMin = priceMin;

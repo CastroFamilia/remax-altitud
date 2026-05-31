@@ -23,6 +23,7 @@ interface FilterChipsProps {
 /** Filter keys that generate chips (exclude 'view' and 'sort') */
 const CHIP_KEYS: Array<keyof SearchFilters> = [
   "type",
+  "listingType",
   "priceMin",
   "priceMax",
   "bedrooms",
@@ -52,6 +53,15 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
       reactKey: "type",
       label: t("filters.type"),
       value: filters.type,
+    });
+  }
+
+  if (filters.listingType) {
+    chips.push({
+      key: "listingType",
+      reactKey: "listingType",
+      label: t("filters.listingType"),
+      value: t(`filters.listingType${filters.listingType}`),
     });
   }
 

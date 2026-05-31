@@ -66,6 +66,23 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
     <div className="flex flex-wrap items-center gap-3 w-full">
       {/* Story 3.4: Lifestyle tag chips (AC #1, #2, #3) */}
       <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
+      {/* Listing Type dropdown (Sale / Lease) */}
+      <div className="flex flex-col gap-1">
+        <label className="text-xs font-medium text-muted-foreground">
+          {t("filters.listingType")}
+        </label>
+        <select
+          data-testid="listing-type-filter"
+          className="rounded border border-border bg-background px-2 py-1 text-sm"
+          value={filters.listingType ?? ""}
+          onChange={(e) => setFilter("listingType", e.target.value || undefined)}
+        >
+          <option value="">{t("filters.listingTypeAll")}</option>
+          <option value="Sale">{t("filters.listingTypeSale")}</option>
+          <option value="Lease">{t("filters.listingTypeLease")}</option>
+        </select>
+      </div>
+
       {/* Type dropdown (AC #1) */}
       <div className="flex flex-col gap-1">
         <label className="text-xs font-medium text-muted-foreground">{t("filters.type")}</label>
@@ -215,6 +232,23 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
 
             {/* Row 2: Structured inputs, perfectly balanced to fill the horizontal space */}
             <div className="flex flex-wrap lg:flex-nowrap items-end gap-5 w-full">
+              {/* Listing Type dropdown */}
+              <div className="flex flex-col gap-1.5 flex-1 min-w-[140px]">
+                <label className="text-xs font-semibold text-brand-navy/80">
+                  {t("filters.listingType")}
+                </label>
+                <select
+                  data-testid="listing-type-filter"
+                  className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
+                  value={filters.listingType ?? ""}
+                  onChange={(e) => setFilter("listingType", e.target.value || undefined)}
+                >
+                  <option value="">{t("filters.listingTypeAll")}</option>
+                  <option value="Sale">{t("filters.listingTypeSale")}</option>
+                  <option value="Lease">{t("filters.listingTypeLease")}</option>
+                </select>
+              </div>
+
               {/* Type dropdown */}
               <div className="flex flex-col gap-1.5 flex-1 min-w-[150px]">
                 <label className="text-xs font-semibold text-brand-navy/80">

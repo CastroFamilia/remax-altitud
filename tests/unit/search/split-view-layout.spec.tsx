@@ -142,7 +142,7 @@ describe("SplitViewLayout", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P0] renders map panel with lg:w-[60%] and grid panel with lg:w-[40%] when viewMode='split'",
+    "[P0] renders map panel with lg:w-[35%] and grid panel with lg:w-[65%] when viewMode='split'",
     () => {
       render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
 
@@ -152,8 +152,8 @@ describe("SplitViewLayout", () => {
       expect(mapPanel).not.toBeNull();
       expect(gridPanel).not.toBeNull();
       // Desktop responsive classes — mobile-first; lg: prefix targets ≥1024px
-      expect(mapPanel?.className).toContain("lg:w-[60%]");
-      expect(gridPanel?.className).toContain("lg:w-[40%]");
+      expect(mapPanel?.className).toContain("lg:w-[35%]");
+      expect(gridPanel?.className).toContain("lg:w-[65%]");
 
       // Grid panel must be scrollable
       expect(gridPanel?.className).toContain("overflow-y-auto");

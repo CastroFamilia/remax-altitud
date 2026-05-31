@@ -26,6 +26,7 @@ export const properties = pgTable(
       .references(() => offices.id),
     slug: text("slug").notNull().unique(),
     propertyType: text("property_type").notNull(),
+    listingType: text("listing_type").notNull().default("Sale"),
     status: text("status").notNull().default("active"),
     priceUsd: integer("price_usd").notNull(),
     currency: text("currency").notNull().default("USD"),
@@ -71,7 +72,7 @@ export const properties = pgTable(
     geoIdx: index("idx_properties_geo").using("gist", table.geo),
     tagsIdx: index("idx_properties_tags").using("gin", table.lifestyleTags),
     searchIdx: index("idx_properties_search")
-      .on(table.isVisible, table.propertyType, table.priceUsd, table.areaSlug)
+      .on(table.isVisible, table.propertyType, table.priceUsd, table.areaSlug, table.listingType)
       .where(sql`${table.isVisible} = true`),
     communityIdx: index("idx_properties_community")
       .on(table.communityId)

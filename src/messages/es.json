@@ -79,6 +79,8 @@
       "searchSubmit": "Buscar",
       "smartToggle": "Búsqueda Inteligente",
       "traditionalToggle": "Búsqueda Tradicional",
+      "buyOption": "Comprar",
+      "rentOption": "Alquilar",
       "shellNotice": "",
       "vipPrompt": "¿Busca en otras zonas del país o del mundo?",
       "vipCta": "Conozca nuestro Servicio de Comprador VIP"
@@ -358,6 +360,10 @@
       "clearAll": "Borrar todo",
       "activeChip": "{label}: {value}",
       "dismiss": "Eliminar filtro {label}",
+      "listingType": "Transacción",
+      "listingTypeAll": "Todas",
+      "listingTypeSale": "En Venta",
+      "listingTypeLease": "En Alquiler",
       "propertyTypes": {
         "Casa": "Casa",
         "Apartamento": "Apartamento",
@@ -425,6 +431,10 @@
     }
   },
   "PropertyCard": {
+    "listingType": {
+      "Sale": "En Venta",
+      "Lease": "En Alquiler"
+    },
     "saveProperty": "Guardar propiedad",
     "removeFromSaved": "Quitar de guardados",
     "shortlistFull": "Lista llena (máx. 20)",
@@ -470,6 +480,10 @@
     "thumbnailStripLabel": "Fotos de {title}"
   },
   "ListingDetail": {
+    "listingType": {
+      "Sale": "En Venta",
+      "Lease": "En Alquiler"
+    },
     "description": "Descripción",
     "features": "Características y Amenidades",
     "specs": {

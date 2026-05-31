@@ -38,6 +38,28 @@ async function getAreaIdBySlug(slug: string): Promise<string | null> {
   return areaCache.get(slug) ?? null;
 }
 
+const AREA_CENTERS = [
+  { slug: "perez-zeledon", lat: 9.37, lng: -83.7 },
+  { slug: "tinamastes-platanillo", lat: 9.28, lng: -83.77 },
+  { slug: "dominical", lat: 9.25, lng: -83.86 },
+  { slug: "uvita", lat: 9.17, lng: -83.74 },
+  { slug: "ojochal", lat: 9.08, lng: -83.65 },
+];
+
+function getDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
 function containsWholeWord(text: string, word: string): boolean {
   const regex = new RegExp(`(?:^|[^a-záéíóúüñ])${word}(?:$|[^a-záéíóúüñ])`, "i");
   return regex.test(text);
@@ -50,6 +72,8 @@ export function resolveAreaSlug(raw: {
   titleEs: string;
   publicRemarksEn: string | null;
   publicRemarksEs: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }): string {
   const titleAndLocation = [raw.titleEn, raw.titleEs, raw.location ?? ""].join(" ").toLowerCase();
 
@@ -125,7 +149,28 @@ export function resolveAreaSlug(raw: {
     return "perez-zeledon";
   }
 
-  // 5. Office-based Fallbacks
+  // 5. Geographic Bounding / Distance Fallback
+  if (raw.latitude != null && raw.longitude != null) {
+    const lat = Number(raw.latitude);
+    const lon = Number(raw.longitude);
+    if (lat !== 0 && lon !== 0 && !isNaN(lat) && !isNaN(lon)) {
+      let closestSlug = "dominical";
+      let minDistance = Infinity;
+      for (const center of AREA_CENTERS) {
+        const dist = getDistance(lat, lon, center.lat, center.lng);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestSlug = center.slug;
+        }
+      }
+      // If closest area is within 30km (Southern Zone covers ~50km max), resolve to it
+      if (minDistance < 30) {
+        return closestSlug;
+      }
+    }
+  }
+
+  // 6. Office-based Fallbacks
   if (raw.officeApiId === 218) {
     return "perez-zeledon";
   }
@@ -156,6 +201,7 @@ export async function upsertProperty(
     officeId,
     slug: baseSlug || raw.apiId, // fallback to apiId if title produces empty slug
     propertyType: raw.propertyTypeEn,
+    listingType: raw.listingType ?? "Sale",
     priceUsd: Math.round(raw.priceUsd),
     currency: raw.currency ?? "USD",
     bedrooms: raw.bedrooms ?? null,
@@ -186,6 +232,7 @@ export async function upsertProperty(
 
   const mutableSet = {
     propertyType: values.propertyType,
+    listingType: values.listingType,
     priceUsd: values.priceUsd,
     currency: values.currency,
     bedrooms: values.bedrooms,
@@ -469,6 +516,7 @@ export function mapPropertyRowToSearchItem(row: {
   apiRaw?: unknown;
   descriptionEn?: string | null;
   descriptionEs?: string | null;
+  listingType?: string | null;
 }): PropertySearchItem {
   return {
     id: row.id,
@@ -491,6 +539,7 @@ export function mapPropertyRowToSearchItem(row: {
     apiRaw: row.apiRaw as Record<string, unknown> | null,
     descriptionEn: row.descriptionEn ?? "",
     descriptionEs: row.descriptionEs ?? "",
+    listingType: row.listingType ?? "Sale",
   };
 }
 
@@ -507,6 +556,7 @@ export const propertySearchColumns = {
   constructionM2: properties.constructionM2,
   zmtStatus: properties.zmtStatus,
   propertyType: properties.propertyType,
+  listingType: properties.listingType,
   status: properties.status,
   areaSlug: properties.areaSlug,
   images: properties.images,

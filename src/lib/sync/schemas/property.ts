@@ -129,6 +129,7 @@ export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
     apiKey: p.ListingKey,
     propertyTypeEn: p.PropertyTypeName_en,
     propertyTypeEs: p.PropertyTypeName_es,
+    listingType: p.ContractType_en ?? "Sale",
     titleEn,
     titleEs,
     publicRemarksEn: p.PublicRemarks_en ?? null,

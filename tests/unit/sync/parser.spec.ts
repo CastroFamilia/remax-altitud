@@ -95,6 +95,62 @@ describe("parsePropertyArray", () => {
     expect(records[0].priceUsd).toBe(9709);
   });
 
+  it("parses ContractType_en and sets listingType correctly", () => {
+    const rawPropWithLease = {
+      ListingId: 163898,
+      ListingKey: "400343886055",
+      PropertyTypeName_en: "Lot/Land",
+      PropertyTypeName_es: "Lote/Terreno",
+      ListingTitle_en: "Beautiful lease land",
+      Status: "Active",
+      Furnishedyn: "N",
+      Garage: "N",
+      MaidRoom: "N",
+      Cooling: "N",
+      PoolPrivate: "N",
+      Viewyn: "N",
+      GatedCommunity: "N",
+      ListPrice: 1500,
+      CurrencyId: 1,
+      CurrencyListPrice: "(USD) US Dollar",
+      AssociateId: 3886,
+      OfficeID: 218,
+      ContractType_en: "Lease",
+      ContractType_es: "Renta",
+    };
+    
+    const { records } = parsePropertyArray([rawPropWithLease]);
+    expect(records).toHaveLength(1);
+    expect(records[0].listingType).toBe("Lease");
+  });
+
+  it("defaults listingType to 'Sale' if ContractType_en is missing", () => {
+    const rawPropNoContractType = {
+      ListingId: 163899,
+      ListingKey: "400343886056",
+      PropertyTypeName_en: "Lot/Land",
+      PropertyTypeName_es: "Lote/Terreno",
+      ListingTitle_en: "Land without contract type",
+      Status: "Active",
+      Furnishedyn: "N",
+      Garage: "N",
+      MaidRoom: "N",
+      Cooling: "N",
+      PoolPrivate: "N",
+      Viewyn: "N",
+      GatedCommunity: "N",
+      ListPrice: 199000,
+      CurrencyId: 1,
+      CurrencyListPrice: "(USD) US Dollar",
+      AssociateId: 3886,
+      OfficeID: 218,
+    };
+    
+    const { records } = parsePropertyArray([rawPropNoContractType]);
+    expect(records).toHaveLength(1);
+    expect(records[0].listingType).toBe("Sale");
+  });
+
   it("returns an error payload when the root is not an array", () => {
     const result = parsePropertyArray({ oops: "not an array" });
     expect(result.records).toEqual([]);
