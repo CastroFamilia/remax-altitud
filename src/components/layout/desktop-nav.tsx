@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { mainNavItems, type NavItem } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/layout/language-toggle";
+import { CurrencyToggle } from "@/components/layout/currency-toggle";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -45,8 +46,9 @@ export function DesktopNav() {
           ))}
         </NavigationMenuList>
       </NavigationMenu>
-      <div className="ml-2 border-l border-white/20 pl-3">
+      <div className="ml-2 border-l border-white/20 pl-3 flex items-center gap-4">
         <LanguageToggle />
+        <CurrencyToggle />
       </div>
     </nav>
   );

@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import { SaveButton } from "@/components/shortlist/save-button";
 import { ShareButton } from "@/components/property/share-button";
 import { convertArea, type UnitSystem } from "@/lib/utils/units";
-import { formatUSD, formatEUR, isNonUSLocale } from "@/lib/utils/currency";
+import { PropertyPriceDisplay } from "@/components/property/property-price-display";
+import { formatUSD } from "@/lib/utils/currency";
 import type { PropertySearchItem } from "@/types/search";
 
 interface PropertyCardProps {
@@ -140,22 +141,12 @@ export function PropertyCard({
           className={`flex flex-col gap-2 ${isCompact ? "p-3" : "p-4"} ${isHorizontal ? "w-[60%]" : ""}`}
         >
           {/* Price */}
-          <p
-            data-testid="property-price"
-            className="font-bold text-xl text-[--color-accent] flex flex-wrap items-baseline gap-1.5"
-          >
-            <span>{usdPrice}</span>
-            {property.currency === "CRC" && originalPriceColones != null && (
-              <span className="text-xs font-semibold text-muted-foreground">
-                (₡{originalPriceColones.toLocaleString("es-CR")})
-              </span>
-            )}
-          </p>
-          {isNonUSLocale(locale) && (
-            <p data-testid="property-price-eur" className="text-xs text-muted-foreground">
-              ≈ {formatEUR(property.priceUsd, locale)}
-            </p>
-          )}
+          <PropertyPriceDisplay
+            priceUsd={property.priceUsd || 0}
+            originalCurrency={property.currency}
+            originalPriceColones={originalPriceColones}
+            locale={locale}
+          />
 
           {/* Title */}
           <h3
