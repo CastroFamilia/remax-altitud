@@ -4,7 +4,7 @@
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { shortlistShares } from "@/lib/db/schema/shortlist-shares";
-import { inArray, eq, and } from "drizzle-orm";
+import { inArray, eq, and, or } from "drizzle-orm";
 import { mapPropertyRowToSearchItem, propertySearchColumns } from "@/lib/db/queries/properties";
 import type { PropertySearchItem } from "@/types/search";
 import { randomBytes } from "crypto";
@@ -17,10 +17,23 @@ import { getAllAgents } from "@/lib/db/queries/agents";
 export async function getShortlistProperties(ids: string[]): Promise<PropertySearchItem[]> {
   if (!ids || ids.length === 0) return [];
 
+  const uuids = ids.filter((id) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id),
+  );
+  const apiIds = ids.filter(
+    (id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id),
+  );
+
+  const conditions = [];
+  if (uuids.length > 0) conditions.push(inArray(properties.id, uuids));
+  if (apiIds.length > 0) conditions.push(inArray(properties.apiId, apiIds));
+
+  if (conditions.length === 0) return [];
+
   const rows = await db
     .select(propertySearchColumns)
     .from(properties)
-    .where(and(inArray(properties.id, ids), eq(properties.isVisible, true)));
+    .where(and(or(...conditions), eq(properties.isVisible, true)));
 
   return rows.map(mapPropertyRowToSearchItem);
 }
@@ -106,6 +119,19 @@ import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 export async function getShortlistPropertiesWithAgents(ids: string[]): Promise<any[]> {
   if (!ids || ids.length === 0) return [];
 
+  const uuids = ids.filter((id) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id),
+  );
+  const apiIds = ids.filter(
+    (id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id),
+  );
+
+  const conditions = [];
+  if (uuids.length > 0) conditions.push(inArray(properties.id, uuids));
+  if (apiIds.length > 0) conditions.push(inArray(properties.apiId, apiIds));
+
+  if (conditions.length === 0) return [];
+
   const rows = await db
     .select({
       properties: {
@@ -135,7 +161,7 @@ export async function getShortlistPropertiesWithAgents(ids: string[]): Promise<a
     })
     .from(properties)
     .leftJoin(agents, eq(properties.agentId, agents.id))
-    .where(and(inArray(properties.id, ids), eq(properties.isVisible, true)));
+    .where(and(or(...conditions), eq(properties.isVisible, true)));
 
   return rows.map((row) => ({
     id: row.properties.id,
