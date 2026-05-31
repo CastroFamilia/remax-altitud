@@ -467,6 +467,8 @@ export function mapPropertyRowToSearchItem(row: {
   longitude: number | null;
   currency?: string | null;
   apiRaw?: unknown;
+  descriptionEn?: string | null;
+  descriptionEs?: string | null;
 }): PropertySearchItem {
   return {
     id: row.id,
@@ -487,6 +489,8 @@ export function mapPropertyRowToSearchItem(row: {
     longitude: row.longitude,
     currency: row.currency,
     apiRaw: row.apiRaw as Record<string, unknown> | null,
+    descriptionEn: row.descriptionEn ?? "",
+    descriptionEs: row.descriptionEs ?? "",
   };
 }
 
@@ -510,6 +514,8 @@ export const propertySearchColumns = {
   longitude: properties.longitude,
   currency: properties.currency,
   apiRaw: properties.apiRaw,
+  descriptionEn: properties.descriptionEn,
+  descriptionEs: properties.descriptionEs,
 } as const;
 
 /**

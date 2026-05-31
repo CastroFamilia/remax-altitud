@@ -102,7 +102,7 @@ export function StickySpecsBar({
           <div className="flex flex-col min-w-0">
             <span className="text-xs text-gray-500 uppercase tracking-wide">{t("lot")}</span>
             <span className="text-sm font-medium text-gray-700">
-              {convertArea(lotSizeM2, unitSystem, locale)}
+              {convertArea(lotSizeM2, unitSystem, locale, true)}
             </span>
           </div>
         )}
@@ -112,7 +112,7 @@ export function StickySpecsBar({
           <div className="flex flex-col min-w-0">
             <span className="text-xs text-gray-500 uppercase tracking-wide">{t("built")}</span>
             <span className="text-sm font-medium text-gray-700">
-              {convertArea(constructionM2, unitSystem, locale)}
+              {convertArea(constructionM2, unitSystem, locale, false)}
             </span>
           </div>
         )}

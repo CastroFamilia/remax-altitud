@@ -184,7 +184,7 @@ export async function ListingDetailLayout({
                       {t("specs.lotSize")}
                     </p>
                     <p className="mt-1 text-lg font-bold text-brand-navy">
-                      {convertArea(property.lotSizeM2, "metric", locale)}
+                      {convertArea(property.lotSizeM2, "metric", locale, true)}
                     </p>
                   </div>
                 )}
@@ -194,7 +194,7 @@ export async function ListingDetailLayout({
                       {t("specs.builtArea")}
                     </p>
                     <p className="mt-1 text-lg font-bold text-brand-navy">
-                      {convertArea(property.constructionM2, "metric", locale)}
+                      {convertArea(property.constructionM2, "metric", locale, false)}
                     </p>
                   </div>
                 )}
