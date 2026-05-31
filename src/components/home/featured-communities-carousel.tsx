@@ -125,7 +125,7 @@ export function FeaturedCommunitiesCarousel({
       >
         {sortCommunitiesCustom(communities).map((community) => {
           const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
-          
+
           // Resolve area info from areaInfoMap
           const areaInfo = areaInfoMap[community.areaId];
           const areaSlug = areaInfo?.slug || "perez-zeledon";
@@ -134,12 +134,16 @@ export function FeaturedCommunitiesCarousel({
           // Parse fallbacks from quickFacts
           const qf = (community.quickFacts || {}) as Record<string, unknown>;
 
-          const propertyTypes = (locale === "es"
-            ? (community.propertyTypesEs || qf.propertyTypesEs || qf.propertyTypes || "")
-            : (community.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || "")) as string;
+          const propertyTypes = (
+            locale === "es"
+              ? community.propertyTypesEs || qf.propertyTypesEs || qf.propertyTypes || ""
+              : community.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || ""
+          ) as string;
 
-          const sizeMin = community.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
-          const sizeMax = community.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
+          const sizeMin =
+            community.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
+          const sizeMax =
+            community.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
 
           return (
             <div

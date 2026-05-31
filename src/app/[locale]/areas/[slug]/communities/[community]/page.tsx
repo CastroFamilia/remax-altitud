@@ -134,7 +134,12 @@ export default async function CommunityPage({
         locale={locale}
       />
       <CommunityTabs properties={communityProperties} community={community} locale={locale} />
-      <SimilarCommunitiesSlider communities={similarCommunities} locale={locale} areaSlug={slug} areaName={areaName} />
+      <SimilarCommunitiesSlider
+        communities={similarCommunities}
+        locale={locale}
+        areaSlug={slug}
+        areaName={areaName}
+      />
     </main>
   );
 }

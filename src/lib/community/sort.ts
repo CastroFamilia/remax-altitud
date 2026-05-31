@@ -12,7 +12,7 @@ export function sortCommunitiesCustom<T extends { slug: string }>(items: T[]): T
     "harmony-heights",
     "serena-san-mateo",
     "residencial-la-piedra",
-    "villas-san-miguel"
+    "villas-san-miguel",
   ];
   return [...items].sort((a, b) => {
     let idxA = order.indexOf(a.slug);

@@ -18,7 +18,7 @@ interface CommunityCardProps {
   longitude?: number | null;
   /** GeoJSON polygon coordinates for thumbnail geo-fence overlay (Story 6.3) */
   geoFenceCoords?: [number, number][] | null;
-  
+
   // Custom metrics props
   location?: string;
   propertyTypes?: string;
@@ -63,8 +63,8 @@ export function CommunityCard({
         ? formatPrice(priceMin)
         : `${formatPrice(priceMin)}–${formatPrice(priceMax)}`
       : priceMin
-      ? formatPrice(priceMin)
-      : null;
+        ? formatPrice(priceMin)
+        : null;
 
   // Format Size Range beautifully
   const formatSize = (val: number) => {
@@ -77,8 +77,8 @@ export function CommunityCard({
         ? `${formatSize(sizeMin)} m²`
         : `${formatSize(sizeMin)}–${formatSize(sizeMax)} m²`
       : sizeMin
-      ? `${formatSize(sizeMin)} m²`
-      : null;
+        ? `${formatSize(sizeMin)} m²`
+        : null;
 
   return (
     <a
@@ -175,7 +175,10 @@ export function CommunityCard({
               <Maximize2 className="h-3 w-3 text-[var(--color-gold,#C2A661)]" strokeWidth={2.5} />
               {locale === "es" ? "Área" : "Size"}
             </span>
-            <span className="mt-1 text-sm font-extrabold text-brand-navy leading-none truncate" title={sizeRangeStr || undefined}>
+            <span
+              className="mt-1 text-sm font-extrabold text-brand-navy leading-none truncate"
+              title={sizeRangeStr || undefined}
+            >
               {sizeRangeStr || "—"}
             </span>
           </div>

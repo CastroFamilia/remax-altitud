@@ -129,19 +129,23 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
             {dbCommunities.map((comm) => {
               const tagline = (locale === "es" ? comm.taglineEs : comm.taglineEn) || undefined;
               const href = `/${locale}/areas/${comm.areaSlug}/communities/${comm.slug}`;
-              
+
               // Resolve location based on locale
               const location = locale === "es" ? comm.areaNameEs : comm.areaNameEn;
 
               // Parse fallbacks from quickFacts if table columns are empty
               const qf = (comm.quickFacts || {}) as Record<string, unknown>;
-              
-              const propertyTypes = (locale === "es" 
-                ? (comm.propertyTypesEs || qf.propertyTypesEs || qf.propertyTypes || "") 
-                : (comm.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || "")) as string;
 
-              const sizeMin = comm.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
-              const sizeMax = comm.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
+              const propertyTypes = (
+                locale === "es"
+                  ? comm.propertyTypesEs || qf.propertyTypesEs || qf.propertyTypes || ""
+                  : comm.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || ""
+              ) as string;
+
+              const sizeMin =
+                comm.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
+              const sizeMax =
+                comm.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
 
               return (
                 <div key={comm.id} data-testid="community-index-card">
