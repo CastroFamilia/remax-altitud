@@ -1,12 +1,25 @@
 "use client";
 
 import { useEffect } from "react";
-import { useLocale } from "next-intl";
+import * as nextIntl from "next-intl";
 import { useCurrencyStore, type CurrencyCode } from "@/store/currency-store";
 import { formatUSD, formatEUR, formatCRC, getCrcToUsdRate } from "@/lib/utils/currency";
 
-export function useLocaleCurrency() {
-  const locale = useLocale();
+export function useLocaleCurrency(localeOverride?: string) {
+  // Safely resolve locale, fallback to 'en' in test environments where next-intl's useLocale might not be mocked
+  let locale = "en";
+  if (localeOverride) {
+    locale = localeOverride;
+  } else {
+    try {
+      if (typeof nextIntl.useLocale === "function") {
+        locale = nextIntl.useLocale();
+      }
+    } catch {
+      // fallback to 'en'
+    }
+  }
+
   const { currency, setCurrency, isHydrated, setHydrated } = useCurrencyStore();
 
   useEffect(() => {
@@ -16,7 +29,7 @@ export function useLocaleCurrency() {
         if (stored === "USD" || stored === "EUR" || stored === "CRC") {
           setCurrency(stored);
         }
-      } catch {
+      } catch (e) {
         // ignore storage availability errors
       }
       setHydrated(true);

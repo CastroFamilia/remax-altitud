@@ -20,7 +20,7 @@ export function PropertyPriceDisplay({
   variant = "card",
   className,
 }: PropertyPriceDisplayProps) {
-  const { currency, formatPrice } = useLocaleCurrency();
+  const { currency, formatPrice } = useLocaleCurrency(locale);
 
   const primaryPrice = formatPrice(priceUsd, originalPriceColones);
   const isCrcOriginal = originalCurrency === "CRC" && originalPriceColones != null && originalPriceColones > 0;

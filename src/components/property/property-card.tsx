@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { PropertyImage } from "@/components/property/property-image";
 import { useTranslations } from "next-intl";

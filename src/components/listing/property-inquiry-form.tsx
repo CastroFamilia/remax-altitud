@@ -308,16 +308,6 @@ export function PropertyInquiryForm({
       <form onSubmit={handleSubmit} noValidate className="space-y-4 pt-2">
         <h4 className="text-sm font-extrabold text-brand-navy tracking-tight">{t("title")}</h4>
 
-        {submitState === "error" && (
-          <div className="flex gap-2 rounded-lg border border-red-200 bg-red-50/50 p-3 text-xs text-red-700">
-            <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
-            <div>
-              <span className="font-bold">{t("errorHeading")}</span>
-              <p className="mt-0.5">{t("errorMessage")}</p>
-            </div>
-          </div>
-        )}
-
         {/* Honeypot anti-spam input */}
         <input
           type="text"
@@ -420,6 +410,16 @@ export function PropertyInquiryForm({
           <Info className="h-3 w-3 shrink-0 text-brand-gold mt-0.5" />
           <span>{t("transparencyNote")}</span>
         </p>
+
+        {submitState === "error" && (
+          <div className="flex gap-2 rounded-lg border border-red-200 bg-red-50/50 p-3 text-xs text-red-700">
+            <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
+            <div>
+              <span className="font-bold">{t("errorHeading")}</span>
+              <p className="mt-0.5">{t("errorMessage")}</p>
+            </div>
+          </div>
+        )}
 
         {/* Submit button */}
         <button
