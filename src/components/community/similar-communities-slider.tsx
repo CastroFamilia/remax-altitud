@@ -55,6 +55,18 @@ export function SimilarCommunitiesSlider({
           const sizeMax =
             community.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
 
+          const priceRangeOverride = (
+            locale === "es"
+              ? qf.priceRangeEs || qf.priceRange
+              : qf.priceRangeEn || qf.priceRange
+          ) as string | null;
+
+          const sizeRangeOverride = (
+            locale === "es"
+              ? qf.sizeRangeEs || qf.sizeRange
+              : qf.sizeRangeEn || qf.sizeRange
+          ) as string | null;
+
           return (
             <div key={community.slug} className="w-72 flex-shrink-0">
               <CommunityCard
@@ -70,6 +82,8 @@ export function SimilarCommunitiesSlider({
                 propertyTypes={propertyTypes}
                 sizeMin={sizeMin}
                 sizeMax={sizeMax}
+                priceRangeOverride={priceRangeOverride}
+                sizeRangeOverride={sizeRangeOverride}
               />
             </div>
           );

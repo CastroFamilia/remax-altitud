@@ -134,6 +134,13 @@
       "when": 1780244352212,
       "tag": "0018_absent_spitfire",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1780454000000,
+      "tag": "0019_update_featured_communities",
+      "breakpoints": true
     }
   ]
 }
