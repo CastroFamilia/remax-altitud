@@ -1,6 +1,6 @@
 import { doublePrecision, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
-/** RE/MAX Altitud offices. Two rows are seeded by the initial migration with the GUIDs from `.env.example` (PZ_OFFICE_GUID / DOM_OFFICE_GUID). */
+/** REMAX Altitud offices. Two rows are seeded by the initial migration with the GUIDs from `.env.example` (PZ_OFFICE_GUID / DOM_OFFICE_GUID). */
 export const offices = pgTable("offices", {
   id: uuid("id").primaryKey().defaultRandom(),
   apiGuid: text("api_guid").notNull().unique(),

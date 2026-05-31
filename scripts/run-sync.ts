@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Console runner for the RE/MAX CCA sync pipeline.
+ * Console runner for the REMAX CCA sync pipeline.
  *
  * Usage:
  *   npx tsx scripts/run-sync.ts              # Full sync
@@ -63,7 +63,7 @@ function error(msg: string) {
 async function main() {
   const startTime = Date.now();
 
-  log("RE/MAX CCA Sync Pipeline — Console Runner");
+  log("REMAX CCA Sync Pipeline — Console Runner");
   log(`Mode: ${isDryRun ? "DRY RUN (no DB writes)" : "FULL SYNC"}`);
   log("─".repeat(50));
 
@@ -91,7 +91,7 @@ async function main() {
       "../src/lib/sync/api-client"
     );
 
-    log("Fetching properties from RE/MAX CCA API...");
+    log("Fetching properties from REMAX CCA API...");
 
     const [pzProps, domProps, pzAgents, domAgents] = await Promise.all([
       fetchPropertiesForOffice(pzGuid),

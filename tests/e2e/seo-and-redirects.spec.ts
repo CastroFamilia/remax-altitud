@@ -333,7 +333,7 @@ test.describe("Story 4.4: Open Graph and meta tags (4.4-E2E-004, 4.4-E2E-005)", 
   // ---------------------------------------------------------------------------
 
   test.skip(
-    "[P1] 4.4-E2E-005a: listing page has non-empty <title> tag containing 'RE/MAX Altitud'",
+    "[P1] 4.4-E2E-005a: listing page has non-empty <title> tag containing 'REMAX Altitud'",
     async ({ page }: any) => {
       await page.setViewportSize(DESKTOP_VIEWPORT);
       await page.goto(LISTING_URL_EN);
@@ -341,7 +341,7 @@ test.describe("Story 4.4: Open Graph and meta tags (4.4-E2E-004, 4.4-E2E-005)", 
 
       const title = await page.title();
       expect(title).toBeTruthy();
-      expect(title).toContain("RE/MAX Altitud");
+      expect(title).toContain("REMAX Altitud");
     },
   );
 

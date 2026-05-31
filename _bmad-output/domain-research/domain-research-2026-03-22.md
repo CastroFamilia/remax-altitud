@@ -8,7 +8,7 @@ related_brainstorming: '_bmad-output/brainstorming/brainstorming-session-2026-03
 
 # Domain Research: Costa Rica Real Estate Industry
 
-> Deep dive into the Costa Rica real estate domain to inform the RE/MAX Altitud website product decisions.
+> Deep dive into the Costa Rica real estate domain to inform the REMAX Altitud website product decisions.
 
 ---
 
@@ -75,7 +75,7 @@ related_brainstorming: '_bmad-output/brainstorming/brainstorming-session-2026-03
 - Costa Rica has **no national real estate licensing law**
 - Agents handling money must register with **SUGEF** (financial regulator) — requires residency + background check
 - Voluntary associations: **CRGAR** and **CCCBR** provide ethics training and certification
-- **RE/MAX Costa Rica**: Internal "RE/MAX Costa Rica University" training; agents adhere to NAR Code of Ethics
+- **REMAX Costa Rica**: Internal "REMAX Costa Rica University" training; agents adhere to NAR Code of Ethics
 
 ---
 
@@ -108,7 +108,7 @@ These are critical distinctions the website must surface clearly — especially 
 
 ### Rental Market
 
-The rental segment is particularly relevant for RE/MAX Altitud's coverage areas:
+The rental segment is particularly relevant for REMAX Altitud's coverage areas:
 
 | Rental Type | Description | Typical Market |
 |------------|------------|---------------|
@@ -210,16 +210,16 @@ Property Search  →  Offer/LOI  →  SPA Agreement  →  Escrow Deposit  →  D
 
 Costa Rica **does not have a unified national MLS** like the US. This creates both challenges and opportunities:
 
-| Factor | Impact on RE/MAX Altitud |
+| Factor | Impact on REMAX Altitud |
 |--------|-------------------------|
-| **Fragmented listings** | RE/MAX's own API data becomes a competitive advantage |
+| **Fragmented listings** | REMAX's own API data becomes a competitive advantage |
 | **No Zillow/Redfin** | No dominant aggregator for CR — opportunity to own SEO |
 | **Agent networks** | Rely on personal networks, WhatsApp groups for sharing |
 | **Encuentra24** | Dominant classifieds — but generic, not luxury/curated |
 | **CostaRicaMLS** | Attempting structure, but limited coverage |
 | **OmniMLS (2023)** | Connecting agents internationally, but incomplete |
 
-> **Strategic opportunity**: A well-built, SEO-optimized RE/MAX Altitud site with daily-synced API data can become the authoritative source for Pérez Zeledón and Southern Pacific listings — filling the void left by the absence of a centralized MLS.
+> **Strategic opportunity**: A well-built, SEO-optimized REMAX Altitud site with daily-synced API data can become the authoritative source for Pérez Zeledón and Southern Pacific listings — filling the void left by the absence of a centralized MLS.
 
 ### Competitor Website Features
 
@@ -235,7 +235,7 @@ Costa Rica **does not have a unified national MLS** like the US. This creates bo
 | Lifestyle search | ❌ | ❌ | ❌ |
 | Investment tools | ❌ | ❌ | ❌ |
 
-> **RE/MAX Altitud differentiators**: 6 languages, relocation hub, lifestyle-first search, and investment tools are unmatched by any competitor.
+> **REMAX Altitud differentiators**: 6 languages, relocation hub, lifestyle-first search, and investment tools are unmatched by any competitor.
 
 ---
 
@@ -266,10 +266,10 @@ Key terms the website must handle correctly:
 1. **ZMT status indicators** — Clear labeling of titled vs. concession properties
 2. **Bilingual legal glossary** — Help foreign buyers understand CR-specific terms
 3. **Due diligence content** — Buying guides, checklists, and process explainers drive SEO and trust
-4. **Area expertise signals** — Deep Pérez Zeledón and Costa Ballena content positions RE/MAX Altitud as the local authority
+4. **Area expertise signals** — Deep Pérez Zeledón and Costa Ballena content positions REMAX Altitud as the local authority
 5. **No MLS = own the search** — SEO-first architecture with daily-refreshed static pages fills a real market gap
 6. **Multi-currency** — USD is standard for international listings, but EUR/GBP/CAD/BRL conversion is a differentiator
-7. **Agent credibility** — RE/MAX University training, NAR ethics, and SUGEF registration are trust signals to highlight
+7. **Agent credibility** — REMAX University training, NAR ethics, and SUGEF registration are trust signals to highlight
 8. **Investment data** — Rental yields, appreciation trends, and ROI calculators address investor personas
 9. **Relocation ecosystem** — Visa guides, cost calculators, and area comparisons are unique competitive advantages
 10. **WhatsApp integration** — Primary communication channel in Costa Rica for real estate

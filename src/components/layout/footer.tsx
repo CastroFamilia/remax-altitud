@@ -182,7 +182,7 @@ export async function Footer() {
         {/* Gold divider + Copyright */}
         <div className="mt-10 border-t border-brand-gold/40 pt-6 text-center">
           <p className="text-xs text-text-on-dark/70">
-            © {new Date().getFullYear()} RE/MAX Altitud. {t("allRightsReserved")}.
+            © {new Date().getFullYear()} REMAX Altitud. {t("allRightsReserved")}.
           </p>
         </div>
       </div>

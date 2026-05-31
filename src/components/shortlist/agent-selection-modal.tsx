@@ -156,7 +156,7 @@ export default function AgentSelectionModal({
               const photoSrc = isOffice
                 ? "/images/agent-placeholder.jpg"
                 : agent.photoOptimizedUrl || agent.photoUrl || "/images/agent-placeholder.jpg";
-              const agentName = isOffice ? "RE/MAX Altitud" : agent.name;
+              const agentName = isOffice ? "REMAX Altitud" : agent.name;
               const languages = isOffice ? "" : agent.languages;
 
               return (

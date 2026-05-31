@@ -27,7 +27,7 @@ so that I'm never stuck at a dead end and can discover nearby properties.
 
 5. **Given** geolocation is granted **When** coordinates are received **Then** the map flies to the user's location with a radius overlay showing nearby properties (FR16)
 
-6. **Given** geolocation is denied **When** the permission is blocked **Then** the map centers on the nearest RE/MAX office location with a friendly message (FR16)
+6. **Given** geolocation is denied **When** the permission is blocked **Then** the map centers on the nearest REMAX office location with a friendly message (FR16)
 
 7. **And** every empty/error state has a forward path — no dead ends (UX-DR20)
 
@@ -186,12 +186,12 @@ so that I'm never stuck at a dead end and can discover nearby properties.
 
 - [x] Task 7: Create `src/lib/constants/offices-geo.ts` — Office lat/lng for geolocation fallback (AC: #6)
   - [x] Create `src/lib/constants/offices-geo.ts` — **new file** (not in architecture spec but needed to avoid circular imports)
-  - [x] Export office fallback coordinates (sourced from Google Maps for RE/MAX Altitud offices):
+  - [x] Export office fallback coordinates (sourced from Google Maps for REMAX Altitud offices):
     ```ts
-    /** Pérez Zeledón office — RE/MAX Altitud main office, San Isidro de El General */
+    /** Pérez Zeledón office — REMAX Altitud main office, San Isidro de El General */
     export const OFFICE_PZ_COORDS = { lat: 9.3725, lng: -83.7011 };
 
-    /** Dominical / Uvita office — RE/MAX Altitud Cero */
+    /** Dominical / Uvita office — REMAX Altitud Cero */
     export const OFFICE_DOMINICAL_COORDS = { lat: 9.2570, lng: -83.8850 };
 
     /**
@@ -374,7 +374,7 @@ so that I'm never stuck at a dead end and can discover nearby properties.
       useTranslations: vi.fn(() => (key: string) => key),
     }));
     vi.mock('@/lib/constants/offices', () => ({
-      offices: [{ name: 'RE/MAX Altitud', whatsapp: '50627710000' }],
+      offices: [{ name: 'REMAX Altitud', whatsapp: '50627710000' }],
       buildWhatsAppUrl: vi.fn((office: { whatsapp: string }, msg?: string) =>
         `https://wa.me/${office.whatsapp}${msg ? '?text=' + encodeURIComponent(msg) : ''}`
       ),
@@ -672,7 +672,7 @@ Test IDs from `_bmad-output/test-artifacts/test-design-epic-3.md` that this stor
 
 | Test ID | Type | Coverage | AC |
 |---------|------|----------|----|
-| 3.8-E2E-001 | E2E | Near Me denied → fallback to RE/MAX office + message | AC #6, R-007 |
+| 3.8-E2E-001 | E2E | Near Me denied → fallback to REMAX office + message | AC #6, R-007 |
 | 3.8-E2E-002 | E2E | Zero-results shows suggestions + WhatsApp CTA with correct URL | AC #1, #2 |
 | 3.8-E2E-003 | E2E | Hidden listing URL shows "no longer available" + similar properties | AC #3 |
 | 3.8-E2E-004 | E2E | Near Me granted → map flies to user coords + radius overlay | AC #5 |

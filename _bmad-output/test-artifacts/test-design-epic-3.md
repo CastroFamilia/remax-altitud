@@ -151,7 +151,7 @@ Story 3.2 must add: `data-testid="map-container"` on the Mapbox wrapper, and `da
 | R-004 | 3.3 | PERF | Filter changes exceed 500ms client-side response (NFR5) — debounce tuning + PostGIS query latency | 2 | 3 | 6 | **CLOSED — Story 3.3 shipped.** 300ms debounce implemented for price slider (AC #4); E2E scaffold 3.3-E2E-001 deferred to Playwright unskip phase. | QA | Done (PR #125 merged) |
 | R-005 | 3.5 | PERF | PropertyCard images cause CLS — aspect-ratio: 3/2 not enforced, layout shifts on slow networks (NFR2) | 2 | 3 | 6 | **CLOSED — Story 3.5 shipped.** `aspect-ratio: 3/2` enforced in `PropertyCard`; `property-card.spec.tsx` AC #8 test verifies container class. | QA | Done (PR #127 merged) |
 | R-006 | 3.6 | TECH | Pull-up sheet drag conflicts with iOS Safari native scroll/overscroll-behavior — sheet becomes unresponsive | 3 | 2 | 6 | E2E test on mobile viewport with pointer events simulating drag; assert snap behavior; test `overscroll-behavior: none` is applied | QA | Before 3.6 ships |
-| R-007 | 3.8 | BUS | Geolocation "Near Me" — `PermissionDeniedError` not handled → JS error or blank map with no user feedback | 2 | 3 | 6 | E2E test mocking `navigator.geolocation` to reject; assert map falls back to nearest RE/MAX office with friendly message | Dev/QA | Before 3.8 ships |
+| R-007 | 3.8 | BUS | Geolocation "Near Me" — `PermissionDeniedError` not handled → JS error or blank map with no user feedback | 2 | 3 | 6 | E2E test mocking `navigator.geolocation` to reject; assert map falls back to nearest REMAX office with friendly message | Dev/QA | Before 3.8 ships |
 | R-008 | 3.1 | TECH | React hydration error at Server/Client Component boundary — interactive elements fail silently after initial render | 2 | 3 | 6 | **CLOSED — Story 3.1 shipped.** All components marked `'use client'` correctly. 21 component tests passing (92/100). No hydration errors observed in code review. | Dev | Done (3.1 merged 2026-04-26) |
 
 ### Medium-Priority Risks (Score 3–5)
@@ -224,7 +224,7 @@ Story 3.2 must add: `data-testid="map-container"` on the Mapbox wrapper, and `da
 | 3.3-UNIT-001 | 3.3 | URL param parser rejects malformed/injected values with safe defaults | Unit | R-003 | Fuzz inputs: negative prices, XSS strings, out-of-range values |
 | 3.3-E2E-002 | 3.3 | Active filters serialize to URL; page reload restores same results | E2E | R-003 | Apply filters; copy URL; reload; assert same filtered state |
 | 3.5-E2E-001 | 3.5 | PropertyCard images have no CLS (aspect-ratio: 3/2 enforced) | E2E | R-005 | Playwright CLS measurement on search page with slow images |
-| 3.8-E2E-001 | 3.8 | "Near Me" with geolocation denied falls back to RE/MAX office + friendly message | E2E | R-007 | Mock `navigator.geolocation` to deny; assert fallback behavior |
+| 3.8-E2E-001 | 3.8 | "Near Me" with geolocation denied falls back to REMAX office + friendly message | E2E | R-007 | Mock `navigator.geolocation` to deny; assert fallback behavior |
 | 3.8-E2E-002 | 3.8 | Zero-results state shows suggestions + WhatsApp CTA with correct URL | E2E | R-007 | Apply filters returning 0 results; assert empty state content |
 
 **Total P0:** 12 scenarios (~20–35 hours)
@@ -469,7 +469,7 @@ Story 3.2 must add: `data-testid="map-container"` on the Mapbox wrapper, and `da
 **Mitigation Strategy:**
 1. Wrap `navigator.geolocation.getCurrentPosition` in try/catch with explicit error type check
 2. E2E test: mock geolocation to call `errorCallback` with `PERMISSION_DENIED` code
-3. Assert map centers on RE/MAX office coordinates + toast/message visible
+3. Assert map centers on REMAX office coordinates + toast/message visible
 
 **Owner:** Dev  
 **Timeline:** Before Story 3.8 ships  

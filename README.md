@@ -1,10 +1,10 @@
-# RE/MAX Altitud Website
+# REMAX Altitud Website
 
-> A multilingual relocation gateway to Costa Rica — powered by the RE/MAX brand, SEO-friendly search, and interactive maps.
+> A multilingual relocation gateway to Costa Rica — powered by the REMAX brand, SEO-friendly search, and interactive maps.
 
 ## Project Vision
 
-A complete real estate website for **RE/MAX Altitud** (2 offices in Costa Rica) featuring:
+A complete real estate website for **REMAX Altitud** (2 offices in Costa Rica) featuring:
 
 - 🔍 **Effortless property search** — lifestyle tags, map-first browsing, smart presets
 - 🌐 **6 languages** — EN, ES, IT, DE, FR, PT via AI translation
@@ -12,7 +12,7 @@ A complete real estate website for **RE/MAX Altitud** (2 offices in Costa Rica) 
 - 🌴 **"Move to Costa Rica" relocation hub** — visa guides, cost calculators, area info
 - 📈 **SEO-first architecture** — daily-regenerated static pages from API data
 - 👤 **Agent profiles** — multilingual mini-sites with WhatsApp integration
-- 🔄 **Background sync** — daily import from RE/MAX CCA API → AI translate → optimize → DB
+- 🔄 **Background sync** — daily import from REMAX CCA API → AI translate → optimize → DB
 
 ## Project Tracking & Progress
 
@@ -102,7 +102,7 @@ API docs: [`docs/`](docs/)
 - **Hosting**: Coolify (Docker, self-hosted)
 - **CI/CD**: GitHub Actions (Node 24, Actions v5) + Coolify auto-deploy + Lighthouse CI (score ≥ 90 gate)
 - **Testing**: Vitest 4 (workspace projects: node + jsdom) + Testing Library (component & integration tests)
-- **Data sync**: Docker Cron → RE/MAX CCA API → validate → translate → optimize → PostgreSQL → ISR revalidation
+- **Data sync**: Docker Cron → REMAX CCA API → validate → translate → optimize → PostgreSQL → ISR revalidation
 
 ## Getting Started (Local Development)
 
@@ -187,7 +187,7 @@ This uses Drizzle ORM to synchronize the database schema with the TypeScript def
 npm run dev
 ```
 
-The app will start on **http://localhost:3000** with Turbopack for fast hot-reload. Open that URL in your browser — you should see the RE/MAX Altitud site.
+The app will start on **http://localhost:3000** with Turbopack for fast hot-reload. Open that URL in your browser — you should see the REMAX Altitud site.
 
 > [!TIP]
 > The dev server watches for file changes. Edit any file in `src/` and the browser will update automatically.
@@ -209,7 +209,7 @@ The app will start on **http://localhost:3000** with Turbopack for fast hot-relo
 | `npm run db:push` | Push schema to database |
 | `npm run db:migrate` | Run migration files |
 | `npm run db:studio` | Open Drizzle Studio (visual DB browser) |
-| `npm run sync` | Run the RE/MAX data sync pipeline |
+| `npm run sync` | Run the REMAX data sync pipeline |
 | `npm run sync:dry-run` | Preview sync without writing to DB |
 
 ### Troubleshooting

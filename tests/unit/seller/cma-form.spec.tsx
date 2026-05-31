@@ -113,7 +113,7 @@ const MOCK_AGENT = {
 
 function renderCmaForm() {
   return render(
-    <CmaForm locale="en" fallbackAgent={MOCK_AGENT as never} officeName="RE/MAX Altitud" />,
+    <CmaForm locale="en" fallbackAgent={MOCK_AGENT as never} officeName="REMAX Altitud" />,
   );
 }
 

@@ -49,7 +49,7 @@ so that I can decide if this property is worth contacting an agent about.
 - [x] **File:** `next.config.ts` (MODIFY — exists)
 - [x] **Current state:** No `images` key exists in `nextConfig`. Story 3.2 used `unoptimized` prop on `<Image>` components as a workaround.
 - [x] **Action:** Add `images.remotePatterns` to `nextConfig`. Property image sources come from two places:
-  - The Azure CDN used by the RE/MAX CCA API (original photo source)
+  - The Azure CDN used by the REMAX CCA API (original photo source)
   - The local Docker volume (`/property-images/...`) served at `/property-images/` by Next.js from `public/` or by direct serving — note that **locally-served optimized images** at `/property-images/...` are relative paths and do NOT need `remotePatterns` (they're same-origin static files)
   - If the API photos use Azure CDN, the CDN hostname must be added. Check `src/lib/sync/image-optimizer.ts` to confirm the source URLs used.
 - [x] **Minimum viable config** (adjust hostnames based on actual CDN discovery):
@@ -58,7 +58,7 @@ so that I can decide if this property is worth contacting an agent about.
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.azurefd.net",  // Azure Front Door CDN — RE/MAX CCA API photos
+        hostname: "*.azurefd.net",  // Azure Front Door CDN — REMAX CCA API photos
       },
       {
         protocol: "https",
@@ -104,7 +104,7 @@ so that I can decide if this property is worth contacting an agent about.
     const title = locale === "es" ? property.titleEs : property.titleEn;
     const description = locale === "es" ? property.descriptionEs : property.descriptionEn;
     return {
-      title: `${title} | RE/MAX Altitud`,
+      title: `${title} | REMAX Altitud`,
       description: description.slice(0, 160),
       openGraph: {
         title,
@@ -318,7 +318,7 @@ so that I can decide if this property is worth contacting an agent about.
       "concession": "Concession",
       "zmt_restricted": "ZMT Restricted"
     },
-    "noAgentAssigned": "Contact RE/MAX Altitud",
+    "noAgentAssigned": "Contact REMAX Altitud",
     "agentSection": "Listing Agent"
   },
   "StickySpecsBar": {
@@ -356,7 +356,7 @@ so that I can decide if this property is worth contacting an agent about.
       "concession": "Concesión",
       "zmt_restricted": "Zona Marítimo Terrestre Restringida"
     },
-    "noAgentAssigned": "Contactar RE/MAX Altitud",
+    "noAgentAssigned": "Contactar REMAX Altitud",
     "agentSection": "Agente a cargo"
   },
   "StickySpecsBar": {

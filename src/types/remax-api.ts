@@ -1,5 +1,5 @@
 /**
- * Canonical type exports for RE/MAX CCA API consumers. Downstream stories
+ * Canonical type exports for REMAX CCA API consumers. Downstream stories
  * import from `@/types/remax-api`; do not import Zod-derived types from
  * `@/lib/sync/schemas/*` directly.
  */
@@ -13,7 +13,7 @@ export type { RawPropertyAmenities } from "@/lib/sync/schemas/property";
 export type { RemaxConfig } from "@/lib/sync/config";
 
 /**
- * Normalized property record from RE/MAX CCA API.
+ * Normalized property record from REMAX CCA API.
  * Extends the schema-inferred type with optional legacy/alias fields
  * used by test factories and consumer code.
  */
@@ -30,7 +30,7 @@ export type RawProperty = _RawProperty & {
 };
 
 /**
- * Normalized agent record from RE/MAX CCA API.
+ * Normalized agent record from REMAX CCA API.
  * Extends the schema-inferred type with optional alias fields
  * used by test factories and consumer code.
  */

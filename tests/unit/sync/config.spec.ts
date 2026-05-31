@@ -32,14 +32,14 @@ describe("getRemaxConfig", () => {
 
   it("throws with all missing vars listed at once", () => {
     expect(() => getRemaxConfig()).toThrowError(
-      "Missing required RE/MAX env vars: REMAX_API_BASE_URL, PZ_OFFICE_GUID, DOM_OFFICE_GUID",
+      "Missing required REMAX env vars: REMAX_API_BASE_URL, PZ_OFFICE_GUID, DOM_OFFICE_GUID",
     );
   });
 
   it("lists only the missing vars when some are set", () => {
     process.env.REMAX_API_BASE_URL = "https://api.example";
     expect(() => getRemaxConfig()).toThrowError(
-      "Missing required RE/MAX env vars: PZ_OFFICE_GUID, DOM_OFFICE_GUID",
+      "Missing required REMAX env vars: PZ_OFFICE_GUID, DOM_OFFICE_GUID",
     );
   });
 });

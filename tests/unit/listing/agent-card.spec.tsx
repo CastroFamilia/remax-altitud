@@ -104,7 +104,7 @@ const defaultProps = {
   propertyTitle: "Beautiful Mountain Home",
   propertyRef: "ALT-12345",
   locale: "en",
-  officeName: "RE/MAX Altitud",
+  officeName: "REMAX Altitud",
 };
 
 afterEach(() => {

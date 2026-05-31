@@ -7,7 +7,7 @@
  * Prerequisites:
  *   - Playwright framework configured (playwright.config.ts)
  *   - Staging/local environment with DB seeded (≥1 agent with photo, bio, languages, listings)
- *   - Agent slug: "emma-smith" seeded with officeId pointing to "RE/MAX Altitud"
+ *   - Agent slug: "emma-smith" seeded with officeId pointing to "REMAX Altitud"
  *
  * Acceptance criteria covered:
  *   AC #1  — 4.3-E2E-001: Agent profile page displays photo, bio, languages, office, listing count, CTAs (P1)
@@ -104,7 +104,7 @@ test.describe("Story 4.3: Agent Profile Page (ATDD Red Phase)", () => {
 
       // Page title must contain agent name (SEO / standalone context)
       const title = await page.title();
-      expect(title).toContain("RE/MAX Altitud");
+      expect(title).toContain("REMAX Altitud");
 
       // Hero section must be present even when navigated directly (no search context)
       const hero = page.getByTestId("agent-profile-hero");
@@ -227,10 +227,10 @@ test.describe("Story 4.3: Agent Profile Page (ATDD Red Phase)", () => {
       const initialCards = await page.getByTestId("agent-index-card").count();
       expect(initialCards).toBeGreaterThan(0);
 
-      // Apply office filter (RE/MAX Altitud)
+      // Apply office filter (REMAX Altitud)
       const officeFilter = page.getByTestId("agent-office-filter");
       await expect(officeFilter).toBeVisible();
-      await officeFilter.selectOption({ label: "RE/MAX Altitud" });
+      await officeFilter.selectOption({ label: "REMAX Altitud" });
 
       // Result count should be ≤ initial count (filtered)
       const filteredCards = await page.getByTestId("agent-index-card").count();
@@ -275,11 +275,11 @@ test.describe("Story 4.3: Agent Profile Page (ATDD Red Phase)", () => {
       const officeFilter = page.getByTestId("agent-office-filter");
 
       // Select first office
-      await officeFilter.selectOption({ label: "RE/MAX Altitud" });
+      await officeFilter.selectOption({ label: "REMAX Altitud" });
       const firstOfficeCards = await page.getByTestId("agent-index-card").all();
 
       // Switch to second office
-      await officeFilter.selectOption({ label: "RE/MAX Altitud Cero" });
+      await officeFilter.selectOption({ label: "REMAX Altitud Cero" });
       const secondOfficeCards = await page.getByTestId("agent-index-card").all();
 
       // Both offices must return results (if seeded correctly)

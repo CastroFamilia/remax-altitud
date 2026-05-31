@@ -4,7 +4,7 @@
  * The `properties.images` JSONB column can contain two formats:
  * 1. **OptimizedImage[]** — after the image-optimization pipeline has run.
  *    Each item has { src, srcset, blurDataUrl, width, height, alt }.
- * 2. **string[]** — raw CDN URLs from the RE/MAX CCA API sync, before the
+ * 2. **string[]** — raw CDN URLs from the REMAX CCA API sync, before the
  *    image-optimization pipeline processes them.
  *
  * This utility detects the format at runtime and converts raw URL strings

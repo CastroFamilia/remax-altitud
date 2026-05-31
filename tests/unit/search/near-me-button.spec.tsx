@@ -11,7 +11,7 @@
  *   AC #6  — onLocationFallback callback called when geolocation is denied
  *
  * Test IDs from test-design-epic-3.md:
- *   3.8-E2E-001 (unit coverage) — Near Me denied → fallback to RE/MAX office + message
+ *   3.8-E2E-001 (unit coverage) — Near Me denied → fallback to REMAX office + message
  *   3.8-E2E-004 (unit coverage) — Near Me granted → map flies to user coords
  *
  * Environment: jsdom (React component — .spec.tsx → jsdom via environmentMatchGlobs)

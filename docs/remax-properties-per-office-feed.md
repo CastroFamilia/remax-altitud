@@ -1,4 +1,4 @@
-# RE/MAX CCA — PropertiesPerOffice API Feed Documentation
+# REMAX CCA — PropertiesPerOffice API Feed Documentation
 
 ## Endpoint
 
@@ -13,7 +13,7 @@ https://api.remax-cca.com/api/PropertiesPerOffice/FEA8746D-CC1D-41B8-89F3-D04AC9
 
 ## Overview
 
-Returns a **JSON array** of property listing objects for a given RE/MAX office. Each element represents a single active property listing with bilingual content (English/Spanish), geographic data, pricing, property features, agent info, and image gallery URLs.
+Returns a **JSON array** of property listing objects for a given REMAX office. Each element represents a single active property listing with bilingual content (English/Spanish), geographic data, pricing, property features, agent info, and image gallery URLs.
 
 ---
 
@@ -49,7 +49,7 @@ Returns a **JSON array** of property listing objects for a given RE/MAX office. 
 | `ContractType_en` | `string` | Contract type label (EN) | `"Sale"` |
 | `ContractType_es` | `string` | Contract type label (ES) | `"Venta"` |
 | `ListingProbableuseId` | `integer` | Probable use ID | `1` = General, `2` = Commercial |
-| `ProbableUse` | `string` | Probable use label | `"General"`, `"RE/MAX Commercial"` |
+| `ProbableUse` | `string` | Probable use label | `"General"`, `"REMAX Commercial"` |
 
 ### Listing Content (Bilingual)
 
@@ -157,7 +157,7 @@ https://remaxcaribbeanandcentralamerica.azureedge.net/images/{ListingKey}/v3/hd/
 | `FirstName` | `string` | Agent first name | `"Emma"` |
 | `LastName` | `string` | Agent last name | `"Bennett"` |
 | `OfficeID` | `integer` | Office numeric ID | `218` |
-| `OfficeName` | `string` | Office name | `"RE/MAX ALTITUD"` |
+| `OfficeName` | `string` | Office name | `"REMAX ALTITUD"` |
 
 ---
 
@@ -175,7 +175,7 @@ https://remaxcaribbeanandcentralamerica.azureedge.net/images/{ListingKey}/v3/hd/
 | `ListingProbableuseId` | `ProbableUse` |
 |---|---|
 | `1` | `General` |
-| `2` | `RE/MAX Commercial` |
+| `2` | `REMAX Commercial` |
 
 ---
 
@@ -239,7 +239,7 @@ https://remaxcaribbeanandcentralamerica.azureedge.net/images/{ListingKey}/v3/hd/
   "FirstName": "Emma",
   "LastName": "Bennett",
   "OfficeID": 218,
-  "OfficeName": "RE/MAX ALTITUD",
+  "OfficeName": "REMAX ALTITUD",
   "EmbeddedVideoCode": null
 }
 ```

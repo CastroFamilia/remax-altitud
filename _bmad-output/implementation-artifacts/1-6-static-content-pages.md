@@ -5,12 +5,12 @@ Status: done
 ## Story
 
 As a **visitor**,
-I want to learn about RE/MAX Altitud's team, services, and how to contact them,
+I want to learn about REMAX Altitud's team, services, and how to contact them,
 So that I can trust the company and reach out through my preferred channel.
 
 ## Acceptance Criteria
 
-1. **Given** `/en/about` or `/es/about` is visited **When** the page renders **Then** it displays `<main>`-wrapped, SSG-rendered content for **both** offices — RE/MAX Altitud (Pérez Zeledón) and RE/MAX Altitud Cero (Dominical/Uvita) — including office name, location, full address, phone, email, and a "List with Us" CTA linking to `/sell` (FR68).
+1. **Given** `/en/about` or `/es/about` is visited **When** the page renders **Then** it displays `<main>`-wrapped, SSG-rendered content for **both** offices — REMAX Altitud (Pérez Zeledón) and REMAX Altitud Cero (Dominical/Uvita) — including office name, location, full address, phone, email, and a "List with Us" CTA linking to `/sell` (FR68).
 
 2. **Given** `/en/services` or `/es/services` is visited **When** the page renders **Then** it displays three service cards — **Buy**, **Sell**, **Invest** — each with a heading, 2–4 sentence description, 3–5 bullet highlights, and a locale-aware CTA (`/search`, `/sell`, `/search?tag=investment` respectively), fully translated in EN and ES (FR68). _Updated 2026-04-23: query string uses `tag=` to match the lifestyle-tag filter naming finalized in Epic 3 Story 3-4._
 
@@ -20,7 +20,7 @@ So that I can trust the company and reach out through my preferred channel.
 
 5. **Given** the contact form is submitted with invalid or missing data **When** the submit handler runs **Then** inline field-level error messages render below each offending input (not a blocking alert), the first invalid field receives focus, and no mailto: is opened.
 
-6. **Given** `/en/join` or `/es/join` is visited **When** the page renders **Then** it displays recruitment benefits (RE/MAX brand, multilingual lead gen, training, office support) **plus** a lightweight inquiry form with fields: name, email, phone, current license status (select: Licensed / Studying / Not yet), languages spoken (multi-select: EN, ES, IT, DE, FR, PT), area of interest (select: PZ / Dominical-Uvita / Either), and message (optional) (FR61, FR68).
+6. **Given** `/en/join` or `/es/join` is visited **When** the page renders **Then** it displays recruitment benefits (REMAX brand, multilingual lead gen, training, office support) **plus** a lightweight inquiry form with fields: name, email, phone, current license status (select: Licensed / Studying / Not yet), languages spoken (multi-select: EN, ES, IT, DE, FR, PT), area of interest (select: PZ / Dominical-Uvita / Either), and message (optional) (FR61, FR68).
 
 7. **Given** any of the four static pages **When** the HTML is inspected **Then** the document contains exactly one `<h1>`, uses semantic landmarks (`<main>` inherited from layout, `<section>` for each logical block, `<article>` where appropriate), and each heading follows the hierarchy (`<h1>` → `<h2>` → `<h3>`) with no skipped levels.
 
@@ -47,10 +47,10 @@ So that I can trust the company and reach out through my preferred channel.
 - [x] Update `src/messages/en.json` — add **four new top-level namespaces** (after `HomePage`, before `Metadata`). Keep existing namespaces untouched.
   ```json
   "AboutPage": {
-    "metaTitle": "About RE/MAX Altitud — Costa Rica's Southern Zone",
-    "metaDescription": "Learn about RE/MAX Altitud and Altitud Cero — the premier real estate team serving Pérez Zeledón, Dominical, and Uvita.",
-    "pageTitle": "About RE/MAX Altitud",
-    "intro": "RE/MAX Altitud and RE/MAX Altitud Cero unite two offices under one promise: guide international and local clients through buying, selling, and investing in Costa Rica's Southern Zone — in the language they prefer.",
+    "metaTitle": "About REMAX Altitud — Costa Rica's Southern Zone",
+    "metaDescription": "Learn about REMAX Altitud and Altitud Cero — the premier real estate team serving Pérez Zeledón, Dominical, and Uvita.",
+    "pageTitle": "About REMAX Altitud",
+    "intro": "REMAX Altitud and REMAX Altitud Cero unite two offices under one promise: guide international and local clients through buying, selling, and investing in Costa Rica's Southern Zone — in the language they prefer.",
     "officesHeading": "Our Offices",
     "officesIntro": "Two offices, one team — covering the mountains of Pérez Zeledón and the Pacific coast from Dominical to Uvita.",
     "office": {
@@ -77,9 +77,9 @@ So that I can trust the company and reach out through my preferred channel.
   },
   "ServicesPage": {
     "metaTitle": "Our Services — Buy, Sell, Invest in Costa Rica",
-    "metaDescription": "RE/MAX Altitud helps you buy your dream home, sell with confidence, or invest in Costa Rica's Southern Zone.",
+    "metaDescription": "REMAX Altitud helps you buy your dream home, sell with confidence, or invest in Costa Rica's Southern Zone.",
     "pageTitle": "How We Help",
-    "intro": "Three services, one team. Every client of RE/MAX Altitud gets a bilingual agent, local knowledge, and a seamless path from first search to closing.",
+    "intro": "Three services, one team. Every client of REMAX Altitud gets a bilingual agent, local knowledge, and a seamless path from first search to closing.",
     "buy": {
       "heading": "Buy",
       "description": "Find a home or vacation property you'll love — in the language you prefer.",
@@ -118,8 +118,8 @@ So that I can trust the company and reach out through my preferred channel.
     }
   },
   "ContactPage": {
-    "metaTitle": "Contact RE/MAX Altitud",
-    "metaDescription": "Reach RE/MAX Altitud in Pérez Zeledón or RE/MAX Altitud Cero in Dominical/Uvita — by phone, email, WhatsApp, or contact form.",
+    "metaTitle": "Contact REMAX Altitud",
+    "metaDescription": "Reach REMAX Altitud in Pérez Zeledón or REMAX Altitud Cero in Dominical/Uvita — by phone, email, WhatsApp, or contact form.",
     "pageTitle": "Contact Us",
     "intro": "We reply within 24 hours. Reach us by WhatsApp, phone, or the form below — in English or Spanish.",
     "officesHeading": "Our Offices",
@@ -136,8 +136,8 @@ So that I can trust the company and reach out through my preferred channel.
       "phonePlaceholder": "+506 0000-0000",
       "officeLabel": "Preferred office",
       "officeOptionAny": "Either office",
-      "officeOptionPZ": "RE/MAX Altitud — Pérez Zeledón",
-      "officeOptionDOM": "RE/MAX Altitud Cero — Dominical / Uvita",
+      "officeOptionPZ": "REMAX Altitud — Pérez Zeledón",
+      "officeOptionDOM": "REMAX Altitud Cero — Dominical / Uvita",
       "languageLabel": "Preferred language",
       "languageOptionEN": "English",
       "languageOptionES": "Spanish",
@@ -153,15 +153,15 @@ So that I can trust the company and reach out through my preferred channel.
     }
   },
   "JoinPage": {
-    "metaTitle": "Join Our Team — RE/MAX Altitud Careers",
-    "metaDescription": "Become a RE/MAX Altitud agent. Multilingual lead generation, training, and the RE/MAX brand — in Costa Rica's Southern Zone.",
+    "metaTitle": "Join Our Team — REMAX Altitud Careers",
+    "metaDescription": "Become a REMAX Altitud agent. Multilingual lead generation, training, and the REMAX brand — in Costa Rica's Southern Zone.",
     "pageTitle": "Join Our Team",
-    "intro": "Grow your real estate career with RE/MAX Altitud. Leads in six languages, proven tools, and offices in Pérez Zeledón and Dominical/Uvita.",
-    "benefitsHeading": "Why RE/MAX Altitud",
+    "intro": "Grow your real estate career with REMAX Altitud. Leads in six languages, proven tools, and offices in Pérez Zeledón and Dominical/Uvita.",
+    "benefitsHeading": "Why REMAX Altitud",
     "benefits": [
       { "title": "Global brand", "body": "Backed by the world's most recognized real estate brand." },
       { "title": "Multilingual lead flow", "body": "Reach six language markets from day one." },
-      { "title": "Training & mentorship", "body": "RE/MAX University plus in-office coaching." },
+      { "title": "Training & mentorship", "body": "REMAX University plus in-office coaching." },
       { "title": "Two-office reach", "body": "Serve clients across mountain and coastal Costa Rica." }
     ],
     "formHeading": "Interested? Tell us about yourself.",
@@ -195,9 +195,9 @@ So that I can trust the company and reach out through my preferred channel.
     }
   }
   ```
-- [x] Update `src/messages/es.json` — mirror the **exact same key structure** with Spanish translations. **Style rule from Story 1.4:** use informal "tú" on CTAs and button copy (e.g., "Envía tu mensaje", "Busca propiedades", "Lista con nosotros"). Keep proper nouns identical (Pérez Zeledón, Dominical, Uvita, RE/MAX, WhatsApp). Example mappings:
-  - `AboutPage.pageTitle`: "Acerca de RE/MAX Altitud"
-  - `AboutPage.intro`: "RE/MAX Altitud y RE/MAX Altitud Cero unen dos oficinas bajo una misma promesa: acompañar a clientes internacionales y locales para comprar, vender o invertir en la Zona Sur de Costa Rica — en el idioma que prefieras."
+- [x] Update `src/messages/es.json` — mirror the **exact same key structure** with Spanish translations. **Style rule from Story 1.4:** use informal "tú" on CTAs and button copy (e.g., "Envía tu mensaje", "Busca propiedades", "Lista con nosotros"). Keep proper nouns identical (Pérez Zeledón, Dominical, Uvita, REMAX, WhatsApp). Example mappings:
+  - `AboutPage.pageTitle`: "Acerca de REMAX Altitud"
+  - `AboutPage.intro`: "REMAX Altitud y REMAX Altitud Cero unen dos oficinas bajo una misma promesa: acompañar a clientes internacionales y locales para comprar, vender o invertir en la Zona Sur de Costa Rica — en el idioma que prefieras."
   - `ServicesPage.pageTitle`: "Cómo te ayudamos"
   - `ContactPage.pageTitle`: "Contáctanos"
   - `ContactPage.form.submit`: "Enviar mensaje"
@@ -516,7 +516,7 @@ So that I can trust the company and reach out through my preferred channel.
   ```
   Both arrays must be empty.
 - [x] Spot-check informal "tú" conjugations on CTAs (e.g., "Busca", "Lista", "Envía") vs formal "usted" (e.g., "Busque", "Liste", "Envíe"). The project uses informal — Story 1.4 guidance.
-- [x] Keep proper nouns identical: Pérez Zeledón, Dominical, Uvita, RE/MAX, WhatsApp.
+- [x] Keep proper nouns identical: Pérez Zeledón, Dominical, Uvita, REMAX, WhatsApp.
 
 ### Task 12: Commit + PR prep (AC: all)
 

@@ -26,7 +26,7 @@ interface BreadcrumbItem {
  * `JSON.stringify` alone does NOT escape `<`, `>`, or `&`, so a description
  * containing the literal substring `</script>` (or `<!--`, or `<![CDATA[`)
  * would allow the inline script to break out of its tag — even though the
- * source values originate from the RE/MAX CCA sync, property/agent text is
+ * source values originate from the REMAX CCA sync, property/agent text is
  * arbitrary free-form content.
  *
  * This helper escapes the dangerous HTML/JSON-script characters and the JS

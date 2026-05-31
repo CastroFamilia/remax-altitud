@@ -1,6 +1,6 @@
 import "server-only";
 
-/** Typed RE/MAX CCA API configuration read from environment variables. */
+/** Typed REMAX CCA API configuration read from environment variables. */
 export interface RemaxConfig {
   readonly baseUrl: string;
   readonly pzOfficeGuid: string;
@@ -8,7 +8,7 @@ export interface RemaxConfig {
 }
 
 /**
- * Read required RE/MAX env vars. Throws a descriptive error listing every missing
+ * Read required REMAX env vars. Throws a descriptive error listing every missing
  * variable (aggregated, not first-miss) so operators fix everything in one pass.
  */
 export function getRemaxConfig(): RemaxConfig {
@@ -22,7 +22,7 @@ export function getRemaxConfig(): RemaxConfig {
   if (!domOfficeGuid) missing.push("DOM_OFFICE_GUID");
 
   if (missing.length > 0) {
-    throw new Error(`Missing required RE/MAX env vars: ${missing.join(", ")}`);
+    throw new Error(`Missing required REMAX env vars: ${missing.join(", ")}`);
   }
 
   return {

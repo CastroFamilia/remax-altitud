@@ -16,7 +16,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "AgentProfile" });
   return {
-    title: `${t("indexPageTitle")} | RE/MAX Altitud`,
+    title: `${t("indexPageTitle")} | REMAX Altitud`,
     description: t("indexPageDescription"),
   };
 }

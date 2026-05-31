@@ -116,6 +116,17 @@ export default async function AreaGuidePage({
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {communities.map((community) => {
               const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
+              const location = locale === "es" ? area.nameEs : area.nameEn;
+              
+              const qf = (community.quickFacts || {}) as Record<string, unknown>;
+              
+              const propertyTypes = (locale === "es"
+                ? (community.propertyTypesEs || qf.propertyTypesEs || qf.propertyTypes || "")
+                : (community.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || "")) as string;
+
+              const sizeMin = community.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
+              const sizeMax = community.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
+
               return (
                 <CommunityCard
                   key={community.slug}
@@ -130,6 +141,10 @@ export default async function AreaGuidePage({
                   latitude={community.latitude}
                   longitude={community.longitude}
                   geoFenceCoords={community.geoFenceCoords as [number, number][] | null}
+                  location={location}
+                  propertyTypes={propertyTypes}
+                  sizeMin={sizeMin}
+                  sizeMax={sizeMax}
                 />
               );
             })}

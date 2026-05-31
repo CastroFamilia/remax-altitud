@@ -94,9 +94,9 @@ Uvita is the undisputed logistical hub of the South Pacific:
 * **Excellent Everyday Services**: The town features multiple major banks, pharmacies, premium organic markets, modern hardware stores, and the Coast Ballena's premier private medical centers.
 * **High-Yield Rental Performance**: Boasting dual whale-watching seasons (December to April and July to October), Uvita maintains an exceptionally high year-round vacation rental occupancy, making it a highly attractive destination for passive-income investors.
 
-### Find Your Property with RE/MAX Altitud
+### Find Your Property with REMAX Altitud
 
-Whether your goal is a contemporary architectural masterpiece perched high on an exclusive oceanview ridge with a view of the Whale Tail, a modern family villa close to bilingual schools, or a high-yielding turn-key vacation rental near the national park, our team at RE/MAX Altitud in Uvita is your premier local authority. We specialize in matching international families, remote executives, and luxury investors with properties that elevate their lifestyle and secure their future.
+Whether your goal is a contemporary architectural masterpiece perched high on an exclusive oceanview ridge with a view of the Whale Tail, a modern family villa close to bilingual schools, or a high-yielding turn-key vacation rental near the national park, our team at REMAX Altitud in Uvita is your premier local authority. We specialize in matching international families, remote executives, and luxury investors with properties that elevate their lifestyle and secure their future.
 
 [CTA_BUTTON]`;
 
@@ -176,17 +176,17 @@ Uvita es el centro logístico indiscutible del Pacífico Sur:
 * **Excelentes Servicios Diarios**: El pueblo cuenta con múltiples bancos principales, farmacias, supermercados gourmet, ferreterías modernas y los centros médicos privados más prestigiosos de la Costa Ballena.
 * **Rendimiento de Alquiler de Alta Gama**: Con dos temporadas anuales de avistamiento de ballenas (de diciembre a abril y de julio a octubre), Uvita mantiene una ocupación de alquiler vacacional excepcionalmente alta durante todo el año, lo que la convierte en una opción sumamente atractiva para inversionistas de ingresos pasivos.
 
-### Encuentre su Propiedad con RE/MAX Altitud
+### Encuentre su Propiedad con REMAX Altitud
 
-Ya sea que su objetivo sea una obra maestra arquitectónica moderna en lo alto de una colina exclusiva con vista al océano y a la Cola de Ballena, una villa familiar moderna cerca de escuelas bilingües, o una propiedad llave en mano de alto rendimiento cerca del parque nacional, nuestro equipo en RE/MAX Altitud en Uvita es su principal autoridad local. Nos especializamos en conectar a familias internacionales, ejecutivos remotos e inversionistas de lujo con propiedades que elevan su estilo de vida y aseguran su futuro.
+Ya sea que su objetivo sea una obra maestra arquitectónica moderna en lo alto de una colina exclusiva con vista al océano y a la Cola de Ballena, una villa familiar moderna cerca de escuelas bilingües, o una propiedad llave en mano de alto rendimiento cerca del parque nacional, nuestro equipo en REMAX Altitud en Uvita es su principal autoridad local. Nos especializamos en conectar a familias internacionales, ejecutivos remotos e inversionistas de lujo con propiedades que elevan su estilo de vida y aseguran su futuro.
 
 [CTA_BUTTON]`;
 
 const metadata = {
   h1En: "The Coastal Hub of the South Pacific: Discover Uvita & Bahía Ballena, Costa Rica",
   h1Es: "El Centro Costero del Pacífico Sur: Descubra Uvita y Bahía Ballena, Costa Rica",
-  seoTitleEn: "Real Estate & Homes for Sale in Uvita & Bahía Ballena | RE/MAX Altitud",
-  seoTitleEs: "Bienes Raíces y Casas en Venta en Uvita y Bahía Ballena | RE/MAX Altitud",
+  seoTitleEn: "Real Estate & Homes for Sale in Uvita & Bahía Ballena | REMAX Altitud",
+  seoTitleEs: "Bienes Raíces y Casas en Venta en Uvita y Bahía Ballena | REMAX Altitud",
   seoDescriptionEn:
     "Explore real estate in Uvita and Bahía Ballena. Discover beach-side villas, oceanview estates on the Hermosa ridges, and luxury homes near the Marino Ballena Whale Tail.",
   seoDescriptionEs:

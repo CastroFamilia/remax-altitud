@@ -56,7 +56,7 @@ export async function generateMetadata({
   const description = locale === "es" ? property.descriptionEs : property.descriptionEn;
   const images = normalizePropertyImages(property.images);
   return {
-    title: `${title} | RE/MAX Altitud`,
+    title: `${title} | REMAX Altitud`,
     description: description.slice(0, 160),
     alternates: {
       canonical: generateCanonicalUrl(locale, `/property/${slug}`),
@@ -100,7 +100,7 @@ export default async function PropertyPage({
       assignedAgent = allAgents[0] ?? null;
     }
     const office = assignedAgent?.officeId ? await getOfficeById(assignedAgent.officeId) : null;
-    const officeName = office?.name ?? "RE/MAX Altitud";
+    const officeName = office?.name ?? "REMAX Altitud";
 
     const propertyTitle = locale === "es" ? property.titleEs : property.titleEn;
     const propertyRef = property.apiId;

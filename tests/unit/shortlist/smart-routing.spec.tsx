@@ -119,7 +119,7 @@ vi.mock("@/components/shortlist/agent-selection-modal", () => ({
           🏠 Direct Agent Routing — To coordinate your visits, you will contact each listing agent directly for their properties.
         </div>
         {agentGroups.map((group: any) => {
-          const name = group.agent ? group.agent.name : "RE/MAX Altitud";
+          const name = group.agent ? group.agent.name : "REMAX Altitud";
           return (
             <div key={group.agent?.id || "office"} data-testid={`agent-group-${group.agent?.id || "office"}`}>
               <span>{name}</span>

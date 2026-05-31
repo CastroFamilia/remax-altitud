@@ -54,12 +54,12 @@ export default async function SellPage({ params }: { params: Promise<{ locale: s
   // Wrapped in try/catch so SSG build continues if DB is unavailable —
   // pages are generated on-demand via ISR fallback (same pattern as agents/page.tsx).
   let fallbackAgent: Awaited<ReturnType<typeof getAllAgents>>[0] | null = null;
-  let officeName = "RE/MAX Altitud";
+  let officeName = "REMAX Altitud";
   try {
     const agents = await getAllAgents();
     fallbackAgent = agents[0] ?? null;
     const office = fallbackAgent?.officeId ? await getOfficeById(fallbackAgent.officeId) : null;
-    officeName = office?.name ?? "RE/MAX Altitud";
+    officeName = office?.name ?? "REMAX Altitud";
   } catch {
     // DB unavailable at build time — render empty shell; ISR will populate on first request.
   }

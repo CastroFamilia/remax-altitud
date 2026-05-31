@@ -53,6 +53,13 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
     longitude: number | null;
     geoFenceCoords: unknown;
     areaSlug: string;
+    areaNameEn: string;
+    areaNameEs: string;
+    propertyTypesEn: string | null;
+    propertyTypesEs: string | null;
+    sizeMinM2: number | null;
+    sizeMaxM2: number | null;
+    quickFacts: unknown;
   }
   let dbCommunities: DBCommunityRow[] = [];
   try {
@@ -71,10 +78,17 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
         longitude: communities.longitude,
         geoFenceCoords: communities.geoFenceCoords,
         areaSlug: areas.slug,
+        areaNameEn: areas.nameEn,
+        areaNameEs: areas.nameEs,
+        propertyTypesEn: communities.propertyTypesEn,
+        propertyTypesEs: communities.propertyTypesEs,
+        sizeMinM2: communities.sizeMinM2,
+        sizeMaxM2: communities.sizeMaxM2,
+        quickFacts: communities.quickFacts,
       })
       .from(communities)
       .innerJoin(areas, eq(communities.areaId, areas.id))
-      .orderBy(asc(communities.name));
+      .orderBy(asc(communities.name)) as unknown as DBCommunityRow[];
   } catch (error) {
     console.error("Failed to fetch communities from DB:", error);
   }
@@ -112,6 +126,19 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
             {dbCommunities.map((comm) => {
               const tagline = (locale === "es" ? comm.taglineEs : comm.taglineEn) || undefined;
               const href = `/${locale}/areas/${comm.areaSlug}/communities/${comm.slug}`;
+              
+              // Resolve location based on locale
+              const location = locale === "es" ? comm.areaNameEs : comm.areaNameEn;
+
+              // Parse fallbacks from quickFacts if table columns are empty
+              const qf = (comm.quickFacts || {}) as Record<string, unknown>;
+              
+              const propertyTypes = (locale === "es" 
+                ? (comm.propertyTypesEs || qf.propertyTypesEs || qf.propertyTypes || "") 
+                : (comm.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || "")) as string;
+
+              const sizeMin = comm.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
+              const sizeMax = comm.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
 
               return (
                 <div key={comm.id} data-testid="community-index-card">
@@ -127,6 +154,10 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
                     latitude={comm.latitude}
                     longitude={comm.longitude}
                     geoFenceCoords={comm.geoFenceCoords as unknown as [number, number][] | null}
+                    location={location}
+                    propertyTypes={propertyTypes}
+                    sizeMin={sizeMin}
+                    sizeMax={sizeMax}
                   />
                 </div>
               );

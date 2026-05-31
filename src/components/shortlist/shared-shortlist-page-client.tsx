@@ -71,7 +71,7 @@ export function SharedShortlistPageClient({
         <div className="flex items-center gap-2 mb-2">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-gold-dark bg-brand-gold/15 px-3 py-1 rounded-full inline-flex items-center gap-1.5">
             <Sparkles className="h-3 w-3" />
-            RE/MAX Altitud
+            REMAX Altitud
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold text-brand-navy tracking-tight mt-1">

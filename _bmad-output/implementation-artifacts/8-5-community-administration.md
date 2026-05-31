@@ -139,7 +139,7 @@ So that I can curate premium development pages and control which properties are 
       };
       ```
   - Use `getAllAreas()` from `src/lib/db/queries/areas.ts` as the single source of truth for populated areas in the selection dropdown.
-  - Active the "Communities" navigation Link under `/admin/layout.tsx` targeting `/${locale}/admin/communities` with a RE/MAX red border active badge.
+  - Active the "Communities" navigation Link under `/admin/layout.tsx` targeting `/${locale}/admin/communities` with a REMAX red border active badge.
 
 ### Previous Story Learning & Continuity
 

@@ -1,4 +1,4 @@
-// main.js - Core logic for RE/MAX website and AI Simulator
+// main.js - Core logic for REMAX website and AI Simulator
 
 document.addEventListener('DOMContentLoaded', () => {
 

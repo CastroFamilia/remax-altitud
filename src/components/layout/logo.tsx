@@ -1,5 +1,5 @@
 /**
- * Logo — RE/MAX Altitud brand logo with next/image.
+ * Logo — REMAX Altitud brand logo with next/image.
  *
  * Swappable design (UX-DR32): Logo source path is a constant —
  * changing the file at the path swaps the logo with zero code changes.
@@ -40,7 +40,7 @@ export function Logo({ variant = "default" }: LogoProps) {
     <Link href="/" className="flex items-center">
       <Image
         src={LOGO_SRC}
-        alt="RE/MAX Altitud — Costa Rica Real Estate"
+        alt="REMAX Altitud — Costa Rica Real Estate"
         width={LOGO_WIDTH}
         height={LOGO_HEIGHT}
         priority

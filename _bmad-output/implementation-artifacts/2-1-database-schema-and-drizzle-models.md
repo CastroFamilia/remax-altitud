@@ -85,8 +85,8 @@ So that the data sync pipeline (Stories 2.2–2.7) and every downstream feature 
 
 - [x] Task 6: Seed offices (AC: #5, #10)
   - [x] In the generated migration SQL, append an idempotent `INSERT ... ON CONFLICT (api_guid) DO NOTHING` for the two offices. Use placeholders that the migration runner substitutes from env vars OR simply hardcode the GUIDs present in `.env.example` for seed rows:
-    - PZ: `api_guid = 'FEA8746D-CC1D-41B8-89F3-D04AC98274AF'`, `name = 'RE/MAX Altitud'`, `area = 'Pérez Zeledón'`
-    - Dominical/Uvita: `api_guid = '4AD5AE8F-5B47-4A1A-A953-40445F2B4940'`, `name = 'RE/MAX Altitud Cero'`, `area = 'Dominical/Uvita'`
+    - PZ: `api_guid = 'FEA8746D-CC1D-41B8-89F3-D04AC98274AF'`, `name = 'REMAX Altitud'`, `area = 'Pérez Zeledón'`
+    - Dominical/Uvita: `api_guid = '4AD5AE8F-5B47-4A1A-A953-40445F2B4940'`, `name = 'REMAX Altitud Cero'`, `area = 'Dominical/Uvita'`
   - [x] Alternative: seed via a separate `src/lib/db/seed.ts` executed after migrations (`db:seed` script). **Preferred approach: seed via migration** so a clean `db:migrate` produces a complete working state — no extra step.
 
 - [x] Task 7: Smoke tests and spot-check (AC: #12, #13)
@@ -116,7 +116,7 @@ So that the data sync pipeline (Stories 2.2–2.7) and every downstream feature 
 - **Driver:** `postgres` `^3.4.0` (postgres-js). `prepare: false` already set in `src/lib/db/client.ts` — do NOT change.
 - **Database:** Self-hosted PostgreSQL + PostGIS (AD-2, ADR-2). PostGIS is required — not optional.
 - **Source tree:** Schema lives under `src/lib/db/` per architecture §3. Migrations emit to `src/lib/db/migrations/`.
-- **Types:** Every row type is derived via `$inferSelect`/`$inferInsert`. Do NOT redefine row types in `src/types/` — re-export from `@/lib/db/schema` when other modules need them. `src/types/*.ts` is reserved for NON-DB types (UI, API request/response shapes from RE/MAX CCA API — those come in Story 2.2 with Zod schemas).
+- **Types:** Every row type is derived via `$inferSelect`/`$inferInsert`. Do NOT redefine row types in `src/types/` — re-export from `@/lib/db/schema` when other modules need them. `src/types/*.ts` is reserved for NON-DB types (UI, API request/response shapes from REMAX CCA API — those come in Story 2.2 with Zod schemas).
 
 ### Known Scope Discrepancies (Resolved In This Story)
 
@@ -236,7 +236,7 @@ Seed: 2 rows with GUIDs from `.env.example` (`FEA8746D-CC1D-41B8-89F3-D04AC98274
 | `is_featured` | `boolean` | NOT NULL default `false` |
 | `days_on_market` | `integer` | nullable |
 | `api_hash` | `text` | nullable (for diff detection in Story 2.3) |
-| `api_raw` | `jsonb` | NOT NULL default `'{}'::jsonb` (preserves raw RE/MAX CCA payload for audit) |
+| `api_raw` | `jsonb` | NOT NULL default `'{}'::jsonb` (preserves raw REMAX CCA payload for audit) |
 | `synced_at` | `timestamptz` | NOT NULL default `now()` |
 | `created_at` | `timestamptz` | NOT NULL default `now()` |
 | `updated_at` | `timestamptz` | NOT NULL default `now()` (updated via trigger OR app-level — app-level is fine for now) |

@@ -406,7 +406,7 @@ So that we maintain search rankings and maximize organic discovery.
     const description = locale === "es" ? property.descriptionEs : property.descriptionEn;
     const images = (property.images as unknown as OptimizedImage[]) ?? [];
     return {
-      title: `${title} | RE/MAX Altitud`,
+      title: `${title} | REMAX Altitud`,
       description: description.slice(0, 160),
       alternates: {
         canonical: generateCanonicalUrl(locale, `/property/${slug}`),
@@ -464,14 +464,14 @@ So that we maintain search rankings and maximize organic discovery.
 - [x] **Update `generateMetadata`** to include `alternates` and `canonical`:
   ```typescript
   return {
-    title: `${agent.name} | RE/MAX Altitud`,
+    title: `${agent.name} | REMAX Altitud`,
     description: bio.slice(0, 160) || t("defaultMetaDescription", { name: agent.name }),
     alternates: {
       canonical: generateCanonicalUrl(locale, `/agents/${slug}`),
       ...buildAlternatesMetadata(`/agents/${slug}`),
     },
     openGraph: {
-      title: `${agent.name} | RE/MAX Altitud`,
+      title: `${agent.name} | REMAX Altitud`,
       description: bio.slice(0, 160) || t("defaultMetaDescription", { name: agent.name }),
       images: agent.photoOptimizedUrl ? [{ url: agent.photoOptimizedUrl }] : [],
       type: "profile",
