@@ -210,7 +210,8 @@ function parseQuery(queryText: string): Record<string, string> {
   }
 
   // 4b. Hectares parsing (e.g. "1 hectare", "2 hectares", "5 ha", "una hectarea")
-  const hectareRegex = /\b(\d+(?:\.\d+)?|una|dos|tres|cinco)\s*(?:hectareas?|hectáreas?|ha)\b/gi;
+  const hectareRegex =
+    /\b(\d+(?:\.\d+)?|una|dos|tres|cinco)\s*(?:hectareas?|hectáreas?|hecatreas?|hetareas?|hecteras?|ha)\b/gi;
   const hectareMatch = normalized.match(hectareRegex);
   if (hectareMatch) {
     const matchedStr = hectareMatch[0].toLowerCase();

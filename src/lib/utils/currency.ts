@@ -35,7 +35,7 @@ export function getCrcToUsdRate(): number {
  * Safely build a currency Intl.NumberFormat. Falls back to 'en-US' on a
  * malformed locale tag (Intl throws RangeError on invalid BCP-47 input).
  */
-function safeCurrencyFormatter(locale: string, currency: "USD" | "EUR"): Intl.NumberFormat {
+function safeCurrencyFormatter(locale: string, currency: "USD" | "EUR" | "CRC"): Intl.NumberFormat {
   const opts: Intl.NumberFormatOptions = {
     style: "currency",
     currency,
@@ -44,7 +44,7 @@ function safeCurrencyFormatter(locale: string, currency: "USD" | "EUR"): Intl.Nu
   try {
     return new Intl.NumberFormat(locale, opts);
   } catch {
-    return new Intl.NumberFormat("en-US", opts);
+    return new Intl.NumberFormat(currency === "CRC" ? "es-CR" : "en-US", opts);
   }
 }
 
@@ -70,6 +70,17 @@ export function formatEUR(price: number, locale: string): string {
   if (!Number.isFinite(price)) return "—";
   const eur = Math.round(price * EUR_RATE);
   return safeCurrencyFormatter(locale, "EUR").format(eur);
+}
+
+/**
+ * Format a CRC price for the given locale using Intl.NumberFormat.
+ *
+ * Examples:
+ *   formatCRC(185000, 'es-CR') → "₡185.000"
+ */
+export function formatCRC(price: number, locale: string): string {
+  if (!Number.isFinite(price)) return "—";
+  return safeCurrencyFormatter(locale, "CRC").format(price);
 }
 
 /**
