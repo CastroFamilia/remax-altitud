@@ -65,7 +65,7 @@ const SECTION_THEMES: Record<string, ThemeStyle> = {
     border: "border-amber-150 dark:border-amber-900/30",
     text: "text-amber-900 dark:text-amber-200",
     iconBg: "bg-amber-100 dark:bg-amber-900/40",
-    iconColor: "text-amber-650 dark:text-amber-455",
+    iconColor: "text-amber-650 dark:text-amber-450",
   },
   services: {
     icon: ShieldCheck,
@@ -106,7 +106,11 @@ const SECTION_THEMES: Record<string, ThemeStyle> = {
  */
 function getSectionTheme(title: string): ThemeStyle {
   const normalized = title.toLowerCase();
-  if (normalized.includes("ubicación") || normalized.includes("location") || normalized.includes("ubicacion")) {
+  if (
+    normalized.includes("ubicación") ||
+    normalized.includes("location") ||
+    normalized.includes("ubicacion")
+  ) {
     return SECTION_THEMES.location;
   }
   if (
@@ -128,10 +132,18 @@ function getSectionTheme(title: string): ThemeStyle {
   if (normalized.includes("servicios") || normalized.includes("services")) {
     return SECTION_THEMES.services;
   }
-  if (normalized.includes("requisitos") || normalized.includes("requirements") || normalized.includes("contrato")) {
+  if (
+    normalized.includes("requisitos") ||
+    normalized.includes("requirements") ||
+    normalized.includes("contrato")
+  ) {
     return SECTION_THEMES.requirements;
   }
-  if (normalized.includes("contacto") || normalized.includes("contact") || normalized.includes("agenda")) {
+  if (
+    normalized.includes("contacto") ||
+    normalized.includes("contact") ||
+    normalized.includes("agenda")
+  ) {
     return SECTION_THEMES.contact;
   }
   return SECTION_THEMES.default;
@@ -148,7 +160,7 @@ function parseDescription(text: string): ParsedDescription {
   // e.g. [4:37 p. m., 30/5/2026] Tatiana Remax Altitud:
   let cleaned = text.replace(
     /^\[\d{1,2}:\d{2}\s*(?:p\.\s*m\.|a\.\s*m\.|[ap]\.?m\.?|AM|PM)[^\]]*\]\s*[^:]+:\s*/i,
-    ""
+    "",
   );
 
   // 2. Fix periods immediately followed by capital letters without space (common feed issue)
@@ -200,7 +212,7 @@ function parseDescription(text: string): ParsedDescription {
   // e.g. CocheraDescripción -> Cochera\n\nDescripción
   const headingRegex = new RegExp(
     `([a-zñáéíóúüA-Z0-9.!?)]\\s*)(${majorHeaders.join("|")})\\b`,
-    "g"
+    "g",
   );
   cleaned = cleaned.replace(headingRegex, "$1\n\n$2");
 
