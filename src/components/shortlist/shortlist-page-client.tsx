@@ -89,7 +89,7 @@ export function ShortlistPageClient() {
         const currentShortlist = [...shortlist];
 
         data.forEach((p) => {
-          if (p.apiId && currentShortlist.includes(p.apiId)) {
+          if (p.apiId && currentShortlist.includes(p.apiId) && !currentShortlist.includes(p.id)) {
             const idx = currentShortlist.indexOf(p.apiId);
             if (idx > -1) {
               currentShortlist[idx] = p.id; // Replace apiId with uuid
@@ -99,7 +99,8 @@ export function ShortlistPageClient() {
         });
 
         if (migrated) {
-          window.localStorage.setItem("remax-altitud-shortlist", JSON.stringify(currentShortlist));
+          const uniqueList = Array.from(new Set(currentShortlist));
+          window.localStorage.setItem("remax-altitud-shortlist", JSON.stringify(uniqueList));
           // Dispatch event to update the header heart badge count
           window.dispatchEvent(new Event("shortlist-change"));
         }

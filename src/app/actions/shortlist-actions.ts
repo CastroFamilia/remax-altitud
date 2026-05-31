@@ -56,7 +56,12 @@ export async function createShortlistShare({
   const existingProps = await db
     .select({ id: properties.id, isVisible: properties.isVisible })
     .from(properties)
-    .where(and(inArray(properties.id, uniquePropertyIds), eq(properties.isVisible, true)));
+    .where(
+      and(
+        or(inArray(properties.id, uniquePropertyIds), inArray(properties.apiId, uniquePropertyIds)),
+        eq(properties.isVisible, true),
+      ),
+    );
 
   if (existingProps.length !== uniquePropertyIds.length) {
     throw new Error("One or more properties are invalid or hidden");
