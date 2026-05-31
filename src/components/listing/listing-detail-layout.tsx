@@ -21,6 +21,7 @@ import type { Property } from "@/lib/db/schema/properties";
 import type { Agent } from "@/lib/db/schema/agents";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import { getRegionFromAreaSlug } from "@/components/property/property-card";
+import { PropertyDescription } from "@/components/listing/property-description";
 
 // ZMT badge visual config (same as property-card.tsx)
 const ZMT_VISUAL: Record<string, { classes: string; icon: string }> = {
@@ -201,17 +202,11 @@ export async function ListingDetailLayout({
 
               {/* Description */}
               {description && (
-                <section aria-labelledby="description-heading">
-                  <h2 id="description-heading" className="mb-4 text-2xl font-bold text-brand-navy">
+                <section aria-labelledby="description-heading" className="space-y-4">
+                  <h2 id="description-heading" className="text-2xl font-bold text-brand-navy">
                     {t("description")}
                   </h2>
-                  <div className="prose prose-gray max-w-none">
-                    {description.split("\n").map((paragraph, i) => (
-                      <p key={i} className="mb-4 text-text-body leading-relaxed">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
+                  <PropertyDescription description={description} locale={locale} />
                 </section>
               )}
 
