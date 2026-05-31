@@ -13,7 +13,12 @@ import type { NewCommunity, Community } from "@/lib/db/schema/communities";
  * Used by community index page (AC #10) and generateStaticParams.
  */
 export async function getAllCommunities() {
-  return db.select().from(communities).orderBy(asc(communities.name));
+  try {
+    return await db.select().from(communities).orderBy(asc(communities.name));
+  } catch (error) {
+    console.error("Database query failed in getAllCommunities:", error);
+    return [];
+  }
 }
 
 /**
@@ -23,13 +28,18 @@ export async function getAllCommunities() {
  * Used by community page (AC #1).
  */
 export async function getCommunityBySlugAndArea(communitySlug: string, areaSlug: string) {
-  const rows = await db
-    .select()
-    .from(communities)
-    .innerJoin(areas, eq(communities.areaId, areas.id))
-    .where(and(eq(communities.slug, communitySlug), eq(areas.slug, areaSlug)))
-    .limit(1);
-  return rows[0]?.communities ?? null;
+  try {
+    const rows = await db
+      .select()
+      .from(communities)
+      .innerJoin(areas, eq(communities.areaId, areas.id))
+      .where(and(eq(communities.slug, communitySlug), eq(areas.slug, areaSlug)))
+      .limit(1);
+    return rows[0]?.communities ?? null;
+  } catch (error) {
+    console.error("Database query failed in getCommunityBySlugAndArea:", error);
+    return null;
+  }
 }
 
 /**
@@ -37,11 +47,16 @@ export async function getCommunityBySlugAndArea(communitySlug: string, areaSlug:
  * Used by generateStaticParams (AC #9).
  */
 export async function getAllCommunityParams() {
-  const rows = await db
-    .select({ community: communities.slug, slug: areas.slug })
-    .from(communities)
-    .innerJoin(areas, eq(communities.areaId, areas.id));
-  return rows;
+  try {
+    const rows = await db
+      .select({ community: communities.slug, slug: areas.slug })
+      .from(communities)
+      .innerJoin(areas, eq(communities.areaId, areas.id));
+    return rows;
+  } catch (error) {
+    console.error("Database query failed in getAllCommunityParams:", error);
+    return [];
+  }
 }
 
 /**
@@ -52,12 +67,17 @@ export async function getAllCommunityParams() {
 export async function getPropertiesByCommunityId(
   communityId: string,
 ): Promise<PropertySearchItem[]> {
-  const rows = await db
-    .select(propertySearchColumns)
-    .from(properties)
-    .where(and(eq(properties.communityId, communityId), eq(properties.isVisible, true)))
-    .orderBy(desc(properties.syncedAt));
-  return rows.map(mapPropertyRowToSearchItem);
+  try {
+    const rows = await db
+      .select(propertySearchColumns)
+      .from(properties)
+      .where(and(eq(properties.communityId, communityId), eq(properties.isVisible, true)))
+      .orderBy(desc(properties.syncedAt));
+    return rows.map(mapPropertyRowToSearchItem);
+  } catch (error) {
+    console.error("Database query failed in getPropertiesByCommunityId:", error);
+    return [];
+  }
 }
 
 /**
@@ -65,11 +85,16 @@ export async function getPropertiesByCommunityId(
  * Used by SimilarCommunitiesSlider (AC #6).
  */
 export async function getSimilarCommunities(areaId: string, excludeSlug: string) {
-  return db
-    .select()
-    .from(communities)
-    .where(and(eq(communities.areaId, areaId), not(eq(communities.slug, excludeSlug))))
-    .orderBy(asc(communities.name));
+  try {
+    return await db
+      .select()
+      .from(communities)
+      .where(and(eq(communities.areaId, areaId), not(eq(communities.slug, excludeSlug))))
+      .orderBy(asc(communities.name));
+  } catch (error) {
+    console.error("Database query failed in getSimilarCommunities:", error);
+    return [];
+  }
 }
 
 /**
@@ -77,12 +102,17 @@ export async function getSimilarCommunities(areaId: string, excludeSlug: string)
  * Used by FeaturedCommunities (AC #8).
  */
 export async function getFeaturedCommunities(limit = 3) {
-  return db
-    .select()
-    .from(communities)
-    .where(gte(communities.listingCount, 0))
-    .orderBy(desc(communities.listingCount), desc(communities.createdAt))
-    .limit(limit);
+  try {
+    return await db
+      .select()
+      .from(communities)
+      .where(gte(communities.listingCount, 0))
+      .orderBy(desc(communities.listingCount), desc(communities.createdAt))
+      .limit(limit);
+  } catch (error) {
+    console.error("Database query failed in getFeaturedCommunities:", error);
+    return [];
+  }
 }
 
 /**
@@ -90,11 +120,16 @@ export async function getFeaturedCommunities(limit = 3) {
  * Used by area guide page to populate community cards (AC #7).
  */
 export async function getCommunitiesByAreaId(areaId: string) {
-  return db
-    .select()
-    .from(communities)
-    .where(eq(communities.areaId, areaId))
-    .orderBy(asc(communities.name));
+  try {
+    return await db
+      .select()
+      .from(communities)
+      .where(eq(communities.areaId, areaId))
+      .orderBy(asc(communities.name));
+  } catch (error) {
+    console.error("Database query failed in getCommunitiesByAreaId:", error);
+    return [];
+  }
 }
 
 export async function createCommunity(data: NewCommunity) {
@@ -120,13 +155,23 @@ export async function deleteCommunity(id: string) {
 }
 
 export async function getCommunityById(id: string) {
-  const rows = await db.select().from(communities).where(eq(communities.id, id)).limit(1);
-  return rows[0] ?? null;
+  try {
+    const rows = await db.select().from(communities).where(eq(communities.id, id)).limit(1);
+    return rows[0] ?? null;
+  } catch (error) {
+    console.error("Database query failed in getCommunityById:", error);
+    return null;
+  }
 }
 
 export async function getCommunityBySlug(slug: string) {
-  const rows = await db.select().from(communities).where(eq(communities.slug, slug)).limit(1);
-  return rows[0] ?? null;
+  try {
+    const rows = await db.select().from(communities).where(eq(communities.slug, slug)).limit(1);
+    return rows[0] ?? null;
+  } catch (error) {
+    console.error("Database query failed in getCommunityBySlug:", error);
+    return null;
+  }
 }
 
 export { sortCommunitiesCustom } from "@/lib/community/sort";
