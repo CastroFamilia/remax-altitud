@@ -30,10 +30,7 @@ export async function FeaturedCommunities({ locale }: FeaturedCommunitiesProps) 
     ]);
     communities = communitiesData;
     areaInfoMap = Object.fromEntries(
-      areasData.map((a) => [
-        a.id,
-        { slug: a.slug, nameEn: a.nameEn, nameEs: a.nameEs },
-      ])
+      areasData.map((a) => [a.id, { slug: a.slug, nameEn: a.nameEn, nameEs: a.nameEs }]),
     );
   } catch {
     // DB unavailable — render shell fallback
@@ -81,7 +78,11 @@ export async function FeaturedCommunities({ locale }: FeaturedCommunitiesProps) 
         </a>
       </div>
 
-      <FeaturedCommunitiesCarousel communities={communities} areaInfoMap={areaInfoMap} locale={locale} />
+      <FeaturedCommunitiesCarousel
+        communities={communities}
+        areaInfoMap={areaInfoMap}
+        locale={locale}
+      />
     </section>
   );
 }
