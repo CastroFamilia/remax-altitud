@@ -14,7 +14,7 @@ export function CurrencyToggle({ variant = "header" }: CurrencyToggleProps) {
     variant === "dark"
       ? "text-text-on-dark"
       : variant === "header"
-        ? "text-white/90"
+        ? "text-text-on-dark"
         : "text-text-primary";
 
   const currencies: CurrencyCode[] = ["USD", "EUR", "CRC"];

@@ -98,7 +98,7 @@ function SimpleNavItem({ item, pathname, t }: { item: NavItem; pathname: string;
     <Link
       href={item.href}
       className={cn(
-        "inline-flex h-9 items-center justify-center rounded-lg transition-colors whitespace-nowrap",
+        "inline-flex h-9 items-center justify-center rounded-lg transition-colors whitespace-nowrap text-text-on-dark",
         "hover:bg-white/10 hover:text-white",
         "px-2 py-1.5 text-xs lg:px-2 lg:text-xs xl:px-3 xl:text-sm",
         isActive && "border-b-2 border-brand-gold text-white rounded-none",
@@ -153,7 +153,7 @@ function DropdownNavItem({
     <>
       <NavigationMenuTrigger
         className={cn(
-          "text-white/90 hover:bg-white/10 hover:text-white whitespace-nowrap",
+          "text-text-on-dark hover:bg-white/10 hover:text-white whitespace-nowrap",
           "px-2 py-1.5 text-xs lg:px-2 lg:text-xs xl:px-2.5 xl:text-sm",
           isActive && "border-b-2 border-brand-gold text-white rounded-none",
         )}
