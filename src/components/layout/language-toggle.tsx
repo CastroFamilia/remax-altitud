@@ -30,7 +30,7 @@ function LanguageToggleContent({ variant = "header" }: LanguageToggleProps) {
     variant === "dark"
       ? "text-text-on-dark"
       : variant === "header"
-        ? "text-white/90"
+        ? "text-text-on-dark"
         : "text-text-primary";
 
   const switchLocale = (target: Locale) => {
