@@ -68,7 +68,9 @@ const ZMT_VISUAL: Record<string, { classes: string; icon: string }> = {
  */
 function getLandFeatures(property: PropertySearchItem, locale: string): string[] {
   const title = ((locale === "es" ? property.titleEs : property.titleEn) || "").toLowerCase();
-  const desc = ((locale === "es" ? property.descriptionEs : property.descriptionEn) || "").toLowerCase();
+  const desc = (
+    (locale === "es" ? property.descriptionEs : property.descriptionEn) || ""
+  ).toLowerCase();
   const combined = `${title} ${desc}`;
 
   const features: string[] = [];
@@ -221,7 +223,7 @@ export function PropertyCard({
   // Add translated property type
   const typeTranslated =
     locale === "es"
-      ? (property.propertyType || "Propiedad")
+      ? property.propertyType || "Propiedad"
       : property.propertyType === "Casa"
         ? "House"
         : property.propertyType === "Lote"

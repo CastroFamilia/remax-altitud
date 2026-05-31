@@ -196,7 +196,9 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
             </SheetTrigger>
             <SheetContent side="left" className="w-[320px] sm:w-[400px]">
               <SheetHeader>
-                <SheetTitle className="text-brand-navy font-bold">{t("filterBar.label")}</SheetTitle>
+                <SheetTitle className="text-brand-navy font-bold">
+                  {t("filterBar.label")}
+                </SheetTitle>
               </SheetHeader>
               <div className="py-6 px-1 h-[calc(100vh-80px)] overflow-y-auto no-scrollbar">
                 {filterControls}
@@ -215,7 +217,9 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
             <div className="flex flex-wrap lg:flex-nowrap items-end gap-5 w-full">
               {/* Type dropdown */}
               <div className="flex flex-col gap-1.5 flex-1 min-w-[150px]">
-                <label className="text-xs font-semibold text-brand-navy/80">{t("filters.type")}</label>
+                <label className="text-xs font-semibold text-brand-navy/80">
+                  {t("filters.type")}
+                </label>
                 <select
                   data-testid="type-filter"
                   className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
@@ -233,7 +237,10 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
 
               {/* Bedrooms dropdown — hidden for land types */}
               {!isLandType && (
-                <div data-testid="bedrooms-filter" className="flex flex-col gap-1.5 flex-1 min-w-[120px]">
+                <div
+                  data-testid="bedrooms-filter"
+                  className="flex flex-col gap-1.5 flex-1 min-w-[120px]"
+                >
                   <label className="text-xs font-semibold text-brand-navy/80">
                     {t("filters.bedrooms")}
                   </label>
@@ -241,7 +248,10 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
                     className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
                     value={filters.bedrooms?.toString() ?? ""}
                     onChange={(e) =>
-                      setFilter("bedrooms", e.target.value ? parseInt(e.target.value, 10) : undefined)
+                      setFilter(
+                        "bedrooms",
+                        e.target.value ? parseInt(e.target.value, 10) : undefined,
+                      )
                     }
                   >
                     <option value="">{t("filters.bedroomsAny")}</option>
@@ -256,7 +266,10 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
 
               {/* Bathrooms dropdown — hidden for land types */}
               {!isLandType && (
-                <div data-testid="bathrooms-filter" className="flex flex-col gap-1.5 flex-1 min-w-[120px]">
+                <div
+                  data-testid="bathrooms-filter"
+                  className="flex flex-col gap-1.5 flex-1 min-w-[120px]"
+                >
                   <label className="text-xs font-semibold text-brand-navy/80">
                     {t("filters.bathrooms")}
                   </label>
@@ -264,7 +277,10 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
                     className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
                     value={filters.bathrooms?.toString() ?? ""}
                     onChange={(e) =>
-                      setFilter("bathrooms", e.target.value ? parseInt(e.target.value, 10) : undefined)
+                      setFilter(
+                        "bathrooms",
+                        e.target.value ? parseInt(e.target.value, 10) : undefined,
+                      )
                     }
                   >
                     <option value="">{t("filters.bathroomsAny")}</option>
@@ -279,7 +295,9 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
 
               {/* Price Range slider (flex-[2] to give it proportional prominence) */}
               <div className="flex flex-col gap-1.5 flex-[2] min-w-[280px]">
-                <label className="text-xs font-semibold text-brand-navy/80">{t("filters.price")}</label>
+                <label className="text-xs font-semibold text-brand-navy/80">
+                  {t("filters.price")}
+                </label>
                 <div className="bg-background border border-brand-gold/20 rounded-lg px-4 py-2.5 shadow-sm hover:border-brand-gold/40 transition-colors w-full">
                   <PriceRangeSlider
                     value={priceValue}

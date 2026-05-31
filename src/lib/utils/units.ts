@@ -67,7 +67,7 @@ export function convertArea(
   m2: number,
   system: UnitSystem,
   locale: string = "en-US",
-  isLand: boolean = false
+  isLand: boolean = false,
 ): string {
   if (!Number.isFinite(m2)) return "—";
 
