@@ -25,7 +25,7 @@ export function HomepageSkeleton() {
       {/* Hero shimmer */}
       <Skeleton className="h-[50vh] w-full rounded-xl md:h-[60vh]" />
 
-      {/* 3 sections: Featured Properties, Featured Communities, Area Highlights */}
+      {/* 3 sections: New Listings, Featured Communities, Area Highlights */}
       <SectionSkeleton />
       <SectionSkeleton />
       <SectionSkeleton />
