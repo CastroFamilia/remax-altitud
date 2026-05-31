@@ -82,6 +82,26 @@ export function ShortlistPageClient() {
     getShortlistPropertiesWithAgents(shortlist)
       .then((data) => {
         setProperties(data);
+
+        // Auto-migrate legacy apiId references to UUIDs in localStorage
+        let migrated = false;
+        const currentShortlist = [...shortlist];
+
+        data.forEach((p) => {
+          if (p.apiId && currentShortlist.includes(p.apiId) && !currentShortlist.includes(p.id)) {
+            const idx = currentShortlist.indexOf(p.apiId);
+            if (idx > -1) {
+              currentShortlist[idx] = p.id;
+              migrated = true;
+            }
+          }
+        });
+
+        if (migrated) {
+          const uniqueList = Array.from(new Set(currentShortlist));
+          window.localStorage.setItem("remax-altitud-shortlist", JSON.stringify(uniqueList));
+          window.dispatchEvent(new Event("shortlist-change"));
+        }
       })
       .catch((err) => {
         console.error("Error fetching shortlist properties with agents:", err);

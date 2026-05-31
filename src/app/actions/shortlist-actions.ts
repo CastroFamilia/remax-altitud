@@ -4,7 +4,7 @@
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { shortlistShares } from "@/lib/db/schema/shortlist-shares";
-import { inArray, eq, and } from "drizzle-orm";
+import { inArray, eq, and, or } from "drizzle-orm";
 import { mapPropertyRowToSearchItem, propertySearchColumns } from "@/lib/db/queries/properties";
 import type { PropertySearchItem } from "@/types/search";
 import { randomBytes } from "crypto";
@@ -20,7 +20,12 @@ export async function getShortlistProperties(ids: string[]): Promise<PropertySea
   const rows = await db
     .select(propertySearchColumns)
     .from(properties)
-    .where(and(inArray(properties.id, ids), eq(properties.isVisible, true)));
+    .where(
+      and(
+        or(inArray(properties.id, ids), inArray(properties.apiId, ids)),
+        eq(properties.isVisible, true),
+      ),
+    );
 
   return rows.map(mapPropertyRowToSearchItem);
 }
@@ -43,7 +48,12 @@ export async function createShortlistShare({
   const existingProps = await db
     .select({ id: properties.id, isVisible: properties.isVisible })
     .from(properties)
-    .where(and(inArray(properties.id, uniquePropertyIds), eq(properties.isVisible, true)));
+    .where(
+      and(
+        or(inArray(properties.id, uniquePropertyIds), inArray(properties.apiId, uniquePropertyIds)),
+        eq(properties.isVisible, true),
+      ),
+    );
 
   if (existingProps.length !== uniquePropertyIds.length) {
     throw new Error("One or more properties are invalid or hidden");
@@ -135,7 +145,12 @@ export async function getShortlistPropertiesWithAgents(ids: string[]): Promise<a
     })
     .from(properties)
     .leftJoin(agents, eq(properties.agentId, agents.id))
-    .where(and(inArray(properties.id, ids), eq(properties.isVisible, true)));
+    .where(
+      and(
+        or(inArray(properties.id, ids), inArray(properties.apiId, ids)),
+        eq(properties.isVisible, true),
+      ),
+    );
 
   return rows.map((row) => ({
     id: row.properties.id,
