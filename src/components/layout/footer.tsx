@@ -56,6 +56,7 @@ function YoutubeIcon({ className }: { className?: string }) {
 const quickLinks = [
   { key: "properties", href: "/search" },
   { key: "ourAgents", href: "/agents" },
+  { key: "communities", href: "/communities" },
   { key: "vipBuyer", href: "/find-your-dream-property" },
   { key: "about", href: "/about" },
   { key: "contact", href: "/contact" },
