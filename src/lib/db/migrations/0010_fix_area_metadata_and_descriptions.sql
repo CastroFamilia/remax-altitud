@@ -21,9 +21,9 @@ San Isidro de El General sits perfectly in the center of the valley. From this c
 
 If your goal is an organic lifestyle; waking up to the sound of a river, picking fruit from your own trees, and owning a home built with sustainable materials; Pérez Zeledón is an ideal destination. The rural property market here is highly diverse, ranging from small eco-cottages to large sustainable luxury estates.
 
-### Find Your Property with RE/MAX Altitud
+### Find Your Property with REMAX Altitud
 
-Whether you are looking for a modern condo near city amenities, a large agricultural estate with its own waterfalls, or a home inside an exclusive eco-community, our team at RE/MAX Altitud is deeply rooted in the local market. We specialize in matching international investors and families with properties that elevate their quality of life.
+Whether you are looking for a modern condo near city amenities, a large agricultural estate with its own waterfalls, or a home inside an exclusive eco-community, our team at REMAX Altitud is deeply rooted in the local market. We specialize in matching international investors and families with properties that elevate their quality of life.
 
 [CTA_BUTTON]$$,
   "description_es" = $$San Isidro de El General: Una ciudad que lo tiene todo con excelente conectividad
@@ -46,9 +46,9 @@ San Isidro de El General se ubica perfectamente en el centro del valle. Desde es
 
 Si su objetivo es un estilo de vida orgánico; despertarse con el sonido de un río, cosechar frutas de sus propios árboles y ser dueño de una casa construida con materiales sostenibles, Pérez Zeledón es el destino ideal. El mercado de propiedades rurales aquí es muy diverso, abarcando desde pequeñas cabañas ecológicas hasta grandes propiedades sostenibles de lujo.
 
-### Encuentre su propiedad con RE/MAX Altitud
+### Encuentre su propiedad con REMAX Altitud
 
-Ya sea que busque un condominio moderno cerca de los servicios de la ciudad, una gran propiedad agrícola con sus propias cascadas o una casa dentro de una comunidad ecológica exclusiva, nuestro equipo en RE/MAX Altitud está profundamente arraigado en el mercado local. Nos especializamos en conectar a inversionistas internacionales y familias con propiedades que elevan su calidad de vida.
+Ya sea que busque un condominio moderno cerca de los servicios de la ciudad, una gran propiedad agrícola con sus propias cascadas o una casa dentro de una comunidad ecológica exclusiva, nuestro equipo en REMAX Altitud está profundamente arraigado en el mercado local. Nos especializamos en conectar a inversionistas internacionales y familias con propiedades que elevan su calidad de vida.
 
 [CTA_BUTTON]$$,
   "metadata" = coalesce("metadata", '{}'::jsonb) || '{"h1En": "Barefoot Luxury & Mountain Living: Discover Pérez Zeledón, Costa Rica", "h1Es": "Lujo Descalzo y Vida de Montaña: Descubra Pérez Zeledón, Costa Rica", "seoTitleEn": "Affordable Properties for Sale in Pérez Zeledón | Barefoot Luxury Costa Rica", "seoTitleEs": "Propiedades en Venta en Pérez Zeledón | Lujo Descalzo Costa Rica", "seoDescriptionEn": "Explore real estate in Pérez Zeledón. Discover affordable barefoot luxury homes, off-grid mountain farms with private waterfalls, and properties near San Isidro de El General.", "seoDescriptionEs": "Explore bienes raíces en Pérez Zeledón. Descubra casas de lujo, fincas de montaña autosostenibles con cascadas privadas y propiedades cerca de San Isidro.", "nearestAirport": "San José (SJO) — 3.5 hours / Pérez Zeledón Airstrip", "nearestHospital": "Hospital Escalante Pradilla — 15 min", "nearestBeach": "Dominical — 45 min", "investmentContext": {"appreciationTrend": "5-8% annual appreciation over 5 years", "rentalYieldEstimate": "4-6% for long-term rentals", "marketHighlights": ["Growing expat community", "New hospital and university", "Lower entry prices than coastal areas"]}}'::jsonb

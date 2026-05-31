@@ -30,7 +30,7 @@ export async function SellerHero({ locale }: SellerHeroProps) {
       <div className="absolute inset-0 ken-burns" aria-hidden="true">
         <Image
           src="/images/seller-hero-bg.png"
-          alt="RE/MAX Altitud Luxury Oceanfront Villa"
+          alt="REMAX Altitud Luxury Oceanfront Villa"
           fill
           priority
           className="object-cover"

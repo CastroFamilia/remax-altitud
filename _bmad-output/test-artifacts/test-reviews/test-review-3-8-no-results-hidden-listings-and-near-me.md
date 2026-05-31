@@ -237,7 +237,7 @@ Story 3.8 acceptance criteria coverage:
 | AC #3 | Hidden listing URL → "no longer available" + similar | `properties-unavailable.spec.ts` | 3.8-E2E-003 |
 | AC #4 | Near Me button invokes Geolocation API | `near-me-button.spec.tsx` | — |
 | AC #5 | Geolocation success → map flies to coords | `near-me-button.spec.tsx` | 3.8-E2E-004 |
-| AC #6 | Geolocation denied → RE/MAX office fallback | `use-geolocation.spec.tsx` + `near-me-button.spec.tsx` | 3.8-E2E-001 |
+| AC #6 | Geolocation denied → REMAX office fallback | `use-geolocation.spec.tsx` + `near-me-button.spec.tsx` | 3.8-E2E-001 |
 | AC #7 | No dead ends — forward path always present | `no-results-state.spec.tsx` (CTA asserts `/search`) | — |
 | R-007 | errorCallback must be provided | `use-geolocation.spec.tsx` | — |
 

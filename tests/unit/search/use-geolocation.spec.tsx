@@ -8,11 +8,11 @@
  * Covers:
  *   AC #4  — Near Me button invokes browser Geolocation API
  *   AC #5  — On success, map flies to user location with radius overlay
- *   AC #6  — On denied, map centers on nearest RE/MAX office + message
+ *   AC #6  — On denied, map centers on nearest REMAX office + message
  *   R-007  — errorCallback MUST be provided to prevent unhandled rejection
  *
  * Test IDs from test-design-epic-3.md:
- *   3.8-E2E-001 (unit coverage) — Near Me denied → fallback to RE/MAX office + message
+ *   3.8-E2E-001 (unit coverage) — Near Me denied → fallback to REMAX office + message
  *   3.8-E2E-004 (unit coverage) — Near Me granted → map flies to user coords
  *
  * Environment: jsdom (React hook with state — .spec.tsx → jsdom via environmentMatchGlobs)

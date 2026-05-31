@@ -15,13 +15,13 @@ So that I never feel lost or stuck when something takes time or goes wrong.
 2. **Given** a skeleton component **When** `prefers-reduced-motion` is active **Then** the shimmer animation is replaced with static gray — the `skeleton-pulse` keyframe already stops under reduced-motion in `globals.css` (UX-DR18).
 
 3. **Given** a 404 error **When** visiting a non-existent URL **Then** a branded error page displays with:
-   - RE/MAX balloon illustration or icon
+   - REMAX balloon illustration or icon
    - Localized heading and description
    - Navigation links to homepage **and** search
    - Works in both EN and ES
 
 4. **Given** a 500 error **When** a server error occurs **Then** a branded error page shows:
-   - "Something went wrong" heading with RE/MAX balloon icon
+   - "Something went wrong" heading with REMAX balloon icon
    - "Try again" button + homepage link
    - Works in both EN and ES
    - Sentry captures the error with context (AR19)
@@ -67,11 +67,11 @@ The existing `src/app/[locale]/not-found.tsx` is functional but minimal. Upgrade
 
 ### Task 3b: Create BalloonIcon inline SVG component (AC: #3, #4)
 
-- [ ] Create `src/components/ui/balloon-icon.tsx` — a simple inline SVG of the RE/MAX hot-air balloon mark:
+- [ ] Create `src/components/ui/balloon-icon.tsx` — a simple inline SVG of the REMAX hot-air balloon mark:
   - Uses brand tokens: `fill` colors from `--brand-balloon-red` (#cc0000), `--brand-balloon-blue` (#003da5), `--brand-balloon-white` (#ffffff)
   - Props: `className?: string`, `size?: number` (default 64)
   - Inline SVG (not an `<img>` tag) — ensures it renders even when public assets/CDN are unreachable (critical for error pages)
-  - Keep the SVG simple: a stylized balloon silhouette with the three RE/MAX colors
+  - Keep the SVG simple: a stylized balloon silhouette with the three REMAX colors
   - Export as named export: `export function BalloonIcon`
 
 - [ ] Expand `NotFound` namespace in both message files:

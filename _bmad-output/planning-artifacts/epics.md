@@ -8,13 +8,13 @@ inputDocuments:
   - 'docs/remax-cca-api-docs.md'
 ---
 
-# RE/MAX Altitud - Epic Breakdown
+# REMAX Altitud - Epic Breakdown
 
 ## Overview
 
-This document provides the complete epic and story breakdown for the RE/MAX Altitud multilingual real estate platform, decomposing the requirements from the PRD, Architecture, UX Design Specification, Product Brief, and API documentation into implementable stories.
+This document provides the complete epic and story breakdown for the REMAX Altitud multilingual real estate platform, decomposing the requirements from the PRD, Architecture, UX Design Specification, Product Brief, and API documentation into implementable stories.
 
-**Project Context:** Brownfield migration from WordPress (remax-altitud.cr) to Next.js 15 — unifying RE/MAX Altitud (Pérez Zeledón) and RE/MAX Altitud Cero (Dominical/Uvita) under one platform. The platform serves buyers, sellers, and investors in up to 6 languages.
+**Project Context:** Brownfield migration from WordPress (remax-altitud.cr) to Next.js 15 — unifying REMAX Altitud (Pérez Zeledón) and REMAX Altitud Cero (Dominical/Uvita) under one platform. The platform serves buyers, sellers, and investors in up to 6 languages.
 
 **Project Vision:** Convert curiosity into trust and trust into qualified leads for agents — across buyers, sellers, and investors, in 6 languages.
 
@@ -108,7 +108,7 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 
 | ID | Requirement |
 |----|------------|
-| FR46 | Daily sync from RE/MAX API (two office GUIDs: Altitud + Altitud Cero) |
+| FR46 | Daily sync from REMAX API (two office GUIDs: Altitud + Altitud Cero) |
 | FR47 | Image optimization (WebP, responsive sizes) during sync |
 | FR48 | Translation of new listing content to available languages during sync |
 | FR49 | Auto-tagging with lifestyle tags based on configurable attribute rules + manual override |
@@ -225,7 +225,7 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 | AR1 | Database schema: Properties, Agents, Areas, Communities, Leads, SyncLogs — Drizzle ORM + PostGIS | §3 |
 | AR2 | PostGIS spatial indexing (GiST) for geo-queries and geo-fence matching | §3 |
 | AR3 | Soft delete for removed listings (is_visible=false, preserve URL) | §3 + ADR-6 |
-| AR4 | RE/MAX CCA API integration: two endpoints (PropertiesPerOffice, AgentsPerOffice) | §4 |
+| AR4 | REMAX CCA API integration: two endpoints (PropertiesPerOffice, AgentsPerOffice) | §4 |
 | AR5 | 8-step sync pipeline: fetch → validate → diff → translate → optimize → upsert → cleanup → revalidate | §5 |
 | AR6 | ISR on-demand revalidation after sync via /api/revalidate | §5 + §7 |
 | AR7 | Next.js 15 App Router with [locale] prefix routing | §6 |
@@ -273,7 +273,7 @@ This document provides the complete epic and story breakdown for the RE/MAX Alti
 |----|------------|-----------|
 | UX-DR1 | Split-hero homepage: dual-pane mountain/coast with glassmorphism search overlay; mobile stacks vertically with search between panes | Design Direction |
 | UX-DR2 | Design token system: CSS custom properties for colors, typography, spacing, radii, shadows, transitions | Design System |
-| UX-DR3 | RE/MAX brand colors: dark variants as primary (navy #000E35, burgundy #660000); bright accent-only; gold #C2A661 luxury differentiator | Color System |
+| UX-DR3 | REMAX brand colors: dark variants as primary (navy #000E35, burgundy #660000); bright accent-only; gold #C2A661 luxury differentiator | Color System |
 | UX-DR4 | Region themes: Mountain (forest green #233428 + gold) and Coast (ocean blue #183C5A + sand) | Color System |
 | UX-DR5 | Typography: Montserrat 400/600/700/800 via next/font; 16px body min; type scale hero→xs | Typography |
 | UX-DR6 | Card-first design: property, area, agent, community — consistent card structure | Principles |
@@ -400,7 +400,7 @@ Visitors can access a professionally branded, multilingual-ready platform with c
 **Key ARs:** AR7-9, AR11-12, AR16, AR18-21
 **Key UX-DRs:** UX-DR1-7, UX-DR15-20, UX-DR23-24, UX-DR26, UX-DR28, UX-DR30, UX-DR32
 
-**User Outcome:** Visitors land on a premium, branded RE/MAX Altitud platform with working navigation, language toggle (EN/ES), static pages (Homepage shell, About, Services, Contact, Join), and the full design system. Works on all devices from $150 Android to desktop.
+**User Outcome:** Visitors land on a premium, branded REMAX Altitud platform with working navigation, language toggle (EN/ES), static pages (Homepage shell, About, Services, Contact, Join), and the full design system. Works on all devices from $150 Android to desktop.
 
 **Implementation Notes:** Establishes Next.js 15 App Router, PostgreSQL connection, Drizzle ORM schema, CI/CD pipeline, Coolify Docker deployment, design token system, and i18n routing. Everything else builds on this.
 
@@ -408,13 +408,13 @@ Visitors can access a professionally branded, multilingual-ready platform with c
 
 ### Epic 2: Data Pipeline & Property Database
 
-The system automatically syncs, validates, translates, and serves property and agent data from the RE/MAX API — ensuring the platform always has fresh, optimized listing data.
+The system automatically syncs, validates, translates, and serves property and agent data from the REMAX API — ensuring the platform always has fresh, optimized listing data.
 
 **FRs covered:** FR46, FR47, FR48, FR49, FR51, FR52, FR53, FR55
 **Key NFRs:** NFR13-15, NFR17-19
 **Key ARs:** AR1-6, AR24, API1-API10
 
-**User Outcome:** Property and agent data flows reliably from RE/MAX CCA API into the database. Images optimized, content translated to EN/ES, lifestyle tags auto-applied, and the site serves data even during API outages. Admin receives alerts on failures.
+**User Outcome:** Property and agent data flows reliably from REMAX CCA API into the database. Images optimized, content translated to EN/ES, lifestyle tags auto-applied, and the site serves data even during API outages. Admin receives alerts on failures.
 
 **Implementation Notes:** 8-step sync pipeline, Zod validation for API quirks, PostGIS spatial indexing, ISR revalidation. No user-facing pages yet — data foundation only.
 
@@ -692,7 +692,7 @@ So that I can browse comfortably whether I speak English or Spanish.
 
 As a **visitor**,
 I want a stunning homepage that immediately shows me mountain AND coast living options,
-So that I understand RE/MAX Altitud's unique geographic coverage within 3 seconds.
+So that I understand REMAX Altitud's unique geographic coverage within 3 seconds.
 
 **Acceptance Criteria:**
 
@@ -729,7 +729,7 @@ So that I understand RE/MAX Altitud's unique geographic coverage within 3 second
 **GH Issue:** #76
 
 As a **visitor**,
-I want to learn about RE/MAX Altitud's team, services, and how to contact them,
+I want to learn about REMAX Altitud's team, services, and how to contact them,
 So that I can trust the company and reach out through my preferred channel.
 
 **Acceptance Criteria:**
@@ -786,7 +786,7 @@ So that I never feel lost or stuck when something takes time or goes wrong.
 
 **Given** a 500 error
 **When** a server error occurs
-**Then** a branded error page shows "Something went wrong" with RE/MAX balloon icon and "Try again" + homepage link (UX-DR20)
+**Then** a branded error page shows "Something went wrong" with REMAX balloon icon and "Try again" + homepage link (UX-DR20)
 
 **Given** any empty state
 **When** no content is available
@@ -799,7 +799,7 @@ So that I never feel lost or stuck when something takes time or goes wrong.
 
 ## Epic 2: Data Pipeline & Property Database
 
-The system automatically syncs, validates, translates, and serves property and agent data from the RE/MAX API — ensuring the platform always has fresh, optimized listing data.
+The system automatically syncs, validates, translates, and serves property and agent data from the REMAX API — ensuring the platform always has fresh, optimized listing data.
 
 ### Story 2.1: Database Schema & Drizzle Models
 **GH Issue:** #78
@@ -842,12 +842,12 @@ So that all platform data can be stored, queried, and extended reliably.
 **GH Issue:** #79
 
 As a **system**,
-I want to reliably fetch property and agent data from the RE/MAX CCA API for both offices,
+I want to reliably fetch property and agent data from the REMAX CCA API for both offices,
 So that the platform always has access to the latest listing and agent information.
 
 **Acceptance Criteria:**
 
-**Given** the RE/MAX CCA API client
+**Given** the REMAX CCA API client
 **When** fetching properties for Altitud (PZ) office
 **Then** data is retrieved from `api.remax-cca.com/api/PropertiesPerOffice/FEA8746D-CC1D-41B8-89F3-D04AC98274AF` (AR4)
 
@@ -1364,7 +1364,7 @@ So that I'm never stuck at a dead end and can discover nearby properties.
 
 **Given** geolocation is denied
 **When** the permission is blocked
-**Then** the map centers on the nearest RE/MAX office location with a friendly message (FR16)
+**Then** the map centers on the nearest REMAX office location with a friendly message (FR16)
 
 **And** every empty/error state has a forward path — no dead ends (UX-DR20)
 
@@ -1587,7 +1587,7 @@ Sellers can submit property listing inquiries and CMA requests through a progres
 
 As a **seller**,
 I want to submit my property for listing through a simple, progressive form on a dedicated seller page,
-So that I can connect with an area-specific RE/MAX agent without needing an account or technical knowledge.
+So that I can connect with an area-specific REMAX agent without needing an account or technical knowledge.
 
 **Acceptance Criteria:**
 

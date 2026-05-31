@@ -13,7 +13,7 @@ export interface Office {
 
 export const offices: Office[] = [
   {
-    name: "RE/MAX Altitud",
+    name: "REMAX Altitud",
     location: "Pérez Zeledón",
     address: "Detras de la escuela 12 de Marzo, Perez Zeledon",
     phone: "+506 6078 8887",
@@ -21,7 +21,7 @@ export const offices: Office[] = [
     whatsapp: "50660788887",
   },
   {
-    name: "RE/MAX Altitud Cero",
+    name: "REMAX Altitud Cero",
     location: "Dominical / Uvita",
     address: "Calle principal frente a la cancha de Futbol de Playa Dominical",
     phone: "+506 6103 2936",

@@ -122,7 +122,7 @@ export function AgentIndexFilters({ agents, locale, officeMap }: AgentIndexFilte
             <li key={agent.id}>
               <AgentIndexCard
                 agent={agent}
-                officeName={officeMap[agent.officeId] ?? "RE/MAX Altitud"}
+                officeName={officeMap[agent.officeId] ?? "REMAX Altitud"}
                 locale={locale}
               />
             </li>

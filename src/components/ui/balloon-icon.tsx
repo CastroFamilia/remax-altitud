@@ -4,7 +4,7 @@ interface BalloonIconProps {
 }
 
 /**
- * Inline SVG of the RE/MAX hot-air balloon mark.
+ * Inline SVG of the REMAX hot-air balloon mark.
  * Uses brand tokens: balloon-red (#cc0000), balloon-blue (#003da5), balloon-white (#ffffff).
  * Inline SVG ensures the icon renders even when public assets or CDN are unreachable —
  * critical for error pages (404/500).

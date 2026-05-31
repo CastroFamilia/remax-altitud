@@ -15,7 +15,7 @@ import { agents } from "./agents";
 import { areas } from "./areas";
 import { offices } from "./offices";
 
-/** Canonical property listings synced from the RE/MAX CCA API. */
+/** Canonical property listings synced from the REMAX CCA API. */
 export const properties = pgTable(
   "properties",
   {

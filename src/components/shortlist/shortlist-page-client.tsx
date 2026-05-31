@@ -139,7 +139,7 @@ export function ShortlistPageClient() {
     channel: "whatsapp" | "email",
   ) => {
     const isOffice = !agent;
-    const agentName = isOffice ? "RE/MAX Altitud" : agent.name;
+    const agentName = isOffice ? "REMAX Altitud" : agent.name;
     const agentEmail = isOffice ? "info@remax-altitud.cr" : agent.email;
     const agentWhatsapp = isOffice ? "50688888888" : agent.whatsapp;
 
@@ -635,7 +635,7 @@ export function ShortlistPageClient() {
                   const photoSrc = isOffice
                     ? "/images/agent-placeholder.jpg"
                     : agent.photoOptimizedUrl || agent.photoUrl || "/images/agent-placeholder.jpg";
-                  const agentName = isOffice ? "RE/MAX Altitud" : agent.name;
+                  const agentName = isOffice ? "REMAX Altitud" : agent.name;
                   const languages = isOffice ? "" : agent.languages;
 
                   return (

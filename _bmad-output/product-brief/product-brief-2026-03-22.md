@@ -8,7 +8,7 @@ input_documents:
   - '_bmad-output/technical-research/technical-research-2026-03-22.md'
 ---
 
-# Product Brief — RE/MAX Altitud Website
+# Product Brief — REMAX Altitud Website
 
 > **Version:** 1.0
 > **Date:** 2026-03-22
@@ -19,7 +19,7 @@ input_documents:
 
 ## 1. Product Vision
 
-**RE/MAX Altitud is building a multilingual relocation gateway to Costa Rica's Southern Zone** — not just a property listings website, but an integrated ecosystem that connects property search, area guides, visa information, and cost-of-living tools with bilingual agents who speak the buyer's language.
+**REMAX Altitud is building a multilingual relocation gateway to Costa Rica's Southern Zone** — not just a property listings website, but an integrated ecosystem that connects property search, area guides, visa information, and cost-of-living tools with bilingual agents who speak the buyer's language.
 
 ### Why Now
 
@@ -45,8 +45,8 @@ input_documents:
 | 🇨🇷 **Carlos** | Local Costa Rican seller | Full Spanish UX, "Sell Your Property" CTA, agent trust, phone/WhatsApp | ES |
 | 🇨🇷 **Andrés** | Costa Rican buyer, searching locally | Spanish UX, colón/USD pricing, local area knowledge, familiar neighborhoods | ES |
 | 🇩🇪 **Hans** | German investor, analytical | Native language UX, investment filters, price/m², legal guides, property comparison | DE |
-| 👩‍💼 **Sofia** | Agent considering joining RE/MAX | Professional agent profiles, visible SEO traffic, "Join Our Team" benefits | EN/ES |
-| 🏢 **Laura** | Current RE/MAX Altitud agent | Her own professional profile page, her listings showcased, lead routing, WhatsApp integration | ES/EN |
+| 👩‍💼 **Sofia** | Agent considering joining REMAX | Professional agent profiles, visible SEO traffic, "Join Our Team" benefits | EN/ES |
+| 🏢 **Laura** | Current REMAX Altitud agent | Her own professional profile page, her listings showcased, lead routing, WhatsApp integration | ES/EN |
 
 ### Additional Segments
 
@@ -55,7 +55,7 @@ input_documents:
 - **Digital nomads** — area guides, cost calculator, lifestyle matching
 - **Canadian snowbirds** — vacation rental potential, property management info
 
-> **Note:** Costa Rican buyers (like Andrés) and current RE/MAX agents (like Laura) are core users — not secondary. The site must work equally well for the local market as for internationals, and must serve as a professional platform agents are proud to share with their clients.
+> **Note:** Costa Rican buyers (like Andrés) and current REMAX agents (like Laura) are core users — not secondary. The site must work equally well for the local market as for internationals, and must serve as a professional platform agents are proud to share with their clients.
 
 ---
 
@@ -88,10 +88,10 @@ input_documents:
 ### For Sellers (Local)
 
 1. **Full Spanish experience** — complete UX in native language
-2. **Credible brand** — RE/MAX global recognition + agent expertise signals
+2. **Credible brand** — REMAX global recognition + agent expertise signals
 3. **Easy contact** — "Sell Your Property" CTA, phone, WhatsApp
 
-### For RE/MAX (Business)
+### For REMAX (Business)
 
 1. **Lead machine** — every interaction captures leads with agent auto-assignment
 2. **SEO dominance** — daily-regenerated static pages filling the no-MLS vacuum
@@ -168,7 +168,7 @@ input_documents:
 | Page | Description | Priority |
 |------|-------------|----------|
 | **Homepage** | Hero, featured listings, area showcase, CTA | Must-have |
-| **About / Offices** | 2 offices, team, RE/MAX brand story | Must-have |
+| **About / Offices** | 2 offices, team, REMAX brand story | Must-have |
 | **Services** | Buying, selling, relocation services overview | Must-have |
 | **Contact** | General contact + office-specific contact | Must-have |
 | **Join Our Team** | Agent recruitment portal with benefits showcase | Must-have |
@@ -223,7 +223,7 @@ input_documents:
 ### Data Pipeline
 
 ```
-RE/MAX CCA API  →  Docker Cron (6 AM daily)  →  Parse + Diff  →  Translate (DeepL/GPT)  →  PostgreSQL  →  ISR Revalidation
+REMAX CCA API  →  Docker Cron (6 AM daily)  →  Parse + Diff  →  Translate (DeepL/GPT)  →  PostgreSQL  →  ISR Revalidation
 ```
 
 ### Rendering Strategy
@@ -256,7 +256,7 @@ RE/MAX CCA API  →  Docker Cron (6 AM daily)  →  Parse + Diff  →  Translate
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| **RE/MAX CCA API dependency** | No data sync if API is down | Graceful degradation: serve cached ISR pages; retry logic; accepted risk |
+| **REMAX CCA API dependency** | No data sync if API is down | Graceful degradation: serve cached ISR pages; retry logic; accepted risk |
 | **AI translation quality** | Misinformation for legal/financial content | Curated glossary (DeepL); human review for legal content; disclaimers |
 | **6-language SEO complexity** | Indexing issues, duplicate content | Strict hreflang; automated sitemaps; Search Console monitoring |
 | **Regional competitors** | Deeper local SEO presence | Long-tail keyword strategy; area-specific content; daily refresh advantage |
@@ -270,16 +270,16 @@ RE/MAX CCA API  →  Docker Cron (6 AM daily)  →  Parse + Diff  →  Translate
 
 ### Constraints
 
-- **2 offices only** — both use the RE/MAX CCA API with separate GUIDs
+- **2 offices only** — both use the REMAX CCA API with separate GUIDs
 - **API is the single data source** — no manual listing entry for MVP
 - **No existing user accounts** — lead capture only, no buyer login for MVP
-- **RE/MAX branding guidelines** — must adhere to global brand standards (balloon logo, colors)
+- **REMAX branding guidelines** — must adhere to global brand standards (balloon logo, colors)
 - **Budget target** — ~$25-45/month operational costs
 - **Self-hosted Coolify** — Docker-based deployment with no function timeout limits
 
 ### Assumptions
 
-- RE/MAX CCA API will remain stable and accessible with current endpoints
+- REMAX CCA API will remain stable and accessible with current endpoints
 - API data includes GPS coordinates for all listings (required for map search)
 - Azure CDN property images can be downloaded and re-optimized
 - DeepL API quality is sufficient for real estate listing translations

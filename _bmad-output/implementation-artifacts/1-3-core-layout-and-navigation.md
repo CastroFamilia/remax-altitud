@@ -58,7 +58,7 @@ So that I can find any section of the site within 2 taps.
   - [x] Source: `public/images/brand/logo-remax-altitud.png` (18KB, off-white on transparent, designed for dark backgrounds)
   - [x] **Swappable design (UX-DR32):** Logo source path is a constant at the top of the file — changing the image file at the path swaps the logo without code changes. Component accepts optional `variant` prop (`"default" | "dark-bg"`) to support future light-background logo variant
   - [x] Renders within a `<Link href="/">` wrapper for homepage navigation
-  - [x] `alt` text: "RE/MAX Altitud — Costa Rica Real Estate"
+  - [x] `alt` text: "REMAX Altitud — Costa Rica Real Estate"
   - [x] **Sizing:** Desktop: height 40px, auto width. Mobile: height 32px, auto width. Use `next/image` `sizes` prop: `(max-width: 768px) 120px, 160px`
   - [x] **CLS Prevention:** To prevent Cumulative Layout Shift, inspect `logo-remax-altitud.png` to determine its intrinsic aspect ratio. Provide explicit `width` and `height` props to `next/image` that match this ratio at 40px (desktop) and 32px (mobile) heights.
   - [x] Apply `object-contain` to preserve aspect ratio within the computed dimensions
@@ -154,9 +154,9 @@ So that I can find any section of the site within 2 taps.
     └─ Join Our Team
 
     Column 2: Offices (data sourced from `src/lib/constants/offices.ts` — create this file)
-    ├─ RE/MAX Altitud (Pérez Zeledón)
+    ├─ REMAX Altitud (Pérez Zeledón)
     │  Address, phone (populate from architecture spec or use TODO placeholders with typed shape)
-    └─ RE/MAX Altitud Cero (Dominical/Uvita)
+    └─ REMAX Altitud Cero (Dominical/Uvita)
        Address, phone
 
     Column 3: Social & Contact
@@ -173,9 +173,9 @@ So that I can find any section of the site within 2 taps.
     ```
   - [x] Mobile layout: stacked columns (1-column grid), sections collapsible or stacked vertically
   - [x] Gold divider line between content and copyright: `border-brand-gold-muted` or `border-t border-brand-gold/40`
-  - [x] Copyright bar at bottom: `© 2026 RE/MAX Altitud. All rights reserved.` — centered, `text-xs text-text-muted`
+  - [x] Copyright bar at bottom: `© 2026 REMAX Altitud. All rights reserved.` — centered, `text-xs text-text-muted`
   - [x] Footer links: `text-text-on-dark` with hover `text-brand-gold` transition using `var(--duration-fast)`
-  - [x] All links have appropriate `aria-label` for social icons (e.g., `aria-label="Visit RE/MAX Altitud on Facebook"`)
+  - [x] All links have appropriate `aria-label` for social icons (e.g., `aria-label="Visit REMAX Altitud on Facebook"`)
   - [x] Social icons use `lucide-react` icons — 24px with 44px touch target area. **Note:** Lucide does not include brand-specific icons (Facebook, Instagram); generic icons (Globe, Camera) are used as placeholders. Consider inline SVGs for brand marks in a future polish pass
   - [x] Language toggle placeholder: text-only "EN | ES" for now — Story 1.4 will implement the functional `<LanguageToggle>` component
 

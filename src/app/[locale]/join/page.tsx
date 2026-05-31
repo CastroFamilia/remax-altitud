@@ -45,7 +45,7 @@ function JoinPageContent() {
       <div className="relative mb-16 overflow-hidden rounded-2xl shadow-lg border border-brand-warm aspect-[21/9] w-full bg-brand-warm/10">
         <Image
           src="/images/join-team-hero.png"
-          alt="RE/MAX Altitud Luxury Tropical Office"
+          alt="REMAX Altitud Luxury Tropical Office"
           fill
           priority
           className="object-cover"
@@ -85,7 +85,7 @@ function JoinPageContent() {
             <div className="relative overflow-hidden rounded-2xl shadow-md border border-brand-warm aspect-square w-full bg-brand-warm/10">
               <Image
                 src="/images/join-team-collaborating.png"
-                alt="RE/MAX Altitud Warm and Close Team Collaboration"
+                alt="REMAX Altitud Warm and Close Team Collaboration"
                 fill
                 className="object-cover hover:scale-[1.02] transition-transform duration-500"
                 sizes="(max-width: 768px) 100vw, 400px"

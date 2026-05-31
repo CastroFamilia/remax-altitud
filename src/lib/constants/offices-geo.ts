@@ -1,7 +1,7 @@
-/** Pérez Zeledón office — RE/MAX Altitud main office, San Isidro de El General */
+/** Pérez Zeledón office — REMAX Altitud main office, San Isidro de El General */
 export const OFFICE_PZ_COORDS = { lat: 9.3725, lng: -83.7011 };
 
-/** Dominical / Uvita office — RE/MAX Altitud Cero */
+/** Dominical / Uvita office — REMAX Altitud Cero */
 export const OFFICE_DOMINICAL_COORDS = { lat: 9.257, lng: -83.885 };
 
 /**

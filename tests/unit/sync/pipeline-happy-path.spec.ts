@@ -315,7 +315,7 @@ describe("runSyncPipeline — happy path", () => {
   });
 
   it("[P0] resolves office UUID from the GUID the record was fetched under, NOT from RawProperty.officeApiId (regression)", async () => {
-    // Regression: parser's `officeApiId` is a numeric RE/MAX OfficeID (e.g. 218),
+    // Regression: parser's `officeApiId` is a numeric REMAX OfficeID (e.g. 218),
     // not a GUID. The pipeline must use the GUID it fetched the record under
     // to resolve the office UUID — otherwise every record would silently fall
     // back to an arbitrary office.

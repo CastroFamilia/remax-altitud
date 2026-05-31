@@ -252,8 +252,8 @@ So that I can browse comfortably whether I speak English or Spanish.
     "Footer": {
       "quickLinks": "Quick Links",
       "offices": "Our Offices",
-      "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
-      "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
+      "perezZeledonOffice": "REMAX Altitud — Pérez Zeledón",
+      "dominicalOffice": "REMAX Altitud Cero — Dominical",
       "followUs": "Follow Us",
       "allRightsReserved": "All rights reserved",
       "sellWithUs": "Sell with Us",
@@ -262,12 +262,12 @@ So that I can browse comfortably whether I speak English or Spanish.
       "contactUs": "Contact Us"
     },
     "HomePage": {
-      "title": "RE/MAX Altitud",
+      "title": "REMAX Altitud",
       "subtitle": "Costa Rica's Southern Zone — Real Estate Platform",
       "scaffoldingNote": "Foundation scaffolding complete. Content coming in Stories 1.5–1.7."
     },
     "Metadata": {
-      "title": "RE/MAX Altitud — Costa Rica Real Estate",
+      "title": "REMAX Altitud — Costa Rica Real Estate",
       "description": "Discover properties in Costa Rica's Southern Zone. Map-first search, multilingual support, and expert agents across Pérez Zeledón and Dominical/Uvita."
     },
     "MobileNav": {
@@ -308,8 +308,8 @@ So that I can browse comfortably whether I speak English or Spanish.
     "Footer": {
       "quickLinks": "Enlaces Rápidos",
       "offices": "Nuestras Oficinas",
-      "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
-      "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
+      "perezZeledonOffice": "REMAX Altitud — Pérez Zeledón",
+      "dominicalOffice": "REMAX Altitud Cero — Dominical",
       "followUs": "Síguenos",
       "allRightsReserved": "Todos los derechos reservados",
       "sellWithUs": "Vende con Nosotros",
@@ -318,12 +318,12 @@ So that I can browse comfortably whether I speak English or Spanish.
       "contactUs": "Contáctanos"
     },
     "HomePage": {
-      "title": "RE/MAX Altitud",
+      "title": "REMAX Altitud",
       "subtitle": "Zona Sur de Costa Rica — Plataforma de Bienes Raíces",
       "scaffoldingNote": "Estructura base completa. Contenido próximamente en Historias 1.5–1.7."
     },
     "Metadata": {
-      "title": "RE/MAX Altitud — Bienes Raíces Costa Rica",
+      "title": "REMAX Altitud — Bienes Raíces Costa Rica",
       "description": "Descubre propiedades en la Zona Sur de Costa Rica. Búsqueda por mapa, soporte multilingüe y agentes expertos en Pérez Zeledón y Dominical/Uvita."
     },
     "MobileNav": {

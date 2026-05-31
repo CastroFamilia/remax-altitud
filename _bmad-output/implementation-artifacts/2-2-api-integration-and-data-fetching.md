@@ -5,7 +5,7 @@ Status: done
 ## Story
 
 As a **system**,
-I want a typed, resilient client for the RE/MAX CCA API that fetches properties and agents for both Altitud offices and parses the raw payloads into validated, normalized in-memory shapes,
+I want a typed, resilient client for the REMAX CCA API that fetches properties and agents for both Altitud offices and parses the raw payloads into validated, normalized in-memory shapes,
 So that downstream sync stories (2.3 diff/upsert, 2.4 images, 2.5 translation, 2.6 lifestyle tags) can build on a single trustworthy ingestion layer instead of redoing parsing or guessing at field semantics.
 
 ## Acceptance Criteria
@@ -20,13 +20,13 @@ So that downstream sync stories (2.3 diff/upsert, 2.4 images, 2.5 translation, 2
 
 5. **Given** an empty array response (Altitud Cero returns `[]` today) **When** parsed **Then** the function returns `[]` and logs a single info-level breadcrumb (NOT an error) — empty offices are a valid steady state (API8).
 
-6. **Given** a Zod schema for the raw RE/MAX property payload **When** a property record is parsed **Then** the schema accepts the field set documented in `docs/remax-properties-per-office-feed.md`, normalizes the inconsistent `publicRemarks_es` → `publicRemarksEs` key (API1), parses `Latitude`/`Longitude` from string to number with a `z.coerce.number()` step (API2), splits `Images` on `|` and URL-encodes filename segments (API3), falls back `ListingTitle_es` to `ListingTitle_en` when empty (API4), and prefers `ConstructionSize` over `ConstructionSizeLiving` since the latter is `0.00` for nearly all listings (API5).
+6. **Given** a Zod schema for the raw REMAX property payload **When** a property record is parsed **Then** the schema accepts the field set documented in `docs/remax-properties-per-office-feed.md`, normalizes the inconsistent `publicRemarks_es` → `publicRemarksEs` key (API1), parses `Latitude`/`Longitude` from string to number with a `z.coerce.number()` step (API2), splits `Images` on `|` and URL-encodes filename segments (API3), falls back `ListingTitle_es` to `ListingTitle_en` when empty (API4), and prefers `ConstructionSize` over `ConstructionSizeLiving` since the latter is `0.00` for nearly all listings (API5).
 
 7. **Given** `LotSizeArea` is present and `LotSizeUnits === "Sq Mt"` but the value is implausibly small for a property whose description mentions "hectare(s)" or "manzana(s)" (case-insensitive) **When** parsed **Then** the parser flags the listing with `lotSizeUnitWarning: true` in the returned object (downstream Story 2.3 will record it in `sync_logs.errors` as a warning) — values are NOT silently rewritten (API6).
 
 8. **Given** a listing whose `ExpirationDate` parses to a date earlier than `now()` **When** processed **Then** the parser sets `isExpired: true` on the returned object so Story 2.3 can soft-delete it (API7). The current story only flags; it does not modify the database.
 
-9. **Given** a Zod schema for the raw RE/MAX agent payload **When** an agent record is parsed **Then** it captures all public fields, **NEVER** exposes `Birthday` (the field is `.transform(() => undefined)` or `.omit()`-stripped from the output type so it cannot leak even via JSON.stringify — API9), and produces a normalized E.164 `whatsapp` field by trimming the `"506 XXXXXXXX"` `DirectPhone` value into `+50688887777` form (API10). When `DirectPhone` is empty/invalid, `whatsapp` is `null`.
+9. **Given** a Zod schema for the raw REMAX agent payload **When** an agent record is parsed **Then** it captures all public fields, **NEVER** exposes `Birthday` (the field is `.transform(() => undefined)` or `.omit()`-stripped from the output type so it cannot leak even via JSON.stringify — API9), and produces a normalized E.164 `whatsapp` field by trimming the `"506 XXXXXXXX"` `DirectPhone` value into `+50688887777` form (API10). When `DirectPhone` is empty/invalid, `whatsapp` is `null`.
 
 10. **Given** the parser **When** a record fails Zod validation **Then** it is excluded from the returned array, an entry is appended to a per-call `parseErrors` collector (`{ apiId, scope: 'property' | 'agent', message, raw }`), and the function returns `{ records, parseErrors }`. Bad records do NOT crash the whole fetch (FR55).
 
@@ -51,7 +51,7 @@ So that downstream sync stories (2.3 diff/upsert, 2.4 images, 2.5 translation, 2
 - [x] Task 1: Env config helper (AC: #1, #11)
   - [x] Create `src/lib/sync/config.ts` exporting `getRemaxConfig(): RemaxConfig`.
   - [x] Read `process.env.REMAX_API_BASE_URL`, `process.env.PZ_OFFICE_GUID`, `process.env.DOM_OFFICE_GUID`.
-  - [x] Throw `Error("Missing required RE/MAX env vars: …")` listing every missing var (do not throw on the first miss; aggregate so the operator sees the full list).
+  - [x] Throw `Error("Missing required REMAX env vars: …")` listing every missing var (do not throw on the first miss; aggregate so the operator sees the full list).
   - [x] Add `import "server-only"` at the top of every file in `src/lib/sync/` so accidental client imports fail the build.
   - [x] Update `.env.example`: keep existing lines but verify `REMAX_API_BASE_URL=https://api.remax-cca.com/api`, `PZ_OFFICE_GUID=FEA8746D-CC1D-41B8-89F3-D04AC98274AF`, `DOM_OFFICE_GUID=4AD5AE8F-5B47-4A1A-A953-40445F2B4940` are present as documentation defaults (already present per Story 2.1; just confirm).
 
@@ -114,14 +114,14 @@ So that downstream sync stories (2.3 diff/upsert, 2.4 images, 2.5 translation, 2
   - [x] `npm run format:check` → pass.
   - [x] `npm run build` → pass (Next.js build will fail if any client component accidentally imports `src/lib/sync/**` — that's the point of the `server-only` guard).
   - [x] `npm test` → all green.
-  - [ ] PR title: `feat: RE/MAX CCA API client, Zod schemas, retry layer (Story 2.2)` — base `main`. Open PR is deferred to the reviewer (Story 2.1 set this precedent).
+  - [ ] PR title: `feat: REMAX CCA API client, Zod schemas, retry layer (Story 2.2)` — base `main`. Open PR is deferred to the reviewer (Story 2.1 set this precedent).
 
 ## Dev Notes
 
 ### Architecture Compliance
 
 - **Source tree (Architecture §3):** all sync code lives under `src/lib/sync/`. The architecture pre-declared these files: `api-client.ts`, `pipeline.ts`, `differ.ts`, `translator.ts`, `image-optimizer.ts`, `geo-tagger.ts`, `lifestyle-tagger.ts`, `alert.ts`. **This story creates only `api-client.ts`** plus supporting `config.ts`, `parser.ts`, `schemas/`, and `utils/phone.ts`. It does NOT create the others — they belong to Stories 2.3–2.7.
-- **Types (Architecture §3):** non-DB external API types live in `src/types/`. Story 2.1 deferred `src/types/api.ts` to this story (see [previous story Project Structure Notes](#previous-story-intelligence)). Use the exact path `src/types/remax-api.ts` (the architecture's `api.ts` is reserved for internal API request/response shapes — not the upstream RE/MAX CCA payloads).
+- **Types (Architecture §3):** non-DB external API types live in `src/types/`. Story 2.1 deferred `src/types/api.ts` to this story (see [previous story Project Structure Notes](#previous-story-intelligence)). Use the exact path `src/types/remax-api.ts` (the architecture's `api.ts` is reserved for internal API request/response shapes — not the upstream REMAX CCA payloads).
 - **Validation (Architecture §10 Data Security):** all external input must be Zod-validated. This story delivers the first Zod schemas in the codebase.
 - **Server-only (Architecture §10 / NFR11):** API GUIDs and base URL are server-only. Use the `server-only` package (zero-dep, ships with Next.js — no install) at the top of every `src/lib/sync/**` file.
 - **No HTTP client library:** Use the built-in `fetch`. Architecture does not authorize axios/got/ky. Node 20 (declared in package.json `@types/node ^20`) has fetch natively. The `package.json` already targets Next.js 15 + React 19, both of which require Node 18+; Node 20+ is the production target on Coolify.
@@ -182,7 +182,7 @@ The authoritative field reference is `docs/remax-properties-per-office-feed.md`.
 
 ### Phone Normalization
 
-Costa Rica phone numbers from RE/MAX arrive in three observed shapes:
+Costa Rica phone numbers from REMAX arrive in three observed shapes:
 
 | Input | Output |
 |---|---|
@@ -291,7 +291,7 @@ The architecture pre-declared `src/lib/sync/api-client.ts` at this exact path (A
 
 From Story 2.1 (`2-1-database-schema-and-drizzle-models.md`):
 
-- **`src/types/` is `.gitkeep`-only today** — Story 2.1 deferred non-DB external API types here, naming Story 2.2 explicitly: *"src/types/*.ts is reserved for NON-DB types (UI, API request/response shapes from RE/MAX CCA API — those come in Story 2.2 with Zod schemas)."* That's this story.
+- **`src/types/` is `.gitkeep`-only today** — Story 2.1 deferred non-DB external API types here, naming Story 2.2 explicitly: *"src/types/*.ts is reserved for NON-DB types (UI, API request/response shapes from REMAX CCA API — those come in Story 2.2 with Zod schemas)."* That's this story.
 - **DB schema mapping target:** Story 2.1 created `properties.api_id` (text, unique), `properties.api_raw` (jsonb), `agents.api_id` (text, unique), `agents.whatsapp` (text, expected E.164), `agents.phone` (text, raw "506 XXXXXXXX"). The parser output shapes in this story map directly to these columns — Story 2.3 will do the actual `INSERT … ON CONFLICT (api_id) DO UPDATE`.
 - **PostGIS coordinates:** Story 2.1 created `properties.geo` as `geography(Point, 4326)` plus `properties.latitude` / `properties.longitude` (`double precision`). The parser produces both `latitude` and `longitude` as numbers; Story 2.3 will compose them into a `GeoPoint` for the `geo` column.
 - **Office GUIDs:** Story 2.1 seeded the `offices` table with `api_guid = "FEA8746D-…"` (PZ) and `api_guid = "4AD5AE8F-…"` (Cero). The parser does NOT need to look these up — Story 2.3 joins by `api_guid` later. This story just passes the GUID into the fetch call.
@@ -333,7 +333,7 @@ Pattern signals from #66 (Story 2.1):
 
 - [Source: _bmad-output/planning-artifacts/epics.md#Story 2.2]
 - [Source: _bmad-output/planning-artifacts/architecture.md#5. Data Sync Pipeline] — pipeline architecture, retry policy
-- [Source: _bmad-output/planning-artifacts/architecture.md#6. API Design] — RE/MAX CCA API integration table
+- [Source: _bmad-output/planning-artifacts/architecture.md#6. API Design] — REMAX CCA API integration table
 - [Source: _bmad-output/planning-artifacts/architecture.md#3. Project Structure] — `src/lib/sync/` source tree
 - [Source: _bmad-output/planning-artifacts/architecture.md#10. Security Architecture] — env vars, server-only API keys
 - [Source: _bmad-output/planning-artifacts/architecture.md#Technology Version Pinning] — zod 3.x pin
@@ -394,7 +394,7 @@ claude-opus-4-7 (Claude Code CLI, dev-story workflow)
 - `tests/setup/server-only-shim.ts`
 
 **Modified:**
-- `.env.example` — filled in documentation defaults for the three RE/MAX vars.
+- `.env.example` — filled in documentation defaults for the three REMAX vars.
 - `package.json` / `package-lock.json` — added `zod@^3.25.76` (dep) and `server-only` (devDependency for Vitest shim compatibility).
 - `vitest.config.ts` — added `server-only` alias so unit tests can resolve the directive.
 - `_bmad-output/implementation-artifacts/sprint-status.yaml` — transitioned `2-2-...` to `in-progress` → `review`.
@@ -426,6 +426,6 @@ claude-opus-4-7 (Claude Code CLI, dev-story workflow)
 
 ## Change Log
 
-- 2026-04-24 — Initial implementation of Story 2.2: typed RE/MAX CCA fetch + parse layer with Zod schemas, exponential-backoff retries, and fixture-driven unit tests (24 passing).
+- 2026-04-24 — Initial implementation of Story 2.2: typed REMAX CCA fetch + parse layer with Zod schemas, exponential-backoff retries, and fixture-driven unit tests (24 passing).
 - 2026-04-24 — Code review: 2 decision-needed, 10 patch, 10 defer, 31 dismissed as spec-conformant or noise.
 - 2026-04-24 — Review patches applied: dropped dead-code `8000ms` backoff slot in favor of 3 attempts × `[2s, 4s]` delays; added 15s `AbortSignal.timeout` to every `fetch`; collapsed double-safeParse by chaining `.transform(...)` on both schemas and deriving `RawProperty` / `RawAgent` via `z.infer` (spec guardrail); switched `Latitude` / `Longitude` to `z.coerce.number()` step; parser now emits `parseErrors` entry on non-`"Sq Mt"` `LotSizeUnits`; `getRemaxConfig` strips trailing slash from `baseUrl`; api-client spec save/restores `process.env`; retry test asserts `endpoint` / `status` / `cause`; added `tests/unit/sync/images.spec.ts`. All 31 sync tests pass; typecheck / lint / format / build clean.
