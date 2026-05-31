@@ -140,7 +140,7 @@ export async function ListingDetailLayout({
                   )}
                 </div>
                 <div className="flex-shrink-0 flex items-center">
-                  <SaveButton propertyId={property.apiId ?? property.id} propertyTitle={title} />
+                  <SaveButton propertyId={property.id} propertyTitle={title} />
                 </div>
               </div>
 
