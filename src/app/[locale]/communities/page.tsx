@@ -142,7 +142,7 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
                   : comm.propertyTypesEn || qf.propertyTypesEn || qf.propertyTypes || ""
               ) as string;
 
-          const sizeMin =
+              const sizeMin =
                 comm.sizeMinM2 ?? (typeof qf.sizeMinM2 === "number" ? qf.sizeMinM2 : null);
               const sizeMax =
                 comm.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
@@ -154,9 +154,7 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
               ) as string | null;
 
               const sizeRangeOverride = (
-                locale === "es"
-                  ? qf.sizeRangeEs || qf.sizeRange
-                  : qf.sizeRangeEn || qf.sizeRange
+                locale === "es" ? qf.sizeRangeEs || qf.sizeRange : qf.sizeRangeEn || qf.sizeRange
               ) as string | null;
 
               return (

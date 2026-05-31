@@ -152,15 +152,11 @@ export function FeaturedCommunitiesCarousel({
             community.sizeMaxM2 ?? (typeof qf.sizeMaxM2 === "number" ? qf.sizeMaxM2 : null);
 
           const priceRangeOverride = (
-            locale === "es"
-              ? qf.priceRangeEs || qf.priceRange
-              : qf.priceRangeEn || qf.priceRange
+            locale === "es" ? qf.priceRangeEs || qf.priceRange : qf.priceRangeEn || qf.priceRange
           ) as string | null;
 
           const sizeRangeOverride = (
-            locale === "es"
-              ? qf.sizeRangeEs || qf.sizeRange
-              : qf.sizeRangeEn || qf.sizeRange
+            locale === "es" ? qf.sizeRangeEs || qf.sizeRange : qf.sizeRangeEn || qf.sizeRange
           ) as string | null;
 
           return (

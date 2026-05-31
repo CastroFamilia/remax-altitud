@@ -63,13 +63,13 @@ export function CommunityCard({
 
   const priceRangeStr = priceRangeOverride
     ? priceRangeOverride
-    : (priceMin && priceMax
+    : priceMin && priceMax
       ? priceMin === priceMax
         ? formatPrice(priceMin)
         : `${formatPrice(priceMin)}–${formatPrice(priceMax)}`
       : priceMin
         ? formatPrice(priceMin)
-        : null);
+        : null;
 
   // Format Size Range beautifully
   const formatSize = (val: number) => {
@@ -78,13 +78,13 @@ export function CommunityCard({
 
   const sizeRangeStr = sizeRangeOverride
     ? sizeRangeOverride
-    : (sizeMin && sizeMax
+    : sizeMin && sizeMax
       ? sizeMin === sizeMax
         ? `${formatSize(sizeMin)} m²`
         : `${formatSize(sizeMin)}–${formatSize(sizeMax)} m²`
       : sizeMin
         ? `${formatSize(sizeMin)} m²`
-        : null);
+        : null;
 
   return (
     <a

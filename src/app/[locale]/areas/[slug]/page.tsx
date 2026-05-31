@@ -138,9 +138,7 @@ export default async function AreaGuidePage({
               ) as string | null;
 
               const sizeRangeOverride = (
-                locale === "es"
-                  ? qf.sizeRangeEs || qf.sizeRange
-                  : qf.sizeRangeEn || qf.sizeRange
+                locale === "es" ? qf.sizeRangeEs || qf.sizeRange : qf.sizeRangeEn || qf.sizeRange
               ) as string | null;
 
               return (
