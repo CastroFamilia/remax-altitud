@@ -19,7 +19,10 @@
     "contact": "Contact",
     "ourAgents": "Our Agents",
     "mainNav": "Main navigation",
-    "vipBuyerService": "VIP Buyer Service"
+    "vipBuyerService": "VIP Buyer Service",
+    "language": "Language",
+    "currency": "Currency",
+    "preferences": "Preferences"
   },
   "LanguageToggle": {
     "switchLanguage": "Switch language",

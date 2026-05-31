@@ -19,7 +19,10 @@
     "contact": "Contacto",
     "ourAgents": "Nuestros Agentes",
     "mainNav": "Navegación principal",
-    "vipBuyerService": "Servicio Comprador VIP"
+    "vipBuyerService": "Servicio Comprador VIP",
+    "language": "Idioma",
+    "currency": "Moneda",
+    "preferences": "Preferencias"
   },
   "LanguageToggle": {
     "switchLanguage": "Cambiar idioma",
