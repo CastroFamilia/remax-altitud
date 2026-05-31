@@ -23,7 +23,12 @@ export async function FeaturedCommunities({ locale }: FeaturedCommunitiesProps) 
       getFeaturedCommunities(6),
       getAllAreas(),
     ]);
-    communities = communitiesData;
+    // Prioritize RISE Costa Rica so it is always first in the homepage featured section
+    communities = [...communitiesData].sort((a, b) => {
+      if (a.slug === "rise-costa-rica") return -1;
+      if (b.slug === "rise-costa-rica") return 1;
+      return 0;
+    });
     areaMap = Object.fromEntries(areasData.map((a) => [a.id, a.slug]));
   } catch {
     // DB unavailable — render shell fallback
