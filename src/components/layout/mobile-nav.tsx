@@ -37,7 +37,7 @@ export function MobileNav() {
   const mobileItems = buildMobileItems(mainNavItems);
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <Button
         variant="ghost"
         size="icon"

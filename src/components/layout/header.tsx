@@ -24,7 +24,7 @@ export function Header() {
         zIndex: "var(--z-sticky-nav)" as unknown as number,
       }}
     >
-      <div className="container flex h-14 items-center justify-between md:h-16">
+      <div className="container flex h-14 items-center justify-between lg:h-16">
         <Logo />
         <DesktopNav />
         <div className="flex items-center gap-2">
