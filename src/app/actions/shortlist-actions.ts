@@ -17,8 +17,12 @@ import { getAllAgents } from "@/lib/db/queries/agents";
 export async function getShortlistProperties(ids: string[]): Promise<PropertySearchItem[]> {
   if (!ids || ids.length === 0) return [];
 
-  const uuids = ids.filter((id) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id));
-  const apiIds = ids.filter((id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id));
+  const uuids = ids.filter((id) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id),
+  );
+  const apiIds = ids.filter(
+    (id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id),
+  );
 
   const conditions = [];
   if (uuids.length > 0) conditions.push(inArray(properties.id, uuids));
@@ -115,8 +119,12 @@ import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 export async function getShortlistPropertiesWithAgents(ids: string[]): Promise<any[]> {
   if (!ids || ids.length === 0) return [];
 
-  const uuids = ids.filter((id) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id));
-  const apiIds = ids.filter((id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id));
+  const uuids = ids.filter((id) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id),
+  );
+  const apiIds = ids.filter(
+    (id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id),
+  );
 
   const conditions = [];
   if (uuids.length > 0) conditions.push(inArray(properties.id, uuids));
