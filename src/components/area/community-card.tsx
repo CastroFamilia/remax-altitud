@@ -24,6 +24,8 @@ interface CommunityCardProps {
   propertyTypes?: string;
   sizeMin?: number | null;
   sizeMax?: number | null;
+  priceRangeOverride?: string | null;
+  sizeRangeOverride?: string | null;
 }
 
 /**
@@ -46,6 +48,8 @@ export function CommunityCard({
   propertyTypes,
   sizeMin,
   sizeMax,
+  priceRangeOverride,
+  sizeRangeOverride,
 }: CommunityCardProps) {
   const linkHref = href ?? `/${locale}/communities`;
 
@@ -57,8 +61,9 @@ export function CommunityCard({
     return `$${(val / 1000).toFixed(0)}K`;
   };
 
-  const priceRangeStr =
-    priceMin && priceMax
+  const priceRangeStr = priceRangeOverride
+    ? priceRangeOverride
+    : priceMin && priceMax
       ? priceMin === priceMax
         ? formatPrice(priceMin)
         : `${formatPrice(priceMin)}–${formatPrice(priceMax)}`
@@ -71,8 +76,9 @@ export function CommunityCard({
     return val.toLocaleString(locale === "es" ? "es-CR" : "en-US");
   };
 
-  const sizeRangeStr =
-    sizeMin && sizeMax
+  const sizeRangeStr = sizeRangeOverride
+    ? sizeRangeOverride
+    : sizeMin && sizeMax
       ? sizeMin === sizeMax
         ? `${formatSize(sizeMin)} m²`
         : `${formatSize(sizeMin)}–${formatSize(sizeMax)} m²`

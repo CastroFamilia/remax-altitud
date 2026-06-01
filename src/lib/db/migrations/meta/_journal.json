@@ -141,6 +141,13 @@
       "when": 1780264761308,
       "tag": "0019_boring_sleepwalker",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1780454000000,
+      "tag": "0019_update_featured_communities",
+      "breakpoints": true
     }
   ]
 }
