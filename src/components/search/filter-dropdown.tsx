@@ -15,7 +15,7 @@
  * - Keyboard accessible via Radix primitives
  */
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Popover } from "radix-ui";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -56,8 +56,7 @@ export function FilterDropdown({
   const selectedOption = options.find((o) => o.value === value);
   const hasValue = !!value && !!selectedOption;
 
-  // Auto-close on Escape is handled by Radix. We just track open state.
-  const triggerRef = useRef<HTMLButtonElement>(null);
+
 
   // Determine the display label for the button
   const displayLabel = hasValue
@@ -88,7 +87,7 @@ export function FilterDropdown({
     <Popover.Root open={open} onOpenChange={setOpen}>
       <Popover.Trigger asChild>
         <button
-          ref={triggerRef}
+
           type="button"
           data-testid={testId}
           className={cn(
