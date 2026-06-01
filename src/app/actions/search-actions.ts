@@ -221,8 +221,9 @@ export async function searchProperties(
   page = 1,
   bounds?: RawBounds,
 ): Promise<SearchResult> {
-  // Sanitize page parameter — clamp to >= 1
-  const safePage = Math.max(1, Math.floor(sanitizeNumber(page) ?? 1));
+  try {
+    // Sanitize page parameter — clamp to >= 1
+    const safePage = Math.max(1, Math.floor(sanitizeNumber(page) ?? 1));
 
   // If bounds are provided, filter properties inside the bounds
   const safeBounds = bounds != null ? sanitizeBounds(bounds) : null;
@@ -383,7 +384,12 @@ export async function searchProperties(
     q: searchCondition,
     bounds:
       safeBounds != null
-        ? sql`${properties.geo} && ST_MakeEnvelope(${safeBounds.west}, ${safeBounds.south}, ${safeBounds.east}, ${safeBounds.north}, 4326)::geography`
+        ? and(
+            gte(properties.latitude, safeBounds.south),
+            lte(properties.latitude, safeBounds.north),
+            gte(properties.longitude, safeBounds.west),
+            lte(properties.longitude, safeBounds.east),
+          )
         : undefined,
   };
 
@@ -516,11 +522,24 @@ export async function searchProperties(
     resultsCount: total,
   });
 
-  return {
-    properties: propertyItems,
-    total,
-    facets,
-  };
+    return {
+      properties: propertyItems,
+      total,
+      facets,
+    };
+  } catch (error) {
+    console.error("Database query failed in searchProperties:", error);
+    return {
+      properties: [],
+      total: 0,
+      facets: {
+        byType: [],
+        byBedrooms: [],
+        byBathrooms: [],
+        byListingType: [],
+      },
+    };
+  }
 }
 
 /**
@@ -530,19 +549,24 @@ export async function searchProperties(
  * AC #7
  */
 export async function getAvailableAreas(): Promise<{ slug: string; label: string }[]> {
-  const rows = await db
-    .select({ areaSlug: properties.areaSlug })
-    .from(properties)
-    .where(and(eq(properties.isVisible, true), isNotNull(properties.areaSlug)))
-    .groupBy(properties.areaSlug);
+  try {
+    const rows = await db
+      .select({ areaSlug: properties.areaSlug })
+      .from(properties)
+      .where(and(eq(properties.isVisible, true), isNotNull(properties.areaSlug)))
+      .groupBy(properties.areaSlug);
 
-  return rows
-    .filter((r): r is { areaSlug: string } => r.areaSlug !== null && r.areaSlug !== "")
-    .map((r) => ({
-      slug: r.areaSlug,
-      label: formatAreaLabel(r.areaSlug),
-    }))
-    .sort((a, b) => a.label.localeCompare(b.label));
+    return rows
+      .filter((r): r is { areaSlug: string } => r.areaSlug !== null && r.areaSlug !== "")
+      .map((r) => ({
+        slug: r.areaSlug,
+        label: formatAreaLabel(r.areaSlug),
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  } catch (error) {
+    console.error("Database query failed in getAvailableAreas:", error);
+    return [];
+  }
 }
 
 /**
