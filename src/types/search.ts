@@ -10,6 +10,7 @@ export type SortOption = "newest" | "price_asc" | "price_desc" | "relevance";
 
 export interface SearchFilters {
   type?: string;
+  listingType?: string;
   priceMin?: number;
   priceMax?: number;
   bedrooms?: number;
@@ -21,6 +22,7 @@ export interface SearchFilters {
   view?: "split" | "map" | "grid";
   // Story 3.4: Lifestyle tags — comma-separated in URL (?tags=Investment+Property,Rental+Potential)
   tags?: string[];
+  q?: string; // Free-text keyword search
 }
 
 import type { OptimizedImage } from "./images";
@@ -37,16 +39,23 @@ export interface PropertySearchItem {
   constructionM2: number | null;
   zmtStatus: string;
   propertyType: string;
+  listingType?: string;
+  status: string;
   areaSlug: string | null;
   images: OptimizedImage[];
   latitude: number | null;
   longitude: number | null;
+  currency?: string | null;
+  apiRaw?: Record<string, unknown> | null;
+  descriptionEn?: string;
+  descriptionEs?: string;
 }
 
 export interface FilterFacets {
   byType: { value: string; count: number }[];
   byBedrooms: { value: number; count: number }[];
   byBathrooms: { value: number; count: number }[];
+  byListingType?: { value: string; count: number }[];
 }
 
 export interface SearchResult {

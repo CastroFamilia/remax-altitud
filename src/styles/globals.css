@@ -8,7 +8,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   RE/MAX Altitud — Design Token Foundation (Story 1.2)
+   REMAX Altitud — Design Token Foundation (Story 1.2)
    Premium Dual-Geography palette: Navy + Burgundy + Gold
    ============================================================
 
@@ -68,7 +68,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* RE/MAX brand tokens → Tailwind utilities (bg-brand-navy, etc.) */
+  /* REMAX brand tokens → Tailwind utilities (bg-brand-navy, etc.) */
   --color-brand-navy: var(--brand-navy);
   --color-brand-navy-light: var(--brand-navy-light);
   --color-brand-burgundy: var(--brand-burgundy);
@@ -144,7 +144,7 @@
   /* Site header height — used by search split-view layout */
   --header-height: 64px;
 
-  /* ── shadcn semantic slots (bare names) → RE/MAX brand ── */
+  /* ── shadcn semantic slots (bare names) → REMAX brand ── */
   --background: #f7f5ee; /* Crema canvas */
   --foreground: #202020; /* Text primary */
   --primary: #000e35; /* Azul Oscuro */
@@ -182,13 +182,13 @@
   --sidebar-border: #efece4;
   --sidebar-ring: #0043ff;
 
-  /* ── RE/MAX brand tokens (--brand-* prefix) ── */
+  /* ── REMAX brand tokens (--brand-* prefix) ── */
   --brand-navy: #000e35;
   --brand-navy-light: #0b1e43;
   --brand-burgundy: #660000;
   --brand-burgundy-light: #931f2e;
   --brand-red: #ff1200;
-  --brand-blue: #0043ff;
+  --brand-blue: #000e35;
   --brand-gold: #c2a661;
   --brand-gold-dark: #8a743e;
   --brand-gold-light: #d9c39b;
@@ -203,7 +203,7 @@
   --brand-beach: #183c5a;
   --brand-beach-accent: #d9c39b;
 
-  /* Balloon mark colors (RE/MAX hot air balloon logo element) */
+  /* Balloon mark colors (REMAX hot air balloon logo element) */
   --brand-balloon-red: #cc0000;
   --brand-balloon-blue: #003da5;
   --brand-balloon-white: #ffffff;
@@ -502,4 +502,14 @@
       opacity: 1;
     }
   }
+}
+
+/* Custom Viewport Locking for Map Search Page (Zillow/Airbnb feel) */
+body.no-footer {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
+body.no-footer footer {
+  display: none !important;
 }

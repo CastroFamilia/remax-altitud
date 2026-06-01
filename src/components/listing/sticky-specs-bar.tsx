@@ -24,6 +24,8 @@ interface StickySpecsBarProps {
   constructionM2: number | null;
   zmtStatus: string;
   locale: string;
+  currency?: string;
+  originalPriceColones?: number | null;
 }
 
 // ZMT badge visual config
@@ -50,6 +52,8 @@ export function StickySpecsBar({
   constructionM2,
   zmtStatus,
   locale,
+  currency,
+  originalPriceColones,
 }: StickySpecsBarProps) {
   const t = useTranslations("StickySpecsBar");
   const { unitSystem, convertArea } = useLocaleUnits(locale);
@@ -64,7 +68,14 @@ export function StickySpecsBar({
         {/* Price */}
         <div className="flex flex-col min-w-0">
           <span className="text-xs text-gray-500 uppercase tracking-wide">{t("price")}</span>
-          <span className="text-xl font-bold text-brand-navy">{formatUSD(priceUsd, locale)}</span>
+          <span className="text-xl font-bold text-brand-navy">
+            {formatUSD(priceUsd, locale)}
+            {currency === "CRC" && originalPriceColones != null && (
+              <span className="ml-2 text-xs font-normal text-gray-500">
+                (₡{originalPriceColones.toLocaleString("es-CR")})
+              </span>
+            )}
+          </span>
         </div>
 
         {/* Divider */}
@@ -91,7 +102,7 @@ export function StickySpecsBar({
           <div className="flex flex-col min-w-0">
             <span className="text-xs text-gray-500 uppercase tracking-wide">{t("lot")}</span>
             <span className="text-sm font-medium text-gray-700">
-              {convertArea(lotSizeM2, unitSystem, locale)}
+              {convertArea(lotSizeM2, unitSystem, locale, true)}
             </span>
           </div>
         )}
@@ -101,7 +112,7 @@ export function StickySpecsBar({
           <div className="flex flex-col min-w-0">
             <span className="text-xs text-gray-500 uppercase tracking-wide">{t("built")}</span>
             <span className="text-sm font-medium text-gray-700">
-              {convertArea(constructionM2, unitSystem, locale)}
+              {convertArea(constructionM2, unitSystem, locale, false)}
             </span>
           </div>
         )}

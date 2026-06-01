@@ -21,7 +21,7 @@
  *       at least one hidden (isVisible=false) property
  *
  * These E2E tests correspond to the acceptance criteria for Story 3.8:
- *   3.8-E2E-001 — Near Me denied → fallback to RE/MAX office + message (AC #6, R-007)
+ *   3.8-E2E-001 — Near Me denied → fallback to REMAX office + message (AC #6, R-007)
  *   3.8-E2E-002 — Zero-results shows suggestions + WhatsApp CTA with correct URL (AC #1, #2)
  *   3.8-E2E-003 — Hidden listing URL shows "no longer available" + similar properties (AC #3)
  *   3.8-E2E-004 — Near Me granted → map flies to user coords + radius overlay (AC #5)
@@ -57,12 +57,12 @@ const ZERO_RESULTS_PARAMS =
 const HIDDEN_PROPERTY_SLUG = "hidden-test-property";
 
 // ---------------------------------------------------------------------------
-// 3.8-E2E-001 — Near Me denied → fallback to RE/MAX office + message (AC #6)
+// 3.8-E2E-001 — Near Me denied → fallback to REMAX office + message (AC #6)
 // ---------------------------------------------------------------------------
 
 test.describe("Story 3.8: No-Results, Hidden Listings & Near Me E2E (ATDD — RED PHASE)", () => {
   test.skip(
-    "[P0] 3.8-E2E-001: Near Me denied → map centers on RE/MAX office + fallback message shown",
+    "[P0] 3.8-E2E-001: Near Me denied → map centers on REMAX office + fallback message shown",
     async ({ page, context }: any) => {
       // THIS TEST WILL FAIL — NearMeButton not yet implemented
       await page.setViewportSize(DESKTOP_VIEWPORT);

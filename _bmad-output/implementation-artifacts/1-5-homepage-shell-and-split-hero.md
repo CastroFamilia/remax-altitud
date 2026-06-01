@@ -6,7 +6,7 @@ Status: done
 
 As a **visitor**,
 I want a stunning homepage that immediately shows me mountain AND coast living options,
-So that I understand RE/MAX Altitud's unique geographic coverage within 3 seconds.
+So that I understand REMAX Altitud's unique geographic coverage within 3 seconds.
 
 ## Acceptance Criteria
 
@@ -49,7 +49,7 @@ So that I understand RE/MAX Altitud's unique geographic coverage within 3 second
 - [x] Update `src/messages/en.json` — extend the existing `HomePage` namespace (do not replace; keep `title`/`subtitle`/`scaffoldingNote` keys even if no longer rendered — future-proof for Epic 4 SEO meta):
   ```json
   "HomePage": {
-    "title": "RE/MAX Altitud",
+    "title": "REMAX Altitud",
     "subtitle": "Costa Rica's Southern Zone — Real Estate Platform",
     "scaffoldingNote": "Foundation scaffolding complete. Content coming in Stories 1.5–1.7.",
     "hero": {
@@ -88,7 +88,7 @@ So that I understand RE/MAX Altitud's unique geographic coverage within 3 second
     },
     "sellCta": {
       "heading": "Ready to list your property?",
-      "description": "Partner with RE/MAX Altitud's expert agents across Pérez Zeledón, Dominical, and Uvita.",
+      "description": "Partner with REMAX Altitud's expert agents across Pérez Zeledón, Dominical, and Uvita.",
       "cta": "List with Us"
     }
   }
@@ -121,7 +121,7 @@ So that I understand RE/MAX Altitud's unique geographic coverage within 3 second
   - `areaHighlights.viewAll`: "Ver todas las zonas"
   - `areaHighlights.shellNotice`: "Zonas destacadas próximamente"
   - `sellCta.heading`: "¿Listo para vender tu propiedad?"
-  - `sellCta.description`: "Trabaja con los agentes expertos de RE/MAX Altitud en Pérez Zeledón, Dominical y Uvita."
+  - `sellCta.description`: "Trabaja con los agentes expertos de REMAX Altitud en Pérez Zeledón, Dominical y Uvita."
   - `sellCta.cta`: "Lista con Nosotros"
 - [x] **Translation style rule (from Story 1.4):** use informal "tú" (e.g., "Explora", "Busca", "Lista") — not formal "usted". Keep proper nouns (Pérez Zeledón, Dominical, Uvita) identical in both languages.
 
@@ -395,7 +395,7 @@ So that I understand RE/MAX Altitud's unique geographic coverage within 3 second
 ### Task 8: Single `<h1>` discipline (AC: #11)
 
 - [x] Audit the rendered page: `<Header>` uses `<Logo>` which is a `<Link>` wrapping `<Image>` — no `<h1>` there (verified). The only `<h1>` should come from the SplitHero.
-- [x] Recommended pattern: render a visually hidden `<h1 class="sr-only">` at the top of `page.tsx` with a page-level title from `HomePage.title` ("RE/MAX Altitud"), then use `<h2>` for both pane labels in SplitHero. This avoids ambiguity about which pane "wins" the h1.
+- [x] Recommended pattern: render a visually hidden `<h1 class="sr-only">` at the top of `page.tsx` with a page-level title from `HomePage.title` ("REMAX Altitud"), then use `<h2>` for both pane labels in SplitHero. This avoids ambiguity about which pane "wins" the h1.
 - [x] Verify with `grep -c "<h1" src/app/[locale]/page.tsx src/components/home/*.tsx` — must equal 1 across the homepage tree.
 
 ### Task 9: Accessibility & keyboard support (AC: #11)

@@ -114,7 +114,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );
@@ -133,7 +133,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );
@@ -153,7 +153,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );
@@ -172,7 +172,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );
@@ -190,7 +190,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );
@@ -212,7 +212,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );
@@ -229,7 +229,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "es",
       }),
     );
@@ -249,7 +249,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: agentNoBio,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );
@@ -270,7 +270,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: agentNoPhoto,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );
@@ -288,7 +288,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );
@@ -306,12 +306,12 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud Cero",
+        officeName: "REMAX Altitud Cero",
         locale: "en",
       }),
     );
     // The office name is required content per AC #1; assert it is rendered
-    expect(screen.getByText("RE/MAX Altitud Cero")).toBeTruthy();
+    expect(screen.getByText("REMAX Altitud Cero")).toBeTruthy();
   });
 
   // [P0] AC #1 — explicit assertion that contact CTAs are wired into the hero.
@@ -325,7 +325,7 @@ describe("Story 4.3: AgentProfileHero component (ATDD Red Phase)", () => {
         locale: string;
       }) => Promise<React.ReactElement>)({
         agent: mockAgent,
-        officeName: "RE/MAX Altitud",
+        officeName: "REMAX Altitud",
         locale: "en",
       }),
     );

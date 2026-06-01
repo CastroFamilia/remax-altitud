@@ -74,7 +74,7 @@ typecheck clean, prettier clean.
 |---|----------|---------------------|------------------------------------------------------------------------------------------------|-------------|
 | 1 | HIGH     | Blind + Auditor     | `AgentProfileCTAs` WhatsApp message hardcoded English/Spanish — bypasses i18n contract        | Applied     |
 | 2 | MEDIUM   | Blind Hunter        | `AgentIndexFilters` language filter dropdown uses raw `lang.toUpperCase()` instead of i18n    | Applied     |
-| 3 | LOW      | Edge Case Hunter    | `"RE/MAX Altitud"` hardcoded as office-name fallback in 3 places (page + filters + slug page) | Deferred    |
+| 3 | LOW      | Edge Case Hunter    | `"REMAX Altitud"` hardcoded as office-name fallback in 3 places (page + filters + slug page) | Deferred    |
 | 4 | LOW      | Edge Case Hunter    | `i18n` key `generalInquiryEn` is misleadingly suffixed "En" but used for both locales         | Deferred    |
 | 5 | LOW      | Edge Case Hunter    | Inactive-agent branch in `[slug]/page.tsx` doesn't set `metadata` differently (still indexed) | Deferred    |
 | 6 | NOISE    | Edge Case Hunter    | `agent-clear-filters` button has no `data-testid` (test uses `getByRole`)                     | Dismissed   |
@@ -82,7 +82,7 @@ typecheck clean, prettier clean.
 
 ### Deferred — Rationale
 
-- **#3** The `"RE/MAX Altitud"` fallback is unreachable in practice — every
+- **#3** The `"REMAX Altitud"` fallback is unreachable in practice — every
   agent has a non-null `officeId` per the DB schema (`officeId text not null`
   in `agents` table), and `getAllOffices` returns both offices. The fallback
   exists only to satisfy TypeScript's `Record<string, string>` lookup result
@@ -182,7 +182,7 @@ All user-visible strings flow through `useTranslations` (client) or `getTranslat
 (server). All language code labels resolve via `language.{code}` keys. WhatsApp
 message uses `generalInquiryEn` key (Finding #1 fix).
 
-Hardcoded `"RE/MAX Altitud"` brand-name fallback (Finding #3) deferred — unreachable
+Hardcoded `"REMAX Altitud"` brand-name fallback (Finding #3) deferred — unreachable
 in practice and matches the brand convention used elsewhere.
 
 ## Files Changed by Review

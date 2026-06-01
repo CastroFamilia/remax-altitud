@@ -95,6 +95,10 @@ export function SplitViewLayout({
 
   const count = propertyCount ?? filterProperties?.length ?? properties.length;
 
+  const gridColsClass = mapHidden
+    ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+    : "grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4";
+
   function handleBoundsChange(bounds: MapBounds) {
     onBoundsChange?.(bounds);
   }
@@ -152,18 +156,21 @@ export function SplitViewLayout({
             // Mobile: full width map (no-prefix = mobile-first)
             "w-full",
             // Desktop split / full-map / full-grid
-            mapHidden ? "lg:hidden" : gridHidden ? "lg:w-full" : "lg:w-[60%]",
+            mapHidden ? "lg:hidden" : gridHidden ? "lg:w-full" : "lg:w-[35%]",
             // Height: fill the remaining flex space
             "h-full",
             "flex-shrink-0",
+            "lg:p-4 md:p-3 p-2",
           )}
         >
-          <MapView
-            properties={properties}
-            locale={locale}
-            onBoundsChange={handleBoundsChange}
-            flyToTarget={flyToTarget}
-          />
+          <div className="w-full h-full rounded-2xl overflow-hidden shadow-lg border border-brand-gold/20 bg-background">
+            <MapView
+              properties={properties}
+              locale={locale}
+              onBoundsChange={handleBoundsChange}
+              flyToTarget={flyToTarget}
+            />
+          </div>
         </div>
 
         {/* Grid panel — hidden on mobile, shown on desktop */}
@@ -175,7 +182,7 @@ export function SplitViewLayout({
             // Tablet (md): 40% width, hidden behind side-panel toggle
             sidePanelOpen ? "md:block md:w-[40%]" : "md:hidden",
             // Desktop: show in split/grid mode, hide in full-map mode
-            gridHidden ? "lg:hidden" : mapHidden ? "lg:w-full lg:block" : "lg:w-[40%] lg:block",
+            gridHidden ? "lg:hidden" : mapHidden ? "lg:w-full lg:block" : "lg:w-[65%] lg:block",
             "overflow-y-auto",
             "lg:h-full",
           )}
@@ -191,9 +198,10 @@ export function SplitViewLayout({
               onPageChange={onPageChange}
               unitSystem={unitSystem}
               filters={filters}
+              className={gridColsClass}
             />
           ) : (
-            <SearchResultsSkeleton />
+            <SearchResultsSkeleton className={gridColsClass} />
           )}
         </div>
 

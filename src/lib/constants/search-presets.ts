@@ -1,9 +1,6 @@
 /**
  * Story 3.4: Lifestyle Tags & Smart Presets
- * Smart preset definitions — configurable without code changes (AC #7).
- *
- * Architecture: neutral constants file — no client directive, no restricted imports.
- * Adding a new preset = appending one object to SEARCH_PRESETS, zero other changes.
+ * Smart preset definitions — configurable without code changes.
  */
 
 import type { SearchFilters } from "@/types/search";
@@ -17,38 +14,57 @@ export interface SearchPreset {
 
 export const SEARCH_PRESETS: SearchPreset[] = [
   {
-    id: "mountain-retirement",
-    labelKey: "mountainRetirement",
-    icon: "🏔️",
+    id: "fincas-con-rio",
+    labelKey: "fincasConRio",
+    icon: "🏞️",
     filters: {
-      areaSlug: "perez-zeledon",
-      type: "Casa",
-      tags: ["Retire"],
+      type: "Finca",
+      tags: ["Con río"],
     },
   },
   {
-    id: "beach-investment",
-    labelKey: "beachInvestment",
+    id: "lotes-vista-mar",
+    labelKey: "lotesVistaMar",
     icon: "🌊",
     filters: {
-      areaSlug: "uvita",
-      tags: ["Investment Property"],
+      type: "Lote",
+      tags: ["Con vista al mar"],
     },
   },
   {
-    id: "rental-potential",
-    labelKey: "rentalPotential",
-    icon: "💰",
+    id: "casas-vista-mar",
+    labelKey: "casasVistaMar",
+    icon: "🏡",
     filters: {
-      tags: ["Rental Potential"],
+      type: "Casa",
+      tags: ["Con vista al mar"],
     },
   },
   {
-    id: "vacation-home",
-    labelKey: "vacationHome",
-    icon: "🏖️",
+    id: "casas-vista-montana",
+    labelKey: "casasVistaMontana",
+    icon: "🏔️",
     filters: {
-      tags: ["Vacation Home"],
+      type: "Casa",
+      tags: ["Con vista a la montaña"],
+    },
+  },
+  {
+    id: "lotes-vista-montana",
+    labelKey: "lotesVistaMontana",
+    icon: "⛰️",
+    filters: {
+      type: "Lote",
+      tags: ["Con vista a la montaña"],
+    },
+  },
+  {
+    id: "lotes-con-cascada",
+    labelKey: "lotesConCascada",
+    icon: "💦",
+    filters: {
+      type: "Lote",
+      tags: ["Con cascada"],
     },
   },
 ];

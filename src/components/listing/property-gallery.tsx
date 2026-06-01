@@ -11,7 +11,7 @@
  */
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import { PropertyImage } from "@/components/property/property-image";
 import { useTranslations } from "next-intl";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useDrag } from "@use-gesture/react";
@@ -77,48 +77,331 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
 
   const activeImage = images[activeIndex];
 
+  // Dynamic grid layouts for desktop based on total images
+  const renderDesktopGrid = () => {
+    if (total === 1) {
+      return (
+        <div className="hidden md:grid grid-cols-1 gap-2 h-full w-full overflow-hidden rounded-xl">
+          <div
+            onClick={() => {
+              setActiveIndex(0);
+              setLightboxOpen(true);
+            }}
+            className="relative h-full w-full overflow-hidden cursor-pointer group"
+          >
+            <PropertyImage
+              src={images[0].src}
+              alt={images[0].alt || propertyTitle}
+              fallbackSrc={images[0].fallbackSrc || "/property-placeholder.svg"}
+              fill
+              priority
+              sizes="100vw"
+              {...(images[0].blurDataUrl
+                ? { placeholder: "blur" as const, blurDataURL: images[0].blurDataUrl }
+                : {})}
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+        </div>
+      );
+    }
+
+    if (total === 2) {
+      return (
+        <div className="hidden md:grid grid-cols-2 gap-2 h-full w-full overflow-hidden rounded-xl">
+          {images.slice(0, 2).map((img, idx) => (
+            <div
+              key={img.src}
+              onClick={() => {
+                setActiveIndex(idx);
+                setLightboxOpen(true);
+              }}
+              className="relative h-full w-full overflow-hidden cursor-pointer group"
+            >
+              <PropertyImage
+                src={img.src}
+                alt={img.alt || propertyTitle}
+                fallbackSrc={img.fallbackSrc || "/property-placeholder.svg"}
+                fill
+                priority={idx === 0}
+                sizes="50vw"
+                {...(img.blurDataUrl
+                  ? { placeholder: "blur" as const, blurDataURL: img.blurDataUrl }
+                  : {})}
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (total === 3) {
+      return (
+        <div className="hidden md:grid grid-cols-3 grid-rows-2 gap-2 h-full w-full overflow-hidden rounded-xl">
+          {/* Main Large Photo */}
+          <div
+            onClick={() => {
+              setActiveIndex(0);
+              setLightboxOpen(true);
+            }}
+            className="col-span-2 row-span-2 relative h-full w-full overflow-hidden cursor-pointer group"
+          >
+            <PropertyImage
+              src={images[0].src}
+              alt={images[0].alt || propertyTitle}
+              fallbackSrc={images[0].fallbackSrc || "/property-placeholder.svg"}
+              fill
+              priority
+              sizes="66vw"
+              {...(images[0].blurDataUrl
+                ? { placeholder: "blur" as const, blurDataURL: images[0].blurDataUrl }
+                : {})}
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+          {/* Right Side Two Stacked */}
+          {images.slice(1, 3).map((img, idx) => (
+            <div
+              key={img.src}
+              onClick={() => {
+                setActiveIndex(idx + 1);
+                setLightboxOpen(true);
+              }}
+              className="col-span-1 row-span-1 relative h-full w-full overflow-hidden cursor-pointer group"
+            >
+              <PropertyImage
+                src={img.src}
+                alt={img.alt || propertyTitle}
+                fallbackSrc={img.fallbackSrc || "/property-placeholder.svg"}
+                fill
+                sizes="33vw"
+                {...(img.blurDataUrl
+                  ? { placeholder: "blur" as const, blurDataURL: img.blurDataUrl }
+                  : {})}
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (total === 4) {
+      return (
+        <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-full w-full overflow-hidden rounded-xl">
+          {/* Main Large Photo */}
+          <div
+            onClick={() => {
+              setActiveIndex(0);
+              setLightboxOpen(true);
+            }}
+            className="col-span-2 row-span-2 relative h-full w-full overflow-hidden cursor-pointer group"
+          >
+            <PropertyImage
+              src={images[0].src}
+              alt={images[0].alt || propertyTitle}
+              fallbackSrc={images[0].fallbackSrc || "/property-placeholder.svg"}
+              fill
+              priority
+              sizes="50vw"
+              {...(images[0].blurDataUrl
+                ? { placeholder: "blur" as const, blurDataURL: images[0].blurDataUrl }
+                : {})}
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+          {/* Stacked Mid Column */}
+          {images.slice(1, 3).map((img, idx) => (
+            <div
+              key={img.src}
+              onClick={() => {
+                setActiveIndex(idx + 1);
+                setLightboxOpen(true);
+              }}
+              className="col-span-1 row-span-1 relative h-full w-full overflow-hidden cursor-pointer group"
+            >
+              <PropertyImage
+                src={img.src}
+                alt={img.alt || propertyTitle}
+                fallbackSrc={img.fallbackSrc || "/property-placeholder.svg"}
+                fill
+                sizes="25vw"
+                {...(img.blurDataUrl
+                  ? { placeholder: "blur" as const, blurDataURL: img.blurDataUrl }
+                  : {})}
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+          ))}
+          {/* Tall Right Column */}
+          <div
+            onClick={() => {
+              setActiveIndex(3);
+              setLightboxOpen(true);
+            }}
+            className="col-span-1 row-span-2 relative h-full w-full overflow-hidden cursor-pointer group"
+          >
+            <PropertyImage
+              src={images[3].src}
+              alt={images[3].alt || propertyTitle}
+              fallbackSrc={images[3].fallbackSrc || "/property-placeholder.svg"}
+              fill
+              sizes="25vw"
+              {...(images[3].blurDataUrl
+                ? { placeholder: "blur" as const, blurDataURL: images[3].blurDataUrl }
+                : {})}
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+        </div>
+      );
+    }
+
+    // Default: 5+ Photos
+    return (
+      <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-full w-full overflow-hidden rounded-xl">
+        {/* Main Large Photo */}
+        <div
+          onClick={() => {
+            setActiveIndex(0);
+            setLightboxOpen(true);
+          }}
+          className="col-span-2 row-span-2 relative h-full w-full overflow-hidden cursor-pointer group"
+        >
+          <PropertyImage
+            src={images[0].src}
+            alt={images[0].alt || propertyTitle}
+            fallbackSrc={images[0].fallbackSrc || "/property-placeholder.svg"}
+            fill
+            priority
+            sizes="50vw"
+            {...(images[0].blurDataUrl
+              ? { placeholder: "blur" as const, blurDataURL: images[0].blurDataUrl }
+              : {})}
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+        {/* Column 3: Two Stacked Photos */}
+        {images.slice(1, 3).map((img, idx) => (
+          <div
+            key={img.src}
+            onClick={() => {
+              setActiveIndex(idx + 1);
+              setLightboxOpen(true);
+            }}
+            className="col-span-1 row-span-1 relative h-full w-full overflow-hidden cursor-pointer group"
+          >
+            <PropertyImage
+              src={img.src}
+              alt={img.alt || propertyTitle}
+              fallbackSrc={img.fallbackSrc || "/property-placeholder.svg"}
+              fill
+              sizes="25vw"
+              {...(img.blurDataUrl
+                ? { placeholder: "blur" as const, blurDataURL: img.blurDataUrl }
+                : {})}
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+        ))}
+        {/* Column 4: Two Stacked Photos */}
+        {images.slice(3, 5).map((img, idx) => (
+          <div
+            key={img.src}
+            onClick={() => {
+              setActiveIndex(idx + 3);
+              setLightboxOpen(true);
+            }}
+            className="col-span-1 row-span-1 relative h-full w-full overflow-hidden cursor-pointer group"
+          >
+            <PropertyImage
+              src={img.src}
+              alt={img.alt || propertyTitle}
+              fallbackSrc={img.fallbackSrc || "/property-placeholder.svg"}
+              fill
+              sizes="25vw"
+              {...(img.blurDataUrl
+                ? { placeholder: "blur" as const, blurDataURL: img.blurDataUrl }
+                : {})}
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="w-full">
       <div
         data-testid="gallery-hero"
-        className="relative w-full aspect-[4/3] overflow-hidden bg-gray-100"
+        className="relative w-full aspect-[4/3] md:aspect-auto md:h-[450px] overflow-hidden bg-gray-100 md:bg-transparent"
       >
-        <Image
-          src={activeImage.src}
-          alt={activeImage.alt || propertyTitle}
-          fill
-          sizes="100vw"
-          priority={activeIndex === 0}
-          {...(activeImage.blurDataUrl
-            ? { placeholder: "blur" as const, blurDataURL: activeImage.blurDataUrl }
-            : {})}
-          className="object-cover"
-        />
+        {/* Mobile View: Single hero image */}
+        <div className="relative w-full h-full md:hidden">
+          <PropertyImage
+            src={activeImage.src}
+            alt={activeImage.alt || propertyTitle}
+            fallbackSrc={activeImage.fallbackSrc || "/property-placeholder.svg"}
+            fill
+            sizes="100vw"
+            priority={activeIndex === 0}
+            {...(activeImage.blurDataUrl
+              ? { placeholder: "blur" as const, blurDataURL: activeImage.blurDataUrl }
+              : {})}
+            className="object-cover"
+          />
 
-        {/* Photo count overlay — single source of truth for gallery navigation */}
-        <div
-          data-testid="gallery-photo-count"
-          className="absolute bottom-4 right-4 bg-black/60 text-white text-sm font-medium px-3 py-1 rounded-full"
-          aria-live="polite"
-        >
-          {t("photoCount", { current: activeIndex + 1, total })}
+          {/* Photo count overlay — single source of truth for gallery navigation */}
+          <div
+            data-testid="gallery-photo-count"
+            className="absolute bottom-4 right-4 bg-black/60 text-white text-sm font-medium px-3 py-1 rounded-full"
+            aria-live="polite"
+          >
+            {t("photoCount", { current: activeIndex + 1, total })}
+          </div>
         </div>
 
-        {/* Fullscreen / open lightbox button */}
+        {/* Desktop View: Zillow-style collage grid */}
+        {renderDesktopGrid()}
+
+        {/* Fullscreen / open lightbox button (Unified responsive button) */}
         <button
           type="button"
           aria-label={t("openLightbox")}
           onClick={() => setLightboxOpen(true)}
-          className="absolute top-4 right-4 bg-black/60 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-black/80 transition-colors"
+          className="absolute top-4 right-4 bg-black/60 text-white hover:bg-black/80 md:top-auto md:bottom-4 md:right-4 md:bg-white md:text-brand-navy md:border md:border-border/80 md:hover:bg-gray-50 md:shadow-md md:flex md:items-center md:gap-2 md:hover:scale-[1.02] md:active:scale-[0.98] z-10 font-medium md:font-semibold px-3 py-2 md:px-4 md:py-2 rounded-lg transition-all"
         >
-          {t("openLightbox")}
+          {/* Mobile Text */}
+          <span className="md:hidden">{t("openLightbox")}</span>
+
+          {/* Desktop Content */}
+          <span className="hidden md:inline-flex items-center gap-2">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              />
+            </svg>
+            <span>
+              {t("openLightbox")} ({total})
+            </span>
+          </span>
         </button>
       </div>
 
-      {/* Thumbnail strip */}
+      {/* Thumbnail strip (Mobile only) */}
       <div
         data-testid="gallery-thumbnail-strip"
-        className="flex gap-2 overflow-x-auto py-2 px-1"
+        className="flex gap-2 overflow-x-auto py-2 px-1 md:hidden"
         role="list"
         aria-label={t("thumbnailStripLabel", { title: propertyTitle })}
       >
@@ -136,7 +419,13 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
             aria-label={t("photoCount", { current: index + 1, total })}
             aria-current={index === activeIndex ? "true" : undefined}
           >
-            <Image src={image.src} alt={image.alt || propertyTitle} fill className="object-cover" />
+            <PropertyImage
+              src={image.src}
+              alt={image.alt || propertyTitle}
+              fallbackSrc={image.fallbackSrc || "/property-placeholder.svg"}
+              fill
+              className="object-cover"
+            />
           </button>
         ))}
       </div>
@@ -165,9 +454,10 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
             <div className="relative w-full h-full flex items-center justify-center" {...bind()}>
               {/* Lightbox image */}
               <div className="relative w-full max-w-5xl h-[80vh]">
-                <Image
+                <PropertyImage
                   src={activeImage.src}
                   alt={activeImage.alt || propertyTitle}
+                  fallbackSrc={activeImage.fallbackSrc || "/property-placeholder.svg"}
                   fill
                   sizes="100vw"
                   {...(activeImage.blurDataUrl

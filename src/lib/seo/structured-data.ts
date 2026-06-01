@@ -11,6 +11,7 @@ import { SITE_ORIGIN } from "@/lib/seo/constants";
 import type { Property } from "@/lib/db/schema/properties";
 import type { Agent } from "@/lib/db/schema/agents";
 import type { Area } from "@/lib/db/schema/areas";
+import type { Community } from "@/lib/db/schema/communities";
 
 interface BreadcrumbItem {
   name: string;
@@ -25,7 +26,7 @@ interface BreadcrumbItem {
  * `JSON.stringify` alone does NOT escape `<`, `>`, or `&`, so a description
  * containing the literal substring `</script>` (or `<!--`, or `<![CDATA[`)
  * would allow the inline script to break out of its tag — even though the
- * source values originate from the RE/MAX CCA sync, property/agent text is
+ * source values originate from the REMAX CCA sync, property/agent text is
  * arbitrary free-form content.
  *
  * This helper escapes the dangerous HTML/JSON-script characters and the JS
@@ -157,5 +158,53 @@ export function generatePlaceJsonLd(area: Area, locale: string): object {
     description: description?.slice(0, 300) || undefined,
     url: `${SITE_ORIGIN}/${locale}/areas/${area.slug}`,
     address: { "@type": "PostalAddress", addressCountry: "CR" },
+    ...(area.latitude != null && area.longitude != null
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: area.latitude,
+            longitude: area.longitude,
+          },
+        }
+      : {}),
+  };
+}
+
+/**
+ * Generates Place JSON-LD structured data for community pages.
+ * Returns Place schema with community's name, description, area context,
+ * and containedInPlace relationship.
+ * Used by community page (AC #12, Story 6.2).
+ */
+export function generateCommunityJsonLd(
+  community: Community,
+  area: Area,
+  locale: string,
+): Record<string, unknown> {
+  const name = community.name;
+  const description = locale === "es" ? community.descriptionEs : community.descriptionEn;
+  const areaName = locale === "es" ? area.nameEs : area.nameEn;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Place",
+    name,
+    description: description?.slice(0, 300) || undefined,
+    url: `${SITE_ORIGIN}/${locale}/areas/${area.slug}/communities/${community.slug}`,
+    address: { "@type": "PostalAddress", addressCountry: "CR" },
+    containedInPlace: {
+      "@type": "Place",
+      name: areaName,
+      url: `${SITE_ORIGIN}/${locale}/areas/${area.slug}`,
+    },
+    ...(area.latitude != null && area.longitude != null
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: area.latitude,
+            longitude: area.longitude,
+          },
+        }
+      : {}),
   };
 }

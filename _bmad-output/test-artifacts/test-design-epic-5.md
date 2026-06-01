@@ -36,7 +36,7 @@ epicScope:
 
 Epic 5 is the **seller acquisition layer** of the platform. It introduces the first active lead-generation forms: a 3-step progressive seller listing form (`/{locale}/sell`), a Comparative Market Analysis (CMA) request form, and the backend infrastructure to store, route, and track those leads. This epic also introduces the first **PII handling** (name, phone, email with column-level encryption), the first **API POST endpoint** (`/api/leads`), and the first **agent routing logic** (geo-coordinate → nearest office → active agent assignment).
 
-The conversion funnel introduced here is the core revenue pathway for the RE/MAX Altitud business: a seller who fills out the form is a qualified lead. A single form submission can generate a listing worth $6,000–$18,000 in commission. **Every bug that silently drops a lead submission is a direct revenue loss.**
+The conversion funnel introduced here is the core revenue pathway for the REMAX Altitud business: a seller who fills out the form is a qualified lead. A single form submission can generate a listing worth $6,000–$18,000 in commission. **Every bug that silently drops a lead submission is a direct revenue loss.**
 
 **Risk Summary:**
 
@@ -382,7 +382,7 @@ Stories 5.1–5.3 build on the test infrastructure established in Epics 3–4. T
 
 - **Risk:** Agent routing boundary for Pérez Zeledón vs. Dominical offices is not geo-fenced — it is a business rule
   - **Impact:** Routing tests must use known coordinates that unambiguously belong to one office
-  - **Contingency:** Get fixture coordinate sets from the business (e.g., the RE/MAX Altitud office address lat/lng) before writing routing tests
+  - **Contingency:** Get fixture coordinate sets from the business (e.g., the REMAX Altitud office address lat/lng) before writing routing tests
 
 ---
 

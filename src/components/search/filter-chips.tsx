@@ -23,6 +23,7 @@ interface FilterChipsProps {
 /** Filter keys that generate chips (exclude 'view' and 'sort') */
 const CHIP_KEYS: Array<keyof SearchFilters> = [
   "type",
+  "listingType",
   "priceMin",
   "priceMax",
   "bedrooms",
@@ -30,6 +31,7 @@ const CHIP_KEYS: Array<keyof SearchFilters> = [
   "lotSizeMin",
   "lotSizeMax",
   "areaSlug",
+  "q",
 ];
 
 interface ChipInfo {
@@ -51,6 +53,15 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
       reactKey: "type",
       label: t("filters.type"),
       value: filters.type,
+    });
+  }
+
+  if (filters.listingType) {
+    chips.push({
+      key: "listingType",
+      reactKey: "listingType",
+      label: t("filters.listingType"),
+      value: t(`filters.listingType${filters.listingType}`),
     });
   }
 
@@ -104,6 +115,15 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
     });
   }
 
+  if (filters.q) {
+    chips.push({
+      key: "q",
+      reactKey: "q",
+      label: t("filters.search"),
+      value: `"${filters.q}"`,
+    });
+  }
+
   // Story 3.4: render one chip per active lifestyle tag (AC #6)
   // Try localized chip label first; fall back to tagDisplayLabel when the key
   // is missing — keeps display consistent across locales without breaking
@@ -111,7 +131,8 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
   const chipValueForTag = (tag: string): string => {
     const i18nKey = `lifestyleTags.chips.${tag}`;
     const translated = t(i18nKey);
-    return translated === i18nKey ? tagDisplayLabel(tag) : translated;
+    const isMissing = translated === i18nKey || translated === `SearchPage.${i18nKey}`;
+    return isMissing ? tagDisplayLabel(tag) : translated;
   };
   (filters.tags ?? []).forEach((tag) => {
     chips.push({
@@ -152,7 +173,7 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
         <span
           key={chip.reactKey}
           data-testid="filter-chip"
-          className="inline-flex items-center gap-1 rounded-full bg-brand-blue px-3 py-1 text-sm font-medium text-white min-h-[2.75rem]"
+          className="inline-flex items-center gap-1 rounded-full bg-brand-blue border border-brand-blue px-4 py-1.5 text-sm font-semibold text-white min-h-[2.75rem] shadow-sm transition-all duration-200"
         >
           <span>
             {chip.label}: {chip.value}

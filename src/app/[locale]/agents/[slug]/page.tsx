@@ -45,14 +45,14 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "AgentProfile" });
   const bio = locale === "es" ? agent.bioEs : agent.bioEn;
   return {
-    title: `${agent.name} | RE/MAX Altitud`,
+    title: `${agent.name} | REMAX Altitud`,
     description: bio.slice(0, 160) || t("defaultMetaDescription", { name: agent.name }),
     alternates: {
       canonical: generateCanonicalUrl(locale, `/agents/${slug}`),
       ...buildAlternatesMetadata(`/agents/${slug}`),
     },
     openGraph: {
-      title: `${agent.name} | RE/MAX Altitud`,
+      title: `${agent.name} | REMAX Altitud`,
       description: bio.slice(0, 160) || t("defaultMetaDescription", { name: agent.name }),
       images: agent.photoOptimizedUrl ? [{ url: agent.photoOptimizedUrl }] : [],
       type: "profile",
@@ -100,7 +100,7 @@ export default async function AgentProfilePage({
     getPropertiesByAgentId(agent.id),
   ]);
 
-  const officeName = office?.name ?? "RE/MAX Altitud";
+  const officeName = office?.name ?? "REMAX Altitud";
 
   // Story 4.4 Task 8: JSON-LD structured data for RealEstateAgent + BreadcrumbList (AC #2, #4, #5)
   const tBreadcrumbs = await getTranslations({ locale, namespace: "Breadcrumbs" });

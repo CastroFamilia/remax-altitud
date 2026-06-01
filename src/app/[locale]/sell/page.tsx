@@ -1,5 +1,5 @@
 /**
- * SellPage — Story 5.1 (AC #1, #12, #13, #14)
+ * SellPage — Story 5.1 (AC #1, #12, #13, #14) + Story 5.2 (AC #5)
  *
  * SSG seller landing page at /{locale}/sell.
  * Follows the exact pattern of src/app/[locale]/about/page.tsx.
@@ -10,6 +10,8 @@
  * (AC #14). SellerFormLoader is a thin 'use client' wrapper following the PropertyGalleryLoader
  * pattern — required by Turbopack which enforces that dynamic(ssr:false) must live in a Client
  * Component.
+ *
+ * Story 5.2 adds the CMA form as a secondary CTA section below the seller form.
  */
 
 import type { Metadata } from "next";
@@ -17,6 +19,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { SellerHero } from "@/components/seller/seller-hero";
 import { SellerFormLoader } from "@/components/seller/seller-form-loader";
+import { CmaHero } from "@/components/seller/cma-hero";
+import { CmaFormLoader } from "@/components/seller/cma-form-loader";
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 
@@ -50,12 +54,12 @@ export default async function SellPage({ params }: { params: Promise<{ locale: s
   // Wrapped in try/catch so SSG build continues if DB is unavailable —
   // pages are generated on-demand via ISR fallback (same pattern as agents/page.tsx).
   let fallbackAgent: Awaited<ReturnType<typeof getAllAgents>>[0] | null = null;
-  let officeName = "RE/MAX Altitud";
+  let officeName = "REMAX Altitud";
   try {
     const agents = await getAllAgents();
     fallbackAgent = agents[0] ?? null;
     const office = fallbackAgent?.officeId ? await getOfficeById(fallbackAgent.officeId) : null;
-    officeName = office?.name ?? "RE/MAX Altitud";
+    officeName = office?.name ?? "REMAX Altitud";
   } catch {
     // DB unavailable at build time — render empty shell; ISR will populate on first request.
   }
@@ -64,6 +68,11 @@ export default async function SellPage({ params }: { params: Promise<{ locale: s
     <main>
       <SellerHero locale={locale} />
       <SellerFormLoader locale={locale} fallbackAgent={fallbackAgent} officeName={officeName} />
+
+      {/* CMA section — secondary CTA (Story 5.2, AC #5) */}
+      <CmaHero locale={locale}>
+        <CmaFormLoader locale={locale} fallbackAgent={fallbackAgent} officeName={officeName} />
+      </CmaHero>
     </main>
   );
 }

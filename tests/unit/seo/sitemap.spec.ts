@@ -42,6 +42,17 @@ vi.mock("@/lib/db/queries/agents", () => ({
   getAllAgents: vi.fn(async () => []),
 }));
 
+vi.mock("@/lib/db/queries/areas", () => ({
+  getAllAreaSlugs: vi.fn(async () => ["perez-zeledon", "dominical"]),
+}));
+
+vi.mock("@/lib/db/queries/communities", () => ({
+  getAllCommunityParams: vi.fn(async () => [
+    { community: "rise", slug: "perez-zeledon" },
+    { community: "serena-del-mar", slug: "dominical" },
+  ]),
+}));
+
 // Mock next/cache
 vi.mock("next/cache", () => ({
   revalidateTag: vi.fn(),

@@ -107,7 +107,7 @@ describe("computePropertyHash", () => {
 // ---------------------------------------------------------------------------
 
 /** Snapshot shape expected by diffProperties for existing DB records */
-type DbSnapshot = { apiId: string; apiHash: string | null; isVisible: boolean };
+type DbSnapshot = { apiId: string; apiHash: string | null; isVisible: boolean; images?: unknown };
 
 describe("diffProperties", () => {
   it("[P0] classifies a new API record (not in DB) as NEW", () => {
@@ -255,5 +255,45 @@ describe("diffProperties", () => {
     // Null hash → cannot confirm unchanged → treat as updated
     expect(result.updated).toHaveLength(1);
     expect(result.unchanged).toHaveLength(0);
+  });
+
+  it("[P1] classifies a record as UPDATED if it lacks optimized images in DB even if its apiHash matches", () => {
+    const raw = makeRawProperty({
+      apiId: "113149",
+      images: ["https://cdn.example.com/photo1.jpg"],
+    });
+    const hash = computePropertyHash(raw);
+
+    // Case A: DB has empty images list
+    const dbRecordsA: DbSnapshot[] = [
+      { apiId: "113149", apiHash: hash, isVisible: true, images: [] },
+    ];
+    const resultA = diffProperties([raw], dbRecordsA);
+    expect(resultA.updated).toHaveLength(1);
+    expect(resultA.unchanged).toHaveLength(0);
+
+    // Case B: DB has raw CDN string array (un-optimized)
+    const dbRecordsB: DbSnapshot[] = [
+      { apiId: "113149", apiHash: hash, isVisible: true, images: ["https://cdn.example.com/photo1.jpg"] },
+    ];
+    const resultB = diffProperties([raw], dbRecordsB);
+    expect(resultB.updated).toHaveLength(1);
+
+    // Case C: DB already has optimized images
+    const optimizedImage = {
+      src: "/property-images/113149/photo1-400w.webp",
+      srcset: "/property-images/113149/photo1-400w.webp 400w",
+      blurDataUrl: "data:image/webp;base64,lqip",
+      width: 400,
+      height: 300,
+      alt: "Photo 1",
+      fallbackSrc: "https://cdn.example.com/photo1.jpg",
+    };
+    const dbRecordsC: DbSnapshot[] = [
+      { apiId: "113149", apiHash: hash, isVisible: true, images: [optimizedImage] },
+    ];
+    const resultC = diffProperties([raw], dbRecordsC);
+    expect(resultC.unchanged).toHaveLength(1);
+    expect(resultC.updated).toHaveLength(0);
   });
 });

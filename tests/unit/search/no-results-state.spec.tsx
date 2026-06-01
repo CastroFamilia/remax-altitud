@@ -45,7 +45,7 @@ vi.mock("next-intl", () => ({
 }));
 
 vi.mock("@/lib/constants/offices", () => ({
-  offices: [{ name: "RE/MAX Altitud", whatsapp: "50627710000" }],
+  offices: [{ name: "REMAX Altitud", whatsapp: "50627710000" }],
   buildWhatsAppUrl: vi.fn(
     (office: { whatsapp: string }, msg?: string) =>
       `https://wa.me/${office.whatsapp}${msg ? "?text=" + encodeURIComponent(msg) : ""}`,

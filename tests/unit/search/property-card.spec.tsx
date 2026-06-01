@@ -144,7 +144,7 @@ vi.mock("@/lib/utils/currency", () => ({
 }));
 
 // Mock SaveButton and ShareButton as simple stubs
-vi.mock("@/components/property/save-button", () => ({
+vi.mock("@/components/shortlist/save-button", () => ({
   SaveButton: ({
     propertyId,
     propertyTitle,
@@ -206,6 +206,7 @@ const mockPropertyMountain: PropertySearchItem = {
   constructionM2: 180,
   zmtStatus: "titled",
   propertyType: "Casa",
+  status: "active",
   areaSlug: "perez-zeledon",
   images: [{ src: "/images/mountain-house.jpg", alt: "Mountain house" }],
   latitude: 9.35,
@@ -224,6 +225,7 @@ const mockPropertyBeach: PropertySearchItem = {
   constructionM2: 250,
   zmtStatus: "concession",
   propertyType: "Casa",
+  status: "active",
   areaSlug: "dominical",
   images: [{ src: "/images/beach-house.jpg", alt: "Beach house" }],
   latitude: 9.25,
@@ -242,6 +244,7 @@ const mockLandProperty: PropertySearchItem = {
   constructionM2: null,
   zmtStatus: "zmt_restricted",
   propertyType: "Lote",
+  status: "active",
   areaSlug: "uvita",
   images: [],
   latitude: 9.16,

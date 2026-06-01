@@ -262,8 +262,8 @@ So that I can browse comfortably whether I speak English or Spanish.
     "Footer": {
       "quickLinks": "Quick Links",
       "offices": "Our Offices",
-      "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
-      "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
+      "perezZeledonOffice": "REMAX Altitud — Pérez Zeledón",
+      "dominicalOffice": "REMAX Altitud Cero — Dominical",
       "followUs": "Follow Us",
       "allRightsReserved": "All rights reserved",
       "sellWithUs": "Sell with Us",
@@ -272,12 +272,12 @@ So that I can browse comfortably whether I speak English or Spanish.
       "contactUs": "Contact Us"
     },
     "HomePage": {
-      "title": "RE/MAX Altitud",
+      "title": "REMAX Altitud",
       "subtitle": "Costa Rica's Southern Zone — Real Estate Platform",
       "scaffoldingNote": "Foundation scaffolding complete. Content coming in Stories 1.5–1.7."
     },
     "Metadata": {
-      "title": "RE/MAX Altitud — Costa Rica Real Estate",
+      "title": "REMAX Altitud — Costa Rica Real Estate",
       "description": "Discover properties in Costa Rica's Southern Zone. Map-first search, multilingual support, and expert agents across Pérez Zeledón and Dominical/Uvita."
     },
     "MobileNav": {
@@ -318,8 +318,8 @@ So that I can browse comfortably whether I speak English or Spanish.
     "Footer": {
       "quickLinks": "Enlaces Rápidos",
       "offices": "Nuestras Oficinas",
-      "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
-      "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
+      "perezZeledonOffice": "REMAX Altitud — Pérez Zeledón",
+      "dominicalOffice": "REMAX Altitud Cero — Dominical",
       "followUs": "Síguenos",
       "allRightsReserved": "Todos los derechos reservados",
       "sellWithUs": "Vende con Nosotros",
@@ -328,12 +328,12 @@ So that I can browse comfortably whether I speak English or Spanish.
       "contactUs": "Contáctanos"
     },
     "HomePage": {
-      "title": "RE/MAX Altitud",
+      "title": "REMAX Altitud",
       "subtitle": "Zona Sur de Costa Rica — Plataforma de Bienes Raíces",
       "scaffoldingNote": "Estructura base completa. Contenido próximamente en Historias 1.5–1.7."
     },
     "Metadata": {
-      "title": "RE/MAX Altitud — Bienes Raíces Costa Rica",
+      "title": "REMAX Altitud — Bienes Raíces Costa Rica",
       "description": "Descubre propiedades en la Zona Sur de Costa Rica. Búsqueda por mapa, soporte multilingüe y agentes expertos en Pérez Zeledón y Dominical/Uvita."
     },
     "MobileNav": {
@@ -772,7 +772,7 @@ index ee40448..0636ba3 100644
 -});
 -
 -export const metadata: Metadata = {
--  title: "RE/MAX Altitud — Costa Rica Real Estate",
+-  title: "REMAX Altitud — Costa Rica Real Estate",
 -  description:
 -    "Discover properties in Costa Rica's Southern Zone. Map-first search, multilingual support, and expert agents across Pérez Zeledón and Dominical/Uvita.",
 -};
@@ -821,7 +821,7 @@ index d6f25a6..0000000
 -export default function HomePage() {
 -  return (
 -    <main className="flex min-h-screen flex-col items-center justify-center p-8">
--      <h1 className="text-4xl font-bold">RE/MAX Altitud</h1>
+-      <h1 className="text-4xl font-bold">REMAX Altitud</h1>
 -      <p className="mt-4 text-lg text-gray-600">
 -        Costa Rica&apos;s Southern Zone — Real Estate Platform
 -      </p>
@@ -1000,22 +1000,22 @@ index 6d2784c..773d838 100644
  
  const socialLinks = [
 -  {
--    label: "Visit RE/MAX Altitud on Facebook",
+-    label: "Visit REMAX Altitud on Facebook",
 -    href: "https://facebook.com",
 -    icon: Globe,
 -  },
 -  {
--    label: "Visit RE/MAX Altitud on Instagram",
+-    label: "Visit REMAX Altitud on Instagram",
 -    href: "https://instagram.com",
 -    icon: Camera,
 -  },
 -  {
--    label: "Contact RE/MAX Altitud via WhatsApp",
+-    label: "Contact REMAX Altitud via WhatsApp",
 -    href: "https://wa.me/50600000000",
 -    icon: MessageCircle,
 -  },
 -  {
--    label: "Email RE/MAX Altitud",
+-    label: "Email REMAX Altitud",
 -    href: "mailto:info@remaxaltitud.com",
 -    icon: Mail,
 -  },
@@ -1114,8 +1114,8 @@ index 6d2784c..773d838 100644
          {/* Gold divider + Copyright */}
          <div className="mt-10 border-t border-brand-gold/40 pt-6 text-center">
            <p className="text-xs text-text-muted">
--            © {new Date().getFullYear()} RE/MAX Altitud. All rights reserved.
-+            © {new Date().getFullYear()} RE/MAX Altitud. {t("allRightsReserved")}.
+-            © {new Date().getFullYear()} REMAX Altitud. All rights reserved.
++            © {new Date().getFullYear()} REMAX Altitud. {t("allRightsReserved")}.
            </p>
          </div>
        </div>
@@ -1708,8 +1708,8 @@ index 0000000..70fdae0
 +    "legal": "Legal",
 +    "connect": "Connect",
 +    "menu": "Menu",
-+    "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
-+    "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
++    "perezZeledonOffice": "REMAX Altitud — Pérez Zeledón",
++    "dominicalOffice": "REMAX Altitud Cero — Dominical",
 +    "followUs": "Follow Us",
 +    "allRightsReserved": "All rights reserved",
 +    "sellWithUs": "Sell with Us",
@@ -1724,18 +1724,18 @@ index 0000000..70fdae0
 +    "privacy": "Privacy Policy",
 +    "terms": "Terms of Service",
 +    "sitemap": "Sitemap",
-+    "socialFacebook": "Visit RE/MAX Altitud on Facebook",
-+    "socialInstagram": "Visit RE/MAX Altitud on Instagram",
-+    "socialWhatsApp": "Contact RE/MAX Altitud via WhatsApp",
-+    "socialEmail": "Email RE/MAX Altitud"
++    "socialFacebook": "Visit REMAX Altitud on Facebook",
++    "socialInstagram": "Visit REMAX Altitud on Instagram",
++    "socialWhatsApp": "Contact REMAX Altitud via WhatsApp",
++    "socialEmail": "Email REMAX Altitud"
 +  },
 +  "HomePage": {
-+    "title": "RE/MAX Altitud",
++    "title": "REMAX Altitud",
 +    "subtitle": "Costa Rica's Southern Zone — Real Estate Platform",
 +    "scaffoldingNote": "Foundation scaffolding complete. Content coming in Stories 1.5–1.7."
 +  },
 +  "Metadata": {
-+    "title": "RE/MAX Altitud — Costa Rica Real Estate",
++    "title": "REMAX Altitud — Costa Rica Real Estate",
 +    "description": "Discover properties in Costa Rica's Southern Zone. Map-first search, multilingual support, and expert agents across Pérez Zeledón and Dominical/Uvita."
 +  },
 +  "MobileNav": {
@@ -1790,8 +1790,8 @@ index 0000000..d178b54
 +    "legal": "Legal",
 +    "connect": "Conecta",
 +    "menu": "Menú",
-+    "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
-+    "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
++    "perezZeledonOffice": "REMAX Altitud — Pérez Zeledón",
++    "dominicalOffice": "REMAX Altitud Cero — Dominical",
 +    "followUs": "Síguenos",
 +    "allRightsReserved": "Todos los derechos reservados",
 +    "sellWithUs": "Vende con Nosotros",
@@ -1806,18 +1806,18 @@ index 0000000..d178b54
 +    "privacy": "Política de Privacidad",
 +    "terms": "Términos de Servicio",
 +    "sitemap": "Mapa del Sitio",
-+    "socialFacebook": "Visita RE/MAX Altitud en Facebook",
-+    "socialInstagram": "Visita RE/MAX Altitud en Instagram",
-+    "socialWhatsApp": "Contacta a RE/MAX Altitud por WhatsApp",
-+    "socialEmail": "Envía un correo a RE/MAX Altitud"
++    "socialFacebook": "Visita REMAX Altitud en Facebook",
++    "socialInstagram": "Visita REMAX Altitud en Instagram",
++    "socialWhatsApp": "Contacta a REMAX Altitud por WhatsApp",
++    "socialEmail": "Envía un correo a REMAX Altitud"
 +  },
 +  "HomePage": {
-+    "title": "RE/MAX Altitud",
++    "title": "REMAX Altitud",
 +    "subtitle": "Zona Sur de Costa Rica — Plataforma de Bienes Raíces",
 +    "scaffoldingNote": "Estructura base completa. Contenido próximamente en Historias 1.5–1.7."
 +  },
 +  "Metadata": {
-+    "title": "RE/MAX Altitud — Bienes Raíces Costa Rica",
++    "title": "REMAX Altitud — Bienes Raíces Costa Rica",
 +    "description": "Descubre propiedades en la Zona Sur de Costa Rica. Búsqueda por mapa, soporte multilingüe y agentes expertos en Pérez Zeledón y Dominical/Uvita."
 +  },
 +  "MobileNav": {

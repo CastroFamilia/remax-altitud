@@ -5,6 +5,14 @@ import { agents } from "@/lib/db/schema/agents";
 import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawAgent } from "@/types/remax-api";
 import { mapPropertyRowToSearchItem } from "./properties";
+import { AGENT_LANGUAGE_OVERRIDES, normalizeAgentName } from "@/lib/constants/agent-overrides";
+
+export function getAgentLanguages(name: string, fallbackLang: string | null): string[] {
+  const normalized = normalizeAgentName(name);
+  const override = AGENT_LANGUAGE_OVERRIDES[normalized];
+  if (override) return override;
+  return fallbackLang ? [fallbackLang] : [];
+}
 
 /**
  * Upserts a single agent into the database using Drizzle's
@@ -22,6 +30,10 @@ export async function upsertAgent(raw: RawAgent, officeId: string): Promise<void
   const baseSlug = slugify(raw.name);
   const slugWithSuffix = slugify(raw.name, raw.apiId);
 
+  const normalizedName = normalizeAgentName(raw.name);
+  const resolvedLanguages =
+    AGENT_LANGUAGE_OVERRIDES[normalizedName] || (raw.primaryLang ? [raw.primaryLang] : []);
+
   const values = {
     apiId: raw.apiId,
     officeId,
@@ -31,7 +43,7 @@ export async function upsertAgent(raw: RawAgent, officeId: string): Promise<void
     phone: raw.phone ?? null,
     whatsapp: raw.whatsapp ?? null,
     photoUrl: raw.photoUrl ?? null,
-    languages: raw.primaryLang ? [raw.primaryLang] : [],
+    languages: resolvedLanguages,
     specializations: [],
     isActive: true,
     syncedAt: new Date(),
@@ -43,7 +55,7 @@ export async function upsertAgent(raw: RawAgent, officeId: string): Promise<void
     phone: values.phone,
     whatsapp: values.whatsapp,
     photoUrl: values.photoUrl,
-    languages: values.languages,
+    languages: resolvedLanguages,
     isActive: values.isActive,
     syncedAt: values.syncedAt,
     updatedAt: new Date(),
@@ -144,6 +156,7 @@ export async function getPropertiesByAgentId(agentId: string) {
       constructionM2: properties.constructionM2,
       zmtStatus: properties.zmtStatus,
       propertyType: properties.propertyType,
+      status: properties.status,
       areaSlug: properties.areaSlug,
       images: properties.images,
       latitude: properties.latitude,

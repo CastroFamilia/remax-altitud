@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { mainNavItems, mobileOnlyItems, type NavItem } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/layout/language-toggle";
+import { CurrencyToggle } from "@/components/layout/currency-toggle";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 
 export function MobileNav() {
@@ -36,7 +37,7 @@ export function MobileNav() {
   const mobileItems = buildMobileItems(mainNavItems);
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <Button
         variant="ghost"
         size="icon"
@@ -91,8 +92,9 @@ export function MobileNav() {
             </ul>
           </nav>
 
-          <SheetFooter className="border-t border-brand-warm px-4 pt-4">
+          <SheetFooter className="border-t border-brand-warm px-4 pt-4 flex flex-row items-center justify-between">
             <LanguageToggle variant="light" />
+            <CurrencyToggle variant="light" />
           </SheetFooter>
         </SheetContent>
       </Sheet>

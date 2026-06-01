@@ -1,25 +1,53 @@
 import { relations } from "drizzle-orm";
 import { agents } from "./agents";
 import { areas } from "./areas";
+import { communities } from "./communities";
+import { leads } from "./leads";
 import { offices } from "./offices";
 import { properties } from "./properties";
+
+import { leadAssignmentLogs } from "./lead-assignment-logs";
 
 export const officesRelations = relations(offices, ({ many }) => ({
   properties: many(properties),
   agents: many(agents),
 }));
 
-export const propertiesRelations = relations(properties, ({ one }) => ({
+export const propertiesRelations = relations(properties, ({ one, many }) => ({
   office: one(offices, { fields: [properties.officeId], references: [offices.id] }),
   area: one(areas, { fields: [properties.areaId], references: [areas.id] }),
   agent: one(agents, { fields: [properties.agentId], references: [agents.id] }),
+  community: one(communities, { fields: [properties.communityId], references: [communities.id] }),
+  leads: many(leads),
 }));
 
 export const agentsRelations = relations(agents, ({ one, many }) => ({
   office: one(offices, { fields: [agents.officeId], references: [offices.id] }),
   listings: many(properties),
+  leads: many(leads),
 }));
 
 export const areasRelations = relations(areas, ({ many }) => ({
   properties: many(properties),
+  communities: many(communities),
+}));
+
+export const communitiesRelations = relations(communities, ({ one, many }) => ({
+  area: one(areas, { fields: [communities.areaId], references: [areas.id] }),
+  properties: many(properties),
+}));
+
+export const leadsRelations = relations(leads, ({ one, many }) => ({
+  agent: one(agents, { fields: [leads.assignedAgentId], references: [agents.id] }),
+  property: one(properties, { fields: [leads.propertyId], references: [properties.id] }),
+  assignmentLogs: many(leadAssignmentLogs),
+}));
+
+export const leadAssignmentLogsRelations = relations(leadAssignmentLogs, ({ one }) => ({
+  lead: one(leads, { fields: [leadAssignmentLogs.leadId], references: [leads.id] }),
+  previousAgent: one(agents, {
+    fields: [leadAssignmentLogs.previousAgentId],
+    references: [agents.id],
+  }),
+  newAgent: one(agents, { fields: [leadAssignmentLogs.newAgentId], references: [agents.id] }),
 }));

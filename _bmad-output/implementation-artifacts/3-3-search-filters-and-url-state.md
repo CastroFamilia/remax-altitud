@@ -136,7 +136,7 @@ so that I only see properties that match my needs.
     - Sort dropdown → "Newest," "Price ↑," "Price ↓," "Relevance"
   - [x] All filter controls use `use-search-filters` hook to read/write URL state
   - [x] Context-sensitive: when `type === 'land'` or `type === 'lot'` or type value matching land property types from DB, hide bedrooms and bathrooms controls (AC #2)
-  - [x] Property types from DB schema: `propertyType` is `text` — real values are from RE/MAX CCA API. Use these known types: `"Casa"`, `"Apartamento"`, `"Lote"`, `"Terreno"`, `"Comercial"`, `"Finca"`. For land-type detection: `['Lote', 'Terreno', 'Finca'].includes(filters.type)`
+  - [x] Property types from DB schema: `propertyType` is `text` — real values are from REMAX CCA API. Use these known types: `"Casa"`, `"Apartamento"`, `"Lote"`, `"Terreno"`, `"Comercial"`, `"Finca"`. For land-type detection: `['Lote', 'Terreno', 'Finca'].includes(filters.type)`
   - [x] Active filter chips row: render below the control row; only visible when `activeFilterCount > 0`
 
 - [x] Task 5: Implement dual-handle price slider (AC: #4)

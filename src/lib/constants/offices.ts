@@ -13,20 +13,20 @@ export interface Office {
 
 export const offices: Office[] = [
   {
-    name: "RE/MAX Altitud",
+    name: "REMAX Altitud",
     location: "Pérez Zeledón",
-    address: "San Isidro de El General, Pérez Zeledón, San José",
-    phone: "+506 2771-0000",
-    email: "pz@remax-altitud.cr",
-    whatsapp: "50627710000",
+    address: "Detras de la escuela 12 de Marzo, Perez Zeledon",
+    phone: "+506 6078 8887",
+    email: "hola@remax-altitud.cr",
+    whatsapp: "50660788887",
   },
   {
-    name: "RE/MAX Altitud Cero",
+    name: "REMAX Altitud Cero",
     location: "Dominical / Uvita",
-    address: "Dominical, Osa, Puntarenas",
-    phone: "+506 2787-0000",
-    email: "dominical@remax-altitud.cr",
-    whatsapp: "50627870000",
+    address: "Calle principal frente a la cancha de Futbol de Playa Dominical",
+    phone: "+506 6103 2936",
+    email: "cero@remax-altitud.cr",
+    whatsapp: "50661032936",
   },
 ];
 

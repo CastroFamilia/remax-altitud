@@ -92,7 +92,7 @@ assessedDocuments:
 | FR43 | Seller form submissions are stored and routed to an assigned agent |
 | FR44 | Visitors can discover investment properties through lifestyle tags |
 | FR45 | Listings display area appreciation and rental yield context when available (admin-curated) |
-| FR46 | System syncs property listings from RE/MAX API daily (two office GUIDs) |
+| FR46 | System syncs property listings from REMAX API daily (two office GUIDs) |
 | FR47 | System optimizes API images (WebP, responsive sizes) during sync |
 | FR48 | System translates new listing content to available languages during sync |
 | FR49 | System auto-tags listings with lifestyle tags based on configurable attribute rules |
@@ -160,14 +160,14 @@ assessedDocuments:
 
 **Constraints:**
 - Solo developer for MVP
-- RE/MAX brand guidelines compliance (NFR25-26)
-- RE/MAX API dependency (daily sync, no real-time)
+- REMAX brand guidelines compliance (NFR25-26)
+- REMAX API dependency (daily sync, no real-time)
 - Two-office structure (Altitud + Altitud Cero)
 - Third-party API cost budgets (maps, translation)
 - SEO migration — must preserve existing rankings
 
 **Assumptions:**
-- RE/MAX API provides sufficient listing data
+- REMAX API provides sufficient listing data
 - Agents will adopt WhatsApp-first workflow
 - European markets drive primary non-US demand
 - 6-language coverage addresses target buyer markets
@@ -486,7 +486,7 @@ This is a **brownfield** project (WordPress migration) with greenfield technical
 
 # ✅ READY — All issues resolved
 
-The RE/MAX Altitud project is **implementation-ready**. All four planning artifacts (PRD, Architecture, UX Design Specification, Epics & Stories) are comprehensive, well-aligned, and contain sufficient detail for a solo developer to begin sprint planning and coding.
+The REMAX Altitud project is **implementation-ready**. All four planning artifacts (PRD, Architecture, UX Design Specification, Epics & Stories) are comprehensive, well-aligned, and contain sufficient detail for a solo developer to begin sprint planning and coding.
 
 ### Critical Issues Requiring Immediate Action
 

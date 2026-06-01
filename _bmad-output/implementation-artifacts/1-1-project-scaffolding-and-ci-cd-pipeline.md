@@ -170,7 +170,7 @@ Install `@sentry/nextjs` and follow their wizard or manual setup. Key files:
 # Database (PostgreSQL via Coolify)
 DATABASE_URL=
 
-# RE/MAX API
+# REMAX API
 REMAX_API_BASE_URL=
 PZ_OFFICE_GUID=
 DOM_OFFICE_GUID=

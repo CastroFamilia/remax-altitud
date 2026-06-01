@@ -1,4 +1,4 @@
-# RE/MAX CCA API Documentation
+# REMAX CCA API Documentation
 
 > Last verified: 2026-04-09
 
@@ -19,8 +19,8 @@ https://api.remax-cca.com/api
 
 | Office | GUID | Location |
 |--------|------|----------|
-| **RE/MAX Altitud** | `FEA8746D-CC1D-41B8-89F3-D04AC98274AF` | Pérez Zeledón (mountain) |
-| **RE/MAX Altitud Cero** | `4AD5AE8F-5B47-4A1A-A953-40445F2B4940` | Dominical/Uvita (coast) |
+| **REMAX Altitud** | `FEA8746D-CC1D-41B8-89F3-D04AC98274AF` | Pérez Zeledón (mountain) |
+| **REMAX Altitud Cero** | `4AD5AE8F-5B47-4A1A-A953-40445F2B4940` | Dominical/Uvita (coast) |
 
 ---
 
@@ -49,8 +49,8 @@ Returns a JSON array of all active property listings for the specified office.
 | `ListingTitle_es` | string | Listing title in Spanish | Yes (can be `""`) |
 | `PublicRemarks_en` | string | Full description in English (rich text with `\r\n`) | No |
 | `publicRemarks_es` | string | Full description in Spanish (**note lowercase `p`**) | No |
-| `ListingProbableuseId` | integer | 1 = General, 2 = RE/MAX Commercial | No |
-| `ProbableUse` | string | `"General"` or `"RE/MAX Commercial"` | No |
+| `ListingProbableuseId` | integer | 1 = General, 2 = REMAX Commercial | No |
+| `ProbableUse` | string | `"General"` or `"REMAX Commercial"` | No |
 | `Status` | string | Full status text (e.g., `"Active: Available for sale/lease..."`) | No |
 | `Furnishedyn` | string | `"Y"` / `"N"` — Furnished? | No |
 | `ListingContractDate` | string (ISO 8601) | Contract start date | No |
@@ -94,7 +94,7 @@ Returns a JSON array of all active property listings for the specified office.
 | `FirstName` | string | Agent first name | No |
 | `LastName` | string | Agent last name | No |
 | `OfficeID` | integer | Office ID (218 = Altitud, 235 = Altitud Cero) | No |
-| `OfficeName` | string | `"RE/MAX ALTITUD"` or `"RE/MAX ALTITUD CERO"` | No |
+| `OfficeName` | string | `"REMAX ALTITUD"` or `"REMAX ALTITUD CERO"` | No |
 | `EmbeddedVideoCode` | string | Embedded video HTML/code | **Yes** |
 
 #### Data Quality Notes
@@ -129,13 +129,13 @@ Returns a JSON array of all active agents for the specified office.
 | `AssociateID` | integer | Unique agent ID | No |
 | `FirstName` | string | First name | No |
 | `LastName` | string | Last name | No |
-| `REMAXID` | string | RE/MAX global ID | No |
+| `REMAXID` | string | REMAX global ID | No |
 | `Mobile` | string | Mobile phone | Yes (can be `""`) |
 | `DirectPhone` | string | Direct phone (format: `"506 XXXXXXXX"`) | No |
-| `RemaxEmail` | string | RE/MAX email (e.g., `emma@remax-altitud.cr`) | No |
+| `RemaxEmail` | string | REMAX email (e.g., `emma@remax-altitud.cr`) | No |
 | `NonRemaxEmail` | string | Personal email | **Yes** |
 | `Birthday` | string (ISO 8601) | Date of birth | No |
-| `StartDate` | string (ISO 8601) | Date joined RE/MAX | No |
+| `StartDate` | string (ISO 8601) | Date joined REMAX | No |
 | `AssociateStatus_en` | string | `"Active"` | No |
 | `UrlImg` | string | Profile photo URL (hosted on `balloon.remax-cca.com`) | No |
 | `Title` | string | Role: `"Associate"`, `"Owner"` | No |
@@ -143,7 +143,7 @@ Returns a JSON array of all active agents for the specified office.
 | `Lang` | string | Primary language: `"English"` / `"Spanish"` | No |
 | `OfficeID` | integer | Office ID (218 = Altitud, 235 = Altitud Cero) | No |
 | `CountryID` | integer | Country ID (1886 = Costa Rica) | No |
-| `OfficeName` | string | `"RE/MAX ALTITUD"` or `"RE/MAX ALTITUD CERO"` | No |
+| `OfficeName` | string | `"REMAX ALTITUD"` or `"REMAX ALTITUD CERO"` | No |
 | `TitleEs` | string | Role in Spanish: `"Agente asociado"`, `"Dueño de Oficina"` | No |
 
 #### Agent Data Observations
@@ -159,7 +159,7 @@ Returns a JSON array of all active agents for the specified office.
 
 ## Current Data Summary (as of 2026-04-09)
 
-### RE/MAX Altitud (Pérez Zeledón)
+### REMAX Altitud (Pérez Zeledón)
 
 | Metric | Value |
 |--------|-------|
@@ -171,7 +171,7 @@ Returns a JSON array of all active agents for the specified office.
 | **All currency** | USD |
 | **All listings by** | Emma Bennett (AssociateId: 2400) |
 
-### RE/MAX Altitud Cero (Dominical/Uvita)
+### REMAX Altitud Cero (Dominical/Uvita)
 
 | Metric | Value |
 |--------|-------|

@@ -1,5 +1,5 @@
 # Story Dependency Graph
-_Last updated: 2026-05-04T00:00:00-06:00_
+_Last updated: 2026-05-28T12:31:00-06:00_
 
 ## Stories
 
@@ -32,25 +32,25 @@ _Last updated: 2026-05-04T00:00:00-06:00_
 | 4.3   | 4    | Agent Profile Pages | done | #95 | #133 | merged | 4.2 | ✅ Yes (done) |
 | 4.4   | 4    | SEO Architecture & WordPress Redirects | done | #96 | #134 | merged | 4.1 | ✅ Yes (done) |
 | 4.5   | 4    | Similar Properties & Cross-Linking | done | #97 | #135 | merged | 4.1, 4.3 | ✅ Yes (done) |
-| 5.1   | 5    | Seller Landing Page & List With Us Form | backlog | #98 | — | — | none | ✅ Yes |
-| 5.2   | 5    | CMA Request Form | backlog | #99 | — | — | 5.1 | ❌ No (5.1 not merged) |
-| 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | backlog | #100 | — | — | 5.1, 5.2 | ❌ No (5.1, 5.2 not merged) |
-| 6.1   | 6    | Area Guide Pages | backlog | #101 | — | — | none | ❌ No (epic 5 not complete) |
-| 6.2   | 6    | Community Pages | backlog | #102 | — | — | 6.1 | ❌ No (epic 5 not complete) |
-| 6.3   | 6    | Community Mini-Map & Geo-Fence Display | backlog | #103 | — | — | 6.2 | ❌ No (epic 5 not complete) |
-| 6.4   | 6    | Investment Discovery & Area Context | backlog | #104 | — | — | 6.1 | ❌ No (epic 5 not complete) |
-| 6.5   | 6    | Community Geo-Fence Auto-Tagging | backlog | #105 | — | — | 6.2 | ❌ No (epic 5 not complete) |
-| 7.1   | 7    | Save & Shortlist Properties | backlog | #106 | — | — | none | ❌ No (epic 6 not complete) |
-| 7.2   | 7    | Shortlist Comparison Page | backlog | #107 | — | — | 7.1 | ❌ No (epic 6 not complete) |
-| 7.3   | 7    | Shareable Shortlist URL | backlog | #108 | — | — | 7.2 | ❌ No (epic 6 not complete) |
-| 7.4   | 7    | Smart Agent Routing from Shortlist | backlog | #109 | — | — | 7.2 | ❌ No (epic 6 not complete) |
-| 8.1   | 8    | Sync Status Dashboard & Monitoring | backlog | #110 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.2   | 8    | Lead Management & Agent Assignment | backlog | #111 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.3   | 8    | Bulk Lead Reassignment & Export | backlog | #112 | — | — | 8.2 | ❌ No (epic 7 not complete) |
-| 8.4   | 8    | Lifestyle Tag Administration | backlog | #113 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.5   | 8    | Community Administration | backlog | #114 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.6   | 8    | Listing Visibility & SEO Monitoring | backlog | #115 | — | — | none | ❌ No (epic 7 not complete) |
-| 8.7   | 8    | Shortlist Analytics | backlog | #116 | — | — | none | ❌ No (epic 7 not complete) |
+| 5.1   | 5    | Seller Landing Page & List With Us Form | done | #98 | #137 | merged | none | ✅ Yes (done) |
+| 5.2   | 5    | CMA Request Form | done | #99 | #144 | merged | 5.1 | ✅ Yes (done) |
+| 5.3   | 5    | Seller Lead Storage, Routing & Source Tracking | done | #100 | #152 | merged | 5.1, 5.2 | ✅ Yes (done) |
+| 6.1   | 6    | Area Guide Pages | done | #101 | #153 | merged | none | ✅ Yes (done) |
+| 6.2   | 6    | Community Pages | done | #102 | #156 | merged | 6.1 | ✅ Yes (done) |
+| 6.3   | 6    | Community Mini-Map & Geo-Fence Display | done | #103 | #157 | merged | 6.2 | ✅ Yes (done) |
+| 6.4   | 6    | Investment Discovery & Area Context | done | #104 | #159 | merged | 6.1 | ✅ Yes (done) |
+| 6.5   | 6    | Community Geo-Fence Auto-Tagging | done | #105 | #160 | merged | 6.2 | ✅ Yes (done) |
+| 7.1   | 7    | Save & Shortlist Properties | done | #106 | #161 | merged | none | ✅ Yes (done) |
+| 7.2   | 7    | Shortlist Comparison Page | done | #107 | #162 | merged | 7.1 | ✅ Yes (done) |
+| 7.3   | 7    | Shareable Shortlist URL | done | #108 | #164 | merged | 7.2 | ✅ Yes (done) |
+| 7.4   | 7    | Smart Agent Routing from Shortlist | done | #109 | #165 | merged | 7.2 | ✅ Yes (done) |
+| 8.1   | 8    | Sync Status Dashboard & Monitoring | done | #110 | #166 | merged | none | ✅ Yes (done) |
+| 8.2   | 8    | Lead Management & Agent Assignment | done | #111 | #167 | merged | none | ✅ Yes (done) |
+| 8.3   | 8    | Bulk Lead Reassignment & Export | done | #112 | #168 | merged | 8.2 | ✅ Yes (done) |
+| 8.4   | 8    | Lifestyle Tag Administration | done | #113 | #169 | merged | none | ✅ Yes (done) |
+| 8.5   | 8    | Community Administration | done | #114 | #172 | merged | none | ✅ Yes (done) |
+| 8.6   | 8    | Listing Visibility & SEO Monitoring | done | #115 | #173 | merged | none | ✅ Yes (done) |
+| 8.7   | 8    | Shortlist Analytics | done | #116 | #174 | merged | none | ✅ Yes (done) |
 
 ## Dependency Chains
 
@@ -82,7 +82,7 @@ _Last updated: 2026-05-04T00:00:00-06:00_
 - **4.5** depends on: 4.1, 4.3
 - **5.1** depends on: Epic 4 complete
 - **5.2** depends on: 5.1
-- **5.3** depends on: 5.1
+- **5.3** depends on: 5.1, 5.2
 - **6.1** depends on: Epic 5 complete
 - **6.2** depends on: 6.1
 - **6.3** depends on: 6.2
@@ -102,16 +102,8 @@ _Last updated: 2026-05-04T00:00:00-06:00_
 
 ## Notes
 
-- Epic 1 is fully complete (all 7 stories done and merged).
-- Epic 2 is fully complete (all 7 stories done and merged). PR #121 for 2.7 merged 2026-04-26.
-- Epic 2 complete: PRs #66, #67, #117, #118, #119, #120, #121 all merged.
-- Epic 3 is fully complete (all 8 stories done and merged). PRs #122, #123, #125, #126, #127, #128, #129, #130 all merged.
-- Epic 4 is fully complete (all 5 stories done and merged). PRs #131 (4.1), #132 (4.2), #133 (4.3), #134 (4.4), #135 (4.5) all merged.
-- Epic ordering is strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.
-- Updated 2026-05-02 (batch 2): PRs #128 (3.6), #129 (3.7), #130 (3.8) confirmed merged. Epic 3 marked done. Epic 4 stories now unblocked (4.1 Ready to Work).
-- Updated 2026-05-02 (batch 4): PR #131 (4.1) merged 2026-05-02. PR #132 (4.2) merged 2026-05-03. Stories 4.3 and 4.4 are now unblocked (Ready to Work). Story 4.5 still blocked on 4.3 not merged.
-- Updated 2026-05-03 (batch 5): PR #133 (4.3) merged 2026-05-03. Story 4.3 marked done. Story 4.5 now unblocked (both 4.1 and 4.3 merged). Next story: 4.4 (SEO Architecture & WordPress Redirects, GH #96).
-- Updated 2026-05-03 (batch 6): PR #134 (4.4) merged 2026-05-03. Story 4.4 marked done. Stories 4.1–4.4 all done. Next story: 4.5 (Similar Properties & Cross-Linking, GH #97). 4.5 was already ready-for-dev (dependencies 4.1 + 4.3 both merged).
-- Updated 2026-05-04: PR #135 (4.5) merged 2026-05-03. Epic 4 fully complete. Epic 5 (Seller Lead Capture) is now the active epic. Story 5.1 is Ready to Work (no dependencies). Stories 5.2 and 5.3 blocked on 5.1. Story 5.3 has a known gating decision: PII encryption strategy for column-level encryption (AR17, NFR9) — phone and email fields must be encrypted at rest. This is an architectural decision that should be confirmed before 5.3 begins.
-- No open PRs. No stale worktrees.
-- WARNING: Local main has 1 commit ("epic-4 retrospective", SHA 104e164) ahead of origin/main that cannot be pushed due to branch protection rules. This is expected — it does not affect story work.
+- Epics 1–8 are fully complete (all stories done and merged).
+- Base branch: `development` (not `main`). All worktrees and PRs target `development`.
+- No open story PRs.
+- Cleaned up story-8.1 to story-8.7 worktrees and remote/local branches.
+- Epic ordering strictly enforced: Epic N cannot start until all stories in Epic N-1 have merged PRs.

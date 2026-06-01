@@ -1,20 +1,18 @@
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { SplitHero } from "@/components/home/split-hero";
-import {
-  AreaHighlightsShell,
-  FeaturedCommunitiesShell,
-  FeaturedPropertiesShell,
-  SellCtaShell,
-} from "@/components/home/homepage-sections";
+import { FeaturedPropertiesShell, SellCtaShell } from "@/components/home/homepage-sections";
+import { FeaturedCommunities } from "@/components/home/featured-communities";
+import { FeaturedAreas } from "@/components/home/featured-areas";
+import { VipSearchBanner } from "@/components/home/vip-search-banner";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <HomeContent />;
+  return <HomeContent locale={locale} />;
 }
 
-function HomeContent() {
+function HomeContent({ locale }: { locale: string }) {
   const t = useTranslations("HomePage");
 
   return (
@@ -22,9 +20,10 @@ function HomeContent() {
       <h1 className="sr-only">{t("title")}</h1>
       <SplitHero />
       <div className="container space-y-16 py-16">
-        <FeaturedPropertiesShell />
-        <FeaturedCommunitiesShell />
-        <AreaHighlightsShell />
+        <VipSearchBanner />
+        <FeaturedPropertiesShell locale={locale} />
+        <FeaturedCommunities locale={locale} />
+        <FeaturedAreas locale={locale} />
       </div>
       <div className="container pb-16">
         <SellCtaShell />

@@ -11,9 +11,8 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Map as MapboxMap, Marker } from "react-map-gl";
-import Supercluster from "supercluster";
 import type { MapRef } from "react-map-gl";
-import type { Map as MapboxGLMap } from "mapbox-gl";
+import Supercluster from "supercluster";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { MAPBOX_TOKEN, MAP_STYLE, MAX_BOUNDS } from "@/lib/map/config";
@@ -115,7 +114,7 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
     : null;
 
   const handleMapLoad = useCallback(
-    (event: { target: MapboxGLMap }) => {
+    (event: { target: import("mapbox-gl").Map }) => {
       const map = event.target;
 
       // Add Mapbox DEM terrain source for 3D terrain
@@ -212,8 +211,27 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
     }
   }, [flyToTarget]);
 
+  // Resize the Mapbox canvas when the container element changes size
+  // (e.g. switching between split 35% and full-map 100% views).
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = containerRef.current;
+    // ResizeObserver is available in all modern browsers but not in jsdom (test env)
+    if (!el || typeof ResizeObserver === "undefined") return;
+
+    const observer = new ResizeObserver(() => {
+      // Defer resize to next frame so Mapbox reads the final container size
+      requestAnimationFrame(() => {
+        mapRef.current?.resize();
+      });
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
+      ref={containerRef}
       data-testid="map-container"
       aria-label="Property locations map"
       className="h-full w-full relative"
@@ -227,7 +245,7 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
           latitude: center.lat,
           zoom,
         }}
-        maxBounds={MAX_BOUNDS}
+        maxBounds={MAX_BOUNDS as [[number, number], [number, number]]}
         terrain={{ source: "mapbox-dem", exaggeration: 1.2 }}
         onLoad={handleMapLoad}
         onMove={handleMove}

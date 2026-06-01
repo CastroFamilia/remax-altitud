@@ -15,10 +15,27 @@
 export const EUR_RATE = 0.92;
 
 /**
+ * Default CRC -> USD exchange rate (approximate).
+ * Can be overridden by the CRC_TO_USD_RATE environment variable.
+ */
+export const DEFAULT_CRC_TO_USD_RATE = 515;
+
+export function getCrcToUsdRate(): number {
+  const envRate = process.env.CRC_TO_USD_RATE;
+  if (envRate) {
+    const rate = Number(envRate);
+    if (Number.isFinite(rate) && rate > 0) {
+      return rate;
+    }
+  }
+  return DEFAULT_CRC_TO_USD_RATE;
+}
+
+/**
  * Safely build a currency Intl.NumberFormat. Falls back to 'en-US' on a
  * malformed locale tag (Intl throws RangeError on invalid BCP-47 input).
  */
-function safeCurrencyFormatter(locale: string, currency: "USD" | "EUR"): Intl.NumberFormat {
+function safeCurrencyFormatter(locale: string, currency: "USD" | "EUR" | "CRC"): Intl.NumberFormat {
   const opts: Intl.NumberFormatOptions = {
     style: "currency",
     currency,
@@ -27,7 +44,7 @@ function safeCurrencyFormatter(locale: string, currency: "USD" | "EUR"): Intl.Nu
   try {
     return new Intl.NumberFormat(locale, opts);
   } catch {
-    return new Intl.NumberFormat("en-US", opts);
+    return new Intl.NumberFormat(currency === "CRC" ? "es-CR" : "en-US", opts);
   }
 }
 
@@ -53,6 +70,17 @@ export function formatEUR(price: number, locale: string): string {
   if (!Number.isFinite(price)) return "—";
   const eur = Math.round(price * EUR_RATE);
   return safeCurrencyFormatter(locale, "EUR").format(eur);
+}
+
+/**
+ * Format a CRC price for the given locale using Intl.NumberFormat.
+ *
+ * Examples:
+ *   formatCRC(185000, 'es-CR') → "₡185.000"
+ */
+export function formatCRC(price: number, locale: string): string {
+  if (!Number.isFinite(price)) return "—";
+  return safeCurrencyFormatter(locale, "CRC").format(price);
 }
 
 /**

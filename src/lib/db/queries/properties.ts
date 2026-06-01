@@ -1,7 +1,8 @@
 import "server-only";
-import { and, asc, desc, eq, gte, inArray, lte, not, sql } from "drizzle-orm";
+import { and, or, ilike, asc, desc, eq, gte, inArray, lte, not, sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
+import { shortlistEvents } from "@/lib/db/schema/shortlist-events";
 import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawProperty } from "@/types/remax-api";
 import type { OptimizedImage } from "@/types/images";
@@ -23,6 +24,161 @@ import { normalizePropertyImages } from "@/lib/utils/normalize-images";
  * @param agentId  - UUID of the agent (resolved from agents table lookup), or null
  * @param apiHash  - Pre-computed SHA-256 hash from differ.ts
  */
+let areaCache: Map<string, string> | null = null;
+
+async function getAreaIdBySlug(slug: string): Promise<string | null> {
+  if (typeof db.select !== "function") {
+    return null;
+  }
+  if (!areaCache) {
+    const { areas } = await import("@/lib/db/schema/areas");
+    const rows = await db.select({ id: areas.id, slug: areas.slug }).from(areas);
+    areaCache = new Map(rows.map((r) => [r.slug, r.id]));
+  }
+  return areaCache.get(slug) ?? null;
+}
+
+const AREA_CENTERS = [
+  { slug: "perez-zeledon", lat: 9.37, lng: -83.7 },
+  { slug: "tinamastes-platanillo", lat: 9.28, lng: -83.77 },
+  { slug: "dominical", lat: 9.25, lng: -83.86 },
+  { slug: "uvita", lat: 9.17, lng: -83.74 },
+  { slug: "ojochal", lat: 9.08, lng: -83.65 },
+];
+
+function getDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function containsWholeWord(text: string, word: string): boolean {
+  const regex = new RegExp(`(?:^|[^a-záéíóúüñ])${word}(?:$|[^a-záéíóúüñ])`, "i");
+  return regex.test(text);
+}
+
+export function resolveAreaSlug(raw: {
+  officeApiId: number;
+  location: string | null;
+  titleEn: string;
+  titleEs: string;
+  publicRemarksEn: string | null;
+  publicRemarksEs: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}): string {
+  const titleAndLocation = [raw.titleEn, raw.titleEs, raw.location ?? ""].join(" ").toLowerCase();
+
+  const publicRemarks = [raw.publicRemarksEn ?? "", raw.publicRemarksEs ?? ""]
+    .join(" ")
+    .toLowerCase();
+
+  const textToSearch = [titleAndLocation, publicRemarks].join(" ");
+
+  // 1. Uvita & Bahia Ballena
+  const hasUvita =
+    textToSearch.includes("uvita") ||
+    textToSearch.includes("bahia ballena") ||
+    textToSearch.includes("bahía ballena") ||
+    textToSearch.includes("marino ballena") ||
+    titleAndLocation.includes("ballena") ||
+    titleAndLocation.includes("whale tail");
+
+  if (hasUvita) {
+    return "uvita";
+  }
+
+  // 2. Ojochal & Coronado (avoiding water spring "ojo de agua" or common "cortesía" matches in description)
+  const hasOjochal =
+    textToSearch.includes("ojochal") ||
+    textToSearch.includes("coronado") ||
+    textToSearch.includes("chontales") ||
+    titleAndLocation.includes("ojo de agua") ||
+    titleAndLocation.includes("tres rios") ||
+    titleAndLocation.includes("tres ríos") ||
+    containsWholeWord(titleAndLocation, "cortes") ||
+    containsWholeWord(titleAndLocation, "cortés") ||
+    containsWholeWord(publicRemarks, "ciudad cortés") ||
+    containsWholeWord(publicRemarks, "ciudad cortes") ||
+    containsWholeWord(publicRemarks, "plaza cortés") ||
+    (containsWholeWord(publicRemarks, "cortes") &&
+      !publicRemarks.includes("cortesía") &&
+      !publicRemarks.includes("cortesia")) ||
+    (containsWholeWord(publicRemarks, "cortés") && !publicRemarks.includes("cortésmente"));
+
+  if (hasOjochal) {
+    return "ojochal";
+  }
+
+  // 3. Tinamastes & Platanillo (avoiding generic "lagunas" or common "san juan" in description)
+  const hasTinamastes =
+    textToSearch.includes("tinamaste") ||
+    textToSearch.includes("platanillo") ||
+    textToSearch.includes("chimirol") ||
+    textToSearch.includes("rio nuevo") ||
+    textToSearch.includes("río nuevo") ||
+    textToSearch.includes("alto de san juan") ||
+    titleAndLocation.includes("lagunas") ||
+    titleAndLocation.includes("baru") ||
+    titleAndLocation.includes("barú") ||
+    titleAndLocation.includes("san juan");
+
+  if (hasTinamastes) {
+    return "tinamastes-platanillo";
+  }
+
+  // 4. Perez Zeledon
+  const hasPerezZeledon =
+    textToSearch.includes("perez zeledon") ||
+    textToSearch.includes("pérez zeledón") ||
+    textToSearch.includes("perez zeledón") ||
+    textToSearch.includes("pérez zeledon") ||
+    textToSearch.includes("san isidro de el general") ||
+    textToSearch.includes("san isidro") ||
+    textToSearch.includes("el general");
+
+  if (hasPerezZeledon) {
+    return "perez-zeledon";
+  }
+
+  // 5. Geographic Bounding / Distance Fallback
+  if (raw.latitude != null && raw.longitude != null) {
+    const lat = Number(raw.latitude);
+    const lon = Number(raw.longitude);
+    if (lat !== 0 && lon !== 0 && !isNaN(lat) && !isNaN(lon)) {
+      let closestSlug = "dominical";
+      let minDistance = Infinity;
+      for (const center of AREA_CENTERS) {
+        const dist = getDistance(lat, lon, center.lat, center.lng);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestSlug = center.slug;
+        }
+      }
+      // If closest area is within 30km (Southern Zone covers ~50km max), resolve to it
+      if (minDistance < 30) {
+        return closestSlug;
+      }
+    }
+  }
+
+  // 6. Office-based Fallbacks
+  if (raw.officeApiId === 218) {
+    return "perez-zeledon";
+  }
+
+  // Default fallback for office 235 / Altitud Cero
+  return "dominical";
+}
+
 export async function upsertProperty(
   raw: RawProperty,
   officeId: string,
@@ -37,12 +193,17 @@ export async function upsertProperty(
   const baseSlug = slugify(raw.titleEn);
   const slugWithSuffix = slugify(raw.titleEn, raw.apiId);
 
+  const resolvedAreaSlug = resolveAreaSlug(raw);
+  const resolvedAreaId = await getAreaIdBySlug(resolvedAreaSlug);
+
   const values = {
     apiId: raw.apiId,
     officeId,
     slug: baseSlug || raw.apiId, // fallback to apiId if title produces empty slug
     propertyType: raw.propertyTypeEn,
+    listingType: raw.listingType ?? "Sale",
     priceUsd: Math.round(raw.priceUsd),
+    currency: raw.currency ?? "USD",
     bedrooms: raw.bedrooms ?? null,
     bathrooms: raw.bathrooms ?? null,
     lotSizeM2: raw.lotSizeM2 ?? null,
@@ -58,8 +219,8 @@ export async function upsertProperty(
     images: raw.images,
     youtubeUrl: raw.videoUrl ?? null,
     agentId,
-    areaId: null,
-    areaSlug: null,
+    areaId: resolvedAreaId,
+    areaSlug: resolvedAreaSlug,
     communityId: null,
     lifestyleTags: [],
     zmtStatus: "titled" as const,
@@ -71,7 +232,9 @@ export async function upsertProperty(
 
   const mutableSet = {
     propertyType: values.propertyType,
+    listingType: values.listingType,
     priceUsd: values.priceUsd,
+    currency: values.currency,
     bedrooms: values.bedrooms,
     bathrooms: values.bathrooms,
     lotSizeM2: values.lotSizeM2,
@@ -87,9 +250,14 @@ export async function upsertProperty(
     images: values.images,
     youtubeUrl: values.youtubeUrl,
     agentId: values.agentId,
-    areaId: null,
-    areaSlug: null,
-    communityId: null,
+    areaId: resolvedAreaId,
+    areaSlug: resolvedAreaSlug,
+    communityId: sql`CASE 
+      WHEN ${properties.latitude} IS DISTINCT FROM ${values.latitude} 
+        OR ${properties.longitude} IS DISTINCT FROM ${values.longitude} 
+      THEN NULL 
+      ELSE ${properties.communityId} 
+    END`,
     isVisible: true, // reactivation: restore is_visible=true (AC #7)
     apiHash: values.apiHash,
     apiRaw: values.apiRaw,
@@ -152,13 +320,14 @@ export async function softDeleteProperties(apiIds: string[]): Promise<number> {
  * `api_raw` for hundreds of listings (NFR15 anti-pattern guardrail).
  */
 export async function fetchPropertySnapshot(): Promise<
-  { apiId: string; apiHash: string | null; isVisible: boolean }[]
+  { apiId: string; apiHash: string | null; isVisible: boolean; images: unknown }[]
 > {
   const rows = await db
     .select({
       apiId: properties.apiId,
       apiHash: properties.apiHash,
       isVisible: properties.isVisible,
+      images: properties.images,
     })
     .from(properties);
 
@@ -277,6 +446,23 @@ export async function updatePropertyLifestyleTags(apiId: string, tags: string[])
 }
 
 /**
+ * Updates the lifestyle tags array column for a specific property id.
+ * AC: 1, 2, 3
+ *
+ * @param id   - The property's UUID
+ * @param tags - The new array of lifestyle tags
+ */
+export async function updatePropertyTags(id: string, tags: string[]): Promise<void> {
+  await db
+    .update(properties)
+    .set({
+      lifestyleTags: tags,
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.id, id));
+}
+
+/**
  * Fetches all slugs for visible properties.
  * Used by `generateStaticParams` for SSG build-time generation (Story 4.1, Task 1).
  *
@@ -321,10 +507,16 @@ export function mapPropertyRowToSearchItem(row: {
   constructionM2: number | null;
   zmtStatus: string | null;
   propertyType: string;
+  status: string;
   areaSlug: string | null;
   images: unknown;
   latitude: number | null;
   longitude: number | null;
+  currency?: string | null;
+  apiRaw?: unknown;
+  descriptionEn?: string | null;
+  descriptionEs?: string | null;
+  listingType?: string | null;
 }): PropertySearchItem {
   return {
     id: row.id,
@@ -338,15 +530,21 @@ export function mapPropertyRowToSearchItem(row: {
     constructionM2: row.constructionM2,
     zmtStatus: row.zmtStatus ?? "titled",
     propertyType: row.propertyType,
+    status: row.status,
     areaSlug: row.areaSlug,
     images: normalizePropertyImages(row.images, row.titleEn),
     latitude: row.latitude,
     longitude: row.longitude,
+    currency: row.currency,
+    apiRaw: row.apiRaw as Record<string, unknown> | null,
+    descriptionEn: row.descriptionEn ?? "",
+    descriptionEs: row.descriptionEs ?? "",
+    listingType: row.listingType ?? "Sale",
   };
 }
 
 /** Columns to select for PropertySearchItem queries */
-const propertySearchColumns = {
+export const propertySearchColumns = {
   id: properties.id,
   slug: properties.slug,
   titleEn: properties.titleEn,
@@ -358,10 +556,16 @@ const propertySearchColumns = {
   constructionM2: properties.constructionM2,
   zmtStatus: properties.zmtStatus,
   propertyType: properties.propertyType,
+  listingType: properties.listingType,
+  status: properties.status,
   areaSlug: properties.areaSlug,
   images: properties.images,
   latitude: properties.latitude,
   longitude: properties.longitude,
+  currency: properties.currency,
+  apiRaw: properties.apiRaw,
+  descriptionEn: properties.descriptionEn,
+  descriptionEs: properties.descriptionEs,
 } as const;
 
 /**
@@ -514,4 +718,154 @@ export async function getSimilarProperties(
     .where(whereClause)
     .orderBy(desc(properties.syncedAt))
     .limit(limit);
+}
+
+/**
+ * Manually updates or clears (set to NULL) a listing's communityId.
+ * Also inherits the community's areaId and areaSlug if assigned.
+ * AC: 3, 4
+ */
+export async function updatePropertyCommunity(
+  propertyId: string,
+  communityId: string | null,
+): Promise<void> {
+  if (communityId && typeof db.select === "function") {
+    const { communities } = await import("@/lib/db/schema/communities");
+    const { areas } = await import("@/lib/db/schema/areas");
+    const fromObj = db
+      .select({ areaId: communities.areaId, areaSlug: areas.slug })
+      .from(communities);
+
+    if (typeof fromObj.innerJoin === "function") {
+      const rows = await fromObj
+        .innerJoin(areas, eq(communities.areaId, areas.id))
+        .where(eq(communities.id, communityId))
+        .limit(1);
+
+      if (rows[0]) {
+        await db
+          .update(properties)
+          .set({
+            communityId,
+            areaId: rows[0].areaId,
+            areaSlug: rows[0].areaSlug,
+            updatedAt: new Date(),
+          })
+          .where(eq(properties.id, propertyId));
+        return;
+      }
+    }
+  }
+
+  await db
+    .update(properties)
+    .set({
+      communityId,
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.id, propertyId));
+}
+
+/**
+ * Updates a listing's visibility in the database.
+ * AC: 1, 3
+ */
+export async function updatePropertyVisibility(id: string, isVisible: boolean): Promise<void> {
+  await db
+    .update(properties)
+    .set({
+      isVisible,
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.id, id));
+}
+
+export async function fetchShortlistAnalyticsData(filters: {
+  search?: string;
+  sortBy?: "saves30" | "savesAll" | "active" | "code";
+  sortOrder?: "asc" | "desc";
+  limit?: number;
+  offset?: number;
+}) {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  // Group-by aggregations query
+  let query = db
+    .select({
+      id: properties.id,
+      apiId: properties.apiId,
+      titleEn: properties.titleEn,
+      titleEs: properties.titleEs,
+      slug: properties.slug,
+      images: properties.images,
+      totalSaves: sql<number>`count(case when ${shortlistEvents.action} = 'save' then 1 end)::int`,
+      saves30Days: sql<number>`count(case when ${shortlistEvents.action} = 'save' and ${shortlistEvents.createdAt} >= ${thirtyDaysAgo} then 1 end)::int`,
+      activeSaves: sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`,
+    })
+    .from(properties)
+    .leftJoin(shortlistEvents, eq(properties.id, shortlistEvents.propertyId));
+
+  if (filters.search) {
+    const hasWhere = "where" in query && typeof (query as { where?: unknown }).where === "function";
+    if (hasWhere) {
+      query = (
+        query as unknown as {
+          where: (arg: unknown) => typeof query;
+        }
+      ).where(
+        or(
+          ilike(properties.apiId, `%${filters.search}%`),
+          ilike(properties.titleEn, `%${filters.search}%`),
+          ilike(properties.titleEs, `%${filters.search}%`),
+        ),
+      );
+    }
+  }
+
+  const groupedQuery = query.groupBy(properties.id);
+
+  // Handle sorting (with case-sensitive PostgreSQL double-quoted identifier safety)
+  const order = filters.sortOrder === "asc" ? asc : desc;
+  if (filters.sortBy === "saves30") {
+    groupedQuery.orderBy(order(sql`"saves30Days"`), desc(properties.createdAt));
+  } else if (filters.sortBy === "savesAll") {
+    groupedQuery.orderBy(order(sql`"totalSaves"`), desc(properties.createdAt));
+  } else if (filters.sortBy === "active") {
+    groupedQuery.orderBy(order(sql`"activeSaves"`), desc(properties.createdAt));
+  } else {
+    groupedQuery.orderBy(order(properties.apiId));
+  }
+
+  const limit = filters.limit ?? 20;
+  const offset = filters.offset ?? 0;
+
+  return await groupedQuery.offset(offset).limit(limit);
+}
+
+/**
+ * Fetches up to `limit` visible properties marked as featured.
+ * If none are marked as featured, falls back to the most recently synced visible properties.
+ *
+ * @param limit - Maximum number of properties to fetch (default 3)
+ */
+export async function getFeaturedProperties(limit = 3): Promise<PropertySearchItem[]> {
+  const rows = await db
+    .select(propertySearchColumns)
+    .from(properties)
+    .where(and(eq(properties.isVisible, true), eq(properties.isFeatured, true)))
+    .orderBy(desc(properties.syncedAt))
+    .limit(limit);
+
+  if (rows.length === 0) {
+    const fallbackRows = await db
+      .select(propertySearchColumns)
+      .from(properties)
+      .where(eq(properties.isVisible, true))
+      .orderBy(desc(properties.syncedAt))
+      .limit(limit);
+    return fallbackRows.map(mapPropertyRowToSearchItem);
+  }
+
+  return rows.map(mapPropertyRowToSearchItem);
 }

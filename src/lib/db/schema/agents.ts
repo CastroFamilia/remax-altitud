@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { boolean, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { offices } from "./offices";
 
-/** RE/MAX agents exposed publicly. Privacy-sensitive fields (e.g. birthday) are intentionally excluded per API9. */
+/** REMAX agents exposed publicly. Privacy-sensitive fields (e.g. birthday) are intentionally excluded per API9. */
 export const agents = pgTable(
   "agents",
   {

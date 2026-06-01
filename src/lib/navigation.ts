@@ -41,7 +41,6 @@ export const mainNavItems: NavItem[] = [
       { labelKey: "perezZeledon", href: "/areas/perez-zeledon" },
       { labelKey: "dominical", href: "/areas/dominical" },
       { labelKey: "uvita", href: "/areas/uvita" },
-      { labelKey: "allAreas", href: "/areas" },
       // Communities sub-group (rendered after divider in dropdown)
       {
         labelKey: "communities",
@@ -60,6 +59,12 @@ export const mainNavItems: NavItem[] = [
         ],
       },
     ],
+  },
+  {
+    labelKey: "vipBuyerService",
+    href: "/find-your-dream-property",
+    activePrefix: "/find-your-dream-property",
+    icon: "✨",
   },
   {
     labelKey: "sellYourProperty",

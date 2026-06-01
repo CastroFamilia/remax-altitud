@@ -163,6 +163,7 @@ export async function optimizePropertyImages(
         width: 400,
         height,
         alt,
+        fallbackSrc: url,
       });
     } catch (err: unknown) {
       errors.push({

@@ -15,15 +15,27 @@
 import type { MetadataRoute } from "next";
 import { getAllPropertySlugs } from "@/lib/db/queries/properties";
 import { getAllAgentSlugs } from "@/lib/db/queries/agents";
+import { getAllAreaSlugs } from "@/lib/db/queries/areas";
+import { getAllCommunityParams } from "@/lib/db/queries/communities";
 import { SITE_ORIGIN, LOCALES } from "@/lib/seo/constants";
 
-const staticRoutes = ["", "/search", "/about", "/contact", "/services", "/join"];
+const staticRoutes = [
+  "",
+  "/search",
+  "/about",
+  "/contact",
+  "/services",
+  "/join",
+  "/find-your-dream-property",
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
-    const [propertySlugs, agentSlugs] = await Promise.all([
+    const [propertySlugs, agentSlugs, areaSlugs, communityParams] = await Promise.all([
       getAllPropertySlugs(),
       getAllAgentSlugs(),
+      getAllAreaSlugs(),
+      getAllCommunityParams(),
     ]);
 
     const staticEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
@@ -53,10 +65,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
     );
 
-    // Area/community entries stubbed — Epic 6 will add real queries
-    const areaEntries: MetadataRoute.Sitemap = [];
+    const areaEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
+      areaSlugs.map((slug) => ({
+        url: `${SITE_ORIGIN}/${locale}/areas/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      })),
+    );
 
-    return [...staticEntries, ...propertyEntries, ...agentEntries, ...areaEntries];
+    const communityEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
+      communityParams.map((params) => ({
+        url: `${SITE_ORIGIN}/${locale}/areas/${params.slug}/communities/${params.community}`,
+        lastModified: new Date(),
+        changeFrequency: "daily" as const,
+        priority: 0.7,
+      })),
+    );
+
+    return [
+      ...staticEntries,
+      ...propertyEntries,
+      ...agentEntries,
+      ...areaEntries,
+      ...communityEntries,
+    ];
   } catch {
     // Build continues; sitemap generates on-demand at runtime
     return [];

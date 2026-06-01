@@ -1,7 +1,7 @@
 ---
 stepsCompleted: [1, 2, 3, 4]
 inputDocuments: ['docs/remax-cca-api-docs.md', 'docs/remax-properties-per-office-feed.md']
-session_topic: 'RE/MAX Altitud website functionalities — complete real estate website with agents, listings, 2 offices, API-driven data, SEO-friendly search'
+session_topic: 'REMAX Altitud website functionalities — complete real estate website with agents, listings, 2 offices, API-driven data, SEO-friendly search'
 session_goals: 'Define all features and functionalities for a production-ready real estate website with multi-office support, agent/listing data import, and SEO-friendly static search pages'
 selected_approach: 'ai-recommended'
 techniques_used: ['Six Thinking Hats', 'SCAMPER', 'Role Playing']
@@ -20,7 +20,7 @@ workflow_completed: true
 
 ## Session Overview
 
-**Topic:** RE/MAX Altitud — Complete Real Estate Website Functionalities
+**Topic:** REMAX Altitud — Complete Real Estate Website Functionalities
 **Goals:** Define all features and functionalities for a production-ready real estate website
 **Approach:** AI-Recommended Techniques
 **Techniques Used:** Six Thinking Hats → SCAMPER → Role Playing
@@ -28,7 +28,7 @@ workflow_completed: true
 ### Key Context
 
 - **2 offices**, each with separate agents and listings (separate API GUIDs)
-- Data imported via background job from RE/MAX CCA API (JSON)
+- Data imported via background job from REMAX CCA API (JSON)
 - Background sync pipeline: Pull API → AI-translate to 6 languages → optimize photos → save to DB
 - SEO-friendly search: static pages regenerated daily after sync
 - Spanish-language market (Costa Rica), global buyers
@@ -48,11 +48,11 @@ workflow_completed: true
 | Hat | Key Takeaway |
 |-----|-------------|
 | ⬜ **Facts** | 2 offices, 15+ agents, bilingual API (EN/ES), GPS coords, rich amenities, 4 property types, images on Azure CDN |
-| ❤️ **Emotions** | Wow = effortless organized search. Pain = slow/confusing competitors with location ambiguity. Trust = RE/MAX global brand |
+| ❤️ **Emotions** | Wow = effortless organized search. Pain = slow/confusing competitors with location ambiguity. Trust = REMAX global brand |
 | 💛 **Benefits** | 6-language i18n, GPS map search, SEO-first architecture, unique relocation services positioning |
 | 🖤 **Risks** | API single dependency (accepted), daily sync covers freshness, real competitors identified |
 | 💚 **Creative** | Lifestyle search, "Move to Costa Rica" hub, agent mini-sites, draw-on-map search, AI Concierge (future) |
-| 🔵 **Process** | Not just a listings site — a **multilingual relocation gateway** powered by SEO, maps, and the RE/MAX brand |
+| 🔵 **Process** | Not just a listings site — a **multilingual relocation gateway** powered by SEO, maps, and the REMAX brand |
 
 ---
 
@@ -142,9 +142,9 @@ workflow_completed: true
 | Persona | Top Priorities |
 |---------|---------------|
 | 🇺🇸 **Maria** (American retiree, iPad, no Spanish) | English auto-detect, map + area guides, lifestyle search, WhatsApp, relocation tools |
-| 🇨🇷 **Carlos** (Local seller, Spanish-only) | Full Spanish UX, "Sell Your Property" CTA, agent phone/WhatsApp, RE/MAX credibility |
+| 🇨🇷 **Carlos** (Local seller, Spanish-only) | Full Spanish UX, "Sell Your Property" CTA, agent phone/WhatsApp, REMAX credibility |
 | 🇩🇪 **Hans** (German investor, analytical) | German language, investment filters, price/m², legal guides, property comparison |
-| 👩‍💼 **Sofia** (Agent considering RE/MAX) | Professional agent profiles, visible SEO traffic, "Join Our Team" benefits showcase |
+| 👩‍💼 **Sofia** (Agent considering REMAX) | Professional agent profiles, visible SEO traffic, "Join Our Team" benefits showcase |
 
 ### New Features from Role Playing
 
@@ -324,11 +324,11 @@ _North-star features for later phases_
 - **8 organized themes** covering search, i18n, listings, agents, relocation, leads, SEO, and future innovation
 - **3-phase prioritization** from MVP to future features
 - **4 user personas validated** — retiree buyer, local seller, investor, agent recruit
-- **Core positioning defined**: multilingual relocation gateway powered by SEO, maps, and RE/MAX brand
+- **Core positioning defined**: multilingual relocation gateway powered by SEO, maps, and REMAX brand
 
 ### Key Insight
 
-> This isn't just a real estate listings website — it's a **multilingual relocation gateway to Costa Rica**, where the property search is only the starting point. The real value is in the relocation ecosystem: area guides, visa info, cost calculators, legal support, VIP concierge — all connected to RE/MAX agents who speak the buyer's language.
+> This isn't just a real estate listings website — it's a **multilingual relocation gateway to Costa Rica**, where the property search is only the starting point. The real value is in the relocation ecosystem: area guides, visa info, cost calculators, legal support, VIP concierge — all connected to REMAX agents who speak the buyer's language.
 
 ### Creative Breakthroughs
 

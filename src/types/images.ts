@@ -17,4 +17,6 @@ export interface OptimizedImage {
   height?: number;
   /** Alt text following the template: "Photo {n} of {total} — {propertyType} in {location}" */
   alt?: string;
+  /** Fallback URL pointing to the original unoptimized remote image (e.g. Azure CDN) */
+  fallbackSrc?: string;
 }

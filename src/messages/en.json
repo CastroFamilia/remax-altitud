@@ -18,7 +18,11 @@
     "ourTeam": "Our Team",
     "contact": "Contact",
     "ourAgents": "Our Agents",
-    "mainNav": "Main navigation"
+    "mainNav": "Main navigation",
+    "vipBuyerService": "VIP Buyer Service",
+    "language": "Language",
+    "currency": "Currency",
+    "preferences": "Preferences"
   },
   "LanguageToggle": {
     "switchLanguage": "Switch language",
@@ -33,15 +37,17 @@
     "legal": "Legal",
     "connect": "Connect",
     "menu": "Menu",
-    "perezZeledonOffice": "RE/MAX Altitud — Pérez Zeledón",
-    "dominicalOffice": "RE/MAX Altitud Cero — Dominical",
+    "perezZeledonOffice": "REMAX Altitud — Pérez Zeledón",
+    "dominicalOffice": "REMAX Altitud Cero — Dominical",
     "followUs": "Follow Us",
     "allRightsReserved": "All rights reserved",
     "sellWithUs": "Sell with Us",
     "aboutUs": "About Us",
     "ourAgents": "Our Agents",
+    "vipBuyer": "VIP Buyer Service",
     "contactUs": "Contact Us",
     "properties": "Properties",
+    "communities": "Communities",
     "areas": "Areas",
     "about": "About",
     "contact": "Contact",
@@ -49,13 +55,14 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "sitemap": "Sitemap",
-    "socialFacebook": "Visit RE/MAX Altitud on Facebook",
-    "socialInstagram": "Visit RE/MAX Altitud on Instagram",
-    "socialWhatsApp": "Contact RE/MAX Altitud via WhatsApp",
-    "socialEmail": "Email RE/MAX Altitud"
+    "socialFacebook": "Visit REMAX Altitud on Facebook",
+    "socialInstagram": "Visit REMAX Altitud on Instagram",
+    "socialYoutube": "Visit REMAX Altitud on YouTube",
+    "socialWhatsApp": "Contact REMAX Altitud via WhatsApp",
+    "socialEmail": "Email REMAX Altitud"
   },
   "HomePage": {
-    "title": "RE/MAX Altitud",
+    "title": "REMAX Altitud",
     "subtitle": "Costa Rica's Southern Zone — Real Estate Platform",
     "scaffoldingNote": "Foundation scaffolding complete. Content coming in Stories 1.5–1.7.",
     "hero": {
@@ -68,17 +75,21 @@
       "coastCta": "Explore Beach Homes",
       "coastAlt": "Pristine Pacific coast beach near Dominical, Costa Rica",
       "searchPlaceholder": "Search properties, areas, or lifestyles…",
-      "searchAriaLabel": "Search properties (coming soon)",
+      "searchAriaLabel": "Search properties",
       "searchSubmit": "Search",
       "smartToggle": "Smart Search",
       "traditionalToggle": "Traditional Search",
-      "shellNotice": "Search coming soon"
+      "buyOption": "Buy",
+      "rentOption": "Rent",
+      "shellNotice": "",
+      "vipPrompt": "Looking in other areas of the country or the world?",
+      "vipCta": "Connect with our VIP Buyers Service"
     },
     "featuredProperties": {
-      "heading": "Featured Properties",
-      "description": "Hand-picked homes across Costa Rica's Southern Zone.",
+      "heading": "New Listings",
+      "description": "The latest homes and land listed across Costa Rica's Southern Zone.",
       "viewAll": "View all properties",
-      "shellNotice": "Featured properties coming soon"
+      "shellNotice": "New listings coming soon"
     },
     "featuredCommunities": {
       "heading": "Featured Communities",
@@ -88,21 +99,30 @@
     },
     "areaHighlights": {
       "heading": "Explore Our Areas",
-      "description": "From mountain valleys to Pacific beaches.",
+      "description": "Find your ideal home in the South Pacific and mountains of Costa Rica. From \"barefoot\" luxury surrounded by rivers and valleys near the city, to high-end premium properties overlooking the ocean.",
       "viewAll": "View all areas",
-      "shellNotice": "Area highlights coming soon"
+      "shellNotice": "Area highlights coming soon",
+      "altitude": "Altitude",
+      "temperature": "Temp",
+      "explore": "Explore Area"
     },
     "sellCta": {
       "heading": "Ready to list your property?",
-      "description": "Partner with RE/MAX Altitud's expert agents across Pérez Zeledón, Dominical, and Uvita.",
+      "description": "Partner with REMAX Altitud's expert agents across Pérez Zeledón, Dominical, and Uvita.",
       "cta": "List with Us"
+    },
+    "vipSearchBanner": {
+      "title": "Looking for a property? We will find it for you, free of charge.",
+      "body": "You only see what is published; we know what is about to hit the market. We search our database, connect with other agencies, and scout the areas you love to bring you the perfect option.",
+      "ctaText": "We make buying or renting simple.",
+      "ctaButton": "VIP Search"
     }
   },
   "AboutPage": {
-    "metaTitle": "About RE/MAX Altitud — Costa Rica's Southern Zone",
-    "metaDescription": "Learn about RE/MAX Altitud and Altitud Cero — the premier real estate team serving Pérez Zeledón, Dominical, and Uvita.",
-    "pageTitle": "About RE/MAX Altitud",
-    "intro": "RE/MAX Altitud and RE/MAX Altitud Cero unite two offices under one promise: guide international and local clients through buying, selling, and investing in Costa Rica's Southern Zone — in the language they prefer.",
+    "metaTitle": "About REMAX Altitud — Costa Rica's Southern Zone",
+    "metaDescription": "Learn about REMAX Altitud and Altitud Cero — the premier real estate team serving Pérez Zeledón, Dominical, and Uvita.",
+    "pageTitle": "About REMAX Altitud",
+    "intro": "REMAX Altitud and REMAX Altitud Cero unite two offices under one promise: guide international and local clients through buying, selling, and investing in Costa Rica's Southern Zone — in the language they prefer.",
     "officesHeading": "Our Offices",
     "officesIntro": "Two offices, one team — covering the mountains of Pérez Zeledón and the Pacific coast from Dominical to Uvita.",
     "office": {
@@ -127,9 +147,9 @@
   },
   "ServicesPage": {
     "metaTitle": "Our Services — Buy, Sell, Invest in Costa Rica",
-    "metaDescription": "RE/MAX Altitud helps you buy your dream home, sell with confidence, or invest in Costa Rica's Southern Zone.",
+    "metaDescription": "REMAX Altitud helps you buy your dream home, sell with confidence, or invest in Costa Rica's Southern Zone.",
     "pageTitle": "How We Help",
-    "intro": "Three services, one team. Every client of RE/MAX Altitud gets a bilingual agent, local knowledge, and a seamless path from first search to closing.",
+    "intro": "Three services, one team. Every client of REMAX Altitud gets a bilingual agent, local knowledge, and a seamless path from first search to closing.",
     "servicesHeading": "Our Services",
     "buy": {
       "heading": "Buy",
@@ -160,8 +180,8 @@
     }
   },
   "ContactPage": {
-    "metaTitle": "Contact RE/MAX Altitud",
-    "metaDescription": "Reach RE/MAX Altitud in Pérez Zeledón or RE/MAX Altitud Cero in Dominical/Uvita — by phone, email, WhatsApp, or contact form.",
+    "metaTitle": "Contact REMAX Altitud",
+    "metaDescription": "Reach REMAX Altitud in Pérez Zeledón or REMAX Altitud Cero in Dominical/Uvita — by phone, email, WhatsApp, or contact form.",
     "pageTitle": "Contact Us",
     "intro": "We reply within 24 hours. Reach us by WhatsApp, phone, or the form below — in English or Spanish.",
     "officesHeading": "Our Offices",
@@ -178,8 +198,8 @@
       "phonePlaceholder": "+506 0000-0000",
       "officeLabel": "Preferred office",
       "officeOptionAny": "Either office",
-      "officeOptionPZ": "RE/MAX Altitud — Pérez Zeledón",
-      "officeOptionDOM": "RE/MAX Altitud Cero — Dominical / Uvita",
+      "officeOptionPZ": "REMAX Altitud — Pérez Zeledón",
+      "officeOptionDOM": "REMAX Altitud Cero — Dominical / Uvita",
       "languageLabel": "Preferred language",
       "languageOptionEN": "English",
       "languageOptionES": "Spanish",
@@ -195,17 +215,17 @@
     }
   },
   "JoinPage": {
-    "metaTitle": "Join Our Team — RE/MAX Altitud Careers",
-    "metaDescription": "Become a RE/MAX Altitud agent. Multilingual lead generation, training, and the RE/MAX brand — in Costa Rica's Southern Zone.",
+    "metaTitle": "Join Our Team — REMAX Altitud Careers",
+    "metaDescription": "Become a REMAX Altitud agent. Multilingual lead generation, training, and the REMAX brand — in Costa Rica's Southern Zone.",
     "pageTitle": "Join Our Team",
-    "intro": "Grow your real estate career with RE/MAX Altitud. Leads in six languages, proven tools, and offices in Pérez Zeledón and Dominical/Uvita.",
-    "benefitsHeading": "Why RE/MAX Altitud",
+    "intro": "Grow your real estate career with REMAX Altitud. Leads in six languages, proven tools, and offices in Pérez Zeledón and Dominical/Uvita.",
+    "benefitsHeading": "Why REMAX Altitud",
     "benefit1Title": "Global brand",
     "benefit1Body": "Backed by the world's most recognized real estate brand.",
     "benefit2Title": "Multilingual lead flow",
     "benefit2Body": "Reach six language markets from day one.",
     "benefit3Title": "Training & mentorship",
-    "benefit3Body": "RE/MAX University plus in-office coaching.",
+    "benefit3Body": "REMAX University plus in-office coaching.",
     "benefit4Title": "Two-office reach",
     "benefit4Body": "Serve clients across mountain and coastal Costa Rica.",
     "formHeading": "Interested? Tell us about yourself.",
@@ -234,6 +254,13 @@
       "areaOptionPZ": "Pérez Zeledón",
       "areaOptionDOM": "Dominical / Uvita",
       "areaOptionEither": "Either office",
+      "carLabel": "Do you have a reliable vehicle for property showings?",
+      "carOptionYes": "Yes, I have a reliable vehicle",
+      "carOptionNo": "No, I do not have a vehicle at the moment",
+      "experienceLabel": "Do you have experience in Sales or Real Estate?",
+      "experiencePlaceholder": "Describe your background (years of experience, achievements, or niche)...",
+      "commissionLabel": "How do you feel about working on a commission-only structure?",
+      "commissionPlaceholder": "Share your perspective or preparedness for a commission-only role...",
       "messageLabel": "Anything else we should know? (optional)",
       "messagePlaceholder": "Tell us about your experience or goals.",
       "submit": "Send inquiry",
@@ -243,7 +270,7 @@
     }
   },
   "Metadata": {
-    "title": "RE/MAX Altitud — Costa Rica Real Estate",
+    "title": "REMAX Altitud — Costa Rica Real Estate",
     "description": "Discover properties in Costa Rica's Southern Zone. Map-first search, multilingual support, and expert agents across Pérez Zeledón and Dominical/Uvita."
   },
   "MobileNav": {
@@ -329,9 +356,14 @@
       "sortPriceAsc": "Price ↑",
       "sortPriceDesc": "Price ↓",
       "sortRelevance": "Relevance",
+      "search": "Keyword",
       "clearAll": "Clear all",
       "activeChip": "{label}: {value}",
       "dismiss": "Remove {label} filter",
+      "listingType": "Listing Type",
+      "listingTypeAll": "All Transactions",
+      "listingTypeSale": "For Sale",
+      "listingTypeLease": "For Lease",
       "propertyTypes": {
         "Casa": "House",
         "Apartamento": "Apartment",
@@ -363,19 +395,23 @@
     "lifestyleTags": {
       "label": "Lifestyle",
       "chips": {
-        "Rental Potential": "Rental Potential",
-        "Investment Property": "Investment Property",
-        "Vacation Home": "Vacation Home",
-        "Retire": "Retirement Paradise",
-        "Commercial": "Commercial"
+        "Casa": "House",
+        "Lote": "Lot",
+        "Finca": "Farm",
+        "Con río": "With river",
+        "Con cascada": "With waterfall",
+        "Con vista al mar": "Ocean view",
+        "Con vista a la montaña": "Mountain view"
       }
     },
     "presets": {
       "label": "Quick Searches",
-      "mountainRetirement": "Mountain Retirement Homes",
-      "beachInvestment": "Beach Investment Land",
-      "rentalPotential": "Rental Income Properties",
-      "vacationHome": "Vacation Homes"
+      "fincasConRio": "Farms with river",
+      "lotesVistaMar": "Lots with ocean view",
+      "casasVistaMar": "Houses with ocean view",
+      "casasVistaMontana": "Houses with mountain view",
+      "lotesVistaMontana": "Lots with mountain view",
+      "lotesConCascada": "Lots with waterfall"
     },
     "MapView": {
       "ariaLabel": "Property locations map",
@@ -395,6 +431,10 @@
     }
   },
   "PropertyCard": {
+    "listingType": {
+      "Sale": "For Sale",
+      "Lease": "For Lease"
+    },
     "saveProperty": "Save property",
     "removeFromSaved": "Remove from saved",
     "shortlistFull": "Shortlist full (20 max)",
@@ -418,7 +458,7 @@
     "linkCopied": "Link copied!"
   },
   "PropertyUnavailable": {
-    "heading": "This property is no longer available",
+    "heading": "No longer available",
     "subtext": "It may have been sold or removed from our listings.",
     "similarHeading": "Similar properties you might like",
     "browseCta": "Browse all properties",
@@ -440,6 +480,10 @@
     "thumbnailStripLabel": "{title} photos"
   },
   "ListingDetail": {
+    "listingType": {
+      "Sale": "For Sale",
+      "Lease": "For Lease"
+    },
     "description": "Description",
     "features": "Features & Amenities",
     "specs": {
@@ -455,9 +499,9 @@
       "concession": "Concession",
       "zmt_restricted": "ZMT Restricted"
     },
-    "noAgentAssigned": "Contact RE/MAX Altitud",
+    "noAgentAssigned": "Contact REMAX Altitud",
     "agentSection": "Listing Agent",
-    "unknownOffice": "RE/MAX Altitud"
+    "unknownOffice": "REMAX Altitud"
   },
   "AgentCard": {
     "agentCardLabel": "Listing agent: {name}",
@@ -479,6 +523,33 @@
       "pt": "Portuguese"
     }
   },
+  "PropertyInquiryForm": {
+    "title": "Inquire About This Property",
+    "nameLabel": "Full Name",
+    "namePlaceholder": "Your full name",
+    "nameError": "Please enter your name.",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "emailError": "Please enter a valid email.",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "+506 8888-8888",
+    "phoneError": "Please enter a valid phone number (min. 7 digits).",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Tell us how we can help...",
+    "messageDefault": "Hi, I am interested in {title} (Ref: {ref}). Please provide more details.",
+    "messageError": "Message must be at least 10 characters.",
+    "submit": "Send Inquiry",
+    "submitting": "Sending...",
+    "successHeading": "Inquiry Sent!",
+    "successMessage": "Thank you! Your message has been sent to {agentName}. They will contact you shortly.",
+    "successOfficeMessage": "Thank you! Your message has been sent. Our team will contact you shortly.",
+    "errorHeading": "Submission Failed",
+    "errorMessage": "Something went wrong. Please try again or contact the agent directly.",
+    "or": "Or contact directly:",
+    "whatsappCTA": "WhatsApp",
+    "emailCTA": "Email",
+    "transparencyNote": "Your inquiry will be routed directly to the listing agent for this property."
+  },
   "AgentProfile": {
     "listings": "listings",
     "whatsapp": "WhatsApp",
@@ -489,12 +560,12 @@
     "noAgentsMatch": "No agents match your filters.",
     "clearFilters": "Clear filters",
     "indexPageTitle": "Meet Our Agents",
-    "indexPageDescription": "Browse RE/MAX Altitud agents — find an agent who speaks your language and knows your area.",
+    "indexPageDescription": "Browse REMAX Altitud agents — find an agent who speaks your language and knows your area.",
     "filterByOffice": "Filter by office",
     "filterByLanguage": "Filter by language",
     "allOffices": "All offices",
     "allLanguages": "All languages",
-    "defaultMetaDescription": "View {name}'s listings and contact information at RE/MAX Altitud.",
+    "defaultMetaDescription": "View {name}'s listings and contact information at REMAX Altitud.",
     "agentNoLongerActive": "This agent is no longer active.",
     "backToAgents": "Browse all agents",
     "language": {
@@ -528,6 +599,7 @@
     "home": "Home",
     "search": "Search",
     "agents": "Agents",
+    "areas": "Areas",
     "ariaLabel": "Breadcrumb"
   },
   "AgentAreaServed": {
@@ -542,19 +614,19 @@
   },
   "SellerPage": {
     "meta": {
-      "title": "List Your Property | RE/MAX Altitud",
-      "description": "List your Costa Rica property with RE/MAX Altitud — Southern Zone's #1 real estate team. Fill our simple 3-step form to connect with an area expert.",
-      "ogTitle": "Sell Your Property with RE/MAX Altitud",
-      "ogDescription": "Connect with a local RE/MAX agent in 3 minutes. No account needed."
+      "title": "List Your Property | REMAX Altitud",
+      "description": "List your Costa Rica property with REMAX Altitud — Southern Zone's #1 real estate team. Fill our simple 3-step form to connect with an area expert.",
+      "ogTitle": "Sell Your Property with REMAX Altitud",
+      "ogDescription": "Connect with a local REMAX agent in 3 minutes. No account needed."
     },
     "hero": {
       "heading": "List Your Property with the Southern Zone's #1 Team",
       "subheading": "From Pérez Zeledón to Dominical — our agents know every hectare.",
-      "benefit1": "Global RE/MAX network exposure",
+      "benefit1": "Global REMAX network exposure",
       "benefit2": "Local market expertise since 2008",
       "benefit3": "No upfront fees — commission only",
       "process": "How it works: Fill our 3-step form → Get matched with an area agent → Schedule a property visit",
-      "testimonial1": "\"RE/MAX Altitud sold our finca in 3 months at asking price.\" — Carlos, Rivas",
+      "testimonial1": "\"REMAX Altitud sold our finca in 3 months at asking price.\" — Carlos, Rivas",
       "startButton": "Get Started",
       "startButtonAriaLabel": "Start the property listing form"
     },
@@ -648,6 +720,506 @@
       "whatsappButtonAriaLabel": "Contact {agentName} via WhatsApp",
       "emailButtonAriaLabel": "Contact {agentName} via email",
       "browseWhileWaiting": "While you wait, explore what's selling in your area"
+    }
+  },
+  "CmaForm": {
+    "hero": {
+      "heading": "Request a Free CMA",
+      "subheading": "Just need a valuation?",
+      "description": "A Comparative Market Analysis (CMA) is a professional assessment of your property's current market value. Our agents analyze recent sales, active listings, and market trends in your area to provide an accurate price estimate — completely free.",
+      "ctaButton": "Request a Free CMA",
+      "ctaButtonAriaLabel": "Open the CMA request form"
+    },
+    "form": {
+      "heading": "Request Your Free CMA",
+      "nameLabel": "Full Name",
+      "namePlaceholder": "Your name",
+      "nameAriaLabel": "Enter your full name",
+      "phoneLabel": "Phone / WhatsApp",
+      "phonePlaceholder": "+506 8888-8888",
+      "phoneAriaLabel": "Enter your phone or WhatsApp number",
+      "phoneDescription": "WhatsApp preferred — your agent will contact you here",
+      "emailLabel": "Email Address (optional)",
+      "emailPlaceholder": "your@email.com",
+      "emailAriaLabel": "Enter your email address (optional)",
+      "emailOptionalBadge": "Optional",
+      "propertyTypeLabel": "Property Type",
+      "propertyTypeAriaLabel": "Select property type (optional)",
+      "propertyTypePlaceholder": "Select type...",
+      "typeCasa": "House / Casa",
+      "typeLote": "Lot / Lote",
+      "typeFinca": "Farm / Finca",
+      "typeCondominio": "Condo / Condominio",
+      "typeCommercial": "Commercial / Comercial",
+      "locationLabel": "Property Location",
+      "locationPlaceholder": "Type address or nearest landmark",
+      "locationAriaLabel": "Enter property location",
+      "sizeLabel": "Approximate Size",
+      "sizePlaceholder": "e.g. 5000",
+      "sizeAriaLabel": "Enter approximate property size",
+      "sizeUnitAriaLabel": "Toggle size unit between square meters, square feet, and acres",
+      "commentLabel": "Comments or Questions (optional)",
+      "commentPlaceholder": "Tell us anything else about your property or what you'd like to know...",
+      "commentAriaLabel": "Additional comments or questions (optional)",
+      "submitButton": "Request My Free CMA",
+      "submitButtonAriaLabel": "Submit your CMA request",
+      "submittingButton": "Submitting...",
+      "validation": {
+        "nameRequired": "Please enter your name",
+        "phoneRequired": "Please enter your phone number",
+        "phoneInvalid": "Please enter a valid phone number",
+        "emailInvalid": "Please enter a valid email address"
+      }
+    },
+    "confirmation": {
+      "heading": "CMA Request Received!",
+      "subheading": "Your agent will prepare your Comparative Market Analysis and contact you within 24 hours.",
+      "agentMatchHeading": "Your Agent Match",
+      "browseWhileWaiting": "While you wait, explore what's selling in your area"
+    }
+  },
+  "AreaGuide": {
+    "meta": {
+      "title": "{area} — Area Guide | REMAX Altitud",
+      "description": "Explore {area}: real estate listings, lifestyle info, climate data, and local agents. Your guide to living in {area}, Costa Rica.",
+      "ogTitle": "{area} — Area Guide | REMAX Altitud",
+      "ogDescription": "Discover properties and lifestyle in {area}, Costa Rica — from REMAX Altitud."
+    },
+    "index": {
+      "title": "Explore Our Areas",
+      "description": "From mountain valleys to Pacific beaches — discover the Southern Zone of Costa Rica.",
+      "meta": {
+        "title": "Areas — REMAX Altitud",
+        "description": "Explore all areas served by REMAX Altitud in the Southern Zone of Costa Rica — Pérez Zeledón, Dominical, Uvita, and more."
+      }
+    },
+    "tabs": {
+      "properties": "Properties",
+      "agents": "Agents",
+      "similarAreas": "Similar Areas"
+    },
+    "noProperties": "No properties are currently listed in this area.",
+    "noAgents": "No agents are currently assigned to this area.",
+    "noSimilarAreas": "No similar areas found.",
+    "region": {
+      "Mountain": "Mountain",
+      "Coast": "Coast"
+    },
+    "propertyCount": "{count, plural, one {# property} other {# properties}}",
+    "listingCount": "{count, plural, one {# listing} other {# listings}}",
+    "nearestServices": {
+      "airport": "Nearest Airport",
+      "hospital": "Nearest Hospital",
+      "beach": "Nearest Beach"
+    },
+    "communities": {
+      "heading": "Communities in This Area"
+    }
+  },
+  "CommunityPage": {
+    "meta": {
+      "title": "{community} — Community | REMAX Altitud",
+      "description": "Explore {community}: curated homes, lot availability, quick facts, and lifestyle details. Your guide to living in this premium Costa Rica community.",
+      "ogTitle": "{community} — Community | REMAX Altitud",
+      "ogDescription": "Discover {community} — a curated community in Costa Rica with premium homes and lots."
+    },
+    "tabs": {
+      "properties": "Properties",
+      "siteMap": "Site Map"
+    },
+    "hero": {
+      "homesFrom": "Homes from {min}–{max}"
+    },
+    "quickFacts": {
+      "heading": "Quick Facts",
+      "elevation": "Elevation",
+      "airport": "Airport",
+      "internet": "Internet",
+      "amenities": "Amenities",
+      "developer": "Developer",
+      "established": "Established"
+    },
+    "description": {
+      "heading": "About This Community"
+    },
+    "noProperties": "No properties are currently listed in this community.",
+    "noSiteMap": "Site map not yet available for this community.",
+    "lotStatus": {
+      "available": "Available",
+      "sold": "Sold",
+      "reserved": "Reserved"
+    },
+    "sort": {
+      "label": "Sort by",
+      "status": "Status",
+      "priceAsc": "Price ↑",
+      "priceDesc": "Price ↓"
+    },
+    "similarCommunities": {
+      "heading": "Similar Communities"
+    },
+    "miniMap": {
+      "heading": "Community Location",
+      "alt": "Map of {community} in {area}",
+      "geoFenceLabel": "Community boundary shown"
+    },
+    "index": {
+      "title": "Explore Our Communities",
+      "description": "Curated developments in the mountains and on the coast — premium living in Costa Rica.",
+      "meta": {
+        "title": "Communities — REMAX Altitud",
+        "description": "Explore curated community developments served by REMAX Altitud in the Southern Zone of Costa Rica."
+      }
+    }
+  },
+  "InvestmentContext": {
+    "heading": "Investment Context",
+    "appreciation": "Appreciation Trend",
+    "rentalYield": "Rental Yield Estimate",
+    "highlights": "Market Highlights",
+    "disclaimer": "Based on market estimates — consult an agent for current data"
+  },
+  "Shortlist": {
+    "limitReached": "Remove one to add more",
+    "agentTooltip": "Save more — your agent will show you all of them.",
+    "saveLabel": "Save property",
+    "removeLabel": "Remove from saved",
+    "linkLabel": "Saved properties",
+    "title": "My Saved Properties",
+    "emptyState": "No properties saved yet. Browse listings and tap ♡ to save.",
+    "browseCta": "Browse Listings",
+    "keepSearching": "Keep searching for more properties",
+    "addMoreProperties": "Add more properties",
+    "askAgentCta": "Ask about these",
+    "shareShortlistCta": "Share my shortlist",
+    "removeButtonLabel": "Remove property from saved",
+    "whatsAppMessageHeader": "Hello, I'm interested in these properties from my shortlist:",
+    "shareMessageHeader": "Check out my property shortlist:",
+    "shareCopied": "Link copied! Share it with anyone.",
+    "expiredTitle": "Shared Shortlist Expired",
+    "expiredMessage": "This shortlist has expired. Start a new search.",
+    "sharedBanner": "Viewing a shared shortlist. Start saving properties to create your own!",
+    "shareError": "Failed to generate share link. Copying direct listing links instead.",
+    "contactFormHeading": "Contact an Agent",
+    "contactFormSubheading": "Your inquiries will be automatically split and sent directly to the listing agents of your saved properties.",
+    "nameLabel": "Your Full Name",
+    "namePlaceholder": "Enter your name",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "phoneLabel": "Phone / WhatsApp",
+    "phonePlaceholder": "+506 8888-8888",
+    "messageLabel": "Personal Message",
+    "messagePlaceholder": "Tell us about your schedule preference or questions...",
+    "agentLabel": "Send inquiry to:",
+    "sendToOffice": "Office (REMAX Altitud)",
+    "shortlistAgentsGroup": "Agents for your saved properties",
+    "otherAgentsGroup": "Other Office Agents",
+    "submitForm": "Send My Shortlist",
+    "submittingForm": "Sending...",
+    "successHeading": "Shortlist Sent Successfully!",
+    "successText": "Your saved property list has been sent. The selected agent or our office coordinator will contact you shortly.",
+    "backToShortlist": "Back to My List",
+    "formValidationError": "Please fill out all required fields.",
+    "nameError": "Please enter your name",
+    "emailError": "Please enter a valid email address",
+    "phoneError": "Please enter a valid phone number (min. 7 digits)",
+    "formSubmitError": "Failed to send form. Please try again."
+  },
+  "ShortlistRouting": {
+    "autoSuggestText": "{name} represents properties you're exploring. Direct contact ensures the fastest planning.",
+    "contactAgent": "Contact {name}",
+    "chooseDifferent": "Contact agents individually",
+    "modalTitle": "Contact Listing Agents",
+    "educationInterstitial": "🏠 Direct Agent Routing — To coordinate your visits, you will contact each listing agent directly for their properties. This ensures direct, fast, and accurate coordination!",
+    "languages": "Languages Spoken:",
+    "listings": "listings",
+    "contactWhatsApp": "Contact via WhatsApp",
+    "contactEmail": "Contact via Email",
+    "whatsappMessageIntro": "Hi {agentName}, I'm interested in these properties you represent from my shortlist:",
+    "whatsappMessageOutro": "Could we coordinate a visit? Thank you.",
+    "emailSubject": "Inquiry about your listed properties from my shortlist",
+    "emailBody": "Hi {agentName},\n\nI am interested in viewing the following saved properties you represent:\n\n{list}\n\nCould we coordinate these visits?\n\nThank you!"
+  },
+  "AdminSync": {
+    "dashboardTitle": "Sync Status & Monitoring",
+    "subtitle": "Monitor data freshness, run logs, and diagnostic history",
+    "activeListings": "Active Listings",
+    "lastSuccess": "Last Successful Sync",
+    "lastSuccessNever": "Never",
+    "filterTitle": "Filters",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "status": "Status",
+    "allStatuses": "All Statuses",
+    "filterButton": "Apply Filters",
+    "clearFilters": "Clear",
+    "startedAt": "Started At",
+    "completedAt": "Completed At",
+    "duration": "Duration",
+    "propertiesAdded": "Added",
+    "propertiesUpdated": "Updated",
+    "propertiesRemoved": "Removed",
+    "agentsSynced": "Agents",
+    "translations": "Translations",
+    "images": "Images Optimized",
+    "noLogs": "No sync logs found for the selected criteria.",
+    "errorTitle": "Diagnostic Logs & Errors",
+    "details": "Pipeline Details",
+    "running": "Running",
+    "success": "Success",
+    "failure": "Failure",
+    "partial": "Partial Success",
+    "justNow": "just now",
+    "mAgo": "{mins}m ago",
+    "hAgo": "{hours}h ago",
+    "dAgo": "{days}d ago"
+  },
+  "AdminTags": {
+    "title": "Lifestyle Tag Administration",
+    "subtitle": "Curate and manage lifestyle tags on property listings for discovery categories",
+    "searchPlaceholder": "Search by title or reference code...",
+    "tableThumbnail": "Thumbnail",
+    "tableTitle": "Listing Title",
+    "tableRef": "Ref Code",
+    "tablePrice": "Price",
+    "tableTags": "Lifestyle Tags",
+    "tableActions": "Actions",
+    "btnManageTags": "Manage Tags",
+    "modalTitle": "Manage Tags for {title}",
+    "modalDescription": "Toggle the lifestyle tags that apply to this property. Manually overridden tags take precedence and will not be overwritten by the auto-tagging sync pipeline.",
+    "btnCancel": "Cancel",
+    "btnSave": "Save Changes",
+    "saving": "Saving...",
+    "successMessage": "Successfully updated tags for {title}",
+    "errorMessage": "Failed to update tags. Please try again.",
+    "noProperties": "No properties found.",
+    "paginationInfo": "Showing {start} to {end} of {total} properties",
+    "prev": "Previous",
+    "next": "Next"
+  },
+  "AdminVisibility": {
+    "title": "Listing Visibility & SEO Monitoring",
+    "subtitle": "Control which listings are visible to visitors and monitor organic SEO metrics",
+    "searchPlaceholder": "Search by title or reference code...",
+    "showHiddenOnly": "Show hidden listings only",
+    "tableThumbnail": "Thumbnail",
+    "tableTitle": "Listing Title",
+    "tableRef": "Ref Code",
+    "tablePrice": "Price",
+    "tableVisibility": "Visibility",
+    "tableActions": "Actions",
+    "btnHide": "Hide Listing",
+    "btnShow": "Show Listing",
+    "badgeVisible": "Visible",
+    "badgeHidden": "Hidden",
+    "successHidden": "Listing successfully hidden",
+    "successVisible": "Listing successfully set to visible",
+    "errorUpdate": "Failed to update listing visibility",
+    "noProperties": "No properties found matching criteria.",
+    "paginationInfo": "Showing {start} to {end} of {total} properties",
+    "seoDashboardTitle": "SEO & Analytics Dashboard",
+    "gscTitle": "Google Search Console",
+    "ga4Title": "Google Analytics 4 (GA4)",
+    "gscImpressions": "Impressions (30d)",
+    "gscCtr": "Avg Click-Through Rate",
+    "gscOrganicTraffic": "Organic Traffic Trend",
+    "gscKeywords": "Top Keywords",
+    "gscIndexing": "Indexing Status",
+    "gscIndexed": "Indexed",
+    "gscExcluded": "Excluded",
+    "ga4PopularPages": "Top Performing Pages (Views/Saves)",
+    "ga4Views": "Views",
+    "ga4Saves": "Saves",
+    "tabProperties": "Listings",
+    "tabAnalytics": "SEO Dashboard"
+  },
+  "Admin": {
+    "portalTitle": "Admin Portal",
+    "portalSubtitle": "REMAX Altitud Administration",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "unlockButton": "Unlock Dashboard",
+    "authenticating": "Authenticating...",
+    "errorInvalidPassword": "Invalid password. Please try again.",
+    "errorUnexpected": "An unexpected error occurred. Please try again.",
+    "controlCenter": "Control Center",
+    "navigationTitle": "ALTITUD",
+    "syncStatus": "Sync Status",
+    "active": "Active",
+    "stub": "Stub",
+    "leads": "Leads (8.2)",
+    "lifestyleTags": "Lifestyle Tags",
+    "communities": "Communities",
+    "visibility": "Visibility",
+    "shortlistAnalytics": "Shortlist Analytics",
+    "bulkReassignBtn": "Bulk Reassign Leads",
+    "exportContactsBtn": "Export Contacts",
+    "bulkModalTitle": "Bulk Lead Reassignment & Transfer",
+    "bulkSourceAgentLabel": "Source Agent (Transfer From)",
+    "bulkTargetAgentLabel": "Target Agent (Transfer To)",
+    "bulkOperationTypeLabel": "Operation Type",
+    "bulkOpSingle": "Single Target Agent",
+    "bulkOpDistribute": "Distribute Evenly (Round-Robin)",
+    "bulkSelectTargetAgents": "Select Target Agents",
+    "bulkConfirmTitle": "Explicit Confirmation Required",
+    "bulkConfirmPrompt": "Are you sure? This will reassign {count} leads from {source} to {target}.",
+    "bulkConfirmPromptMulti": "Are you sure? This will reassign {count} leads from {source} to these agents: {target}.",
+    "bulkNoLeadsError": "No leads to reassign for {agentName}",
+    "bulkCancel": "Cancel",
+    "bulkConfirm": "Confirm Reassignment",
+    "bulkSuccessCount": "Successfully reassigned {count} leads.",
+    "bulkErrorHeader": "Error",
+    "bulkLoadingCount": "Checking source leads...",
+    "bulkExportSuccess": "Export complete. Starting download...",
+    "bulkSelectAgentExport": "Select Agent to Export Contacts",
+    "selectAgentPlaceholder": "Select Agent...",
+    "resetBtn": "Reset",
+    "continueBtn": "Continue",
+    "processingState": "Processing...",
+    "exportingState": "Exporting...",
+    "bulkLeadsCountBadge": "📊 {count} leads assigned to this agent",
+    "bulkExportDescription": "Export client leads assigned to a departing agent into a highly formatted CSV containing client Name, Email, and Phone. PII data is securely decrypted on transmission.",
+    "bulkErrorSelectSource": "Please select a source agent.",
+    "bulkErrorNoActiveLeads": "Source agent has no active leads.",
+    "bulkErrorSelectTarget": "Please select a target agent.",
+    "bulkErrorSameAgent": "Target agent cannot be the same as the source agent.",
+    "bulkErrorSelectTargetDistribute": "Please select at least one target agent for distribution.",
+    "bulkErrorDistributeIncludeSource": "Target distribution cannot include the source agent.",
+    "bulkErrorSelectExportAgent": "Please select an agent to export contacts.",
+    "bulkErrorVerifyCountFailed": "Could not verify lead count.",
+    "bulkErrorUnexpectedReassignment": "An unexpected error occurred during lead reassignment.",
+    "bulkErrorExportFailed": "Failed to export contacts. Verify authentication and try again.",
+    "loggingOut": "Logging out...",
+    "logOut": "Log Out"
+  },
+  "AdminCommunities": {
+    "title": "Community Administration",
+    "subtitle": "Create and manage curated community developments with geo-fences",
+    "searchPlaceholder": "Search communities by name...",
+    "btnCreateCommunity": "Create New Community",
+    "btnEdit": "Edit",
+    "btnDelete": "Delete",
+    "confirmDelete": "Are you sure you want to delete {name}? This will clear community references from all properties.",
+    "tableHeadName": "Name",
+    "tableHeadArea": "Area",
+    "tableHeadListings": "Active Listings",
+    "tableHeadActions": "Actions",
+    "formLabelName": "Community Name",
+    "formLabelSlug": "Slug",
+    "formLabelArea": "Area",
+    "formLabelTaglineEn": "Tagline (EN)",
+    "formLabelTaglineEs": "Tagline (ES)",
+    "formLabelDescriptionEn": "Description (EN)",
+    "formLabelDescriptionEs": "Description (ES)",
+    "formLabelHeroImage": "Hero Image URL",
+    "formLabelSiteMap": "Site Map Image URL",
+    "formLabelLatitude": "Center Latitude",
+    "formLabelLongitude": "Center Longitude",
+    "formLabelQuickFacts": "Quick Facts",
+    "formLabelElevation": "Elevation",
+    "formLabelAirport": "Airport Distance",
+    "formLabelAmenities": "Amenities (comma separated)",
+    "formLabelDeveloper": "Developer Name",
+    "formLabelEstablished": "Established Year",
+    "formLabelInfrastructure": "Infrastructure Details",
+    "btnDrawGeoFence": "Draw Geo-Fence",
+    "btnClearGeoFence": "Clear Geo-Fence",
+    "geoFenceNote": "Click on the map to define the boundary. Close the shape by clicking the first point again.",
+    "btnSave": "Save Community",
+    "btnCancel": "Cancel",
+    "successCreated": "Successfully created community {name}",
+    "successUpdated": "Successfully updated community {name}",
+    "successDeleted": "Successfully deleted community",
+    "errorSaveFailed": "Failed to save community. Please try again."
+  },
+  "VipBuyerPage": {
+    "metaTitle": "Find Your Dream Property - REMAX Altitud",
+    "metaDescription": "Exclusive Property Search Service: You describe the life you want, we'll show you where it can happen. We’ll help you discover the place in Costa Rica that truly fits your life.",
+    "hero": {
+      "title": "Exclusive Property Search Service",
+      "subtitle": "You describe the life you want, we'll show you where it can happen. We’ll help you discover the place in Costa Rica that truly fits your life. From your first call to the moment you find your home, our process blends local expertise, curated experiences, and a clear plan from day one.",
+      "ctaCall": "Book Your Discovery Call",
+      "ctaWhatsapp": "Send us a WhatsApp"
+    },
+    "howItWorks": {
+      "heading": "How It Works",
+      "subtitle": "Moving to Costa Rica is exciting, but it can also feel overwhelming. That’s why we designed a process that makes it simple, personal, and strategic.",
+      "step1": {
+        "title": "Introductory Discovery Call",
+        "body": "You don’t need to know Costa Rica; that’s our job. Tell us what kind of life you imagine, your budget, and your timeline, and we’ll show you the best regions that match your lifestyle."
+      },
+      "step2": {
+        "title": "Shortlist and Strategy",
+        "body": "We map out the areas and properties that truly fit your needs, not just what appears online. Each recommendation comes from local agents who actually live there."
+      },
+      "step3": {
+        "title": "On-the-Ground Experience",
+        "body": "Visit properties in person or join live virtual tours. Discover each area’s rhythm, community, and potential."
+      },
+      "step4": {
+        "title": "Decision and Next Steps",
+        "body": "From offers and due diligence to trusted attorneys, banks, and builders. We guide you with clarity and confidence."
+      }
+    },
+    "chooseExperience": {
+      "heading": "Choose Your Experience",
+      "premium": {
+        "tag": "No Cost",
+        "name": "Premium",
+        "description": "A clear, guided start to your Costa Rica journey.",
+        "bestFor": "Best for: Early planning, clarity, and a focused start.",
+        "cta": "Book Your Discovery Call",
+        "bullet1": "Discovery Call: Share your goals, budget, and lifestyle. You don’t need to know Costa Rica. We’ll help you understand where you’ll actually find what you want.",
+        "bullet2": "Local Insight Plan: After our first call, we’ll define the right local agents from the areas that best fit your vision.",
+        "bullet3": "Tailored Shortlist: Review hand-picked properties together online, with transparent answers about costs, process, and timelines.",
+        "bullet4": "Next-Step Plan: Move forward confidently. Visit in person or let us tour properties via live video calls."
+      },
+      "vip": {
+        "tag": "By Arrangement",
+        "name": "VIP White-Glove",
+        "description": "For those ready to move with purpose and ease. Everything included in Premium, plus full concierge coordination:",
+        "bestFor": "Best for: Serious movers who want an end-to-end, time-efficient experience.",
+        "cta": "Request VIP Experience",
+        "bullet1": "Private airport pickup (Chauffeur or Charter Flight option)",
+        "bullet2": "Accommodation coordination (Stay near your areas of interest)",
+        "bullet3": "Curated property & neighborhood tours (with lifestyle stops)",
+        "bullet4": "School visits & meetings arranged for you",
+        "bullet5": "Local appointments (With attorneys, banks, builders and inspectors)",
+        "bullet6": "Personalized itineraries, transfers, and reservations",
+        "bullet7": "Decision support with comparable analysis and offer strategy"
+      }
+    },
+    "whyChooseUs": {
+      "heading": "Why Buyers Choose Us",
+      "subtitle": "Because buying property in Costa Rica should feel exciting, not confusing. Let’s make it simple, and unforgettable.",
+      "pillar1": {
+        "title": "Knowledge",
+        "body": "You don’t need to know Costa Rica: We know every corner of it."
+      },
+      "pillar2": {
+        "title": "Local Expertise",
+        "body": "Local agents who live in the areas they represent."
+      },
+      "pillar3": {
+        "title": "Professionalism",
+        "body": "Efficient, curated tours that save you days (and costly mistakes)."
+      },
+      "pillar4": {
+        "title": "Network",
+        "body": "Verified network of trusted pros: attorneys, builders, and banks."
+      },
+      "pillar5": {
+        "title": "Transparency",
+        "body": "Transparent numbers: clear costs, timelines, and next steps."
+      },
+      "pillar6": {
+        "title": "REMAX Power",
+        "body": "The brand you already trust, now right here guiding your move."
+      }
+    },
+    "booking": {
+      "heading": "Start Here: Tell Us About You",
+      "subtitle": "Let’s start your Costa Rica journey. Tell us what you’re dreaming of, and we’ll make it real."
     }
   }
 }

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { normalizeCostaRicaPhone } from "../utils/phone";
 
 /**
- * Zod schema for a single record in the RE/MAX CCA `AgentsPerOffice` feed.
+ * Zod schema for a single record in the REMAX CCA `AgentsPerOffice` feed.
  * Accepts the published fields; `Birthday` is intentionally stripped from the
  * output via the chained `.transform(...)` so API9 is enforced at the type
  * and runtime surface (it remains only inside `apiRaw` for downstream opt-in).
@@ -62,7 +62,7 @@ export const rawAgentApiSchema = rawAgentApiSchemaBase.transform((a) => {
 type RawAgentSchemaOutput = z.infer<typeof rawAgentApiSchema>;
 
 /**
- * Normalized, privacy-safe shape of a RE/MAX agent record. `Birthday` is
+ * Normalized, privacy-safe shape of a REMAX agent record. `Birthday` is
  * intentionally absent — API9 forbids exposing it, and the schema's transform
  * never assigns it. `apiRaw` carries the original input for downstream JSONB
  * storage and is supplied by the parser.

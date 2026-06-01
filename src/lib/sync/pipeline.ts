@@ -5,6 +5,7 @@ import { computePropertyHash, diffProperties } from "./differ";
 import { optimizePropertyImages } from "./image-optimizer";
 import { translateBatch } from "./translator";
 import { tagBatch } from "./lifestyle-tagger";
+import { autoTagCommunities } from "./geo-tagger";
 import { createSyncLog, updateSyncLog } from "@/lib/db/queries/sync-log";
 import {
   upsertProperty,
@@ -44,7 +45,7 @@ export type SyncProgressEvent =
   | { type: "property_tag"; apiId: string };
 
 /**
- * Orchestrates the full sync pipeline against the RE/MAX CCA API.
+ * Orchestrates the full sync pipeline against the REMAX CCA API.
  *
  * Steps:
  * 1. Create sync_log with status="running" (AC #1)
@@ -75,7 +76,7 @@ export async function runSyncPipeline(options?: {
     const pzGuid = process.env.PZ_OFFICE_GUID ?? "";
     const domGuid = process.env.DOM_OFFICE_GUID ?? "";
 
-    info("Fetching data from RE/MAX CCA API...");
+    info("Fetching data from REMAX CCA API...");
     // Step 2: Fetch all 4 endpoints concurrently (AC Architecture §5 Step 1)
     const [pzPropsResult, domPropsResult, pzAgentsResult, domAgentsResult] = await Promise.all([
       fetchPropertiesForOffice(pzGuid),
@@ -93,7 +94,7 @@ export async function runSyncPipeline(options?: {
     ];
 
     // Track originating office GUID alongside each record. The parser's
-    // `officeApiId` is a numeric RE/MAX OfficeID (e.g. 218, 235) — NOT a GUID —
+    // `officeApiId` is a numeric REMAX OfficeID (e.g. 218, 235) — NOT a GUID —
     // so we cannot use it as a key into `officeMap` (whose keys are GUIDs).
     // The fetch source is the canonical office identity.
     const allProps = [
@@ -273,6 +274,11 @@ export async function runSyncPipeline(options?: {
       }
     }
 
+    // Step 7d: Community geo-tagging (Story 6.5, AC #1, FR50)
+    info("Running community geo-fence auto-tagging...");
+    const autoTaggedCount = await autoTagCommunities();
+    info(`Community geo-fence auto-tagging complete: ${autoTaggedCount} properties tagged.`);
+
     // Step 8: Collect lotSizeUnitWarning errors (AC #12) — do NOT block upsert
     const warningErrors: ParseError[] = [...diff.new, ...diff.updated]
       .filter((r) => r.lotSizeUnitWarning)
@@ -311,28 +317,31 @@ export async function runSyncPipeline(options?: {
     });
 
     // Step 10: ISR revalidation — best-effort, non-blocking (AC #14, AR6)
-    try {
-      const revalidateUrl = new URL(
-        "/api/revalidate",
-        process.env.NEXTAUTH_URL ?? "http://localhost:3000",
-      ).href;
+    // Run as un-awaited floating promise to prevent single-threaded local server deadlocks.
+    (async () => {
+      try {
+        const revalidateUrl = new URL(
+          "/api/revalidate",
+          process.env.NEXTAUTH_URL ?? "http://localhost:3000",
+        ).href;
 
-      const res = await fetch(revalidateUrl, {
-        method: "POST",
-        headers: {
-          "x-api-secret": process.env.API_SECRET ?? "",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tags: ["properties", "agents"] }),
-        cache: "no-store",
-      });
+        const res = await fetch(revalidateUrl, {
+          method: "POST",
+          headers: {
+            "x-api-secret": process.env.API_SECRET ?? "",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tags: ["properties", "agents"] }),
+          cache: "no-store",
+        });
 
-      if (!res.ok) {
-        console.warn(`[sync] /api/revalidate returned non-2xx: ${res.status}`);
+        if (!res.ok) {
+          console.warn(`[sync] /api/revalidate returned non-2xx: ${res.status}`);
+        }
+      } catch (revalErr) {
+        console.warn("[sync] /api/revalidate call failed (best-effort):", revalErr);
       }
-    } catch (revalErr) {
-      console.warn("[sync] /api/revalidate call failed (best-effort):", revalErr);
-    }
+    })();
 
     return {
       propertiesFetched,

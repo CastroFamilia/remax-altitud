@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { integer, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
-/** Sync pipeline run log. One row per RE/MAX CCA sync invocation. */
+/** Sync pipeline run log. One row per REMAX CCA sync invocation. */
 export const syncLogs = pgTable("sync_logs", {
   id: uuid("id").primaryKey().defaultRandom(),
   startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),

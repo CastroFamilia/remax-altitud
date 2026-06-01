@@ -24,7 +24,15 @@ async function main() {
     // extension, but keep an idempotent bootstrap here so the runner stays
     // safe when invoked against unfamiliar targets.
     console.log("Ensuring PostGIS extension is installed…");
-    await client`CREATE EXTENSION IF NOT EXISTS postgis`;
+    try {
+      await client`CREATE EXTENSION IF NOT EXISTS postgis`;
+    } catch (e) {
+      console.warn(
+        "Could not ensure PostGIS extension is enabled via direct query. " +
+          "Proceeding in case it is already enabled by the database administrator:",
+        e,
+      );
+    }
 
     console.log("Running migrations against database…");
     await migrate(db, { migrationsFolder: "src/lib/db/migrations" });

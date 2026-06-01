@@ -31,6 +31,7 @@ export interface UseSearchFiltersReturn {
 /** URL param names — short, human-readable, lowercase (UX spec §9 SEO) */
 const PARAM_MAP: Record<keyof SearchFilters, string> = {
   type: "type",
+  listingType: "listing_type",
   priceMin: "price_min",
   priceMax: "price_max",
   bedrooms: "bedrooms",
@@ -42,6 +43,7 @@ const PARAM_MAP: Record<keyof SearchFilters, string> = {
   view: "view",
   // Story 3.4: tags — comma-separated string (?tags=Investment+Property,Rental+Potential)
   tags: "tags",
+  q: "q",
 };
 
 /**
@@ -70,6 +72,7 @@ export function buildSearchUrl(pathname: string, filters: SearchFilters): string
 /** Filter keys that count toward activeFilterCount (exclude view and sort) */
 const FILTER_KEYS: Array<keyof SearchFilters> = [
   "type",
+  "listingType",
   "priceMin",
   "priceMax",
   "bedrooms",
@@ -77,6 +80,7 @@ const FILTER_KEYS: Array<keyof SearchFilters> = [
   "lotSizeMin",
   "lotSizeMax",
   "areaSlug",
+  "q",
 ];
 
 /** Valid sort options */
@@ -96,6 +100,9 @@ function parseFilters(params: URLSearchParams): SearchFilters {
 
   const type = params.get("type");
   if (type) filters.type = type;
+
+  const listingType = params.get("listing_type");
+  if (listingType) filters.listingType = listingType;
 
   const priceMin = parseInt(params.get("price_min") ?? "", 10);
   if (Number.isFinite(priceMin) && priceMin >= 0) filters.priceMin = priceMin;
@@ -137,6 +144,9 @@ function parseFilters(params: URLSearchParams): SearchFilters {
       .filter(Boolean);
     if (parsed.length > 0) filters.tags = parsed;
   }
+
+  const q = params.get("q");
+  if (q) filters.q = q;
 
   return filters;
 }

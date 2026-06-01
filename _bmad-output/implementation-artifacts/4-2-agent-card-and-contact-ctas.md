@@ -407,8 +407,8 @@ so that I can ask questions or schedule a viewing with one tap.
   }
   ```
 - [x] **ALSO update `ListingDetail` namespace** to add `unknownOffice` key (the existing `noAgentAssigned` key is already there from Story 4.1 — do NOT re-add it):
-  - English: `"unknownOffice": "RE/MAX Altitud"`
-  - Spanish: `"unknownOffice": "RE/MAX Altitud"`
+  - English: `"unknownOffice": "REMAX Altitud"`
+  - Spanish: `"unknownOffice": "REMAX Altitud"`
 - [x] **DO NOT re-add** existing keys (`PropertyCard.*`, `PropertyUnavailable.*`, `UnitToggle.*`, `PropertyGallery.*`, `StickySpecsBar.*`, `Navigation.*`, and the full existing `ListingDetail.*` namespace — only ADD `unknownOffice` to it)
 
 ### Task 8: Create agent placeholder image (AC: #1)
@@ -630,7 +630,7 @@ Story 4.1 uses `next/dynamic({ ssr: false })` for `PropertyGallery` because it u
 - `photoOptimizedUrl` paths are local (`/agent-photos/...`) — no `remotePatterns` needed
 - If `photoOptimizedUrl` is null but `photoUrl` is set (Azure CDN), it will work with Story 4.1's `remotePatterns`
 
-**`property.apiId` for property reference:** The property `apiId` field (from the RE/MAX CCA API sync) is the human-readable reference like "ALT-12345". Use `property.apiId` as `propertyRef` in the WhatsApp message. Check the `properties` schema: `apiId` is `text("api_id").notNull().unique()` — it's always set.
+**`property.apiId` for property reference:** The property `apiId` field (from the REMAX CCA API sync) is the human-readable reference like "ALT-12345". Use `property.apiId` as `propertyRef` in the WhatsApp message. Check the `properties` schema: `apiId` is `text("api_id").notNull().unique()` — it's always set.
 
 **`getOfficeById` — check if offices.ts queries already exist:** Run `ls src/lib/db/queries/` to see if `offices.ts` already exists. If it does, add `getOfficeById` to it rather than creating from scratch. Preserve any existing `import "server-only"` at the top.
 

@@ -7,20 +7,25 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Pin workspace root so Turbopack doesn't walk up to stray lockfiles
+  // in parent directories (e.g. accidental npm install in ~/)
+  turbopack: {
+    root: __dirname,
+  },
   // images.remotePatterns — Task 0, Story 4.1
   // Property images are stored locally as WebP files at relative /property-images/... paths
   // and do NOT need remotePatterns (same-origin static files).
   // Azure CDN entries are added here in case any component references original CDN URLs
-  // (e.g., map popups from Story 3.2, agent photos from the RE/MAX CCA API).
+  // (e.g., map popups from Story 3.2, agent photos from the REMAX CCA API).
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.azurefd.net", // Azure Front Door CDN — RE/MAX CCA API photos
+        hostname: "*.azurefd.net", // Azure Front Door CDN — REMAX CCA API photos
       },
       {
         protocol: "https",
-        hostname: "*.azureedge.net", // Azure CDN edge — RE/MAX CCA raw property images
+        hostname: "*.azureedge.net", // Azure CDN edge — REMAX CCA raw property images
       },
       {
         protocol: "https",
@@ -28,7 +33,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "balloon.remax-cca.com", // RE/MAX CCA user-uploaded content (agent photos)
+        hostname: "balloon.remax-cca.com", // REMAX CCA user-uploaded content (agent photos)
       },
     ],
   },

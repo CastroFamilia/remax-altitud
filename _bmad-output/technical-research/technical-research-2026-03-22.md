@@ -1,17 +1,17 @@
 ---
 type: technical-research
 session_date: '2026-03-22'
-domain: 'RE/MAX Altitud Website'
+domain: 'REMAX Altitud Website'
 focus_areas: ['framework selection', 'rendering strategy', 'internationalization', 'map search', 'AI translation', 'database', 'deployment', 'image optimization']
 related_brainstorming: '_bmad-output/brainstorming/brainstorming-session-2026-03-20-0905.md'
 related_market_research: '_bmad-output/market-research/market-research-2026-03-22.md'
 related_domain_research: '_bmad-output/domain-research/domain-research-2026-03-22.md'
 ---
 
-# Technical Research — RE/MAX Altitud
+# Technical Research — REMAX Altitud
 
 **Date:** 2026-03-22
-**Purpose:** Architecture and technology feasibility analysis for the RE/MAX Altitud website rebuild
+**Purpose:** Architecture and technology feasibility analysis for the REMAX Altitud website rebuild
 
 ---
 
@@ -156,10 +156,10 @@ Best choice for Next.js App Router — native integration, type-safe, performant
 | **Brand familiarity** | Very high | Medium |
 | **Pin preview cards** | Via InfoWindow | Custom popups (full control) |
 
-### Why Mapbox for RE/MAX Altitud
+### Why Mapbox for REMAX Altitud
 
 1. **5x more free map loads** — critical for a new site with growing traffic
-2. **Full design control** — custom map styles matching RE/MAX branding
+2. **Full design control** — custom map styles matching REMAX branding
 3. **Superior clustering** — handles hundreds of property pins gracefully
 4. **3D terrain** — show mountain/valley topography for Pérez Zeledón
 5. **Custom popups** — property preview cards with photo, price, stats
@@ -214,12 +214,12 @@ Better pricing, superior customization, and 3D terrain support for mountain/coas
 ```
 Daily Sync Job
   │
-  ├── 1. Pull API data (EN + ES from RE/MAX CCA)
+  ├── 1. Pull API data (EN + ES from REMAX CCA)
   │
   ├── 2. Detect changes (diff against stored data)
   │
   ├── 3. Translate changed content → IT, DE, FR, PT
-  │   ├── Listings: DeepL API with RE/MAX glossary
+  │   ├── Listings: DeepL API with REMAX glossary
   │   └── Area guides: GPT-4 with locale prompts
   │
   ├── 4. Store translations in DB
@@ -262,7 +262,7 @@ DeepL for accuracy + glossary; GPT-4 for creative adaptation and SEO metadata.
 | **JSON support** | ✅ JSONB | ✅ JSON | ⚠️ |
 | **REST/GraphQL API** | ✅ Auto-generated | ❌ | ❌ |
 
-### Why Self-Hosted PostgreSQL for RE/MAX Altitud
+### Why Self-Hosted PostgreSQL for REMAX Altitud
 
 1. **PostGIS** — geospatial queries for map search (distance, bounding box, polygon)
 2. **Full control** — no vendor lock-in, self-hosted on Coolify VPS
@@ -276,7 +276,7 @@ DeepL for accuracy + glossary; GPT-4 for creative adaptation and SEO metadata.
 ### Database Schema (Core)
 
 ```sql
--- Properties (synced from RE/MAX CCA API)
+-- Properties (synced from REMAX CCA API)
 properties (id, api_id, office_id, type, status, price, currency,
             bedrooms, bathrooms, lot_size_m2, construction_m2,
             latitude, longitude, geo GEOGRAPHY(Point, 4326),
@@ -288,7 +288,7 @@ properties (id, api_id, office_id, type, status, price, currency,
             lifestyle_tags TEXT[], area_slug, zmt_status,
             synced_at, created_at, updated_at)
 
--- Agents (synced from RE/MAX CCA API)
+-- Agents (synced from REMAX CCA API)
 agents (id, api_id, office_id, name, photo_url, email, phone,
         whatsapp, languages TEXT[], specializations TEXT[],
         bio_en, bio_es, bio_it, bio_de, bio_fr, bio_pt,
@@ -315,7 +315,7 @@ Best choice for this project — PostGIS for map search, full control, included 
 
 ```
 ┌──────────────┐    ┌────────────────┐    ┌──────────────┐
-│ Docker Cron  │───▶│ /api/sync      │───▶│ RE/MAX CCA   │
+│ Docker Cron  │───▶│ /api/sync      │───▶│ REMAX CCA   │
 │ (0 6 * * *)  │    │ (Background)   │    │ API (JSON)   │
 └──────────────┘    └───────┬────────┘    └──────────────┘
                             │
@@ -527,7 +527,7 @@ remaxaltitud.com/pt/      → Portuguese
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| RE/MAX CCA API downtime | No new data sync | Graceful degradation — serve cached ISR pages; retry logic in sync job |
+| REMAX CCA API downtime | No new data sync | Graceful degradation — serve cached ISR pages; retry logic in sync job |
 | Docker container issues | App or DB downtime | Coolify auto-restart policies; Docker health checks; monitoring alerts |
 | Translation quality for legal terms | Misinformation risk | Curated glossary + human review for legal content (visa, ZMT, buying process) |
 | Mapbox cost at scale | Budget overrun | Monitor usage; cache map tiles; consider Google Maps if Mapbox costs spike |
