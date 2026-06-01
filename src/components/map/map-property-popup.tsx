@@ -70,6 +70,7 @@ export function MapPropertyPopup({
       anchor="bottom"
       offset={[0, -30] as [number, number]}
       closeButton={false}
+      closeOnClick={false}
       onClose={onClose}
     >
       <div

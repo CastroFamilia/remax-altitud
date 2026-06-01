@@ -259,6 +259,13 @@ export function MapView({
         onLoad={handleMapLoad}
         onMove={handleMove}
         onMoveEnd={handleMoveEnd}
+        onClick={(e) => {
+          // Only close the popup when clicking on the map background,
+          // not when clicking on a marker (pin) or the popup card itself.
+          const target = e.originalEvent?.target as HTMLElement | null;
+          if (target?.closest?.(".mapboxgl-marker, .mapboxgl-popup")) return;
+          setSelectedPropertyId(null);
+        }}
       >
         {/* Render clusters and individual pins */}
         {clusters.map((feature) => {
