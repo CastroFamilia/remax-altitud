@@ -105,6 +105,57 @@ const rawPropertyApiSchemaBase = z
   })
   .passthrough();
 
+/**
+ * Resolves the listing transaction type ("Sale" or "Lease") using multiple
+ * signals from the API payload. The REMAX CCA API sometimes returns
+ * `ContractType_en` as null for rental properties, so we cascade through
+ * several fallback strategies before defaulting to "Sale".
+ *
+ * Signal priority:
+ *   1. ContractType_en (English text: "Sale", "Lease")
+ *   2. ContractType_es (Spanish text: "Venta", "Alquiler" / "Arriendo")
+ *   3. ListingContractType (numeric ID: 2 = Lease in REMAX CCA)
+ *   4. Title heuristic (rent/lease/alquiler keywords in EN or ES title)
+ *   5. Default: "Sale"
+ */
+function resolveListingType(p: {
+  ContractType_en?: string | null;
+  ContractType_es?: string | null;
+  ListingContractType?: number | null;
+  ListingTitle_en: string;
+  ListingTitle_es?: string | null;
+}): "Sale" | "Lease" {
+  // 1. Explicit English contract type
+  if (p.ContractType_en) {
+    const ct = p.ContractType_en.trim();
+    if (/lease|rent/i.test(ct)) return "Lease";
+    if (/sale|sell/i.test(ct)) return "Sale";
+    // If it's some other value, continue to fallbacks
+  }
+
+  // 2. Explicit Spanish contract type
+  if (p.ContractType_es) {
+    const ct = p.ContractType_es.trim();
+    if (/alquiler|arriendo|renta/i.test(ct)) return "Lease";
+    if (/venta/i.test(ct)) return "Sale";
+  }
+
+  // 3. Numeric contract type ID (REMAX CCA convention: 2 = Lease)
+  if (p.ListingContractType === 2) return "Lease";
+  if (p.ListingContractType === 1) return "Sale";
+
+  // 4. Title-based heuristic — look for rental keywords in either language
+  const titleText = `${p.ListingTitle_en} ${p.ListingTitle_es ?? ""}`.toLowerCase();
+  if (
+    /\bfor rent\b|\bfor lease\b|\brental\b|\balquiler\b|\barriendo\b|\ben renta\b/.test(titleText)
+  ) {
+    return "Lease";
+  }
+
+  // 5. Default fallback
+  return "Sale";
+}
+
 export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
   const titleEn = p.ListingTitle_en;
   const titleEsRaw = (p.ListingTitle_es ?? "").trim();
@@ -129,7 +180,7 @@ export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
     apiKey: p.ListingKey,
     propertyTypeEn: p.PropertyTypeName_en,
     propertyTypeEs: p.PropertyTypeName_es,
-    listingType: p.ContractType_en ?? "Sale",
+    listingType: resolveListingType(p),
     titleEn,
     titleEs,
     publicRemarksEn: p.PublicRemarks_en ?? null,
