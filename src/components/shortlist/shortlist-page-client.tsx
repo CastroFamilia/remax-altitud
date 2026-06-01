@@ -645,6 +645,7 @@ export function ShortlistPageClient() {
                     >
                       <div className="flex gap-4 items-center">
                         <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={photoSrc}
                             alt={agentName}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useTransition } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -180,9 +181,12 @@ export function AdminCommunitiesTable({
                       className="hover:bg-slate-800/40 transition-colors community-row"
                     >
                       <td className="px-6 py-4">
-                        <img
+                        <Image
                           src={imageSrc}
                           alt={community.name}
+                          width={64}
+                          height={40}
+                          unoptimized
                           className="w-16 h-10 object-cover rounded border border-slate-700 bg-slate-800"
                         />
                       </td>

@@ -29,7 +29,7 @@ export function useLocaleCurrency(localeOverride?: string) {
         if (stored === "USD" || stored === "EUR" || stored === "CRC") {
           setCurrency(stored);
         }
-      } catch (e) {
+      } catch {
         // ignore storage availability errors
       }
       setHydrated(true);

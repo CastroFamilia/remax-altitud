@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -232,9 +233,11 @@ export default async function PropertyPage({
                 {/* Agent details */}
                 {assignedAgent && (
                   <div className="flex flex-col items-center md:items-start gap-4">
-                    <img
+                    <Image
                       src={agentPhotoSrc}
                       alt={assignedAgent.name}
+                      width={80}
+                      height={80}
                       className="w-20 h-20 rounded-full object-cover border-2 border-red-50 shadow-sm"
                     />
                     <div className="space-y-1">
