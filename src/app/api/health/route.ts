@@ -1,35 +1,32 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { checkDatabaseHealth } from "@/lib/db/health-check";
-import { db } from "@/lib/db/client";
-import { properties } from "@/lib/db/schema/properties";
-import { count, isNotNull } from "drizzle-orm";
+import { searchProperties } from "@/app/actions/search-actions";
 
 export async function GET(req: NextRequest) {
   const dbHealth = await checkDatabaseHealth();
 
-  let totalCount = 0;
-  let nonNullCoordsCount = 0;
-  let allProperties: unknown[] = [];
+  let searchResultPz: unknown = null;
+  let searchResultWide: unknown = null;
   let errorMsg: string | null = null;
 
   try {
-    const countRes = await db.select({ count: count() }).from(properties);
-    totalCount = countRes[0]?.count ?? 0;
+    // Pérez Zeledón bounds
+    const pzBounds = {
+      north: 9.5,
+      south: 9.2,
+      east: -83.5,
+      west: -83.8,
+    };
+    searchResultPz = await searchProperties({}, 1, pzBounds);
 
-    const coordsCountRes = await db
-      .select({ count: count() })
-      .from(properties)
-      .where(isNotNull(properties.latitude));
-    nonNullCoordsCount = coordsCountRes[0]?.count ?? 0;
-
-    allProperties = await db
-      .select({
-        id: properties.id,
-        titleEn: properties.titleEn,
-        latitude: properties.latitude,
-        longitude: properties.longitude,
-      })
-      .from(properties);
+    // Extremely wide bounds (should cover all of Costa Rica)
+    const wideBounds = {
+      north: 11.0,
+      south: 8.0,
+      east: -82.0,
+      west: -86.0,
+    };
+    searchResultWide = await searchProperties({}, 1, wideBounds);
   } catch (err) {
     errorMsg = err instanceof Error ? err.message : String(err);
   }
@@ -41,9 +38,8 @@ export async function GET(req: NextRequest) {
       database: dbHealth,
     },
     diagnostics: {
-      totalCount,
-      nonNullCoordsCount,
-      allProperties,
+      searchResultPz,
+      searchResultWide,
       errorMsg,
     },
   };
