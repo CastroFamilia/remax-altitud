@@ -31,12 +31,7 @@ async function main() {
       titleEn: properties.titleEn,
     })
     .from(properties)
-    .where(
-      and(
-        eq(properties.areaSlug, "perez-zeledon"),
-        isNull(properties.subLocation),
-      ),
-    );
+    .where(and(eq(properties.areaSlug, "perez-zeledon"), isNull(properties.subLocation)));
 
   console.log(`Found ${pzProperties.length} PZ properties without sub_location.\n`);
 
@@ -93,12 +88,7 @@ async function main() {
       count: sql<number>`count(*)::int`,
     })
     .from(properties)
-    .where(
-      and(
-        eq(properties.areaSlug, "perez-zeledon"),
-        isNotNull(properties.subLocation),
-      ),
-    )
+    .where(and(eq(properties.areaSlug, "perez-zeledon"), isNotNull(properties.subLocation)))
     .groupBy(properties.subLocation);
 
   if (counts.length > 0) {

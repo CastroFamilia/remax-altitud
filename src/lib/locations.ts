@@ -38,28 +38,78 @@ export interface Canton {
 // ─── Pérez Zeledón — 12 Districts ───────────────────────────────────────────
 
 const PZ_DISTRICTS: District[] = [
-  { slug: "san-isidro", label: "San Isidro de El General", parentSlug: "perez-zeledon", coords: [9.3787, -83.7008, 14] },
-  { slug: "el-general", label: "El General", parentSlug: "perez-zeledon", coords: [9.355, -83.655, 14] },
-  { slug: "daniel-flores", label: "Daniel Flores", parentSlug: "perez-zeledon", coords: [9.345, -83.68, 14] },
+  {
+    slug: "san-isidro",
+    label: "San Isidro de El General",
+    parentSlug: "perez-zeledon",
+    coords: [9.3787, -83.7008, 14],
+  },
+  {
+    slug: "el-general",
+    label: "El General",
+    parentSlug: "perez-zeledon",
+    coords: [9.355, -83.655, 14],
+  },
+  {
+    slug: "daniel-flores",
+    label: "Daniel Flores",
+    parentSlug: "perez-zeledon",
+    coords: [9.345, -83.68, 14],
+  },
   { slug: "rivas", label: "Rivas", parentSlug: "perez-zeledon", coords: [9.465, -83.685, 13] },
-  { slug: "san-pedro", label: "San Pedro", parentSlug: "perez-zeledon", coords: [9.315, -83.63, 13] },
-  { slug: "platanares", label: "Platanares", parentSlug: "perez-zeledon", coords: [9.31, -83.72, 13] },
+  {
+    slug: "san-pedro",
+    label: "San Pedro",
+    parentSlug: "perez-zeledon",
+    coords: [9.315, -83.63, 13],
+  },
+  {
+    slug: "platanares",
+    label: "Platanares",
+    parentSlug: "perez-zeledon",
+    coords: [9.31, -83.72, 13],
+  },
   { slug: "pejibaye", label: "Pejibaye", parentSlug: "perez-zeledon", coords: [9.28, -83.59, 13] },
   { slug: "cajon", label: "Cajón", parentSlug: "perez-zeledon", coords: [9.22, -83.61, 13] },
   { slug: "baru", label: "Barú", parentSlug: "perez-zeledon", coords: [9.29, -83.81, 13] },
-  { slug: "rio-nuevo", label: "Río Nuevo", parentSlug: "perez-zeledon", coords: [9.305, -83.77, 13] },
+  {
+    slug: "rio-nuevo",
+    label: "Río Nuevo",
+    parentSlug: "perez-zeledon",
+    coords: [9.305, -83.77, 13],
+  },
   { slug: "paramo", label: "Páramo", parentSlug: "perez-zeledon", coords: [9.51, -83.72, 13] },
-  { slug: "la-amistad", label: "La Amistad", parentSlug: "perez-zeledon", coords: [9.31, -83.52, 12] },
+  {
+    slug: "la-amistad",
+    label: "La Amistad",
+    parentSlug: "perez-zeledon",
+    coords: [9.31, -83.52, 12],
+  },
 ];
 
 // ─── Osa (Dominical–Uvita) — 6 Districts ───────────────────────────────────
 
 const OSA_DISTRICTS: District[] = [
-  { slug: "bahia-ballena", label: "Bahía Ballena", parentSlug: "dominical", coords: [9.155, -83.745, 14] },
-  { slug: "puerto-cortes", label: "Puerto Cortés", parentSlug: "ojochal", coords: [8.96, -83.53, 13] },
+  {
+    slug: "bahia-ballena",
+    label: "Bahía Ballena",
+    parentSlug: "dominical",
+    coords: [9.155, -83.745, 14],
+  },
+  {
+    slug: "puerto-cortes",
+    label: "Puerto Cortés",
+    parentSlug: "ojochal",
+    coords: [8.96, -83.53, 13],
+  },
   { slug: "palmar", label: "Palmar", parentSlug: "ojochal", coords: [8.95, -83.47, 13] },
   { slug: "sierpe", label: "Sierpe", parentSlug: "ojochal", coords: [8.87, -83.48, 13] },
-  { slug: "piedras-blancas", label: "Piedras Blancas", parentSlug: "ojochal", coords: [8.78, -83.35, 13] },
+  {
+    slug: "piedras-blancas",
+    label: "Piedras Blancas",
+    parentSlug: "ojochal",
+    coords: [8.78, -83.35, 13],
+  },
   { slug: "bahia-drake", label: "Bahía Drake", parentSlug: "ojochal", coords: [8.7, -83.55, 13] },
 ];
 
@@ -69,7 +119,12 @@ const QUEPOS_DISTRICTS: District[] = [
   { slug: "quepos-centro", label: "Quepos", parentSlug: "quepos", coords: [9.431, -84.162, 14] },
   { slug: "savegre", label: "Savegre", parentSlug: "quepos", coords: [9.32, -83.91, 13] },
   { slug: "naranjito", label: "Naranjito", parentSlug: "quepos", coords: [9.41, -84.07, 13] },
-  { slug: "manuel-antonio", label: "Manuel Antonio", parentSlug: "quepos", coords: [9.392, -84.14, 14] },
+  {
+    slug: "manuel-antonio",
+    label: "Manuel Antonio",
+    parentSlug: "quepos",
+    coords: [9.392, -84.14, 14],
+  },
 ];
 
 // ─── Full Canton Registry ───────────────────────────────────────────────────

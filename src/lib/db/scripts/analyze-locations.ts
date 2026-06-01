@@ -46,11 +46,11 @@ async function main() {
   console.log("─".repeat(120));
   console.log(
     "Location".padEnd(45) +
-    "LocID".padEnd(8) +
-    "State".padEnd(15) +
-    "StID".padEnd(6) +
-    "Current Area".padEnd(25) +
-    "Count"
+      "LocID".padEnd(8) +
+      "State".padEnd(15) +
+      "StID".padEnd(6) +
+      "Current Area".padEnd(25) +
+      "Count",
   );
   console.log("─".repeat(120));
 
@@ -58,17 +58,17 @@ async function main() {
     const r = row as Record<string, unknown>;
     console.log(
       String(r.location ?? "(null)").padEnd(45) +
-      String(r.location_id ?? "").padEnd(8) +
-      String(r.state ?? "").padEnd(15) +
-      String(r.state_id ?? "").padEnd(6) +
-      String(r.area_slug ?? "").padEnd(25) +
-      String(r.property_count)
+        String(r.location_id ?? "").padEnd(8) +
+        String(r.state ?? "").padEnd(15) +
+        String(r.state_id ?? "").padEnd(6) +
+        String(r.area_slug ?? "").padEnd(25) +
+        String(r.property_count),
     );
   }
 
   // Show LocationId → Location mapping (the API's own IDs)
   console.log("\n\n📋 LocationId → Location mapping (RECONNECT's IDs):\n");
-  
+
   const idMap = await db.execute(sql`
     SELECT 
       api_raw->>'LocationId' AS location_id,
@@ -82,7 +82,9 @@ async function main() {
 
   for (const row of idMap) {
     const r = row as Record<string, unknown>;
-    console.log(`  ID ${String(r.location_id).padEnd(6)} → ${String(r.location).padEnd(50)} (${r.cnt} properties)`);
+    console.log(
+      `  ID ${String(r.location_id).padEnd(6)} → ${String(r.location).padEnd(50)} (${r.cnt} properties)`,
+    );
   }
 
   await client.end();

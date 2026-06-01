@@ -193,10 +193,7 @@ import { DISTRICT_KEYWORDS } from "@/lib/locations";
  * @param areaSlug  - The resolved main area slug (filters keywords to matching parent)
  * @returns Sub-location slug (e.g. "cajon") or null if not resolvable
  */
-export function resolveSubLocation(
-  location: string | null,
-  areaSlug: string,
-): string | null {
+export function resolveSubLocation(location: string | null, areaSlug: string): string | null {
   if (!location || location.trim().length === 0) return null;
 
   const loc = location.toLowerCase();
