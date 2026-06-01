@@ -32,7 +32,7 @@ export function ViewModeToggle({ viewMode, onViewModeChange }: ViewModeTogglePro
   return (
     <div
       data-testid="view-mode-toggle-container"
-      className="hidden lg:flex items-center gap-1 px-4 py-2 border-b border-border bg-background"
+      className="hidden lg:flex items-center gap-1 px-4 py-2 bg-transparent"
     >
       {buttons.map(({ mode, label, testId }) => (
         <button
