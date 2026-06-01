@@ -148,7 +148,7 @@ export function SplitViewLayout({
       )}
 
       {/* Split-view container */}
-      <div className="relative flex flex-row flex-1 min-h-0">
+      <div className="relative flex flex-row flex-1 min-h-0 h-full">
         {/* Map panel */}
         <div
           data-testid="map-panel"
@@ -184,7 +184,7 @@ export function SplitViewLayout({
             // Desktop: show in split/grid mode, hide in full-map mode
             gridHidden ? "lg:hidden" : mapHidden ? "lg:w-full lg:block" : "lg:w-[65%] lg:block",
             "overflow-y-auto",
-            "lg:h-full",
+            "h-full",
           )}
         >
           {/* Story 3.5: render PropertyGrid when filterProperties provided, else skeleton */}
