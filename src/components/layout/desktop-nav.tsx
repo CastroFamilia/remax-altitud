@@ -35,7 +35,7 @@ export function DesktopNav() {
 
   return (
     <nav className="hidden items-center gap-0.5 lg:flex xl:gap-1" aria-label={t("mainNav")}>
-      <NavigationMenu delayDuration={150} skipDelayDuration={300}>
+      <NavigationMenu delayDuration={150} skipDelayDuration={300} viewport={false}>
         <NavigationMenuList className="flex items-center gap-0.5 xl:gap-1">
           {mainNavItems.map((item) => (
             <NavigationMenuItem key={item.href}>
@@ -62,7 +62,7 @@ export function DesktopNav() {
                 {locale.toUpperCase()} / {currency}
               </span>
             </NavigationMenuTrigger>
-            <NavigationMenuContent className="z-50">
+            <NavigationMenuContent className="z-50 md:left-auto md:right-0">
               <div className="w-[260px] p-4 space-y-4 bg-white rounded-lg shadow-lg border border-brand-warm/20">
                 <div className="space-y-1.5">
                   <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-navy/60">
