@@ -850,22 +850,27 @@ export async function fetchShortlistAnalyticsData(filters: {
  * @param limit - Maximum number of properties to fetch (default 3)
  */
 export async function getFeaturedProperties(limit = 3): Promise<PropertySearchItem[]> {
-  const rows = await db
-    .select(propertySearchColumns)
-    .from(properties)
-    .where(and(eq(properties.isVisible, true), eq(properties.isFeatured, true)))
-    .orderBy(desc(properties.syncedAt))
-    .limit(limit);
-
-  if (rows.length === 0) {
-    const fallbackRows = await db
+  try {
+    const rows = await db
       .select(propertySearchColumns)
       .from(properties)
-      .where(eq(properties.isVisible, true))
+      .where(and(eq(properties.isVisible, true), eq(properties.isFeatured, true)))
       .orderBy(desc(properties.syncedAt))
       .limit(limit);
-    return fallbackRows.map(mapPropertyRowToSearchItem);
-  }
 
-  return rows.map(mapPropertyRowToSearchItem);
+    if (rows.length === 0) {
+      const fallbackRows = await db
+        .select(propertySearchColumns)
+        .from(properties)
+        .where(eq(properties.isVisible, true))
+        .orderBy(desc(properties.syncedAt))
+        .limit(limit);
+      return fallbackRows.map(mapPropertyRowToSearchItem);
+    }
+
+    return rows.map(mapPropertyRowToSearchItem);
+  } catch (error) {
+    console.error("getFeaturedProperties: DB query failed (missing column?):", error);
+    return [];
+  }
 }
