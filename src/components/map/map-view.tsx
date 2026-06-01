@@ -211,8 +211,27 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
     }
   }, [flyToTarget]);
 
+  // Resize the Mapbox canvas when the container element changes size
+  // (e.g. switching between split 35% and full-map 100% views).
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = containerRef.current;
+    // ResizeObserver is available in all modern browsers but not in jsdom (test env)
+    if (!el || typeof ResizeObserver === "undefined") return;
+
+    const observer = new ResizeObserver(() => {
+      // Defer resize to next frame so Mapbox reads the final container size
+      requestAnimationFrame(() => {
+        mapRef.current?.resize();
+      });
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
+      ref={containerRef}
       data-testid="map-container"
       aria-label="Property locations map"
       className="h-full w-full relative"

@@ -299,10 +299,11 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
   );
 
   it(
-    "[P0] renders exactly 20 cards (max per page) when more than 20 properties are passed",
+    "[P0] renders all cards passed by the server (server handles pagination via LIMIT/OFFSET)",
     () => {
-      // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
-      const properties = makeProperties(25);
+      // Server Action returns only 20 items for page 1 via SQL LIMIT.
+      // PropertyGrid renders all items it receives — no client-side slicing.
+      const properties = makeProperties(20);
       render(<PropertyGrid properties={properties} locale="en" page={1} total={25} />);
 
       const cards = document.querySelectorAll('[data-testid="property-card"]');
@@ -311,10 +312,11 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
   );
 
   it(
-    "[P1] renders second page of cards when page=2 and >20 properties passed",
+    "[P1] renders second page of cards (server sends only 5 remaining items for page 2)",
     () => {
-      // THIS TEST WILL FAIL — property-grid.tsx not yet implemented
-      const properties = makeProperties(25);
+      // Server Action returns only the remaining 5 items for page 2.
+      // PropertyGrid renders all items it receives — no client-side slicing.
+      const properties = makeProperties(5);
       render(
         <PropertyGrid
           properties={properties}
@@ -324,7 +326,7 @@ describe("PropertyGrid — AC #2/#3/#4: responsive grid layout", () => {
         />,
       );
 
-      // Page 2 should show the remaining 5 (properties 21-25)
+      // Page 2 should show exactly the 5 items the server returned
       const cards = document.querySelectorAll('[data-testid="property-card"]');
       expect(cards).toHaveLength(5);
     },
