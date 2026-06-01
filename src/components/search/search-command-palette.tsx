@@ -192,8 +192,8 @@ const TYPE_KEYWORDS: Record<string, string> = {
   condominio: "Apartamento",
   lote: "Lote",
   lot: "Lote",
-  terreno: "Terreno",
-  land: "Terreno",
+  terreno: "Lote",
+  land: "Lote",
   comercial: "Comercial",
   commercial: "Comercial",
   finca: "Finca",
@@ -204,8 +204,7 @@ const TYPE_KEYWORDS: Record<string, string> = {
 const TYPE_LABELS: Record<string, { en: string; es: string }> = {
   Casa: { en: "House", es: "Casa" },
   Apartamento: { en: "Apartment", es: "Apartamento" },
-  Lote: { en: "Lot", es: "Lote" },
-  Terreno: { en: "Land", es: "Terreno" },
+  Lote: { en: "Lot / Land", es: "Lote / Terreno" },
   Comercial: { en: "Commercial", es: "Comercial" },
   Finca: { en: "Farm", es: "Finca" },
 };
