@@ -20,7 +20,16 @@ export function SearchPageClient() {
   const locale = typeof params.locale === "string" ? params.locale : "en";
 
   const rawView = searchParams.get("view");
-  const viewMode: ViewMode = rawView === "map" || rawView === "grid" ? rawView : "split";
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    return rawView === "map" || rawView === "grid" ? rawView : "split";
+  });
+
+  // Sync viewMode state when URL search parameters change (e.g. browser navigation)
+  useEffect(() => {
+    const currentView = searchParams.get("view");
+    const mode: ViewMode = currentView === "map" || currentView === "grid" ? currentView : "split";
+    setViewMode(mode);
+  }, [searchParams]);
 
   // Map properties — fetched by map-actions.ts (Story 3.2, unchanged)
   const [mapProperties, setMapProperties] = useState<MapProperty[]>([]);
@@ -148,9 +157,7 @@ export function SearchPageClient() {
       <SearchFilterBar facets={facets} areas={areas} />
       <SplitViewLayout
         viewMode={viewMode}
-        onViewModeChange={() => {
-          // View mode changes are handled inside SplitViewLayout via ViewModeToggle
-        }}
+        onViewModeChange={setViewMode}
         properties={mapProperties}
         filterProperties={filterProperties}
         facets={facets}

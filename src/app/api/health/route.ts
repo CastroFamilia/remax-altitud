@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
   let searchResultPz: unknown = null;
   let searchResultWide: unknown = null;
   let errorMsg: string | null = null;
+  let errorDetail: unknown = null;
 
   try {
     // Pérez Zeledón bounds
@@ -27,8 +28,25 @@ export async function GET(req: NextRequest) {
       west: -86.0,
     };
     searchResultWide = await searchProperties({}, 1, wideBounds);
-  } catch (err) {
+  } catch (err: unknown) {
+    const errorObject = err as Record<string, unknown>;
     errorMsg = err instanceof Error ? err.message : String(err);
+    errorDetail = {
+      name: errorObject?.name,
+      code: errorObject?.code,
+      severity: errorObject?.severity,
+      detail: errorObject?.detail,
+      hint: errorObject?.hint,
+      position: errorObject?.position,
+      internalPosition: errorObject?.internalPosition,
+      internalQuery: errorObject?.internalQuery,
+      where: errorObject?.where,
+      schema: errorObject?.schema,
+      table: errorObject?.table,
+      column: errorObject?.column,
+      dataType: errorObject?.dataType,
+      constraint: errorObject?.constraint,
+    };
   }
 
   const health = {
@@ -41,6 +59,7 @@ export async function GET(req: NextRequest) {
       searchResultPz,
       searchResultWide,
       errorMsg,
+      errorDetail,
     },
   };
 

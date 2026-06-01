@@ -160,14 +160,17 @@ export function SplitViewLayout({
             // Height: fill the remaining flex space
             "h-full",
             "flex-shrink-0",
+            "lg:p-4 md:p-3 p-2",
           )}
         >
-          <MapView
-            properties={properties}
-            locale={locale}
-            onBoundsChange={handleBoundsChange}
-            flyToTarget={flyToTarget}
-          />
+          <div className="w-full h-full rounded-2xl overflow-hidden shadow-lg border border-brand-gold/20 bg-background">
+            <MapView
+              properties={properties}
+              locale={locale}
+              onBoundsChange={handleBoundsChange}
+              flyToTarget={flyToTarget}
+            />
+          </div>
         </div>
 
         {/* Grid panel — hidden on mobile, shown on desktop */}
