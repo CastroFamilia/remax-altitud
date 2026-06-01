@@ -251,7 +251,7 @@ export function SearchFilterBar({
       {/* Filter bar wrapper */}
       <div
         data-testid="search-filter-bar"
-        className="sticky top-[var(--header-height)] z-10 py-2 md:py-3 bg-background border-b border-border flex flex-col"
+        className="sticky top-[var(--header-height)] z-10 py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
       >
         <div className="flex items-stretch px-4 gap-3 h-full">
           {/* Mobile compact bar — visible below md breakpoint */}
@@ -285,7 +285,7 @@ export function SearchFilterBar({
           </Sheet>
 
           {/* Desktop/tablet filter controls — visible at md: and above */}
-          <div className="hidden md:flex flex-col gap-2 w-full">
+          <div className="hidden md:flex flex-col gap-1 w-full">
             {/* Row 1: Lifestyle Tags (compact, scrollable) */}
             <div className="w-full overflow-x-auto no-scrollbar">
               <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
