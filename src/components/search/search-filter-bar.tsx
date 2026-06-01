@@ -329,9 +329,7 @@ export function SearchFilterBar({
                     placeholder={t("filters.bedrooms")}
                     value={filters.bedrooms?.toString() ?? undefined}
                     options={bedroomOptions}
-                    onChange={(val) =>
-                      setFilter("bedrooms", val ? parseInt(val, 10) : undefined)
-                    }
+                    onChange={(val) => setFilter("bedrooms", val ? parseInt(val, 10) : undefined)}
                     testId="bedrooms-filter"
                     formatSelected={(opt) => `${opt.label} ${t("filters.bedrooms")}`}
                   />
@@ -343,9 +341,7 @@ export function SearchFilterBar({
                     placeholder={t("filters.bathrooms")}
                     value={filters.bathrooms?.toString() ?? undefined}
                     options={bathroomOptions}
-                    onChange={(val) =>
-                      setFilter("bathrooms", val ? parseInt(val, 10) : undefined)
-                    }
+                    onChange={(val) => setFilter("bathrooms", val ? parseInt(val, 10) : undefined)}
                     testId="bathrooms-filter"
                     formatSelected={(opt) => `${opt.label} ${t("filters.bathrooms")}`}
                   />

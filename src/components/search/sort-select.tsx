@@ -31,10 +31,7 @@ export function SortSelect() {
       value={filters.sort ?? undefined}
       options={options}
       onChange={(val) =>
-        setFilter(
-          "sort",
-          (val as "newest" | "price_asc" | "price_desc" | "relevance") || undefined,
-        )
+        setFilter("sort", (val as "newest" | "price_asc" | "price_desc" | "relevance") || undefined)
       }
       testId="sort-select"
     />

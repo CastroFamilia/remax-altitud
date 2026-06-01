@@ -378,7 +378,9 @@ export async function searchProperties(
       lotSizeMin: safeLotMin !== undefined ? gte(properties.lotSizeM2, safeLotMin) : undefined,
       lotSizeMax: safeLotMax !== undefined ? lte(properties.lotSizeM2, safeLotMax) : undefined,
       areaSlug: filters.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined,
-      subLocation: filters.subLocation ? eq(properties.subLocation, filters.subLocation) : undefined,
+      subLocation: filters.subLocation
+        ? eq(properties.subLocation, filters.subLocation)
+        : undefined,
       // Story 3.4: lifestyle tag OR filter using PostgreSQL && (overlap) operator on GIN-indexed array
       // The && operator returns rows where lifestyleTags and the filter array share at least one element
       tags: sanitizedTags?.length
@@ -552,7 +554,9 @@ export async function searchProperties(
  * parent area slug. This powers grouped area selectors (optgroup dropdowns).
  * AC #7
  */
-export async function getAvailableAreas(): Promise<{ slug: string; label: string; parentSlug?: string; isSubLocation?: boolean }[]> {
+export async function getAvailableAreas(): Promise<
+  { slug: string; label: string; parentSlug?: string; isSubLocation?: boolean }[]
+> {
   try {
     // Get distinct main area slugs
     const areaRows = await db
@@ -576,15 +580,14 @@ export async function getAvailableAreas(): Promise<{ slug: string; label: string
         subLocation: properties.subLocation,
       })
       .from(properties)
-      .where(and(
-        eq(properties.isVisible, true),
-        isNotNull(properties.subLocation),
-      ))
+      .where(and(eq(properties.isVisible, true), isNotNull(properties.subLocation)))
       .groupBy(properties.areaSlug, properties.subLocation);
 
     const subLocations = subRows
-      .filter((r): r is { areaSlug: string; subLocation: string } =>
-        r.areaSlug !== null && r.subLocation !== null && r.subLocation !== "")
+      .filter(
+        (r): r is { areaSlug: string; subLocation: string } =>
+          r.areaSlug !== null && r.subLocation !== null && r.subLocation !== "",
+      )
       .map((r) => ({
         slug: r.subLocation,
         label: formatSubLocationLabel(r.subLocation),
@@ -639,18 +642,22 @@ function formatAreaLabel(slug: string): string {
 
 /**
  * Format a sub-location slug into a display label.
- * "cajon" → "Cajón" (using a known mapping + fallback title-case)
+ * Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
  */
 function formatSubLocationLabel(slug: string): string {
   const knownSubLocations: Record<string, string> = {
-    "san-isidro": "San Isidro",
-    cajon: "Cajón",
-    rivas: "Rivas",
+    "san-isidro": "San Isidro de El General",
+    "el-general": "El General",
     "daniel-flores": "Daniel Flores",
-    pejibaye: "Pejibaye",
-    "general-viejo": "General Viejo",
-    "san-gerardo-de-rivas": "San Gerardo de Rivas",
+    rivas: "Rivas",
+    "san-pedro": "San Pedro",
     platanares: "Platanares",
+    pejibaye: "Pejibaye",
+    cajon: "Cajón",
+    baru: "Barú",
+    "rio-nuevo": "Río Nuevo",
+    paramo: "Páramo",
+    "la-amistad": "La Amistad",
   };
 
   if (knownSubLocations[slug]) return knownSubLocations[slug];

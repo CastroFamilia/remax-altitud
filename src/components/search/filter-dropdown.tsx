@@ -56,8 +56,6 @@ export function FilterDropdown({
   const selectedOption = options.find((o) => o.value === value);
   const hasValue = !!value && !!selectedOption;
 
-
-
   // Determine the display label for the button
   const displayLabel = hasValue
     ? formatSelected
@@ -87,7 +85,6 @@ export function FilterDropdown({
     <Popover.Root open={open} onOpenChange={setOpen}>
       <Popover.Trigger asChild>
         <button
-
           type="button"
           data-testid={testId}
           className={cn(

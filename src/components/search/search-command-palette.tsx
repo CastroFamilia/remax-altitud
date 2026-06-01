@@ -120,6 +120,7 @@ const AREA_KEYWORDS: Record<string, string> = {
 };
 
 // Sub-location keyword → slug mapping for command palette smart search
+// Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
 const SUB_LOCATION_KEYWORDS: Record<string, string> = {
   "san isidro": "san-isidro",
   "san isidro de el general": "san-isidro",
@@ -128,10 +129,21 @@ const SUB_LOCATION_KEYWORDS: Record<string, string> = {
   rivas: "rivas",
   "daniel flores": "daniel-flores",
   pejibaye: "pejibaye",
-  "general viejo": "general-viejo",
-  "san gerardo": "san-gerardo-de-rivas",
-  "san gerardo de rivas": "san-gerardo-de-rivas",
+  "el general": "el-general",
+  "general viejo": "el-general",
+  "san pedro": "san-pedro",
   platanares: "platanares",
+  barú: "baru",
+  baru: "baru",
+  tinamaste: "baru",
+  "río nuevo": "rio-nuevo",
+  "rio nuevo": "rio-nuevo",
+  páramo: "paramo",
+  paramo: "paramo",
+  chirripó: "paramo",
+  "la amistad": "la-amistad",
+  "san gerardo": "rivas",
+  "san gerardo de rivas": "rivas",
 };
 
 const AREA_LABELS: Record<string, string> = {
@@ -155,15 +167,19 @@ const AREA_LABELS: Record<string, string> = {
   alajuela: "Alajuela",
   cartago: "Cartago",
   "tinamastes-platanillo": "Tinamastes & Platanillo",
-  // PZ sub-location labels
-  "san-isidro": "San Isidro",
-  cajon: "Cajón",
-  rivas: "Rivas",
+  // PZ sub-location labels — aligned with ALTITUD HUB (12 districts)
+  "san-isidro": "San Isidro de El General",
+  "el-general": "El General",
   "daniel-flores": "Daniel Flores",
-  pejibaye: "Pejibaye",
-  "general-viejo": "General Viejo",
-  "san-gerardo-de-rivas": "San Gerardo de Rivas",
+  rivas: "Rivas",
+  "san-pedro": "San Pedro",
   platanares: "Platanares",
+  pejibaye: "Pejibaye",
+  cajon: "Cajón",
+  baru: "Barú",
+  "rio-nuevo": "Río Nuevo",
+  paramo: "Páramo",
+  "la-amistad": "La Amistad",
 };
 
 const TYPE_KEYWORDS: Record<string, string> = {
@@ -265,7 +281,12 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
     if (normalized.includes(key)) {
       params.area = "perez-zeledon";
       params.sub_location = subSlug;
-      detected.push({ type: "area", label: AREA_LABELS[subSlug] || subSlug, icon: "pin", value: subSlug });
+      detected.push({
+        type: "area",
+        label: AREA_LABELS[subSlug] || subSlug,
+        icon: "pin",
+        value: subSlug,
+      });
       remainingText = remainingText.replace(key, " ");
       matchedSubLocation = true;
       break;

@@ -88,12 +88,7 @@ export function PriceFilterPopover({
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
           )}
         >
-          <PriceRangeSlider
-            value={value}
-            onChange={onChange}
-            min={min}
-            max={max}
-          />
+          <PriceRangeSlider value={value} onChange={onChange} min={min} max={max} />
 
           {/* Quick reset button when range is active */}
           {hasRange && (

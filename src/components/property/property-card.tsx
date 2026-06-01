@@ -165,16 +165,21 @@ function getLandFeatures(property: PropertySearchItem, locale: string): string[]
 
 /**
  * Known sub-location slug → display label mapping.
+ * Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
  */
 const SUB_LOCATION_LABELS: Record<string, string> = {
-  "san-isidro": "San Isidro",
-  cajon: "Cajón",
-  rivas: "Rivas",
+  "san-isidro": "San Isidro de El General",
+  "el-general": "El General",
   "daniel-flores": "Daniel Flores",
-  pejibaye: "Pejibaye",
-  "general-viejo": "General Viejo",
-  "san-gerardo-de-rivas": "San Gerardo de Rivas",
+  rivas: "Rivas",
+  "san-pedro": "San Pedro",
   platanares: "Platanares",
+  pejibaye: "Pejibaye",
+  cajon: "Cajón",
+  baru: "Barú",
+  "rio-nuevo": "Río Nuevo",
+  paramo: "Páramo",
+  "la-amistad": "La Amistad",
 };
 
 /**
@@ -184,7 +189,10 @@ const SUB_LOCATION_LABELS: Record<string, string> = {
  */
 function cleanApiLocation(raw: string): string {
   // Strip trailing province names (", San José", ", Puntarenas", etc.)
-  let cleaned = raw.replace(/,\s*(San José|Puntarenas|Limón|Alajuela|Heredia|Cartago|Guanacaste)\s*$/i, "");
+  let cleaned = raw.replace(
+    /,\s*(San José|Puntarenas|Limón|Alajuela|Heredia|Cartago|Guanacaste)\s*$/i,
+    "",
+  );
   // Strip "de Pérez Zeledón" / "de Osa" suffix to avoid redundancy
   cleaned = cleaned.replace(/\s+de\s+(Pérez\s*Zeledón|Osa|Aguirre|Quepos)\s*$/i, "");
   return cleaned.trim();
@@ -199,11 +207,19 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
   const areaSlug = property.areaSlug;
 
   // 1. Try subLocation field for PZ sub-locations (most reliable)
-  const subLocation = (apiRaw as Record<string, unknown> | undefined)?.subLocation as string | undefined;
+  const subLocation = (apiRaw as Record<string, unknown> | undefined)?.subLocation as
+    | string
+    | undefined;
   if (subLocation && SUB_LOCATION_LABELS[subLocation]) {
-    const parentLabel = areaSlug === "perez-zeledon"
-      ? (locale === "es" ? "Pérez Zeledón" : "Perez Zeledon")
-      : areaSlug?.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") ?? "";
+    const parentLabel =
+      areaSlug === "perez-zeledon"
+        ? locale === "es"
+          ? "Pérez Zeledón"
+          : "Perez Zeledon"
+        : (areaSlug
+            ?.split("-")
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(" ") ?? "");
     return `${SUB_LOCATION_LABELS[subLocation]}, ${parentLabel}`;
   }
 
@@ -211,11 +227,17 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
   if (typeof apiRaw?.Location === "string" && apiRaw.Location.trim().length > 0) {
     const cleaned = cleanApiLocation(apiRaw.Location);
     // If it's a PZ property and Location is just "Pérez Zeledón", add specificity from title
-    if (cleaned.toLowerCase().replace(/[éá]/g, (c) => c === "é" ? "e" : "a") === "perez zeledon") {
+    if (
+      cleaned.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a")) === "perez zeledon"
+    ) {
       return locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
     }
     // Add canton context if not already present
-    if (areaSlug === "perez-zeledon" && !cleaned.toLowerCase().includes("pérez") && !cleaned.toLowerCase().includes("perez")) {
+    if (
+      areaSlug === "perez-zeledon" &&
+      !cleaned.toLowerCase().includes("pérez") &&
+      !cleaned.toLowerCase().includes("perez")
+    ) {
       return `${cleaned}, ${locale === "es" ? "Pérez Zeledón" : "Perez Zeledon"}`;
     }
     return cleaned;

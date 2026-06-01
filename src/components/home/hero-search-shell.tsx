@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { useRouter, Link } from "@/i18n/navigation";
 import { getAvailableAreas } from "@/app/actions/search-actions";
 import { useSearchHistory } from "@/hooks/use-search-history";
+import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 
 type Variant = "desktop-overlay" | "mobile-inline";
 
@@ -99,14 +100,19 @@ const AREA_LABELS: Record<string, string> = {
   cartago: "Cartago",
   "tinamastes-platanillo": "Tinamastes & Platanillo",
   // PZ sub-location labels (used in smart search chips)
-  "san-isidro": "San Isidro",
-  cajon: "Cajón",
-  rivas: "Rivas",
+  // Aligned with ALTITUD HUB locations.js — 12 districts
+  "san-isidro": "San Isidro de El General",
+  "el-general": "El General",
   "daniel-flores": "Daniel Flores",
-  pejibaye: "Pejibaye",
-  "general-viejo": "General Viejo",
-  "san-gerardo-de-rivas": "San Gerardo de Rivas",
+  rivas: "Rivas",
+  "san-pedro": "San Pedro",
   platanares: "Platanares",
+  pejibaye: "Pejibaye",
+  cajon: "Cajón",
+  baru: "Barú",
+  "rio-nuevo": "Río Nuevo",
+  paramo: "Páramo",
+  "la-amistad": "La Amistad",
 };
 
 const TYPE_KEYWORDS: Record<string, string> = {
@@ -206,6 +212,7 @@ const FEATURE_KEYWORDS: Record<string, { q: string; label: { en: string; es: str
 const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Terreno", "Comercial", "Finca"];
 
 // Sub-location keyword → slug mapping for smart search
+// Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
 const SUB_LOCATION_KEYWORDS: Record<string, string> = {
   "san isidro": "san-isidro",
   "san isidro de el general": "san-isidro",
@@ -214,10 +221,21 @@ const SUB_LOCATION_KEYWORDS: Record<string, string> = {
   rivas: "rivas",
   "daniel flores": "daniel-flores",
   pejibaye: "pejibaye",
-  "general viejo": "general-viejo",
-  "san gerardo": "san-gerardo-de-rivas",
-  "san gerardo de rivas": "san-gerardo-de-rivas",
+  "el general": "el-general",
+  "general viejo": "el-general",
+  "san pedro": "san-pedro",
   platanares: "platanares",
+  barú: "baru",
+  baru: "baru",
+  tinamaste: "baru",
+  "río nuevo": "rio-nuevo",
+  "rio nuevo": "rio-nuevo",
+  páramo: "paramo",
+  paramo: "paramo",
+  chirripó: "paramo",
+  "la amistad": "la-amistad",
+  "san gerardo": "rivas",
+  "san gerardo de rivas": "rivas",
 };
 
 const FALLBACK_AREAS = [
@@ -231,16 +249,30 @@ const FALLBACK_AREAS = [
   { slug: "jaco", label: "Jacó" },
 ];
 
-/** PZ sub-locations for the grouped dropdown fallback */
+/** PZ sub-locations for the grouped dropdown fallback — aligned with ALTITUD HUB */
 const FALLBACK_PZ_SUB_LOCATIONS = [
-  { slug: "san-isidro", label: "San Isidro", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "cajon", label: "Cajón", parentSlug: "perez-zeledon", isSubLocation: true },
+  {
+    slug: "san-isidro",
+    label: "San Isidro de El General",
+    parentSlug: "perez-zeledon",
+    isSubLocation: true,
+  },
+  { slug: "el-general", label: "El General", parentSlug: "perez-zeledon", isSubLocation: true },
+  {
+    slug: "daniel-flores",
+    label: "Daniel Flores",
+    parentSlug: "perez-zeledon",
+    isSubLocation: true,
+  },
   { slug: "rivas", label: "Rivas", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "daniel-flores", label: "Daniel Flores", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "pejibaye", label: "Pejibaye", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "general-viejo", label: "General Viejo", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "san-gerardo-de-rivas", label: "San Gerardo de Rivas", parentSlug: "perez-zeledon", isSubLocation: true },
+  { slug: "san-pedro", label: "San Pedro", parentSlug: "perez-zeledon", isSubLocation: true },
   { slug: "platanares", label: "Platanares", parentSlug: "perez-zeledon", isSubLocation: true },
+  { slug: "pejibaye", label: "Pejibaye", parentSlug: "perez-zeledon", isSubLocation: true },
+  { slug: "cajon", label: "Cajón", parentSlug: "perez-zeledon", isSubLocation: true },
+  { slug: "baru", label: "Barú", parentSlug: "perez-zeledon", isSubLocation: true },
+  { slug: "rio-nuevo", label: "Río Nuevo", parentSlug: "perez-zeledon", isSubLocation: true },
+  { slug: "paramo", label: "Páramo", parentSlug: "perez-zeledon", isSubLocation: true },
+  { slug: "la-amistad", label: "La Amistad", parentSlug: "perez-zeledon", isSubLocation: true },
 ];
 
 /** Grouping definitions for the area dropdown */
@@ -254,7 +286,19 @@ const AREA_GROUPS: AreaGrouping[] = [
   {
     labelEn: "Pacific Coast",
     labelEs: "Costa Pacífica",
-    slugs: ["dominical", "uvita", "ojochal", "quepos", "manuel-antonio", "jaco", "tamarindo", "nosara", "samara", "santa-teresa", "playa-hermosa"],
+    slugs: [
+      "dominical",
+      "uvita",
+      "ojochal",
+      "quepos",
+      "manuel-antonio",
+      "jaco",
+      "tamarindo",
+      "nosara",
+      "samara",
+      "santa-teresa",
+      "playa-hermosa",
+    ],
   },
   {
     labelEn: "Mountain & Valley",
@@ -920,7 +964,9 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
   const [selectedSubLocation, setSelectedSubLocation] = useState("");
   const [priceMin, setPriceMin] = useState<number | undefined>(undefined);
   const [priceMax, setPriceMax] = useState<number | undefined>(undefined);
-  const [areas, setAreas] = useState<{ slug: string; label: string; parentSlug?: string; isSubLocation?: boolean }[]>([]);
+  const [areas, setAreas] = useState<
+    { slug: string; label: string; parentSlug?: string; isSubLocation?: boolean }[]
+  >([]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -1429,79 +1475,23 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                   </div>
                 </div>
 
-                {/* Area / Location Filter — Grouped by Region */}
+                {/* Area / Location Filter — Searchable Combobox */}
                 <div className="flex flex-col gap-1.5 w-full">
                   <label className="text-[10px] uppercase tracking-widest font-bold text-white/60">
                     {tSearch("filters.location")}
                   </label>
-                  <div className="relative flex items-center bg-black/40 border border-white/20 rounded-xl px-3 py-2.5 focus-within:border-brand-gold/70 focus-within:ring-1 focus-within:ring-brand-gold/30 transition-all duration-200">
-                    <select
-                      value={selectedSubLocation ? `sub:${selectedSubLocation}` : selectedArea}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val.startsWith("sub:")) {
-                          // Sub-location selected — set both area and sub-location
-                          const subSlug = val.replace("sub:", "");
-                          setSelectedArea("perez-zeledon");
-                          setSelectedSubLocation(subSlug);
-                        } else {
-                          // Main area selected — clear sub-location
-                          setSelectedArea(val);
-                          setSelectedSubLocation("");
-                        }
-                      }}
-                      className="w-full bg-transparent text-sm text-white outline-none cursor-pointer appearance-none pr-8 select-none"
-                    >
-                      <option value="" className="bg-brand-navy text-white">
-                        {tSearch("filters.locationAll")}
-                      </option>
-                      {(() => {
-                        // Build grouped area list
-                        const allAreas = areas.length > 0 ? areas : FALLBACK_AREAS;
-                        const mainAreas = allAreas.filter((a) => !("isSubLocation" in a && a.isSubLocation));
-                        const subLocations = areas.length > 0
-                          ? allAreas.filter((a) => "isSubLocation" in a && a.isSubLocation)
-                          : FALLBACK_PZ_SUB_LOCATIONS;
-
-                        return AREA_GROUPS.map((group) => {
-                          const groupAreas = mainAreas.filter((a) => group.slugs.includes(a.slug));
-                          if (groupAreas.length === 0) return null;
-
-                          const groupLabel = locale === "es" ? group.labelEs : group.labelEn;
-
-                          return (
-                            <optgroup key={groupLabel} label={groupLabel} className="bg-brand-navy text-white">
-                              {groupAreas.map((area) => (
-                                <option
-                                  key={area.slug}
-                                  value={area.slug}
-                                  className="bg-brand-navy text-white"
-                                >
-                                  {area.label}
-                                </option>
-                              ))}
-                              {/* Nest sub-locations under their parent area */}
-                              {groupAreas.map((area) => {
-                                const areaSubLocations = subLocations.filter(
-                                  (s) => "parentSlug" in s && s.parentSlug === area.slug
-                                );
-                                return areaSubLocations.map((sub) => (
-                                  <option
-                                    key={`sub:${sub.slug}`}
-                                    value={`sub:${sub.slug}`}
-                                    className="bg-brand-navy text-white/80"
-                                  >
-                                    {"   "}↳ {sub.label}
-                                  </option>
-                                ));
-                              })}
-                            </optgroup>
-                          );
-                        });
-                      })()}
-                    </select>
-                    <ChevronDown className="absolute right-3 h-4 w-4 text-white/50 pointer-events-none" />
-                  </div>
+                  <AreaSearchCombobox
+                    areas={areas}
+                    selectedArea={selectedArea}
+                    selectedSubLocation={selectedSubLocation}
+                    onAreaChange={(areaSlug, subSlug) => {
+                      setSelectedArea(areaSlug);
+                      setSelectedSubLocation(subSlug);
+                    }}
+                    placeholder={locale === "es" ? "Buscar zona..." : "Search location..."}
+                    locale={locale}
+                    variant="dark"
+                  />
                 </div>
 
                 {/* Minimum Price Filter */}
