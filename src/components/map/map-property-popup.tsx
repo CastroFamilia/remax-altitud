@@ -13,6 +13,7 @@ import Image from "next/image";
 import { Popup } from "react-map-gl";
 import { X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { convertArea, type UnitSystem } from "@/lib/utils/units";
 import type { OptimizedImage } from "@/types/images";
 
 interface MapPropertyPopupProps {
@@ -32,6 +33,7 @@ interface MapPropertyPopupProps {
   };
   locale: string;
   onClose: () => void;
+  unitSystem?: UnitSystem;
 }
 
 const ZMT_LABELS: Record<string, string> = {
@@ -40,7 +42,7 @@ const ZMT_LABELS: Record<string, string> = {
   zmt_restricted: "ZMT Restricted",
 };
 
-export function MapPropertyPopup({ property, locale, onClose }: MapPropertyPopupProps) {
+export function MapPropertyPopup({ property, locale, onClose, unitSystem = "metric" }: MapPropertyPopupProps) {
   const title = locale === "es" ? property.titleEs : property.titleEn;
   const firstImage = property.images[0];
   const formattedPrice = property.priceUsd.toLocaleString("en-US", {
@@ -53,7 +55,7 @@ export function MapPropertyPopup({ property, locale, onClose }: MapPropertyPopup
   const specs: string[] = [];
   if (property.bedrooms != null) specs.push(`${property.bedrooms} bed`);
   if (property.bathrooms != null) specs.push(`${property.bathrooms} bath`);
-  if (property.lotSizeM2 != null) specs.push(`${Math.round(property.lotSizeM2)} m²`);
+  if (property.lotSizeM2 != null) specs.push(convertArea(property.lotSizeM2, unitSystem, locale, true));
 
   return (
     <Popup
