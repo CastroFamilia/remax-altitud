@@ -7,6 +7,7 @@ import { convertArea, type UnitSystem } from "@/lib/utils/units";
 import { PropertyPriceDisplay } from "@/components/property/property-price-display";
 import { formatUSD } from "@/lib/utils/currency";
 import type { PropertySearchItem } from "@/types/search";
+import { getDistrictLabel } from "@/lib/locations";
 
 interface PropertyCardProps {
   property: PropertySearchItem;
@@ -164,23 +165,12 @@ function getLandFeatures(property: PropertySearchItem, locale: string): string[]
 }
 
 /**
- * Known sub-location slug → display label mapping.
- * Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
+ * Get display label for a sub-location slug.
+ * Uses the shared locations module as single source of truth.
  */
-const SUB_LOCATION_LABELS: Record<string, string> = {
-  "san-isidro": "San Isidro de El General",
-  "el-general": "El General",
-  "daniel-flores": "Daniel Flores",
-  rivas: "Rivas",
-  "san-pedro": "San Pedro",
-  platanares: "Platanares",
-  pejibaye: "Pejibaye",
-  cajon: "Cajón",
-  baru: "Barú",
-  "rio-nuevo": "Río Nuevo",
-  paramo: "Páramo",
-  "la-amistad": "La Amistad",
-};
+function getSubLocationLabel(slug: string): string {
+  return getDistrictLabel(slug);
+}
 
 /**
  * Clean up an apiRaw.Location string for card display.
@@ -210,7 +200,7 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
   const subLocation = (apiRaw as Record<string, unknown> | undefined)?.subLocation as
     | string
     | undefined;
-  if (subLocation && SUB_LOCATION_LABELS[subLocation]) {
+  if (subLocation) {
     const parentLabel =
       areaSlug === "perez-zeledon"
         ? locale === "es"
@@ -220,7 +210,7 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
             ?.split("-")
             .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
             .join(" ") ?? "");
-    return `${SUB_LOCATION_LABELS[subLocation]}, ${parentLabel}`;
+    return `${getSubLocationLabel(subLocation)}, ${parentLabel}`;
   }
 
   // 2. Try apiRaw.Location — clean it up for display

@@ -18,6 +18,7 @@ import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
 import { mapPropertyRowToSearchItem, propertySearchColumns } from "@/lib/db/queries/properties";
 import { trackSearchInBackground } from "@/lib/services/tracking";
+import { getDistrictLabel } from "@/lib/locations";
 
 export type RawBounds = {
   north: number;
@@ -642,29 +643,8 @@ function formatAreaLabel(slug: string): string {
 
 /**
  * Format a sub-location slug into a display label.
- * Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
+ * Uses the shared locations module as single source of truth.
  */
 function formatSubLocationLabel(slug: string): string {
-  const knownSubLocations: Record<string, string> = {
-    "san-isidro": "San Isidro de El General",
-    "el-general": "El General",
-    "daniel-flores": "Daniel Flores",
-    rivas: "Rivas",
-    "san-pedro": "San Pedro",
-    platanares: "Platanares",
-    pejibaye: "Pejibaye",
-    cajon: "Cajón",
-    baru: "Barú",
-    "rio-nuevo": "Río Nuevo",
-    paramo: "Páramo",
-    "la-amistad": "La Amistad",
-  };
-
-  if (knownSubLocations[slug]) return knownSubLocations[slug];
-
-  // Fallback: title-case the slug
-  return slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+  return getDistrictLabel(slug);
 }
