@@ -77,7 +77,13 @@ type PointFeature = GeoJSON.Feature<
 // Stable world bbox for initial cluster rendering before map bounds are known
 const INITIAL_BBOX: [number, number, number, number] = [-180, -85, 180, 85];
 
-export function MapView({ properties, locale, onBoundsChange, flyToTarget, unitSystem }: MapViewProps) {
+export function MapView({
+  properties,
+  locale,
+  onBoundsChange,
+  flyToTarget,
+  unitSystem,
+}: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const { center, zoom, setCenter, setZoom, setBounds } = useMapStore();
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);

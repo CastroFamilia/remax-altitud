@@ -42,7 +42,12 @@ const ZMT_LABELS: Record<string, string> = {
   zmt_restricted: "ZMT Restricted",
 };
 
-export function MapPropertyPopup({ property, locale, onClose, unitSystem = "metric" }: MapPropertyPopupProps) {
+export function MapPropertyPopup({
+  property,
+  locale,
+  onClose,
+  unitSystem = "metric",
+}: MapPropertyPopupProps) {
   const title = locale === "es" ? property.titleEs : property.titleEn;
   const firstImage = property.images[0];
   const formattedPrice = property.priceUsd.toLocaleString("en-US", {
@@ -55,7 +60,8 @@ export function MapPropertyPopup({ property, locale, onClose, unitSystem = "metr
   const specs: string[] = [];
   if (property.bedrooms != null) specs.push(`${property.bedrooms} bed`);
   if (property.bathrooms != null) specs.push(`${property.bathrooms} bath`);
-  if (property.lotSizeM2 != null) specs.push(convertArea(property.lotSizeM2, unitSystem, locale, true));
+  if (property.lotSizeM2 != null)
+    specs.push(convertArea(property.lotSizeM2, unitSystem, locale, true));
 
   return (
     <Popup
