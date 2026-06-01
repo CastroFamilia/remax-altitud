@@ -31,6 +31,7 @@ const CHIP_KEYS: Array<keyof SearchFilters> = [
   "lotSizeMin",
   "lotSizeMax",
   "areaSlug",
+  "subLocation",
   "q",
 ];
 
@@ -112,6 +113,15 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
       reactKey: "areaSlug",
       label: t("filters.location"),
       value: filters.areaSlug,
+    });
+  }
+
+  if (filters.subLocation) {
+    chips.push({
+      key: "subLocation",
+      reactKey: "subLocation",
+      label: t("filters.location"),
+      value: filters.subLocation,
     });
   }
 

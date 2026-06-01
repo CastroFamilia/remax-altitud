@@ -338,14 +338,12 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
 
   // 1. Match Area (check sub-locations first for more specific match)
   let matchedAreaKey = "";
-  let matchedSubLocationSlug = "";
   // Try sub-location keywords first (more specific)
   for (const [key, subSlug] of Object.entries(SUB_LOCATION_KEYWORDS)) {
     if (normalized.includes(key)) {
       params.area = "perez-zeledon"; // Sub-locations are all in PZ
       params.sub_location = subSlug;
       matchedAreaKey = key;
-      matchedSubLocationSlug = subSlug;
       detected.push({
         type: "area",
         label: AREA_LABELS[subSlug] || subSlug,

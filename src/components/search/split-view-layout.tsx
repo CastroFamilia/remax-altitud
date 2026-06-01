@@ -4,13 +4,9 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
-import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { MapView } from "@/components/map/map-view-loader";
 import { PropertyGrid } from "@/components/property/property-grid";
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
-import { UnitToggle } from "@/components/layout/unit-toggle";
-import { NearMeButton } from "@/components/search/near-me-button";
-import { SortSelect } from "@/components/search/sort-select";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets, SearchFilters } from "@/types/search";
@@ -54,11 +50,17 @@ interface SplitViewLayoutProps {
   onPageChange?: (page: number) => void;
   /** Story 3.8: Active search filters to forward to PropertyGrid for NoResultsState */
   filters?: SearchFilters;
+  /** Fly-to target from Near Me (lifted from SearchFilterBar) */
+  flyToTarget?: { lat: number; lng: number; zoom?: number } | null;
+  /** Fallback message from Near Me */
+  nearMeFallbackMessage?: string | null;
+  /** Dismiss fallback handler */
+  onDismissFallback?: () => void;
 }
 
 export function SplitViewLayout({
   viewMode,
-  onViewModeChange,
+  onViewModeChange: _onViewModeChange,
   properties = [],
   locale = "en",
   propertyCount,
@@ -73,21 +75,18 @@ export function SplitViewLayout({
   page,
   onPageChange,
   filters,
+  flyToTarget,
+  nearMeFallbackMessage,
+  onDismissFallback,
 }: SplitViewLayoutProps) {
   // Suppress unused-var warnings for forward-compat props; they are part of
   // the public API surface used by SearchPageClient today.
   void _facets;
+  void _onViewModeChange;
   // Unit preference (localStorage-persisted)
   const { unitSystem } = useLocaleUnits(locale);
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
-  // Story 3.8: Near Me — fly-to target and fallback message
-  const [flyToTarget, setFlyToTarget] = useState<{
-    lat: number;
-    lng: number;
-    zoom?: number;
-  } | null>(null);
-  const [nearMeFallbackMessage, setNearMeFallbackMessage] = useState<string | null>(null);
   const tSidePanel = useTranslations("SearchPage.sidePanel");
   const tNearMe = useTranslations("NearMe");
   const mapHidden = viewMode === "grid";
@@ -105,27 +104,7 @@ export function SplitViewLayout({
 
   return (
     <div className="relative flex flex-col flex-1 min-h-0">
-      {/* View mode + unit toggle row — desktop/tablet only, hidden on mobile.
-          The outer wrapper provides the full-width border-b and bg-background so
-          the bottom border spans the entire toolbar width (ViewModeToggle's own
-          inner border-b only extends to its content width). */}
-      <div className="hidden lg:flex items-center justify-between border-b border-border bg-background">
-        <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
-        <div className="flex items-center gap-2 px-4 py-2">
-          <SortSelect />
-          <NearMeButton
-            onLocationSuccess={(coords) => {
-              setFlyToTarget({ ...coords, zoom: 13 });
-              setNearMeFallbackMessage(null);
-            }}
-            onLocationFallback={(coords, message) => {
-              setFlyToTarget({ ...coords, zoom: 11 });
-              setNearMeFallbackMessage(message);
-            }}
-          />
-          <UnitToggle locale={locale} />
-        </div>
-      </div>
+      {/* Toolbar row removed — controls now live in SearchFilterBar */}
 
       {/* Story 3.8: Near Me fallback notification banner */}
       {nearMeFallbackMessage && (
@@ -139,7 +118,7 @@ export function SplitViewLayout({
           <button
             type="button"
             aria-label={tNearMe("fallbackDismiss")}
-            onClick={() => setNearMeFallbackMessage(null)}
+            onClick={onDismissFallback}
             className="ml-4 text-amber-600 hover:text-amber-800"
           >
             ✕

@@ -105,6 +105,33 @@ const AREA_KEYWORDS: Record<string, string> = {
   platanillo: "tinamastes-platanillo",
   barú: "tinamastes-platanillo",
   baru: "tinamastes-platanillo",
+  // PZ sub-locations
+  "san isidro": "perez-zeledon",
+  "san isidro de el general": "perez-zeledon",
+  cajón: "perez-zeledon",
+  cajon: "perez-zeledon",
+  rivas: "perez-zeledon",
+  "daniel flores": "perez-zeledon",
+  pejibaye: "perez-zeledon",
+  "general viejo": "perez-zeledon",
+  "san gerardo": "perez-zeledon",
+  "san gerardo de rivas": "perez-zeledon",
+  platanares: "perez-zeledon",
+};
+
+// Sub-location keyword → slug mapping for command palette smart search
+const SUB_LOCATION_KEYWORDS: Record<string, string> = {
+  "san isidro": "san-isidro",
+  "san isidro de el general": "san-isidro",
+  cajón: "cajon",
+  cajon: "cajon",
+  rivas: "rivas",
+  "daniel flores": "daniel-flores",
+  pejibaye: "pejibaye",
+  "general viejo": "general-viejo",
+  "san gerardo": "san-gerardo-de-rivas",
+  "san gerardo de rivas": "san-gerardo-de-rivas",
+  platanares: "platanares",
 };
 
 const AREA_LABELS: Record<string, string> = {
@@ -128,6 +155,15 @@ const AREA_LABELS: Record<string, string> = {
   alajuela: "Alajuela",
   cartago: "Cartago",
   "tinamastes-platanillo": "Tinamastes & Platanillo",
+  // PZ sub-location labels
+  "san-isidro": "San Isidro",
+  cajon: "Cajón",
+  rivas: "Rivas",
+  "daniel-flores": "Daniel Flores",
+  pejibaye: "Pejibaye",
+  "general-viejo": "General Viejo",
+  "san-gerardo-de-rivas": "San Gerardo de Rivas",
+  platanares: "Platanares",
 };
 
 const TYPE_KEYWORDS: Record<string, string> = {
@@ -223,13 +259,27 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
 
   let remainingText = normalized;
 
-  // Area
-  for (const [key, slug] of Object.entries(AREA_KEYWORDS)) {
+  // Area — check sub-locations first for more specific match
+  let matchedSubLocation = false;
+  for (const [key, subSlug] of Object.entries(SUB_LOCATION_KEYWORDS)) {
     if (normalized.includes(key)) {
-      params.area = slug;
-      detected.push({ type: "area", label: AREA_LABELS[slug] || slug, icon: "pin", value: slug });
+      params.area = "perez-zeledon";
+      params.sub_location = subSlug;
+      detected.push({ type: "area", label: AREA_LABELS[subSlug] || subSlug, icon: "pin", value: subSlug });
       remainingText = remainingText.replace(key, " ");
+      matchedSubLocation = true;
       break;
+    }
+  }
+  // If no sub-location matched, try main area keywords
+  if (!matchedSubLocation) {
+    for (const [key, slug] of Object.entries(AREA_KEYWORDS)) {
+      if (normalized.includes(key)) {
+        params.area = slug;
+        detected.push({ type: "area", label: AREA_LABELS[slug] || slug, icon: "pin", value: slug });
+        remainingText = remainingText.replace(key, " ");
+        break;
+      }
     }
   }
 

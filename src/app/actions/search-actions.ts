@@ -378,6 +378,7 @@ export async function searchProperties(
       lotSizeMin: safeLotMin !== undefined ? gte(properties.lotSizeM2, safeLotMin) : undefined,
       lotSizeMax: safeLotMax !== undefined ? lte(properties.lotSizeM2, safeLotMax) : undefined,
       areaSlug: filters.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined,
+      subLocation: filters.subLocation ? eq(properties.subLocation, filters.subLocation) : undefined,
       // Story 3.4: lifestyle tag OR filter using PostgreSQL && (overlap) operator on GIN-indexed array
       // The && operator returns rows where lifestyleTags and the filter array share at least one element
       tags: sanitizedTags?.length
@@ -545,26 +546,54 @@ export async function searchProperties(
 }
 
 /**
- * getAvailableAreas — fetch distinct area slugs from visible properties.
+ * getAvailableAreas — fetch distinct area slugs and sub-locations from visible properties.
  *
- * MVP: flat list of area slugs (full hierarchy deferred to Epic 6 / Story 6.1).
+ * Returns a hierarchical list: main areas first, then sub-locations with their
+ * parent area slug. This powers grouped area selectors (optgroup dropdowns).
  * AC #7
  */
-export async function getAvailableAreas(): Promise<{ slug: string; label: string }[]> {
+export async function getAvailableAreas(): Promise<{ slug: string; label: string; parentSlug?: string; isSubLocation?: boolean }[]> {
   try {
-    const rows = await db
+    // Get distinct main area slugs
+    const areaRows = await db
       .select({ areaSlug: properties.areaSlug })
       .from(properties)
       .where(and(eq(properties.isVisible, true), isNotNull(properties.areaSlug)))
       .groupBy(properties.areaSlug);
 
-    return rows
+    const mainAreas = areaRows
       .filter((r): r is { areaSlug: string } => r.areaSlug !== null && r.areaSlug !== "")
       .map((r) => ({
         slug: r.areaSlug,
         label: formatAreaLabel(r.areaSlug),
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
+
+    // Get distinct sub-locations
+    const subRows = await db
+      .select({
+        areaSlug: properties.areaSlug,
+        subLocation: properties.subLocation,
+      })
+      .from(properties)
+      .where(and(
+        eq(properties.isVisible, true),
+        isNotNull(properties.subLocation),
+      ))
+      .groupBy(properties.areaSlug, properties.subLocation);
+
+    const subLocations = subRows
+      .filter((r): r is { areaSlug: string; subLocation: string } =>
+        r.areaSlug !== null && r.subLocation !== null && r.subLocation !== "")
+      .map((r) => ({
+        slug: r.subLocation,
+        label: formatSubLocationLabel(r.subLocation),
+        parentSlug: r.areaSlug,
+        isSubLocation: true,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+    return [...mainAreas, ...subLocations];
   } catch (error) {
     console.error("Database query failed in getAvailableAreas:", error);
     return [];
@@ -602,6 +631,31 @@ function formatAreaLabel(slug: string): string {
   if (knownAreas[slug]) return knownAreas[slug];
 
   // Fallback: title-case the slug (replace hyphens with spaces, capitalize words)
+  return slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+/**
+ * Format a sub-location slug into a display label.
+ * "cajon" → "Cajón" (using a known mapping + fallback title-case)
+ */
+function formatSubLocationLabel(slug: string): string {
+  const knownSubLocations: Record<string, string> = {
+    "san-isidro": "San Isidro",
+    cajon: "Cajón",
+    rivas: "Rivas",
+    "daniel-flores": "Daniel Flores",
+    pejibaye: "Pejibaye",
+    "general-viejo": "General Viejo",
+    "san-gerardo-de-rivas": "San Gerardo de Rivas",
+    platanares: "Platanares",
+  };
+
+  if (knownSubLocations[slug]) return knownSubLocations[slug];
+
+  // Fallback: title-case the slug
   return slug
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))

@@ -164,15 +164,64 @@ function getLandFeatures(property: PropertySearchItem, locale: string): string[]
 }
 
 /**
+ * Known sub-location slug → display label mapping.
+ */
+const SUB_LOCATION_LABELS: Record<string, string> = {
+  "san-isidro": "San Isidro",
+  cajon: "Cajón",
+  rivas: "Rivas",
+  "daniel-flores": "Daniel Flores",
+  pejibaye: "Pejibaye",
+  "general-viejo": "General Viejo",
+  "san-gerardo-de-rivas": "San Gerardo de Rivas",
+  platanares: "Platanares",
+};
+
+/**
+ * Clean up an apiRaw.Location string for card display.
+ * The API often returns verbose strings like "Cajón de Pérez Zeledón, San José".
+ * We extract the town portion and pair it with the canton for a concise label.
+ */
+function cleanApiLocation(raw: string): string {
+  // Strip trailing province names (", San José", ", Puntarenas", etc.)
+  let cleaned = raw.replace(/,\s*(San José|Puntarenas|Limón|Alajuela|Heredia|Cartago|Guanacaste)\s*$/i, "");
+  // Strip "de Pérez Zeledón" / "de Osa" suffix to avoid redundancy
+  cleaned = cleaned.replace(/\s+de\s+(Pérez\s*Zeledón|Osa|Aguirre|Quepos)\s*$/i, "");
+  return cleaned.trim();
+}
+
+/**
  * Helper to resolve the town and canton name.
+ * Priority: subLocation field → apiRaw.Location (cleaned) → areaSlug fallback.
  */
 function getPropertyLocation(property: PropertySearchItem, locale: string): string {
   const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
-  if (typeof apiRaw?.Location === "string" && apiRaw.Location.trim().length > 0) {
-    return apiRaw.Location;
-  }
-  // Fallback based on areaSlug
   const areaSlug = property.areaSlug;
+
+  // 1. Try subLocation field for PZ sub-locations (most reliable)
+  const subLocation = (apiRaw as Record<string, unknown> | undefined)?.subLocation as string | undefined;
+  if (subLocation && SUB_LOCATION_LABELS[subLocation]) {
+    const parentLabel = areaSlug === "perez-zeledon"
+      ? (locale === "es" ? "Pérez Zeledón" : "Perez Zeledon")
+      : areaSlug?.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") ?? "";
+    return `${SUB_LOCATION_LABELS[subLocation]}, ${parentLabel}`;
+  }
+
+  // 2. Try apiRaw.Location — clean it up for display
+  if (typeof apiRaw?.Location === "string" && apiRaw.Location.trim().length > 0) {
+    const cleaned = cleanApiLocation(apiRaw.Location);
+    // If it's a PZ property and Location is just "Pérez Zeledón", add specificity from title
+    if (cleaned.toLowerCase().replace(/[éá]/g, (c) => c === "é" ? "e" : "a") === "perez zeledon") {
+      return locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
+    }
+    // Add canton context if not already present
+    if (areaSlug === "perez-zeledon" && !cleaned.toLowerCase().includes("pérez") && !cleaned.toLowerCase().includes("perez")) {
+      return `${cleaned}, ${locale === "es" ? "Pérez Zeledón" : "Perez Zeledon"}`;
+    }
+    return cleaned;
+  }
+
+  // 3. Fallback based on areaSlug
   if (areaSlug === "perez-zeledon") {
     return locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
   }

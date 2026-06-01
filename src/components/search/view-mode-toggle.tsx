@@ -32,7 +32,7 @@ export function ViewModeToggle({ viewMode, onViewModeChange }: ViewModeTogglePro
   return (
     <div
       data-testid="view-mode-toggle-container"
-      className="hidden lg:flex items-center gap-1 px-4 py-2 bg-transparent"
+      className="hidden lg:inline-flex items-center rounded-lg border border-brand-gold/30 bg-background p-0.5"
     >
       {buttons.map(({ mode, label, testId }) => (
         <button
@@ -41,10 +41,10 @@ export function ViewModeToggle({ viewMode, onViewModeChange }: ViewModeTogglePro
           data-testid={testId}
           onClick={() => handleModeChange(mode)}
           className={cn(
-            "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
+            "px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap",
             viewMode === mode
-              ? "bg-brand-navy text-white"
-              : "bg-transparent text-foreground hover:bg-muted",
+              ? "bg-brand-navy text-white shadow-sm"
+              : "bg-transparent text-brand-navy/70 hover:text-brand-navy hover:bg-brand-gold/10",
           )}
         >
           {label}

@@ -18,6 +18,7 @@ export interface SearchFilters {
   lotSizeMin?: number;
   lotSizeMax?: number;
   areaSlug?: string;
+  subLocation?: string;
   sort?: SortOption;
   view?: "split" | "map" | "grid";
   // Story 3.4: Lifestyle tags — comma-separated in URL (?tags=Investment+Property,Rental+Potential)

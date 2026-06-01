@@ -152,9 +152,40 @@ export function SearchPageClient() {
       });
   }, []);
 
+  // Near Me handlers — lifted here to pass into SearchFilterBar
+  // while SplitViewLayout still uses the flyToTarget state.
+  const [flyToTarget, setFlyToTarget] = useState<{
+    lat: number;
+    lng: number;
+    zoom?: number;
+  } | null>(null);
+  const [nearMeFallbackMessage, setNearMeFallbackMessage] = useState<string | null>(null);
+
+  const handleNearMeSuccess = useCallback((coords: { lat: number; lng: number }) => {
+    setFlyToTarget({ ...coords, zoom: 13 });
+    setNearMeFallbackMessage(null);
+  }, []);
+
+  const handleNearMeFallback = useCallback(
+    (coords: { lat: number; lng: number }, message: string) => {
+      setFlyToTarget({ ...coords, zoom: 11 });
+      setNearMeFallbackMessage(message);
+    },
+    [],
+  );
+
   return (
     <div className="flex flex-col overflow-hidden overscroll-none h-[calc(100vh-var(--header-height))]">
-      <SearchFilterBar facets={facets} areas={areas} />
+      <SearchFilterBar
+        facets={facets}
+        areas={areas}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        locale={locale}
+        onNearMeSuccess={handleNearMeSuccess}
+        onNearMeFallback={handleNearMeFallback}
+        resultCount={total}
+      />
       <SplitViewLayout
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -169,6 +200,9 @@ export function SearchPageClient() {
         page={page}
         onPageChange={setPage}
         filters={filters}
+        flyToTarget={flyToTarget}
+        nearMeFallbackMessage={nearMeFallbackMessage}
+        onDismissFallback={() => setNearMeFallbackMessage(null)}
       />
     </div>
   );
