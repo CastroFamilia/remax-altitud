@@ -442,6 +442,15 @@
       "mountain": "Mountain",
       "beach": "Beach"
     },
+    "typeBadge": {
+      "House": "House",
+      "Lot": "Lot",
+      "Land": "Land",
+      "Farm/Ranch": "Farm",
+      "Apartment": "Apt",
+      "Condo": "Condo",
+      "Commercial": "Commercial"
+    },
     "zmtStatus": {
       "titled": "Titled Property",
       "concession": "Concession",

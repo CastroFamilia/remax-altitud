@@ -72,6 +72,28 @@ const TYPE_DISPLAY: Record<string, { en: string; es: string }> = {
   Commercial: { en: "Commercial", es: "Comercial" },
 };
 
+/** Color classes for property type badge — each type gets a distinct color */
+const TYPE_BADGE_COLORS: Record<string, string> = {
+  House: "bg-indigo-600",
+  Lot: "bg-amber-600",
+  Land: "bg-yellow-700",
+  "Farm/Ranch": "bg-emerald-700",
+  Apartment: "bg-violet-600",
+  Condo: "bg-sky-600",
+  Commercial: "bg-rose-600",
+};
+
+/**
+ * Get the normalized EN type key for badge display.
+ * Returns the EN label from TYPE_DISPLAY (e.g. "House", "Lot", "Farm/Ranch")
+ * which is used as the key for TYPE_BADGE_COLORS and the typeBadge i18n namespace.
+ */
+function getTypeBadgeKey(propertyType: string | null): string | null {
+  if (!propertyType) return null;
+  const entry = TYPE_DISPLAY[propertyType];
+  return entry ? entry.en : null;
+}
+
 /**
  * Determine region from area slug.
  * Returns 'Mountain', 'Beach', or null.
@@ -285,6 +307,7 @@ export function PropertyCard({
   const region = getRegionFromAreaSlug(property.areaSlug || null);
   const isLand = LAND_TYPES.has(property.propertyType || "");
   const zmtVisual = property.zmtStatus ? ZMT_VISUAL[property.zmtStatus] : null;
+  const typeBadgeKey = getTypeBadgeKey(property.propertyType || null);
 
   const isHorizontal = variant === "horizontal";
   const isCompact = variant === "compact";
@@ -383,6 +406,16 @@ export function PropertyCard({
               className={`absolute ${onRemove ? "left-14" : "left-3"} top-3 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm ${region === "Mountain" ? "bg-brand-mountain" : "bg-brand-beach"}`}
             >
               {t(`region.${region === "Mountain" ? "mountain" : "beach"}`)}
+            </span>
+          )}
+
+          {/* Property type badge — next to region badge */}
+          {typeBadgeKey && (
+            <span
+              data-testid="type-badge"
+              className={`absolute ${onRemove ? (region ? "left-[7.5rem]" : "left-14") : (region ? "left-[5.5rem]" : "left-3")} top-3 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm backdrop-blur-sm ${TYPE_BADGE_COLORS[typeBadgeKey] || "bg-gray-600"}`}
+            >
+              {t(`typeBadge.${typeBadgeKey}` as Parameters<typeof t>[0])}
             </span>
           )}
 
