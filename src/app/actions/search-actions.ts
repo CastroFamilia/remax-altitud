@@ -383,7 +383,12 @@ export async function searchProperties(
     q: searchCondition,
     bounds:
       safeBounds != null
-        ? sql`${properties.geo} && ST_MakeEnvelope(${safeBounds.west}, ${safeBounds.south}, ${safeBounds.east}, ${safeBounds.north}, 4326)::geography`
+        ? and(
+            gte(properties.latitude, safeBounds.south),
+            lte(properties.latitude, safeBounds.north),
+            gte(properties.longitude, safeBounds.west),
+            lte(properties.longitude, safeBounds.east),
+          )
         : undefined,
   };
 
