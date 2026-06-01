@@ -179,6 +179,35 @@ export function resolveAreaSlug(raw: {
   return "dominical";
 }
 
+// ─── Sub-Location Resolution ──────────────────────────────────────────────
+// Uses the shared locations module (src/lib/locations.ts) as single source of truth.
+// Aligned with ALTITUD HUB locations.js — Cantón → Distrito hierarchy.
+
+import { DISTRICT_KEYWORDS } from "@/lib/locations";
+
+/**
+ * Resolves a sub-location (district) slug from the RECONNECT API's Location field.
+ * Uses the shared DISTRICT_KEYWORDS from locations.ts for matching.
+ *
+ * @param location  - The Location string from the RECONNECT API (e.g. "Cajón de Pérez Zeledón")
+ * @param areaSlug  - The resolved main area slug (filters keywords to matching parent)
+ * @returns Sub-location slug (e.g. "cajon") or null if not resolvable
+ */
+export function resolveSubLocation(location: string | null, areaSlug: string): string | null {
+  if (!location || location.trim().length === 0) return null;
+
+  const loc = location.toLowerCase();
+
+  for (const { keyword, slug, parent } of DISTRICT_KEYWORDS) {
+    // Only match keywords whose parent matches the resolved area
+    if (parent === areaSlug && loc.includes(keyword)) {
+      return slug;
+    }
+  }
+
+  return null;
+}
+
 export async function upsertProperty(
   raw: RawProperty,
   officeId: string,
@@ -195,6 +224,7 @@ export async function upsertProperty(
 
   const resolvedAreaSlug = resolveAreaSlug(raw);
   const resolvedAreaId = await getAreaIdBySlug(resolvedAreaSlug);
+  const resolvedSubLocation = resolveSubLocation(raw.location, resolvedAreaSlug);
 
   const values = {
     apiId: raw.apiId,
@@ -221,6 +251,7 @@ export async function upsertProperty(
     agentId,
     areaId: resolvedAreaId,
     areaSlug: resolvedAreaSlug,
+    subLocation: resolvedSubLocation,
     communityId: null,
     lifestyleTags: [],
     zmtStatus: "titled" as const,
@@ -252,6 +283,7 @@ export async function upsertProperty(
     agentId: values.agentId,
     areaId: resolvedAreaId,
     areaSlug: resolvedAreaSlug,
+    subLocation: resolvedSubLocation,
     communityId: sql`CASE 
       WHEN ${properties.latitude} IS DISTINCT FROM ${values.latitude} 
         OR ${properties.longitude} IS DISTINCT FROM ${values.longitude} 

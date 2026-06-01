@@ -89,7 +89,7 @@ export function FilterDropdown({
           data-testid={testId}
           className={cn(
             // Base
-            "inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium",
+            "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium",
             "transition-all duration-200 cursor-pointer whitespace-nowrap",
             // Focus
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 focus-visible:border-brand-blue",
