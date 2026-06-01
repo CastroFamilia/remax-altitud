@@ -22,6 +22,7 @@ import { MapClusterPin } from "@/components/map/map-cluster-pin";
 import { MapPricePin } from "@/components/map/map-price-pin";
 import { MapPropertyPopup } from "@/components/map/map-property-popup";
 import type { OptimizedImage } from "@/types/images";
+import type { UnitSystem } from "@/lib/utils/units";
 
 export type MapBounds = {
   north: number;
@@ -51,6 +52,8 @@ interface MapViewProps {
   onBoundsChange?: (bounds: MapBounds) => void;
   /** Story 3.8: When set, map flies to these coordinates with given zoom */
   flyToTarget?: { lat: number; lng: number; zoom?: number } | null;
+  /** Unit system preference for area display in popups */
+  unitSystem?: UnitSystem;
 }
 
 type ClusterFeature = GeoJSON.Feature<
@@ -74,7 +77,13 @@ type PointFeature = GeoJSON.Feature<
 // Stable world bbox for initial cluster rendering before map bounds are known
 const INITIAL_BBOX: [number, number, number, number] = [-180, -85, 180, 85];
 
-export function MapView({ properties, locale, onBoundsChange, flyToTarget }: MapViewProps) {
+export function MapView({
+  properties,
+  locale,
+  onBoundsChange,
+  flyToTarget,
+  unitSystem,
+}: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const { center, zoom, setCenter, setZoom, setBounds } = useMapStore();
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
@@ -293,6 +302,7 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
             property={selectedProperty}
             locale={locale}
             onClose={() => setSelectedPropertyId(null)}
+            unitSystem={unitSystem}
           />
         )}
       </MapboxMap>

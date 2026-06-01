@@ -169,6 +169,7 @@ export function SplitViewLayout({
               locale={locale}
               onBoundsChange={handleBoundsChange}
               flyToTarget={flyToTarget}
+              unitSystem={unitSystem}
             />
           </div>
         </div>

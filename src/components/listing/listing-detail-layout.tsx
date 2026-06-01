@@ -9,7 +9,7 @@
  */
 
 import { getTranslations } from "next-intl/server";
-import { convertArea } from "@/lib/utils/units";
+import { PropertySpecsSummary } from "@/components/listing/property-specs-summary";
 import { StickySpecsBar } from "@/components/listing/sticky-specs-bar";
 import { PropertyGalleryLoader } from "@/components/listing/property-gallery-loader";
 import { PropertyInquiryForm } from "@/components/listing/property-inquiry-form";
@@ -163,59 +163,16 @@ export async function ListingDetailLayout({
               </div>
 
               {/* Property specs summary */}
-              <div className="grid grid-cols-2 gap-4 rounded-xl border border-border p-6 md:grid-cols-4">
-                {property.priceUsd != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.price")}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">
-                      ${property.priceUsd.toLocaleString("en-US")}
-                      {property.currency === "CRC" && originalPriceColones != null && (
-                        <span className="ml-2 text-sm font-medium text-text-muted">
-                          (₡{originalPriceColones.toLocaleString("es-CR")})
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                )}
-                {property.bedrooms != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.bedrooms", { count: property.bedrooms })}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">{property.bedrooms}</p>
-                  </div>
-                )}
-                {property.bathrooms != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.bathrooms", { count: property.bathrooms })}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">{property.bathrooms}</p>
-                  </div>
-                )}
-                {property.lotSizeM2 != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.lotSize")}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">
-                      {convertArea(property.lotSizeM2, "metric", locale, true)}
-                    </p>
-                  </div>
-                )}
-                {property.constructionM2 != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.builtArea")}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">
-                      {convertArea(property.constructionM2, "metric", locale, false)}
-                    </p>
-                  </div>
-                )}
-              </div>
+              <PropertySpecsSummary
+                priceUsd={property.priceUsd}
+                bedrooms={property.bedrooms}
+                bathrooms={property.bathrooms}
+                lotSizeM2={property.lotSizeM2}
+                constructionM2={property.constructionM2}
+                locale={locale}
+                currency={property.currency}
+                originalPriceColones={originalPriceColones}
+              />
 
               {/* Description */}
               {description && (
