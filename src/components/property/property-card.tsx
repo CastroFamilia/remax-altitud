@@ -34,7 +34,42 @@ const BEACH_SLUGS = new Set([
 
 const MOUNTAIN_SLUGS = new Set(["perez-zeledon", "tinamastes-platanillo"]);
 
-const LAND_TYPES = new Set(["Lote", "Terreno", "Finca"]);
+const LAND_TYPES = new Set([
+  "Lote",
+  "Terreno",
+  "Finca",
+  "Lot",
+  "Lot/Land",
+  "Land",
+  "Farm",
+  "Ranch",
+  "Rural area",
+  "Terrenos",
+]);
+
+/** Bi-directional property type display labels (EN ↔ ES) */
+const TYPE_DISPLAY: Record<string, { en: string; es: string }> = {
+  Casa: { en: "House", es: "Casa" },
+  House: { en: "House", es: "Casa" },
+  "House/Villa": { en: "House", es: "Casa" },
+  Residential: { en: "House", es: "Casa" },
+  Lote: { en: "Lot", es: "Lote" },
+  Lot: { en: "Lot", es: "Lote" },
+  "Lot/Land": { en: "Lot", es: "Lote" },
+  Land: { en: "Land", es: "Terreno" },
+  Terreno: { en: "Land", es: "Terreno" },
+  Terrenos: { en: "Land", es: "Terreno" },
+  Finca: { en: "Farm/Ranch", es: "Finca" },
+  Farm: { en: "Farm/Ranch", es: "Finca" },
+  Ranch: { en: "Farm/Ranch", es: "Finca" },
+  "Rural area": { en: "Farm/Ranch", es: "Finca" },
+  Apartamento: { en: "Apartment", es: "Apartamento" },
+  Apartment: { en: "Apartment", es: "Apartamento" },
+  Condominium: { en: "Condo", es: "Condominio" },
+  Condo: { en: "Condo", es: "Condominio" },
+  Comercial: { en: "Commercial", es: "Comercial" },
+  Commercial: { en: "Commercial", es: "Comercial" },
+};
 
 /**
  * Determine region from area slug.
@@ -196,7 +231,8 @@ export function PropertyCard({
   const usdPrice = formatUSD(property.priceUsd || 0, locale);
 
   const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
-  const originalPriceColones = apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
+  const originalPriceColones =
+    property.currency === "CRC" && apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
 
   // Build the short description specs line
   const parts: string[] = [];
@@ -221,16 +257,10 @@ export function PropertyCard({
   }
 
   // Add translated property type
-  const typeTranslated =
-    locale === "es"
-      ? property.propertyType || "Propiedad"
-      : property.propertyType === "Casa"
-        ? "House"
-        : property.propertyType === "Lote"
-          ? "Lot"
-          : property.propertyType === "Finca"
-            ? "Farm/Ranch"
-            : property.propertyType;
+  const typeEntry = TYPE_DISPLAY[property.propertyType || ""];
+  const typeTranslated = typeEntry
+    ? typeEntry[locale === "es" ? "es" : "en"]
+    : property.propertyType || (locale === "es" ? "Propiedad" : "Property");
   parts.push(typeTranslated);
 
   const shortDescription = parts.join(" | ");

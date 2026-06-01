@@ -68,7 +68,8 @@ export async function ListingDetailLayout({
   const images = normalizePropertyImages(property.images, title);
 
   const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
-  const originalPriceColones = apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
+  const originalPriceColones =
+    property.currency === "CRC" && apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
 
   // ZMT badge
   const zmtVisual = property.zmtStatus ? ZMT_VISUAL[property.zmtStatus] : null;
