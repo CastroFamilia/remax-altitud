@@ -125,8 +125,8 @@ const TYPE_KEYWORDS: Record<string, string> = {
   condominio: "Apartamento",
   lote: "Lote",
   lot: "Lote",
-  terreno: "Terreno",
-  land: "Terreno",
+  terreno: "Lote",
+  land: "Lote",
   comercial: "Comercial",
   commercial: "Comercial",
   finca: "Finca",
@@ -137,8 +137,7 @@ const TYPE_KEYWORDS: Record<string, string> = {
 const TYPE_LABELS: Record<string, { en: string; es: string }> = {
   Casa: { en: "House", es: "Casa" },
   Apartamento: { en: "Apartment", es: "Apartamento" },
-  Lote: { en: "Lot", es: "Lote" },
-  Terreno: { en: "Land", es: "Terreno" },
+  Lote: { en: "Lot / Land", es: "Lote / Terreno" },
   Comercial: { en: "Commercial", es: "Comercial" },
   Finca: { en: "Farm", es: "Finca" },
 };
@@ -209,7 +208,7 @@ const FEATURE_KEYWORDS: Record<string, { q: string; label: { en: string; es: str
   jardin: { q: "garden jardín jardin", label: { en: "Garden", es: "Jardín" } },
 };
 
-const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Terreno", "Comercial", "Finca"];
+const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Comercial", "Finca"];
 
 // Sub-location keyword → slug mapping for smart search
 // Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón

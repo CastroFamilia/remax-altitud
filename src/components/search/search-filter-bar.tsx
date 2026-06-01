@@ -38,7 +38,7 @@ import type { FilterFacets } from "@/types/search";
 /** Property types that are land/lot — hides bedrooms and bathrooms (AC #2) */
 const LAND_TYPES = ["Lote", "Terreno", "Finca"];
 
-const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Terreno", "Comercial", "Finca"];
+const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Comercial", "Finca"];
 
 const BEDROOM_OPTIONS = [1, 2, 3, 4, 5];
 const BATHROOM_OPTIONS = [1, 2, 3, 4];
@@ -83,10 +83,23 @@ export function SearchFilterBar({
   const priceValue: [number, number] = [filters.priceMin ?? 0, filters.priceMax ?? 5_000_000];
 
   /** Get facet count label for a property type, e.g. "Casa (12)" */
+  /** Display label for a property type — "Lote" renders as "Lote / Terreno" */
+  function typeDisplayName(type: string): string {
+    return type === "Lote" ? "Lote / Terreno" : type;
+  }
+
   function typeLabel(type: string): string {
-    if (!facets) return type;
+    const display = typeDisplayName(type);
+    if (!facets) return display;
+    if (type === "Lote") {
+      // Combine Lote + Terreno facet counts
+      const loteCount = facets.byType.find((f) => f.value === "Lote")?.count ?? 0;
+      const terrenoCount = facets.byType.find((f) => f.value === "Terreno")?.count ?? 0;
+      const total = loteCount + terrenoCount;
+      return total > 0 ? `${display} (${total})` : display;
+    }
     const facet = facets.byType.find((f) => f.value === type);
-    return facet ? `${type} (${facet.count})` : type;
+    return facet ? `${display} (${facet.count})` : display;
   }
 
   /** Build options for the Listing Type dropdown */
@@ -97,11 +110,19 @@ export function SearchFilterBar({
 
   /** Build options for the Property Type dropdown */
   const propertyTypeOptions = PROPERTY_TYPES.map((type) => {
-    const facet = facets?.byType.find((f) => f.value === type);
+    let count: number | undefined;
+    if (type === "Lote") {
+      const loteCount = facets?.byType.find((f) => f.value === "Lote")?.count ?? 0;
+      const terrenoCount = facets?.byType.find((f) => f.value === "Terreno")?.count ?? 0;
+      const total = loteCount + terrenoCount;
+      count = total > 0 ? total : undefined;
+    } else {
+      count = facets?.byType.find((f) => f.value === type)?.count;
+    }
     return {
       value: type,
-      label: type,
-      count: facet?.count,
+      label: type === "Lote" ? "Lote / Terreno" : type,
+      count,
     };
   });
 

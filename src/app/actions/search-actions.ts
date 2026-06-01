@@ -184,7 +184,7 @@ const DB_TYPE_TO_SPANISH: Record<string, string> = {
   Condo: "Apartamento",
   Lot: "Lote",
   "Lot/Land": "Lote",
-  Land: "Terreno",
+  Land: "Lote",
   Commercial: "Comercial",
   Farm: "Finca",
   Ranch: "Finca",
