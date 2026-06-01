@@ -44,10 +44,8 @@ export function PropertyGrid({
   const totalPages = Math.max(1, Math.ceil(totalCount / ITEMS_PER_PAGE));
   const showPagination = totalCount > ITEMS_PER_PAGE;
 
-  // Compute current page slice
-  const startIdx = (page - 1) * ITEMS_PER_PAGE;
-  const endIdx = startIdx + ITEMS_PER_PAGE;
-  const currentPageItems = properties.slice(startIdx, endIdx);
+  // Server Action (searchProperties) already returns only the current page's
+  // items via SQL LIMIT/OFFSET — no client-side slicing needed.
 
   const isFirstPage = page <= 1;
   const isLastPage = page >= totalPages;
@@ -60,7 +58,7 @@ export function PropertyGrid({
         className || "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
       )}
     >
-      {currentPageItems.map((property) => (
+      {properties.map((property) => (
         <PropertyCard
           key={property.id}
           property={property}
@@ -70,7 +68,7 @@ export function PropertyGrid({
       ))}
 
       {/* Empty state — Story 3.8: render NoResultsState with active filters */}
-      {currentPageItems.length === 0 && !isLoading && (
+      {properties.length === 0 && !isLoading && (
         <div className="col-span-full">
           <NoResultsState filters={filters ?? {}} />
         </div>

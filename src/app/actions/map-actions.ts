@@ -18,7 +18,7 @@
  * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 8
  */
 
-import { and, isNotNull, eq, sql } from "drizzle-orm";
+import { and, isNotNull, eq, gte, lte } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
@@ -71,8 +71,7 @@ function sanitizeBounds(bounds: RawBounds): RawBounds | null {
   const clampedEast = Math.min(180, Math.max(-180, east));
   const clampedWest = Math.min(180, Math.max(-180, west));
 
-  // Reject inverted / degenerate envelopes — these cause ST_MakeEnvelope to
-  // either return empty results or throw, depending on PostGIS version.
+  // Reject inverted / degenerate envelopes.
   if (clampedNorth <= clampedSouth || clampedEast <= clampedWest) {
     return null;
   }
@@ -94,11 +93,17 @@ export async function getPropertiesForMap(bounds?: RawBounds): Promise<MapProper
 
   const safeBounds = bounds != null ? sanitizeBounds(bounds) : null;
 
+  // Use simple lat/lng range comparisons instead of PostGIS geo operators.
+  // The `&&` operator with ST_MakeEnvelope doesn't work correctly on
+  // geography(Point, 4326) columns — it requires geometry type.
   const conditions =
     safeBounds != null
       ? and(
           baseConditions,
-          sql`${properties.geo} && ST_MakeEnvelope(${safeBounds.west}, ${safeBounds.south}, ${safeBounds.east}, ${safeBounds.north}, 4326)::geography`,
+          gte(properties.latitude, safeBounds.south),
+          lte(properties.latitude, safeBounds.north),
+          gte(properties.longitude, safeBounds.west),
+          lte(properties.longitude, safeBounds.east),
         )
       : baseConditions;
 
