@@ -1484,7 +1484,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                     areas={areas}
                     selectedArea={selectedArea}
                     selectedSubLocation={selectedSubLocation}
-                    onAreaChange={(areaSlug, subSlug) => {
+                    onAreaChange={(areaSlug: string, subSlug: string) => {
                       setSelectedArea(areaSlug);
                       setSelectedSubLocation(subSlug);
                     }}
