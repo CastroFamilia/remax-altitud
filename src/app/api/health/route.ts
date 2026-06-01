@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
   let totalCount = 0;
   let nonNullCoordsCount = 0;
-  let sampleProperties: unknown[] = [];
+  let allProperties: unknown[] = [];
   let errorMsg: string | null = null;
 
   try {
@@ -22,15 +22,14 @@ export async function GET(req: NextRequest) {
       .where(isNotNull(properties.latitude));
     nonNullCoordsCount = coordsCountRes[0]?.count ?? 0;
 
-    sampleProperties = await db
+    allProperties = await db
       .select({
         id: properties.id,
         titleEn: properties.titleEn,
         latitude: properties.latitude,
         longitude: properties.longitude,
       })
-      .from(properties)
-      .limit(10);
+      .from(properties);
   } catch (err) {
     errorMsg = err instanceof Error ? err.message : String(err);
   }
@@ -44,7 +43,7 @@ export async function GET(req: NextRequest) {
     diagnostics: {
       totalCount,
       nonNullCoordsCount,
-      sampleProperties,
+      allProperties,
       errorMsg,
     },
   };
