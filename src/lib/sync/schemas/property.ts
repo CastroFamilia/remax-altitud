@@ -146,7 +146,9 @@ function resolveListingType(p: {
 
   // 4. Title-based heuristic — look for rental keywords in either language
   const titleText = `${p.ListingTitle_en} ${p.ListingTitle_es ?? ""}`.toLowerCase();
-  if (/\bfor rent\b|\bfor lease\b|\brental\b|\balquiler\b|\barriendo\b|\ben renta\b/.test(titleText)) {
+  if (
+    /\bfor rent\b|\bfor lease\b|\brental\b|\balquiler\b|\barriendo\b|\ben renta\b/.test(titleText)
+  ) {
     return "Lease";
   }
 

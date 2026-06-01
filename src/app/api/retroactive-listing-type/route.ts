@@ -11,7 +11,11 @@ export const dynamic = "force-dynamic";
  * Mirrors the logic in src/lib/sync/schemas/property.ts → resolveListingType()
  * but operates on the stored apiRaw JSONB column.
  */
-function resolveListingTypeFromRaw(apiRaw: Record<string, unknown>, titleEn: string, titleEs: string): "Sale" | "Lease" {
+function resolveListingTypeFromRaw(
+  apiRaw: Record<string, unknown>,
+  titleEn: string,
+  titleEs: string,
+): "Sale" | "Lease" {
   // 1. ContractType_en
   const ctEn = typeof apiRaw.ContractType_en === "string" ? apiRaw.ContractType_en.trim() : null;
   if (ctEn) {
@@ -33,7 +37,9 @@ function resolveListingTypeFromRaw(apiRaw: Record<string, unknown>, titleEn: str
 
   // 4. Title heuristic
   const titleText = `${titleEn} ${titleEs}`.toLowerCase();
-  if (/\bfor rent\b|\bfor lease\b|\brental\b|\balquiler\b|\barriendo\b|\ben renta\b/.test(titleText)) {
+  if (
+    /\bfor rent\b|\bfor lease\b|\brental\b|\balquiler\b|\barriendo\b|\ben renta\b/.test(titleText)
+  ) {
     return "Lease";
   }
 
@@ -78,7 +84,10 @@ export async function GET(req: Request) {
     const fixes: Array<{ apiId: string; titleEn: string; oldType: string; newType: string }> = [];
 
     for (const p of allProperties) {
-      const apiRaw = (p.apiRaw && typeof p.apiRaw === "object" ? p.apiRaw : {}) as Record<string, unknown>;
+      const apiRaw = (p.apiRaw && typeof p.apiRaw === "object" ? p.apiRaw : {}) as Record<
+        string,
+        unknown
+      >;
       const resolved = resolveListingTypeFromRaw(apiRaw, p.titleEn, p.titleEs);
 
       if (resolved !== p.listingType) {
