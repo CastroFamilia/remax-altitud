@@ -52,14 +52,15 @@ The project follows the **[BMad Method](https://github.com/bmadcode/BMAD-METHOD)
 | Create Epics & Stories<br>`/bmad-bmm-create-epics-and-stories` | ✅ Done | 8 epics, 38 stories, 69/69 FRs covered (100%) |
 | Check Readiness<br>`/bmad-bmm-check-implementation-readiness` | ✅ Done | 6-step assessment passed — all 3 minor findings remediated |
 
-### Phase 4: Implementation 🚀
+### Phase 4: Implementation ✅
 
 | Step | Status | Description |
 |------|--------|-------------|
 | Sprint Planning<br>`/bmad-sprint-planning` | ✅ Done | Sprint plan generated & tracking active |
-| Create Story<br>`/bmad-create-story` | 🔁 Ongoing | Individual story preparation |
-| Dev Story<br>`/bmad-dev-story` | 🔁 Ongoing | Story implementation |
-| Code Review<br>`/bmad-code-review` | 🔁 Ongoing | Code quality & security review |
+| Create Story<br>`/bmad-create-story` | ✅ Done | All stories prepared |
+| Dev Story<br>`/bmad-dev-story` | ✅ Done | All stories implemented |
+| Code Review<br>`/bmad-code-review` | ✅ Done | All stories reviewed & merged |
+
 
 ## UX Design Highlights
 
@@ -267,7 +268,7 @@ npm run dev -- --port 3001
 
 ## Current Status
 
-→ **Implementation in progress** — Epics 1–4 complete, Epic 5 underway _(sprint snapshot: 2026-05-13)_
+→ **Implementation complete** — All Epics 1–8 complete _(sprint snapshot: 2026-05-28)_
 
 | Epic | Stories | FRs | Progress | Status |
 |------|---------|-----|----------|--------|
@@ -275,14 +276,15 @@ npm run dev -- --port 3001
 | 2. Data Pipeline & Property Database | 7 | FR46–FR55 | 7 / 7 | ✅ Complete |
 | 3. Property Discovery & Search | 8 | FR1–FR16 | 8 / 8 | ✅ Complete |
 | 4. Listing Detail & Agent Profiles | 5 | FR8, FR13, FR31, FR33–FR39, FR69 | 5 / 5 | ✅ Complete |
-| 5. Seller Lead Capture | 3 | FR40–FR43, FR54 | 2 / 3 | 🚧 In progress |
-| 6. Community Pages & Area Guides | 5 | FR17–FR21, FR44–FR45, FR50 | 0 / 5 | ⚪ Backlog |
-| 7. Shortlist & Smart Agent Routing | 4 | FR22–FR28 | 0 / 4 | ⚪ Backlog |
-| 8. Administration & Operations | 7 | FR56–FR66 | 0 / 7 | ⚪ Backlog |
+| 5. Seller Lead Capture | 3 | FR40–FR43, FR54 | 3 / 3 | ✅ Complete |
+| 6. Community Pages & Area Guides | 5 | FR17–FR21, FR44–FR45, FR50 | 5 / 5 | ✅ Complete |
+| 7. Shortlist & Smart Agent Routing | 4 | FR22–FR28 | 4 / 4 | ✅ Complete |
+| 8. Administration & Operations | 7 | FR56–FR66 | 7 / 7 | ✅ Complete |
 
-**Implementation:** 29 / 46 stories done (63%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
+**Implementation:** 46 / 46 stories done (100%) · **Planning:** 69/69 FRs (100%) with BDD acceptance criteria.
 
-**Latest shipped:** Story 5.2 — CMA Request Form (in-review: CMA hero section, validated request form with lazy loading, i18n, and ATDD test coverage).
-**Next up:** Story 5.3 — Seller Lead Storage, Routing & Source Tracking.
+**Latest shipped:** Epic 8 — Administration & Operations complete.
+**Next up:** Production release and continuous monitoring.
 
 _Source of truth for day-to-day status lives in [`_bmad-output/implementation-artifacts/sprint-status.yaml`](_bmad-output/implementation-artifacts/sprint-status.yaml)._
+
