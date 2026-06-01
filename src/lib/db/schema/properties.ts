@@ -45,6 +45,7 @@ export const properties = pgTable(
     communityId: uuid("community_id"),
     areaId: uuid("area_id").references(() => areas.id, { onDelete: "set null" }),
     areaSlug: text("area_slug"),
+    subLocation: text("sub_location"),
     agentId: uuid("agent_id").references(() => agents.id, { onDelete: "set null" }),
     amenities: jsonb("amenities")
       .notNull()

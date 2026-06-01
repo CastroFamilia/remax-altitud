@@ -39,6 +39,7 @@ const PARAM_MAP: Record<keyof SearchFilters, string> = {
   lotSizeMin: "lot_min",
   lotSizeMax: "lot_max",
   areaSlug: "area",
+  subLocation: "sub_location",
   sort: "sort",
   view: "view",
   // Story 3.4: tags — comma-separated string (?tags=Investment+Property,Rental+Potential)
@@ -80,6 +81,7 @@ const FILTER_KEYS: Array<keyof SearchFilters> = [
   "lotSizeMin",
   "lotSizeMax",
   "areaSlug",
+  "subLocation",
   "q",
 ];
 
@@ -124,6 +126,9 @@ function parseFilters(params: URLSearchParams): SearchFilters {
 
   const areaSlug = params.get("area");
   if (areaSlug) filters.areaSlug = areaSlug;
+
+  const subLocation = params.get("sub_location");
+  if (subLocation) filters.subLocation = subLocation;
 
   const sort = params.get("sort");
   if (sort && VALID_SORT_OPTIONS.includes(sort as SortOption)) {

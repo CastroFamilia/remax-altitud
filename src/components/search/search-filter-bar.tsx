@@ -2,7 +2,7 @@
 
 /**
  * Story 3.3: Search Filters & URL State
- * Component: SearchFilterBar — real filter controls replacing the Story 3.1 stub.
+ * Component: SearchFilterBar — redesigned with custom dropdown popovers.
  *
  * Preserved from Story 3.1 (must NOT break):
  * - data-testid="search-filter-bar" on root div
@@ -11,11 +11,12 @@
  * - data-testid="mobile-filters-button" on mobile button
  * - File starts with 'use client'
  *
- * Story 3.3 additions:
- * - Real filter controls (Type, Price, Beds, Baths, Lot, Location, Sort)
- * - Context-sensitive: land types hide bedrooms/bathrooms (AC #2)
- * - Active filter chips row via FilterChips component (AC #5)
- * - Mobile filter Sheet (Radix Dialog) with full filter set
+ * Redesign changes:
+ * - Native <select> → custom FilterDropdown (Radix Popover)
+ * - Inline price slider → PriceFilterPopover (compact button trigger)
+ * - Removed floating labels — dropdowns are self-descriptive
+ * - Merged toolbar (ViewMode, Sort, NearMe, UnitToggle) into filter row
+ * - Slimmer lifestyle tag chips
  */
 
 import { useState } from "react";
@@ -24,6 +25,12 @@ import { useTranslations } from "next-intl";
 import { useSearchFilters } from "@/hooks/use-search-filters";
 import { FilterChips } from "@/components/search/filter-chips";
 import { LifestyleTagChips } from "@/components/search/lifestyle-tag-chips";
+import { PriceFilterPopover } from "@/components/search/price-filter-popover";
+import { FilterDropdown } from "@/components/search/filter-dropdown";
+import { ViewModeToggle } from "@/components/search/view-mode-toggle";
+import { SortSelect } from "@/components/search/sort-select";
+import { NearMeButton } from "@/components/search/near-me-button";
+import { UnitToggle } from "@/components/layout/unit-toggle";
 import { PriceRangeSlider } from "@/components/search/price-range-slider";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { FilterFacets } from "@/types/search";
@@ -36,12 +43,35 @@ const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Terreno", "Comercial", "
 const BEDROOM_OPTIONS = [1, 2, 3, 4, 5];
 const BATHROOM_OPTIONS = [1, 2, 3, 4];
 
+type ViewMode = "split" | "map" | "grid";
+
 interface SearchFilterBarProps {
   facets?: FilterFacets;
   areas?: { slug: string; label: string }[];
+  /** View mode for the toolbar (from SplitViewLayout merge) */
+  viewMode?: ViewMode;
+  /** View mode change handler */
+  onViewModeChange?: (mode: ViewMode) => void;
+  /** Locale for UnitToggle */
+  locale?: string;
+  /** Near Me success handler — fly to user's location */
+  onNearMeSuccess?: (coords: { lat: number; lng: number }) => void;
+  /** Near Me fallback handler */
+  onNearMeFallback?: (coords: { lat: number; lng: number }, message: string) => void;
+  /** Result count to display in toolbar */
+  resultCount?: number;
 }
 
-export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
+export function SearchFilterBar({
+  facets,
+  areas = [],
+  viewMode = "split",
+  onViewModeChange,
+  locale = "en",
+  onNearMeSuccess,
+  onNearMeFallback,
+  resultCount,
+}: SearchFilterBarProps) {
   const t = useTranslations("SearchPage");
   const { filters, setFilter, clearFilter, clearAll, activeFilterCount, toggleTag } =
     useSearchFilters();
@@ -59,10 +89,43 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
     return facet ? `${type} (${facet.count})` : type;
   }
 
-  /** The full set of filter controls (used in both desktop bar and mobile sheet).
-   * Defined as a variable (not a nested component) to avoid React re-mounting
-   * it on every render — nested function components lose state every render. */
-  const filterControls = (
+  /** Build options for the Listing Type dropdown */
+  const listingTypeOptions = [
+    { value: "Sale", label: t("filters.listingTypeSale") },
+    { value: "Lease", label: t("filters.listingTypeLease") },
+  ];
+
+  /** Build options for the Property Type dropdown */
+  const propertyTypeOptions = PROPERTY_TYPES.map((type) => {
+    const facet = facets?.byType.find((f) => f.value === type);
+    return {
+      value: type,
+      label: type,
+      count: facet?.count,
+    };
+  });
+
+  /** Build options for the Beds dropdown */
+  const bedroomOptions = BEDROOM_OPTIONS.map((n) => ({
+    value: n.toString(),
+    label: `${n}+`,
+  }));
+
+  /** Build options for the Baths dropdown */
+  const bathroomOptions = BATHROOM_OPTIONS.map((n) => ({
+    value: n.toString(),
+    label: `${n}+`,
+  }));
+
+  /** Build options for the Location dropdown */
+  const areaOptions = areas.map((area) => ({
+    value: area.slug,
+    label: area.label,
+  }));
+
+  /** The full set of filter controls for the MOBILE sheet.
+   * Keeps native selects + inline slider for better mobile UX. */
+  const mobileFilterControls = (
     <div className="flex flex-wrap items-center gap-3 w-full">
       {/* Story 3.4: Lifestyle tag chips (AC #1, #2, #3) */}
       <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
@@ -180,8 +243,6 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
           </select>
         </div>
       )}
-
-      {/* Sort dropdown moved to SplitViewLayout toolbar (sort-select.tsx) */}
     </div>
   );
 
@@ -218,152 +279,119 @@ export function SearchFilterBar({ facets, areas = [] }: SearchFilterBarProps) {
                 </SheetTitle>
               </SheetHeader>
               <div className="py-6 px-1 h-[calc(100vh-80px)] overflow-y-auto no-scrollbar">
-                {filterControls}
+                {mobileFilterControls}
               </div>
             </SheetContent>
           </Sheet>
 
           {/* Desktop/tablet filter controls — visible at md: and above */}
-          <div className="hidden md:flex flex-col gap-4 w-full">
-            {/* Row 1: Lifestyle Tags (Scrollable, full-width, clean bottom border) */}
-            <div className="w-full pb-2.5 border-b border-border/40 overflow-x-auto no-scrollbar">
+          <div className="hidden md:flex flex-col gap-2 w-full">
+            {/* Row 1: Lifestyle Tags (compact, scrollable) */}
+            <div className="w-full overflow-x-auto no-scrollbar">
               <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
             </div>
 
-            {/* Row 2: Structured inputs, perfectly balanced to fill the horizontal space */}
-            <div className="flex flex-wrap lg:flex-nowrap items-end gap-5 w-full">
-              {/* Listing Type dropdown */}
-              <div className="flex flex-col gap-1.5 flex-1 min-w-[140px]">
-                <label className="text-xs font-semibold text-brand-navy/80">
-                  {t("filters.listingType")}
-                </label>
-                <select
-                  data-testid="listing-type-filter"
-                  className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
-                  value={filters.listingType ?? ""}
-                  onChange={(e) => setFilter("listingType", e.target.value || undefined)}
-                >
-                  <option value="">{t("filters.listingTypeAll")}</option>
-                  <option value="Sale">{t("filters.listingTypeSale")}</option>
-                  <option value="Lease">{t("filters.listingTypeLease")}</option>
-                </select>
-              </div>
+            {/* Row 2: All controls in a single unified row */}
+            <div className="flex items-center gap-2 w-full">
+              {/* Left group: View toggle + Filter dropdowns */}
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                {/* View Mode Toggle (inline) */}
+                {onViewModeChange && (
+                  <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+                )}
 
-              {/* Type dropdown */}
-              <div className="flex flex-col gap-1.5 flex-1 min-w-[150px]">
-                <label className="text-xs font-semibold text-brand-navy/80">
-                  {t("filters.type")}
-                </label>
-                <select
-                  data-testid="type-filter"
-                  className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
-                  value={filters.type ?? ""}
-                  onChange={(e) => setFilter("type", e.target.value || undefined)}
-                >
-                  <option value="">{t("filters.typeAll")}</option>
-                  {PROPERTY_TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {typeLabel(type)}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                {/* Divider between view toggle and filters */}
+                {onViewModeChange && (
+                  <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
+                )}
 
-              {/* Bedrooms dropdown — hidden for land types */}
-              {!isLandType && (
-                <div
-                  data-testid="bedrooms-filter"
-                  className="flex flex-col gap-1.5 flex-1 min-w-[120px]"
-                >
-                  <label className="text-xs font-semibold text-brand-navy/80">
-                    {t("filters.bedrooms")}
-                  </label>
-                  <select
-                    className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
-                    value={filters.bedrooms?.toString() ?? ""}
-                    onChange={(e) =>
-                      setFilter(
-                        "bedrooms",
-                        e.target.value ? parseInt(e.target.value, 10) : undefined,
-                      )
-                    }
-                  >
-                    <option value="">{t("filters.bedroomsAny")}</option>
-                    {BEDROOM_OPTIONS.map((n) => (
-                      <option key={n} value={n}>
-                        {n}+
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+                {/* Listing Type */}
+                <FilterDropdown
+                  placeholder={t("filters.listingTypeAll")}
+                  value={filters.listingType ?? undefined}
+                  options={listingTypeOptions}
+                  onChange={(val) => setFilter("listingType", val)}
+                  testId="listing-type-filter"
+                />
 
-              {/* Bathrooms dropdown — hidden for land types */}
-              {!isLandType && (
-                <div
-                  data-testid="bathrooms-filter"
-                  className="flex flex-col gap-1.5 flex-1 min-w-[120px]"
-                >
-                  <label className="text-xs font-semibold text-brand-navy/80">
-                    {t("filters.bathrooms")}
-                  </label>
-                  <select
-                    className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
-                    value={filters.bathrooms?.toString() ?? ""}
-                    onChange={(e) =>
-                      setFilter(
-                        "bathrooms",
-                        e.target.value ? parseInt(e.target.value, 10) : undefined,
-                      )
-                    }
-                  >
-                    <option value="">{t("filters.bathroomsAny")}</option>
-                    {BATHROOM_OPTIONS.map((n) => (
-                      <option key={n} value={n}>
-                        {n}+
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+                {/* Property Type */}
+                <FilterDropdown
+                  placeholder={t("filters.typeAll")}
+                  value={filters.type ?? undefined}
+                  options={propertyTypeOptions}
+                  onChange={(val) => setFilter("type", val)}
+                  testId="type-filter"
+                />
 
-              {/* Price Range slider (flex-[2] to give it proportional prominence) */}
-              <div className="flex flex-col gap-1.5 flex-[2] min-w-[280px]">
-                <label className="text-xs font-semibold text-brand-navy/80">
-                  {t("filters.price")}
-                </label>
-                <div className="bg-background border border-brand-gold/20 rounded-lg px-4 py-2.5 shadow-sm hover:border-brand-gold/40 transition-colors w-full">
-                  <PriceRangeSlider
-                    value={priceValue}
-                    onChange={([min, max]) => {
-                      setFilter("priceMin", min > 0 ? min : undefined);
-                      setFilter("priceMax", max < 5_000_000 ? max : undefined);
-                    }}
+                {/* Beds — hidden for land types */}
+                {!isLandType && (
+                  <FilterDropdown
+                    placeholder={t("filters.bedrooms")}
+                    value={filters.bedrooms?.toString() ?? undefined}
+                    options={bedroomOptions}
+                    onChange={(val) => setFilter("bedrooms", val ? parseInt(val, 10) : undefined)}
+                    testId="bedrooms-filter"
+                    formatSelected={(opt) => `${opt.label} ${t("filters.bedrooms")}`}
                   />
-                </div>
+                )}
+
+                {/* Baths — hidden for land types */}
+                {!isLandType && (
+                  <FilterDropdown
+                    placeholder={t("filters.bathrooms")}
+                    value={filters.bathrooms?.toString() ?? undefined}
+                    options={bathroomOptions}
+                    onChange={(val) => setFilter("bathrooms", val ? parseInt(val, 10) : undefined)}
+                    testId="bathrooms-filter"
+                    formatSelected={(opt) => `${opt.label} ${t("filters.bathrooms")}`}
+                  />
+                )}
+
+                {/* Price Range Popover */}
+                <PriceFilterPopover
+                  placeholder={t("filters.price")}
+                  value={priceValue}
+                  onChange={([min, max]) => {
+                    setFilter("priceMin", min > 0 ? min : undefined);
+                    setFilter("priceMax", max < 5_000_000 ? max : undefined);
+                  }}
+                />
+
+                {/* Location */}
+                {areas.length > 0 && (
+                  <FilterDropdown
+                    placeholder={t("filters.location")}
+                    value={filters.areaSlug ?? undefined}
+                    options={areaOptions}
+                    onChange={(val) => setFilter("areaSlug", val)}
+                    testId="area-filter"
+                  />
+                )}
               </div>
 
-              {/* Location dropdown */}
-              {areas.length > 0 && (
-                <div className="flex flex-col gap-1.5 flex-1 min-w-[180px]">
-                  <label className="text-xs font-semibold text-brand-navy/80">
-                    {t("filters.location")}
-                  </label>
-                  <select
-                    data-testid="area-filter"
-                    className="rounded-lg border border-brand-gold/30 bg-background px-3 py-2.5 text-sm text-brand-navy font-medium shadow-sm hover:border-brand-gold/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer w-full"
-                    value={filters.areaSlug ?? ""}
-                    onChange={(e) => setFilter("areaSlug", e.target.value || undefined)}
-                  >
-                    <option value="">{t("filters.locationAll")}</option>
-                    {areas.map((area) => (
-                      <option key={area.slug} value={area.slug}>
-                        {area.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+              {/* Right group: Result count + Sort + Near Me + Unit toggle */}
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Result count */}
+                {resultCount !== undefined && (
+                  <span className="text-xs text-muted-foreground font-medium whitespace-nowrap hidden xl:inline">
+                    {resultCount.toLocaleString()} {resultCount === 1 ? "result" : "results"}
+                  </span>
+                )}
+
+                {/* Divider */}
+                <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
+
+                <SortSelect />
+
+                {onNearMeSuccess && onNearMeFallback && (
+                  <NearMeButton
+                    onLocationSuccess={onNearMeSuccess}
+                    onLocationFallback={onNearMeFallback}
+                  />
+                )}
+
+                <UnitToggle locale={locale} />
+              </div>
             </div>
           </div>
         </div>

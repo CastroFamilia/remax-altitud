@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useTransition } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Search,
@@ -348,9 +349,12 @@ export function AdminShortlistAnalyticsDashboard({
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-4">
-                            <img
+                            <Image
                               src={imageSrc}
                               alt={title}
+                              width={48}
+                              height={32}
+                              unoptimized
                               className="w-12 h-8 object-cover rounded border border-slate-700 bg-slate-800"
                             />
                             <div className="flex flex-col">

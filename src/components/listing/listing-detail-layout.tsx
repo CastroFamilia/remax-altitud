@@ -180,7 +180,7 @@ export async function ListingDetailLayout({
                   <h2 id="description-heading" className="text-2xl font-bold text-brand-navy">
                     {t("description")}
                   </h2>
-                  <PropertyDescription description={description} locale={locale} />
+                  <PropertyDescription description={description} />
                 </section>
               )}
 

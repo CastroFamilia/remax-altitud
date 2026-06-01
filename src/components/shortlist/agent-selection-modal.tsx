@@ -171,6 +171,7 @@ export default function AgentSelectionModal({
                   {/* Agent Header Details */}
                   <div className="flex gap-4 items-center">
                     <div className="w-14 h-14 rounded-full overflow-hidden border border-slate-100 bg-slate-50 flex-shrink-0 relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={photoSrc}
                         alt={agentName}
@@ -230,6 +231,7 @@ export default function AgentSelectionModal({
                             className="flex items-center gap-3 p-2 rounded-lg bg-slate-50 border border-slate-100/50 hover:bg-slate-100/50 transition-colors"
                           >
                             <div className="w-12 h-9 rounded-md overflow-hidden bg-slate-200 flex-shrink-0">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
                                 src={mainImg}
                                 alt={propTitle}

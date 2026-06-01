@@ -83,8 +83,6 @@ export default async function CommunityPage({
   ]);
   if (!area || !community) notFound();
 
-  const t = await getTranslations({ locale, namespace: "CommunityPage" });
-
   const [communityProperties, similarCommunities] = await Promise.all([
     getPropertiesByCommunityId(community.id),
     getSimilarCommunities(community.areaId, communitySlug),

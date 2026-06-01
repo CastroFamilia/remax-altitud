@@ -58,10 +58,10 @@ export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsPro
             onClick={() => onToggle(tag)}
             aria-pressed={isActive}
             className={[
-              "min-h-[44px] px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 shadow-sm border",
+              "h-8 px-3.5 rounded-full text-xs font-medium transition-all duration-200 border",
               isActive
-                ? "bg-brand-blue text-white border-brand-blue"
-                : "border-brand-gold/30 bg-white text-brand-navy hover:bg-brand-gold/15 hover:border-brand-gold hover:text-brand-navy",
+                ? "bg-brand-navy text-white border-brand-navy shadow-sm"
+                : "border-border bg-background text-brand-navy/70 hover:bg-brand-gold/10 hover:border-brand-gold/40 hover:text-brand-navy",
             ].join(" ")}
           >
             {chipLabel(tag)}

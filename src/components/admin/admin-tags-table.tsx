@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useTransition, useEffect, useMemo } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -328,9 +329,12 @@ export function AdminTagsTable({
                       className="hover:bg-slate-800/40 transition-colors property-row"
                     >
                       <td className="px-6 py-4">
-                        <img
+                        <Image
                           src={imageSrc}
                           alt={title}
+                          width={48}
+                          height={32}
+                          unoptimized
                           className="w-12 h-8 object-cover rounded border border-slate-700 bg-slate-800"
                         />
                       </td>

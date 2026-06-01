@@ -4,16 +4,12 @@ import React, { useMemo } from "react";
 import {
   MapPin,
   Sparkles,
-  Receipt,
   Info,
   MessageSquare,
-  Home,
   CheckCircle2,
   DollarSign,
-  ScrollText,
   UserCheck,
   ShieldCheck,
-  ExternalLink,
 } from "lucide-react";
 
 interface DescriptionSection {
@@ -29,7 +25,6 @@ interface ParsedDescription {
 
 interface PropertyDescriptionProps {
   description: string;
-  locale: string;
 }
 
 // Map headings to Lucide icons and styled accents
@@ -284,7 +279,7 @@ function parseDescription(text: string): ParsedDescription {
   return { intro, sections };
 }
 
-export function PropertyDescription({ description, locale }: PropertyDescriptionProps) {
+export function PropertyDescription({ description }: PropertyDescriptionProps) {
   const parsed = useMemo(() => parseDescription(description), [description]);
 
   if (!description) return null;
