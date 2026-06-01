@@ -131,13 +131,6 @@
     {
       "idx": 18,
       "version": "7",
-      "when": 1780244352212,
-      "tag": "0021_absent_spitfire",
-      "breakpoints": true
-    },
-    {
-      "idx": 19,
-      "version": "7",
       "when": 1780264761308,
       "tag": "0019_boring_sleepwalker",
       "breakpoints": true

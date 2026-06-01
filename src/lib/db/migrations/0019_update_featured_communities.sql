@@ -1,3 +1,7 @@
+-- Ensure size columns exist in case previous migrations were skipped or database was out of sync
+ALTER TABLE "communities" ADD COLUMN IF NOT EXISTS "size_min_m2" double precision;
+ALTER TABLE "communities" ADD COLUMN IF NOT EXISTS "size_max_m2" double precision;
+
 -- Update the definitive featured communities details (RISE, Santa Elena Hills, Harmony Heights, SERENA San Mateo, Residencial La Piedra, Villas San Miguel)
 -- Incorporate language overrides for custom price and size ranges and hook up custom images
 
