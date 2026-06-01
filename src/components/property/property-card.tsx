@@ -34,7 +34,18 @@ const BEACH_SLUGS = new Set([
 
 const MOUNTAIN_SLUGS = new Set(["perez-zeledon", "tinamastes-platanillo"]);
 
-const LAND_TYPES = new Set(["Lote", "Terreno", "Finca", "Lot", "Lot/Land", "Land", "Farm", "Ranch", "Rural area", "Terrenos"]);
+const LAND_TYPES = new Set([
+  "Lote",
+  "Terreno",
+  "Finca",
+  "Lot",
+  "Lot/Land",
+  "Land",
+  "Farm",
+  "Ranch",
+  "Rural area",
+  "Terrenos",
+]);
 
 /** Bi-directional property type display labels (EN ↔ ES) */
 const TYPE_DISPLAY: Record<string, { en: string; es: string }> = {
