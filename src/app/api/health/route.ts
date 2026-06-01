@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
   let totalCount = 0;
   let nonNullCoordsCount = 0;
-  let sampleProperties: any[] = [];
+  let sampleProperties: unknown[] = [];
   let queryCount = 0;
   let errorMsg: string | null = null;
 
@@ -53,8 +53,8 @@ export async function GET(req: NextRequest) {
         );
       queryCount = qRes[0]?.count ?? 0;
     }
-  } catch (err: any) {
-    errorMsg = err?.message || String(err);
+  } catch (err) {
+    errorMsg = err instanceof Error ? err.message : String(err);
   }
 
   const health = {
