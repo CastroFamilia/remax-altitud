@@ -176,6 +176,7 @@ const TYPE_EQUIVALENTS: Record<string, string[]> = {
 };
 
 const DB_TYPE_TO_SPANISH: Record<string, string> = {
+  // English → Spanish
   House: "Casa",
   "House/Villa": "Casa",
   Residential: "Casa",
@@ -186,9 +187,18 @@ const DB_TYPE_TO_SPANISH: Record<string, string> = {
   "Lot/Land": "Lote",
   Land: "Lote",
   Commercial: "Comercial",
+  Business: "Comercial",
   Farm: "Finca",
   Ranch: "Finca",
   "Rural area": "Finca",
+  // Spanish → Spanish (API sometimes sends Spanish values in PropertyTypeName_en)
+  Casa: "Casa",
+  Apartamento: "Apartamento",
+  Lote: "Lote",
+  Terreno: "Lote",
+  Terrenos: "Lote",
+  Comercial: "Comercial",
+  Finca: "Finca",
 };
 
 function getPropertyTypeEquivalents(type: string): string[] {
