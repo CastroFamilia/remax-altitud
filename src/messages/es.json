@@ -14,7 +14,7 @@
     "santaElenaHills": "Santa Elena Hills",
     "allCommunities": "Todas las Comunidades",
     "sellYourProperty": "Vende tu Propiedad",
-    "about": "Nosotros",
+    "about": "La Ventaja Altitud",
     "ourTeam": "Nuestro Equipo",
     "contact": "Contacto",
     "ourAgents": "Nuestros Agentes",
@@ -42,14 +42,14 @@
     "followUs": "Síguenos",
     "allRightsReserved": "Todos los derechos reservados",
     "sellWithUs": "Vende con Nosotros",
-    "aboutUs": "Sobre Nosotros",
+    "aboutUs": "La Ventaja Altitud",
     "ourAgents": "Nuestros Agentes",
     "vipBuyer": "Servicio Comprador VIP",
     "contactUs": "Contáctanos",
     "properties": "Propiedades",
     "communities": "Comunidades",
     "areas": "Zonas",
-    "about": "Nosotros",
+    "about": "La Ventaja Altitud",
     "contact": "Contacto",
     "joinTeam": "Únete al Equipo",
     "privacy": "Política de Privacidad",
@@ -119,10 +119,25 @@
     }
   },
   "AboutPage": {
-    "metaTitle": "Acerca de REMAX Altitud — Zona Sur de Costa Rica",
-    "metaDescription": "Conoce a REMAX Altitud y Altitud Cero — el equipo inmobiliario de la Zona Sur: Pérez Zeledón, Dominical y Uvita.",
-    "pageTitle": "Acerca de REMAX Altitud",
-    "intro": "REMAX Altitud y REMAX Altitud Cero unen dos oficinas bajo una misma promesa: acompañar a clientes internacionales y locales para comprar, vender o invertir en la Zona Sur de Costa Rica — en el idioma que prefieras.",
+    "metaTitle": "La Ventaja Altitud — REMAX Altitud",
+    "metaDescription": "Descubra la Ventaja Altitud: financiamiento de hasta el 80%, planos de diseño arquitectónico gratuitos, asesoría legal gratuita y nuestras oficinas en la Zona Sur de Costa Rica.",
+    "pageTitle": "La Ventaja Altitud",
+    "intro": "Hacemos más que listar propiedades—pavimentamos el camino hacia su estilo de vida ideal. Compre, venda o construya con beneficios exclusivos que no encontrará en ningún otro lugar.",
+    "advantage": {
+      "heading": "La Ventaja Altitud",
+      "financing": {
+        "title": "Financiamiento de hasta el 80%",
+        "desc": "Asegure el capital que necesita. Le ayudamos a gestionar financiamiento de hasta el 80% a través de nuestra red bancaria, adaptado a su nacionalidad, historial crediticio y propiedad."
+      },
+      "architect": {
+        "title": "Diseño Arquitectónico Gratuito",
+        "desc": "Visualice su futuro hogar. Aproveche nuestros convenios exclusivos con constructoras de primer nivel que diseñarán el plano de su propiedad de forma 100% gratuita."
+      },
+      "legal": {
+        "title": "Asesoría Legal Gratuita",
+        "desc": "Invierta con absoluta tranquilidad. Nuestros abogados aliados le ofrecen una primera consulta de cortesía para revisar contratos, escrituras y estructuras de concesión (ZMT)."
+      }
+    },
     "officesHeading": "Nuestras Oficinas",
     "officesIntro": "Dos oficinas, un solo equipo — cubriendo las montañas de Pérez Zeledón y la costa pacífica desde Dominical hasta Uvita.",
     "office": {
@@ -1240,6 +1255,108 @@
     "booking": {
       "heading": "Comience Aquí: Cuéntenos Sobre Usted",
       "subtitle": "Comencemos su viaje a Costa Rica. Cuéntenos qué sueña y lo haremos realidad."
+    }
+  },
+  "LifestyleQuestionnaire": {
+    "title": "Cuestionario de Descubrimiento de Estilo de Vida en Costa Rica",
+    "tagline": "Dime cómo quieres vivir y te diré dónde encontrarlo",
+    "welcome": {
+      "heading": "¡Bienvenido a la Zona Sur y Región del Valle!",
+      "description": "Encontrar tu hogar perfecto aquí no se trata solo de dormitorios o metros cuadrados; se trata de sincronizar tu ritmo diario con el microclima, la infraestructura vial y el ambiente comunitario adecuados.",
+      "timeEstimate": "Tómate 3 minutos para completar este diagnóstico y ubicaremos el vecindario local exacto que se adapta a tu visión.",
+      "start": "Comenzar Cuestionario"
+    },
+    "question": "Pregunta",
+    "of": "de",
+    "next": "Siguiente Pregunta",
+    "back": "Atrás",
+    "seeResults": "Ver mis Resultados",
+    "retake": "Repetir Cuestionario",
+    "recommendedListings": "Propiedades recomendadas para ti",
+    "questions": {
+      "q1": {
+        "title": "1. El Ritmo de la Mañana y el Clima",
+        "subtitle": "Cuando te despiertas y miras por la ventana, ¿qué quieres ver y sentir?",
+        "a": "Un ambiente playero natural y de alta energía. Quiero escuchar las olas, ver el surf y sentir el calor costero tropical.",
+        "b": "Cúpula de selva profunda, monos y espectaculares vistas al mar (como la icónica Cola de Ballena) desde una cresta montañosa elevada y con brisa, donde las montañas se encuentran con el mar.",
+        "c": "Brisas frescas de montaña, ríos caudalosos, colinas verdes onduladas o vistas tranquilas del valle. Quiero un clima más templado y confortable donde pueda evitar por completo el uso del aire acondicionado."
+      },
+      "q2": {
+        "title": "2. Conducción, Accesibilidad y Realidades Viales",
+        "subtitle": "¿Cómo te sientes honestamente con las carreteras no pavimentadas y el terreno accidentado?",
+        "a": "Prefiero carreteras planas completamente pavimentadas o calles costeras de muy fácil acceso. Quiero ir rápido a la playa o a una cafetería en un vehículo estándar 2WD sin preocuparme por subidas empinadas.",
+        "b": "No me molesta un camino de lastre, pero quiero un camino comunitario sólido y bien mantenido donde pueda acceder a la carretera principal Costanera en un lapso de 5 a 10 minutos.",
+        "c": "¡Que venga la aventura! Me siento completamente cómodo comprando un vehículo 4x4 robusto con altura libre al suelo para manejar crestas de montañas empinadas y sin pavimentar o caminos rurales si eso significa obtener máxima privacidad, hectáreas y naturaleza prístina."
+      },
+      "q3": {
+        "title": "3. Conveniencia, Mandados y Atención Médica",
+        "subtitle": "¿Qué tan lejos estás dispuesto a conducir para ir a supermercados importantes, bancos y atención médica?",
+        "a": "Quiero la comodidad de boutiques justo al final de la calle. Caminar o conducir 5 minutos a mercados orgánicos, farmacias locales, clínicas médicas independientes y un puñado de restaurantes para extranjeros es perfecto.",
+        "b": "Un viaje panorámico de 15 a 20 minutos subiendo o bajando la costa está perfectamente bien si eso significa que puedo vivir en un vecindario más tranquilo y exclusivo.",
+        "c": "Quiero un centro de ciudad municipal importante y con todos los servicios. Quiero acceso inmediato a hospitales regionales, sucursales bancarias importantes, abogados especializados, grandes supermercados, mecánicos y tiendas de electrodomésticos."
+      },
+      "q4": {
+        "title": "4. Ambiente Comunitario y Círculos Sociales",
+        "subtitle": "¿Cómo se ve tu red de vecinos e interacción social ideal?",
+        "a": "Una mezcla bohemia y fluida de surfistas de clase mundial, nómadas digitales, viajeros con conciencia ecológica y una vibrante vida social nocturna con cerveza artesanal local y música en vivo.",
+        "b": "Una comunidad internacional de residentes extranjeros orientada al bienestar y estrechamente integrada con la cultura tica local, donde los fines de semana se pasan en la Feria local del agricultor, estudios de yoga o espacios comunitarios familiares.",
+        "c": "Un estilo de vida costarricense profundamente auténtico y basado en relaciones. Quiero vivir entre residentes a largo plazo, dueños de negocios locales y agricultores, mezclado con una comunidad creciente y de perfil bajo de agricultores ecológicos y jubilados."
+      }
+    },
+    "results": {
+      "a": {
+        "title": "El Centro Playero de Surf y Alta Energía",
+        "vibe": "Quieres energía de playa inmediata, un estilo de vida transitable a pie o en auto de fácil acceso, y una conexión social animada. No quieres estar aislado en una cresta montañosa alta; quieres estar donde está la acción.",
+        "matches": "Tus mejores opciones:",
+        "places": {
+          "p1": {
+            "name": "Dominical",
+            "desc": "La capital definitiva para el surf de clase mundial, la vida nocturna bohemia y la energía de nómadas digitales. Zona en su mayoría plana, centro de la ciudad muy transitable con acceso pavimentado justo al lado de la Costanera."
+          },
+          "p2": {
+            "name": "Dominicalito",
+            "desc": "Justo al sur de Dominical. Ofrece un ambiente de playa en una bahía un poco más tranquila y suave, muy favorecido por residentes a largo plazo que desean una proximidad al océano accesible con vehículos 2WD sin el alto tráfico turístico del Dominical principal."
+          },
+          "p3": {
+            "name": "Bahía Ballena",
+            "desc": "Ubicado justo al lado del Parque Nacional Marino Ballena. Plano, fácil de conducir, muy apto para bicicletas, y perfecto para compradores que desean caminar hacia el parque nacional todas las mañanas para ver la costa prístina."
+          }
+        }
+      },
+      "b": {
+        "title": "La Cresta de Selva Costera y Estilo de Vida Eco-Lujo",
+        "vibe": "Quieres el espectacular factor sorpresa: donde la exuberante selva mira directamente al Océano Pacífico. Priorizas vistas majestuosas, vida silvestre y comunidades de bienestar/educación alternativa premium, y no te importa un camino de montaña 4x4 para llegar a tu santuario privado.",
+        "matches": "Tus mejores opciones:",
+        "places": {
+          "p1": {
+            "name": "Uvita",
+            "desc": "El indiscutible centro de gravedad de servicios en la costa. Hogar de diversos restaurantes, supermercados, farmacias y prósperas comunidades bilingües y de aprendizaje alternativo. Las partes bajas son planas y fáciles; las crestas requieren un 4x4 sólido pero ofrecen vistas espectaculares de la Cola de Ballena."
+          },
+          "p2": {
+            "name": "Platanillo",
+            "desc": "Ubicado en la carretera pavimentada a media altura entre la costa y el valle interior. Se sitúa a mayor altitud, ofreciendo temperaturas más frescas, vistas de bosques lluviosos montañosos exuberantes, cascadas caudalosas y una comunidad fuerte y unida de extranjeros y locales a solo 15 minutos de la playa."
+          },
+          "p3": {
+            "name": "Barú",
+            "desc": "Una prístina zona de valle fluvial y montaña que se extiende hacia el interior a lo largo del río Barú. Ideal para quienes desean una biodiversidad masiva, privacidad y proximidad a reservas naturales manteniendo la playa a un corto y panorámico viaje en auto."
+          }
+        }
+      },
+      "c": {
+        "title": "El Auténtico Valle de Montaña y Estilo de Vida de Alta Conveniencia",
+        "vibe": "Quieres el máximo valor por tu inversión, amplias propiedades terrestres, una conexión auténtica con la cultura costarricense y cero dependencia del aire acondicionado las 24 horas. Priorizas una infraestructura robusta de nivel de ciudad sobre el acceso inmediato a la playa.",
+        "matches": "Tus mejores opciones:",
+        "places": {
+          "p1": {
+            "name": "Pérez Zeledón (incluyendo San Isidro de El General)",
+            "desc": "El principal motor económico y agrícola de la región. Este es un centro de ciudad municipal completo que ofrece un hospital regional de primer nivel, clínicas médicas privadas importantes, banca corporativa, Ferias orgánicas semanales masivas y un sinfín de comodidades comerciales."
+          },
+          "p2": {
+            "name": "Áreas circundantes de Pérez (ej. General Viejo, Miravalles, Quebradas, Cajón)",
+            "desc": "Estas laderas montañosas circundantes ofrecen extensas propiedades rurales, suelo fértil para sembrar, aire fresco de montaña y vistas espectaculares de la cordillera de Talamanca, todo mientras estás a un viaje pavimentado continuo de 10 a 15 minutos al centro de San Isidro para hacer mandados."
+          }
+        }
+      }
     }
   }
 }
