@@ -1,1 +1,1 @@
-ALTER TABLE "properties" ADD COLUMN "sub_location" text;
+ALTER TABLE "properties" ADD COLUMN IF NOT EXISTS "sub_location" text;
