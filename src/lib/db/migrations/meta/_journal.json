@@ -148,6 +148,13 @@
       "when": 1780455000000,
       "tag": "0021_update_dominical_area_guide_tokenized",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1780458000000,
+      "tag": "0022_add_sub_location",
+      "breakpoints": true
     }
   ]
 }
