@@ -10,6 +10,9 @@ import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { generateBreadcrumbJsonLd, serializeJsonLd } from "@/lib/seo/structured-data";
 import { sortCommunitiesCustom } from "@/lib/db/queries/communities";
 
+/** Opt out of static caching so DB-driven communities list always renders with fresh data. */
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ locale: string }>;
 }
