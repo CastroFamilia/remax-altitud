@@ -96,7 +96,7 @@ export function SearchPageClient() {
     return () => {
       cancelled = true;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapFilters?.type, mapFilters?.listingType, bounds]);
 
   // Initial load — fetch available areas for the location filter
