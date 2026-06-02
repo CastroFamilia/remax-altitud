@@ -423,6 +423,18 @@
         "concession": "Concesión",
         "zmt_restricted": "Zona Restringida ZMT"
       },
+      "listingType": {
+        "Sale": "En Venta",
+        "Lease": "En Alquiler"
+      },
+      "typeBadge": {
+        "House": "Casa",
+        "Lot": "Lote",
+        "Farm/Ranch": "Finca",
+        "Apartment": "Apto",
+        "Condo": "Condo",
+        "Commercial": "Comercial"
+      },
       "specs": {
         "beds": "{count} habitación",
         "baths": "{count} baño",

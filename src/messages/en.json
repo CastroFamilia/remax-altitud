@@ -423,6 +423,18 @@
         "concession": "Concession",
         "zmt_restricted": "ZMT Restricted"
       },
+      "listingType": {
+        "Sale": "For Sale",
+        "Lease": "For Lease"
+      },
+      "typeBadge": {
+        "House": "House",
+        "Lot": "Lot",
+        "Farm/Ranch": "Farm",
+        "Apartment": "Apt",
+        "Condo": "Condo",
+        "Commercial": "Commercial"
+      },
       "specs": {
         "beds": "{count} bed",
         "baths": "{count} bath",

@@ -33,7 +33,12 @@ export type MapProperty = {
   bedrooms: number | null;
   bathrooms: number | null;
   lotSizeM2: number | null;
+  constructionM2: number | null;
   zmtStatus: string;
+  propertyType: string;
+  listingType: string;
+  currency: string;
+  apiRaw: unknown;
   images: OptimizedImage[];
   latitude: number;
   longitude: number;
@@ -117,7 +122,12 @@ export async function getPropertiesForMap(bounds?: RawBounds): Promise<MapProper
       bedrooms: properties.bedrooms,
       bathrooms: properties.bathrooms,
       lotSizeM2: properties.lotSizeM2,
+      constructionM2: properties.constructionM2,
       zmtStatus: properties.zmtStatus,
+      propertyType: properties.propertyType,
+      listingType: properties.listingType,
+      currency: properties.currency,
+      apiRaw: properties.apiRaw,
       images: properties.images,
       latitude: properties.latitude,
       longitude: properties.longitude,

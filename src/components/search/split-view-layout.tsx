@@ -23,7 +23,12 @@ export type MapProperty = {
   bedrooms: number | null;
   bathrooms: number | null;
   lotSizeM2: number | null;
+  constructionM2?: number | null;
   zmtStatus: string;
+  propertyType?: string;
+  listingType?: string;
+  currency?: string | null;
+  apiRaw?: unknown;
   images: OptimizedImage[];
   latitude: number;
   longitude: number;
