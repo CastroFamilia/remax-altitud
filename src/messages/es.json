@@ -1277,30 +1277,30 @@
       "q1": {
         "title": "1. El Ritmo de la Mañana y el Clima",
         "subtitle": "Cuando te despiertas y miras por la ventana, ¿qué quieres ver y sentir?",
-        "a": "Un ambiente playero natural y de alta energía. Quiero escuchar las olas, ver el surf y sentir el calor costero tropical.",
-        "b": "Cúpula de selva profunda, monos y espectaculares vistas al mar (como la icónica Cola de Ballena) desde una cresta montañosa elevada y con brisa, donde las montañas se encuentran con el mar.",
-        "c": "Brisas frescas de montaña, ríos caudalosos, colinas verdes onduladas o vistas tranquilas del valle. Quiero un clima más templado y confortable donde pueda evitar por completo el uso del aire acondicionado."
+        "a": "Ambiente playero de alta energía. Quiero sentir el calor costero tropical y escuchar el surf.",
+        "b": "Selva exuberante y espectaculares vistas al mar desde una cresta montañosa elevada y fresca.",
+        "c": "Brisas frescas de montaña, colinas verdes o valles. Un clima templado donde pueda evitar el aire acondicionado."
       },
       "q2": {
         "title": "2. Conducción, Accesibilidad y Realidades Viales",
         "subtitle": "¿Cómo te sientes honestamente con las carreteras no pavimentadas y el terreno accidentado?",
-        "a": "Prefiero carreteras planas completamente pavimentadas o calles costeras de muy fácil acceso. Quiero ir rápido a la playa o a una cafetería en un vehículo estándar 2WD sin preocuparme por subidas empinadas.",
-        "b": "No me molesta un camino de lastre, pero quiero un camino comunitario sólido y bien mantenido donde pueda acceder a la carretera principal Costanera en un lapso de 5 a 10 minutos.",
-        "c": "¡Que venga la aventura! Me siento completamente cómodo comprando un vehículo 4x4 robusto con altura libre al suelo para manejar crestas de montañas empinadas y sin pavimentar o caminos rurales si eso significa obtener máxima privacidad, hectáreas y naturaleza prístina."
+        "a": "Carreteras planas, fáciles y pavimentadas. Prefiero acceso sencillo para vehículos 2WD sin pendientes empinadas.",
+        "b": "Puedo tolerar algo de aventura, pero con límites. Caminos de lastre estables o calles comunitarias están bien.",
+        "c": "¡Que venga la aventura! Totalmente cómodo con rutas 4x4 rudas para obtener máxima privacidad y naturaleza virgen."
       },
       "q3": {
         "title": "3. Conveniencia, Mandados y Atención Médica",
         "subtitle": "¿Qué tan lejos estás dispuesto a conducir para ir a supermercados importantes, bancos y atención médica?",
-        "a": "Quiero la comodidad de boutiques justo al final de la calle. Caminar o conducir 5 minutos a mercados orgánicos, farmacias locales, clínicas médicas independientes y un puñado de restaurantes para extranjeros es perfecto.",
-        "b": "Un viaje panorámico de 15 a 20 minutos subiendo o bajando la costa está perfectamente bien si eso significa que puedo vivir en un vecindario más tranquilo y exclusivo.",
-        "c": "Quiero un centro de ciudad municipal importante y con todos los servicios. Quiero acceso inmediato a hospitales regionales, sucursales bancarias importantes, abogados especializados, grandes supermercados, mecánicos y tiendas de electrodomésticos."
+        "a": "Comodidades locales a la mano. A 5 minutos a pie o en auto de mercados orgánicos, farmacias y restaurantes.",
+        "b": "Privacidad y exclusividad. No me importa conducir de 15 a 20 minutos por la costa para hacer mis compras.",
+        "c": "Servicios completos de ciudad. Acceso inmediato a hospitales regionales, bancos importantes y supermercados."
       },
       "q4": {
         "title": "4. Ambiente Comunitario y Círculos Sociales",
         "subtitle": "¿Cómo se ve tu red de vecinos e interacción social ideal?",
-        "a": "Una mezcla bohemia y fluida de surfistas de clase mundial, nómadas digitales, viajeros con conciencia ecológica y una vibrante vida social nocturna con cerveza artesanal local y música en vivo.",
-        "b": "Una comunidad internacional de residentes extranjeros orientada al bienestar y estrechamente integrada con la cultura tica local, donde los fines de semana se pasan en la Feria local del agricultor, estudios de yoga o espacios comunitarios familiares.",
-        "c": "Un estilo de vida costarricense profundamente auténtico y basado en relaciones. Quiero vivir entre residentes a largo plazo, dueños de negocios locales y agricultores, mezclado con una comunidad creciente y de perfil bajo de agricultores ecológicos y jubilados."
+        "a": "Ambiente bohemio y activo. Nómadas digitales, surfistas y una vida social vibrante al atardecer.",
+        "b": "Comunidad internacional enfocada en bienestar, yoga y ferias locales, integrada con la cultura tica.",
+        "c": "Estilo de vida tico auténtico. Vivir rodeado de residentes a largo plazo, agricultores locales y fincas amplias."
       }
     },
     "results": {

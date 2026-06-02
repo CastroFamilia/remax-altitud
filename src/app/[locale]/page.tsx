@@ -42,6 +42,7 @@ function HomeContent({
         <LifestyleQuestionnaire initialProperties={questionnaireProperties} locale={locale} />
         <VipSearchBanner />
         <FeaturedPropertiesShell locale={locale} />
+        <LifestyleQuestionnaire initialProperties={questionnaireProperties} locale={locale} />
         <FeaturedCommunities locale={locale} />
         <FeaturedAreas locale={locale} />
       </div>

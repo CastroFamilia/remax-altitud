@@ -1277,30 +1277,30 @@
       "q1": {
         "title": "1. The Morning Rhythm & Climate",
         "subtitle": "When you wake up and look out the window, what do you want to see and feel?",
-        "a": "A raw, high-energy beach vibe. I want to hear the waves, see the surf, and feel the tropical coastal heat.",
-        "b": "Deep jungle canopy, monkeys, and spectacular ocean views (like the iconic Whale's Tail) from an elevated, breezy mountain ridge where the mountains meet the sea.",
-        "c": "Cool mountain breezes, rushing rivers, rolling green hills, or peaceful valley views. I want a milder, comfortable climate where I can completely avoid using A/C."
+        "a": "High-energy coastal beach vibe. I want to feel the tropical coastal heat and hear the surf.",
+        "b": "Lush jungle canopy and dramatic ocean views from a breezy mountain ridge where the mountains meet the sea.",
+        "c": "Cool mountain breezes, green hills, or peaceful valley views. A milder climate where I can avoid using A/C."
       },
       "q2": {
         "title": "2. Driving, Access & Road Realities",
         "subtitle": "How do you honestly feel about unpaved roads and rugged terrain?",
-        "a": "I prefer flat, fully paved roads or highly accessible coastal streets. I want to zip to the beach or a café in a standard 2WD vehicle without stressing about steep climbs.",
-        "b": "I don't mind a gravel road, but I want a solid, well-maintained community road where I can access the main Costanera highway within 5 to 10 minutes.",
-        "c": "Bring on the adventure! I am completely comfortable buying a rugged 4x4 with high clearance to handle steep, winding unpaved mountain ridges or rural tracks if it means getting ultimate privacy, acreage, and pristine nature."
+        "a": "All paved, flat, and easy roads. I prefer highly accessible coastal streets with a standard 2WD vehicle.",
+        "b": "I can handle some adventure, but within limits. Solid gravel or well-maintained community roads are fine.",
+        "c": "Bring on the adventure! Fully comfortable with rugged 4x4 tracks to get ultimate privacy and pristine nature."
       },
       "q3": {
         "title": "3. Convenience, Errands & Healthcare",
         "subtitle": "How far are you willing to drive for major supermarkets, banking, and medical care?",
-        "a": "I want boutique convenience right down the street. Walking or a 5-minute drive to organic markets, local pharmacies, independent medical clinics, and a handful of expat eateries is perfect.",
-        "b": "A 15- to 20-minute scenic drive up or down the coast is perfectly fine if it means I get to live in a quieter, more exclusive neighborhood.",
-        "c": "I want a major, full-service municipal city hub. I want immediate access to regional hospitals, major bank branches, specialized lawyers, large supermarkets, auto mechanics, and appliance stores."
+        "a": "Boutique convenience right down the street. Walk or 5-minute drive to organic markets, pharmacies, and local eateries.",
+        "b": "Quiet seclusion. I don't mind a 15- to 20-minute scenic drive up or down the coast for my errands.",
+        "c": "Full municipal city convenience. I want immediate access to regional hospitals, corporate banks, and major supermarkets."
       },
       "q4": {
         "title": "4. Community Vibe & Social Circles",
         "subtitle": "What does your ideal neighbor network and social scene look like?",
-        "a": "A fluid, bohemian blend of world-class surfers, digital nomads, eco-conscious travelers, and a vibrant evening social scene with local craft beer and live music.",
-        "b": "An international, wellness-oriented expat community tightly integrated with local Tico culture, where weekends are spent at the local Feria (farmers' market), yoga studios, or family-focused community spaces.",
-        "c": "A deeply authentic, relationship-driven Costa Rican lifestyle. I want to live among long-term residents, local business owners, and farmers, mixed with a growing, low-profile community of intentional homesteaders and retirees."
+        "a": "Bohemian and fluid blend of world-class surfers, digital nomads, eco-travelers, and active evening social scenes.",
+        "b": "International, wellness-oriented expat community tightly integrated with local Tico culture (farmers' markets, yoga).",
+        "c": "Authentic, relationship-driven Costa Rican lifestyle. Sprawling country estates, local farmers, and homesteaders."
       }
     },
     "results": {
