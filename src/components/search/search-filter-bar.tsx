@@ -78,6 +78,11 @@ export function SearchFilterBar({
 
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
 
+  /** Toggle a property-type chip — same effect as choosing from the Type dropdown */
+  const handleTypeToggle = (type: string) => {
+    setFilter("type", filters.type === type ? undefined : type);
+  };
+
   const isLandType = filters.type ? LAND_TYPES.includes(filters.type) : false;
 
   const priceValue: [number, number] = [filters.priceMin ?? 0, filters.priceMax ?? 5_000_000];
@@ -149,7 +154,12 @@ export function SearchFilterBar({
   const mobileFilterControls = (
     <div className="flex flex-wrap items-center gap-3 w-full">
       {/* Story 3.4: Lifestyle tag chips (AC #1, #2, #3) */}
-      <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
+      <LifestyleTagChips
+        activeTags={filters.tags ?? []}
+        onToggle={toggleTag}
+        activeType={filters.type}
+        onTypeToggle={handleTypeToggle}
+      />
       {/* Listing Type dropdown (Sale / Lease) */}
       <div className="flex flex-col gap-1">
         <label className="text-xs font-medium text-muted-foreground">
@@ -309,7 +319,12 @@ export function SearchFilterBar({
           <div className="hidden md:flex flex-col gap-1 w-full">
             {/* Row 1: Lifestyle Tags (compact, scrollable) */}
             <div className="w-full overflow-x-auto no-scrollbar">
-              <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
+              <LifestyleTagChips
+                activeTags={filters.tags ?? []}
+                onToggle={toggleTag}
+                activeType={filters.type}
+                onTypeToggle={handleTypeToggle}
+              />
             </div>
 
             {/* Row 2: All controls in a single unified row */}
