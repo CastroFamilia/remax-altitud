@@ -1,9 +1,27 @@
+import Module from "node:module";
+import path from "node:path";
+
+// Shim server-only before importing any queries
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const originalResolve = (Module as any)._resolveFilename;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(Module as any)._resolveFilename = function (
+  request: string,
+  parent: unknown,
+  isMain: boolean,
+  options: unknown,
+) {
+  if (request === "server-only") {
+    return path.resolve(process.cwd(), "scripts/server-only-shim.js");
+  }
+  return originalResolve.call(this, request, parent, isMain, options);
+};
+
 import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { eq, and, isNull, isNotNull, sql } from "drizzle-orm";
+import { eq, and, isNotNull, sql } from "drizzle-orm";
 import { properties } from "../schema/properties";
-import { resolveSubLocation } from "../queries/properties";
 
 config({ path: ".env.local" });
 config({ path: ".env" });
@@ -18,9 +36,11 @@ const client = postgres(connectionString, { prepare: false, max: 1 });
 const db = drizzle(client);
 
 async function main() {
+  const { resolveSubLocation } = await import("../queries/properties");
+
   console.log("🔍 Populating sub_location from apiRaw.Location for Pérez Zeledón properties...\n");
 
-  // Fetch all PZ properties that don't have a sub_location yet
+  // Fetch all PZ properties to populate/correct their sub_locations
   const pzProperties = await db
     .select({
       id: properties.id,
@@ -29,11 +49,12 @@ async function main() {
       subLocation: properties.subLocation,
       apiRaw: properties.apiRaw,
       titleEn: properties.titleEn,
+      titleEs: properties.titleEs,
     })
     .from(properties)
-    .where(and(eq(properties.areaSlug, "perez-zeledon"), isNull(properties.subLocation)));
+    .where(eq(properties.areaSlug, "perez-zeledon"));
 
-  console.log(`Found ${pzProperties.length} PZ properties without sub_location.\n`);
+  console.log(`Found ${pzProperties.length} total PZ properties to process.\n`);
 
   let updated = 0;
   let skipped = 0;
@@ -42,27 +63,37 @@ async function main() {
   for (const prop of pzProperties) {
     const apiRaw = prop.apiRaw as Record<string, unknown> | null;
     const location = typeof apiRaw?.Location === "string" ? apiRaw.Location : null;
-
-    if (!location) {
-      skipped++;
-      continue;
-    }
+    const unparsedAddress =
+      typeof apiRaw?.UnparsedAddress === "string" ? apiRaw.UnparsedAddress : null;
 
     // Use the same resolveSubLocation() from the sync pipeline (single source of truth)
-    const subLocationSlug = resolveSubLocation(location, "perez-zeledon");
+    const subLocationSlug = resolveSubLocation(
+      location,
+      "perez-zeledon",
+      prop.titleEn,
+      prop.titleEs,
+      unparsedAddress,
+    );
 
     if (subLocationSlug) {
-      await db
-        .update(properties)
-        .set({ subLocation: subLocationSlug })
-        .where(eq(properties.id, prop.id));
+      if (prop.subLocation !== subLocationSlug) {
+        await db
+          .update(properties)
+          .set({ subLocation: subLocationSlug })
+          .where(eq(properties.id, prop.id));
 
-      console.log(`  ✅ ${prop.slug}: "${location}" → ${subLocationSlug}`);
-      updated++;
+        console.log(
+          `  ✅ ${prop.slug}: "${location ?? "None"}" | "${unparsedAddress ?? "None"}" → ${subLocationSlug}`,
+        );
+        updated++;
+      } else {
+        skipped++;
+      }
     } else {
       // Could not map — log for review
-      if (!unmapped.includes(location)) {
-        unmapped.push(location);
+      const displayLoc = location || unparsedAddress || prop.titleEn;
+      if (displayLoc && !unmapped.includes(displayLoc)) {
+        unmapped.push(displayLoc);
       }
       skipped++;
     }

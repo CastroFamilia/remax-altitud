@@ -193,14 +193,23 @@ import { DISTRICT_KEYWORDS } from "@/lib/locations";
  * @param areaSlug  - The resolved main area slug (filters keywords to matching parent)
  * @returns Sub-location slug (e.g. "cajon") or null if not resolvable
  */
-export function resolveSubLocation(location: string | null, areaSlug: string): string | null {
-  if (!location || location.trim().length === 0) return null;
+export function resolveSubLocation(
+  location: string | null,
+  areaSlug: string,
+  titleEn?: string | null,
+  titleEs?: string | null,
+  unparsedAddress?: string | null,
+): string | null {
+  const loc = (location ?? "").toLowerCase();
+  const tEn = (titleEn ?? "").toLowerCase();
+  const tEs = (titleEs ?? "").toLowerCase();
+  const addr = (unparsedAddress ?? "").toLowerCase();
 
-  const loc = location.toLowerCase();
+  const combined = `${loc} ${tEn} ${tEs} ${addr}`;
 
   for (const { keyword, slug, parent } of DISTRICT_KEYWORDS) {
     // Only match keywords whose parent matches the resolved area
-    if (parent === areaSlug && loc.includes(keyword)) {
+    if (parent === areaSlug && combined.includes(keyword)) {
       return slug;
     }
   }
@@ -224,7 +233,13 @@ export async function upsertProperty(
 
   const resolvedAreaSlug = resolveAreaSlug(raw);
   const resolvedAreaId = await getAreaIdBySlug(resolvedAreaSlug);
-  const resolvedSubLocation = resolveSubLocation(raw.location, resolvedAreaSlug);
+  const resolvedSubLocation = resolveSubLocation(
+    raw.location,
+    resolvedAreaSlug,
+    raw.titleEn,
+    raw.titleEs,
+    raw.unparsedAddress,
+  );
 
   const values = {
     apiId: raw.apiId,
@@ -523,10 +538,6 @@ export async function getPropertyBySlug(slug: string) {
   return rows[0] ?? null;
 }
 
-/**
- * Maps DB property rows to PropertySearchItem shape.
- * Handles normalization of images (Story 3.5 transition).
- */
 export function mapPropertyRowToSearchItem(row: {
   id: string;
   slug: string;
@@ -549,6 +560,7 @@ export function mapPropertyRowToSearchItem(row: {
   descriptionEn?: string | null;
   descriptionEs?: string | null;
   listingType?: string | null;
+  subLocation?: string | null;
 }): PropertySearchItem {
   return {
     id: row.id,
@@ -572,6 +584,7 @@ export function mapPropertyRowToSearchItem(row: {
     descriptionEn: row.descriptionEn ?? "",
     descriptionEs: row.descriptionEs ?? "",
     listingType: row.listingType ?? "Sale",
+    subLocation: row.subLocation ?? null,
   };
 }
 
@@ -591,6 +604,7 @@ export const propertySearchColumns = {
   listingType: properties.listingType,
   status: properties.status,
   areaSlug: properties.areaSlug,
+  subLocation: properties.subLocation,
   images: properties.images,
   latitude: properties.latitude,
   longitude: properties.longitude,
