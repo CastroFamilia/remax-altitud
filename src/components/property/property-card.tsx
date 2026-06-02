@@ -212,6 +212,53 @@ function cleanApiLocation(raw: string): string {
 }
 
 /**
+ * Helper to extract a specific town from the title if known.
+ */
+function extractTownFromTitle(title: string): string | null {
+  const titleLower = title.toLowerCase();
+  const towns = [
+    { keyword: "general viejo", label: "General Viejo" },
+    { keyword: "santa elena", label: "Santa Elena" },
+    { keyword: "cajón", label: "Cajón" },
+    { keyword: "cajon", label: "Cajón" },
+    { keyword: "quebradas", label: "Quebradas" },
+    { keyword: "miravalles", label: "Miravalles" },
+    { keyword: "la palma", label: "La Palma" },
+    { keyword: "sinaí", label: "Barrio Sinaí" },
+    { keyword: "sinai", label: "Barrio Sinaí" },
+    { keyword: "quizarra", label: "Quizarrá" },
+    { keyword: "quizarrá", label: "Quizarrá" },
+    { keyword: "peñas blancas", label: "Peñas Blancas" },
+    { keyword: "penas blancas", label: "Peñas Blancas" },
+    { keyword: "san francisco", label: "San Francisco" },
+    { keyword: "las mercedes", label: "Las Mercedes" },
+    { keyword: "san miguel", label: "San Miguel" },
+    { keyword: "miraflores", label: "Miraflores" },
+    { keyword: "pavones", label: "Pavones" },
+    { keyword: "santa rosa", label: "Santa Rosa" },
+    { keyword: "rivas", label: "Rivas" },
+    { keyword: "el general", label: "El General" },
+    { keyword: "san isidro", label: "San Isidro" },
+    { keyword: "san pedro", label: "San Pedro" },
+    { keyword: "platanares", label: "Platanares" },
+    { keyword: "pejibaye", label: "Pejibaye" },
+    { keyword: "barú", label: "Barú" },
+    { keyword: "baru", label: "Barú" },
+    { keyword: "rio nuevo", label: "Río Nuevo" },
+    { keyword: "río nuevo", label: "Río Nuevo" },
+    { keyword: "paramo", label: "Páramo" },
+    { keyword: "páramo", label: "Páramo" },
+  ];
+
+  for (const town of towns) {
+    if (titleLower.includes(town.keyword)) {
+      return town.label;
+    }
+  }
+  return null;
+}
+
+/**
  * Helper to resolve the town and canton name.
  * Priority: subLocation field → apiRaw.Location (cleaned) → areaSlug fallback.
  */
@@ -219,10 +266,8 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
   const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
   const areaSlug = property.areaSlug;
 
-  // 1. Try subLocation field for PZ sub-locations (most reliable)
-  const subLocation = (apiRaw as Record<string, unknown> | undefined)?.subLocation as
-    | string
-    | undefined;
+  // 1. Try subLocation field from property (most reliable, resolved from DB)
+  const subLocation = property.subLocation;
   if (subLocation) {
     const parentLabel =
       areaSlug === "perez-zeledon"
@@ -233,10 +278,55 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
             ?.split("-")
             .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
             .join(" ") ?? "");
-    return `${getSubLocationLabel(subLocation)}, ${parentLabel}`;
+
+    // For "el-general", map to "General Viejo" or "Santa Elena" if title/address has them
+    let label = getSubLocationLabel(subLocation);
+    if (subLocation === "el-general") {
+      const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+      const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.toLowerCase() ?? "";
+      if (title.toLowerCase().includes("santa elena") || unparsedAddress.includes("santa elena")) {
+        label = "Santa Elena";
+      } else {
+        label = "General Viejo";
+      }
+    }
+
+    return `${label}, ${parentLabel}`;
   }
 
-  // 2. Try apiRaw.Location — clean it up for display
+  // 2. Try to get a specific town name from UnparsedAddress or Title for Pérez Zeledón
+  if (areaSlug === "perez-zeledon") {
+    let specificTown: string | null = null;
+
+    // a. Try to get it from UnparsedAddress
+    const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.trim();
+    if (unparsedAddress && unparsedAddress.length > 0) {
+      const parts = unparsedAddress.split(",");
+      const firstPart = parts[0]?.trim();
+      if (firstPart) {
+        const lowerFirst = firstPart.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a"));
+        if (
+          lowerFirst !== "perez zeledon" &&
+          lowerFirst !== "costa rica" &&
+          lowerFirst !== "san jose"
+        ) {
+          specificTown = firstPart;
+        }
+      }
+    }
+
+    // b. Try to extract it from title
+    if (!specificTown) {
+      const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+      specificTown = extractTownFromTitle(title);
+    }
+
+    if (specificTown) {
+      return `${specificTown}, ${locale === "es" ? "Pérez Zeledón" : "Perez Zeledon"}`;
+    }
+  }
+
+  // 3. Try apiRaw.Location — clean it up for display
   if (typeof apiRaw?.Location === "string" && apiRaw.Location.trim().length > 0) {
     const cleaned = cleanApiLocation(apiRaw.Location);
     // If it's a PZ property and Location is just "Pérez Zeledón", add specificity from title
@@ -256,7 +346,7 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
     return cleaned;
   }
 
-  // 3. Fallback based on areaSlug
+  // 4. Fallback based on areaSlug
   if (areaSlug === "perez-zeledon") {
     return locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
   }

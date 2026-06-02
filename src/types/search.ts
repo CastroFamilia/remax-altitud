@@ -50,6 +50,7 @@ export interface PropertySearchItem {
   apiRaw?: Record<string, unknown> | null;
   descriptionEn?: string;
   descriptionEs?: string;
+  subLocation?: string | null;
 }
 
 export interface FilterFacets {

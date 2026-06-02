@@ -334,6 +334,29 @@ export async function searchProperties(
         "at",
         "by",
         "of",
+        "near",
+        "cerca",
+        "the",
+        // Transaction intent words — these indicate buy/sell/rent intent and
+        // should never be used as keyword search terms against property content.
+        // The client-side parser strips them, but this is defense-in-depth.
+        "sell",
+        "sale",
+        "buy",
+        "purchase",
+        "buying",
+        "selling",
+        "comprar",
+        "vender",
+        "venta",
+        "compra",
+        "rent",
+        "renting",
+        "lease",
+        "leasing",
+        "alquilar",
+        "arrendar",
+        "arriendo",
       ]);
 
       // Split by whitespace and punctuation, map to lowercase and filter out stop words
