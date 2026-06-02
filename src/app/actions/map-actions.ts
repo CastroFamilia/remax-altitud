@@ -18,7 +18,7 @@
  * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 8
  */
 
-import { and, isNotNull, eq, gte, lte } from "drizzle-orm";
+import { and, isNotNull, eq, gte, lte, inArray } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
@@ -50,6 +50,39 @@ type RawBounds = {
   east: number;
   west: number;
 };
+
+/** Optional filters to apply to map property queries. */
+export type MapFilters = {
+  type?: string;
+  listingType?: string;
+};
+
+/**
+ * Maps a user-facing type label (Spanish or English) to all equivalent
+ * property_type values stored in the DB. Mirrors the TYPE_EQUIVALENTS
+ * in search-actions.ts so map and grid stay in sync.
+ */
+const TYPE_EQUIVALENTS: Record<string, string[]> = {
+  casa: ["Casa", "House", "Residential", "House/Villa"],
+  house: ["Casa", "House", "Residential", "House/Villa"],
+  apartamento: ["Apartamento", "Apartment", "Condominium", "Condo"],
+  apartment: ["Apartamento", "Apartment", "Condominium", "Condo"],
+  lote: ["Lote", "Lot", "Land", "Lot/Land", "Terreno", "Terrenos", "Finca", "Farm", "Ranch", "Rural area"],
+  lot: ["Lote", "Lot", "Land", "Lot/Land", "Terreno", "Terrenos", "Finca", "Farm", "Ranch", "Rural area"],
+  terreno: ["Terreno", "Terrenos", "Land", "Lot", "Lot/Land", "Lote", "Finca", "Farm", "Ranch", "Rural area"],
+  comercial: ["Comercial", "Commercial", "Business"],
+  commercial: ["Comercial", "Commercial", "Business"],
+  finca: ["Finca", "Farm", "Ranch", "Rural area", "Lote", "Lot", "Land", "Lot/Land", "Terreno", "Terrenos"],
+  farm: ["Finca", "Farm", "Ranch", "Rural area", "Lote", "Lot", "Land", "Lot/Land", "Terreno", "Terrenos"],
+};
+
+function getPropertyTypeEquivalents(type: string): string[] {
+  const normalized = type.toLowerCase().trim();
+  const equivalents = TYPE_EQUIVALENTS[normalized];
+  if (equivalents) return equivalents;
+  const capitalized = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+  return [type, normalized, capitalized];
+}
 
 /**
  * Validates a client-supplied bounds object. Returns sanitized bounds when
@@ -89,7 +122,10 @@ function sanitizeBounds(bounds: RawBounds): RawBounds | null {
   };
 }
 
-export async function getPropertiesForMap(bounds?: RawBounds): Promise<MapProperty[]> {
+export async function getPropertiesForMap(
+  bounds?: RawBounds,
+  filters?: MapFilters,
+): Promise<MapProperty[]> {
   const baseConditions = and(
     eq(properties.isVisible, true),
     isNotNull(properties.latitude),
@@ -98,6 +134,17 @@ export async function getPropertiesForMap(bounds?: RawBounds): Promise<MapProper
 
   const safeBounds = bounds != null ? sanitizeBounds(bounds) : null;
 
+  // Build filter conditions from the active search filters so map pins
+  // stay in sync with the card grid (fixes map showing all types when
+  // a type filter is active).
+  const typeCondition = filters?.type
+    ? inArray(properties.propertyType, getPropertyTypeEquivalents(filters.type))
+    : undefined;
+
+  const listingTypeCondition = filters?.listingType
+    ? eq(properties.listingType, filters.listingType)
+    : undefined;
+
   // Use simple lat/lng range comparisons instead of PostGIS geo operators.
   // The `&&` operator with ST_MakeEnvelope doesn't work correctly on
   // geography(Point, 4326) columns — it requires geometry type.
@@ -105,12 +152,14 @@ export async function getPropertiesForMap(bounds?: RawBounds): Promise<MapProper
     safeBounds != null
       ? and(
           baseConditions,
+          typeCondition,
+          listingTypeCondition,
           gte(properties.latitude, safeBounds.south),
           lte(properties.latitude, safeBounds.north),
           gte(properties.longitude, safeBounds.west),
           lte(properties.longitude, safeBounds.east),
         )
-      : baseConditions;
+      : and(baseConditions, typeCondition, listingTypeCondition);
 
   const rows = await db
     .select({

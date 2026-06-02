@@ -7,7 +7,7 @@ import { SearchFilterBar } from "@/components/search/search-filter-bar";
 import { getPropertiesForMap } from "@/app/actions/map-actions";
 import { searchProperties, getAvailableAreas } from "@/app/actions/search-actions";
 import { useSearchFilters } from "@/hooks/use-search-filters";
-import type { MapProperty } from "@/app/actions/map-actions";
+import type { MapProperty, MapFilters } from "@/app/actions/map-actions";
 import type { PropertySearchItem, FilterFacets } from "@/types/search";
 
 type ViewMode = "split" | "map" | "grid";
@@ -67,21 +67,37 @@ export function SearchPageClient() {
     };
   }, []);
 
-  // Initial load — fetch all visible properties with coordinates for the map
+  // Extract the map-relevant filters (type, listingType) so the map query
+  // stays in sync with the card grid when a filter is active.
+  const mapFilters: MapFilters | undefined =
+    filters.type || filters.listingType
+      ? { type: filters.type, listingType: filters.listingType }
+      : undefined;
+
+  // Keep a ref to the latest mapFilters so the handleBoundsChange callback
+  // always sees the current value without needing to be re-created.
+  const mapFiltersRef = useRef(mapFilters);
+  mapFiltersRef.current = mapFilters;
+
+  // Fetch map properties whenever filters change (and on initial load).
+  // This ensures map pins update when the user selects a property type.
   useEffect(() => {
     let cancelled = false;
-    getPropertiesForMap()
+    const seq = ++requestSeqRef.current;
+    getPropertiesForMap(bounds ?? undefined, mapFilters)
       .then((data) => {
-        if (!cancelled) setMapProperties(data);
+        if (!cancelled && seq === requestSeqRef.current) {
+          setMapProperties(data);
+        }
       })
       .catch((error) => {
-        // Server Action failure — log and leave the property list empty
-        console.error("[search] initial getPropertiesForMap failed", error);
+        console.error("[search] getPropertiesForMap failed", error);
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapFilters?.type, mapFilters?.listingType, bounds]);
 
   // Initial load — fetch available areas for the location filter
   useEffect(() => {
@@ -136,20 +152,11 @@ export function SearchPageClient() {
       });
   }, [filters, page, bounds, viewMode]);
 
-  // Refresh map properties when map bounds change.
-  // Uses a monotonically increasing sequence number to discard stale responses.
+  // Update bounds state when the map viewport changes.
+  // Map property fetching is handled by the unified effect above
+  // (which reacts to bounds AND filter changes).
   const handleBoundsChange = useCallback((newBounds: MapBounds) => {
     setBoundsState(newBounds);
-    const seq = ++requestSeqRef.current;
-    getPropertiesForMap(newBounds)
-      .then((data) => {
-        if (seq === requestSeqRef.current) {
-          setMapProperties(data);
-        }
-      })
-      .catch((error) => {
-        console.error("[search] bounds-change getPropertiesForMap failed", error);
-      });
   }, []);
 
   // Near Me handlers — lifted here to pass into SearchFilterBar
