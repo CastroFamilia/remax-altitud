@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { SimplePageLayout } from "@/components/layout/simple-page-layout";
 import { OfficeCard } from "@/components/layout/office-card";
 import { offices } from "@/lib/constants/offices";
+import { Coins, Palette, Scale } from "lucide-react";
 
 export async function generateMetadata({
   params,
@@ -40,6 +41,42 @@ function AboutPageContent() {
   const t = useTranslations("AboutPage");
   return (
     <SimplePageLayout pageTitle={t("pageTitle")} intro={t("intro")}>
+      {/* The Altitud Advantage Perks Section */}
+      <section aria-labelledby="advantage-heading" className="mx-auto max-w-5xl mb-16">
+        <h2 id="advantage-heading" className="sr-only">
+          {t("advantage.heading")}
+        </h2>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {/* Card 1: Financing */}
+          <article className="flex flex-col items-center text-center rounded-xl border border-brand-warm bg-white p-6 shadow-md transition-all duration-[var(--duration-fast)] hover:-translate-y-1 hover:shadow-lg">
+            <div className="flex size-14 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark mb-4">
+              <Coins className="size-7" />
+            </div>
+            <h3 className="text-lg font-bold text-brand-navy">{t("advantage.financing.title")}</h3>
+            <p className="mt-3 text-sm text-text-muted flex-1">{t("advantage.financing.desc")}</p>
+          </article>
+
+          {/* Card 2: Free Architect Design */}
+          <article className="flex flex-col items-center text-center rounded-xl border border-brand-warm bg-white p-6 shadow-md transition-all duration-[var(--duration-fast)] hover:-translate-y-1 hover:shadow-lg">
+            <div className="flex size-14 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark mb-4">
+              <Palette className="size-7" />
+            </div>
+            <h3 className="text-lg font-bold text-brand-navy">{t("advantage.architect.title")}</h3>
+            <p className="mt-3 text-sm text-text-muted flex-1">{t("advantage.architect.desc")}</p>
+          </article>
+
+          {/* Card 3: Free Legal Consultation */}
+          <article className="flex flex-col items-center text-center rounded-xl border border-brand-warm bg-white p-6 shadow-md transition-all duration-[var(--duration-fast)] hover:-translate-y-1 hover:shadow-lg">
+            <div className="flex size-14 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark mb-4">
+              <Scale className="size-7" />
+            </div>
+            <h3 className="text-lg font-bold text-brand-navy">{t("advantage.legal.title")}</h3>
+            <p className="mt-3 text-sm text-text-muted flex-1">{t("advantage.legal.desc")}</p>
+          </article>
+        </div>
+      </section>
+
+      {/* Offices Section */}
       <section aria-labelledby="offices-heading" className="mx-auto max-w-5xl">
         <h2 id="offices-heading" className="text-2xl font-bold text-brand-navy md:text-3xl">
           {t("officesHeading")}
@@ -52,6 +89,7 @@ function AboutPageContent() {
         </div>
       </section>
 
+      {/* Mission Section */}
       <section aria-labelledby="mission-heading" className="mx-auto mt-16 max-w-3xl text-center">
         <h2 id="mission-heading" className="text-2xl font-bold text-brand-navy md:text-3xl">
           {t("mission.heading")}
@@ -59,6 +97,7 @@ function AboutPageContent() {
         <p className="mt-4 text-text-muted">{t("mission.body")}</p>
       </section>
 
+      {/* Call to Action Section */}
       <section
         aria-labelledby="about-cta-heading"
         className="mx-auto mt-16 max-w-3xl rounded-xl bg-brand-navy p-8 text-center text-white md:p-12"
