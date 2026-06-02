@@ -6,6 +6,10 @@ import { FeaturedCommunities } from "@/components/home/featured-communities";
 import { FeaturedAreas } from "@/components/home/featured-areas";
 import { VipSearchBanner } from "@/components/home/vip-search-banner";
 
+/** Opt out of static caching so DB-driven sections (featured properties,
+ *  communities, areas) always render with fresh data. */
+export const dynamic = "force-dynamic";
+
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
