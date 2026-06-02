@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 import { SplitViewLayout } from "@/components/search/split-view-layout";
 import { SearchFilterBar } from "@/components/search/search-filter-bar";
@@ -67,12 +67,38 @@ export function SearchPageClient() {
     };
   }, []);
 
-  // Extract the map-relevant filters (type, listingType) so the map query
-  // stays in sync with the card grid when a filter is active.
-  const mapFilters: MapFilters | undefined =
-    filters.type || filters.listingType
-      ? { type: filters.type, listingType: filters.listingType }
-      : undefined;
+  // Build mapFilters from the full search filters so the map query applies the
+  // same dimensions as the grid (fixes split view showing mismatched results).
+  const mapFilters: MapFilters | undefined = useMemo(() => {
+    const hasAnyFilter =
+      filters.type ||
+      filters.listingType ||
+      filters.priceMin !== undefined ||
+      filters.priceMax !== undefined ||
+      filters.bedrooms !== undefined ||
+      filters.bathrooms !== undefined ||
+      filters.lotSizeMin !== undefined ||
+      filters.lotSizeMax !== undefined ||
+      filters.areaSlug ||
+      filters.subLocation ||
+      (filters.tags && filters.tags.length > 0) ||
+      filters.q;
+    if (!hasAnyFilter) return undefined;
+    return {
+      type: filters.type,
+      listingType: filters.listingType,
+      priceMin: filters.priceMin,
+      priceMax: filters.priceMax,
+      bedrooms: filters.bedrooms,
+      bathrooms: filters.bathrooms,
+      lotSizeMin: filters.lotSizeMin,
+      lotSizeMax: filters.lotSizeMax,
+      areaSlug: filters.areaSlug,
+      subLocation: filters.subLocation,
+      tags: filters.tags,
+      q: filters.q,
+    };
+  }, [filters]);
 
   // Keep a ref to the latest mapFilters so the handleBoundsChange callback
   // always sees the current value without needing to be re-created.
@@ -80,7 +106,7 @@ export function SearchPageClient() {
   mapFiltersRef.current = mapFilters;
 
   // Fetch map properties whenever filters change (and on initial load).
-  // This ensures map pins update when the user selects a property type.
+  // This ensures map pins update when the user selects any filter.
   useEffect(() => {
     let cancelled = false;
     const seq = ++requestSeqRef.current;
@@ -96,8 +122,7 @@ export function SearchPageClient() {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapFilters?.type, mapFilters?.listingType, bounds]);
+  }, [mapFilters, bounds]);
 
   // Initial load — fetch available areas for the location filter
   useEffect(() => {
