@@ -169,7 +169,7 @@ export function SplitViewLayout({
             // Desktop: show in split/grid mode, hide in full-map mode
             gridHidden ? "lg:hidden" : mapHidden ? "lg:w-full lg:block" : "lg:w-[65%] lg:block",
             "overflow-y-auto",
-            "h-full",
+            "h-full pt-2",
           )}
         >
           {/* Story 3.5: render PropertyGrid when filterProperties provided, else skeleton */}
