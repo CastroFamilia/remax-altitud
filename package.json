@@ -22,7 +22,8 @@
     "dist:sync": "node dist/run-sync.mjs",
     "dist:sync:dry-run": "node dist/run-sync.mjs --dry-run --verbose",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepare": "husky"
   },
   "dependencies": {
     "@sentry/nextjs": "10.53.1",
@@ -65,14 +66,19 @@
     "drizzle-kit": "0.31.10",
     "eslint": "9.39.4",
     "eslint-config-next": "15.5.15",
+    "husky": "9.1.7",
     "jsdom": "29.1.1",
     "lighthouse": "13.3.0",
+    "lint-staged": "17.0.7",
     "prettier": "3.8.3",
     "server-only": "0.0.1",
     "tailwindcss": "4.3.0",
     "tsx": "4.22.2",
     "typescript": "5.9.3",
     "vitest": "4.1.6"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,css,json}": "prettier --write"
   },
   "overrides": {
     "import-in-the-middle": "3.0.1"
