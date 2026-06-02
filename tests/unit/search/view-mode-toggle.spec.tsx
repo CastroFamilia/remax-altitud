@@ -160,7 +160,7 @@ describe("ViewModeToggle", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P1] toggle container has 'hidden lg:flex' classes (hidden on mobile, flex on desktop)",
+    "[P1] toggle container has 'hidden lg:inline-flex' classes (hidden on mobile, inline-flex on desktop)",
     () => {
       render(<ViewModeToggle viewMode="split" onViewModeChange={vi.fn()} />);
 
@@ -168,7 +168,7 @@ describe("ViewModeToggle", () => {
 
       expect(toggleContainer).not.toBeNull();
       expect(toggleContainer?.className).toContain("hidden");
-      expect(toggleContainer?.className).toContain("lg:flex");
+      expect(toggleContainer?.className).toContain("lg:inline-flex");
     },
   );
 

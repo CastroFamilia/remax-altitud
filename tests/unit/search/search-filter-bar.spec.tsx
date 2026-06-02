@@ -153,15 +153,15 @@ describe("SearchFilterBar", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P1] filter bar has md:py-3 padding and correct background/border classes on desktop",
+    "[P1] filter bar has md:py-1.5 padding and correct background/border classes on desktop",
     () => {
       render(<SearchFilterBar />);
 
       const filterBar = document.querySelector('[data-testid="search-filter-bar"]');
 
       expect(filterBar).not.toBeNull();
-      // UI polish (commit 48f4a66) replaced fixed h-14/h-12 with py-2 md:py-3
-      expect(filterBar?.className).toContain("md:py-3");
+      // Compact padding: py-1 base, md:py-1.5
+      expect(filterBar?.className).toContain("md:py-1.5");
       expect(filterBar?.className).toContain("bg-background");
       expect(filterBar?.className).toContain("border-b");
       expect(filterBar?.className).toContain("border-border");
@@ -219,15 +219,15 @@ describe("SearchFilterBar", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P2] filter bar has py-2 padding on mobile viewport",
+    "[P2] filter bar has py-1 padding on mobile viewport",
     () => {
       render(<SearchFilterBar />);
 
       const filterBar = document.querySelector('[data-testid="search-filter-bar"]');
 
       expect(filterBar).not.toBeNull();
-      // UI polish (commit 48f4a66): mobile uses py-2 base, md: upgrades to py-3
-      expect(filterBar?.className).toContain("py-2");
+      // Compact padding: py-1 base on mobile
+      expect(filterBar?.className).toContain("py-1");
     },
   );
 

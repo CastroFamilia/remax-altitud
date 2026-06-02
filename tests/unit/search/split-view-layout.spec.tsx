@@ -293,13 +293,13 @@ describe("SplitViewLayout", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P2] renders ViewModeToggle above split panels on desktop",
+    "[P2] ViewModeToggle is NOT rendered inside SplitViewLayout (moved to SearchFilterBar)",
     () => {
       render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
 
+      // ViewModeToggle was moved to SearchFilterBar — it should NOT be inside SplitViewLayout
       const toggle = document.querySelector('[data-testid="view-mode-toggle"]');
-      expect(toggle).not.toBeNull();
-      expect(toggle?.getAttribute("data-active-mode")).toBe("split");
+      expect(toggle).toBeNull();
     },
   );
 
@@ -381,32 +381,27 @@ describe("SplitViewLayout", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P0] (Story 3.8) renders data-testid='near-me-button' in the toolbar",
+    "[P0] (Story 3.8) NearMeButton is NOT rendered inside SplitViewLayout (moved to SearchFilterBar)",
     () => {
       render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
 
+      // NearMeButton was moved to SearchFilterBar — it should NOT be inside SplitViewLayout
       const nearMeBtn = document.querySelector('[data-testid="near-me-button"]');
-      expect(nearMeBtn).not.toBeNull();
+      expect(nearMeBtn).toBeNull();
     },
   );
 
   it(
-    "[P0] (Story 3.8) renders data-testid='near-me-fallback-message' banner when NearMeButton triggers fallback",
+    "[P0] (Story 3.8) renders near-me-fallback-message banner when nearMeFallbackMessage prop is provided",
     () => {
-      const { rerender } = render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
-
-      // Verify no fallback banner initially
-      expect(document.querySelector('[data-testid="near-me-fallback-message"]')).toBeNull();
-
-      // Invoke the fallback callback captured from the mock.
-      // Wrap in act() because calling it triggers a setState inside SplitViewLayout.
-      expect(capturedOnLocationFallback).not.toBeNull();
-      act(() => {
-        capturedOnLocationFallback!({ lat: 9.3725, lng: -83.7011 }, "Location unavailable — showing properties near our Pérez Zeledón office");
-      });
-
-      // Force re-render to reflect state update
-      rerender(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
+      // Render with nearMeFallbackMessage prop directly (no longer via NearMeButton callback)
+      render(
+        <SplitViewLayout
+          viewMode="split"
+          onViewModeChange={noop}
+          nearMeFallbackMessage="Location unavailable — showing properties near our Pérez Zeledón office"
+        />,
+      );
 
       const banner = document.querySelector('[data-testid="near-me-fallback-message"]');
       expect(banner).not.toBeNull();
