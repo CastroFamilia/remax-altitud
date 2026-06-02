@@ -3,94 +3,34 @@
  * Module: src/lib/sync/translator.ts
  *
  * Covers:
- *   AC #1 — new listing (empty titleEs/descriptionEs) → DeepL called for both fields
- *   AC #2 — listing with API-provided titleEs → title NOT overwritten (DeepL not called for title)
+ *   AC #1 — new listing (empty titleEs/descriptionEs) → Google Translate called for both fields
+ *   AC #2 — listing with API-provided titleEs → title NOT overwritten
  *   AC #3 — listing with API-provided descriptionEs → description NOT overwritten
- *   AC #5 — exponential backoff on HTTP 429 (TooManyRequestsError) and transient
- *           ConnectionError: 3 attempts, delays 2s/4s/8s. QuotaExceededError
- *           (billing-period exhaustion) is intentionally NOT retried.
- *   AC #6 — non-transient DeepL error → listing skipped, error returned, no crash
- *   AC #7 — glossary applied (via `options.glossary` — the deepl-node SDK key)
- *           when DEEPL_GLOSSARY_ID is set; omitted when not set
+ *   AC #5 — exponential backoff on HTTP 429 and transient errors:
+ *           3 attempts, delays 2s/4s/8s. Non-transient errors are NOT retried.
+ *   AC #6 — non-transient error → listing skipped, error returned, no crash
+ *   AC #7 — glossary applied via post-processing (applyGlossary) for key terms
  *   AC #8/batch — translateBatch processes all inputs and returns results + errors arrays
- *   Idempotency — property with non-empty titleEs AND descriptionEs → translated:false, no DeepL call
+ *   Idempotency — property with non-empty titleEs AND descriptionEs → translated:false, no API call
  *
  * translateBatch contract: ALL input items appear in result.results (including errored ones
  * with translated:false). Callers must filter by translated:true to get successful-only entries.
  * Errors also appear in result.errors with apiId and message fields.
  *
- * All external I/O is mocked — no real DeepL API calls.
+ * The translator now uses the Google Translate free API via fetch() instead of deepl-node.
+ * All external I/O is mocked via globalThis.fetch — no real API calls.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // ---------------------------------------------------------------------------
-// Hoisted mock primitives — vi.hoisted() ensures availability when vi.mock()
-// factory runs (hoisted to top of compiled output).
+// Mock fetch — the translator uses fetch() to call Google Translate
 // ---------------------------------------------------------------------------
 
-const {
-  mockTranslateText,
-  MockTranslator,
-  MockTooManyRequestsError,
-  MockQuotaExceededError,
-  MockConnectionError,
-} = vi.hoisted(() => {
-  const mockTranslateText = vi.fn();
-
-  class MockDeepLError extends Error {
-    error?: Error;
-  }
-
-  class MockTooManyRequestsError extends MockDeepLError {
-    constructor(message = "Too many requests") {
-      super(message);
-      this.name = "TooManyRequestsError";
-    }
-  }
-
-  class MockQuotaExceededError extends MockDeepLError {
-    constructor(message = "Quota exceeded") {
-      super(message);
-      this.name = "QuotaExceededError";
-    }
-  }
-
-  class MockConnectionError extends MockDeepLError {
-    shouldRetry: boolean;
-    constructor(message = "Connection error", shouldRetry = true) {
-      super(message);
-      this.name = "ConnectionError";
-      this.shouldRetry = shouldRetry;
-    }
-  }
-
-  class MockTranslator {
-    translateText = mockTranslateText;
-  }
-
-  return {
-    mockTranslateText,
-    MockTranslator,
-    MockTooManyRequestsError,
-    MockQuotaExceededError,
-    MockConnectionError,
-  };
-});
+const mockFetch = vi.fn();
 
 // ---------------------------------------------------------------------------
-// Mock deepl-node before any module under test is imported
-// ---------------------------------------------------------------------------
-
-vi.mock("deepl-node", () => ({
-  Translator: MockTranslator,
-  TooManyRequestsError: MockTooManyRequestsError,
-  QuotaExceededError: MockQuotaExceededError,
-  ConnectionError: MockConnectionError,
-}));
-
-// ---------------------------------------------------------------------------
-// Imports — resolved after mocks are hoisted
+// Imports — resolved after mocks are set up
 // ---------------------------------------------------------------------------
 
 import { translateProperty, translateBatch } from "@/lib/sync/translator";
@@ -99,50 +39,51 @@ import { translateProperty, translateBatch } from "@/lib/sync/translator";
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Default mock return value for a successful DeepL translation call. */
-function makeDeepLResult(text: string) {
-  return { text };
+/** Creates a mock Response simulating Google Translate API success. */
+function makeGoogleTranslateResponse(translatedText: string): Response {
+  // Google Translate returns: [[[translatedText, sourceText, ...]]]
+  const body = JSON.stringify([[[translatedText, "source text"]]]);
+  return new Response(body, { status: 200, headers: { "Content-Type": "application/json" } });
+}
+
+/** Creates a mock Response with a given HTTP status (for error simulation). */
+function makeErrorResponse(status: number, statusText = "Error"): Response {
+  return new Response(null, { status, statusText });
+}
+
+/** Track how many times fetch was called (for retry assertions). */
+function fetchCallCount(): number {
+  return mockFetch.mock.calls.length;
 }
 
 // ---------------------------------------------------------------------------
 // Env setup / teardown
 // ---------------------------------------------------------------------------
 
-const ENV_KEYS = ["DEEPL_API_KEY", "DEEPL_GLOSSARY_ID"] as const;
-const savedEnv: Record<string, string | undefined> = {};
-
 beforeEach(() => {
-  for (const key of ENV_KEYS) savedEnv[key] = process.env[key];
-  process.env.DEEPL_API_KEY = "test-deepl-api-key";
-  delete process.env.DEEPL_GLOSSARY_ID; // default: no glossary set
-
   vi.clearAllMocks();
-
+  // Replace global fetch with our mock
+  globalThis.fetch = mockFetch;
   // Default: successful translation response
-  mockTranslateText.mockResolvedValue(makeDeepLResult("Texto traducido"));
+  mockFetch.mockResolvedValue(makeGoogleTranslateResponse("Texto traducido"));
 });
 
 afterEach(() => {
-  for (const key of ENV_KEYS) {
-    if (savedEnv[key] === undefined) delete process.env[key];
-    else process.env[key] = savedEnv[key];
-  }
   vi.restoreAllMocks();
 });
 
 // ---------------------------------------------------------------------------
-// AC #1 — New listing: empty titleEs and publicRemarksEs → DeepL called for both
+// AC #1 — New listing: empty titleEs and publicRemarksEs → API called for both
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — new listing (AC #1)", () => {
   it(
-    "[P0] given titleEs='' and publicRemarksEs='' when translateProperty called then translateText is called for title AND description",
+    "[P0] given titleEs='' and publicRemarksEs='' when translateProperty called then fetch is called for title AND description",
     async () => {
       // AC #1 — brand-new listing with no Spanish content from API
-      // Risk R-003: translation must not skip fields that need translation
-      mockTranslateText
-        .mockResolvedValueOnce(makeDeepLResult("Terreno con vista al mar"))
-        .mockResolvedValueOnce(makeDeepLResult("Un buen terreno de 1 hectárea."));
+      mockFetch
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Terreno con vista al mar"))
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Un buen terreno de 1 hectárea."));
 
       const result = await translateProperty({
         apiId: "API-001",
@@ -155,16 +96,16 @@ describe("translateProperty — new listing (AC #1)", () => {
       expect(result.error).toBeNull();
       expect(result.result.translated).toBe(true);
       // Both title and description must have been translated
-      expect(mockTranslateText).toHaveBeenCalledTimes(2);
+      expect(fetchCallCount()).toBe(2);
       expect(result.result.titleEs).toBe("Terreno con vista al mar");
       expect(result.result.descriptionEs).toBe("Un buen terreno de 1 hectárea.");
     },
   );
 
   it(
-    "[P0] given titleEs='' when called then result.titleEs contains the DeepL translation of titleEn",
+    "[P0] given titleEs='' when called then result.titleEs contains the translated titleEn",
     async () => {
-      mockTranslateText.mockResolvedValueOnce(makeDeepLResult("Terreno con vista"));
+      mockFetch.mockResolvedValueOnce(makeGoogleTranslateResponse("Terreno con vista"));
 
       const result = await translateProperty({
         apiId: "API-001",
@@ -180,10 +121,10 @@ describe("translateProperty — new listing (AC #1)", () => {
   );
 
   it(
-    "[P1] given publicRemarksEn=null and publicRemarksEs='' when called then translateText NOT called for description and descriptionEs is empty string",
+    "[P1] given publicRemarksEn=null and publicRemarksEs='' when called then fetch NOT called for description and descriptionEs is empty string",
     async () => {
       // Nothing to translate for description — source text is null
-      mockTranslateText.mockResolvedValueOnce(makeDeepLResult("Título traducido"));
+      mockFetch.mockResolvedValueOnce(makeGoogleTranslateResponse("Título traducido"));
 
       const result = await translateProperty({
         apiId: "API-001",
@@ -194,8 +135,8 @@ describe("translateProperty — new listing (AC #1)", () => {
       });
 
       expect(result.error).toBeNull();
-      // translateText called only once (for title), not for description
-      expect(mockTranslateText).toHaveBeenCalledTimes(1);
+      // fetch called only once (for title), not for description
+      expect(fetchCallCount()).toBe(1);
       expect(result.result.descriptionEs).toBe("");
     },
   );
@@ -207,11 +148,10 @@ describe("translateProperty — new listing (AC #1)", () => {
 
 describe("translateProperty — preserve API-provided titleEs (AC #2)", () => {
   it(
-    "[P0] given titleEs='Casa en la montaña' (non-empty) when translateProperty called then translateText NOT called for title",
+    "[P0] given titleEs='Casa en la montaña' (non-empty) when translateProperty called then fetch NOT called for title",
     async () => {
-      // AC #2 — API already supplied a Spanish title; DeepL must not overwrite it
-      // Risk R-003: preserve API-provided Spanish content
-      mockTranslateText.mockResolvedValueOnce(makeDeepLResult("Descripción traducida"));
+      // AC #2 — API already supplied a Spanish title; must not overwrite it
+      mockFetch.mockResolvedValueOnce(makeGoogleTranslateResponse("Descripción traducida"));
 
       const result = await translateProperty({
         apiId: "API-002",
@@ -222,8 +162,8 @@ describe("translateProperty — preserve API-provided titleEs (AC #2)", () => {
       });
 
       expect(result.error).toBeNull();
-      // translateText called only once — for description (title is preserved)
-      expect(mockTranslateText).toHaveBeenCalledTimes(1);
+      // fetch called only once — for description (title is preserved)
+      expect(fetchCallCount()).toBe(1);
       // Title is the original API-provided value
       expect(result.result.titleEs).toBe("Casa en la montaña");
     },
@@ -232,7 +172,7 @@ describe("translateProperty — preserve API-provided titleEs (AC #2)", () => {
   it(
     "[P0] given titleEs='Casa en la montaña' when called then result.result.titleEs equals the original API value",
     async () => {
-      mockTranslateText.mockResolvedValueOnce(makeDeepLResult("Descripción"));
+      mockFetch.mockResolvedValueOnce(makeGoogleTranslateResponse("Descripción"));
 
       const result = await translateProperty({
         apiId: "API-002",
@@ -253,11 +193,10 @@ describe("translateProperty — preserve API-provided titleEs (AC #2)", () => {
 
 describe("translateProperty — preserve API-provided publicRemarksEs (AC #3)", () => {
   it(
-    "[P0] given publicRemarksEs='Descripción existente.' (non-empty) when translateProperty called then translateText NOT called for description",
+    "[P0] given publicRemarksEs='Descripción existente.' (non-empty) when translateProperty called then fetch NOT called for description",
     async () => {
-      // AC #3 — API already supplied a Spanish description; DeepL must not overwrite it
-      // Risk R-003: preserve API-provided Spanish content even if EN differs
-      mockTranslateText.mockResolvedValueOnce(makeDeepLResult("Título traducido"));
+      // AC #3 — API already supplied a Spanish description; must not overwrite it
+      mockFetch.mockResolvedValueOnce(makeGoogleTranslateResponse("Título traducido"));
 
       const result = await translateProperty({
         apiId: "API-003",
@@ -268,16 +207,16 @@ describe("translateProperty — preserve API-provided publicRemarksEs (AC #3)", 
       });
 
       expect(result.error).toBeNull();
-      // translateText called only once — for title (description is preserved)
-      expect(mockTranslateText).toHaveBeenCalledTimes(1);
+      // fetch called only once — for title (description is preserved)
+      expect(fetchCallCount()).toBe(1);
       expect(result.result.descriptionEs).toBe("Descripción existente.");
     },
   );
 
   it(
-    "[P0] given both titleEs and publicRemarksEs non-empty when called then translateText NOT called at all and translated=false",
+    "[P0] given both titleEs and publicRemarksEs non-empty when called then fetch NOT called at all and translated=false",
     async () => {
-      // Idempotency: both fields already have API-provided Spanish — zero DeepL calls
+      // Idempotency: both fields already have API-provided Spanish — zero API calls
       const result = await translateProperty({
         apiId: "API-004",
         titleEn: "Furnished Apartment",
@@ -287,18 +226,14 @@ describe("translateProperty — preserve API-provided publicRemarksEs (AC #3)", 
       });
 
       expect(result.error).toBeNull();
-      expect(mockTranslateText).not.toHaveBeenCalled();
+      expect(mockFetch).not.toHaveBeenCalled();
       expect(result.result.translated).toBe(false);
     },
   );
 });
 
 // ---------------------------------------------------------------------------
-// AC #5 — Exponential backoff on transient errors (HTTP 429 rate limit + connection)
-//
-// NOTE: DeepL distinguishes `TooManyRequestsError` (HTTP 429 — rate limit, transient,
-// retried) from `QuotaExceededError` (billing-period quota exhausted, NOT retried).
-// Earlier ATDD tests retried on QuotaExceededError; that was the wrong error class.
+// AC #5 — Exponential backoff on transient errors (HTTP 429 + connection)
 // ---------------------------------------------------------------------------
 
 describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => {
@@ -311,14 +246,13 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
   });
 
   it(
-    "[P0] given translateText throws TooManyRequestsError twice then succeeds on 3rd attempt when called then translateProperty resolves successfully",
+    "[P0] given fetch returns 429 twice then succeeds on 3rd attempt when called then translateProperty resolves successfully",
     async () => {
-      // AC #5 — NFR19: retry 3 times with 2s/4s/8s backoff on 429 rate limits
-      const rateErr = new MockTooManyRequestsError();
-      mockTranslateText
-        .mockRejectedValueOnce(rateErr) // attempt 1: 429
-        .mockRejectedValueOnce(rateErr) // attempt 2: 429
-        .mockResolvedValueOnce(makeDeepLResult("Terreno traducido")); // attempt 3: success
+      // AC #5 — retry 3 times with 2s/4s/8s backoff on 429 rate limits
+      mockFetch
+        .mockResolvedValueOnce(makeErrorResponse(429, "Too Many Requests")) // attempt 1: 429
+        .mockResolvedValueOnce(makeErrorResponse(429, "Too Many Requests")) // attempt 2: 429
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Terreno traducido")); // attempt 3: success
 
       const promise = translateProperty({
         apiId: "API-005",
@@ -336,17 +270,16 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
       expect(result.error).toBeNull();
       expect(result.result.translated).toBe(true);
       expect(result.result.titleEs).toBe("Terreno traducido");
-      // translateText must have been called exactly 3 times (2 retries + 1 success)
-      expect(mockTranslateText).toHaveBeenCalledTimes(3);
+      // fetch must have been called exactly 3 times (2 retries + 1 success)
+      expect(fetchCallCount()).toBe(3);
     },
   );
 
   it(
-    "[P0] given translateText throws TooManyRequestsError on all 3 attempts when called then translateProperty returns error without crashing",
+    "[P0] given fetch returns 429 on all 3 attempts when called then translateProperty returns error without crashing",
     async () => {
       // All 3 attempts exhausted — should return error, not throw
-      const rateErr = new MockTooManyRequestsError("Rate limited after 3 attempts");
-      mockTranslateText.mockRejectedValue(rateErr);
+      mockFetch.mockResolvedValue(makeErrorResponse(429, "Too Many Requests"));
 
       const promise = translateProperty({
         apiId: "API-005",
@@ -369,12 +302,10 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
   );
 
   it(
-    "[P1] given translateText throws QuotaExceededError when called then translateProperty does NOT retry (billing-period quota is permanent within a sync run)",
+    "[P1] given fetch throws a non-retryable error when called then translateProperty does NOT retry",
     async () => {
-      // QuotaExceededError indicates the monthly billing quota has been exhausted —
-      // retrying within the same sync run cannot resolve it. Only one attempt is made.
-      const quotaErr = new MockQuotaExceededError();
-      mockTranslateText.mockRejectedValue(quotaErr);
+      // Non-transient errors should fail immediately without retrying
+      mockFetch.mockRejectedValue(new Error("Unexpected parsing failure"));
 
       const promise = translateProperty({
         apiId: "API-005-Q",
@@ -389,19 +320,18 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
 
       expect(result.error).not.toBeNull();
       expect(result.result.translated).toBe(false);
-      // No retries — single attempt only
-      expect(mockTranslateText).toHaveBeenCalledTimes(1);
+      // Non-transient error — should throw on first attempt, caught by outer try/catch
+      expect(fetchCallCount()).toBe(1);
     },
   );
 
   it(
-    "[P1] given translateText throws ConnectionError with shouldRetry=true when called then translateProperty retries with backoff",
+    "[P1] given fetch throws a connection error then succeeds when called then translateProperty retries with backoff",
     async () => {
-      // Transient connection errors are retried per the deepl-node SDK's shouldRetry flag.
-      const connErr = new MockConnectionError("ECONNRESET", true);
-      mockTranslateText
-        .mockRejectedValueOnce(connErr)
-        .mockResolvedValueOnce(makeDeepLResult("Recuperado"));
+      // Transient connection errors (ECONNREFUSED, etc.) are retried
+      mockFetch
+        .mockRejectedValueOnce(new Error("ECONNREFUSED"))
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Recuperado"));
 
       const promise = translateProperty({
         apiId: "API-005-C",
@@ -416,22 +346,22 @@ describe("translateProperty — exponential backoff on HTTP 429 (AC #5)", () => 
 
       expect(result.error).toBeNull();
       expect(result.result.titleEs).toBe("Recuperado");
-      expect(mockTranslateText).toHaveBeenCalledTimes(2);
+      expect(fetchCallCount()).toBe(2);
     },
   );
 });
 
 // ---------------------------------------------------------------------------
-// AC #6 — Non-429 error: listing skipped, error returned, pipeline continues
+// AC #6 — Non-transient error: listing skipped, error returned, pipeline continues
 // ---------------------------------------------------------------------------
 
-describe("translateProperty — non-429 DeepL error isolation (AC #6)", () => {
+describe("translateProperty — non-transient error isolation (AC #6)", () => {
   it(
-    "[P0] given translateText throws a non-429 Error when called then translateProperty returns error object without throwing",
+    "[P0] given fetch throws a non-transient Error when called then translateProperty returns error object without throwing",
     async () => {
-      // AC #6 — non-429 errors are isolated per listing; pipeline must continue
-      const networkErr = new Error("ECONNREFUSED — DeepL unreachable");
-      mockTranslateText.mockRejectedValue(networkErr);
+      // AC #6 — non-transient errors are isolated per listing; pipeline must continue
+      const unexpectedErr = new Error("Unexpected JSON parse error");
+      mockFetch.mockRejectedValue(unexpectedErr);
 
       const result = await translateProperty({
         apiId: "API-006",
@@ -443,7 +373,7 @@ describe("translateProperty — non-429 DeepL error isolation (AC #6)", () => {
 
       expect(result.error).not.toBeNull();
       expect(result.error?.apiId).toBe("API-006");
-      expect(result.error?.message).toContain("ECONNREFUSED");
+      expect(result.error?.message).toContain("Unexpected JSON parse error");
       expect(result.result.translated).toBe(false);
       expect(result.result.titleEs).toBeNull();
       expect(result.result.descriptionEs).toBeNull();
@@ -451,10 +381,10 @@ describe("translateProperty — non-429 DeepL error isolation (AC #6)", () => {
   );
 
   it(
-    "[P1] given translateText throws a non-429 Error when called then the error is NOT re-thrown (no crash)",
+    "[P1] given fetch throws a non-transient Error when called then the error is NOT re-thrown (no crash)",
     async () => {
-      const unexpectedErr = new Error("Unexpected DeepL server error");
-      mockTranslateText.mockRejectedValue(unexpectedErr);
+      const unexpectedErr = new Error("Unexpected server error");
+      mockFetch.mockRejectedValue(unexpectedErr);
 
       // Must resolve (not reject) so the pipeline continues
       await expect(
@@ -471,69 +401,58 @@ describe("translateProperty — non-429 DeepL error isolation (AC #6)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// AC #7 — Glossary applied when DEEPL_GLOSSARY_ID env var is set
+// AC #7 — Glossary applied via post-processing (applyGlossary)
 // ---------------------------------------------------------------------------
 
-describe("translateProperty — DeepL glossary integration (AC #7)", () => {
+describe("translateProperty — glossary post-processing (AC #7)", () => {
   it(
-    "[P0] given DEEPL_GLOSSARY_ID='test-glossary-id' when translateProperty called then translateText receives the `glossary` option (the key the deepl-node SDK consumes)",
+    "[P0] given Google Translate returns 'Fee Simple' untranslated when called then applyGlossary converts it to 'Pleno Dominio'",
     async () => {
-      // AC #7 — FR33: legal/property terms must use the glossary for consistency.
-      // The deepl-node SDK reads `options.glossary` (not `options.glossaryId`);
-      // using the wrong key silently disables the glossary in production.
-      process.env.DEEPL_GLOSSARY_ID = "test-glossary-id";
-      mockTranslateText.mockResolvedValue(makeDeepLResult("Propiedad Titulada en venta"));
+      // The glossary post-processor catches terms Google Translate may leave untranslated
+      mockFetch.mockResolvedValue(
+        makeGoogleTranslateResponse("Propiedad Fee Simple en venta"),
+      );
 
-      await translateProperty({
+      const result = await translateProperty({
         apiId: "API-007",
-        titleEn: "Titled Property for sale",
+        titleEn: "Fee Simple Property for sale",
         titleEs: "",
         publicRemarksEn: null,
         publicRemarksEs: null,
       });
 
-      expect(mockTranslateText).toHaveBeenCalledWith(
-        expect.any(String), // source text
-        "en",               // source language
-        "es",               // target language
-        expect.objectContaining({ glossary: "test-glossary-id" }),
-      );
-      // Defensive — ensure we are not also passing the legacy/wrong key
-      const callArgs = mockTranslateText.mock.calls[0];
-      expect(callArgs[3]).not.toHaveProperty("glossaryId");
+      // applyGlossary should convert "Fee Simple" → "Pleno Dominio"
+      expect(result.result.titleEs).toContain("Pleno Dominio");
     },
   );
 
   it(
-    "[P0] given DEEPL_GLOSSARY_ID is NOT set when translateProperty called then translateText is called WITHOUT a glossary option",
+    "[P0] given Google Translate returns 'Titled Property' when called then applyGlossary converts it to 'Propiedad Titulada'",
     async () => {
-      // No glossary env var — `glossary` must be omitted (not passed as undefined)
-      delete process.env.DEEPL_GLOSSARY_ID;
-      mockTranslateText.mockResolvedValue(makeDeepLResult("Terreno en venta"));
+      mockFetch.mockResolvedValue(
+        makeGoogleTranslateResponse("Titled Property en la costa"),
+      );
 
-      await translateProperty({
+      const result = await translateProperty({
         apiId: "API-007",
-        titleEn: "Land for Sale",
+        titleEn: "Titled Property on the coast",
         titleEs: "",
         publicRemarksEn: null,
         publicRemarksEs: null,
       });
 
-      const callArgs = mockTranslateText.mock.calls[0];
-      // The options object (4th arg) must not contain a glossary key if env var is unset
-      if (callArgs[3]) {
-        expect(callArgs[3]).not.toHaveProperty("glossary");
-        expect(callArgs[3]).not.toHaveProperty("glossaryId");
-      }
+      expect(result.result.titleEs).toContain("Propiedad Titulada");
     },
   );
 
   it(
     "[P1] given DEEPL_GLOSSARY_ID set when translating 'Titled Property' then result includes glossary-translated term",
     async () => {
+      // Even with the old DEEPL env var set, the Google Translate path still applies glossary
       process.env.DEEPL_GLOSSARY_ID = "test-glossary-id";
-      // Simulate DeepL returning the glossary-enforced translation
-      mockTranslateText.mockResolvedValueOnce(makeDeepLResult("Propiedad Titulada"));
+      mockFetch.mockResolvedValueOnce(
+        makeGoogleTranslateResponse("Titled Property"),
+      );
 
       const result = await translateProperty({
         apiId: "API-007",
@@ -544,6 +463,7 @@ describe("translateProperty — DeepL glossary integration (AC #7)", () => {
       });
 
       expect(result.result.titleEs).toBe("Propiedad Titulada");
+      delete process.env.DEEPL_GLOSSARY_ID;
     },
   );
 });
@@ -554,14 +474,14 @@ describe("translateProperty — DeepL glossary integration (AC #7)", () => {
 
 describe("translateBatch — batch processing (AC #8)", () => {
   it(
-    "[P0] given 2 properties with empty Spanish fields when translateBatch called then translateText is called for each and results array has 2 entries",
+    "[P0] given 2 properties with empty Spanish fields when translateBatch called then fetch is called for each and results array has 2 entries",
     async () => {
       // AC #8 — batch mode: processes all inputs, returns results and errors
-      mockTranslateText
-        .mockResolvedValueOnce(makeDeepLResult("Título 1"))
-        .mockResolvedValueOnce(makeDeepLResult("Descripción 1"))
-        .mockResolvedValueOnce(makeDeepLResult("Título 2"))
-        .mockResolvedValueOnce(makeDeepLResult("Descripción 2"));
+      mockFetch
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Título 1"))
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Descripción 1"))
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Título 2"))
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Descripción 2"));
 
       const result = await translateBatch([
         {
@@ -590,15 +510,11 @@ describe("translateBatch — batch processing (AC #8)", () => {
   it(
     "[P0] given one property fails and one succeeds when translateBatch called then errors has 1 entry and 1 successful result",
     async () => {
-      // AC #6 at batch level — error isolation: one failure must not block others.
-      // Design note: translateBatch always returns ALL processed items in results (both
-      // successful and errored, with translated:false for errors). Callers must filter
-      // result.results by translated:true to get successful-only entries.
-      const networkErr = new Error("DeepL timeout for BATCH-001");
-      mockTranslateText
-        .mockRejectedValueOnce(networkErr) // BATCH-001 title fails
-        .mockResolvedValueOnce(makeDeepLResult("Título 2")) // BATCH-002 title succeeds
-        .mockResolvedValueOnce(makeDeepLResult("Descripción 2")); // BATCH-002 description succeeds
+      // AC #6 at batch level — error isolation: one failure must not block others
+      mockFetch
+        .mockRejectedValueOnce(new Error("Timeout for BATCH-001")) // BATCH-001 title fails
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Título 2")) // BATCH-002 title succeeds
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Descripción 2")); // BATCH-002 description succeeds
 
       const result = await translateBatch([
         {
@@ -631,13 +547,13 @@ describe("translateBatch — batch processing (AC #8)", () => {
   );
 
   it(
-    "[P1] given empty array when translateBatch called then returns empty results and errors arrays without calling translateText",
+    "[P1] given empty array when translateBatch called then returns empty results and errors arrays without calling fetch",
     async () => {
       const result = await translateBatch([]);
 
       expect(result.results).toHaveLength(0);
       expect(result.errors).toHaveLength(0);
-      expect(mockTranslateText).not.toHaveBeenCalled();
+      expect(mockFetch).not.toHaveBeenCalled();
     },
   );
 
@@ -646,9 +562,13 @@ describe("translateBatch — batch processing (AC #8)", () => {
     async () => {
       // NFR: sequential processing avoids rate-limit burst — verify call order
       const callOrder: string[] = [];
-      mockTranslateText.mockImplementation(async (text: string) => {
-        callOrder.push(text as string);
-        return makeDeepLResult("Traducción");
+      mockFetch.mockImplementation(async (_url: string, init: RequestInit) => {
+        const body = init?.body?.toString() ?? "";
+        // Extract the 'q' parameter value from URL-encoded body
+        const params = new URLSearchParams(body);
+        const text = params.get("q") ?? "";
+        callOrder.push(text);
+        return makeGoogleTranslateResponse("Traducción");
       });
 
       await translateBatch([
@@ -681,9 +601,9 @@ describe("translateBatch — batch processing (AC #8)", () => {
 
 describe("translateProperty — idempotency (both fields already have Spanish)", () => {
   it(
-    "[P0] given both titleEs and publicRemarksEs non-empty when translateProperty called then returns translated:false and translateText is never called",
+    "[P0] given both titleEs and publicRemarksEs non-empty when translateProperty called then returns translated:false and fetch is never called",
     async () => {
-      // Idempotency: if both fields are already populated, zero DeepL calls must happen
+      // Idempotency: if both fields are already populated, zero API calls must happen
       const result = await translateProperty({
         apiId: "API-IDEM",
         titleEn: "Furnished Apartment",
@@ -696,7 +616,7 @@ describe("translateProperty — idempotency (both fields already have Spanish)",
       expect(result.result.translated).toBe(false);
       expect(result.result.titleEs).toBe("Apartamento amoblado");
       expect(result.result.descriptionEs).toBe("Excelente ubicación.");
-      expect(mockTranslateText).not.toHaveBeenCalled();
+      expect(mockFetch).not.toHaveBeenCalled();
     },
   );
 });
@@ -709,9 +629,9 @@ describe("translateProperty — result shape", () => {
   it(
     "[P1] given successful translation when called then result has apiId, titleEs, descriptionEs, and translated fields",
     async () => {
-      mockTranslateText
-        .mockResolvedValueOnce(makeDeepLResult("Título ES"))
-        .mockResolvedValueOnce(makeDeepLResult("Descripción ES"));
+      mockFetch
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Título ES"))
+        .mockResolvedValueOnce(makeGoogleTranslateResponse("Descripción ES"));
 
       const result = await translateProperty({
         apiId: "API-SHAPE",
@@ -732,9 +652,9 @@ describe("translateProperty — result shape", () => {
   );
 
   it(
-    "[P1] given translateText throws an error when called then error has apiId and message fields",
+    "[P1] given fetch throws an error when called then error has apiId and message fields",
     async () => {
-      mockTranslateText.mockRejectedValue(new Error("API failure"));
+      mockFetch.mockRejectedValue(new Error("API failure"));
 
       const result = await translateProperty({
         apiId: "API-ERR",
