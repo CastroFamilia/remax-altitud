@@ -21,12 +21,27 @@
 import { useTranslations } from "next-intl";
 import { LIFESTYLE_TAGS, tagDisplayLabel } from "@/lib/constants/lifestyle-tags";
 
+/**
+ * Property-type tags that should set the `type` filter (propertyType column)
+ * instead of the `tags` filter (lifestyleTags array column).
+ */
+const PROPERTY_TYPE_TAGS = new Set(["Casa", "Lote", "Finca"]);
+
 interface LifestyleTagChipsProps {
   activeTags: string[];
   onToggle: (tag: string) => void;
+  /** Current active property type filter (from the type dropdown) */
+  activeType?: string;
+  /** Callback to toggle a property-type chip (sets the `type` filter) */
+  onTypeToggle?: (type: string) => void;
 }
 
-export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsProps) {
+export function LifestyleTagChips({
+  activeTags,
+  onToggle,
+  activeType,
+  onTypeToggle,
+}: LifestyleTagChipsProps) {
   const t = useTranslations("SearchPage");
 
   /**
@@ -48,14 +63,24 @@ export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsPro
       className="flex gap-2 flex-wrap md:flex-nowrap overflow-x-auto"
     >
       {LIFESTYLE_TAGS.map((tag) => {
-        const isActive = activeTags.includes(tag);
+        const isPropertyType = PROPERTY_TYPE_TAGS.has(tag);
+        const isActive = isPropertyType ? activeType === tag : activeTags.includes(tag);
         const slug = tag.toLowerCase().replace(/\s+/g, "-");
+
+        const handleClick = () => {
+          if (isPropertyType && onTypeToggle) {
+            onTypeToggle(tag);
+          } else {
+            onToggle(tag);
+          }
+        };
+
         return (
           <button
             key={tag}
             type="button"
             data-testid={`lifestyle-tag-chip-${slug}`}
-            onClick={() => onToggle(tag)}
+            onClick={handleClick}
             aria-pressed={isActive}
             className={[
               "h-8 px-3.5 rounded-full text-xs font-medium transition-all duration-200 border",
