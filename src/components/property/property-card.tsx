@@ -212,10 +212,10 @@ function cleanApiLocation(raw: string): string {
 }
 
 /**
- * Helper to extract a specific town from the title if known.
+ * Helper to extract a specific town from text if known.
  */
-function extractTownFromTitle(title: string): string | null {
-  const titleLower = title.toLowerCase();
+function extractTownFromText(text: string): string | null {
+  const lowerText = text.toLowerCase();
   const towns = [
     { keyword: "general viejo", label: "General Viejo" },
     { keyword: "santa elena", label: "Santa Elena" },
@@ -251,7 +251,7 @@ function extractTownFromTitle(title: string): string | null {
   ];
 
   for (const town of towns) {
-    if (titleLower.includes(town.keyword)) {
+    if (lowerText.includes(town.keyword)) {
       return town.label;
     }
   }
@@ -297,10 +297,15 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
   // 2. Try to get a specific town name from UnparsedAddress or Title for Pérez Zeledón
   if (areaSlug === "perez-zeledon") {
     let specificTown: string | null = null;
-
-    // a. Try to get it from UnparsedAddress
+    const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
     const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.trim();
-    if (unparsedAddress && unparsedAddress.length > 0) {
+
+    // a. Try to get it from the combined title and unparsed address using keywords
+    const combinedText = `${title} ${unparsedAddress ?? ""}`;
+    specificTown = extractTownFromText(combinedText);
+
+    // b. Try to get it from first part of UnparsedAddress if still not found
+    if (!specificTown && unparsedAddress && unparsedAddress.length > 0) {
       const parts = unparsedAddress.split(",");
       const firstPart = parts[0]?.trim();
       if (firstPart) {
@@ -313,12 +318,6 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
           specificTown = firstPart;
         }
       }
-    }
-
-    // b. Try to extract it from title
-    if (!specificTown) {
-      const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
-      specificTown = extractTownFromTitle(title);
     }
 
     if (specificTown) {

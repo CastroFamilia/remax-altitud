@@ -1277,14 +1277,14 @@
       "q1": {
         "title": "1. El Ritmo de la Mañana y el Clima",
         "subtitle": "Cuando te despiertas y miras por la ventana, ¿qué quieres ver y sentir?",
-        "a": "Ambiente playero de alta energía. Quiero sentir el calor costero tropical y escuchar el surf.",
-        "b": "Selva exuberante y espectaculares vistas al mar desde una cresta montañosa elevada y fresca.",
-        "c": "Brisas frescas de montaña, colinas verdes o valles. Un clima templado donde pueda evitar el aire acondicionado."
+        "a": "Ambiente de alta energía. Quiero sentir el calor tropical y disfrutar de un entorno vibrante y soleado.",
+        "b": "Inmerso en la naturaleza. Quiero vistas amplias y elevadas, rodeado de verdor y brisa constante.",
+        "c": "Fresco y tranquilo. Prefiero brisas frescas, colinas verdes y un clima templado donde pueda evitar el aire acondicionado."
       },
       "q2": {
         "title": "2. Conducción, Accesibilidad y Realidades Viales",
         "subtitle": "¿Cómo te sientes honestamente con las carreteras no pavimentadas y el terreno accidentado?",
-        "a": "Carreteras planas, fáciles y pavimentadas. Prefiero acceso sencillo para vehículos 2WD sin pendientes empinadas.",
+        "a": "Carreteras planas, fáciles y pavimentadas. Prefiero acceso sencillo donde cualquier vehículo estándar pueda transitar.",
         "b": "Puedo tolerar algo de aventura, pero con límites. Caminos de lastre estables o calles comunitarias están bien.",
         "c": "¡Que venga la aventura! Totalmente cómodo con rutas 4x4 rudas para obtener máxima privacidad y naturaleza virgen."
       },
@@ -1292,7 +1292,7 @@
         "title": "3. Conveniencia, Mandados y Atención Médica",
         "subtitle": "¿Qué tan lejos estás dispuesto a conducir para ir a supermercados importantes, bancos y atención médica?",
         "a": "Comodidades locales a la mano. A 5 minutos a pie o en auto de mercados orgánicos, farmacias y restaurantes.",
-        "b": "Privacidad y exclusividad. No me importa conducir de 15 a 20 minutos por la costa para hacer mis compras.",
+        "b": "Privacidad y exclusividad. No me importa conducir de 15 a 20 minutos por rutas escénicas para hacer mis compras.",
         "c": "Servicios completos de ciudad. Acceso inmediato a hospitales regionales, bancos importantes y supermercados."
       },
       "q4": {

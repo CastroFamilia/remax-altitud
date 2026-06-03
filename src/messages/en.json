@@ -1277,14 +1277,14 @@
       "q1": {
         "title": "1. The Morning Rhythm & Climate",
         "subtitle": "When you wake up and look out the window, what do you want to see and feel?",
-        "a": "High-energy coastal beach vibe. I want to feel the tropical coastal heat and hear the surf.",
-        "b": "Lush jungle canopy and dramatic ocean views from a breezy mountain ridge where the mountains meet the sea.",
-        "c": "Cool mountain breezes, green hills, or peaceful valley views. A milder climate where I can avoid using A/C."
+        "a": "High-energy vibe. I want to feel the tropical heat and enjoy a vibrant, sun-drenched environment.",
+        "b": "Immersed in nature. I want elevated, sweeping views, lush green surroundings, and a continuous breeze.",
+        "c": "Fresh and tranquil. I prefer cool breezes, rolling green hills, and a milder climate where I can avoid using A/C."
       },
       "q2": {
         "title": "2. Driving, Access & Road Realities",
         "subtitle": "How do you honestly feel about unpaved roads and rugged terrain?",
-        "a": "All paved, flat, and easy roads. I prefer highly accessible coastal streets with a standard 2WD vehicle.",
+        "a": "All paved, flat, and easy roads. I prefer highly accessible streets where any standard vehicle can go.",
         "b": "I can handle some adventure, but within limits. Solid gravel or well-maintained community roads are fine.",
         "c": "Bring on the adventure! Fully comfortable with rugged 4x4 tracks to get ultimate privacy and pristine nature."
       },
@@ -1292,7 +1292,7 @@
         "title": "3. Convenience, Errands & Healthcare",
         "subtitle": "How far are you willing to drive for major supermarkets, banking, and medical care?",
         "a": "Boutique convenience right down the street. Walk or 5-minute drive to organic markets, pharmacies, and local eateries.",
-        "b": "Quiet seclusion. I don't mind a 15- to 20-minute scenic drive up or down the coast for my errands.",
+        "b": "Quiet seclusion. I don't mind a 15- to 20-minute scenic drive to get my errands done.",
         "c": "Full municipal city convenience. I want immediate access to regional hospitals, corporate banks, and major supermarkets."
       },
       "q4": {
