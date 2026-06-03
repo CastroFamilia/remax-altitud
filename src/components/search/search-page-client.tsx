@@ -49,7 +49,9 @@ export function SearchPageClient() {
   const [total, setTotal] = useState(0);
 
   // Available areas for the area filter dropdown
-  const [areas, setAreas] = useState<{ slug: string; label: string }[]>([]);
+  const [areas, setAreas] = useState<
+    { slug: string; label: string; parentSlug?: string; isSubLocation?: boolean }[]
+  >([]);
 
   // Monotonic sequence counters for race condition prevention
   // Using a single counter is fine since only one fetch at a time is needed
