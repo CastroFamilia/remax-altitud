@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 const TOAST_DISMISS_MS = 5000;
 const MAILTO_DELAY_MS = 200;
@@ -80,7 +80,6 @@ export function AgentContactForm({ agentEmail, agentName }: AgentContactFormProp
   // Using the ContactPage.form translations as a base
   const t = useTranslations("ContactPage.form");
   const tProfile = useTranslations("AgentProfile");
-  const locale = useLocale();
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
