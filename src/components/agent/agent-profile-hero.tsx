@@ -94,6 +94,29 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
           agentId={agent.id}
         />
       </div>
+
+      {agent.videoUrl && (
+        <div className="mt-8 overflow-hidden rounded-xl bg-brand-light shadow-sm">
+          {agent.videoUrl.includes("youtube.com") || agent.videoUrl.includes("youtu.be") ? (
+            <iframe
+              className="aspect-video w-full"
+              src={agent.videoUrl
+                .replace("watch?v=", "embed/")
+                .replace("youtu.be/", "youtube.com/embed/")}
+              title={`${agent.name} Presentation Video`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <video
+              className="aspect-video w-full"
+              controls
+              src={agent.videoUrl}
+              title={`${agent.name} Presentation Video`}
+            />
+          )}
+        </div>
+      )}
     </section>
   );
 }

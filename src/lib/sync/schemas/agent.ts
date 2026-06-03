@@ -31,6 +31,9 @@ const rawAgentApiSchemaBase = z
     CountryID: z.number().nullish(),
     OfficeName: z.string().nullish(),
     TitleEs: z.string().nullish(),
+    VideoUrl: z.string().nullish(),
+    Bio_en: z.string().nullish(),
+    Bio_es: z.string().nullish(),
   })
   .passthrough();
 
@@ -56,6 +59,9 @@ export const rawAgentApiSchema = rawAgentApiSchemaBase.transform((a) => {
     primaryLang,
     officeApiId: a.OfficeID,
     role,
+    videoUrl: a.VideoUrl && a.VideoUrl.trim().length > 0 ? a.VideoUrl.trim() : null,
+    bioEn: a.Bio_en && a.Bio_en.trim().length > 0 ? a.Bio_en.trim() : null,
+    bioEs: a.Bio_es && a.Bio_es.trim().length > 0 ? a.Bio_es.trim() : null,
   };
 });
 
