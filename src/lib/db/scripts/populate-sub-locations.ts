@@ -38,9 +38,9 @@ const db = drizzle(client);
 async function main() {
   const { resolveSubLocation } = await import("../queries/properties");
 
-  console.log("🔍 Populating sub_location from apiRaw.Location for Pérez Zeledón properties...\n");
+  console.log("🔍 Populating sub_location from apiRaw.Location for all properties...\n");
 
-  // Fetch all PZ properties to populate/correct their sub_locations
+  // Fetch all properties to populate/correct their sub_locations
   const pzProperties = await db
     .select({
       id: properties.id,
@@ -52,9 +52,9 @@ async function main() {
       titleEs: properties.titleEs,
     })
     .from(properties)
-    .where(eq(properties.areaSlug, "perez-zeledon"));
+    .where(isNotNull(properties.areaSlug));
 
-  console.log(`Found ${pzProperties.length} total PZ properties to process.\n`);
+  console.log(`Found ${pzProperties.length} total properties to process.\n`);
 
   let updated = 0;
   let skipped = 0;
@@ -69,7 +69,7 @@ async function main() {
     // Use the same resolveSubLocation() from the sync pipeline (single source of truth)
     const subLocationSlug = resolveSubLocation(
       location,
-      "perez-zeledon",
+      prop.areaSlug as string,
       prop.titleEn,
       prop.titleEs,
       unparsedAddress,
@@ -102,14 +102,14 @@ async function main() {
   console.log(`\n📊 Results:`);
   console.log(`  Updated: ${updated}`);
   console.log(`  Skipped: ${skipped} (no Location or unmapped)`);
-  console.log(`  Total PZ properties: ${pzProperties.length}`);
+  console.log(`  Total properties: ${pzProperties.length}`);
 
   if (unmapped.length > 0) {
     console.log(`\n⚠️  Unmapped Location values (${unmapped.length}):`);
     for (const loc of unmapped) {
       console.log(`    - "${loc}"`);
     }
-    console.log("\n  Add these to PZ_DISTRICT_KEYWORDS in properties.ts if they should be mapped.");
+    console.log("\n  Add these to DISTRICT_KEYWORDS in locations.ts if they should be mapped.");
   }
 
   // Show a count of properties per sub_location after update
@@ -119,7 +119,7 @@ async function main() {
       count: sql<number>`count(*)::int`,
     })
     .from(properties)
-    .where(and(eq(properties.areaSlug, "perez-zeledon"), isNotNull(properties.subLocation)))
+    .where(isNotNull(properties.subLocation))
     .groupBy(properties.subLocation);
 
   if (counts.length > 0) {
