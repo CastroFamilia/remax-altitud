@@ -414,15 +414,159 @@ export const DISTRICT_KEYWORDS: { keyword: string; slug: string; parent: string 
   { keyword: "rise", slug: "el-general", parent: "perez-zeledon" }, // rise
 
   // Osa
-  { keyword: "bahía ballena", slug: "bahia-ballena", parent: "dominical" },
-  { keyword: "bahia ballena", slug: "bahia-ballena", parent: "dominical" },
-  { keyword: "puerto cortés", slug: "puerto-cortes", parent: "ojochal" },
-  { keyword: "puerto cortes", slug: "puerto-cortes", parent: "ojochal" },
-  { keyword: "piedras blancas", slug: "piedras-blancas", parent: "ojochal" },
-  { keyword: "bahía drake", slug: "bahia-drake", parent: "ojochal" },
-  { keyword: "bahia drake", slug: "bahia-drake", parent: "ojochal" },
-  { keyword: "sierpe", slug: "sierpe", parent: "ojochal" },
-  { keyword: "palmar", slug: "palmar", parent: "ojochal" },
+  { keyword: "quebrada grande", slug: "bahia-ballena", parent: "dominical" }, // Quebrada Grande
+  { keyword: "tortuga arriba", slug: "bahia-ballena", parent: "dominical" }, // Tortuga Arriba
+  { keyword: "bahía ballena", slug: "bahia-ballena", parent: "dominical" }, // Bahía Ballena
+  { keyword: "bahia ballena", slug: "bahia-ballena", parent: "dominical" }, // Bahia Ballena
+  { keyword: "playa hermosa", slug: "bahia-ballena", parent: "dominical" }, // Playa Hermosa
+  { keyword: "dominicalito", slug: "bahia-ballena", parent: "dominical" }, // Dominicalito
+  { keyword: "san josecito", slug: "bahia-ballena", parent: "dominical" }, // San Josecito
+  { keyword: "san martín", slug: "bahia-ballena", parent: "dominical" }, // San Martín
+  { keyword: "dominical", slug: "bahia-ballena", parent: "dominical" }, // Dominical
+  { keyword: "escaleras", slug: "bahia-ballena", parent: "dominical" }, // Escaleras
+  { keyword: "cambutal", slug: "bahia-ballena", parent: "dominical" }, // Cambutal
+  { keyword: "piñuela", slug: "bahia-ballena", parent: "dominical" }, // Piñuela
+  { keyword: "uvita", slug: "bahia-ballena", parent: "dominical" }, // Uvita
+  { keyword: "campo de aguabuena", slug: "sierpe", parent: "ojochal" }, // Campo de Aguabuena
+  { keyword: "punta mala arriba", slug: "puerto-cortes", parent: "ojochal" }, // Punta Mala Arriba
+  { keyword: "san buenaventura", slug: "puerto-cortes", parent: "ojochal" }, // San Buenaventura
+  { keyword: "vista de térraba", slug: "puerto-cortes", parent: "ojochal" }, // Vista de Térraba
+  { keyword: "la luz del mundo", slug: "palmar", parent: "ojochal" }, // La luz del mundo
+  { keyword: "primero de marzo", slug: "palmar", parent: "ojochal" }, // Primero de Marzo
+  { keyword: "puerto escondido", slug: "sierpe", parent: "ojochal" }, // Puerto Escondido
+  { keyword: "finca guanacaste", slug: "piedras-blancas", parent: "ojochal" }, // Finca Guanacaste
+  { keyword: "finca puntarenas", slug: "piedras-blancas", parent: "ojochal" }, // Finca Puntarenas
+  { keyword: "piedras blancas", slug: "piedras-blancas", parent: "ojochal" }, // Piedras Blancas
+  { keyword: "rincón caliente", slug: "piedras-blancas", parent: "ojochal" }, // Rincón Caliente
+  { keyword: "quebrada ganado", slug: "bahia-drake", parent: "ojochal" }, // Quebrada Ganado
+  { keyword: "cinco esquinas", slug: "puerto-cortes", parent: "ojochal" }, // Cinco Esquinas
+  { keyword: "puerta del sol", slug: "palmar", parent: "ojochal" }, // Puerta del Sol
+  { keyword: "alto los mogos", slug: "sierpe", parent: "ojochal" }, // Alto Los Mogos
+  { keyword: "finca alajuela", slug: "piedras-blancas", parent: "ojochal" }, // Finca Alajuela
+  { keyword: "villa agujitas", slug: "bahia-drake", parent: "ojochal" }, // Villa Agujitas
+  { keyword: "rancho quemado", slug: "bahia-drake", parent: "ojochal" }, // Rancho Quemado
+  { keyword: "puerto cortés", slug: "puerto-cortes", parent: "ojochal" }, // Puerto Cortés
+  { keyword: "puerto cortes", slug: "puerto-cortes", parent: "ojochal" }, // Puerto Cortes
+  { keyword: "isla sorpresa", slug: "puerto-cortes", parent: "ojochal" }, // Isla Sorpresa
+  { keyword: "tortuga abajo", slug: "puerto-cortes", parent: "ojochal" }, // Tortuga Abajo
+  { keyword: "once de abril", slug: "palmar", parent: "ojochal" }, // Once de Abril
+  { keyword: "san cristóbal", slug: "palmar", parent: "ojochal" }, // San Cristóbal
+  { keyword: "san francisco", slug: "palmar", parent: "ojochal" }, // San Francisco
+  { keyword: "alto san juan", slug: "sierpe", parent: "ojochal" }, // Alto San Juan
+  { keyword: "boca chocuaco", slug: "sierpe", parent: "ojochal" }, // Boca Chocuaco
+  { keyword: "santa cecilia", slug: "piedras-blancas", parent: "ojochal" }, // Santa Cecilia
+  { keyword: "pueblo nuevo", slug: "puerto-cortes", parent: "ojochal" }, // Pueblo Nuevo
+  { keyword: "renacimiento", slug: "puerto-cortes", parent: "ojochal" }, // Renacimiento
+  { keyword: "palmar norte", slug: "palmar", parent: "ojochal" }, // Palmar Norte
+  { keyword: "alto ángeles", slug: "palmar", parent: "ojochal" }, // Alto Ángeles
+  { keyword: "alto encanto", slug: "palmar", parent: "ojochal" }, // Alto Encanto
+  { keyword: "alto montura", slug: "palmar", parent: "ojochal" }, // Alto Montura
+  { keyword: "bajos matías", slug: "sierpe", parent: "ojochal" }, // Bajos Matías
+  { keyword: "cerro oscuro", slug: "piedras-blancas", parent: "ojochal" }, // Cerro Oscuro
+  { keyword: "kilómetro 40", slug: "piedras-blancas", parent: "ojochal" }, // Kilómetro 40
+  { keyword: "villa bonita", slug: "piedras-blancas", parent: "ojochal" }, // Villa Bonita
+  { keyword: "san josecito", slug: "bahia-drake", parent: "ojochal" }, // San Josecito
+  { keyword: "san pedrillo", slug: "bahia-drake", parent: "ojochal" }, // San Pedrillo
+  { keyword: "embarcadero", slug: "puerto-cortes", parent: "ojochal" }, // Embarcadero
+  { keyword: "ojo de agua", slug: "puerto-cortes", parent: "ojochal" }, // Ojo de Agua
+  { keyword: "cañablancal", slug: "palmar", parent: "ojochal" }, // Cañablancal
+  { keyword: "san gabriel", slug: "palmar", parent: "ojochal" }, // San Gabriel
+  { keyword: "santa elena", slug: "palmar", parent: "ojochal" }, // Santa Elena
+  { keyword: "ajuntaderas", slug: "sierpe", parent: "ojochal" }, // Ajuntaderas
+  { keyword: "playa palma", slug: "sierpe", parent: "ojochal" }, // Playa Palma
+  { keyword: "san gerardo", slug: "sierpe", parent: "ojochal" }, // San Gerardo
+  { keyword: "villa colón", slug: "piedras-blancas", parent: "ojochal" }, // Villa Colón
+  { keyword: "bahía drake", slug: "bahia-drake", parent: "ojochal" }, // Bahía Drake
+  { keyword: "bahia drake", slug: "bahia-drake", parent: "ojochal" }, // Bahia Drake
+  { keyword: "boca ganado", slug: "bahia-drake", parent: "ojochal" }, // Boca Ganado
+  { keyword: "cementerio", slug: "puerto-cortes", parent: "ojochal" }, // Cementerio
+  { keyword: "lindavista", slug: "puerto-cortes", parent: "ojochal" }, // Lindavista
+  { keyword: "punta mala", slug: "puerto-cortes", parent: "ojochal" }, // Punta Mala
+  { keyword: "san marcos", slug: "puerto-cortes", parent: "ojochal" }, // San Marcos
+  { keyword: "palmar sur", slug: "palmar", parent: "ojochal" }, // Palmar Sur
+  { keyword: "las brisas", slug: "palmar", parent: "ojochal" }, // Las Brisas
+  { keyword: "san isidro", slug: "palmar", parent: "ojochal" }, // San Isidro
+  { keyword: "san rafael", slug: "palmar", parent: "ojochal" }, // San Rafael
+  { keyword: "bahía chal", slug: "sierpe", parent: "ojochal" }, // Bahía Chal
+  { keyword: "cantarrana", slug: "sierpe", parent: "ojochal" }, // Cantarrana
+  { keyword: "san martín", slug: "piedras-blancas", parent: "ojochal" }, // San Martín
+  { keyword: "santa rosa", slug: "piedras-blancas", parent: "ojochal" }, // Santa Rosa
+  { keyword: "campanario", slug: "bahia-drake", parent: "ojochal" }, // Campanario
+  { keyword: "bocabrava", slug: "puerto-cortes", parent: "ojochal" }, // Bocabrava
+  { keyword: "bocachica", slug: "puerto-cortes", parent: "ojochal" }, // Bocachica
+  { keyword: "chontales", slug: "puerto-cortes", parent: "ojochal" }, // Chontales
+  { keyword: "tres ríos", slug: "puerto-cortes", parent: "ojochal" }, // Tres Ríos
+  { keyword: "olla cero", slug: "palmar", parent: "ojochal" }, // Olla Cero
+  { keyword: "monterrey", slug: "sierpe", parent: "ojochal" }, // Monterrey
+  { keyword: "taboguita", slug: "sierpe", parent: "ojochal" }, // Taboguita
+  { keyword: "chacarita", slug: "piedras-blancas", parent: "ojochal" }, // Chacarita
+  { keyword: "montreal", slug: "puerto-cortes", parent: "ojochal" }, // Montreal
+  { keyword: "precario", slug: "puerto-cortes", parent: "ojochal" }, // Precario
+  { keyword: "coronado", slug: "puerto-cortes", parent: "ojochal" }, // Coronado
+  { keyword: "delicias", slug: "puerto-cortes", parent: "ojochal" }, // Delicias
+  { keyword: "parcelas", slug: "puerto-cortes", parent: "ojochal" }, // Parcelas
+  { keyword: "alemania", slug: "palmar", parent: "ojochal" }, // Alemania
+  { keyword: "calavera", slug: "palmar", parent: "ojochal" }, // Calavera
+  { keyword: "silencio", slug: "palmar", parent: "ojochal" }, // Silencio
+  { keyword: "victoria", slug: "palmar", parent: "ojochal" }, // Victoria
+  { keyword: "chocuaco", slug: "sierpe", parent: "ojochal" }, // Chocuaco
+  { keyword: "playitas", slug: "sierpe", parent: "ojochal" }, // Playitas
+  { keyword: "varillal", slug: "sierpe", parent: "ojochal" }, // Varillal
+  { keyword: "porvenir", slug: "piedras-blancas", parent: "ojochal" }, // Porvenir
+  { keyword: "lourdes", slug: "puerto-cortes", parent: "ojochal" }, // Lourdes
+  { keyword: "ojochal", slug: "puerto-cortes", parent: "ojochal" }, // Ojochal
+  { keyword: "betania", slug: "palmar", parent: "ojochal" }, // Betania
+  { keyword: "coquito", slug: "palmar", parent: "ojochal" }, // Coquito
+  { keyword: "gorrión", slug: "palmar", parent: "ojochal" }, // Gorrión
+  { keyword: "paraíso", slug: "palmar", parent: "ojochal" }, // Paraíso
+  { keyword: "gallega", slug: "sierpe", parent: "ojochal" }, // Gallega
+  { keyword: "camíbar", slug: "sierpe", parent: "ojochal" }, // Camíbar
+  { keyword: "charcos", slug: "sierpe", parent: "ojochal" }, // Charcos
+  { keyword: "garrobo", slug: "sierpe", parent: "ojochal" }, // Garrobo
+  { keyword: "isidora", slug: "sierpe", parent: "ojochal" }, // Isidora
+  { keyword: "islotes", slug: "sierpe", parent: "ojochal" }, // Islotes
+  { keyword: "miramar", slug: "sierpe", parent: "ojochal" }, // Miramar
+  { keyword: "potrero", slug: "sierpe", parent: "ojochal" }, // Potrero
+  { keyword: "florida", slug: "piedras-blancas", parent: "ojochal" }, // Florida
+  { keyword: "navidad", slug: "piedras-blancas", parent: "ojochal" }, // Navidad
+  { keyword: "venecia", slug: "piedras-blancas", parent: "ojochal" }, // Venecia
+  { keyword: "banegas", slug: "bahia-drake", parent: "ojochal" }, // Banegas
+  { keyword: "caletas", slug: "bahia-drake", parent: "ojochal" }, // Caletas
+  { keyword: "canadá", slug: "puerto-cortes", parent: "ojochal" }, // Canadá
+  { keyword: "balsar", slug: "puerto-cortes", parent: "ojochal" }, // Balsar
+  { keyword: "cerrón", slug: "puerto-cortes", parent: "ojochal" }, // Cerrón
+  { keyword: "fuente", slug: "puerto-cortes", parent: "ojochal" }, // Fuente
+  { keyword: "tagual", slug: "puerto-cortes", parent: "ojochal" }, // Tagual
+  { keyword: "palmar", slug: "palmar", parent: "ojochal" }, // Palmar
+  { keyword: "cansot", slug: "palmar", parent: "ojochal" }, // Cansot
+  { keyword: "tinoco", slug: "palmar", parent: "ojochal" }, // Tinoco
+  { keyword: "trocha", slug: "palmar", parent: "ojochal" }, // Trocha
+  { keyword: "vergel", slug: "palmar", parent: "ojochal" }, // Vergel
+  { keyword: "zapote", slug: "palmar", parent: "ojochal" }, // Zapote
+  { keyword: "sierpe", slug: "sierpe", parent: "ojochal" }, // Sierpe
+  { keyword: "bejuco", slug: "sierpe", parent: "ojochal" }, // Bejuco
+  { keyword: "guabos", slug: "sierpe", parent: "ojochal" }, // Guabos
+  { keyword: "rincón", slug: "sierpe", parent: "ojochal" }, // Rincón
+  { keyword: "sábalo", slug: "sierpe", parent: "ojochal" }, // Sábalo
+  { keyword: "taboga", slug: "sierpe", parent: "ojochal" }, // Taboga
+  { keyword: "calera", slug: "piedras-blancas", parent: "ojochal" }, // Calera
+  { keyword: "guaria", slug: "piedras-blancas", parent: "ojochal" }, // Guaria
+  { keyword: "salamá", slug: "piedras-blancas", parent: "ojochal" }, // Salamá
+  { keyword: "guerra", slug: "bahia-drake", parent: "ojochal" }, // Guerra
+  { keyword: "planes", slug: "bahia-drake", parent: "ojochal" }, // Planes
+  { keyword: "riyito", slug: "bahia-drake", parent: "ojochal" }, // Riyito
+  { keyword: "coobó", slug: "palmar", parent: "ojochal" }, // Coobó
+  { keyword: "palma", slug: "palmar", parent: "ojochal" }, // Palma
+  { keyword: "barco", slug: "sierpe", parent: "ojochal" }, // Barco
+  { keyword: "julia", slug: "sierpe", parent: "ojochal" }, // Julia
+  { keyword: "mogos", slug: "sierpe", parent: "ojochal" }, // Mogos
+  { keyword: "tigre", slug: "sierpe", parent: "ojochal" }, // Tigre
+  { keyword: "nubes", slug: "piedras-blancas", parent: "ojochal" }, // Nubes
+  { keyword: "sinaí", slug: "piedras-blancas", parent: "ojochal" }, // Sinaí
+  { keyword: "drake", slug: "bahia-drake", parent: "ojochal" }, // Drake
+  { keyword: "yuca", slug: "puerto-cortes", parent: "ojochal" }, // Yuca
+  { keyword: "pozo", slug: "puerto-cortes", parent: "ojochal" }, // Pozo
+  { keyword: "fila", slug: "piedras-blancas", parent: "ojochal" }, // Fila
   // Quepos
   { keyword: "manuel antonio", slug: "manuel-antonio", parent: "quepos" },
   { keyword: "naranjito", slug: "naranjito", parent: "quepos" },
