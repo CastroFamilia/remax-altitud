@@ -39,7 +39,6 @@ function HomeContent({
       <h1 className="sr-only">{t("title")}</h1>
       <SplitHero />
       <div className="container space-y-16 py-16">
-        <LifestyleQuestionnaire initialProperties={questionnaireProperties} locale={locale} />
         <VipSearchBanner />
         <FeaturedPropertiesShell locale={locale} />
         <LifestyleQuestionnaire initialProperties={questionnaireProperties} locale={locale} />
