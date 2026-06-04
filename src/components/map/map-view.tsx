@@ -10,7 +10,7 @@
  */
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { Map as MapboxMap, Marker } from "react-map-gl";
+import { Map as MapboxMap, Marker, NavigationControl } from "react-map-gl";
 import type { MapRef } from "react-map-gl";
 import Supercluster from "supercluster";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -272,6 +272,8 @@ export function MapView({
           setSelectedPropertyId(null);
         }}
       >
+        <NavigationControl position="bottom-right" showCompass={false} />
+
         {/* Render clusters and individual pins */}
         {clusters.map((feature) => {
           const [lng, lat] = feature.geometry.coordinates;
