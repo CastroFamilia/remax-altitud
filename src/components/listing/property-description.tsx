@@ -325,62 +325,70 @@ export function PropertyDescription({ description }: PropertyDescriptionProps) {
 
       {/* Styled Responsive Sections Grid */}
       <div className="flex flex-col">
-        {parsed.sections.map((section, idx) => {
-          const theme = getSectionTheme(section.title);
-          const Icon = theme.icon;
+        {parsed.sections
+          .filter((section) => {
+            const lowerTitle = section.title.toLowerCase();
+            return (
+              !lowerTitle.includes("exclusive benefits") &&
+              !lowerTitle.includes("beneficios exclusivos")
+            );
+          })
+          .map((section, idx) => {
+            const theme = getSectionTheme(section.title);
+            const Icon = theme.icon;
 
-          return (
-            <div
-              key={idx}
-              className="group py-8 border-t border-slate-200 dark:border-slate-800 first:border-0 first:pt-0"
-            >
-              {/* Section Header */}
-              <div className="flex items-center gap-4 mb-8">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 transition-transform duration-500 group-hover:scale-105">
-                  <Icon className="w-5 h-5" strokeWidth={1.5} />
-                </span>
-                <h3 className="text-2xl font-light tracking-wide text-slate-900 dark:text-slate-100">
-                  {section.title}
-                </h3>
-              </div>
+            return (
+              <div
+                key={idx}
+                className="group py-8 border-t border-slate-200 dark:border-slate-800 first:border-0 first:pt-0"
+              >
+                {/* Section Header */}
+                <div className="flex items-center gap-4 mb-8">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 transition-transform duration-500 group-hover:scale-105">
+                    <Icon className="w-5 h-5" strokeWidth={1.5} />
+                  </span>
+                  <h3 className="text-2xl font-light tracking-wide text-slate-900 dark:text-slate-100">
+                    {section.title}
+                  </h3>
+                </div>
 
-              {/* Section Items / Specifications Grid */}
-              {section.items && section.items.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mb-8">
-                  {section.items.map((item, itemIdx) => (
-                    <div
-                      key={itemIdx}
-                      className="flex items-start gap-4 py-3 border-b border-slate-100 dark:border-slate-800/50"
-                    >
-                      <div className="space-y-1">
-                        <span className="block text-xs font-medium uppercase tracking-widest text-slate-400">
-                          {item.label}
-                        </span>
-                        <span className="block text-base font-light text-slate-800 dark:text-slate-200">
-                          {item.value}
-                        </span>
+                {/* Section Items / Specifications Grid */}
+                {section.items && section.items.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mb-8">
+                    {section.items.map((item, itemIdx) => (
+                      <div
+                        key={itemIdx}
+                        className="flex items-start gap-4 py-3 border-b border-slate-100 dark:border-slate-800/50"
+                      >
+                        <div className="space-y-1">
+                          <span className="block text-xs font-medium uppercase tracking-widest text-slate-400">
+                            {item.label}
+                          </span>
+                          <span className="block text-base font-light text-slate-800 dark:text-slate-200">
+                            {item.value}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
 
-              {/* Section Body Text */}
-              {section.content && (
-                <div className="prose prose-gray dark:prose-invert max-w-none">
-                  {section.content.split("\n").map((para, paraIdx) => (
-                    <p
-                      key={paraIdx}
-                      className="mb-6 last:mb-0 text-base md:text-lg font-light leading-relaxed text-slate-600 dark:text-slate-300"
-                    >
-                      {para}
-                    </p>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                {/* Section Body Text */}
+                {section.content && (
+                  <div className="prose prose-gray dark:prose-invert max-w-none">
+                    {section.content.split("\n").map((para, paraIdx) => (
+                      <p
+                        key={paraIdx}
+                        className="mb-6 last:mb-0 text-base md:text-lg font-light leading-relaxed text-slate-600 dark:text-slate-300"
+                      >
+                        {para}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
       </div>
     </div>
   );
