@@ -119,7 +119,8 @@ function getSectionTheme(title: string): ThemeStyle {
     normalized.includes("condiciones") ||
     normalized.includes("price") ||
     normalized.includes("precio") ||
-    normalized.includes("beneficios")
+    normalized.includes("beneficios") ||
+    normalized.includes("benefits")
   ) {
     return SECTION_THEMES.conditions;
   }
@@ -180,8 +181,12 @@ function parseDescription(text: string): ParsedDescription {
     "Location",
     "Ubicacion",
     "Características de la Propiedad",
+    "Technical Features",
+    "Características Técnicas",
     "Características",
     "Caracteristicas",
+    "Exclusive Benefits",
+    "Beneficios Exclusivos",
     "Features",
     "Condiciones del Alquiler y Beneficios",
     "Condiciones del Alquiler",
