@@ -6,7 +6,6 @@ import {
   Sparkles,
   Info,
   MessageSquare,
-  CheckCircle2,
   DollarSign,
   UserCheck,
   ShieldCheck,

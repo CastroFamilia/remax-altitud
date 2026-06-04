@@ -35,7 +35,7 @@ test.describe("Story 8.7: Shortlist Analytics", () => {
   });
 
   test.describe("Admin Analytics Portal", () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     test.beforeEach(async ({ context }: any) => {
       // Authenticate as Admin
       const sessionToken = createHash("sha256").update("admin").digest("hex");
