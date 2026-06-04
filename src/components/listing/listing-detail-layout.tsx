@@ -33,6 +33,14 @@ function extractYoutubeVideoId(url: string): string | null {
   return match ? match[1] : null;
 }
 
+function extractYoutubeVideoId(url: string): string | null {
+  if (!url) return null;
+  const match = url.match(
+    /(?:v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/v\/)([A-Za-z0-9_-]{11})/i,
+  );
+  return match ? match[1] : null;
+}
+
 // ZMT badge visual config (same as property-card.tsx)
 const ZMT_VISUAL: Record<string, { classes: string; icon: string }> = {
   titled: {
@@ -262,75 +270,89 @@ export async function ListingDetailLayout({
                 officeName={officeName ?? t("unknownOffice")}
               />
 
-              {/* Altitud Perks for This Listing Widget */}
-              <div className="rounded-xl border border-brand-warm bg-white p-6 shadow-md space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-brand-gold-dark">
-                  {locale === "es" ? "La Ventaja Altitud" : "The Altitud Advantage"}
-                </h3>
-                <p className="text-xs text-text-muted font-medium">
-                  {locale === "es"
-                    ? "Beneficios exclusivos incluidos con esta propiedad:"
-                    : "Exclusive benefits included with this property:"}
-                </p>
-                <ul className="space-y-3.5 pt-2">
-                  <li className="flex items-start gap-3">
-                    <span className="flex size-7 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark text-xs font-bold flex-shrink-0">
-                      💳
-                    </span>
-                    <div>
-                      <h4 className="text-xs font-bold text-brand-navy">
-                        {locale === "es" ? "Financiamiento hasta 80%" : "Up to 80% Financing"}
-                      </h4>
-                      <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
-                        {locale === "es"
-                          ? "Disponible según su nacionalidad, score y propiedad."
-                          : "Available based on nationality, credit score, and property."}
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="flex size-7 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark text-xs font-bold flex-shrink-0">
-                      📐
-                    </span>
-                    <div>
-                      <h4 className="text-xs font-bold text-brand-navy">
-                        {locale === "es"
-                          ? "Diseño de Propiedad Gratuito"
-                          : "Free Architectural Design"}
-                      </h4>
-                      <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
-                        {locale === "es"
-                          ? "Convenios exclusivos con constructoras para su plano personalizado."
-                          : "Exclusive agreements with builders for your custom layout."}
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="flex size-7 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark text-xs font-bold flex-shrink-0">
-                      ⚖️
-                    </span>
-                    <div>
-                      <h4 className="text-xs font-bold text-brand-navy">
-                        {locale === "es" ? "Consulta Legal de Cortesía" : "Free Legal Consultation"}
-                      </h4>
-                      <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
-                        {locale === "es"
-                          ? "Revisión de título y ZMT con nuestros abogados aliados."
-                          : "Title and ZMT review with our trusted partner attorneys."}
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-                <div className="pt-3 border-t border-brand-warm text-center">
-                  <Link
-                    href="/about"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-navy hover:text-brand-navy-light transition-colors"
-                  >
-                    <span>{locale === "es" ? "Saber más" : "Learn more"}</span>
-                    <span aria-hidden="true">→</span>
-                  </Link>
+              {/* Altitud Perks for This Listing Widget / Video Embed */}
+              {property.youtubeUrl ? (
+                <div className="rounded-xl overflow-hidden shadow-md border border-brand-warm bg-white">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${extractYoutubeVideoId(property.youtubeUrl)}`}
+                    title="Property Video"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full aspect-video"
+                  />
                 </div>
-              </div>
+              ) : (
+                <div className="rounded-xl border border-brand-warm bg-white p-6 shadow-md space-y-4">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-brand-gold-dark">
+                    {locale === "es" ? "La Ventaja Altitud" : "The Altitud Advantage"}
+                  </h3>
+                  <p className="text-xs text-text-muted font-medium">
+                    {locale === "es"
+                      ? "Beneficios exclusivos incluidos con esta propiedad:"
+                      : "Exclusive benefits included with this property:"}
+                  </p>
+                  <ul className="space-y-3.5 pt-2">
+                    <li className="flex items-start gap-3">
+                      <span className="flex size-7 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark text-xs font-bold flex-shrink-0">
+                        💳
+                      </span>
+                      <div>
+                        <h4 className="text-xs font-bold text-brand-navy">
+                          {locale === "es" ? "Financiamiento hasta 80%" : "Up to 80% Financing"}
+                        </h4>
+                        <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
+                          {locale === "es"
+                            ? "Disponible según su nacionalidad, score y propiedad."
+                            : "Available based on nationality, credit score, and property."}
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex size-7 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark text-xs font-bold flex-shrink-0">
+                        📐
+                      </span>
+                      <div>
+                        <h4 className="text-xs font-bold text-brand-navy">
+                          {locale === "es"
+                            ? "Diseño de Propiedad Gratuito"
+                            : "Free Architectural Design"}
+                        </h4>
+                        <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
+                          {locale === "es"
+                            ? "Convenios exclusivos con constructoras para su plano personalizado."
+                            : "Exclusive agreements with builders for your custom layout."}
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex size-7 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark text-xs font-bold flex-shrink-0">
+                        ⚖️
+                      </span>
+                      <div>
+                        <h4 className="text-xs font-bold text-brand-navy">
+                          {locale === "es"
+                            ? "Consulta Legal de Cortesía"
+                            : "Free Legal Consultation"}
+                        </h4>
+                        <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
+                          {locale === "es"
+                            ? "Revisión de título y ZMT con nuestros abogados aliados."
+                            : "Title and ZMT review with our trusted partner attorneys."}
+                        </p>
+                      </div>
+                    </li>
+                  </ul>
+                  <div className="pt-3 border-t border-brand-warm text-center">
+                    <Link
+                      href="/about"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-navy hover:text-brand-navy-light transition-colors"
+                    >
+                      <span>{locale === "es" ? "Saber más" : "Learn more"}</span>
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
