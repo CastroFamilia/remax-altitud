@@ -14,7 +14,7 @@
     "santaElenaHills": "Santa Elena Hills",
     "allCommunities": "All Communities",
     "sellYourProperty": "Sell Your Property",
-    "about": "About",
+    "about": "The Altitud Advantage",
     "ourTeam": "Our Team",
     "contact": "Contact",
     "ourAgents": "Our Agents",
@@ -42,14 +42,14 @@
     "followUs": "Follow Us",
     "allRightsReserved": "All rights reserved",
     "sellWithUs": "Sell with Us",
-    "aboutUs": "About Us",
+    "aboutUs": "The Altitud Advantage",
     "ourAgents": "Our Agents",
     "vipBuyer": "VIP Buyer Service",
     "contactUs": "Contact Us",
     "properties": "Properties",
     "communities": "Communities",
     "areas": "Areas",
-    "about": "About",
+    "about": "The Altitud Advantage",
     "contact": "Contact",
     "joinTeam": "Join Our Team",
     "privacy": "Privacy Policy",
@@ -119,10 +119,25 @@
     }
   },
   "AboutPage": {
-    "metaTitle": "About REMAX Altitud — Costa Rica's Southern Zone",
-    "metaDescription": "Learn about REMAX Altitud and Altitud Cero — the premier real estate team serving Pérez Zeledón, Dominical, and Uvita.",
-    "pageTitle": "About REMAX Altitud",
-    "intro": "REMAX Altitud and REMAX Altitud Cero unite two offices under one promise: guide international and local clients through buying, selling, and investing in Costa Rica's Southern Zone — in the language they prefer.",
+    "metaTitle": "The Altitud Advantage — REMAX Altitud",
+    "metaDescription": "Discover the Altitud Advantage: up to 80% financing, free custom architectural design plans, complimentary legal consultation, and our premier offices serving Costa Rica's Southern Zone.",
+    "pageTitle": "The Altitud Advantage",
+    "intro": "We do more than list properties—we pave the path to your dream lifestyle. Buy, sell, or build with exclusive benefits you won't find anywhere else.",
+    "advantage": {
+      "heading": "The Altitud Advantage",
+      "financing": {
+        "title": "Up to 80% Financing",
+        "desc": "Secure the capital you need. We help facilitate financing up to 80% through our banking network, tailored to your nationality, credit score, and selected property."
+      },
+      "architect": {
+        "title": "Free Architectural Design",
+        "desc": "Visualize your future home. Benefit from our exclusive partnerships (convenios) with premier building companies that will design your property plans entirely free of charge."
+      },
+      "legal": {
+        "title": "Free Legal Consultation",
+        "desc": "Invest with total confidence. Our trusted partner attorneys provide a complimentary initial consultation to review contracts, titles, and concession structures (ZMT)."
+      }
+    },
     "officesHeading": "Our Offices",
     "officesIntro": "Two offices, one team — covering the mountains of Pérez Zeledón and the Pacific coast from Dominical to Uvita.",
     "office": {
@@ -1240,6 +1255,108 @@
     "booking": {
       "heading": "Start Here: Tell Us About You",
       "subtitle": "Let’s start your Costa Rica journey. Tell us what you’re dreaming of, and we’ll make it real."
+    }
+  },
+  "LifestyleQuestionnaire": {
+    "title": "Costa Rica Lifestyle Discovery Questionnaire",
+    "tagline": "Tell Me How You Want to Live, and I'll Tell You Where to Find It",
+    "welcome": {
+      "heading": "Welcome to the Southern Zone & Valley Region!",
+      "description": "Finding your perfect home here isn't just about bedrooms or square footage—it’s about matching your daily rhythm to the right microclimate, road infrastructure, and community vibe.",
+      "timeEstimate": "Take 3 minutes to fill out this lifestyle check, and we will pinpoint the exact local neighborhood that matches your vision.",
+      "start": "Start Lifestyle Questionnaire"
+    },
+    "question": "Question",
+    "of": "of",
+    "next": "Next Question",
+    "back": "Back",
+    "seeResults": "See My Results",
+    "retake": "Retake Questionnaire",
+    "recommendedListings": "Recommended Listings For You",
+    "questions": {
+      "q1": {
+        "title": "1. The Morning Rhythm & Climate",
+        "subtitle": "When you wake up and look out the window, what do you want to see and feel?",
+        "a": "High-energy vibe. I want to feel the tropical heat and enjoy a vibrant, sun-drenched environment.",
+        "b": "Immersed in nature. I want elevated, sweeping views, lush green surroundings, and a continuous breeze.",
+        "c": "Fresh and tranquil. I prefer cool breezes, rolling green hills, and a milder climate where I can avoid using A/C."
+      },
+      "q2": {
+        "title": "2. Driving, Access & Road Realities",
+        "subtitle": "How do you honestly feel about unpaved roads and rugged terrain?",
+        "a": "All paved, flat, and easy roads. I prefer highly accessible streets where any standard vehicle can go.",
+        "b": "I can handle some adventure, but within limits. Solid gravel or well-maintained community roads are fine.",
+        "c": "Bring on the adventure! Fully comfortable with rugged 4x4 tracks to get ultimate privacy and pristine nature."
+      },
+      "q3": {
+        "title": "3. Convenience, Errands & Healthcare",
+        "subtitle": "How far are you willing to drive for major supermarkets, banking, and medical care?",
+        "a": "Boutique convenience right down the street. Walk or 5-minute drive to organic markets, pharmacies, and local eateries.",
+        "b": "Quiet seclusion. I don't mind a 15- to 20-minute scenic drive to get my errands done.",
+        "c": "Full municipal city convenience. I want immediate access to regional hospitals, corporate banks, and major supermarkets."
+      },
+      "q4": {
+        "title": "4. Community Vibe & Social Circles",
+        "subtitle": "What does your ideal neighbor network and social scene look like?",
+        "a": "Bohemian and fluid blend of world-class surfers, digital nomads, eco-travelers, and active evening social scenes.",
+        "b": "International, wellness-oriented expat community tightly integrated with local Tico culture (farmers' markets, yoga).",
+        "c": "Authentic, relationship-driven Costa Rican lifestyle. Sprawling country estates, local farmers, and homesteaders."
+      }
+    },
+    "results": {
+      "a": {
+        "title": "The Coastal Surf & High-Energy Hub",
+        "vibe": "You want immediate beach energy, a walkable or easy-drive lifestyle, and a lively social connection. You don't want to be isolated on a high mountain ridge; you want to be where the action is.",
+        "matches": "Your Best Matches:",
+        "places": {
+          "p1": {
+            "name": "Dominical",
+            "desc": "The ultimate capital for world-class surf, bohemian nightlife, and digital nomad energy. Mostly flat, highly walkable town center with paved access right off the Costanera."
+          },
+          "p2": {
+            "name": "Dominicalito",
+            "desc": "Just south of Dominical. It offers a slightly quieter, gentler cove beach vibe, highly favored by long-term residents who want easy 2WD ocean proximity without the high tourist traffic of main Dominical."
+          },
+          "p3": {
+            "name": "Bahía Ballena",
+            "desc": "Nestled right against the Marino Ballena National Park. Flat, easy to drive, highly bikeable, and perfect for buyers who want to walk into the national park every morning to see the pristine shoreline."
+          }
+        }
+      },
+      "b": {
+        "title": "The Coastal Jungle Ridge & Eco-Luxury Lifestyle",
+        "vibe": "You want the dramatic \"wow factor\"—where the lush jungle canopy directly overlooks the Pacific Ocean. You prioritize sweeping views, wildlife, and premium alternative learning/wellness communities, and you don't mind a 4x4 mountain road to get to your private sanctuary.",
+        "matches": "Your Best Matches:",
+        "places": {
+          "p1": {
+            "name": "Uvita",
+            "desc": "The undisputed center of gravity for services on the coast. Home to diverse restaurants, supermarkets, pharmacies, and thriving bilingual and alternative learning communities. The lower parts are flat and easy; the ridges require a solid 4x4 but offer spectacular views of the Whale's Tail."
+          },
+          "p2": {
+            "name": "Platanillo",
+            "desc": "Perched on the paved ridge road halfway between the coast and the inland valley. It sits at a higher elevation, offering cooler temperatures, lush mountain rainforest views, rushing waterfalls, and a strong, tight-knit community of eco-conscious expats and locals just 15 minutes from the beach."
+          },
+          "p3": {
+            "name": "Barú",
+            "desc": "A pristine, nature-first river valley and mountain zone stretching inland along the Barú River. Ideal for those who want massive biodiversity, privacy, and close proximity to nature reserves while keeping the beach within a short, scenic drive."
+          }
+        }
+      },
+      "c": {
+        "title": "The Authentic Mountain Valley & High-Convenience Lifestyle",
+        "vibe": "You want maximum value, spacious acreage, an authentic connection to Costa Rican culture, and zero reliance on 24/7 air conditioning. You prioritize robust, city-level infrastructure over immediate beach access.",
+        "matches": "Your Best Matches:",
+        "places": {
+          "p1": {
+            "name": "Pérez Zeledón (including San Isidro de El General)",
+            "desc": "The major economic and agricultural powerhouse of the region. This is a full-scale municipal city hub offering a top-tier regional hospital, major private medical clinics, corporate banking, massive weekly organic Ferias, and endless commercial conveniences."
+          },
+          "p2": {
+            "name": "Surrounding Pérez Areas (e.g., General Viejo, Miravalles, Quebradas, Cajón)",
+            "desc": "These surrounding mountain foothills offer sprawling country estates, rich soil for planting, cool mountain air, and dramatic vistas of the Talamanca mountain range—all while being a seamless 10- to 15-minute paved drive into downtown San Isidro for errands."
+          }
+        }
+      }
     }
   }
 }

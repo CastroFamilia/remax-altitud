@@ -13,6 +13,7 @@
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { communities } from "@/lib/db/schema/communities";
+import { areas } from "@/lib/db/schema/areas";
 import { and, eq, gte, lte, isNotNull, desc, asc, sql, or, inArray } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
@@ -275,6 +276,16 @@ export async function searchProperties(
         ? lotSizeMin
         : lotSizeMax;
 
+    // Resolve area slugs for region filter
+    let matchingAreaSlugs: string[] = [];
+    if (filters.region) {
+      const areaRows = await db
+        .select({ slug: areas.slug })
+        .from(areas)
+        .where(eq(areas.region, filters.region));
+      matchingAreaSlugs = areaRows.map((r) => r.slug).filter((s): s is string => s !== null);
+    }
+
     // Build keyword search conditions with feature synonym expansion
     let searchCondition: SQL | undefined = undefined;
     if (filters.q && filters.q.trim().length > 0) {
@@ -334,6 +345,29 @@ export async function searchProperties(
         "at",
         "by",
         "of",
+        "near",
+        "cerca",
+        "the",
+        // Transaction intent words — these indicate buy/sell/rent intent and
+        // should never be used as keyword search terms against property content.
+        // The client-side parser strips them, but this is defense-in-depth.
+        "sell",
+        "sale",
+        "buy",
+        "purchase",
+        "buying",
+        "selling",
+        "comprar",
+        "vender",
+        "venta",
+        "compra",
+        "rent",
+        "renting",
+        "lease",
+        "leasing",
+        "alquilar",
+        "arrendar",
+        "arriendo",
       ]);
 
       // Split by whitespace and punctuation, map to lowercase and filter out stop words
@@ -398,6 +432,11 @@ export async function searchProperties(
         ? sql`${properties.lifestyleTags} && ARRAY[${sql.join(sanitizedTags, sql`, `)}]::text[]`
         : undefined,
       q: searchCondition,
+      region: filters.region
+        ? matchingAreaSlugs.length > 0
+          ? inArray(properties.areaSlug, matchingAreaSlugs)
+          : eq(properties.id, "00000000-0000-0000-0000-000000000000") // No results if region has no areas
+        : undefined,
       bounds:
         safeBounds != null
           ? and(

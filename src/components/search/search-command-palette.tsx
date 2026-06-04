@@ -266,6 +266,29 @@ const PLACEHOLDER_EXAMPLES_ES = [
 
 // ─── Parse + Suggest (compact version) ──────────────────────────────────────
 
+// Transaction intent keywords — buy/sell/rent intent → listing_type
+const SALE_INTENT_KEYWORDS_CP = [
+  "sell",
+  "sale",
+  "buy",
+  "purchase",
+  "buying",
+  "selling",
+  "comprar",
+  "vender",
+  "venta",
+  "compra",
+];
+const LEASE_INTENT_KEYWORDS_CP = [
+  "rent",
+  "renting",
+  "lease",
+  "leasing",
+  "alquilar",
+  "arrendar",
+  "arriendo",
+];
+
 function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
   const params: Record<string, string> = {};
   const detected: DetectedItem[] = [];
@@ -354,6 +377,22 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
     }
   }
   if (tags.length > 0) params.tags = tags.join(",");
+
+  // Transaction intent keywords (buy/sell/rent) → listing_type
+  for (const keyword of LEASE_INTENT_KEYWORDS_CP) {
+    const intentRegex = new RegExp(`\\b${keyword}\\b`, "gi");
+    if (intentRegex.test(remainingText)) {
+      params.listing_type = "Lease";
+      remainingText = remainingText.replace(intentRegex, " ");
+    }
+  }
+  for (const keyword of SALE_INTENT_KEYWORDS_CP) {
+    const intentRegex = new RegExp(`\\b${keyword}\\b`, "gi");
+    if (intentRegex.test(remainingText)) {
+      if (!params.listing_type) params.listing_type = "Sale";
+      remainingText = remainingText.replace(intentRegex, " ");
+    }
+  }
 
   // Features
   const featureQTerms: string[] = [];
@@ -464,6 +503,8 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
     "near",
     "cerca",
     "the",
+    ...SALE_INTENT_KEYWORDS_CP,
+    ...LEASE_INTENT_KEYWORDS_CP,
   ]);
   const words = remainingText.split(/[\s,.\-/?!|;:]+/).filter((w) => w.length > 0 && !STOP.has(w));
   const allQ = [...words, ...featureQTerms];

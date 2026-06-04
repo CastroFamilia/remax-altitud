@@ -155,6 +155,20 @@
       "when": 1780458000000,
       "tag": "0022_add_sub_location",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1780459000000,
+      "tag": "0023_set_community_property_types",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1780506555578,
+      "tag": "0023_smooth_the_phantom",
+      "breakpoints": true
     }
   ]
 }

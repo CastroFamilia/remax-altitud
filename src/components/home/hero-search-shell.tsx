@@ -371,6 +371,32 @@ interface Suggestion {
   icon: "pin" | "home" | "tag" | "sparkle";
 }
 
+// Transaction intent keywords — these indicate buy/sell/rent intent and should
+// map to listing_type rather than polluting the free-text `q` search.
+// Without this, a query like "house for sell in ojochal" would pass "sell"
+// into the DB regex search, matching zero properties.
+const SALE_INTENT_KEYWORDS = [
+  "sell",
+  "sale",
+  "buy",
+  "purchase",
+  "buying",
+  "selling",
+  "comprar",
+  "vender",
+  "venta",
+  "compra",
+];
+const LEASE_INTENT_KEYWORDS = [
+  "rent",
+  "renting",
+  "lease",
+  "leasing",
+  "alquilar",
+  "arrendar",
+  "arriendo",
+];
+
 function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
   const params: Record<string, string> = {};
   const detected: DetectedItem[] = [];
@@ -511,6 +537,27 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
 
   if (tags.length > 0) {
     params.tags = tags.join(",");
+  }
+
+  // 3c. Match transaction intent keywords (buy/sell/rent) → listing_type
+  // These are stripped from remainingText to prevent them from appearing in `q`.
+  // Note: listing_type is also set by the toggle, but smart search intent overrides.
+  for (const keyword of LEASE_INTENT_KEYWORDS) {
+    const intentRegex = new RegExp(`\\b${keyword}\\b`, "gi");
+    if (intentRegex.test(remainingText)) {
+      params.listing_type = "Lease";
+      remainingText = remainingText.replace(intentRegex, " ");
+    }
+  }
+  for (const keyword of SALE_INTENT_KEYWORDS) {
+    const intentRegex = new RegExp(`\\b${keyword}\\b`, "gi");
+    if (intentRegex.test(remainingText)) {
+      // Only set to Sale if not already set to Lease (rent takes priority when both present)
+      if (!params.listing_type) {
+        params.listing_type = "Sale";
+      }
+      remainingText = remainingText.replace(intentRegex, " ");
+    }
   }
 
   // 3b. Match Feature Keywords (pool, furnished, etc.)
@@ -742,6 +789,8 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
   }
 
   // Filter stop words and pull out keyword query q
+  // Includes transaction intent words as safety net (they should already be
+  // stripped above, but this prevents edge cases from polluting search).
   const STOP_WORDS = new Set([
     "con",
     "de",
@@ -769,6 +818,10 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
     "near",
     "cerca",
     "the",
+    // Transaction intent words (buy/sell/rent) — already handled above but
+    // kept here as safety net to prevent DB regex misses
+    ...SALE_INTENT_KEYWORDS,
+    ...LEASE_INTENT_KEYWORDS,
   ]);
 
   const words = remainingText.split(/[\s,.\-/?!|;:]+/);

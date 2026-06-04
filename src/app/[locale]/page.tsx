@@ -5,6 +5,11 @@ import { FeaturedPropertiesShell, SellCtaShell } from "@/components/home/homepag
 import { FeaturedCommunities } from "@/components/home/featured-communities";
 import { FeaturedAreas } from "@/components/home/featured-areas";
 import { VipSearchBanner } from "@/components/home/vip-search-banner";
+import { LifestyleQuestionnaire } from "@/components/home/lifestyle-questionnaire";
+import {
+  getQuestionnaireRecommendationProperties,
+  type QuestionnaireProperties,
+} from "@/lib/db/queries/questionnaire";
 
 /** Opt out of static caching so DB-driven sections (featured properties,
  *  communities, areas) always render with fresh data. */
@@ -13,10 +18,20 @@ export const dynamic = "force-dynamic";
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <HomeContent locale={locale} />;
+
+  // Fetch listing recommendations for the lifestyle questionnaire
+  const questionnaireProperties = await getQuestionnaireRecommendationProperties();
+
+  return <HomeContent locale={locale} questionnaireProperties={questionnaireProperties} />;
 }
 
-function HomeContent({ locale }: { locale: string }) {
+function HomeContent({
+  locale,
+  questionnaireProperties,
+}: {
+  locale: string;
+  questionnaireProperties: QuestionnaireProperties;
+}) {
   const t = useTranslations("HomePage");
 
   return (
@@ -26,6 +41,7 @@ function HomeContent({ locale }: { locale: string }) {
       <div className="container space-y-16 py-16">
         <VipSearchBanner />
         <FeaturedPropertiesShell locale={locale} />
+        <LifestyleQuestionnaire initialProperties={questionnaireProperties} locale={locale} />
         <FeaturedCommunities locale={locale} />
         <FeaturedAreas locale={locale} />
       </div>

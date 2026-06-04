@@ -88,6 +88,7 @@ const mockAgent = {
   whatsapp: "50688000000",
   photoUrl: "https://cdn.example.com/emma.jpg",
   photoOptimizedUrl: "/agent-photos/emma-400w.webp",
+  videoUrl: null,
   languages: ["en", "es"],
   specializations: [],
   bioEn: "Mountain specialist.",

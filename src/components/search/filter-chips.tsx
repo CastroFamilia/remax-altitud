@@ -172,6 +172,9 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
     } else if (key === "lotSizeMin") {
       onClearFilter("lotSizeMin");
       onClearFilter("lotSizeMax");
+    } else if (key === "areaSlug") {
+      onClearFilter("areaSlug");
+      onClearFilter("subLocation");
     } else {
       onClearFilter(key);
     }

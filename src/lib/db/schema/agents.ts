@@ -28,6 +28,7 @@ export const agents = pgTable(
       .default(sql`'{}'::text[]`),
     bioEn: text("bio_en").notNull().default(""),
     bioEs: text("bio_es").notNull().default(""),
+    videoUrl: text("video_url"),
     listingCount: integer("listing_count").notNull().default(0),
     isActive: boolean("is_active").notNull().default(true),
     syncedAt: timestamp("synced_at", { withTimezone: true }).notNull().defaultNow(),

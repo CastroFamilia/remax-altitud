@@ -27,6 +27,8 @@ import { FilterChips } from "@/components/search/filter-chips";
 import { LifestyleTagChips } from "@/components/search/lifestyle-tag-chips";
 import { PriceFilterPopover } from "@/components/search/price-filter-popover";
 import { FilterDropdown } from "@/components/search/filter-dropdown";
+import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
+import type { AreaOption } from "@/components/search/area-search-combobox";
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { SortSelect } from "@/components/search/sort-select";
 import { NearMeButton } from "@/components/search/near-me-button";
@@ -47,7 +49,7 @@ type ViewMode = "split" | "map" | "grid";
 
 interface SearchFilterBarProps {
   facets?: FilterFacets;
-  areas?: { slug: string; label: string }[];
+  areas?: AreaOption[];
   /** View mode for the toolbar (from SplitViewLayout merge) */
   viewMode?: ViewMode;
   /** View mode change handler */
@@ -141,12 +143,6 @@ export function SearchFilterBar({
   const bathroomOptions = BATHROOM_OPTIONS.map((n) => ({
     value: n.toString(),
     label: `${n}+`,
-  }));
-
-  /** Build options for the Location dropdown */
-  const areaOptions = areas.map((area) => ({
-    value: area.slug,
-    label: area.label,
   }));
 
   /** The full set of filter controls for the MOBILE sheet.
@@ -255,23 +251,22 @@ export function SearchFilterBar({
 
       {/* Location dropdown (AC #7 — flat area slugs for MVP) */}
       {areas.length > 0 && (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 z-50 relative">
           <label className="text-xs font-medium text-muted-foreground">
             {t("filters.location")}
           </label>
-          <select
-            data-testid="area-filter"
-            className="rounded border border-border bg-background px-2 py-1 text-sm"
-            value={filters.areaSlug ?? ""}
-            onChange={(e) => setFilter("areaSlug", e.target.value || undefined)}
-          >
-            <option value="">{t("filters.locationAll")}</option>
-            {areas.map((area) => (
-              <option key={area.slug} value={area.slug}>
-                {area.label}
-              </option>
-            ))}
-          </select>
+          <AreaSearchCombobox
+            areas={areas}
+            selectedArea={filters.areaSlug ?? ""}
+            selectedSubLocation={filters.subLocation ?? ""}
+            onAreaChange={(areaSlug, subLocationSlug) => {
+              setFilter("areaSlug", areaSlug || undefined);
+              setFilter("subLocation", subLocationSlug || undefined);
+            }}
+            placeholder={t("filters.location")}
+            locale={locale}
+            variant="light"
+          />
         </div>
       )}
     </div>
@@ -395,13 +390,20 @@ export function SearchFilterBar({
 
                 {/* Location */}
                 {areas.length > 0 && (
-                  <FilterDropdown
-                    placeholder={t("filters.location")}
-                    value={filters.areaSlug ?? undefined}
-                    options={areaOptions}
-                    onChange={(val) => setFilter("areaSlug", val)}
-                    testId="area-filter"
-                  />
+                  <div className="w-[180px] lg:w-[220px] shrink-0">
+                    <AreaSearchCombobox
+                      areas={areas}
+                      selectedArea={filters.areaSlug ?? ""}
+                      selectedSubLocation={filters.subLocation ?? ""}
+                      onAreaChange={(areaSlug, subLocationSlug) => {
+                        setFilter("areaSlug", areaSlug || undefined);
+                        setFilter("subLocation", subLocationSlug || undefined);
+                      }}
+                      placeholder={t("filters.location")}
+                      locale={locale}
+                      variant="light"
+                    />
+                  </div>
                 )}
               </div>
 
