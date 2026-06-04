@@ -248,6 +248,12 @@ function extractTownFromText(text: string): string | null {
     { keyword: "río nuevo", label: "Río Nuevo" },
     { keyword: "paramo", label: "Páramo" },
     { keyword: "páramo", label: "Páramo" },
+    { keyword: "platanillo", label: "Platanillo" },
+    { keyword: "tinamastes", label: "Tinamastes" },
+    { keyword: "san juan de dios", label: "San Juan de Dios" },
+    { keyword: "dominical", label: "Dominical" },
+    { keyword: "uvita", label: "Uvita" },
+    { keyword: "ojochal", label: "Ojochal" },
   ];
 
   for (const town of towns) {
@@ -294,51 +300,81 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
     return `${label}, ${parentLabel}`;
   }
 
-  // 2. Try to get a specific town name from UnparsedAddress or Title for Pérez Zeledón
-  if (areaSlug === "perez-zeledon") {
-    let specificTown: string | null = null;
-    const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
-    const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.trim();
+  // 2. Try to get a specific town name from UnparsedAddress or Title
+  let specificTown: string | null = null;
+  const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+  const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.trim();
 
-    // a. Try to get it from the combined title and unparsed address using keywords
-    const combinedText = `${title} ${unparsedAddress ?? ""}`;
-    specificTown = extractTownFromText(combinedText);
+  // a. Try to get it from the combined title and unparsed address using keywords
+  const combinedText = `${title} ${unparsedAddress ?? ""}`;
+  specificTown = extractTownFromText(combinedText);
 
-    // b. Try to get it from first part of UnparsedAddress if still not found
-    if (!specificTown && unparsedAddress && unparsedAddress.length > 0) {
-      const parts = unparsedAddress.split(",");
-      const firstPart = parts[0]?.trim();
-      if (firstPart) {
-        const lowerFirst = firstPart.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a"));
-        if (
-          lowerFirst !== "perez zeledon" &&
-          lowerFirst !== "costa rica" &&
-          lowerFirst !== "san jose"
-        ) {
-          specificTown = firstPart;
-        }
+  // b. Try to get it from first part of UnparsedAddress if still not found
+  if (!specificTown && unparsedAddress && unparsedAddress.length > 0) {
+    const parts = unparsedAddress.split(",");
+    const firstPart = parts[0]?.trim();
+    if (firstPart) {
+      const lowerFirst = firstPart.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a"));
+      if (
+        lowerFirst !== "perez zeledon" &&
+        lowerFirst !== "costa rica" &&
+        lowerFirst !== "san jose" &&
+        lowerFirst !== "osa" &&
+        lowerFirst !== "puntarenas"
+      ) {
+        specificTown = firstPart;
+      }
+    }
+  }
+
+  if (specificTown) {
+    let parentRegion = "";
+    if (areaSlug === "uvita" || areaSlug === "dominical" || areaSlug === "ojochal") {
+      parentRegion = "Osa";
+    } else if (
+      areaSlug === "perez-zeledon" ||
+      areaSlug === "tinamastes-platanillo" ||
+      specificTown === "Platanillo" ||
+      specificTown === "Tinamastes" ||
+      specificTown === "Barú"
+    ) {
+      parentRegion = locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
+    } else {
+      const cleanedLoc =
+        typeof apiRaw?.Location === "string" ? cleanApiLocation(apiRaw.Location) : "";
+      if (
+        cleanedLoc.toLowerCase().includes("pérez") ||
+        cleanedLoc.toLowerCase().includes("perez")
+      ) {
+        parentRegion = locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
+      } else if (cleanedLoc.toLowerCase().includes("osa")) {
+        parentRegion = "Osa";
+      } else if (cleanedLoc) {
+        parentRegion = cleanedLoc;
+      } else {
+        parentRegion = locale === "es" ? "Costa Rica" : "Costa Rica";
       }
     }
 
-    if (specificTown) {
-      return `${specificTown}, ${locale === "es" ? "Pérez Zeledón" : "Perez Zeledon"}`;
+    if (
+      specificTown.toLowerCase() === parentRegion.toLowerCase() ||
+      specificTown.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a")) ===
+        parentRegion.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a"))
+    ) {
+      return parentRegion;
     }
+    return `${specificTown}, ${parentRegion}`;
   }
 
   // 3. Try apiRaw.Location — clean it up for display
   if (typeof apiRaw?.Location === "string" && apiRaw.Location.trim().length > 0) {
     const cleaned = cleanApiLocation(apiRaw.Location);
-    // If it's a PZ property and Location is just "Pérez Zeledón", add specificity from title
-    if (
-      cleaned.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a")) === "perez zeledon"
-    ) {
-      return locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
-    }
     // Add canton context if not already present
     if (
-      areaSlug === "perez-zeledon" &&
+      (areaSlug === "perez-zeledon" || areaSlug === "tinamastes-platanillo") &&
       !cleaned.toLowerCase().includes("pérez") &&
-      !cleaned.toLowerCase().includes("perez")
+      !cleaned.toLowerCase().includes("perez") &&
+      cleaned.toLowerCase() !== "costa rica"
     ) {
       return `${cleaned}, ${locale === "es" ? "Pérez Zeledón" : "Perez Zeledon"}`;
     }
