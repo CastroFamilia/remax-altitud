@@ -28,7 +28,7 @@ interface PropertyGalleryProps {
  * Supports youtube.com/watch?v=... and youtu.be/... formats.
  */
 function extractYoutubeVideoId(url: string): string | null {
-  const match = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  const match = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
   return match ? match[1] : null;
 }
 

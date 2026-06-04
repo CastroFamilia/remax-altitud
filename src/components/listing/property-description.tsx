@@ -161,6 +161,17 @@ function parseDescription(text: string): ParsedDescription {
   // 2. Fix periods immediately followed by capital letters without space (common feed issue)
   cleaned = cleaned.replace(/([.!?])([A-ZÑÁÉÍÓÚÜ])/g, "$1 $2");
 
+  // Fix lowercase/number/parenthesis immediately followed by a Capital letter that has a colon shortly after (a label).
+  cleaned = cleaned.replace(
+    /([a-záéíóúñü0-9)])([A-ZÑÁÉÍÓÚÜ][a-záéíóúñü\sA-Z]{1,30}:)/g,
+    (match, p1, p2) => {
+      return p1 + "\n" + p2;
+    },
+  );
+
+  // Fix missing newline after a colon (when squished)
+  cleaned = cleaned.replace(/:([A-ZÑÁÉÍÓÚÜ])/g, ":\n$1");
+
   // 3. Spacing repair around specific headers
   const majorHeaders = [
     "Descripción",
