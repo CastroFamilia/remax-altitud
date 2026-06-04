@@ -197,7 +197,9 @@ export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
     lotSizeM2,
     constructionM2: p.ConstructionSize,
     images: splitAndEncodeImages(p.Images),
-    videoUrl: p.Videolink ?? null,
+    videoUrl:
+      p.Videolink ??
+      (p.EmbeddedVideoCode ? `https://www.youtube.com/watch?v=${p.EmbeddedVideoCode}` : null),
     expirationDate: p.ExpirationDate,
     isExpired,
     lotSizeUnitWarning,

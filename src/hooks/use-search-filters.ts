@@ -45,6 +45,7 @@ const PARAM_MAP: Record<keyof SearchFilters, string> = {
   // Story 3.4: tags — comma-separated string (?tags=Investment+Property,Rental+Potential)
   tags: "tags",
   q: "q",
+  region: "region",
 };
 
 /**
@@ -83,6 +84,7 @@ const FILTER_KEYS: Array<keyof SearchFilters> = [
   "areaSlug",
   "subLocation",
   "q",
+  "region",
 ];
 
 /** Valid sort options */
@@ -152,6 +154,9 @@ function parseFilters(params: URLSearchParams): SearchFilters {
 
   const q = params.get("q");
   if (q) filters.q = q;
+
+  const region = params.get("region");
+  if (region) filters.region = region;
 
   return filters;
 }

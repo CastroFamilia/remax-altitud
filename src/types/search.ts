@@ -24,6 +24,7 @@ export interface SearchFilters {
   // Story 3.4: Lifestyle tags — comma-separated in URL (?tags=Investment+Property,Rental+Potential)
   tags?: string[];
   q?: string; // Free-text keyword search
+  region?: string; // Region filter (e.g. coast, mountain)
 }
 
 import type { OptimizedImage } from "./images";
