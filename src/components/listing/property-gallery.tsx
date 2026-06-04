@@ -25,10 +25,13 @@ interface PropertyGalleryProps {
 
 /**
  * Extracts the YouTube video ID from a YouTube URL.
- * Supports youtube.com/watch?v=... and youtu.be/... formats.
+ * Supports various formats including watch?v=, youtu.be/, shorts/, and embed/.
  */
 function extractYoutubeVideoId(url: string): string | null {
-  const match = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (!url) return null;
+  const match = url.match(
+    /(?:v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/v\/)([A-Za-z0-9_-]{11})/i,
+  );
   return match ? match[1] : null;
 }
 
