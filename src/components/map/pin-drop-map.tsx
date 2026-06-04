@@ -10,7 +10,7 @@
  */
 
 import { useState, useCallback } from "react";
-import { Map as MapboxMap, Marker } from "react-map-gl";
+import { Map as MapboxMap, Marker, NavigationControl } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { MAPBOX_TOKEN, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, MAP_STYLE } from "@/lib/map/config";
@@ -56,6 +56,7 @@ export function PinDropMap({
         style={{ width: "100%", height: "100%", borderRadius: "0.5rem" }}
         cursor="crosshair"
       >
+        <NavigationControl position="bottom-right" showCompass={false} />
         {mapLoaded && lat !== null && lng !== null && <Marker latitude={lat} longitude={lng} />}
       </MapboxMap>
     </div>

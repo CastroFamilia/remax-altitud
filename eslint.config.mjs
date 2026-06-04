@@ -26,6 +26,8 @@ const eslintConfig = [
       "index.css",
       "design-artifacts/**",
       ".worktrees/**",
+      "dist/**",
+      "scratch/**",
     ],
   },
 ];

@@ -6,7 +6,6 @@ import {
   Sparkles,
   Info,
   MessageSquare,
-  CheckCircle2,
   DollarSign,
   UserCheck,
   ShieldCheck,
@@ -222,6 +221,10 @@ function parseDescription(text: string): ParsedDescription {
   );
   cleaned = cleaned.replace(headingRegex, "$1\n\n$2");
 
+  // Force newlines before sub-items (short Capitalized phrases ending in colon)
+  // e.g. "this propertyU. S. Financing: Available..." -> "this property\nU. S. Financing: Available..."
+  cleaned = cleaned.replace(/([a-z0-9.!?,])\s*([A-ZÑÁÉÍÓÚÜ][^:\n]{2,25}:)/g, "$1\n$2");
+
   // 4. Split by newlines
   const lines = cleaned
     .split(/\n+/)
@@ -299,15 +302,24 @@ export function PropertyDescription({ description }: PropertyDescriptionProps) {
     <div className="space-y-6">
       {/* Intro Summary Banner */}
       {parsed.intro && (
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-navy/5 to-transparent border-l-4 border-brand-navy p-6 shadow-sm">
-          <p className="text-lg font-semibold leading-relaxed text-brand-navy dark:text-slate-200">
-            {parsed.intro}
-          </p>
+        <div className="mb-12 space-y-6">
+          {parsed.intro
+            .replace(/\.\s+(?=[A-ZÑÁÉÍÓÚÜ])/g, ".\n")
+            .split("\n")
+            .filter((p) => p.trim().length > 0)
+            .map((paragraph, idx) => (
+              <p
+                key={idx}
+                className="text-lg md:text-xl font-light leading-relaxed tracking-wide text-slate-800 dark:text-slate-200"
+              >
+                {paragraph.trim()}
+              </p>
+            ))}
         </div>
       )}
 
       {/* Styled Responsive Sections Grid */}
-      <div className="grid grid-cols-1 gap-6">
+      <div className="flex flex-col">
         {parsed.sections.map((section, idx) => {
           const theme = getSectionTheme(section.title);
           const Icon = theme.icon;
@@ -315,34 +327,31 @@ export function PropertyDescription({ description }: PropertyDescriptionProps) {
           return (
             <div
               key={idx}
-              className={`group overflow-hidden rounded-2xl border ${theme.border} ${theme.bg} p-6 shadow-sm transition-all duration-300 hover:shadow-md`}
+              className="group py-8 border-t border-slate-200 dark:border-slate-800 first:border-0 first:pt-0"
             >
               {/* Section Header */}
-              <div className="flex items-center gap-3.5 mb-4 pb-3 border-b border-slate-200/55 dark:border-slate-800/55">
-                <span
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${theme.iconBg} ${theme.iconColor} shadow-sm transition-transform duration-300 group-hover:scale-105`}
-                >
-                  <Icon className="w-5.5 h-5.5" />
+              <div className="flex items-center gap-4 mb-8">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 transition-transform duration-500 group-hover:scale-105">
+                  <Icon className="w-5 h-5" strokeWidth={1.5} />
                 </span>
-                <h3 className={`text-xl font-bold tracking-tight ${theme.text}`}>
+                <h3 className="text-2xl font-light tracking-wide text-slate-900 dark:text-slate-100">
                   {section.title}
                 </h3>
               </div>
 
               {/* Section Items / Specifications Grid */}
               {section.items && section.items.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mb-8">
                   {section.items.map((item, itemIdx) => (
                     <div
                       key={itemIdx}
-                      className="flex items-start gap-3 rounded-xl bg-white/70 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/40 p-4 transition-all duration-200 hover:border-brand-navy/20 hover:bg-white dark:hover:bg-slate-900"
+                      className="flex items-start gap-4 py-3 border-b border-slate-100 dark:border-slate-800/50"
                     >
-                      <CheckCircle2 className={`w-5 h-5 shrink-0 mt-0.5 ${theme.iconColor}`} />
-                      <div className="space-y-0.5">
-                        <span className="block text-xs font-bold uppercase tracking-wider text-text-muted">
+                      <div className="space-y-1">
+                        <span className="block text-xs font-medium uppercase tracking-widest text-slate-400">
                           {item.label}
                         </span>
-                        <span className="block text-sm font-semibold text-brand-navy dark:text-slate-200 leading-relaxed">
+                        <span className="block text-base font-light text-slate-800 dark:text-slate-200">
                           {item.value}
                         </span>
                       </div>
@@ -353,9 +362,12 @@ export function PropertyDescription({ description }: PropertyDescriptionProps) {
 
               {/* Section Body Text */}
               {section.content && (
-                <div className="prose prose-gray dark:prose-invert max-w-none text-text-body leading-relaxed text-sm md:text-base">
+                <div className="prose prose-gray dark:prose-invert max-w-none">
                   {section.content.split("\n").map((para, paraIdx) => (
-                    <p key={paraIdx} className="mb-3 last:mb-0">
+                    <p
+                      key={paraIdx}
+                      className="mb-6 last:mb-0 text-base md:text-lg font-light leading-relaxed text-slate-600 dark:text-slate-300"
+                    >
                       {para}
                     </p>
                   ))}

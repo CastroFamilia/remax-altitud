@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Map as MapboxMap, Source, Layer, Marker } from "react-map-gl";
+import { Map as MapboxMap, Source, Layer, Marker, NavigationControl } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, MAP_STYLE } from "@/lib/map/config";
 
@@ -51,6 +51,8 @@ export function CommunityGeoFenceMap({
         style={{ width: "100%", height: "100%" }}
         cursor="crosshair"
       >
+        <NavigationControl position="bottom-right" showCompass={false} />
+
         {/* Render markers for each point */}
         {polygonPoints.map((pt, idx) => (
           <Marker key={idx} longitude={pt[0]} latitude={pt[1]}>

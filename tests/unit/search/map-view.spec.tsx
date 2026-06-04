@@ -92,6 +92,7 @@ vi.mock("react-map-gl", () => ({
       {children}
     </div>
   ),
+  NavigationControl: () => <div data-testid="mapbox-navigation-control" />,
 }));
 
 // Mapbox CSS import — no-op in jsdom
