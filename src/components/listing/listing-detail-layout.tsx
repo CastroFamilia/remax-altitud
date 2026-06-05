@@ -24,6 +24,8 @@ import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import { getRegionFromAreaSlug } from "@/components/property/property-card";
 import { PropertyDescription } from "@/components/listing/property-description";
 import { MapViewLoader } from "@/components/map/map-view-loader";
+import { PrintButton } from "@/components/listing/print-button";
+import { PropertyPrintView } from "@/components/listing/property-print-view";
 
 function extractYoutubeVideoId(url: string): string | null {
   if (!url) return null;
@@ -93,7 +95,8 @@ export async function ListingDetailLayout({
 
   return (
     <>
-      <article className="min-h-screen bg-background">
+      <PropertyPrintView property={property} locale={locale} />
+      <article className="min-h-screen bg-background print:hidden">
         {/* Breadcrumbs — visual nav (Story 4.5, AC #4) */}
         <Breadcrumbs
           items={[
@@ -167,7 +170,8 @@ export async function ListingDetailLayout({
                     </span>
                   )}
                 </div>
-                <div className="flex-shrink-0 flex items-center">
+                <div className="flex-shrink-0 flex items-center gap-2">
+                  <PrintButton />
                   <SaveButton propertyId={property.id} propertyTitle={title} />
                 </div>
               </div>
@@ -365,15 +369,17 @@ export async function ListingDetailLayout({
 
       {/* Sticky mobile CTA bar — 56px fixed bottom bar, mobile-only (Story 4.2, AC #6/#7) */}
       {agent && (
-        <StickyMobileCTA
-          agentId={agent.id}
-          agentWhatsapp={agent.whatsapp ?? null}
-          agentEmail={agent.email ?? null}
-          agentName={agent.name}
-          propertyTitle={title}
-          propertyRef={property.apiId ?? property.id}
-          locale={locale}
-        />
+        <div className="print:hidden">
+          <StickyMobileCTA
+            agentId={agent.id}
+            agentWhatsapp={agent.whatsapp ?? null}
+            agentEmail={agent.email ?? null}
+            agentName={agent.name}
+            propertyTitle={title}
+            propertyRef={property.apiId ?? property.id}
+            locale={locale}
+          />
+        </div>
       )}
     </>
   );
