@@ -27,7 +27,7 @@
     <line x1="25" y1="75" x2="75" y2="75" stroke="url(#gold-grad)" stroke-width="1.5" />
   </g>
   
-  <!-- RE/MAX ALTITUD Text -->
-  <text x="300" y="270" text-anchor="middle" fill="url(#gold-grad)" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="600" letter-spacing="4">RE/MAX ALTITUD</text>
+  <!-- REMAX ALTITUD Text -->
+  <text x="300" y="270" text-anchor="middle" fill="url(#gold-grad)" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="600" letter-spacing="4">REMAX ALTITUD</text>
   <text x="300" y="295" text-anchor="middle" fill="#8892b0" font-family="system-ui, -apple-system, sans-serif" font-size="12" letter-spacing="2" opacity="0.8">LUXURY PROPERTIES</text>
 </svg>

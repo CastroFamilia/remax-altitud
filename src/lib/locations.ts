@@ -1,5 +1,5 @@
 /**
- * ACM Locations — Shared location hierarchy for RE/MAX Altitud ecosystem.
+ * ACM Locations — Shared location hierarchy for REMAX Altitud ecosystem.
  *
  * Source of truth: ALTITUD HUB locations.js
  * Structure: Cantón → Distrito → Poblado/Barrio
