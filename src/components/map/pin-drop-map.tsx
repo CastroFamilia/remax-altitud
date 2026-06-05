@@ -20,7 +20,7 @@ interface PinDropMapProps {
   lat: number | null;
   lng: number | null;
   /** Called when user drops a pin */
-  onMapClick: (coords: { lat: number; lng: number }) => void;
+  onMapClick?: (coords: { lat: number; lng: number }) => void;
   "data-testid"?: string;
   className?: string;
   readOnly?: boolean;
@@ -39,7 +39,7 @@ export function PinDropMap({
   const handleClick = useCallback(
     (evt: { lngLat: { lat: number; lng: number } }) => {
       if (readOnly) return;
-      onMapClick({ lat: evt.lngLat.lat, lng: evt.lngLat.lng });
+      onMapClick?.({ lat: evt.lngLat.lat, lng: evt.lngLat.lng });
     },
     [onMapClick, readOnly],
   );

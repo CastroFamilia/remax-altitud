@@ -226,7 +226,6 @@ export async function ListingDetailLayout({
                     <MapViewLoader
                       lat={Number(property.latitude)}
                       lng={Number(property.longitude)}
-                      onMapClick={() => {}}
                       readOnly={true}
                       className="h-full w-full"
                     />

@@ -1,0 +1,18 @@
+## Overview
+This PR addresses several critical issues on the application:
+1. **Region Filtering Fix**: The `?region=coast` and `?region=mountain` filters originating from the main navigation menu were previously being ignored by the search backend. This was fixed by ensuring the `region` parameter is parsed, validated against the database `areas` table, and applied to the property search.
+2. **Missing YouTube Videos**: Properties that only provided an `EmbeddedVideoCode` from the API were missing their YouTube video embed. This adds support for mapping `EmbeddedVideoCode` dynamically when `Videolink` is null.
+3. **Squished Description Text**: Descriptions and feature lists lacked proper newlines, particularly around specific labels (e.g. `Construction:`, `Land Area:`), resulting in giant blocks of unreadable text. This automatically repairs squished text formats dynamically.
+4. **Image Visibility**: Solved issues causing property gallery images not to show properly under certain conditions.
+
+## Changes
+- **src/app/actions/search-actions.ts**, **src/types/search.ts**, **src/hooks/use-search-filters.ts**: Added logic to resolve `region` (e.g. `coast`) to specific area slugs from the database before performing the search query.
+- **src/lib/sync/schemas/property.ts**: Modified `rawPropertyApiSchema` to dynamically generate a YouTube URL by falling back to `EmbeddedVideoCode` when `Videolink` is missing.
+- **src/components/listing/property-description.tsx**: Added regular expressions to intelligently insert newlines in text blocks where lowercase characters immediately precede capitalized labels.
+- **src/components/listing/property-gallery.tsx**: Added support for `/embed/` links ensuring robust extraction of YouTube video IDs from various URL formats.
+- **src/components/property/property-image.tsx**: Resolved layout and visibility issues for listing images.
+
+## Testing
+- The project successfully compiles via `npm run build` and `npm run lint` verified.
+- Local verification confirmed that clicking on "Coast" in the Navigation Bar now correctly returns only coastal properties.
+- Performed a local database backfill using a node script which updated 75 affected existing properties that previously had missing YouTube URLs.

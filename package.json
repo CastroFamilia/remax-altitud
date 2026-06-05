@@ -23,6 +23,7 @@
     "dist:sync:dry-run": "node dist/run-sync.mjs --dry-run --verbose",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:agents": "tsx scripts/test-smart-search-agents.ts",
     "prepare": "husky"
   },
   "dependencies": {
