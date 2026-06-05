@@ -1,64 +1,117 @@
-import { exec } from "child_process";
-import { promisify } from "util";
+import puppeteer from "puppeteer";
+import { GoogleGenAI } from "@google/genai";
+import dotenv from "dotenv";
 
-const execPromise = promisify(exec);
+dotenv.config({ path: ".env.local" });
 
-// Define our buyer personas and their specific search criteria
+const apiKey = process.env.GEMINI_API_KEY;
+if (!apiKey) {
+  console.error("❌ GEMINI_API_KEY is not set in .env.local.");
+  process.exit(1);
+}
+
+// Initialize the official Google GenAI client
+const ai = new GoogleGenAI({ apiKey });
+
 const personas = [
   {
     id: "luxury_buyer",
-    description: "Luxury buyer looking for ocean views",
-    instruction: "Go to http://localhost:3000. Find the smart search input (usually in the navigation bar or hero section). Type exactly 'luxury home with ocean view in Dominical' and hit Enter. Wait for the page to load the search results. Look at the first 2 property cards. Summarize what properties you see and determine if they match the criteria of being a luxury home in Dominical with an ocean view.",
+    description: "Luxury buyer looking for ocean views in Dominical",
+    query: "luxury home with ocean view in Dominical",
   },
   {
     id: "budget_investor",
-    description: "Investor looking for cheap lots",
-    instruction: "Go to http://localhost:3000. Find the smart search input. Type exactly 'cheap lot in Perez Zeledon under 50k' and hit Enter. Wait for the page to load the search results. Look at the first 2 property cards. Summarize what properties you see and determine if they match the criteria of being a lot in Perez Zeledon.",
+    description: "Investor looking for cheap lots in Perez Zeledon",
+    query: "cheap lot in Perez Zeledon under 50k",
   },
   {
     id: "family_home",
     description: "Family looking for a 3-bedroom house",
-    instruction: "Go to http://localhost:3000. Find the smart search input. Type exactly '3 bedroom house for family' and hit Enter. Wait for the page to load the search results. Look at the first 2 property cards. Summarize what properties you see and determine if they match the criteria of being a house with at least 3 bedrooms.",
+    query: "3 bedroom house",
   }
 ];
 
-async function runAgentForPersona(persona: typeof personas[0]) {
-  console.log(`\n🤖 Starting agent: [${persona.id}] - ${persona.description}...`);
+async function evaluateResultsWithGemini(persona: typeof personas[0], pageText: string) {
+  const prompt = `
+You are an AI testing agent acting as the following persona:
+Persona: ${persona.description}
+
+You went to a real estate website and typed the following into the Smart Search bar:
+"${persona.query}"
+
+Below is the text extracted from the search results page.
+Please review the properties listed. 
+1. Do the properties match the search criteria? (Note: In real estate, if someone asks for a "3 bedroom house", returning a house with 3 OR MORE bedrooms is considered a MATCH, as long as it fits their other criteria).
+2. Give a brief summary of what was found.
+3. End your response with a final verdict on a new line: "VERDICT: PASS" or "VERDICT: FAIL".
+
+--- PAGE TEXT EXTRACT ---
+${pageText.substring(0, 8000)} // Truncating to avoid context overload if there are too many properties
+--- END PAGE TEXT ---
+  `;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-flash-latest",
+    contents: prompt,
+  });
+
+  return response.text;
+}
+
+async function runAgent(persona: typeof personas[0]) {
+  console.log(`\n🤖 Starting agent: [${persona.id}] - ${persona.description}`);
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
   
   try {
-    // Run agent-browser in quiet mode, passing the persona ID as the session
-    // We use the --json flag if we want structured output, but for now simple stdout is fine
-    const cmd = `AGENT_BROWSER_SESSION=${persona.id} npx agent-browser -q chat "${persona.instruction}"`;
+    // 1. Set viewport to desktop to ensure desktop search renders
+    await page.setViewport({ width: 1280, height: 800 });
     
-    // We increase maxBuffer in case the output is long
-    const { stdout } = await execPromise(cmd, { maxBuffer: 1024 * 1024 * 10 });
+    // 2. Go to homepage
+    await page.goto("https://dev.remax-altitud.cr/en", { waitUntil: "networkidle2" });
     
-    console.log(`\n✅ Agent [${persona.id}] finished successfully.`);
+    // 3. Find the smart search input
+    const searchInputSelector = 'input[type="search"]';
+    await page.waitForSelector(searchInputSelector, { timeout: 10000 });
+    
+    // 4. Type the query
+    await page.type(searchInputSelector, persona.query, { delay: 50 });
+    
+    // 5. Hit Enter to submit the search
+    await page.keyboard.press('Enter');
+    
+    // Wait for the results to load (Next.js does client-side routing, so we wait for network idle manually)
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    
+    // 6. Extract the text of the main content area
+    const pageText = await page.evaluate(() => {
+      const main = document.querySelector('main') || document.body;
+      return main.innerText;
+    });
+
+    // 7. Pass the extracted text to Gemini for evaluation
+    const evaluation = await evaluateResultsWithGemini(persona, pageText);
+    
+    console.log(`\n✅ Agent [${persona.id}] evaluation complete:`);
     console.log(`\n--- Result for ${persona.id} ---\n`);
-    console.log(stdout.trim());
+    console.log(evaluation?.trim());
     console.log(`\n---------------------------------\n`);
-    
-  } catch (error: unknown) {
-    console.error(`\n❌ Agent [${persona.id}] failed.`);
-    const err = error as { stdout?: string; stderr?: string };
-    if (err.stdout) {
-      console.log(`\n--- Partial Output for ${persona.id} ---\n`);
-      console.log(err.stdout.trim());
-    }
-    if (err.stderr) {
-      console.error(`\n--- Error Details for ${persona.id} ---\n`);
-      console.error(err.stderr.trim());
-    }
+
+  } catch (error) {
+    console.error(`\n❌ Agent [${persona.id}] encountered an error:`, error);
+    await page.screenshot({ path: `error-${persona.id}.png` });
+  } finally {
+    await browser.close();
   }
 }
 
 async function main() {
-  console.log("🚀 Starting Multi-Agent Smart Search Test Suite\n");
-  console.log(`Spawning ${personas.length} parallel agent browsers...\n`);
+  console.log("🚀 Starting Multi-Agent Smart Search Test Suite (Powered by Gemini)\n");
   
-  // Run all personas concurrently
-  const promises = personas.map(runAgentForPersona);
-  await Promise.all(promises);
+  // Run tests sequentially to avoid overloading the local dev server and Gemini rate limits
+  for (const persona of personas) {
+    await runAgent(persona);
+  }
   
   console.log("\n🎉 All agent tests completed.");
 }
