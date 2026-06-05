@@ -46,15 +46,40 @@ export async function PropertyPrintView({
   const qrTrackingUrl = `${SITE_ORIGIN}/api/tracking/qr?propertyId=${property.id}&slug=${property.slug}&locale=${locale}`;
 
   return (
-    <div className="hidden print:block print-view-container w-[297mm] h-[210mm] overflow-hidden bg-white text-black font-sans relative box-border mx-auto">
+    <div className="print-view-container font-sans text-black box-border mx-auto">
       <style
         dangerouslySetInnerHTML={{
           __html: `
-        @page { size: A4 landscape; margin: 0; }
+        @page { size: landscape; margin: 0; }
+        @media screen {
+          .print-view-container {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+            opacity: 0;
+            pointer-events: none;
+          }
+        }
         @media print {
           body * { visibility: hidden; }
           .print-view-container, .print-view-container * { visibility: visible; }
-          .print-view-container { position: absolute; left: 0; top: 0; }
+          .print-view-container { 
+            position: fixed !important; 
+            left: 0 !important; 
+            top: 0 !important; 
+            width: 100vw !important; 
+            height: 100vh !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            background: white !important;
+            z-index: 9999 !important;
+          }
           body { 
             -webkit-print-color-adjust: exact !important; 
             print-color-adjust: exact !important; 
@@ -68,9 +93,9 @@ export async function PropertyPrintView({
       />
 
       {/* Full Page Grid Layout */}
-      <div className="grid grid-cols-[2fr_1fr] h-[210mm] w-[297mm]">
+      <div className="grid grid-cols-[2fr_1fr] h-full w-full">
         {/* LEFT COLUMN: Visuals */}
-        <div className="flex flex-col h-[210mm] relative">
+        <div className="flex flex-col h-full relative">
           {/* Main Hero Image */}
           <div className="h-[75%] w-full relative overflow-hidden bg-gray-100">
             {mainImage ? (
