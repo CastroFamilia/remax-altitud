@@ -33,14 +33,6 @@ function extractYoutubeVideoId(url: string): string | null {
   return match ? match[1] : null;
 }
 
-function extractYoutubeVideoId(url: string): string | null {
-  if (!url) return null;
-  const match = url.match(
-    /(?:v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/v\/)([A-Za-z0-9_-]{11})/i,
-  );
-  return match ? match[1] : null;
-}
-
 // ZMT badge visual config (same as property-card.tsx)
 const ZMT_VISUAL: Record<string, { classes: string; icon: string }> = {
   titled: {
