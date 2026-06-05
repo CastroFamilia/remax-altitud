@@ -23,6 +23,7 @@ interface PinDropMapProps {
   onMapClick: (coords: { lat: number; lng: number }) => void;
   "data-testid"?: string;
   className?: string;
+  readOnly?: boolean;
 }
 
 export function PinDropMap({
@@ -31,14 +32,16 @@ export function PinDropMap({
   onMapClick,
   "data-testid": testId = "location-map",
   className = "h-64 w-full rounded-lg",
+  readOnly = false,
 }: PinDropMapProps) {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   const handleClick = useCallback(
     (evt: { lngLat: { lat: number; lng: number } }) => {
+      if (readOnly) return;
       onMapClick({ lat: evt.lngLat.lat, lng: evt.lngLat.lng });
     },
-    [onMapClick],
+    [onMapClick, readOnly],
   );
 
   return (
@@ -51,10 +54,10 @@ export function PinDropMap({
           zoom: DEFAULT_MAP_ZOOM,
         }}
         mapStyle={MAP_STYLE}
-        onClick={handleClick}
+        onClick={readOnly ? undefined : handleClick}
         onLoad={() => setMapLoaded(true)}
         style={{ width: "100%", height: "100%", borderRadius: "0.5rem" }}
-        cursor="crosshair"
+        cursor={readOnly ? "grab" : "crosshair"}
       >
         <NavigationControl position="bottom-right" showCompass={false} />
         {mapLoaded && lat !== null && lng !== null && <Marker latitude={lat} longitude={lng} />}

@@ -23,6 +23,7 @@ import type { Agent } from "@/lib/db/schema/agents";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import { getRegionFromAreaSlug } from "@/components/property/property-card";
 import { PropertyDescription } from "@/components/listing/property-description";
+import { MapViewLoader } from "@/components/map/map-view-loader";
 
 function extractYoutubeVideoId(url: string): string | null {
   if (!url) return null;
@@ -212,6 +213,42 @@ export async function ListingDetailLayout({
                       </li>
                     ))}
                   </ul>
+                </section>
+              )}
+
+              {/* Map Location */}
+              {property.latitude && property.longitude && (
+                <section aria-labelledby="location-heading" className="space-y-4 pt-4">
+                  <h2 id="location-heading" className="text-2xl font-bold text-brand-navy">
+                    {locale === "es" ? "Ubicación" : "Location"}
+                  </h2>
+                  <div className="rounded-xl overflow-hidden shadow-md border border-brand-warm bg-white w-full h-[350px]">
+                    <MapViewLoader
+                      lat={Number(property.latitude)}
+                      lng={Number(property.longitude)}
+                      onMapClick={() => {}}
+                      readOnly={true}
+                      className="h-full w-full"
+                    />
+                  </div>
+                </section>
+              )}
+
+              {/* Video Embed */}
+              {property.youtubeUrl && (
+                <section aria-labelledby="video-heading" className="space-y-4 pt-4">
+                  <h2 id="video-heading" className="text-2xl font-bold text-brand-navy">
+                    {t("videoTitle", { fallback: "Video Tour" })}
+                  </h2>
+                  <div className="rounded-xl overflow-hidden shadow-md border border-brand-warm bg-white w-full">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${extractYoutubeVideoId(property.youtubeUrl)}`}
+                      title="Property Video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full aspect-video"
+                    />
+                  </div>
                 </section>
               )}
             </div>
