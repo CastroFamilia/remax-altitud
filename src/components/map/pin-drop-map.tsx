@@ -44,13 +44,30 @@ export function PinDropMap({
     [onMapClick, readOnly],
   );
 
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div
+        data-testid={testId}
+        className={`${className} bg-slate-100 flex items-center justify-center border border-dashed border-slate-300`}
+      >
+        <div className="text-center p-4">
+          <p className="text-sm font-semibold text-slate-500 mb-1">Interactive Map Disabled</p>
+          <p className="text-xs text-slate-400">Mapbox access token is required.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const validLat = typeof lat === "number" && !Number.isNaN(lat) ? lat : DEFAULT_MAP_CENTER.lat;
+  const validLng = typeof lng === "number" && !Number.isNaN(lng) ? lng : DEFAULT_MAP_CENTER.lng;
+
   return (
     <div data-testid={testId} className={className}>
       <MapboxMap
         mapboxAccessToken={MAPBOX_TOKEN}
         initialViewState={{
-          latitude: lat ?? DEFAULT_MAP_CENTER.lat,
-          longitude: lng ?? DEFAULT_MAP_CENTER.lng,
+          latitude: validLat,
+          longitude: validLng,
           zoom: DEFAULT_MAP_ZOOM,
         }}
         mapStyle={MAP_STYLE}

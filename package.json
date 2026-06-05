@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.5",
+    "@google/genai": "2.8.0",
     "@tailwindcss/postcss": "4.3.0",
     "@testing-library/dom": "10.4.1",
     "@testing-library/react": "16.3.2",
@@ -71,6 +72,7 @@
     "lighthouse": "13.3.0",
     "lint-staged": "17.0.7",
     "prettier": "3.8.3",
+    "puppeteer": "25.1.0",
     "server-only": "0.0.1",
     "tailwindcss": "4.3.0",
     "tsx": "4.22.2",

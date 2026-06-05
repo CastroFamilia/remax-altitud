@@ -99,11 +99,19 @@ export function MapView({
   // Convert properties to GeoJSON points for Supercluster
   const points = useMemo<GeoJSON.Feature<GeoJSON.Point, { cluster: false; propertyId: string }>[]>(
     () =>
-      properties.map((p) => ({
-        type: "Feature",
-        geometry: { type: "Point", coordinates: [p.longitude, p.latitude] },
-        properties: { cluster: false, propertyId: p.id },
-      })),
+      properties
+        .filter(
+          (p) =>
+            typeof p.latitude === "number" &&
+            typeof p.longitude === "number" &&
+            !Number.isNaN(p.latitude) &&
+            !Number.isNaN(p.longitude),
+        )
+        .map((p) => ({
+          type: "Feature",
+          geometry: { type: "Point", coordinates: [p.longitude as number, p.latitude as number] },
+          properties: { cluster: false, propertyId: p.id },
+        })),
     [properties],
   );
 
@@ -242,6 +250,39 @@ export function MapView({
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div className="w-full h-full min-h-[400px] bg-slate-100 flex items-center justify-center border border-dashed border-slate-300 rounded-xl shadow-inner">
+        <div className="text-center p-6 space-y-2">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-200 text-slate-400 mb-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-bold text-slate-700">Map Disabled</h3>
+          <p className="text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
+            Please configure{" "}
+            <code className="px-1.5 py-0.5 bg-slate-200 rounded text-slate-700 font-mono text-xs">
+              NEXT_PUBLIC_MAPBOX_TOKEN
+            </code>{" "}
+            in your environment variables to enable the interactive map.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
