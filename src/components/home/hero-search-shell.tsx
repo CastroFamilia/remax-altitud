@@ -63,6 +63,10 @@ const AREA_KEYWORDS: Record<string, string> = {
   platanillo: "tinamastes-platanillo",
   barú: "tinamastes-platanillo",
   baru: "tinamastes-platanillo",
+  "tinamastes-platanillo": "tinamastes-platanillo",
+  "tinamastes & platanillo": "tinamastes-platanillo",
+  "tinamastes, platanillo & barú": "tinamastes-platanillo",
+  "tinamastes, platanillo & baru": "tinamastes-platanillo",
   // PZ sub-locations
   "san isidro": "perez-zeledon",
   "san isidro de el general": "perez-zeledon",
@@ -224,9 +228,6 @@ const SUB_LOCATION_KEYWORDS: Record<string, string> = {
   "general viejo": "el-general",
   "san pedro": "san-pedro",
   platanares: "platanares",
-  barú: "baru",
-  baru: "baru",
-  tinamaste: "baru",
   "río nuevo": "rio-nuevo",
   "rio nuevo": "rio-nuevo",
   páramo: "paramo",
@@ -268,7 +269,6 @@ const FALLBACK_PZ_SUB_LOCATIONS = [
   { slug: "platanares", label: "Platanares", parentSlug: "perez-zeledon", isSubLocation: true },
   { slug: "pejibaye", label: "Pejibaye", parentSlug: "perez-zeledon", isSubLocation: true },
   { slug: "cajon", label: "Cajón", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "baru", label: "Barú", parentSlug: "perez-zeledon", isSubLocation: true },
   { slug: "rio-nuevo", label: "Río Nuevo", parentSlug: "perez-zeledon", isSubLocation: true },
   { slug: "paramo", label: "Páramo", parentSlug: "perez-zeledon", isSubLocation: true },
   { slug: "la-amistad", label: "La Amistad", parentSlug: "perez-zeledon", isSubLocation: true },
@@ -407,39 +407,56 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
 
   // 1. Match Area (check sub-locations first for more specific match)
   let matchedAreaKey = "";
+
+  // Sort keys by length descending to match longer phrases first
+  const sortedSubLocationKeywords = Object.entries(SUB_LOCATION_KEYWORDS).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+  const sortedAreaKeywords = Object.entries(AREA_KEYWORDS).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+
   // Try sub-location keywords first (more specific)
-  for (const [key, subSlug] of Object.entries(SUB_LOCATION_KEYWORDS)) {
-    if (normalized.includes(key)) {
-      params.area = "perez-zeledon"; // Sub-locations are all in PZ
-      params.sub_location = subSlug;
-      matchedAreaKey = key;
-      detected.push({
-        type: "area",
-        label: AREA_LABELS[subSlug] || subSlug,
-        icon: "pin",
-        value: subSlug,
-      });
-      break;
-    }
-  }
-  // If no sub-location matched, try main area keywords
-  if (!matchedAreaKey) {
-    for (const [key, slug] of Object.entries(AREA_KEYWORDS)) {
-      if (normalized.includes(key)) {
-        params.area = slug;
+  for (const [key, subSlug] of sortedSubLocationKeywords) {
+    if (remainingText.includes(key)) {
+      if (!params.sub_location) {
+        params.area = "perez-zeledon"; // Sub-locations are all in PZ
+        params.sub_location = subSlug;
         matchedAreaKey = key;
         detected.push({
           type: "area",
-          label: AREA_LABELS[slug] || slug,
+          label: AREA_LABELS[subSlug] || subSlug,
           icon: "pin",
-          value: slug,
+          value: subSlug,
         });
-        break;
+      }
+      // Remove all occurrences of keys that map to the same sub_location
+      if (params.sub_location === subSlug) {
+        remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
       }
     }
   }
-  if (matchedAreaKey) {
-    remainingText = remainingText.replace(matchedAreaKey, " ");
+
+  // If no sub-location matched, try main area keywords
+  if (!matchedAreaKey) {
+    for (const [key, slug] of sortedAreaKeywords) {
+      if (remainingText.includes(key)) {
+        if (!params.area) {
+          params.area = slug;
+          matchedAreaKey = key;
+          detected.push({
+            type: "area",
+            label: AREA_LABELS[slug] || slug,
+            icon: "pin",
+            value: slug,
+          });
+        }
+        // Remove all occurrences of keys that map to the same area
+        if (params.area === slug) {
+          remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+        }
+      }
+    }
   }
 
   // 2. Match Property Type

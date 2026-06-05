@@ -1,0 +1,52 @@
+
+> remax-altitud@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.5.18 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.40.25:3000
+   - Environments: .env.development.local, .env.local
+   - Experiments (use with caution):
+     · clientTraceMetadata
+
+ ✓ Starting...
+ ✓ Compiled middleware in 337ms
+ ✓ Ready in 6.3s
+ ○ Compiling /[locale]/property/[slug] ...
+ ✓ Compiled /[locale]/property/[slug] in 7.2s
+ ⨯ Error: Failed query: select "id", "api_id", "office_id", "slug", "name", "email", "phone", "whatsapp", "photo_url", "photo_optimized_url", "languages", "specializations", "bio_en", "bio_es", "video_url", "listing_count", "is_active", "synced_at", "created_at", "updated_at" from "agents" where "agents"."id" = $1 limit $2
+params: f63f3030-f56c-43ac-961b-f7da40a6a3b2,1
+    at async getAgentById (src/lib/db/queries/agents.ts:105:16)
+    at async PropertyPage (src/app/[locale]/property/[slug]/page.tsx:294:36)
+  103 |  */
+  104 | export async function getAgentById(id: string) {
+> 105 |   const rows = await db.select().from(agents).where(eq(agents.id, id)).limit(1);
+      |                ^
+  106 |   return rows[0] ?? null;
+  107 | }
+  108 | {
+  query: 'select "id", "api_id", "office_id", "slug", "name", "email", "phone", "whatsapp", "photo_url", "photo_optimized_url", "languages", "specializations", "bio_en", "bio_es", "video_url", "listing_count", "is_active", "synced_at", "created_at", "updated_at" from "agents" where "agents"."id" = $1 limit $2',
+  params: [Array],
+  digest: '2068039013',
+  [cause]: [Error [PostgresError]: column "video_url" does not exist] {
+    severity_local: 'ERROR',
+    severity: 'ERROR',
+    code: '42703',
+    position: '171',
+    file: 'parse_relation.c',
+    line: '3721',
+    routine: 'errorMissingColumn'
+  }
+}
+ GET /en/property/2-4-acre-property-in-platanillo-featuring-mountain-views-and-2-ready-to-build-lots 500 in 10005ms
+ ⨯ Error: Event handlers cannot be passed to Client Component props.
+  <... lat=... lng=... onMapClick={function onMapClick} readOnly=... className=...>
+                                  ^^^^^^^^^^^^^^^^^^^^^
+If you need interactivity, consider converting part of this to a Client Component.
+    at stringify (<anonymous>) {
+  digest: '590069406'
+}
+ GET /en/property/2-4-acre-property-in-platanillo-featuring-mountain-views-and-2-ready-to-build-lots 500 in 5171ms
+ ✓ Compiled in 552ms
+ ✓ Compiled /[locale]/property/[slug] in 58ms
+ GET /en/property/2-4-acre-property-in-platanillo-featuring-mountain-views-and-2-ready-to-build-lots 200 in 1375ms

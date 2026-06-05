@@ -105,6 +105,10 @@ const AREA_KEYWORDS: Record<string, string> = {
   platanillo: "tinamastes-platanillo",
   barú: "tinamastes-platanillo",
   baru: "tinamastes-platanillo",
+  "tinamastes-platanillo": "tinamastes-platanillo",
+  "tinamastes & platanillo": "tinamastes-platanillo",
+  "tinamastes, platanillo & barú": "tinamastes-platanillo",
+  "tinamastes, platanillo & baru": "tinamastes-platanillo",
   // PZ sub-locations
   "san isidro": "perez-zeledon",
   "san isidro de el general": "perez-zeledon",
@@ -133,9 +137,6 @@ const SUB_LOCATION_KEYWORDS: Record<string, string> = {
   "general viejo": "el-general",
   "san pedro": "san-pedro",
   platanares: "platanares",
-  barú: "baru",
-  baru: "baru",
-  tinamaste: "baru",
   "río nuevo": "rio-nuevo",
   "rio nuevo": "rio-nuevo",
   páramo: "paramo",
@@ -299,29 +300,48 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
 
   // Area — check sub-locations first for more specific match
   let matchedSubLocation = false;
-  for (const [key, subSlug] of Object.entries(SUB_LOCATION_KEYWORDS)) {
-    if (normalized.includes(key)) {
-      params.area = "perez-zeledon";
-      params.sub_location = subSlug;
-      detected.push({
-        type: "area",
-        label: AREA_LABELS[subSlug] || subSlug,
-        icon: "pin",
-        value: subSlug,
-      });
-      remainingText = remainingText.replace(key, " ");
-      matchedSubLocation = true;
-      break;
+
+  const sortedSubLocationKeywords = Object.entries(SUB_LOCATION_KEYWORDS).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+  const sortedAreaKeywords = Object.entries(AREA_KEYWORDS).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+
+  for (const [key, subSlug] of sortedSubLocationKeywords) {
+    if (remainingText.includes(key)) {
+      if (!params.sub_location) {
+        params.area = "perez-zeledon";
+        params.sub_location = subSlug;
+        detected.push({
+          type: "area",
+          label: AREA_LABELS[subSlug] || subSlug,
+          icon: "pin",
+          value: subSlug,
+        });
+        matchedSubLocation = true;
+      }
+      if (params.sub_location === subSlug) {
+        remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+      }
     }
   }
   // If no sub-location matched, try main area keywords
   if (!matchedSubLocation) {
-    for (const [key, slug] of Object.entries(AREA_KEYWORDS)) {
-      if (normalized.includes(key)) {
-        params.area = slug;
-        detected.push({ type: "area", label: AREA_LABELS[slug] || slug, icon: "pin", value: slug });
-        remainingText = remainingText.replace(key, " ");
-        break;
+    for (const [key, slug] of sortedAreaKeywords) {
+      if (remainingText.includes(key)) {
+        if (!params.area) {
+          params.area = slug;
+          detected.push({
+            type: "area",
+            label: AREA_LABELS[slug] || slug,
+            icon: "pin",
+            value: slug,
+          });
+        }
+        if (params.area === slug) {
+          remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+        }
       }
     }
   }
