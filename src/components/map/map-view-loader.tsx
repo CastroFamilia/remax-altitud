@@ -1,8 +1,10 @@
+"use client";
+
 /**
  * Story 3.2: MapViewLoader — next/dynamic wrapper for MapView.
  *
- * This file MUST NOT have 'use client' — the dynamic import handles that.
- * Ensures Mapbox GL JS (~230KB) is NOT included in the main bundle (AR25, R-001).
+ * This file is a Client Component because in Next.js 15+, `ssr: false`
+ * with `next/dynamic` is only allowed in Client Components.
  * The loading fallback retains data-testid="map-container" so tests pass during load.
  *
  * IMPORTANT: Always use this file as the MapView entry point — never directly from ./map-view.
