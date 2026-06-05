@@ -46,12 +46,15 @@ export async function PropertyPrintView({
   const qrTrackingUrl = `${SITE_ORIGIN}/api/tracking/qr?propertyId=${property.id}&slug=${property.slug}&locale=${locale}`;
 
   return (
-    <div className="hidden print:block w-[297mm] h-[210mm] overflow-hidden bg-white text-black font-sans relative box-border mx-auto">
+    <div className="hidden print:block print-view-container w-[297mm] h-[210mm] overflow-hidden bg-white text-black font-sans relative box-border mx-auto">
       <style
         dangerouslySetInnerHTML={{
           __html: `
         @page { size: A4 landscape; margin: 0; }
         @media print {
+          body * { visibility: hidden; }
+          .print-view-container, .print-view-container * { visibility: visible; }
+          .print-view-container { position: absolute; left: 0; top: 0; }
           body { 
             -webkit-print-color-adjust: exact !important; 
             print-color-adjust: exact !important; 
