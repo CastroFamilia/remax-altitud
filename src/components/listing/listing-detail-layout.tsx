@@ -95,7 +95,12 @@ export async function ListingDetailLayout({
 
   return (
     <>
-      <PropertyPrintView property={property} locale={locale} />
+      <PropertyPrintView
+        property={property}
+        locale={locale}
+        agent={agent}
+        officeName={officeName ?? "REMAX Altitud"}
+      />
       <article className="min-h-screen bg-background print:hidden">
         {/* Breadcrumbs — visual nav (Story 4.5, AC #4) */}
         <Breadcrumbs

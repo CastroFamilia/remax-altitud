@@ -18,10 +18,10 @@
  * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 8
  */
 
-import { and, isNotNull, eq, gte, lte, inArray, sql, or } from "drizzle-orm";
+import { and, isNotNull, eq, ilike, gte, lte, inArray, sql, or } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { db } from "@/lib/db/client";
-import { properties } from "@/lib/db/schema";
+import { properties, areas } from "@/lib/db/schema";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import type { OptimizedImage } from "@/types/images";
 
@@ -68,6 +68,7 @@ export type MapFilters = {
   subLocation?: string;
   tags?: string[];
   q?: string;
+  region?: string;
 };
 
 /**
@@ -356,6 +357,22 @@ export async function getPropertiesForMap(
     }
   }
 
+  // Region filter logic (resolve area slugs from areas table)
+  let matchingAreaSlugs: string[] = [];
+  if (filters?.region) {
+    const areaRows = await db
+      .select({ slug: areas.slug })
+      .from(areas)
+      .where(ilike(areas.region, filters.region));
+    matchingAreaSlugs = areaRows.map((r) => r.slug).filter((s): s is string => s !== null);
+  }
+
+  const regionCondition = filters?.region
+    ? matchingAreaSlugs.length > 0
+      ? inArray(properties.areaSlug, matchingAreaSlugs)
+      : eq(properties.id, "00000000-0000-0000-0000-000000000000") // No results if region has no areas
+    : undefined;
+
   // Bounds conditions using simple lat/lng range comparisons
   const boundsCondition =
     safeBounds != null
@@ -383,6 +400,7 @@ export async function getPropertiesForMap(
     tagsCondition,
     searchCondition,
     boundsCondition,
+    regionCondition,
   );
 
   const rows = await db

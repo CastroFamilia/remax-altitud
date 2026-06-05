@@ -84,7 +84,8 @@ export function SearchPageClient() {
       filters.areaSlug ||
       filters.subLocation ||
       (filters.tags && filters.tags.length > 0) ||
-      filters.q;
+      filters.q ||
+      filters.region;
     if (!hasAnyFilter) return undefined;
     return {
       type: filters.type,
@@ -99,6 +100,7 @@ export function SearchPageClient() {
       subLocation: filters.subLocation,
       tags: filters.tags,
       q: filters.q,
+      region: filters.region,
     };
   }, [filters]);
 

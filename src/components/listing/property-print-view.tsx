@@ -1,25 +1,32 @@
 import type { Property } from "@/lib/db/schema/properties";
+import type { Agent } from "@/lib/db/schema/agents";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import { convertArea } from "@/lib/utils/units";
-import { getTranslations } from "next-intl/server";
+import { SITE_ORIGIN } from "@/lib/seo/constants";
+import QRCode from "react-qr-code";
 
 interface PropertyPrintViewProps {
   property: Property;
   locale: string;
+  agent: Agent | null;
+  officeName: string;
 }
 
-export async function PropertyPrintView({ property, locale }: PropertyPrintViewProps) {
-  const t = await getTranslations({ locale, namespace: "ListingDetail" });
-
+export async function PropertyPrintView({
+  property,
+  locale,
+  agent,
+  officeName,
+}: PropertyPrintViewProps) {
   const title = (locale === "es" ? property.titleEs : property.titleEn) || "";
   const images = normalizePropertyImages(property.images, title);
 
   const mainImage = images[0];
-  const secondaryImages = images.slice(1, 5); // Up to 4 other photos
+  const secondaryImage1 = images[1];
+  const secondaryImage2 = images[2];
+  const secondaryImage3 = images[3];
 
   const formattedPrice = property.priceUsd ? `$${property.priceUsd.toLocaleString("en-US")}` : "—";
-  const listingType =
-    property.listingType === "Lease" ? t("listingType.Lease") : t("listingType.Sale");
   const propertyType = property.propertyType || "—";
   const area = property.areaSlug ? property.areaSlug.replace(/-/g, " ") : "—";
 
@@ -36,90 +43,188 @@ export async function PropertyPrintView({ property, locale }: PropertyPrintViewP
   const constructionImperial =
     constructionM2 != null ? convertArea(constructionM2, "imperial", locale, false) : "—";
 
+  const qrTrackingUrl = `${SITE_ORIGIN}/api/tracking/qr?propertyId=${property.id}&slug=${property.slug}&locale=${locale}`;
+
   return (
-    <div className="hidden print:block w-full max-w-4xl mx-auto bg-white text-black p-8 font-sans">
-      {/* Header section */}
-      <div className="mb-6 border-b border-gray-200 pb-4">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{title}</h1>
-        <div className="flex flex-wrap gap-4 text-sm font-semibold uppercase tracking-wider text-gray-600">
-          <span className="bg-gray-100 px-3 py-1 rounded">{listingType}</span>
-          <span className="bg-gray-100 px-3 py-1 rounded">{propertyType}</span>
-          <span className="bg-gray-100 px-3 py-1 rounded">{area}</span>
-        </div>
-      </div>
+    <div className="hidden print:block print-view-container w-[297mm] h-[210mm] overflow-hidden bg-white text-black font-sans relative box-border mx-auto">
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        @page { size: A4 landscape; margin: 0; }
+        @media print {
+          body * { visibility: hidden; }
+          .print-view-container, .print-view-container * { visibility: visible; }
+          .print-view-container { position: absolute; left: 0; top: 0; }
+          body { 
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important; 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            background: white !important;
+          }
+        }
+      `,
+        }}
+      />
 
-      {/* Images Section */}
-      <div className="mb-8 space-y-4">
-        {mainImage && (
-          <div className="w-full aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={mainImage.src} alt={mainImage.alt} className="w-full h-full object-cover" />
-          </div>
-        )}
-
-        {secondaryImages.length > 0 && (
-          <div className="grid grid-cols-4 gap-4">
-            {secondaryImages.map((img, i) => (
-              <div
-                key={i}
-                className="w-full aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden border border-gray-200"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+      {/* Full Page Grid Layout */}
+      <div className="grid grid-cols-[2fr_1fr] h-[210mm] w-[297mm]">
+        {/* LEFT COLUMN: Visuals */}
+        <div className="flex flex-col h-[210mm] relative">
+          {/* Main Hero Image */}
+          <div className="h-[75%] w-full relative overflow-hidden bg-gray-100">
+            {mainImage ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={mainImage.src} alt={mainImage.alt} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-300">
+                No Image Available
               </div>
-            ))}
+            )}
+
+            {/* Elegant Price Badge over image */}
+            <div className="absolute bottom-8 left-8 bg-brand-navy/95 backdrop-blur text-white px-8 py-4 border-l-4 border-amber-500 shadow-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-300 mb-1">
+                {property.listingType === "Lease" ? "For Rent" : "For Sale"}
+              </p>
+              <p className="text-4xl font-light tracking-tight">{formattedPrice}</p>
+            </div>
           </div>
-        )}
-      </div>
 
-      {/* Details Grid */}
-      <div className="grid grid-cols-2 gap-8 mb-8 border border-gray-200 rounded-lg p-6 bg-gray-50">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-bold mb-1">Price</p>
-          <p className="text-2xl font-bold text-gray-900">{formattedPrice}</p>
+          {/* 3 Secondary Images Strip */}
+          <div className="h-[25%] grid grid-cols-3 w-full border-t border-white">
+            <div className="relative overflow-hidden bg-gray-200 border-r border-white">
+              {secondaryImage1 && (
+                /* eslint-disable-next-line @next/next/no-img-element */ <img
+                  src={secondaryImage1.src}
+                  alt="View 1"
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+            <div className="relative overflow-hidden bg-gray-300 border-r border-white">
+              {secondaryImage2 && (
+                /* eslint-disable-next-line @next/next/no-img-element */ <img
+                  src={secondaryImage2.src}
+                  alt="View 2"
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+            <div className="relative overflow-hidden bg-gray-400">
+              {secondaryImage3 && (
+                /* eslint-disable-next-line @next/next/no-img-element */ <img
+                  src={secondaryImage3.src}
+                  alt="View 3"
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+          </div>
         </div>
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-bold mb-1">
-            Property Type
-          </p>
-          <p className="text-2xl font-bold text-gray-900 capitalize">
-            {propertyType.toLowerCase()}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-bold mb-1">
-            Area / Location
-          </p>
-          <p className="text-xl font-bold text-gray-900 capitalize">{area}</p>
-        </div>
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-bold mb-1">Status</p>
-          <p className="text-xl font-bold text-gray-900">{listingType}</p>
-        </div>
-      </div>
 
-      {/* Size Details */}
-      <div className="grid grid-cols-2 gap-8 border border-gray-200 rounded-lg p-6 bg-gray-50">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-bold mb-1">Lot Size</p>
-          <p className="text-xl font-bold text-gray-900">
-            {lotSizeM2 != null ? `${lotSizeMetric} (${lotSizeImperial})` : "—"}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-bold mb-1">
-            Construction Size
-          </p>
-          <p className="text-xl font-bold text-gray-900">
-            {constructionM2 != null ? `${constructionMetric} (${constructionImperial})` : "—"}
-          </p>
-        </div>
-      </div>
+        {/* RIGHT COLUMN: Details & Branding */}
+        <div className="bg-white text-brand-navy h-[210mm] flex flex-col p-10 justify-between relative z-10 border-l border-gray-100 shadow-[-5px_0_20px_rgba(0,0,0,0.05)]">
+          {/* Logo & Top Branding */}
+          <div className="flex justify-center border-b border-gray-100 pb-8 mb-8">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/brand/logo-remax-altitud.png"
+              alt="REMAX Altitud"
+              className="h-14 object-contain"
+            />
+          </div>
 
-      {/* Footer Branding */}
-      <div className="mt-12 pt-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500 font-medium">
-        <p>REMAX Altitud</p>
-        <p>www.remax-altitud.cr</p>
+          {/* Property Title & Location */}
+          <div className="mb-8 flex-grow">
+            <p className="text-amber-600 text-xs font-bold tracking-[0.2em] uppercase mb-3">
+              {area}
+            </p>
+            <h1 className="text-3xl font-black leading-tight tracking-tight mb-8 text-gray-900">
+              {title}
+            </h1>
+
+            <div className="w-12 h-1 bg-amber-500 mb-8"></div>
+
+            {/* Key Specifications Grid */}
+            <div className="grid grid-cols-2 gap-y-8 gap-x-4">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
+                  Type / Tipo
+                </p>
+                <p className="text-lg font-light capitalize text-gray-800">{propertyType}</p>
+              </div>
+
+              {property.bedrooms != null && property.bedrooms > 0 && (
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
+                    Beds / Hab.
+                  </p>
+                  <p className="text-lg font-light text-gray-800">{property.bedrooms}</p>
+                </div>
+              )}
+
+              {property.bathrooms != null && property.bathrooms > 0 && (
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
+                    Baths / Baños
+                  </p>
+                  <p className="text-lg font-light text-gray-800">{property.bathrooms}</p>
+                </div>
+              )}
+
+              {lotSizeM2 != null && (
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
+                    Lot / Terreno
+                  </p>
+                  <p className="text-lg font-light leading-tight text-gray-800">
+                    {lotSizeImperial}
+                  </p>
+                  <p className="text-xs text-gray-400">{lotSizeMetric}</p>
+                </div>
+              )}
+
+              {constructionM2 != null && (
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
+                    Built / Const.
+                  </p>
+                  <p className="text-lg font-light leading-tight text-gray-800">
+                    {constructionImperial}
+                  </p>
+                  <p className="text-xs text-gray-400">{constructionMetric}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Footer: Agent & QR */}
+          <div className="flex justify-between items-end border-t border-gray-100 pt-8 mt-auto">
+            <div className="flex-1 pr-4">
+              <p className="text-[10px] text-amber-600 font-bold tracking-widest uppercase mb-1">
+                Presented By
+              </p>
+              <p className="text-lg font-black text-gray-900">{agent?.name || "REMAX Altitud"}</p>
+              {agent?.whatsapp && (
+                <p className="text-xs text-gray-600 mt-1 font-medium">WA: {agent.whatsapp}</p>
+              )}
+              {agent?.email && (
+                <p className="text-xs text-gray-600 font-medium truncate">{agent.email}</p>
+              )}
+              <p className="text-[10px] text-gray-400 mt-3 uppercase tracking-wide">{officeName}</p>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <div className="bg-white p-2 border border-gray-200">
+                <QRCode value={qrTrackingUrl} size={64} level="M" />
+              </div>
+              <span className="text-[8px] uppercase font-bold tracking-widest text-amber-600 mt-2">
+                Scan for info
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
