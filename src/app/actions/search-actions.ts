@@ -14,7 +14,7 @@ import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { communities } from "@/lib/db/schema/communities";
 import { areas } from "@/lib/db/schema/areas";
-import { and, eq, gte, lte, isNotNull, desc, asc, sql, or, inArray } from "drizzle-orm";
+import { and, eq, ilike, gte, lte, isNotNull, desc, asc, sql, or, inArray } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } from "@/types/search";
 import { mapPropertyRowToSearchItem, propertySearchColumns } from "@/lib/db/queries/properties";
@@ -282,7 +282,7 @@ export async function searchProperties(
       const areaRows = await db
         .select({ slug: areas.slug })
         .from(areas)
-        .where(eq(areas.region, filters.region));
+        .where(ilike(areas.region, filters.region));
       matchingAreaSlugs = areaRows.map((r) => r.slug).filter((s): s is string => s !== null);
     }
 
