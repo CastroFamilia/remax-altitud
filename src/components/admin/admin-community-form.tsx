@@ -11,6 +11,7 @@ import {
 } from "@/app/actions/admin-community-actions";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
+import { DISTRICT_KEYWORDS } from "@/lib/locations";
 
 const CommunityGeoFenceMap = dynamic(
   () => import("@/components/map/community-geofence-map").then((m) => m.CommunityGeoFenceMap),
@@ -100,10 +101,33 @@ export function AdminCommunityForm({
   );
 
   const comboboxAreas = React.useMemo(() => {
-    return areas.map((a) => ({
+    const main = areas.map((a) => ({
       slug: a.slug,
       label: locale === "es" ? a.nameEs : a.nameEn,
     }));
+
+    const uniqueSubs = new Map();
+    DISTRICT_KEYWORDS.forEach((k) => {
+      const slug = k.keyword.toLowerCase().replace(/\s+/g, "-");
+      if (!uniqueSubs.has(slug)) {
+        uniqueSubs.set(slug, {
+          slug,
+          label: k.keyword
+            .split(" ")
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(" "),
+          parentSlug: k.parent,
+          isSubLocation: true,
+        });
+      }
+    });
+
+    return [...main, ...Array.from(uniqueSubs.values())] as {
+      slug: string;
+      label: string;
+      parentSlug?: string;
+      isSubLocation?: boolean;
+    }[];
   }, [areas, locale]);
 
   const selectedAreaSlug = areas.find((a) => a.id === areaId)?.slug || "";
@@ -421,6 +445,7 @@ export function AdminCommunityForm({
                 placeholder={locale === "es" ? "Buscar zona..." : "Search location..."}
                 locale={locale}
                 variant="dark"
+                allowCustom={true}
               />
             </div>
           </div>
