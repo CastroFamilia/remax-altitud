@@ -55,9 +55,11 @@ interface SplitViewLayoutProps {
   onPageChange?: (page: number) => void;
   /** Story 3.8: Active search filters to forward to PropertyGrid for NoResultsState */
   filters?: SearchFilters;
-  /** Fly-to target from Near Me (lifted from SearchFilterBar) */
+  /** Story 3.8: Fly to target feature (Near Me) */
   flyToTarget?: { lat: number; lng: number; zoom?: number } | null;
-  /** Fallback message from Near Me */
+  /** Auto-pan to search results bounding box */
+  fitBoundsTarget?: [[number, number], [number, number]] | null;
+  /** Fallback message when location access fails */
   nearMeFallbackMessage?: string | null;
   /** Dismiss fallback handler */
   onDismissFallback?: () => void;
@@ -81,6 +83,7 @@ export function SplitViewLayout({
   onPageChange,
   filters,
   flyToTarget,
+  fitBoundsTarget,
   nearMeFallbackMessage,
   onDismissFallback,
 }: SplitViewLayoutProps) {
@@ -153,6 +156,7 @@ export function SplitViewLayout({
               locale={locale}
               onBoundsChange={handleBoundsChange}
               flyToTarget={flyToTarget}
+              fitBoundsTarget={fitBoundsTarget}
               unitSystem={unitSystem}
             />
           </div>

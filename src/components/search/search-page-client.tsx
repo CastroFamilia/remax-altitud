@@ -109,15 +109,47 @@ export function SearchPageClient() {
   const mapFiltersRef = useRef(mapFilters);
   mapFiltersRef.current = mapFilters;
 
+  const prevMapFiltersRef = useRef(mapFilters);
+  const isFirstLoadRef = useRef(true);
+
   // Fetch map properties whenever filters change (and on initial load).
   // This ensures map pins update when the user selects any filter.
   useEffect(() => {
     let cancelled = false;
     const seq = ++requestSeqRef.current;
-    getPropertiesForMap(bounds ?? undefined, mapFilters)
+
+    const isFirstLoad = isFirstLoadRef.current;
+    isFirstLoadRef.current = false;
+    const isFilterChange = prevMapFiltersRef.current !== mapFilters || isFirstLoad;
+    prevMapFiltersRef.current = mapFilters;
+
+    getPropertiesForMap(undefined, mapFilters)
       .then((data) => {
         if (!cancelled && seq === requestSeqRef.current) {
           setMapProperties(data);
+
+          if (isFilterChange && data.length > 0) {
+            let minLat = 90,
+              maxLat = -90,
+              minLng = 180,
+              maxLng = -180;
+            data.forEach((p) => {
+              if (p.latitude < minLat) minLat = p.latitude;
+              if (p.latitude > maxLat) maxLat = p.latitude;
+              if (p.longitude < minLng) minLng = p.longitude;
+              if (p.longitude > maxLng) maxLng = p.longitude;
+            });
+
+            // If it's just a single point or exactly overlapping points, we can't fit bounds well
+            if (minLat === maxLat && minLng === maxLng) {
+              setFlyToTarget({ lat: minLat, lng: minLng, zoom: 14 });
+            } else {
+              setFitBoundsTarget([
+                [minLng, minLat],
+                [maxLng, maxLat],
+              ]);
+            }
+          }
         }
       })
       .catch((error) => {
@@ -126,7 +158,7 @@ export function SearchPageClient() {
     return () => {
       cancelled = true;
     };
-  }, [mapFilters, bounds]);
+  }, [mapFilters]);
 
   // Initial load — fetch available areas for the location filter
   useEffect(() => {
@@ -195,6 +227,9 @@ export function SearchPageClient() {
     lng: number;
     zoom?: number;
   } | null>(null);
+  const [fitBoundsTarget, setFitBoundsTarget] = useState<
+    [[number, number], [number, number]] | null
+  >(null);
   const [nearMeFallbackMessage, setNearMeFallbackMessage] = useState<string | null>(null);
 
   const handleNearMeSuccess = useCallback((coords: { lat: number; lng: number }) => {
@@ -237,6 +272,7 @@ export function SearchPageClient() {
         onPageChange={setPage}
         filters={filters}
         flyToTarget={flyToTarget}
+        fitBoundsTarget={fitBoundsTarget}
         nearMeFallbackMessage={nearMeFallbackMessage}
         onDismissFallback={() => setNearMeFallbackMessage(null)}
       />

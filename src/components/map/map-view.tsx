@@ -57,6 +57,8 @@ interface MapViewProps {
   onBoundsChange?: (bounds: MapBounds) => void;
   /** Story 3.8: When set, map flies to these coordinates with given zoom */
   flyToTarget?: { lat: number; lng: number; zoom?: number } | null;
+  /** When set, map fits exactly to this bounding box [[west, south], [east, north]] */
+  fitBoundsTarget?: [[number, number], [number, number]] | null;
   /** Unit system preference for area display in popups */
   unitSystem?: UnitSystem;
 }
@@ -87,6 +89,7 @@ export function MapView({
   locale,
   onBoundsChange,
   flyToTarget,
+  fitBoundsTarget,
   unitSystem,
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
@@ -232,6 +235,13 @@ export function MapView({
       });
     }
   }, [flyToTarget]);
+
+  // Fit bounds when fitBoundsTarget changes (Auto-pan to search results)
+  useEffect(() => {
+    if (fitBoundsTarget && mapRef.current) {
+      mapRef.current.fitBounds(fitBoundsTarget, { padding: 50, duration: 800 });
+    }
+  }, [fitBoundsTarget]);
 
   // Resize the Mapbox canvas when the container element changes size
   // (e.g. switching between split 35% and full-map 100% views).
