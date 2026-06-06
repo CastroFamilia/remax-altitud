@@ -10,7 +10,7 @@ target_regions: ['Pérez Zeledón', 'Dominical']
 
 This report provides a systematic analysis of the search engine results pages (SERPs) and content gaps for real estate searches in the **Pérez Zeledón** (San Isidro de El General / mountain valley) and **Dominical** (coastal/surf lifestyle) regions of Costa Rica. 
 
-By analyzing the current positioning of organic search competitors, their blind spots, and high-intent topical gaps, this report outlines a comprehensive strategy to position **RE/MAX Altitud's Lifestyle & Relocation Content Hub** as the leading authority in the Southern Zone.
+By analyzing the current positioning of organic search competitors, their blind spots, and high-intent topical gaps, this report outlines a comprehensive strategy to position **REMAX Altitud's Lifestyle & Relocation Content Hub** as the leading authority in the Southern Zone.
 
 ---
 
@@ -23,7 +23,7 @@ However, a systematic SERP audit reveals a **critical information asymmetry**:
 * **BUT they fail completely to provide granular, reliable due diligence and lifestyle context** regarding municipal regulations, local water laws, sustainable construction standards, and community-specific nuances.
 
 > [!IMPORTANT]
-> This "information gap" represents a major opportunity for **RE/MAX Altitud**. By producing hyper-local, authoritative, and regulatory-focused lifestyle guides, RE/MAX Altitud can capture high-intent, long-tail organic search traffic and establish unparalleled trust before a buyer even makes their first inquiry.
+> This "information gap" represents a major opportunity for **REMAX Altitud**. By producing hyper-local, authoritative, and regulatory-focused lifestyle guides, REMAX Altitud can capture high-intent, long-tail organic search traffic and establish unparalleled trust before a buyer even makes their first inquiry.
 
 ---
 
@@ -42,7 +42,7 @@ We analyzed organic search results for primary keywords like `"Pérez Zeledón r
 | **Local Boutiques** *(We Sell Paradise, Exclusive Homes)* | Various | Costa Ballena | Strong community feel; beach-lifestyle focus. | Low domain authority; erratic blogging; lack of technical depth on regulations. |
 
 ### SERP Competitor Summary
-* **Dominical SERPs:** Dominated heavily by established global brands (Coldwell Banker/Dominical Realty, RE/MAX Costa Rica regional pages) and regional portals. Their focus is 95% listing-driven with a generic blog presence focusing on tourist attractions.
+* **Dominical SERPs:** Dominated heavily by established global brands (Coldwell Banker/Dominical Realty, REMAX Costa Rica regional pages) and regional portals. Their focus is 95% listing-driven with a generic blog presence focusing on tourist attractions.
 * **Pérez Zeledón SERPs:** Significantly less competitive. National portals and regional coastal agencies rank for PZ keywords with simple landing pages, meaning **the Pérez Zeledón organic landscape is ripe for disruption by a dedicated, content-rich hub.**
 
 ---
@@ -208,4 +208,4 @@ To transform these insights into a high-converting organic search machine, REMAX
 ---
 
 ### Conclusion
-By filling these critical regulatory and hyper-local lifestyle information gaps, REMAX Altitud will transcend standard listing portals. The content hub will capture high-intent buyers during their initial research phase, build immediate authority, and ensure that when they are ready to purchase, RE/MAX Altitud is the only agency they trust to guide them through the process.
+By filling these critical regulatory and hyper-local lifestyle information gaps, REMAX Altitud will transcend standard listing portals. The content hub will capture high-intent buyers during their initial research phase, build immediate authority, and ensure that when they are ready to purchase, REMAX Altitud is the only agency they trust to guide them through the process.
