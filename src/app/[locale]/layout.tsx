@@ -10,6 +10,7 @@ import { SITE_ORIGIN } from "@/lib/seo/constants";
 import { SkipToContent } from "@/components/layout/skip-to-content";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { StickyMobileCta } from "@/components/layout/sticky-mobile-cta";
 
 const montserrat = Montserrat({
   subsets: ["latin", "latin-ext"],
@@ -101,8 +102,11 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SkipToContent />
           <Header />
-          <main id="main-content">{children}</main>
+          <main id="main-content" className="pb-16 md:pb-0">
+            {children}
+          </main>
           <Footer />
+          <StickyMobileCta />
         </NextIntlClientProvider>
       </body>
     </html>
