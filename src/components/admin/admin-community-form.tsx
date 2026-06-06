@@ -91,10 +91,22 @@ export function AdminCommunityForm({
   const [siteMapImageUrl, setSiteMapImageUrl] = useState(initialData?.siteMapImageUrl || "");
   const [priceListUrl, setPriceListUrl] = useState(initialData?.priceListUrl || "");
 
-  const initialGallery = Array.isArray(initialData?.galleryUrls)
-    ? (initialData.galleryUrls as string[])
-    : [];
-  const [galleryUrls, setGalleryUrls] = useState<string[]>(initialGallery);
+  const [galleryUrls, setGalleryUrls] = useState<string[]>(
+    Array.isArray(initialData?.galleryUrls) ? (initialData.galleryUrls as string[]) : [],
+  );
+
+  const [propertySearch, setPropertySearch] = useState("");
+
+  const filteredProperties = React.useMemo(() => {
+    if (!propertySearch.trim()) return allProperties;
+    const q = propertySearch.toLowerCase().trim();
+    return allProperties.filter(
+      (p) =>
+        p.titleEn.toLowerCase().includes(q) ||
+        p.titleEs.toLowerCase().includes(q) ||
+        p.apiId.toLowerCase().includes(q),
+    );
+  }, [allProperties, propertySearch]);
 
   const [associatedPropertyIds, setAssociatedPropertyIds] = useState<string[]>(
     allProperties.filter((p) => p.communityId === initialData?.id).map((p) => p.id),
@@ -174,7 +186,6 @@ export function AdminCommunityForm({
   const [internet, setInternet] = useState(quickFacts?.internet || "");
 
   // Geofence polygon points
-  // Check if we have initial coordinates in geoFenceCoords
   const initialPoints = (() => {
     const geoCoords = initialData?.geoFenceCoords as
       | {
@@ -185,7 +196,6 @@ export function AdminCommunityForm({
       | undefined;
     if (geoCoords?.coordinates?.[0]) {
       const coords = geoCoords.coordinates[0];
-      // Filter out last closed point if it matches the first one to avoid duplicate on render click
       if (coords.length > 2) {
         const first = coords[0];
         const last = coords[coords.length - 1];
@@ -220,7 +230,6 @@ export function AdminCommunityForm({
     }
   };
 
-  // Auto-slug generation from English name (only on create)
   useEffect(() => {
     if (!isEdit && name) {
       const slugified = name
@@ -231,10 +240,8 @@ export function AdminCommunityForm({
     }
   }, [name, isEdit]);
 
-  // Set center points based on polygon draw
   useEffect(() => {
     if (polygonPoints.length > 0 && !latitude && !longitude) {
-      // Calculate polygon center/average or just use first point
       const avgLng = polygonPoints.reduce((sum, pt) => sum + pt[0], 0) / polygonPoints.length;
       const avgLat = polygonPoints.reduce((sum, pt) => sum + pt[1], 0) / polygonPoints.length;
       setLatitude(avgLat.toFixed(6));
@@ -278,7 +285,7 @@ export function AdminCommunityForm({
         amenities: parsedAmenities,
         developer: parsedDeveloper,
         establishedYear: parsedEstablishedYear,
-        established: parsedEstablishedYear, // support bothestablished formats
+        established: parsedEstablishedYear,
         infrastructure: parsedInfrastructure,
         internet: parsedInternet,
       };
@@ -286,7 +293,6 @@ export function AdminCommunityForm({
       const latNum = latitude.trim() !== "" ? parseFloat(latitude) : null;
       const lngNum = longitude.trim() !== "" ? parseFloat(longitude) : null;
 
-      // Format Geofence polygon properly for PostGIS & JSONB
       const isPolygonValid = polygonPoints.length >= 3;
       const geoFence = isPolygonValid ? polygonPoints : null;
 
@@ -319,7 +325,7 @@ export function AdminCommunityForm({
         geoFence,
         geoFenceCoords,
         quickFacts: quickFactsObj,
-        associatedPropertyIds, // Special field handled by the action
+        associatedPropertyIds,
       };
 
       let res;
@@ -352,7 +358,6 @@ export function AdminCommunityForm({
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-24">
-      {/* Header Back Link */}
       <div className="flex items-center gap-4">
         <button
           onClick={() => router.push(`/${locale}/admin/communities`)}
@@ -372,7 +377,6 @@ export function AdminCommunityForm({
         </div>
       </div>
 
-      {/* Alert Status */}
       {alert && (
         <div
           className={`p-4 rounded-xl border text-sm font-semibold ${
@@ -385,12 +389,9 @@ export function AdminCommunityForm({
         </div>
       )}
 
-      {/* Main Form */}
       <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Columns: Details */}
         <div className="lg:col-span-2 space-y-6 bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Name */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 {t("formLabelName")} <span className="text-red-500">*</span>
@@ -406,7 +407,6 @@ export function AdminCommunityForm({
               />
             </div>
 
-            {/* Slug */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 {t("formLabelSlug")} <span className="text-red-500">*</span>
@@ -424,7 +424,6 @@ export function AdminCommunityForm({
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {/* Area & Sub-Location */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Location (Area & Sub-Location) <span className="text-red-500">*</span>
@@ -451,23 +450,29 @@ export function AdminCommunityForm({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Image URLs */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                {t("formLabelHeroImage")}
-              </label>
+              <div className="flex justify-between items-center">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  {t("formLabelHeroImage")}
+                </label>
+                <span className="text-[10px] text-slate-500 font-medium">
+                  Recommended: 1920x1080px (16:9)
+                </span>
+              </div>
               <input
                 type="url"
                 value={heroImageUrl}
                 onChange={(e) => setHeroImageUrl(e.target.value)}
-                placeholder="https://example.com/hero.jpg"
+                placeholder="https://..."
                 data-testid="community-hero-image-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
               />
+              <p className="text-[11px] text-slate-500 mt-1">
+                Paste the URL of the image (e.g., from Google Drive, Imgur, or your CRM).
+              </p>
             </div>
           </div>
 
-          {/* Bilingual Taglines */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-800 pt-4">
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -530,9 +535,14 @@ export function AdminCommunityForm({
           {/* Site Map & Price List */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-800 pt-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                {t("formLabelSiteMap")}
-              </label>
+              <div className="flex justify-between items-center">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  {t("formLabelSiteMap")}
+                </label>
+                <span className="text-[10px] text-slate-500 font-medium">
+                  Recommended: High Res (Any ratio)
+                </span>
+              </div>
               <input
                 type="url"
                 value={siteMapImageUrl}
@@ -541,6 +551,9 @@ export function AdminCommunityForm({
                 data-testid="community-sitemap-image-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
               />
+              <p className="text-[11px] text-slate-500 mt-1">
+                Paste the URL for the sitemap image.
+              </p>
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -559,9 +572,14 @@ export function AdminCommunityForm({
 
           {/* Gallery URLs */}
           <div className="space-y-1.5 border-t border-slate-800 pt-4">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Gallery Images (One URL per line)
-            </label>
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Gallery Images (One URL per line)
+              </label>
+              <span className="text-[10px] text-slate-500 font-medium">
+                Recommended: 1200x800px (3:2)
+              </span>
+            </div>
             <textarea
               value={galleryUrls.join("\n")}
               onChange={(e) => setGalleryUrls(e.target.value.split("\n"))}
@@ -570,33 +588,103 @@ export function AdminCommunityForm({
               data-testid="community-gallery-input"
               className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold resize-y"
             />
+            <p className="text-[11px] text-slate-500 mt-1">
+              Paste URLs of gallery images, separated by new lines.
+            </p>
           </div>
 
           {/* Associated Properties */}
-          <div className="space-y-1.5 border-t border-slate-800 pt-4">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Associated Properties
-            </label>
-            <select
-              multiple
-              value={associatedPropertyIds}
-              onChange={(e) => {
-                const selected = Array.from(e.target.selectedOptions).map((opt) => opt.value);
-                setAssociatedPropertyIds(selected);
-              }}
-              data-testid="community-properties-select"
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
-              style={{ minHeight: "150px" }}
+          <div className="space-y-3 border-t border-slate-800 pt-4">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Associated Properties
+              </label>
+              <span className="text-[10px] text-slate-500 font-medium bg-slate-900 px-2 py-0.5 rounded-full">
+                {associatedPropertyIds.length} selected
+              </span>
+            </div>
+
+            <input
+              type="text"
+              placeholder="Search properties by title or ID..."
+              value={propertySearch}
+              onChange={(e) => setPropertySearch(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
+            />
+
+            <div
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 overflow-y-auto"
+              style={{ maxHeight: "250px" }}
             >
-              {allProperties.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.titleEn} ({p.apiId})
-                </option>
-              ))}
-            </select>
-            <p className="text-[11px] text-slate-500 font-semibold mt-1">
-              Hold CMD/CTRL to select multiple properties.
-            </p>
+              {filteredProperties.length === 0 ? (
+                <p className="text-sm text-slate-500 p-4 text-center">No properties found.</p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {filteredProperties.map((p) => {
+                    const isSelected = associatedPropertyIds.includes(p.id);
+                    return (
+                      <label
+                        key={p.id}
+                        className={`flex items-start space-x-3 p-2 rounded cursor-pointer transition-colors ${
+                          isSelected
+                            ? "bg-red-500/10 border border-red-500/20"
+                            : "hover:bg-slate-900 border border-transparent"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setAssociatedPropertyIds([...associatedPropertyIds, p.id]);
+                            } else {
+                              setAssociatedPropertyIds(
+                                associatedPropertyIds.filter((id) => id !== p.id),
+                              );
+                            }
+                          }}
+                          className="mt-1 flex-shrink-0 w-4 h-4 rounded border-slate-700 text-red-600 focus:ring-red-500 bg-slate-950"
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-sm text-slate-200 font-medium line-clamp-1">
+                            {p.titleEn}
+                          </span>
+                          <span className="text-xs text-slate-500">{p.apiId}</span>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {associatedPropertyIds.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-2">
+                {associatedPropertyIds.map((id) => {
+                  const prop = allProperties.find((p) => p.id === id);
+                  if (!prop) return null;
+                  return (
+                    <div
+                      key={id}
+                      className="flex items-center gap-1 bg-slate-900 border border-slate-700 px-2 py-1 rounded text-xs text-slate-300"
+                    >
+                      <span>{prop.apiId}</span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setAssociatedPropertyIds(
+                            associatedPropertyIds.filter((pid) => pid !== id),
+                          )
+                        }
+                        className="text-slate-500 hover:text-red-400 ml-1"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
