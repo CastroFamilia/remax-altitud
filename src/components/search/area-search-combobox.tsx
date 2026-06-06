@@ -46,8 +46,6 @@ interface AreaSearchComboboxProps {
   locale?: string;
   /** Visual variant */
   variant?: "dark" | "light";
-  /** If true, allows the user to add a custom sub-location that isn't in the list */
-  allowCustom?: boolean;
 }
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -126,7 +124,6 @@ export function AreaSearchCombobox({
   placeholder = "Search location...",
   locale = "en",
   variant = "dark",
-  allowCustom = false,
 }: AreaSearchComboboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -176,31 +173,12 @@ export function AreaSearchCombobox({
     if (!query.trim()) return flatItems;
 
     const q = query.toLowerCase().trim();
-    const results = flatItems.filter((item) => {
+    return flatItems.filter((item) => {
       const label = item.option.label.toLowerCase();
       const slug = item.option.slug.toLowerCase();
       return label.includes(q) || slug.includes(q);
     });
-
-    if (allowCustom && query.trim() !== "") {
-      const exactMatch = results.find(
-        (r) => r.option.label.toLowerCase() === q || r.option.slug.toLowerCase() === q,
-      );
-      if (!exactMatch) {
-        results.push({
-          type: "sub",
-          option: {
-            slug: query.trim(),
-            label: `Add "${query.trim()}"`,
-            parentSlug: selectedArea || "perez-zeledon",
-            isSubLocation: true,
-          },
-        });
-      }
-    }
-
-    return results;
-  }, [flatItems, query, allowCustom, selectedArea]);
+  }, [flatItems, query]);
 
   // Find the current selected label
   const selectedLabel = useMemo(() => {
@@ -210,9 +188,6 @@ export function AreaSearchCombobox({
         const parent = mainAreas.find((a) => a.slug === selectedArea);
         return `${sub.label}, ${parent?.label ?? ""}`;
       }
-      // If it's a custom sub-location not in the list
-      const parent = mainAreas.find((a) => a.slug === selectedArea);
-      return `${selectedSubLocation}, ${parent?.label ?? ""}`;
     }
     if (selectedArea) {
       const area = mainAreas.find((a) => a.slug === selectedArea);
