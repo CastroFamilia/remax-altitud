@@ -107,10 +107,6 @@ export async function PropertyPrintView({
               <img
                 src={mainImage.src}
                 alt={mainImage.alt}
-                onError={(e) => {
-                  e.currentTarget.src = mainImage.fallbackSrc || "/property-placeholder.svg";
-                  e.currentTarget.onerror = null;
-                }}
                 className="absolute inset-0 w-full h-full object-cover"
               />
             ) : (
@@ -135,11 +131,6 @@ export async function PropertyPrintView({
                 /* eslint-disable-next-line @next/next/no-img-element */ <img
                   src={secondaryImage1.src}
                   alt="View 1"
-                  onError={(e) => {
-                    e.currentTarget.src =
-                      secondaryImage1.fallbackSrc || "/property-placeholder.svg";
-                    e.currentTarget.onerror = null;
-                  }}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               )}
@@ -149,11 +140,6 @@ export async function PropertyPrintView({
                 /* eslint-disable-next-line @next/next/no-img-element */ <img
                   src={secondaryImage2.src}
                   alt="View 2"
-                  onError={(e) => {
-                    e.currentTarget.src =
-                      secondaryImage2.fallbackSrc || "/property-placeholder.svg";
-                    e.currentTarget.onerror = null;
-                  }}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               )}
@@ -163,11 +149,6 @@ export async function PropertyPrintView({
                 /* eslint-disable-next-line @next/next/no-img-element */ <img
                   src={secondaryImage3.src}
                   alt="View 3"
-                  onError={(e) => {
-                    e.currentTarget.src =
-                      secondaryImage3.fallbackSrc || "/property-placeholder.svg";
-                    e.currentTarget.onerror = null;
-                  }}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               )}
