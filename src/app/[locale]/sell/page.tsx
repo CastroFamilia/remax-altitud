@@ -24,8 +24,7 @@ import { CmaFormLoader } from "@/components/seller/cma-form-loader";
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 
-// ISR — revalidate every 24 hours (same cadence as agents/page.tsx)
-export const revalidate = 86400;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -60,8 +59,8 @@ export default async function SellPage({ params }: { params: Promise<{ locale: s
     fallbackAgent = agents[0] ?? null;
     const office = fallbackAgent?.officeId ? await getOfficeById(fallbackAgent.officeId) : null;
     officeName = office?.name ?? "REMAX Altitud";
-  } catch {
-    // DB unavailable at build time — render empty shell; ISR will populate on first request.
+  } catch (err) {
+    console.error("Failed to load agents:", err);
   }
 
   return (

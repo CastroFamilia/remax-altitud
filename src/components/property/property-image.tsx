@@ -35,6 +35,7 @@ export function PropertyImage({
 
   return (
     <Image
+      key={imgSrc}
       {...props}
       src={imgSrc}
       alt={alt}
