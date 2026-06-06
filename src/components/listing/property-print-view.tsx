@@ -106,7 +106,7 @@ export async function PropertyPrintView({
             {mainImage ? (
               <PropertyImage
                 src={mainImage.src}
-                alt={mainImage.alt}
+                alt={mainImage.alt || title}
                 fallbackSrc={mainImage.fallbackSrc}
                 fill
                 priority
