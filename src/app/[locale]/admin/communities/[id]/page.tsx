@@ -2,7 +2,6 @@ import React from "react";
 import { setRequestLocale } from "next-intl/server";
 import { getCommunityById, getCommunityBySlug } from "@/lib/db/queries/communities";
 import { getAllAreas } from "@/lib/db/queries/areas";
-import { getAllPropertiesMinimal } from "@/lib/db/queries/properties";
 import { AdminCommunityForm, AreaOption } from "@/components/admin/admin-community-form";
 import { cookies } from "next/headers";
 import { createHash } from "crypto";
@@ -49,17 +48,9 @@ export default async function AdminEditCommunityPage({ params }: PageProps) {
     slug: area.slug,
   }));
 
-  // Fetch minimal properties for multiselect
-  const allProperties = await getAllPropertiesMinimal();
-
   return (
     <div className="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
-      <AdminCommunityForm
-        locale={locale}
-        initialData={community}
-        areas={areaOptions}
-        allProperties={allProperties}
-      />
+      <AdminCommunityForm locale={locale} initialData={community} areas={areaOptions} />
     </div>
   );
 }

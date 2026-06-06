@@ -23,7 +23,6 @@ export function CommunityGeoFenceMap({
     longitude: centerLng ?? DEFAULT_MAP_CENTER.lng,
     zoom: centerLat && centerLng ? 13 : DEFAULT_MAP_ZOOM,
   });
-  const [mapStyle, setMapStyle] = useState<string>(MAP_STYLE);
 
   const handleMapClick = (evt: { lngLat: { lng: number; lat: number } }) => {
     const { lng, lat } = evt.lngLat;
@@ -47,7 +46,7 @@ export function CommunityGeoFenceMap({
         {...viewport}
         onMove={(evt) => setViewport(evt.viewState)}
         mapboxAccessToken={MAPBOX_TOKEN}
-        mapStyle={mapStyle}
+        mapStyle={MAP_STYLE}
         onClick={handleMapClick}
         style={{ width: "100%", height: "100%" }}
         cursor="crosshair"
@@ -85,22 +84,8 @@ export function CommunityGeoFenceMap({
       </MapboxMap>
 
       {/* Control overlay */}
-      <div className="absolute top-3 left-3 flex flex-col gap-2">
-        <div className="bg-slate-900/90 border border-slate-800 rounded px-3 py-1.5 text-xs text-slate-300 font-semibold shadow-lg">
-          Click on map to add boundary points
-        </div>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setMapStyle((prev) =>
-              prev === MAP_STYLE ? "mapbox://styles/mapbox/satellite-streets-v12" : MAP_STYLE,
-            );
-          }}
-          className="bg-slate-900/90 border border-slate-800 hover:bg-slate-800 rounded px-3 py-1.5 text-xs text-slate-300 hover:text-white font-semibold shadow-lg transition-colors self-start cursor-pointer"
-        >
-          {mapStyle === MAP_STYLE ? "Switch to Satellite" : "Switch to Default"}
-        </button>
+      <div className="absolute top-3 left-3 bg-slate-900/90 border border-slate-800 rounded px-3 py-1.5 text-xs text-slate-300 font-semibold shadow-lg">
+        Click on map to add boundary points
       </div>
     </div>
   );

@@ -44,11 +44,6 @@ export const communities = pgTable("communities", {
     .notNull()
     .default(sql`'{}'::jsonb`),
   siteMapImageUrl: text("site_map_image_url"),
-  subLocation: text("sub_location"),
-  galleryUrls: jsonb("gallery_urls")
-    .notNull()
-    .default(sql`'[]'::jsonb`),
-  priceListUrl: text("price_list_url"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
