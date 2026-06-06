@@ -22,7 +22,8 @@
     "vipBuyerService": "Servicio Comprador VIP",
     "language": "Idioma",
     "currency": "Moneda",
-    "preferences": "Preferencias"
+    "preferences": "Preferencias",
+    "faq": "Preguntas Frecuentes"
   },
   "LanguageToggle": {
     "switchLanguage": "Cambiar idioma",
@@ -59,7 +60,8 @@
     "socialInstagram": "Visita REMAX Altitud en Instagram",
     "socialYoutube": "Visita REMAX Altitud en YouTube",
     "socialWhatsApp": "Contacta a REMAX Altitud por WhatsApp",
-    "socialEmail": "Envía un correo a REMAX Altitud"
+    "socialEmail": "Envía un correo a REMAX Altitud",
+    "faq": "Preguntas Frecuentes"
   },
   "HomePage": {
     "title": "REMAX Altitud",
@@ -1358,5 +1360,23 @@
         }
       }
     }
+  },
+  "FAQ": {
+    "metaTitle": "Preguntas Frecuentes sobre Mudarse a Costa Rica | RE/MAX Altitud",
+    "metaDescription": "Encuentre respuestas a las preguntas más comunes sobre mudarse a Costa Rica. Aprenda sobre áreas, costo de vida, tipos de propiedad y por qué comprar es mejor que alquilar.",
+    "pageTitle": "Preguntas Frecuentes sobre Mudarse a Costa Rica",
+    "intro": "Todo lo que necesita saber antes de mudarse a la Zona Sur de Costa Rica.",
+    "q1_question": "¿Es Costa Rica un buen lugar para mudarse?",
+    "q1_answer": "Sí, Costa Rica es un lugar excepcional para mudarse. Ofrece una amplia variedad de áreas con precios, estilos de vida y accesibilidad completamente diferentes. Ya sea que desee despertar con vistas a las montañas nubladas en Pérez Zeledón o disfrutar del clima tropical y el surf de clase mundial a lo largo de la costa en Dominical y Uvita, hay un área adaptada perfectamente a su ritmo y presupuesto.",
+    "q2_question": "¿Debería alquilar antes de comprar en Costa Rica?",
+    "q2_answer": "Recomendamos encarecidamente no alquilar primero. Aunque algunas personas hacen viajes de exploración, firmar un contrato de alquiler a largo plazo lo ata, saca un buen capital de inversión de su bolsillo y limita su flexibilidad. El mercado inmobiliario aquí es extremadamente dinámico. Si compra una propiedad y luego decide que prefiere un área diferente, puede venderla fácilmente, a menudo con una fuerte apreciación.",
+    "q3_question": "¿Hay lugares para estilos de vida específicos (ej. bohemio, lujo, fuera de la red)?",
+    "q3_answer": "Absolutamente. Costa Rica es cultural y socialmente diversa. Hay enclaves específicos para casi todos los estilos de vida: comunidades de lujo orientadas a emprendedores para hacer contactos, pueblos costeros bohemios perfectos para creativos, y lugares para individuos que priorizan la libertad médica y opciones de salud natural (como aquellos que prefieren no vacunarse). Podemos conectarlo con la comunidad exacta que comparte sus valores.",
+    "q4_question": "¿Cómo es el costo de vida en Costa Rica?",
+    "q4_answer": "El costo de vida varía enormemente según su estilo de vida y ubicación. Los pueblos costeros como Uvita y Dominical tienden a tener precios más altos debido a la alta demanda turística, mientras que las áreas montañosas como Pérez Zeledón y sus valles circundantes ofrecen un costo de vida mucho menor, abundantes productos orgánicos locales y un estilo de vida costarricense verdaderamente auténtico.",
+    "q5_question": "¿Pueden los extranjeros comprar propiedades en Costa Rica?",
+    "q5_answer": "Sí, los extranjeros tienen exactamente los mismos derechos de propiedad que los ciudadanos costarricenses al comprar terrenos titulados. No necesita un socio local para comprar una casa o un lote.",
+    "q6_question": "¿Necesito residencia para comprar una casa?",
+    "q6_answer": "No, no necesita ser residente para comprar una propiedad; puede comprar con una visa de turista estándar. De hecho, comprar una propiedad valorada por encima de un cierto umbral puede incluso calificarlo para solicitar una Residencia de Inversionista."
   }
 }

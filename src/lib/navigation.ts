@@ -103,4 +103,9 @@ export const mobileOnlyItems: NavItem[] = [
     href: "/contact",
     icon: "📞",
   },
+  {
+    labelKey: "faq",
+    href: "/faq",
+    icon: "❓",
+  },
 ];

@@ -22,7 +22,8 @@
     "vipBuyerService": "VIP Buyer Service",
     "language": "Language",
     "currency": "Currency",
-    "preferences": "Preferences"
+    "preferences": "Preferences",
+    "faq": "Relocation FAQ"
   },
   "LanguageToggle": {
     "switchLanguage": "Switch language",
@@ -59,7 +60,8 @@
     "socialInstagram": "Visit REMAX Altitud on Instagram",
     "socialYoutube": "Visit REMAX Altitud on YouTube",
     "socialWhatsApp": "Contact REMAX Altitud via WhatsApp",
-    "socialEmail": "Email REMAX Altitud"
+    "socialEmail": "Email REMAX Altitud",
+    "faq": "Relocation FAQ"
   },
   "HomePage": {
     "title": "REMAX Altitud",
@@ -1358,5 +1360,23 @@
         }
       }
     }
+  },
+  "FAQ": {
+    "metaTitle": "Relocating to Costa Rica FAQs | RE/MAX Altitud",
+    "metaDescription": "Find answers to the most common questions about relocating to Costa Rica. Learn about areas, cost of living, property types, and why buying is better than renting.",
+    "pageTitle": "Relocating to Costa Rica FAQs",
+    "intro": "Everything you need to know before making your move to Costa Rica's Southern Zone.",
+    "q1_question": "Is Costa Rica a good place to relocate?",
+    "q1_answer": "Yes, Costa Rica is an exceptional place to relocate. It offers a wide variety of areas with completely different prices, lifestyles, and affordability. Whether you want to wake up to misty mountain views in Pérez Zeledón or enjoy the tropical warmth and world-class surfing along the coast in Dominical and Uvita, there's an area tailored perfectly to your pace and budget.",
+    "q2_question": "Should I rent before buying in Costa Rica?",
+    "q2_answer": "We strongly recommend against renting first. While some people do scouting trips, signing a long-term rental contract locks you in, takes good investment capital out of your pocket, and limits your flexibility. The real estate market here is extremely dynamic. If you buy a property and later decide you prefer a different area, you can easily sell it—often with strong appreciation.",
+    "q3_question": "Are there places for specific lifestyles (e.g., bohemian, luxury, off-grid)?",
+    "q3_answer": "Absolutely. Costa Rica is culturally and socially diverse. There are specific enclaves for almost every lifestyle: luxury and entrepreneur-oriented communities for networking, bohemian coastal towns perfect for creatives, and places for individuals prioritizing medical freedom and natural health choices (such as those who prefer no vaccines). We can match you with the exact community that shares your values.",
+    "q4_question": "What is the cost of living like in Costa Rica?",
+    "q4_answer": "The cost of living varies wildly depending on your lifestyle and location. Coastal towns like Uvita and Dominical lean toward premium pricing due to high tourist demand, whereas mountain areas like Pérez Zeledón and its surrounding valleys offer a much lower cost of living, abundant local organic produce, and a truly authentic Costa Rican lifestyle.",
+    "q5_question": "Can foreigners buy property in Costa Rica?",
+    "q5_answer": "Yes, foreigners have the exact same property rights as Costa Rican citizens when buying titled land. You do not need a local partner to buy a house or a lot.",
+    "q6_question": "Do I need residency to buy a house?",
+    "q6_answer": "No, you do not need to be a resident to purchase property; you can buy on a standard tourist visa. In fact, purchasing a property valued over a certain threshold can actually qualify you to apply for an Investor Residency."
   }
 }
