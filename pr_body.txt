@@ -1,16 +1,13 @@
+# Rebranding Update: RE/MAX to REMAX
+
 ## Overview
-This PR improves the property detail layout by conditionally replacing the "Altitud Advantage" card with a YouTube video embed when a video is available for a property. It also refines the property description parsing to correctly handle layout spacing for headings like "Technical Features" and "Exclusive Benefits". Additionally, it adds zoom controls to maps and resolves some town extraction bugs for property locations.
+This pull request introduces a minor but important branding update across the codebase, replacing instances of the legacy "RE/MAX" branding with the updated "REMAX" standard.
 
 ## Changes
-- **`src/components/listing/listing-detail-layout.tsx`**: Added an `extractYoutubeVideoId` utility function. Replaced the static "Altitud Advantage" card in the right column with a responsive YouTube video iframe when `property.youtubeUrl` is present.
-- **`src/components/listing/property-description.tsx`**: Refined description parsing logic to fix layout issues. Added "Technical Features" and "Exclusive Benefits" to the list of major headers to ensure proper spacing and visual styling.
-- **`src/components/property/property-card.tsx`**: Fixed town extraction logic to correctly resolve specific town names for property locations.
-- **`src/components/map/map-view.tsx` & others**: Added zoom control options (`zoomControl: true`) to `MapView`, `PinDropMap`, and `CommunityGeofenceMap`.
-- **`eslint.config.mjs`**: Ignored `dist` and `scratch` directories in ESLint.
-- **Tests & Scripts**: Fixed test failures in map view and translator tests by correctly mocking dependencies.
+- **`src/lib/locations.ts`**: Updated text references to use the new branding.
+- **`public/property-placeholder.svg`**: Updated the placeholder SVG text elements to "REMAX".
+- **`_bmad-output/competitor-gap-findings.md`**: Updated strategy documentation references.
 
 ## Testing
-- Verified visually that properties with a YouTube URL now render the video player on the right side of the listing page.
-- Verified that properties without a YouTube URL still render the "Altitud Advantage" perks card properly.
-- Validated that property descriptions are parsing "Exclusive Benefits" and "Technical Features" correctly.
-- Ensured `npm run build` compiles with 0 errors.
+- Verified successful static compilation (`npm run build`).
+- Verified zero linting errors (`npm run lint`).

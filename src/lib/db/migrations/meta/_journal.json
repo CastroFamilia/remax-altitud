@@ -169,6 +169,13 @@
       "when": 1780506555578,
       "tag": "0023_smooth_the_phantom",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1780708452469,
+      "tag": "0024_curvy_wasp",
+      "breakpoints": true
     }
   ]
 }

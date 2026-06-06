@@ -1,6 +1,7 @@
 import { getBlogPostBySlug } from "@/lib/data/blog";
 import { notFound } from "next/navigation";
 import { FeaturedPropertiesWidget } from "@/components/blog/featured-properties-widget";
+import ReactMarkdown from "react-markdown";
 
 interface BlogPostPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -8,7 +9,7 @@ interface BlogPostPageProps {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { locale, slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug, locale);
 
   if (!post) {
     notFound();
@@ -38,7 +39,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
       </header>
       <div className="prose prose-lg max-w-none text-slate-700">
-        <p>{post.content}</p>
+        <ReactMarkdown>{post.content}</ReactMarkdown>
       </div>
       <FeaturedPropertiesWidget location={post.location} locale={locale} />
     </article>

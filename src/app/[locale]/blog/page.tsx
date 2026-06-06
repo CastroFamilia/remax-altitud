@@ -13,7 +13,7 @@ export default async function BlogPage({ params, searchParams }: BlogPageProps) 
   const categoryFilter = typeof sp.category === "string" ? sp.category : undefined;
   const locationFilter = typeof sp.location === "string" ? sp.location : undefined;
 
-  let posts = await getBlogPosts();
+  let posts = await getBlogPosts(locale);
   const categories = await getCategories();
   const locations = await getLocations();
 
