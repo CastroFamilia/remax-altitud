@@ -20,7 +20,6 @@ import { CommunityDescription } from "@/components/community/community-descripti
 import { CommunityTabs } from "@/components/community/community-tabs";
 import { SimilarCommunitiesSlider } from "@/components/community/similar-communities-slider";
 import { CommunityMiniMap } from "@/components/community/community-mini-map";
-import { InvestmentContext } from "@/components/area/investment-context";
 
 /**
  * Community Page — SSG + ISR (revalidate = 3600)
@@ -127,10 +126,7 @@ export default async function CommunityPage({
       <CommunityQuickFacts community={community} locale={locale} />
       <CommunityDescription community={community} locale={locale} />
       <CommunityMiniMap community={community} areaName={areaName} locale={locale} />
-      <InvestmentContext
-        metadata={area.metadata as Record<string, unknown> | null}
-        locale={locale}
-      />
+
       <CommunityTabs properties={communityProperties} community={community} locale={locale} />
       <SimilarCommunitiesSlider
         communities={similarCommunities}
