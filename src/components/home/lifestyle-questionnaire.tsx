@@ -33,11 +33,25 @@ export function LifestyleQuestionnaire({ initialProperties, locale }: LifestyleQ
     setStep(1);
   };
 
+  // Google Analytics event tracking helper
+  const trackEvent = (action: string, label: string) => {
+    if (typeof window !== "undefined" && "gtag" in window) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - gtag is dynamically injected
+      window.gtag("event", action, {
+        event_category: "LifestyleQuestionnaire",
+        event_label: label,
+      });
+    }
+  };
+
   const handleSelect = (choice: Choice) => {
+    trackEvent("select_option", `Step ${step}: ${choice}`);
     setAnswers((prev) => ({ ...prev, [step]: choice }));
   };
 
   const handleNext = () => {
+    trackEvent("next_step", `Completed Step ${step}`);
     if (step < totalQuestions) {
       setStep((prev) => prev + 1);
     } else {
