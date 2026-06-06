@@ -69,16 +69,19 @@ export async function PropertyPrintView({
           body * { visibility: hidden; }
           .print-view-container, .print-view-container * { visibility: visible; }
           .print-view-container { 
-            position: fixed !important; 
+            position: absolute !important; 
             left: 0 !important; 
             top: 0 !important; 
             width: 100vw !important; 
-            height: 100vh !important; 
+            height: 99vh !important;
+            max-height: 99vh !important;
             margin: 0 !important;
             padding: 0 !important;
             overflow: hidden !important;
             background: white !important;
             z-index: 9999 !important;
+            page-break-after: avoid !important;
+            page-break-inside: avoid !important;
           }
           body { 
             -webkit-print-color-adjust: exact !important; 
@@ -86,6 +89,7 @@ export async function PropertyPrintView({
             margin: 0 !important; 
             padding: 0 !important; 
             background: white !important;
+            overflow: hidden !important;
           }
         }
       `,
@@ -149,15 +153,17 @@ export async function PropertyPrintView({
         </div>
 
         {/* RIGHT COLUMN: Details & Branding */}
-        <div className="bg-white text-brand-navy h-[210mm] flex flex-col p-10 justify-between relative z-10 border-l border-gray-100 shadow-[-5px_0_20px_rgba(0,0,0,0.05)]">
+        <div className="bg-white text-brand-navy h-full flex flex-col p-10 justify-between relative z-10 border-l border-gray-100 shadow-[-5px_0_20px_rgba(0,0,0,0.05)]">
           {/* Logo & Top Branding */}
           <div className="flex justify-center border-b border-gray-100 pb-8 mb-8">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/brand/logo-remax-altitud.png"
-              alt="REMAX Altitud"
-              className="h-14 object-contain"
-            />
+            <div className="bg-brand-navy py-3 px-6 rounded-lg inline-flex shadow-md">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/brand/logo-remax-altitud.png"
+                alt="REMAX Altitud"
+                className="h-10 object-contain"
+              />
+            </div>
           </div>
 
           {/* Property Title & Location */}

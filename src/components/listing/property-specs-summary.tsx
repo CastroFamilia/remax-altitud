@@ -11,6 +11,7 @@
 
 import { useTranslations } from "next-intl";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
+import { useLocaleCurrency } from "@/hooks/use-locale-currency";
 
 interface PropertySpecsSummaryProps {
   priceUsd: number | null;
@@ -35,6 +36,7 @@ export function PropertySpecsSummary({
 }: PropertySpecsSummaryProps) {
   const t = useTranslations("ListingDetail");
   const { unitSystem, convertArea } = useLocaleUnits(locale);
+  const { formatPrice, currency: activeCurrency } = useLocaleCurrency(locale);
 
   return (
     <div className="grid grid-cols-2 gap-4 rounded-xl border border-border p-6 md:grid-cols-4">
@@ -44,8 +46,8 @@ export function PropertySpecsSummary({
             {t("specs.price")}
           </p>
           <p className="mt-1 text-lg font-bold text-brand-navy">
-            ${priceUsd.toLocaleString("en-US")}
-            {currency === "CRC" && originalPriceColones != null && (
+            {formatPrice(priceUsd, originalPriceColones)}
+            {activeCurrency !== "CRC" && currency === "CRC" && originalPriceColones != null && (
               <span className="ml-2 text-sm font-medium text-text-muted">
                 (₡{originalPriceColones.toLocaleString("es-CR")})
               </span>
