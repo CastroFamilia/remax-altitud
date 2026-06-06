@@ -4,6 +4,7 @@ import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import { convertArea } from "@/lib/utils/units";
 import { SITE_ORIGIN } from "@/lib/seo/constants";
 import QRCode from "react-qr-code";
+import { PropertyImage } from "@/components/property/property-image";
 
 interface PropertyPrintViewProps {
   property: Property;
@@ -103,11 +104,14 @@ export async function PropertyPrintView({
           {/* Main Hero Image */}
           <div className="h-[75%] w-full relative overflow-hidden bg-gray-100">
             {mainImage ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
+              <PropertyImage
                 src={mainImage.src}
-                alt={mainImage.alt}
-                className="absolute inset-0 w-full h-full object-cover"
+                alt={mainImage.alt || title}
+                fallbackSrc={mainImage.fallbackSrc}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover"
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-gray-300">
@@ -128,28 +132,40 @@ export async function PropertyPrintView({
           <div className="h-[25%] grid grid-cols-3 w-full border-t border-white">
             <div className="relative overflow-hidden bg-gray-200 border-r border-white">
               {secondaryImage1 && (
-                /* eslint-disable-next-line @next/next/no-img-element */ <img
+                <PropertyImage
                   src={secondaryImage1.src}
-                  alt="View 1"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  alt={secondaryImage1.alt || "View 1"}
+                  fallbackSrc={secondaryImage1.fallbackSrc}
+                  fill
+                  priority
+                  sizes="33vw"
+                  className="object-cover"
                 />
               )}
             </div>
             <div className="relative overflow-hidden bg-gray-300 border-r border-white">
               {secondaryImage2 && (
-                /* eslint-disable-next-line @next/next/no-img-element */ <img
+                <PropertyImage
                   src={secondaryImage2.src}
-                  alt="View 2"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  alt={secondaryImage2.alt || "View 2"}
+                  fallbackSrc={secondaryImage2.fallbackSrc}
+                  fill
+                  priority
+                  sizes="33vw"
+                  className="object-cover"
                 />
               )}
             </div>
             <div className="relative overflow-hidden bg-gray-400">
               {secondaryImage3 && (
-                /* eslint-disable-next-line @next/next/no-img-element */ <img
+                <PropertyImage
                   src={secondaryImage3.src}
-                  alt="View 3"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  alt={secondaryImage3.alt || "View 3"}
+                  fallbackSrc={secondaryImage3.fallbackSrc}
+                  fill
+                  priority
+                  sizes="33vw"
+                  className="object-cover"
                 />
               )}
             </div>
@@ -166,6 +182,7 @@ export async function PropertyPrintView({
                 src="/images/brand/logo-remax-altitud.png"
                 alt="REMAX Altitud"
                 className="h-8 object-contain"
+                loading="eager"
               />
             </div>
           </div>
