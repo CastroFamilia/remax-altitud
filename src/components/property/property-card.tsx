@@ -525,25 +525,28 @@ export function PropertyCard({
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
 
-          {/* Region badge — top-left overlay */}
-          {region && (
-            <span
-              data-testid="region-badge"
-              className={`absolute ${onRemove ? "left-14" : "left-3"} top-3 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm ${region === "Mountain" ? "bg-brand-mountain" : "bg-brand-beach"}`}
-            >
-              {t(`region.${region === "Mountain" ? "mountain" : "beach"}`)}
-            </span>
-          )}
+          {/* Top-left Badges */}
+          <div
+            className={`absolute top-3 flex flex-wrap gap-2 z-10 ${onRemove ? "left-14" : "left-3"} right-14`}
+          >
+            {region && (
+              <span
+                data-testid="region-badge"
+                className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm whitespace-nowrap ${region === "Mountain" ? "bg-brand-mountain" : "bg-brand-beach"}`}
+              >
+                {t(`region.${region === "Mountain" ? "mountain" : "beach"}`)}
+              </span>
+            )}
 
-          {/* Property type badge — next to region badge */}
-          {typeBadgeKey && (
-            <span
-              data-testid="type-badge"
-              className={`absolute ${onRemove ? (region ? "left-[7.5rem]" : "left-14") : region ? "left-[5.5rem]" : "left-3"} top-3 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm backdrop-blur-sm ${TYPE_BADGE_COLORS[typeBadgeKey] || "bg-gray-600"}`}
-            >
-              {t(`typeBadge.${typeBadgeKey}` as Parameters<typeof t>[0])}
-            </span>
-          )}
+            {typeBadgeKey && (
+              <span
+                data-testid="type-badge"
+                className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm backdrop-blur-sm whitespace-nowrap ${TYPE_BADGE_COLORS[typeBadgeKey] || "bg-gray-600"}`}
+              >
+                {t(`typeBadge.${typeBadgeKey}` as Parameters<typeof t>[0])}
+              </span>
+            )}
+          </div>
 
           {/* ZMT badge (placed on image bottom-left overlay) */}
           {zmtVisual && property.zmtStatus && (
