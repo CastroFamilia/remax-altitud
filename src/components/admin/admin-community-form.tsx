@@ -91,9 +91,10 @@ export function AdminCommunityForm({
   const [siteMapImageUrl, setSiteMapImageUrl] = useState(initialData?.siteMapImageUrl || "");
   const [priceListUrl, setPriceListUrl] = useState(initialData?.priceListUrl || "");
 
-  const [galleryUrls, setGalleryUrls] = useState<string[]>(
-    Array.isArray(initialData?.galleryUrls) ? (initialData.galleryUrls as string[]) : [],
-  );
+  const initialGallery = Array.isArray(initialData?.galleryUrls)
+    ? (initialData.galleryUrls as string[])
+    : [];
+  const [galleryUrls, setGalleryUrls] = useState<string[]>(initialGallery);
 
   const [propertySearch, setPropertySearch] = useState("");
 
@@ -325,7 +326,7 @@ export function AdminCommunityForm({
         geoFence,
         geoFenceCoords,
         quickFacts: quickFactsObj,
-        associatedPropertyIds,
+        associatedPropertyIds, // Special field handled by the action
       };
 
       let res;
@@ -424,6 +425,7 @@ export function AdminCommunityForm({
           </div>
 
           <div className="grid grid-cols-1 gap-4">
+            {/* Area & Sub-Location */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Location (Area & Sub-Location) <span className="text-red-500">*</span>
@@ -450,6 +452,7 @@ export function AdminCommunityForm({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Image URLs */}
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -685,6 +688,33 @@ export function AdminCommunityForm({
                 })}
               </div>
             )}
+          </div>
+
+          {/* Associated Properties */}
+          <div className="space-y-1.5 border-t border-slate-800 pt-4">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Associated Properties
+            </label>
+            <select
+              multiple
+              value={associatedPropertyIds}
+              onChange={(e) => {
+                const selected = Array.from(e.target.selectedOptions).map((opt) => opt.value);
+                setAssociatedPropertyIds(selected);
+              }}
+              data-testid="community-properties-select"
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
+              style={{ minHeight: "150px" }}
+            >
+              {allProperties.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.titleEn} ({p.apiId})
+                </option>
+              ))}
+            </select>
+            <p className="text-[11px] text-slate-500 font-semibold mt-1">
+              Hold CMD/CTRL to select multiple properties.
+            </p>
           </div>
         </div>
 
