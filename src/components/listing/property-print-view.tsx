@@ -104,19 +104,23 @@ export async function PropertyPrintView({
           <div className="h-[75%] w-full relative overflow-hidden bg-gray-100">
             {mainImage ? (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={mainImage.src} alt={mainImage.alt} className="w-full h-full object-cover" />
+              <img
+                src={mainImage.src}
+                alt={mainImage.alt}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-300">
+              <div className="absolute inset-0 flex items-center justify-center text-gray-300">
                 No Image Available
               </div>
             )}
 
             {/* Elegant Price Badge over image */}
-            <div className="absolute bottom-8 left-8 bg-brand-navy/95 backdrop-blur text-white px-8 py-4 border-l-4 border-amber-500 shadow-2xl">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-300 mb-1">
+            <div className="absolute bottom-6 left-6 bg-brand-navy/95 backdrop-blur text-white px-6 py-3 border-l-4 border-amber-500 shadow-2xl">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-300 mb-1">
                 {property.listingType === "Lease" ? "For Rent" : "For Sale"}
               </p>
-              <p className="text-4xl font-light tracking-tight">{formattedPrice}</p>
+              <p className="text-3xl font-light tracking-tight">{formattedPrice}</p>
             </div>
           </div>
 
@@ -127,7 +131,7 @@ export async function PropertyPrintView({
                 /* eslint-disable-next-line @next/next/no-img-element */ <img
                   src={secondaryImage1.src}
                   alt="View 1"
-                  className="w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
               )}
             </div>
@@ -136,7 +140,7 @@ export async function PropertyPrintView({
                 /* eslint-disable-next-line @next/next/no-img-element */ <img
                   src={secondaryImage2.src}
                   alt="View 2"
-                  className="w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
               )}
             </div>
@@ -145,7 +149,7 @@ export async function PropertyPrintView({
                 /* eslint-disable-next-line @next/next/no-img-element */ <img
                   src={secondaryImage3.src}
                   alt="View 3"
-                  className="w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
               )}
             </div>
@@ -153,37 +157,37 @@ export async function PropertyPrintView({
         </div>
 
         {/* RIGHT COLUMN: Details & Branding */}
-        <div className="bg-white text-brand-navy h-full flex flex-col p-10 justify-between relative z-10 border-l border-gray-100 shadow-[-5px_0_20px_rgba(0,0,0,0.05)]">
+        <div className="bg-white text-brand-navy h-full flex flex-col p-6 justify-between relative z-10 border-l border-gray-100 shadow-[-5px_0_20px_rgba(0,0,0,0.05)]">
           {/* Logo & Top Branding */}
-          <div className="flex justify-center border-b border-gray-100 pb-8 mb-8">
-            <div className="bg-brand-navy py-3 px-6 rounded-lg inline-flex shadow-md">
+          <div className="flex justify-center border-b border-gray-100 pb-6 mb-6">
+            <div className="bg-brand-navy py-2 px-4 rounded-lg inline-flex shadow-md">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/brand/logo-remax-altitud.png"
                 alt="REMAX Altitud"
-                className="h-10 object-contain"
+                className="h-8 object-contain"
               />
             </div>
           </div>
 
           {/* Property Title & Location */}
-          <div className="mb-8 flex-grow">
-            <p className="text-amber-600 text-xs font-bold tracking-[0.2em] uppercase mb-3">
+          <div className="mb-4 flex-grow">
+            <p className="text-amber-600 text-[10px] font-bold tracking-[0.2em] uppercase mb-2">
               {area}
             </p>
-            <h1 className="text-3xl font-black leading-tight tracking-tight mb-8 text-gray-900">
+            <h1 className="text-2xl font-black leading-tight tracking-tight mb-4 text-gray-900 line-clamp-4">
               {title}
             </h1>
 
-            <div className="w-12 h-1 bg-amber-500 mb-8"></div>
+            <div className="w-10 h-1 bg-amber-500 mb-6"></div>
 
             {/* Key Specifications Grid */}
-            <div className="grid grid-cols-2 gap-y-8 gap-x-4">
+            <div className="grid grid-cols-2 gap-y-4 gap-x-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
                   Type / Tipo
                 </p>
-                <p className="text-lg font-light capitalize text-gray-800">{propertyType}</p>
+                <p className="text-base font-light capitalize text-gray-800">{propertyType}</p>
               </div>
 
               {property.bedrooms != null && property.bedrooms > 0 && (
@@ -191,7 +195,7 @@ export async function PropertyPrintView({
                   <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
                     Beds / Hab.
                   </p>
-                  <p className="text-lg font-light text-gray-800">{property.bedrooms}</p>
+                  <p className="text-base font-light text-gray-800">{property.bedrooms}</p>
                 </div>
               )}
 
@@ -200,7 +204,7 @@ export async function PropertyPrintView({
                   <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
                     Baths / Baños
                   </p>
-                  <p className="text-lg font-light text-gray-800">{property.bathrooms}</p>
+                  <p className="text-base font-light text-gray-800">{property.bathrooms}</p>
                 </div>
               )}
 
@@ -209,7 +213,7 @@ export async function PropertyPrintView({
                   <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
                     Lot / Terreno
                   </p>
-                  <p className="text-lg font-light leading-tight text-gray-800">
+                  <p className="text-base font-light leading-tight text-gray-800">
                     {lotSizeImperial}
                   </p>
                   <p className="text-xs text-gray-400">{lotSizeMetric}</p>
@@ -221,7 +225,7 @@ export async function PropertyPrintView({
                   <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">
                     Built / Const.
                   </p>
-                  <p className="text-lg font-light leading-tight text-gray-800">
+                  <p className="text-base font-light leading-tight text-gray-800">
                     {constructionImperial}
                   </p>
                   <p className="text-xs text-gray-400">{constructionMetric}</p>
@@ -231,26 +235,26 @@ export async function PropertyPrintView({
           </div>
 
           {/* Footer: Agent & QR */}
-          <div className="flex justify-between items-end border-t border-gray-100 pt-8 mt-auto">
+          <div className="flex justify-between items-end border-t border-gray-100 pt-4 mt-auto">
             <div className="flex-1 pr-4">
               <p className="text-[10px] text-amber-600 font-bold tracking-widest uppercase mb-1">
                 Presented By
               </p>
-              <p className="text-lg font-black text-gray-900">{agent?.name || "REMAX Altitud"}</p>
+              <p className="text-base font-black text-gray-900">{agent?.name || "REMAX Altitud"}</p>
               {agent?.whatsapp && (
                 <p className="text-xs text-gray-600 mt-1 font-medium">WA: {agent.whatsapp}</p>
               )}
               {agent?.email && (
                 <p className="text-xs text-gray-600 font-medium truncate">{agent.email}</p>
               )}
-              <p className="text-[10px] text-gray-400 mt-3 uppercase tracking-wide">{officeName}</p>
+              <p className="text-[9px] text-gray-400 mt-2 uppercase tracking-wide">{officeName}</p>
             </div>
 
             <div className="flex flex-col items-center">
-              <div className="bg-white p-2 border border-gray-200">
-                <QRCode value={qrTrackingUrl} size={64} level="M" />
+              <div className="bg-white p-1.5 border border-gray-200">
+                <QRCode value={qrTrackingUrl} size={56} level="M" />
               </div>
-              <span className="text-[8px] uppercase font-bold tracking-widest text-amber-600 mt-2">
+              <span className="text-[8px] uppercase font-bold tracking-widest text-amber-600 mt-1">
                 Scan for info
               </span>
             </div>
