@@ -920,3 +920,29 @@ export async function getFeaturedProperties(limit = 3): Promise<PropertySearchIt
     return [];
   }
 }
+
+export async function getAllPropertiesMinimal() {
+  return await db
+    .select({
+      id: properties.id,
+      titleEn: properties.titleEn,
+      titleEs: properties.titleEs,
+      apiId: properties.apiId,
+      communityId: properties.communityId,
+    })
+    .from(properties)
+    .orderBy(properties.createdAt);
+}
+
+export async function setCommunityProperties(communityId: string, propertyIds: string[]) {
+  // Clear existing
+  await db
+    .update(properties)
+    .set({ communityId: null })
+    .where(eq(properties.communityId, communityId));
+
+  if (propertyIds.length > 0) {
+    // Set new
+    await db.update(properties).set({ communityId }).where(inArray(properties.id, propertyIds));
+  }
+}

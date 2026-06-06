@@ -10,6 +10,7 @@ import {
   updateCommunityAction,
 } from "@/app/actions/admin-community-actions";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
+import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 
 const CommunityGeoFenceMap = dynamic(
   () => import("@/components/map/community-geofence-map").then((m) => m.CommunityGeoFenceMap),
@@ -31,17 +32,28 @@ export interface AreaOption {
   slug: string;
 }
 
+export interface MinimalProperty {
+  id: string;
+  titleEn: string;
+  titleEs: string;
+  apiId: string;
+  communityId: string | null;
+}
+
 export interface InitialCommunityData {
   id: string;
   name: string;
   slug: string;
   areaId: string;
+  subLocation?: string | null;
   taglineEn?: string | null;
   taglineEs?: string | null;
   descriptionEn?: string | null;
   descriptionEs?: string | null;
   heroImageUrl?: string | null;
   siteMapImageUrl?: string | null;
+  galleryUrls?: unknown;
+  priceListUrl?: string | null;
   latitude?: number | null;
   longitude?: number | null;
   quickFacts?: unknown;
@@ -52,9 +64,15 @@ export interface CommunityFormProps {
   locale: string;
   initialData?: InitialCommunityData | null;
   areas: AreaOption[];
+  allProperties?: MinimalProperty[];
 }
 
-export function AdminCommunityForm({ locale, initialData, areas }: CommunityFormProps) {
+export function AdminCommunityForm({
+  locale,
+  initialData,
+  areas,
+  allProperties = [],
+}: CommunityFormProps) {
   const t = useTranslations("AdminCommunities");
   const router = useRouter();
   const isEdit = !!initialData;
@@ -63,12 +81,32 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
   const [name, setName] = useState(initialData?.name || "");
   const [slug, setSlug] = useState(initialData?.slug || "");
   const [areaId, setAreaId] = useState(initialData?.areaId || "");
+  const [subLocation, setSubLocation] = useState(initialData?.subLocation || "");
   const [taglineEn, setTaglineEn] = useState(initialData?.taglineEn || "");
   const [taglineEs, setTaglineEs] = useState(initialData?.taglineEs || "");
   const [descriptionEn, setDescriptionEn] = useState(initialData?.descriptionEn || "");
   const [descriptionEs, setDescriptionEs] = useState(initialData?.descriptionEs || "");
   const [heroImageUrl, setHeroImageUrl] = useState(initialData?.heroImageUrl || "");
   const [siteMapImageUrl, setSiteMapImageUrl] = useState(initialData?.siteMapImageUrl || "");
+  const [priceListUrl, setPriceListUrl] = useState(initialData?.priceListUrl || "");
+
+  const initialGallery = Array.isArray(initialData?.galleryUrls)
+    ? (initialData.galleryUrls as string[])
+    : [];
+  const [galleryUrls, setGalleryUrls] = useState<string[]>(initialGallery);
+
+  const [associatedPropertyIds, setAssociatedPropertyIds] = useState<string[]>(
+    allProperties.filter((p) => p.communityId === initialData?.id).map((p) => p.id),
+  );
+
+  const comboboxAreas = React.useMemo(() => {
+    return areas.map((a) => ({
+      slug: a.slug,
+      label: locale === "es" ? a.nameEs : a.nameEn,
+    }));
+  }, [areas, locale]);
+
+  const selectedAreaSlug = areas.find((a) => a.id === areaId)?.slug || "";
 
   // Coordinates
   const [latitude, setLatitude] = useState<string>(
@@ -243,17 +281,21 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
         name: name.trim(),
         slug: slug.trim(),
         areaId,
+        subLocation: subLocation.trim() || null,
         taglineEn: taglineEn.trim() || null,
         taglineEs: taglineEs.trim() || null,
         descriptionEn: descriptionEn.trim() || null,
         descriptionEs: descriptionEs.trim() || null,
         heroImageUrl: heroImageUrl.trim() || null,
         siteMapImageUrl: siteMapImageUrl.trim() || null,
+        galleryUrls: galleryUrls.filter(Boolean),
+        priceListUrl: priceListUrl.trim() || null,
         latitude: latNum,
         longitude: lngNum,
         geoFence,
         geoFenceCoords,
         quickFacts: quickFactsObj,
+        associatedPropertyIds, // Special field handled by the action
       };
 
       let res;
@@ -357,28 +399,33 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Area */}
+          <div className="grid grid-cols-1 gap-4">
+            {/* Area & Sub-Location */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                {t("formLabelArea")} <span className="text-red-500">*</span>
+                Location (Area & Sub-Location) <span className="text-red-500">*</span>
               </label>
-              <select
-                required
-                value={areaId}
-                onChange={(e) => setAreaId(e.target.value)}
-                data-testid="community-area-select"
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
-              >
-                <option value="">Select Area...</option>
-                {areas.map((area) => (
-                  <option key={area.id} value={area.id}>
-                    {locale === "es" ? area.nameEs : area.nameEn}
-                  </option>
-                ))}
-              </select>
+              <AreaSearchCombobox
+                areas={comboboxAreas}
+                selectedArea={selectedAreaSlug}
+                selectedSubLocation={subLocation}
+                onAreaChange={(areaSlug, subSlug) => {
+                  const matchedArea = areas.find((a) => a.slug === areaSlug);
+                  if (matchedArea) {
+                    setAreaId(matchedArea.id);
+                  } else {
+                    setAreaId("");
+                  }
+                  setSubLocation(subSlug);
+                }}
+                placeholder={locale === "es" ? "Buscar zona..." : "Search location..."}
+                locale={locale}
+                variant="dark"
+              />
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Image URLs */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -455,19 +502,76 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
             </div>
           </div>
 
-          {/* Site Map URL */}
+          {/* Site Map & Price List */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-800 pt-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                {t("formLabelSiteMap")}
+              </label>
+              <input
+                type="url"
+                value={siteMapImageUrl}
+                onChange={(e) => setSiteMapImageUrl(e.target.value)}
+                placeholder="https://example.com/sitemap.jpg"
+                data-testid="community-sitemap-image-input"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Price List URL (Drive)
+              </label>
+              <input
+                type="url"
+                value={priceListUrl}
+                onChange={(e) => setPriceListUrl(e.target.value)}
+                placeholder="https://drive.google.com/..."
+                data-testid="community-pricelist-input"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
+              />
+            </div>
+          </div>
+
+          {/* Gallery URLs */}
           <div className="space-y-1.5 border-t border-slate-800 pt-4">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              {t("formLabelSiteMap")}
+              Gallery Images (One URL per line)
             </label>
-            <input
-              type="url"
-              value={siteMapImageUrl}
-              onChange={(e) => setSiteMapImageUrl(e.target.value)}
-              placeholder="https://example.com/sitemap.jpg"
-              data-testid="community-sitemap-image-input"
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
+            <textarea
+              value={galleryUrls.join("\n")}
+              onChange={(e) => setGalleryUrls(e.target.value.split("\n"))}
+              placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg"
+              rows={4}
+              data-testid="community-gallery-input"
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold resize-y"
             />
+          </div>
+
+          {/* Associated Properties */}
+          <div className="space-y-1.5 border-t border-slate-800 pt-4">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Associated Properties
+            </label>
+            <select
+              multiple
+              value={associatedPropertyIds}
+              onChange={(e) => {
+                const selected = Array.from(e.target.selectedOptions).map((opt) => opt.value);
+                setAssociatedPropertyIds(selected);
+              }}
+              data-testid="community-properties-select"
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
+              style={{ minHeight: "150px" }}
+            >
+              {allProperties.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.titleEn} ({p.apiId})
+                </option>
+              ))}
+            </select>
+            <p className="text-[11px] text-slate-500 font-semibold mt-1">
+              Hold CMD/CTRL to select multiple properties.
+            </p>
           </div>
         </div>
 

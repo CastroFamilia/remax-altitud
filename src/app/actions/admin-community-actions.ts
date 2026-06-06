@@ -12,7 +12,7 @@ import {
   deleteCommunity,
   getCommunityById,
 } from "@/lib/db/queries/communities";
-import { updatePropertyCommunity } from "@/lib/db/queries/properties";
+import { updatePropertyCommunity, setCommunityProperties } from "@/lib/db/queries/properties";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 
 function triggerRevalidation() {
@@ -91,11 +91,15 @@ export async function fetchAdminCommunitiesData(params: { search?: string; page?
 }
 
 export async function createCommunityAction(
-  data: NewCommunity,
+  payload: NewCommunity & { associatedPropertyIds?: string[] },
 ): Promise<{ success: boolean; community?: Community; error?: string }> {
   try {
     await verifyAdminAuth();
-    const community = await createCommunity(data);
+    const { associatedPropertyIds, ...data } = payload;
+    const community = await createCommunity(data as NewCommunity);
+    if (associatedPropertyIds) {
+      await setCommunityProperties(community.id, associatedPropertyIds);
+    }
     triggerRevalidation();
     return { success: true, community };
   } catch (error) {
@@ -114,11 +118,15 @@ export async function createCommunityAction(
 
 export async function updateCommunityAction(
   id: string,
-  data: Partial<Community>,
+  payload: Partial<Community> & { associatedPropertyIds?: string[] },
 ): Promise<{ success: boolean; community?: Community; error?: string }> {
   try {
     await verifyAdminAuth();
-    const community = await updateCommunity(id, data);
+    const { associatedPropertyIds, ...data } = payload;
+    const community = await updateCommunity(id, data as Partial<Community>);
+    if (associatedPropertyIds) {
+      await setCommunityProperties(id, associatedPropertyIds);
+    }
     triggerRevalidation();
     return { success: true, community };
   } catch (error) {
