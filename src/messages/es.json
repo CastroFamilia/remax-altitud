@@ -378,9 +378,10 @@
       "activeChip": "{label}: {value}",
       "dismiss": "Eliminar filtro {label}",
       "listingType": "Transacción",
-      "listingTypeAll": "Todas",
+      "listingTypeAll": "Transacción",
       "listingTypeSale": "En Venta",
       "listingTypeLease": "En Alquiler",
+      "tags": "Filtros",
       "propertyTypes": {
         "Casa": "Casa",
         "Apartamento": "Apartamento",

@@ -252,20 +252,22 @@ export function useSearchFilters(): UseSearchFiltersReturn {
   const clearFilter = useCallback(
     (key: keyof SearchFilters) => {
       const paramKey = PARAM_MAP[key];
-      const newParams = new URLSearchParams(searchParams.toString());
+      const newParams = new URLSearchParams(latestParamsRef.current.toString());
       newParams.delete(paramKey);
+      latestParamsRef.current = newParams;
       commitParams(newParams);
     },
-    [searchParams, commitParams],
+    [commitParams],
   );
 
   const clearAll = useCallback(() => {
     // Remove all filter params but preserve 'view' (it's not a filter — AR10)
     const newParams = new URLSearchParams();
-    const view = searchParams.get("view");
+    const view = latestParamsRef.current.get("view");
     if (view) newParams.set("view", view);
+    latestParamsRef.current = newParams;
     commitParams(newParams);
-  }, [searchParams, commitParams]);
+  }, [commitParams]);
 
   /**
    * Story 3.4: toggleTag — add/remove a single lifestyle tag from the URL state.

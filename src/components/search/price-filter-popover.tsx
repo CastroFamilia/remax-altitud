@@ -33,7 +33,7 @@ export function PriceFilterPopover({
   value,
   onChange,
   min = 0,
-  max = 5_000_000,
+  max = 800_000,
 }: PriceFilterPopoverProps) {
   const [open, setOpen] = useState(false);
   const [minVal, maxVal] = value;
@@ -43,7 +43,7 @@ export function PriceFilterPopover({
 
   // Format the button label
   const displayLabel = hasRange
-    ? `${formatPriceAbbrev(minVal)}–${formatPriceAbbrev(maxVal)}`
+    ? `${formatPriceAbbrev(minVal)}–${maxVal >= max ? "Any" : formatPriceAbbrev(maxVal)}`
     : placeholder;
 
   return (
