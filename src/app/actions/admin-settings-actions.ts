@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db/client";
-import { settings } from "@/lib/db/schema";
+import { settings } from "@/lib/db/schema/settings";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -24,10 +24,8 @@ export async function updateSettingAction(key: string, value: string) {
 
 export async function getSettingAction(key: string) {
   try {
-    const result = await db.query.settings.findFirst({
-      where: eq(settings.key, key),
-    });
-    return { success: true, value: result?.value || null };
+    const result = await db.select().from(settings).where(eq(settings.key, key)).limit(1);
+    return { success: true, value: result[0]?.value || null };
   } catch (error) {
     console.error("Failed to get setting:", error);
     return { success: false, error: "Failed to get setting" };
