@@ -129,8 +129,8 @@ export async function PropertyPrintView({
           </div>
 
           {/* 3 Secondary Images Strip */}
-          <div className="h-[25%] grid grid-cols-3 w-full border-t border-white">
-            <div className="relative overflow-hidden bg-gray-200 border-r border-white">
+          <div className="h-[25%] grid grid-cols-3 w-full bg-white gap-3 p-3">
+            <div className="relative overflow-hidden bg-gray-200 rounded-sm">
               {secondaryImage1 && (
                 <PropertyImage
                   src={secondaryImage1.src}
@@ -143,7 +143,7 @@ export async function PropertyPrintView({
                 />
               )}
             </div>
-            <div className="relative overflow-hidden bg-gray-300 border-r border-white">
+            <div className="relative overflow-hidden bg-gray-300 rounded-sm">
               {secondaryImage2 && (
                 <PropertyImage
                   src={secondaryImage2.src}
@@ -156,7 +156,7 @@ export async function PropertyPrintView({
                 />
               )}
             </div>
-            <div className="relative overflow-hidden bg-gray-400">
+            <div className="relative overflow-hidden bg-gray-400 rounded-sm">
               {secondaryImage3 && (
                 <PropertyImage
                   src={secondaryImage3.src}
@@ -253,25 +253,42 @@ export async function PropertyPrintView({
 
           {/* Footer: Agent & QR */}
           <div className="flex justify-between items-end border-t border-gray-100 pt-4 mt-auto">
-            <div className="flex-1 pr-4">
-              <p className="text-[10px] text-amber-600 font-bold tracking-widest uppercase mb-1">
-                Presented By
-              </p>
-              <p className="text-base font-black text-gray-900">{agent?.name || "REMAX Altitud"}</p>
-              {agent?.whatsapp && (
-                <p className="text-xs text-gray-600 mt-1 font-medium">WA: {agent.whatsapp}</p>
+            <div className="flex-1 flex items-center pr-4">
+              {(agent?.photoOptimizedUrl || agent?.photoUrl) && (
+                <div className="w-16 h-16 mr-4 relative rounded-full overflow-hidden border border-gray-200 shrink-0 shadow-sm">
+                  <PropertyImage
+                    src={agent.photoOptimizedUrl || agent.photoUrl || ""}
+                    alt={agent.name || "Agent"}
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                  />
+                </div>
               )}
-              {agent?.email && (
-                <p className="text-xs text-gray-600 font-medium truncate">{agent.email}</p>
-              )}
-              <p className="text-[9px] text-gray-400 mt-2 uppercase tracking-wide">{officeName}</p>
+              <div>
+                <p className="text-[10px] text-amber-600 font-bold tracking-widest uppercase mb-1">
+                  Presented By
+                </p>
+                <p className="text-xl font-black text-gray-900 leading-tight">
+                  {agent?.name || "REMAX Altitud"}
+                </p>
+                {agent?.whatsapp && (
+                  <p className="text-sm text-gray-800 mt-1 font-bold">WA: {agent.whatsapp}</p>
+                )}
+                {agent?.email && (
+                  <p className="text-sm text-gray-800 font-bold truncate mt-0.5">{agent.email}</p>
+                )}
+                <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-widest">
+                  {officeName}
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-col items-center">
-              <div className="bg-white p-1.5 border border-gray-200">
-                <QRCode value={qrTrackingUrl} size={56} level="M" />
+              <div className="bg-white p-2 border border-gray-200 shadow-sm">
+                <QRCode value={qrTrackingUrl} size={64} level="M" />
               </div>
-              <span className="text-[8px] uppercase font-bold tracking-widest text-amber-600 mt-1">
+              <span className="text-[9px] uppercase font-bold tracking-widest text-amber-600 mt-1.5">
                 Scan for info
               </span>
             </div>
