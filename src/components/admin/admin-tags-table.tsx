@@ -14,9 +14,13 @@ import {
   MapPin,
   AlertCircle,
   HelpCircle,
+  FileText,
 } from "lucide-react";
 import { LIFESTYLE_TAGS, tagDisplayLabel } from "@/lib/constants/lifestyle-tags";
-import { updatePropertyTagsAction } from "@/app/actions/admin-tag-actions";
+import {
+  updatePropertyTagsAction,
+  updatePropertyZmtStatusAction,
+} from "@/app/actions/admin-tag-actions";
 import { updatePropertyCommunityAction } from "@/app/actions/admin-community-actions";
 import { formatUSD } from "@/lib/utils/currency";
 
@@ -35,6 +39,7 @@ export interface AdminProperty {
   latitude: number | null;
   longitude: number | null;
   communityId: string | null;
+  zmtStatus: string;
 }
 
 export interface DatabaseCommunity {
@@ -110,6 +115,17 @@ export function AdminTagsTable({
     message: string;
   } | null>(null);
 
+  // Legal Status Modal state
+  const [selectedPropertyForLegal, setSelectedPropertyForLegal] = useState<AdminProperty | null>(
+    null,
+  );
+  const [selectedZmtStatus, setSelectedZmtStatus] = useState<string>("");
+  const [isSavingLegal, setIsSavingLegal] = useState(false);
+  const [legalAlert, setLegalAlert] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams(searchParams.toString());
@@ -152,6 +168,18 @@ export function AdminTagsTable({
     setSelectedPropertyForCommunity(null);
     setSelectedCommunityId("");
     setCommunityAlert(null);
+  };
+
+  const handleOpenLegalModal = (property: AdminProperty) => {
+    setSelectedPropertyForLegal(property);
+    setSelectedZmtStatus(property.zmtStatus || "none");
+    setLegalAlert(null);
+  };
+
+  const handleCloseLegalModal = () => {
+    setSelectedPropertyForLegal(null);
+    setSelectedZmtStatus("");
+    setLegalAlert(null);
   };
 
   const handleTagToggle = (tag: string) => {
@@ -224,6 +252,44 @@ export function AdminTagsTable({
       setCommunityAlert({ type: "error", message: "Failed to update community association." });
     } finally {
       setIsSavingCommunity(false);
+    }
+  };
+
+  const handleSaveLegal = async () => {
+    if (!selectedPropertyForLegal) return;
+    setIsSavingLegal(true);
+    setLegalAlert(null);
+    try {
+      const res = await updatePropertyZmtStatusAction(
+        selectedPropertyForLegal.id,
+        selectedZmtStatus,
+      );
+      if (res.success) {
+        setLegalAlert({
+          type: "success",
+          message: `Successfully updated legal status for property.`,
+        });
+        // Update local property visually
+        setLocalProperties((prev) =>
+          prev.map((p) =>
+            p.id === selectedPropertyForLegal.id ? { ...p, zmtStatus: selectedZmtStatus } : p,
+          ),
+        );
+        setSelectedPropertyForLegal((prev) =>
+          prev ? { ...prev, zmtStatus: selectedZmtStatus } : null,
+        );
+        router.refresh();
+        setTimeout(() => {
+          handleCloseLegalModal();
+        }, 1500);
+      } else {
+        setLegalAlert({ type: "error", message: "Failed to update legal status." });
+      }
+    } catch (error) {
+      console.error(error);
+      setLegalAlert({ type: "error", message: "Failed to update legal status." });
+    } finally {
+      setIsSavingLegal(false);
     }
   };
 
@@ -341,11 +407,23 @@ export function AdminTagsTable({
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
                           <span className="font-bold text-slate-100 property-title">{title}</span>
-                          {associatedCommunity && (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400 mt-1 max-w-max px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
-                              🏔️ {associatedCommunity.name}
-                            </span>
-                          )}
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {associatedCommunity && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400 max-w-max px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
+                                🏔️ {associatedCommunity.name}
+                              </span>
+                            )}
+                            {property.zmtStatus &&
+                              property.zmtStatus !== "titled" &&
+                              property.zmtStatus !== "none" && (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-400 max-w-max px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">
+                                  📜{" "}
+                                  {property.zmtStatus === "concession"
+                                    ? "Concession"
+                                    : "ZMT Restricted"}
+                                </span>
+                              )}
+                          </div>
                         </div>
                       </td>
                       <td
@@ -375,6 +453,14 @@ export function AdminTagsTable({
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => handleOpenLegalModal(property)}
+                            data-testid="manage-legal-btn"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-850 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-800 rounded-lg transition-all cursor-pointer"
+                          >
+                            <FileText className="w-3.5 h-3.5 text-blue-400" />
+                            <span>Legal</span>
+                          </button>
                           <button
                             onClick={() => handleOpenCommunityModal(property)}
                             data-testid="manage-community-btn"
@@ -641,6 +727,89 @@ export function AdminTagsTable({
               >
                 {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
                 <span>{isSaving ? t("saving") : t("btnSave")}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Legal Status Modal */}
+      {selectedPropertyForLegal && (
+        <div
+          data-testid="manage-legal-modal"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+        >
+          <div className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-2xl space-y-6">
+            {/* Close button */}
+            <button
+              onClick={handleCloseLegalModal}
+              className="absolute right-4 top-4 p-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-all cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Modal Header */}
+            <div>
+              <h2 className="text-xl font-bold text-white pr-8">Legal Status</h2>
+              <p className="text-xs text-slate-400 mt-2 leading-relaxed font-semibold">
+                Set the property legal status for &quot;
+                {locale === "es"
+                  ? selectedPropertyForLegal.titleEs
+                  : selectedPropertyForLegal.titleEn}
+                &quot;.
+              </p>
+            </div>
+
+            {/* Alert Message */}
+            {legalAlert && (
+              <div
+                className={`p-3.5 rounded-lg border text-sm font-medium ${
+                  legalAlert.type === "success"
+                    ? "bg-green-500/10 text-green-400 border-green-500/20"
+                    : "bg-red-500/10 text-red-400 border-red-500/20"
+                }`}
+              >
+                {legalAlert.message}
+              </div>
+            )}
+
+            {/* Dropdown Selector */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Select Legal Status
+              </label>
+              <select
+                value={selectedZmtStatus}
+                onChange={(e) => setSelectedZmtStatus(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all font-semibold"
+                data-testid="legal-select"
+              >
+                <option value="none">Not Specified (Hidden)</option>
+                <option value="titled">Titled Property (Hidden)</option>
+                <option value="concession">Concession (Visible Badge)</option>
+                <option value="zmt_restricted">ZMT Restricted (Visible Badge)</option>
+              </select>
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={handleCloseLegalModal}
+                disabled={isSavingLegal}
+                className="px-4 py-2 text-sm text-slate-400 hover:text-white transition-all rounded-lg hover:bg-slate-800 cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveLegal}
+                disabled={isSavingLegal}
+                data-testid="save-legal-btn"
+                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm transition-all focus:ring-2 focus:ring-blue-500 disabled:opacity-50 cursor-pointer flex items-center gap-2"
+              >
+                {isSavingLegal && <Loader2 className="w-4 h-4 animate-spin" />}
+                <span>{isSavingLegal ? "Saving..." : "Save Legal Status"}</span>
               </button>
             </div>
           </div>

@@ -15,6 +15,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Search, X, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ALL_DISTRICTS } from "@/lib/locations";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -116,6 +117,31 @@ const FALLBACK_PZ_SUB_LOCATIONS: AreaOption[] = [
   { slug: "la-amistad", label: "La Amistad", parentSlug: "perez-zeledon", isSubLocation: true },
 ];
 
+// ─── Static Areas Fallback ───────────────────────────────────────────────────
+
+const STATIC_MAIN_AREAS: AreaOption[] = [
+  { slug: "dominical", label: "Dominical" },
+  { slug: "uvita", label: "Uvita" },
+  { slug: "ojochal", label: "Ojochal" },
+  { slug: "quepos", label: "Quepos" },
+  { slug: "manuel-antonio", label: "Manuel Antonio" },
+  { slug: "jaco", label: "Jacó" },
+  { slug: "tamarindo", label: "Tamarindo" },
+  { slug: "nosara", label: "Nosara" },
+  { slug: "samara", label: "Sámara" },
+  { slug: "santa-teresa", label: "Santa Teresa" },
+  { slug: "playa-hermosa", label: "Playa Hermosa" },
+  { slug: "perez-zeledon", label: "Pérez Zeledón" },
+  { slug: "tinamastes-platanillo", label: "Tinamastes, Platanillo & Barú" },
+  { slug: "san-jose", label: "San José" },
+  { slug: "escazu", label: "Escazú" },
+  { slug: "santa-ana", label: "Santa Ana" },
+  { slug: "heredia", label: "Heredia" },
+  { slug: "alajuela", label: "Alajuela" },
+  { slug: "cartago", label: "Cartago" },
+  { slug: "liberia", label: "Liberia" },
+];
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export function AreaSearchCombobox({
@@ -137,11 +163,26 @@ export function AreaSearchCombobox({
   const listRef = useRef<HTMLDivElement>(null);
 
   // Build the full list: main areas + sub-locations
-  const mainAreas = useMemo(() => areas.filter((a) => !a.isSubLocation), [areas]);
+  const mainAreas = useMemo(() => {
+    const dynamicMains = areas.filter((a) => !a.isSubLocation);
+    const map = new Map<string, AreaOption>();
+    STATIC_MAIN_AREAS.forEach((a) => map.set(a.slug, a));
+    dynamicMains.forEach((a) => map.set(a.slug, a));
+    return Array.from(map.values());
+  }, [areas]);
 
   const subLocations = useMemo(() => {
-    const subs = areas.filter((a) => a.isSubLocation);
-    return subs.length > 0 ? subs : FALLBACK_PZ_SUB_LOCATIONS;
+    const dynamicSubs = areas.filter((a) => a.isSubLocation);
+    const staticSubs: AreaOption[] = ALL_DISTRICTS.map((d) => ({
+      slug: d.slug,
+      label: d.label,
+      parentSlug: d.parentSlug,
+      isSubLocation: true,
+    }));
+    const map = new Map<string, AreaOption>();
+    staticSubs.forEach((s) => map.set(s.slug, s));
+    dynamicSubs.forEach((s) => map.set(s.slug, s));
+    return Array.from(map.values());
   }, [areas]);
 
   // Build flat list of all selectable items for keyboard nav

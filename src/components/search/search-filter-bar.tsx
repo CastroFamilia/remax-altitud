@@ -31,9 +31,8 @@ import { FilterDropdown } from "@/components/search/filter-dropdown";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 import type { AreaOption } from "@/components/search/area-search-combobox";
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
-import { SortSelect } from "@/components/search/sort-select";
 import { NearMeButton } from "@/components/search/near-me-button";
-import { PriceRangeSlider } from "@/components/search/price-range-slider";
+import { PriceRangeInputs } from "@/components/search/price-range-inputs";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { FilterFacets } from "@/types/search";
 
@@ -80,19 +79,18 @@ export function SearchFilterBar({
 
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
 
-  /** Toggle a property-type chip — same effect as choosing from the Type dropdown */
-  const handleTypeToggle = (type: string) => {
-    setFilter("type", filters.type === type ? undefined : type);
-  };
-
   const isLandType = filters.type ? LAND_TYPES.includes(filters.type) : false;
 
-  const priceValue: [number, number] = [filters.priceMin ?? 0, filters.priceMax ?? 800_000];
+  const priceValue: [number | undefined, number | undefined] = [filters.priceMin, filters.priceMax];
 
-  /** Get facet count label for a property type, e.g. "Casa (12)" */
   /** Display label for a property type — "Lote" renders as "Lote / Terreno" */
   function typeDisplayName(type: string): string {
-    return type === "Lote" ? "Lote / Terreno" : type;
+    if (type === "Lote") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return `${t("filters.propertyTypes.Lote" as any)} / ${t("filters.propertyTypes.Terreno" as any)}`;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return t(`filters.propertyTypes.${type}` as any) || type;
   }
 
   function typeLabel(type: string): string {
@@ -128,7 +126,7 @@ export function SearchFilterBar({
     }
     return {
       value: type,
-      label: type === "Lote" ? "Lote / Terreno" : type,
+      label: typeDisplayName(type),
       count,
     };
   });
@@ -150,13 +148,7 @@ export function SearchFilterBar({
   const mobileFilterControls = (
     <div className="flex flex-wrap items-center gap-3 w-full">
       {/* Story 3.4: Lifestyle tag chips (AC #1, #2, #3) */}
-      <LifestyleTagChips
-        activeTags={filters.tags ?? []}
-        onToggle={toggleTag}
-        activeType={filters.type}
-        onTypeToggle={handleTypeToggle}
-      />
-      {/* Listing Type dropdown (Sale / Lease) */}
+      <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
       <div className="flex flex-col gap-1">
         <label className="text-xs font-medium text-muted-foreground">
           {t("filters.listingType")}
@@ -240,11 +232,11 @@ export function SearchFilterBar({
       {/* Price Range slider (AC #4 — 300ms debounce handled by hook) */}
       <div className="flex flex-col gap-1 min-w-[200px]">
         <label className="text-xs font-medium text-muted-foreground">{t("filters.price")}</label>
-        <PriceRangeSlider
+        <PriceRangeInputs
           value={priceValue}
           onChange={([min, max]) => {
-            setFilter("priceMin", min > 0 ? min : undefined);
-            setFilter("priceMax", max < 800_000 ? max : undefined);
+            setFilter("priceMin", min);
+            setFilter("priceMax", max);
           }}
         />
       </div>
@@ -278,7 +270,7 @@ export function SearchFilterBar({
       {/* Filter bar wrapper */}
       <div
         data-testid="search-filter-bar"
-        className="sticky top-[var(--header-height)] flex-shrink-0 z-10 shadow-sm py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
+        className="sticky top-[var(--header-height)] flex-shrink-0 z-40 shadow-sm py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
       >
         <div className="flex items-stretch px-4 gap-3 h-full">
           {/* Mobile compact bar — visible below md breakpoint */}
@@ -347,19 +339,8 @@ export function SearchFilterBar({
                   testId="type-filter"
                 />
 
-                {/* Tags / Filtros */}
-                <TagsFilterPopover
-                  activeTags={filters.tags ?? []}
-                  onToggle={toggleTag}
-                  activeType={filters.type}
-                  onTypeToggle={(type) => {
-                    if (filters.type === type) {
-                      setFilter("type", undefined);
-                    } else {
-                      setFilter("type", type);
-                    }
-                  }}
-                />
+                {/* Lifestyle Tags / Characteristics */}
+                <TagsFilterPopover activeTags={filters.tags ?? []} onToggle={toggleTag} />
 
                 {/* Beds — hidden for land types */}
                 {!isLandType && (
@@ -390,8 +371,8 @@ export function SearchFilterBar({
                   placeholder={t("filters.price")}
                   value={priceValue}
                   onChange={([min, max]) => {
-                    setFilter("priceMin", min > 0 ? min : undefined);
-                    setFilter("priceMax", max < 800_000 ? max : undefined);
+                    setFilter("priceMin", min);
+                    setFilter("priceMax", max);
                   }}
                 />
 
@@ -426,8 +407,6 @@ export function SearchFilterBar({
 
                 {/* Divider */}
                 <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
-
-                {viewMode !== "grid" && <SortSelect />}
 
                 {onNearMeSuccess && onNearMeFallback && (
                   <NearMeButton

@@ -134,12 +134,7 @@ export function MoreFiltersPopover({ filters, setFilter, toggleTag }: MoreFilter
                 {t("filters.tags") || "Tags & Characteristics"}
               </h4>
               <div className="flex flex-wrap gap-2">
-                <LifestyleTagChips
-                  activeTags={filters.tags ?? []}
-                  onToggle={toggleTag}
-                  activeType={filters.type}
-                  onTypeToggle={(type) => handleSingleCheckbox("type", type)}
-                />
+                <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
               </div>
             </div>
 

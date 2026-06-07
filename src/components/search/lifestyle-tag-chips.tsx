@@ -30,18 +30,9 @@ const PROPERTY_TYPE_TAGS = new Set(["Casa", "Lote", "Finca"]);
 interface LifestyleTagChipsProps {
   activeTags: string[];
   onToggle: (tag: string) => void;
-  /** Current active property type filter (from the type dropdown) */
-  activeType?: string;
-  /** Callback to toggle a property-type chip (sets the `type` filter) */
-  onTypeToggle?: (type: string) => void;
 }
 
-export function LifestyleTagChips({
-  activeTags,
-  onToggle,
-  activeType,
-  onTypeToggle,
-}: LifestyleTagChipsProps) {
+export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsProps) {
   const t = useTranslations("SearchPage");
 
   /**
@@ -58,21 +49,13 @@ export function LifestyleTagChips({
   };
 
   return (
-    <div
-      data-testid="lifestyle-tag-chips"
-      className="flex gap-2 flex-wrap md:flex-nowrap overflow-x-auto"
-    >
-      {LIFESTYLE_TAGS.map((tag) => {
-        const isPropertyType = PROPERTY_TYPE_TAGS.has(tag);
-        const isActive = isPropertyType ? activeType === tag : activeTags.includes(tag);
+    <div data-testid="lifestyle-tag-chips" className="flex gap-2 flex-wrap">
+      {LIFESTYLE_TAGS.filter((tag) => !PROPERTY_TYPE_TAGS.has(tag)).map((tag) => {
+        const isActive = activeTags.includes(tag);
         const slug = tag.toLowerCase().replace(/\s+/g, "-");
 
         const handleClick = () => {
-          if (isPropertyType && onTypeToggle) {
-            onTypeToggle(tag);
-          } else {
-            onToggle(tag);
-          }
+          onToggle(tag);
         };
 
         return (
