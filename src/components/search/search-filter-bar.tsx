@@ -305,10 +305,10 @@ export function SearchFilterBar({
 
           {/* Desktop/tablet filter controls — visible at md: and above */}
           <div className="hidden md:flex flex-col gap-1 w-full">
-            {/* Row 2: All controls in a single unified row */}
-            <div className="flex items-center gap-2 w-full">
+            {/* Row 2: All controls in a single unified row (wraps if needed) */}
+            <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-2 w-full">
               {/* Left group: View toggle + Filter dropdowns */}
-              <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 flex-1 min-w-[300px]">
                 {/* View Mode Toggle (inline) */}
                 {onViewModeChange && (
                   <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
@@ -397,7 +397,7 @@ export function SearchFilterBar({
               </div>
 
               {/* Right group: Result count + Sort + Near Me + Unit toggle */}
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2 shrink-0 ml-auto">
                 {/* Result count */}
                 {resultCount !== undefined && (
                   <span className="text-xs text-muted-foreground font-medium whitespace-nowrap hidden xl:inline">
