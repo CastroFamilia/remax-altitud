@@ -7,6 +7,7 @@ import { SearchResultsSkeleton } from "@/components/search/search-results-skelet
 import { MapView } from "@/components/map/map-view-loader";
 import { PropertyGrid } from "@/components/property/property-grid";
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
+import { GridSortGroup } from "@/components/search/grid-sort-group";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets, SearchFilters } from "@/types/search";
@@ -176,6 +177,13 @@ export function SplitViewLayout({
             "h-full pt-2",
           )}
         >
+          {/* Grid sort group for grid-only view */}
+          {mapHidden && (
+            <div className="flex items-center justify-end px-2 lg:px-4 mb-2">
+              <GridSortGroup />
+            </div>
+          )}
+
           {/* Story 3.5: render PropertyGrid when filterProperties provided, else skeleton */}
           {filterProperties ? (
             <PropertyGrid

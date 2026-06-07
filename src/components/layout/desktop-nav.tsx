@@ -16,6 +16,7 @@ import { mainNavItems, type NavItem } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import { CurrencyToggle } from "@/components/layout/currency-toggle";
+import { UnitToggle } from "@/components/layout/unit-toggle";
 import { useLocaleCurrency } from "@/hooks/use-locale-currency";
 import { Globe } from "lucide-react";
 import {
@@ -76,6 +77,13 @@ export function DesktopNav() {
                     {t("currency")}
                   </h4>
                   <CurrencyToggle variant="light" />
+                </div>
+                <hr className="border-brand-warm/40" />
+                <div className="space-y-1.5">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-navy/60">
+                    Area Unit
+                  </h4>
+                  <UnitToggle locale={locale} />
                 </div>
               </div>
             </NavigationMenuContent>

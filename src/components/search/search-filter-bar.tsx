@@ -25,15 +25,14 @@ import { useTranslations } from "next-intl";
 import { useSearchFilters } from "@/hooks/use-search-filters";
 import { FilterChips } from "@/components/search/filter-chips";
 import { LifestyleTagChips } from "@/components/search/lifestyle-tag-chips";
-import { TagsFilterPopover } from "@/components/search/tags-filter-popover";
 import { PriceFilterPopover } from "@/components/search/price-filter-popover";
 import { FilterDropdown } from "@/components/search/filter-dropdown";
+import { MoreFiltersPopover } from "@/components/search/more-filters-popover";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 import type { AreaOption } from "@/components/search/area-search-combobox";
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { SortSelect } from "@/components/search/sort-select";
 import { NearMeButton } from "@/components/search/near-me-button";
-import { UnitToggle } from "@/components/layout/unit-toggle";
 import { PriceRangeSlider } from "@/components/search/price-range-slider";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { FilterFacets } from "@/types/search";
@@ -109,12 +108,6 @@ export function SearchFilterBar({
     const facet = facets.byType.find((f) => f.value === type);
     return facet ? `${display} (${facet.count})` : display;
   }
-
-  /** Build options for the Listing Type dropdown */
-  const listingTypeOptions = [
-    { value: "Sale", label: t("filters.listingTypeSale") },
-    { value: "Lease", label: t("filters.listingTypeLease") },
-  ];
 
   /** Build options for the Property Type dropdown */
   const propertyTypeOptions = PROPERTY_TYPES.map((type) => {
@@ -328,15 +321,6 @@ export function SearchFilterBar({
                   <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
                 )}
 
-                {/* Listing Type */}
-                <FilterDropdown
-                  placeholder={t("filters.listingTypeAll")}
-                  value={filters.listingType ?? undefined}
-                  options={listingTypeOptions}
-                  onChange={(val) => setFilter("listingType", val)}
-                  testId="listing-type-filter"
-                />
-
                 {/* Property Type */}
                 <FilterDropdown
                   placeholder={t("filters.typeAll")}
@@ -344,14 +328,6 @@ export function SearchFilterBar({
                   options={propertyTypeOptions}
                   onChange={(val) => setFilter("type", val)}
                   testId="type-filter"
-                />
-
-                {/* Lifestyle Tags / Characteristics */}
-                <TagsFilterPopover
-                  activeTags={filters.tags ?? []}
-                  onToggle={toggleTag}
-                  activeType={filters.type}
-                  onTypeToggle={handleTypeToggle}
                 />
 
                 {/* Beds — hidden for land types */}
@@ -377,6 +353,9 @@ export function SearchFilterBar({
                     formatSelected={(opt) => `${opt.label} ${t("filters.bathrooms")}`}
                   />
                 )}
+
+                {/* More Filters Popover (combines Listing Type, Tags) */}
+                <MoreFiltersPopover filters={filters} setFilter={setFilter} toggleTag={toggleTag} />
 
                 {/* Price Range Popover */}
                 <PriceFilterPopover
@@ -420,7 +399,7 @@ export function SearchFilterBar({
                 {/* Divider */}
                 <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
 
-                <SortSelect />
+                {viewMode !== "grid" && <SortSelect />}
 
                 {onNearMeSuccess && onNearMeFallback && (
                   <NearMeButton
@@ -428,8 +407,6 @@ export function SearchFilterBar({
                     onLocationFallback={onNearMeFallback}
                   />
                 )}
-
-                <UnitToggle locale={locale} />
               </div>
             </div>
           </div>
