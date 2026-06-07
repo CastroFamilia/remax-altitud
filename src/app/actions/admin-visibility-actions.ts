@@ -64,6 +64,7 @@ export async function fetchAdminVisibilityData(
     .select({
       id: properties.id,
       apiId: properties.apiId,
+      listingKey: sql<string>`${properties.apiRaw}->>'ListingKey'`,
       slug: properties.slug,
       propertyType: properties.propertyType,
       status: properties.status,

@@ -16,6 +16,8 @@ export const LIFESTYLE_TAGS = [
   "Con cascada",
   "Con vista al mar",
   "Con vista a la montaña",
+  "Para inversión",
+  "Retiro",
 ] as const;
 
 /** Union type of all valid lifestyle tag strings. */
@@ -119,6 +121,30 @@ export const LIFESTYLE_TAG_RULES: LifestyleTagRule[] = [
         desc.includes("vistas a las montañas") ||
         desc.includes("mountain-view")
       );
+    },
+  },
+  {
+    tag: "Para inversión",
+    match: (raw) => {
+      const text =
+        `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return (
+        text.includes("investment") ||
+        text.includes("inversión") ||
+        text.includes("inversion") ||
+        text.includes("income producing") ||
+        text.includes("rentabilidad") ||
+        text.includes("rental income") ||
+        text.includes("roi") ||
+        text.includes("commercial")
+      );
+    },
+  },
+  {
+    tag: "Retiro",
+    match: (raw) => {
+      const text = `${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return text.includes("retire") || text.includes("retiro");
     },
   },
 ];

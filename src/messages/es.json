@@ -418,7 +418,9 @@
         "Con río": "Con río",
         "Con cascada": "Con cascada",
         "Con vista al mar": "Con vista al mar",
-        "Con vista a la montaña": "Con vista a la montaña"
+        "Con vista a la montaña": "Con vista a la montaña",
+        "Para inversión": "Para inversión",
+        "Retiro": "Retiro"
       }
     },
     "presets": {
