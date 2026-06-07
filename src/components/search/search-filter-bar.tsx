@@ -25,6 +25,7 @@ import { useTranslations } from "next-intl";
 import { useSearchFilters } from "@/hooks/use-search-filters";
 import { FilterChips } from "@/components/search/filter-chips";
 import { LifestyleTagChips } from "@/components/search/lifestyle-tag-chips";
+import { TagsFilterPopover } from "@/components/search/tags-filter-popover";
 import { PriceFilterPopover } from "@/components/search/price-filter-popover";
 import { FilterDropdown } from "@/components/search/filter-dropdown";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
@@ -312,16 +313,6 @@ export function SearchFilterBar({
 
           {/* Desktop/tablet filter controls — visible at md: and above */}
           <div className="hidden md:flex flex-col gap-1 w-full">
-            {/* Row 1: Lifestyle Tags (compact, scrollable) */}
-            <div className="w-full overflow-x-auto no-scrollbar">
-              <LifestyleTagChips
-                activeTags={filters.tags ?? []}
-                onToggle={toggleTag}
-                activeType={filters.type}
-                onTypeToggle={handleTypeToggle}
-              />
-            </div>
-
             {/* Row 2: All controls in a single unified row */}
             <div className="flex items-center gap-2 w-full">
               {/* Left group: View toggle + Filter dropdowns */}
@@ -352,6 +343,14 @@ export function SearchFilterBar({
                   options={propertyTypeOptions}
                   onChange={(val) => setFilter("type", val)}
                   testId="type-filter"
+                />
+
+                {/* Lifestyle Tags / Characteristics */}
+                <TagsFilterPopover
+                  activeTags={filters.tags ?? []}
+                  onToggle={toggleTag}
+                  activeType={filters.type}
+                  onTypeToggle={handleTypeToggle}
                 />
 
                 {/* Beds — hidden for land types */}
