@@ -3,6 +3,7 @@ import { and, or, ilike, asc, desc, eq, gte, inArray, lte, not, sql } from "driz
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { shortlistEvents } from "@/lib/db/schema/shortlist-events";
+import { propertyViews } from "@/lib/db/schema/property-views";
 import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawProperty } from "@/types/remax-api";
 import type { OptimizedImage } from "@/types/images";
@@ -852,7 +853,39 @@ export async function fetchShortlistAnalyticsData(filters: {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  // Group-by aggregations query
+  const savesSubquery = db
+    .select({
+      propertyId: shortlistEvents.propertyId,
+      totalSaves:
+        sql<number>`count(case when ${shortlistEvents.action} = 'save' then 1 end)::int`.as(
+          "totalSaves",
+        ),
+      saves30Days:
+        sql<number>`count(case when ${shortlistEvents.action} = 'save' and ${shortlistEvents.createdAt} >= ${thirtyDaysAgo} then 1 end)::int`.as(
+          "saves30Days",
+        ),
+      activeSaves:
+        sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`.as(
+          "activeSaves",
+        ),
+    })
+    .from(shortlistEvents)
+    .groupBy(shortlistEvents.propertyId)
+    .as("saves_sq");
+
+  const viewsSubquery = db
+    .select({
+      propertyId: propertyViews.propertyId,
+      totalViews: sql<number>`count(*)::int`.as("totalViews"),
+      views30Days:
+        sql<number>`count(case when ${propertyViews.createdAt} >= ${thirtyDaysAgo} then 1 end)::int`.as(
+          "views30Days",
+        ),
+    })
+    .from(propertyViews)
+    .groupBy(propertyViews.propertyId)
+    .as("views_sq");
+
   let query = db
     .select({
       id: properties.id,
@@ -861,12 +894,15 @@ export async function fetchShortlistAnalyticsData(filters: {
       titleEs: properties.titleEs,
       slug: properties.slug,
       images: properties.images,
-      totalSaves: sql<number>`count(case when ${shortlistEvents.action} = 'save' then 1 end)::int`,
-      saves30Days: sql<number>`count(case when ${shortlistEvents.action} = 'save' and ${shortlistEvents.createdAt} >= ${thirtyDaysAgo} then 1 end)::int`,
-      activeSaves: sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`,
+      totalSaves: sql<number>`coalesce(${savesSubquery.totalSaves}, 0)::int`,
+      saves30Days: sql<number>`coalesce(${savesSubquery.saves30Days}, 0)::int`,
+      activeSaves: sql<number>`coalesce(${savesSubquery.activeSaves}, 0)::int`,
+      totalViews: sql<number>`coalesce(${viewsSubquery.totalViews}, 0)::int`,
+      views30Days: sql<number>`coalesce(${viewsSubquery.views30Days}, 0)::int`,
     })
     .from(properties)
-    .leftJoin(shortlistEvents, eq(properties.id, shortlistEvents.propertyId));
+    .leftJoin(savesSubquery, eq(properties.id, savesSubquery.propertyId))
+    .leftJoin(viewsSubquery, eq(properties.id, viewsSubquery.propertyId));
 
   if (filters.search) {
     const hasWhere = "where" in query && typeof (query as { where?: unknown }).where === "function";
@@ -885,24 +921,22 @@ export async function fetchShortlistAnalyticsData(filters: {
     }
   }
 
-  const groupedQuery = query.groupBy(properties.id);
-
   // Handle sorting (with case-sensitive PostgreSQL double-quoted identifier safety)
   const order = filters.sortOrder === "asc" ? asc : desc;
   if (filters.sortBy === "saves30") {
-    groupedQuery.orderBy(order(sql`"saves30Days"`), desc(properties.createdAt));
+    query.orderBy(order(sql`"saves30Days"`), desc(properties.createdAt));
   } else if (filters.sortBy === "savesAll") {
-    groupedQuery.orderBy(order(sql`"totalSaves"`), desc(properties.createdAt));
+    query.orderBy(order(sql`"totalSaves"`), desc(properties.createdAt));
   } else if (filters.sortBy === "active") {
-    groupedQuery.orderBy(order(sql`"activeSaves"`), desc(properties.createdAt));
+    query.orderBy(order(sql`"activeSaves"`), desc(properties.createdAt));
   } else {
-    groupedQuery.orderBy(order(properties.apiId));
+    query.orderBy(order(properties.apiId));
   }
 
   const limit = filters.limit ?? 20;
   const offset = filters.offset ?? 0;
 
-  return await groupedQuery.offset(offset).limit(limit);
+  return await query.offset(offset).limit(limit);
 }
 
 /**
