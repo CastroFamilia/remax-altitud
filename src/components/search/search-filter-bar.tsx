@@ -422,7 +422,7 @@ export function SearchFilterBar({
 
       {/* Active filter chips row — shown below filter bar when filters are active */}
       {activeFilterCount > 0 && (
-        <div className="flex-shrink-0 bg-background border-b border-border z-30 relative">
+        <div className="flex-shrink-0 bg-background border-b border-border z-10 relative">
           <FilterChips filters={filters} onClearFilter={clearFilter} onClearAll={clearAll} />
         </div>
       )}

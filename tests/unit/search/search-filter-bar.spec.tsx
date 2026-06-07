@@ -144,7 +144,7 @@ describe("SearchFilterBar", () => {
       expect(filterBar?.className).toContain("top-[var(--header-height)]");
 
       // z-index must be above content but below modals (z-40)
-      expect(filterBar?.className).toContain("z-40");
+      expect(filterBar?.className).toContain("z-20");
     },
   );
 

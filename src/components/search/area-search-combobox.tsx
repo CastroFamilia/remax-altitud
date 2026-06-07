@@ -303,6 +303,8 @@ export function AreaSearchCombobox({
           e.preventDefault();
           if (highlightedIndex >= 0 && filteredItems[highlightedIndex]) {
             handleSelect(filteredItems[highlightedIndex]);
+          } else if (filteredItems.length > 0) {
+            handleSelect(filteredItems[0]);
           } else if (allowCustom && query.trim()) {
             handleSelect(query.trim());
           }
