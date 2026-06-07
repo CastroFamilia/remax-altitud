@@ -13,3 +13,4 @@ export * from "./property-views";
 export * from "./lead-assignment-logs";
 export * from "./shortlist-events";
 export * from "./blog";
+export * from "./settings";
