@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { Map as MapboxMap, Source, Layer, Marker, NavigationControl } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MAPBOX_TOKEN, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, MAP_STYLE } from "@/lib/map/config";
+import {
+  MAPBOX_TOKEN,
+  DEFAULT_MAP_CENTER,
+  DEFAULT_MAP_ZOOM,
+  MAP_STYLE,
+  MAP_STYLE_SATELLITE,
+} from "@/lib/map/config";
+import { Layers } from "lucide-react";
 
 interface CommunityGeoFenceMapProps {
   polygonPoints: [number, number][];
@@ -23,6 +30,7 @@ export function CommunityGeoFenceMap({
     longitude: centerLng ?? DEFAULT_MAP_CENTER.lng,
     zoom: centerLat && centerLng ? 13 : DEFAULT_MAP_ZOOM,
   });
+  const [mapStyle, setMapStyle] = useState(MAP_STYLE);
 
   const handleMapClick = (evt: { lngLat: { lng: number; lat: number } }) => {
     const { lng, lat } = evt.lngLat;
@@ -46,12 +54,28 @@ export function CommunityGeoFenceMap({
         {...viewport}
         onMove={(evt) => setViewport(evt.viewState)}
         mapboxAccessToken={MAPBOX_TOKEN}
-        mapStyle={MAP_STYLE}
+        mapStyle={mapStyle}
         onClick={handleMapClick}
         style={{ width: "100%", height: "100%" }}
         cursor="crosshair"
       >
         <NavigationControl position="bottom-right" showCompass={false} />
+
+        {/* Map Style Toggle */}
+        <div className="absolute top-4 right-4 z-10">
+          <button
+            type="button"
+            className="bg-white p-2 rounded-md shadow-md border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors text-slate-700"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setMapStyle((prev) => (prev === MAP_STYLE ? MAP_STYLE_SATELLITE : MAP_STYLE));
+            }}
+            title={mapStyle === MAP_STYLE ? "Switch to Satellite view" : "Switch to Map view"}
+          >
+            <Layers className="w-5 h-5" />
+          </button>
+        </div>
 
         {/* Render markers for each point */}
         {polygonPoints.map((pt, idx) => (
