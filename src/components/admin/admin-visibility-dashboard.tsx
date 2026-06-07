@@ -23,6 +23,7 @@ import { formatUSD } from "@/lib/utils/currency";
 export interface AdminProperty {
   id: string;
   apiId: string;
+  listingKey?: string;
   slug: string;
   propertyType: string;
   status: string;
@@ -251,7 +252,17 @@ export function AdminVisibilityDashboard({
                           </div>
                         </td>
                         <td className="px-6 py-4 font-mono font-bold text-slate-400">
-                          #{property.apiId}
+                          <div className="flex flex-col gap-0.5">
+                            <span>#{property.apiId}</span>
+                            {property.listingKey && (
+                              <span
+                                className="text-[10px] text-slate-500 font-semibold truncate max-w-[120px]"
+                                title={property.listingKey}
+                              >
+                                {property.listingKey}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="px-6 py-4 font-bold text-slate-200">
                           {formatUSD(property.priceUsd, locale)}
