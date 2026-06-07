@@ -118,6 +118,11 @@
       "body": "You only see what is published; we know what is about to hit the market. We search our database, connect with other agencies, and scout the areas you love to bring you the perfect option.",
       "ctaText": "We make buying or renting simple.",
       "ctaButton": "VIP Search"
+    },
+    "latestBlogPosts": {
+      "heading": "Latest Articles",
+      "description": "Insights, guides, and lifestyle mapping from our team.",
+      "viewAll": "View all articles"
     }
   },
   "AboutPage": {

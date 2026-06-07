@@ -118,6 +118,11 @@
       "body": "Vos solo ves lo publicado; nosotros conocemos lo que está por salir. Buscamos en nuestro sistema, conectamos con otras inmobiliarias y recorremos las zonas que te encantan para traerte la opción perfecta.",
       "ctaText": "Hacemos que comprar o alquilar sea simple.",
       "ctaButton": "Búsqueda VIP"
+    },
+    "latestBlogPosts": {
+      "heading": "Últimos Artículos",
+      "description": "Insights, guías y mapeo de estilo de vida por nuestro equipo.",
+      "viewAll": "Ver todos los artículos"
     }
   },
   "AboutPage": {
