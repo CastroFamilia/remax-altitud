@@ -80,11 +80,6 @@ export function SearchFilterBar({
 
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
 
-  /** Toggle a property-type chip — same effect as choosing from the Type dropdown */
-  const handleTypeToggle = (type: string) => {
-    setFilter("type", filters.type === type ? undefined : type);
-  };
-
   const isLandType = filters.type ? LAND_TYPES.includes(filters.type) : false;
 
   const priceValue: [number | undefined, number | undefined] = [filters.priceMin, filters.priceMax];
@@ -149,7 +144,6 @@ export function SearchFilterBar({
     <div className="flex flex-wrap items-center gap-3 w-full">
       {/* Story 3.4: Lifestyle tag chips (AC #1, #2, #3) */}
       <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
-      {/* Listing Type dropdown (Sale / Lease) */}
       <div className="flex flex-col gap-1">
         <label className="text-xs font-medium text-muted-foreground">
           {t("filters.listingType")}
