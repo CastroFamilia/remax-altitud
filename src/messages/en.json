@@ -420,7 +420,12 @@
         "Con vista al mar": "Ocean view",
         "Con vista a la montaña": "Mountain view",
         "Para inversión": "Investment property",
-        "Retiro": "Retire"
+        "Retiro": "Retire",
+        "Potencial de desarrollo": "Development potential",
+        "Eco amigable": "Eco-friendly",
+        "Off grid": "Off grid",
+        "Fácil acceso": "Easy access",
+        "Requiere 4x4": "4x4 required"
       }
     },
     "presets": {
