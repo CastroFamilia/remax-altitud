@@ -420,7 +420,12 @@
         "Con vista al mar": "Con vista al mar",
         "Con vista a la montaña": "Con vista a la montaña",
         "Para inversión": "Para inversión",
-        "Retiro": "Retiro"
+        "Retiro": "Retiro",
+        "Potencial de desarrollo": "Potencial de desarrollo",
+        "Eco amigable": "Eco amigable",
+        "Off grid": "Off grid",
+        "Fácil acceso": "Fácil acceso",
+        "Requiere 4x4": "Requiere 4x4"
       }
     },
     "presets": {
