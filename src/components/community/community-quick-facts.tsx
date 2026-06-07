@@ -1,7 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import type { Community } from "@/lib/db/schema/communities";
-import { Mountain, Plane, Wifi, Waves, Building2, Calendar } from "lucide-react";
-
 interface CommunityQuickFactsProps {
   community: Community;
   locale: string;
@@ -30,37 +28,61 @@ export async function CommunityQuickFacts({ community, locale }: CommunityQuickF
   const facts: QuickFact[] = [
     {
       key: "elevation",
-      icon: <Mountain {...iconProps} />,
+      icon: (
+        <span className="text-3xl" role="img" aria-hidden="true">
+          📍
+        </span>
+      ),
       labelKey: "quickFacts.elevation",
       value: quickFacts.elevation,
     },
     {
       key: "airportDistance",
-      icon: <Plane {...iconProps} />,
+      icon: (
+        <span className="text-3xl" role="img" aria-hidden="true">
+          ✈
+        </span>
+      ),
       labelKey: "quickFacts.airport",
       value: quickFacts.airportDistance,
     },
     {
       key: "internet",
-      icon: <Wifi {...iconProps} />,
+      icon: (
+        <span className="text-3xl" role="img" aria-hidden="true">
+          🌐
+        </span>
+      ),
       labelKey: "quickFacts.internet",
       value: quickFacts.internet,
     },
     {
       key: "amenities",
-      icon: <Waves {...iconProps} />,
+      icon: (
+        <span className="text-3xl" role="img" aria-hidden="true">
+          🏊
+        </span>
+      ),
       labelKey: "quickFacts.amenities",
       value: quickFacts.amenities,
     },
     {
       key: "developer",
-      icon: <Building2 {...iconProps} />,
+      icon: (
+        <span className="text-3xl" role="img" aria-hidden="true">
+          🏗
+        </span>
+      ),
       labelKey: "quickFacts.developer",
       value: quickFacts.developer,
     },
     {
       key: "established",
-      icon: <Calendar {...iconProps} />,
+      icon: (
+        <span className="text-3xl" role="img" aria-hidden="true">
+          📅
+        </span>
+      ),
       labelKey: "quickFacts.established",
       value: quickFacts.established,
     },
