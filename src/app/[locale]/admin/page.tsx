@@ -4,6 +4,7 @@ import { fetchAdminSyncDashboardData } from "@/app/actions/admin-sync-actions";
 import { AdminSyncFilters } from "@/components/admin/admin-sync-filters";
 import { AdminSyncLogRow } from "@/components/admin/admin-sync-log-row";
 import { AdminSyncPagination } from "@/components/admin/admin-sync-pagination";
+import { AdminSyncControls } from "@/components/admin/admin-sync-controls";
 import { Database, Home, RefreshCw } from "lucide-react";
 
 interface PageProps {
@@ -147,6 +148,9 @@ export default async function AdminPage({ params, searchParams }: PageProps) {
           </div>
         </div>
       </div>
+
+      {/* Sync Controls */}
+      <AdminSyncControls locale={locale} />
 
       {/* Filters Form */}
       <AdminSyncFilters locale={locale} translations={filterTranslations} />

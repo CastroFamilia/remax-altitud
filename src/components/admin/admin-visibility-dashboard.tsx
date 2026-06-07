@@ -44,6 +44,7 @@ interface AdminVisibilityDashboardProps {
   currentPage: number;
   totalPages: number;
   showHiddenOnly: boolean;
+  initialGa4MeasurementId: string;
 }
 
 export function AdminVisibilityDashboard({
@@ -53,6 +54,7 @@ export function AdminVisibilityDashboard({
   currentPage,
   totalPages,
   showHiddenOnly,
+  initialGa4MeasurementId,
 }: AdminVisibilityDashboardProps) {
   const t = useTranslations("AdminVisibility");
   const router = useRouter();
@@ -62,6 +64,10 @@ export function AdminVisibilityDashboard({
   const [localProperties, setLocalProperties] = useState<AdminProperty[]>(properties);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  // GA4 Configuration state
+  const [ga4Id, setGa4Id] = useState(initialGa4MeasurementId);
+  const [isSavingGa4, setIsSavingGa4] = useState(false);
 
   useEffect(() => {
     setLocalProperties(properties);
@@ -131,6 +137,29 @@ export function AdminVisibilityDashboard({
       setAlert({ type: "error", message: t("errorUpdate") });
     } finally {
       setUpdatingId(null);
+      setTimeout(() => setAlert(null), 3000);
+    }
+  };
+
+  const handleSaveGa4Id = async () => {
+    setIsSavingGa4(true);
+    try {
+      const { updateSettingAction } = await import("@/app/actions/admin-settings-actions");
+      const res = await updateSettingAction("GA_MEASUREMENT_ID", ga4Id);
+      if (res.success) {
+        setAlert({
+          type: "success",
+          message: "Google Analytics 4 Measurement ID guardado correctamente.",
+        });
+        router.refresh();
+      } else {
+        setAlert({ type: "error", message: "Error al guardar el Measurement ID de GA4." });
+      }
+    } catch (error) {
+      console.error(error);
+      setAlert({ type: "error", message: "Error al guardar el Measurement ID de GA4." });
+    } finally {
+      setIsSavingGa4(false);
       setTimeout(() => setAlert(null), 3000);
     }
   };
@@ -483,14 +512,40 @@ export function AdminVisibilityDashboard({
             className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-md space-y-6 flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <LineChart className="w-5 h-5 text-red-500" />
-                  <span>{t("ga4Title")}</span>
-                </h3>
-                <span className="text-xs text-slate-500 font-semibold">
-                  Real-Time User Engagement
-                </span>
+              <div className="flex flex-col gap-4 pb-4 border-b border-slate-800">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <LineChart className="w-5 h-5 text-red-500" />
+                    <span>{t("ga4Title")}</span>
+                  </h3>
+                  <span className="text-xs text-slate-500 font-semibold">
+                    Real-Time User Engagement
+                  </span>
+                </div>
+
+                {/* GA4 Configuration Input */}
+                <div className="flex items-center gap-2 bg-slate-950 p-3 rounded-lg border border-slate-850">
+                  <div className="flex-1">
+                    <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block mb-1">
+                      Measurement ID
+                    </label>
+                    <input
+                      type="text"
+                      value={ga4Id}
+                      onChange={(e) => setGa4Id(e.target.value)}
+                      placeholder="G-XXXXXXXXXX"
+                      className="w-full bg-slate-900 border border-slate-800 rounded px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors font-mono"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSaveGa4Id}
+                    disabled={isSavingGa4 || ga4Id === initialGa4MeasurementId}
+                    className="self-end px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded text-sm transition-all focus:ring-2 focus:ring-slate-500 disabled:opacity-50 cursor-pointer flex items-center gap-2"
+                  >
+                    {isSavingGa4 ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                    <span>Guardar</span>
+                  </button>
+                </div>
               </div>
 
               {/* Popular Pages List */}

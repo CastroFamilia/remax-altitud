@@ -19,6 +19,7 @@ import {
   updatePropertyLifestyleTags,
 } from "@/lib/db/queries/properties";
 import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
+import { updateCommunityListingCounts } from "@/lib/db/queries/communities";
 import type { ParseError } from "@/types/remax-api";
 
 /** Summary returned by `runSyncPipeline` on success. */
@@ -277,6 +278,7 @@ export async function runSyncPipeline(options?: {
     // Step 7d: Community geo-tagging (Story 6.5, AC #1, FR50)
     info("Running community geo-fence auto-tagging...");
     const autoTaggedCount = await autoTagCommunities();
+    await updateCommunityListingCounts();
     info(`Community geo-fence auto-tagging complete: ${autoTaggedCount} properties tagged.`);
 
     // Step 8: Collect lotSizeUnitWarning errors (AC #12) — do NOT block upsert

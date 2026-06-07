@@ -66,7 +66,10 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
 
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-E2EMOCK123";
+  // Try to fetch GA4 Measurement ID from database, fallback to environment variable
+  const { getSettingAction } = await import("@/app/actions/admin-settings-actions");
+  const ga4Setting = await getSettingAction("GA_MEASUREMENT_ID");
+  const gaId = ga4Setting.value || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-E2EMOCK123";
 
   return (
     <html lang={locale} className={cn("font-sans", montserrat.variable)}>

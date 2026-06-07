@@ -18,6 +18,7 @@ const { mockInsert, mockUpdate, mockDelete, mockDb, mockRevalidatePath } = vi.ho
     update: mockUpdate,
     delete: mockDelete,
     select: mockSelect,
+    execute: vi.fn().mockResolvedValue(true),
   };
   mockDb.transaction = vi.fn((cb) => cb(mockDb));
   const mockRevalidatePath = vi.fn();
