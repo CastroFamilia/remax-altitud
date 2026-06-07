@@ -1,121 +1,617 @@
-/**
- * ACM Locations — Shared location hierarchy for REMAX Altitud ecosystem.
- *
- * Source of truth: ALTITUD HUB locations.js
- * Structure: Cantón → Distrito → Poblado/Barrio
- *
- * This module is used by:
- * - Sync pipeline (resolveSubLocation) to auto-tag properties on ingest
- * - Search combobox (AreaSearchCombobox) for hierarchical area selection
- * - Property cards (getPropertyLocation) for display labels
- *
- * When RECONNECT API sends Location = "Cajón de Pérez Zeledón, San José",
- * we match "Cajón" → district slug "cajon" under parent "perez-zeledon".
- */
+export interface LocationItem {
+  id: string;
+  name: string;
+}
 
-// ─── Types ──────────────────────────────────────────────────────────────────
-
-export interface District {
-  /** URL-safe slug for the district (e.g. "cajon") */
-  slug: string;
-  /** Display label (e.g. "Cajón") */
-  label: string;
-  /** Parent area slug this district belongs to (e.g. "perez-zeledon") */
-  parentSlug: string;
-  /** Coordinates [lat, lng, zoom] for map centering */
-  coords?: [number, number, number];
+export interface Distrito {
+  cabecera?: string;
+  barrios: LocationItem[];
 }
 
 export interface Canton {
-  /** Display label (e.g. "Pérez Zeledón") */
-  label: string;
-  /** Area slug used in the website (e.g. "perez-zeledon") */
-  areaSlug: string;
-  /** Districts within this cantón */
-  districts: District[];
+  distritos: Record<string, Distrito>;
 }
 
-// ─── Pérez Zeledón — 12 Districts ───────────────────────────────────────────
+export const costaRicaLocations: Record<string, Canton> = {
+  perez_zeledon: {
+    distritos: {
+      san_isidro_de_el_general: {
+        barrios: [{ id: "pz_si_centro", name: "San Isidro de El General" }],
+      },
+      el_general: {
+        barrios: [{ id: "pz_eg_centro", name: "El General" }],
+      },
+      general_viejo: {
+        cabecera: "General Viejo",
+        barrios: [
+          { id: "pz_gv_gv", name: "General Viejo" },
+          { id: "pz_gv_venecia", name: "Venecia" },
+          { id: "pz_gv_nuevo_gen", name: "Nuevo General" },
+          { id: "pz_gv_pb", name: "Peñas Blancas" },
+          { id: "pz_gv_ingenio", name: "El Ingenio" },
+          { id: "pz_gv_c_hidalgo", name: "Calle Hidalgo" },
+          { id: "pz_gv_san_martin", name: "San Martín" },
+          { id: "pz_gv_pinar_rio", name: "Pinar del Río" },
+          { id: "pz_gv_la_linda", name: "La Linda" },
+          { id: "pz_gv_el_carril", name: "El Carril" },
+          { id: "pz_gv_paraiso", name: "Paraíso" },
+          { id: "pz_gv_san_luis", name: "San Luis" },
+          { id: "pz_gv_miraflores", name: "Miraflores" },
+          { id: "pz_gv_santa_cruz", name: "Santa Cruz" },
+          { id: "pz_gv_san_blas", name: "San Blas Linda Arriba" },
+          { id: "pz_gv_la_hermosa", name: "La Hermosa" },
+          { id: "pz_gv_quizarra", name: "Quizarrá" },
+          { id: "pz_gv_montecarlo", name: "Montecarlo" },
+        ],
+      },
+      santa_elena_de_el_general: {
+        cabecera: "Santa Elena",
+        barrios: [
+          { id: "pz_se_santa_elena", name: "Santa Elena" },
+          { id: "pz_se_trinidad", name: "Trinidad" },
+          { id: "pz_se_las_nubes", name: "Las Nubes" },
+          { id: "pz_se_la_paz", name: "La Paz" },
+          { id: "pz_se_barrio_nuevo", name: "Barrio Nuevo" },
+          { id: "pz_se_bajo_arias", name: "Bajo Los Arias" },
+          { id: "pz_se_chumpulun", name: "El Chumpulún" },
+          { id: "pz_se_calle_guzman", name: "Calle Guzmán" },
+          { id: "pz_se_playa_verde", name: "Playa Verde" },
+          { id: "pz_se_la_arepa", name: "La Arepa" },
+        ],
+      },
+      daniel_flores: {
+        cabecera: "Palmares",
+        barrios: [
+          { id: "pz_df_alto_brisas", name: "Alto Brisas" },
+          { id: "pz_df_angeles", name: "Los Ángeles" },
+          { id: "pz_df_aurora", name: "Aurora" },
+          { id: "pz_df_los_chiles", name: "Los Chiles" },
+          { id: "pz_df_crematorio", name: "Crematorio" },
+          { id: "pz_df_zavaleta", name: "Daniel Flores Zavaleta" },
+          { id: "pz_df_laboratorio", name: "Barrio Laboratorio" },
+          { id: "pz_df_los_pinos", name: "Los Pinos" },
+          { id: "pz_df_loma_verde", name: "Loma Verde" },
+          { id: "pz_df_lourdes", name: "Lourdes" },
+          { id: "pz_df_rosas", name: "Rosas" },
+          { id: "pz_df_rosa_iris", name: "Rosa Iris" },
+          { id: "pz_df_san_francisco", name: "San Francisco" },
+          { id: "pz_df_st_margarita", name: "Santa Margarita" },
+          { id: "pz_df_la_trocha", name: "La Trocha" },
+          { id: "pz_df_villa_ligia", name: "Villa Ligia" },
+          { id: "pz_df_aguas_buenas", name: "Aguas Buenas" },
+          { id: "pz_df_bajos_pacuar", name: "Bajos de Pacuar" },
+          { id: "pz_df_concepcion", name: "Concepción" },
+          { id: "pz_df_corazon_jesus", name: "Corazón de Jesús" },
+          { id: "pz_df_juntas_pacuar", name: "Juntas de Pacuar" },
+          { id: "pz_df_paso_bote", name: "Paso Bote" },
+          { id: "pz_df_patio_agua", name: "Patio de Agua San Juan Bosco" },
+          { id: "pz_df_peje", name: "Peje" },
+          { id: "pz_df_percal", name: "Percal" },
+          { id: "pz_df_pinar_rio", name: "Pinar del Río" },
+          { id: "pz_df_q_honda", name: "Quebrada Honda" },
+          { id: "pz_df_repunta", name: "Repunta" },
+          { id: "pz_df_los_reyes", name: "Los Reyes" },
+          { id: "pz_df_la_ribera", name: "La Ribera" },
+          { id: "pz_df_la_suiza", name: "La Suiza" },
+        ],
+      },
+      rivas: {
+        barrios: [
+          { id: "pz_ri_san_gerardo", name: "San Gerardo" },
+          { id: "pz_ri_canaan", name: "Canaán" },
+          { id: "pz_ri_chimirol", name: "Chimirol" },
+          { id: "pz_ri_herradura", name: "Herradura" },
+          { id: "pz_ri_angeles", name: "Los Ángeles" },
+          { id: "pz_ri_guadalupe", name: "Guadalupe" },
+          { id: "pz_ri_san_francisco", name: "San Francisco" },
+          { id: "pz_ri_talari", name: "Talari" },
+          { id: "pz_ri_san_jose", name: "San José" },
+          { id: "pz_ri_monterrey", name: "Monterrey" },
+          { id: "pz_ri_c_mora", name: "Calle Los Mora" },
+          { id: "pz_ri_zapotal", name: "Zapotal" },
+          { id: "pz_ri_chispa", name: "Chispa" },
+          { id: "pz_ri_chuma", name: "Chuma" },
+          { id: "pz_ri_rio_blanco", name: "Río Blanco" },
+          { id: "pz_ri_buena_vista", name: "Buena Vista" },
+          { id: "pz_ri_la_piedra", name: "La Piedra" },
+          { id: "pz_ri_palmital", name: "Palmital" },
+          { id: "pz_ri_sj_norte", name: "San Juan Norte" },
+          { id: "pz_ri_alaska", name: "Alaska" },
+          { id: "pz_ri_piedra_alta", name: "Piedra Alta" },
+          { id: "pz_ri_alto_jaular", name: "Alto Jaular" },
+          { id: "pz_ri_san_cayetano", name: "San Cayetano" },
+          { id: "pz_ri_las_playas", name: "Las Playas" },
+          { id: "pz_ri_rivas_p", name: "Rivas" },
+          { id: "pz_ri_pueblo_nuevo", name: "Pueblo Nuevo" },
+          { id: "pz_ri_miravalles", name: "Miravalles" },
+          { id: "pz_ri_la_bonita", name: "La Bonita" },
+          { id: "pz_ri_linda_vista", name: "Linda Vista" },
+          { id: "pz_ri_tirra", name: "Tirrá" },
+          { id: "pz_ri_la_bambu", name: "La Bambú" },
+          { id: "pz_ri_san_antonio", name: "San Antonio" },
+          { id: "pz_ri_lourdes", name: "Lourdes" },
+          { id: "pz_ri_santa_marta", name: "Santa Marta" },
+          { id: "pz_ri_division", name: "División" },
+          { id: "pz_ri_el_jardin", name: "El Jardín" },
+          { id: "pz_ri_villa_mills", name: "Villa Mills" },
+          { id: "pz_ri_macho_mora", name: "Macho Mora" },
+          { id: "pz_ri_siberia", name: "El Nivel Siberia" },
+        ],
+      },
+      san_pedro: {
+        barrios: [
+          { id: "pz_sp_cruz_roja", name: "Cruz Roja" },
+          { id: "pz_sp_san_pedro", name: "San Pedro" },
+          { id: "pz_sp_arenilla", name: "Arenilla" },
+          { id: "pz_sp_alto_calderon", name: "Alto Calderón" },
+          { id: "pz_sp_cedral", name: "Cedral" },
+          { id: "pz_sp_colonia", name: "Colonia" },
+          { id: "pz_sp_cristo_rey", name: "Cristo Rey" },
+          { id: "pz_sp_esperanza", name: "Esperanza" },
+          { id: "pz_sp_fatima", name: "Fátima" },
+          { id: "pz_sp_fortuna", name: "Fortuna" },
+          { id: "pz_sp_guaria", name: "Guaria" },
+          { id: "pz_sp_angeles", name: "Los Ángeles" },
+          { id: "pz_sp_laguna", name: "Laguna" },
+          { id: "pz_sp_n_hortensia", name: "Nueva Hortensia" },
+          { id: "pz_sp_n_santa_ana", name: "Nueva Santa Ana" },
+          { id: "pz_sp_rinconada", name: "Rinconada Vega" },
+          { id: "pz_sp_s_jeronimo", name: "San Jerónimo" },
+          { id: "pz_sp_s_juan", name: "San Juan" },
+          { id: "pz_sp_s_juancito", name: "San Juancito" },
+          { id: "pz_sp_s_rafael", name: "San Rafael" },
+          { id: "pz_sp_santa_ana", name: "Santa Ana" },
+          { id: "pz_sp_st_cecilia", name: "Santa Cecilia" },
+          { id: "pz_sp_s_domingo", name: "Santo Domingo" },
+          { id: "pz_sp_santiago", name: "Santiago" },
+          { id: "pz_sp_tambor", name: "Tambor" },
+          { id: "pz_sp_union", name: "Unión" },
+          { id: "pz_sp_zapotal", name: "Zapotal" },
+        ],
+      },
+      platanares: {
+        cabecera: "San Rafael",
+        barrios: [
+          { id: "pz_pl_aguas_buenas", name: "Aguas Buenas" },
+          { id: "pz_pl_b_bonitas", name: "Bajo Bonitas" },
+          { id: "pz_pl_b_espinoza", name: "Bajo Espinoza" },
+          { id: "pz_pl_bolivia", name: "Bolivia" },
+          { id: "pz_pl_bonitas", name: "Bonitas" },
+          { id: "pz_pl_b_aires", name: "Buenos Aires" },
+          { id: "pz_pl_concepcion", name: "Concepción" },
+          { id: "pz_pl_cristo_rey", name: "Cristo Rey" },
+          { id: "pz_pl_la_sierra", name: "La Sierra" },
+          { id: "pz_pl_lourdes", name: "Lourdes" },
+          { id: "pz_pl_mastatal", name: "Mastatal" },
+          { id: "pz_pl_mollejoncito", name: "Mollejoncito" },
+          { id: "pz_pl_mollejones", name: "Mollejones" },
+          { id: "pz_pl_naranjos", name: "Naranjos" },
+          { id: "pz_pl_s_pablito", name: "San Pablito" },
+          { id: "pz_pl_san_pablo", name: "San Pablo" },
+          { id: "pz_pl_socorro", name: "Socorro" },
+          { id: "pz_pl_surtubal", name: "Surtubal" },
+          { id: "pz_pl_v_argentina", name: "Villa Argentina" },
+          { id: "pz_pl_v_flor", name: "Villa Flor" },
+          { id: "pz_pl_vista_mar", name: "Vista de Mar" },
+          { id: "pz_pl_san_gerardo", name: "San Gerardo" },
+        ],
+      },
+      pejibaye: {
+        barrios: [
+          { id: "pz_pe_achiotal", name: "Achiotal" },
+          { id: "pz_pe_aguila", name: "Águila" },
+          { id: "pz_pe_alto_trinidad", name: "Alto Trinidad Puñal" },
+          { id: "pz_pe_bajo_caliente", name: "Bajo Caliente" },
+          { id: "pz_pe_bajo_minas", name: "Bajo Minas" },
+          { id: "pz_pe_barrionuevo", name: "Barrionuevo" },
+          { id: "pz_pe_bellavista", name: "Bellavista" },
+          { id: "pz_pe_calientillo", name: "Calientillo" },
+          { id: "pz_pe_delicias", name: "Delicias" },
+          { id: "pz_pe_desamparados", name: "Desamparados" },
+          { id: "pz_pe_el_progreso", name: "El Progreso" },
+          { id: "pz_pe_gibre", name: "Gibre" },
+          { id: "pz_pe_guadalupe", name: "Guadalupe" },
+          { id: "pz_pe_las_cruces", name: "Las Cruces" },
+          { id: "pz_pe_mesas", name: "Mesas" },
+          { id: "pz_pe_minas", name: "Minas" },
+          { id: "pz_pe_paraiso", name: "Paraíso" },
+          { id: "pz_pe_san_marcos", name: "San Marcos" },
+          { id: "pz_pe_san_martin", name: "San Martín" },
+          { id: "pz_pe_san_miguel", name: "San Miguel" },
+          { id: "pz_pe_santa_fe", name: "Santa Fe" },
+          { id: "pz_pe_surtubal", name: "Surtubal" },
+          { id: "pz_pe_trinidad", name: "Trinidad" },
+          { id: "pz_pe_veracruz", name: "Veracruz" },
+          { id: "pz_pe_zapote", name: "Zapote" },
+        ],
+      },
+      cajon: {
+        barrios: [
+          { id: "pz_ca_cedral", name: "Cedral" },
+          { id: "pz_ca_quemado", name: "El Quemado" },
+          { id: "pz_ca_gloria", name: "Gloria" },
+          { id: "pz_ca_brisas", name: "Las Brisas" },
+          { id: "pz_ca_los_vega", name: "Los Vega" },
+          { id: "pz_ca_mercedes", name: "Mercedes" },
+          { id: "pz_ca_montecarlo", name: "Montecarlo" },
+          { id: "pz_ca_navajuelar", name: "Navajuelar" },
+          { id: "pz_ca_nubes", name: "Nubes" },
+          { id: "pz_ca_paraiso", name: "Paraíso" },
+          { id: "pz_ca_pilar", name: "Pilar" },
+          { id: "pz_ca_pueblo_nuevo", name: "Pueblo Nuevo" },
+          { id: "pz_ca_quizarra", name: "Quizarrá" },
+          { id: "pz_ca_salitrales", name: "Salitrales" },
+          { id: "pz_ca_san_francisco", name: "San Francisco" },
+          { id: "pz_ca_san_ignacio", name: "San Ignacio" },
+          { id: "pz_ca_san_pedrito", name: "San Pedrito" },
+          { id: "pz_ca_santa_maria", name: "Santa María" },
+          { id: "pz_ca_santa_teresa", name: "Santa Teresa" },
+        ],
+      },
+      baru: {
+        cabecera: "Platanillo",
+        barrios: [
+          { id: "pz_ba_alfombra", name: "Alfombra" },
+          { id: "pz_ba_alto_perla", name: "Alto Perla" },
+          { id: "pz_ba_bajos", name: "Bajos" },
+          { id: "pz_ba_b_zapotal", name: "Bajos de Zapotal" },
+          { id: "pz_ba_baru_p", name: "Barú" },
+          { id: "pz_ba_barucito", name: "Barucito" },
+          { id: "pz_ba_cacao", name: "Cacao" },
+          { id: "pz_ba_camarones", name: "Camarones" },
+          { id: "pz_ba_canablanca", name: "Cañablanca" },
+          { id: "pz_ba_ceiba", name: "Ceiba" },
+          { id: "pz_ba_chontales", name: "Chontales" },
+          { id: "pz_ba_farallas", name: "Farallas" },
+          { id: "pz_ba_florida", name: "Florida" },
+          { id: "pz_ba_sj_dios", name: "San Juan de Dios Guabo" },
+          { id: "pz_ba_libano", name: "Líbano" },
+          { id: "pz_ba_magnolia", name: "Magnolia" },
+          { id: "pz_ba_pozos", name: "Pozos" },
+          { id: "pz_ba_reina", name: "Reina" },
+          { id: "pz_ba_san_marcos", name: "San Marcos" },
+          { id: "pz_ba_san_salvador", name: "San Salvador" },
+          { id: "pz_ba_st_juana", name: "Santa Juana" },
+          { id: "pz_ba_sto_cristo", name: "Santo Cristo" },
+          { id: "pz_ba_tinamaste", name: "Tinamaste San Cristóbal" },
+          { id: "pz_ba_torito", name: "Torito" },
+          { id: "pz_ba_tres_piedras", name: "Tres Piedras" },
+          { id: "pz_ba_tumbas", name: "Tumbas" },
+          { id: "pz_ba_villabonita", name: "Villabonita" },
+          { id: "pz_ba_vista_mar", name: "Vista Mar" },
+        ],
+      },
+      rio_nuevo: {
+        barrios: [
+          { id: "pz_rn_santa_rosa", name: "Santa Rosa" },
+          { id: "pz_rn_san_antonio", name: "San Antonio" },
+          { id: "pz_rn_calle_mora", name: "Calle Mora" },
+          { id: "pz_rn_sj_cruz", name: "San Juan de la Cruz Alto los Mena" },
+          { id: "pz_rn_santa_marta", name: "Santa Marta" },
+          { id: "pz_rn_purruja", name: "La Purruja" },
+          { id: "pz_rn_san_cayetano", name: "San Cayetano" },
+          { id: "pz_rn_chirricano", name: "Chirricano" },
+          { id: "pz_rn_savegre", name: "Savegre" },
+          { id: "pz_rn_el_llano", name: "El Llano" },
+          { id: "pz_rn_el_brujo", name: "El Brujo" },
+          { id: "pz_rn_p_blancas", name: "Piedras Blancas" },
+          { id: "pz_rn_zaragoza", name: "Zaragoza" },
+          { id: "pz_rn_santa_lucia", name: "Santa Lucía" },
+          { id: "pz_rn_california", name: "California" },
+        ],
+      },
+      paramo: {
+        cabecera: "San Ramón Sur",
+        barrios: [
+          { id: "pz_pa_macho_mora", name: "Alto Macho Mora" },
+          { id: "pz_pa_siberia", name: "Siberia" },
+          { id: "pz_pa_division", name: "División" },
+          { id: "pz_pa_miramar", name: "Miramar" },
+          { id: "pz_pa_jardin", name: "Jardín" },
+          { id: "pz_pa_la_hortensia", name: "La Hortensia" },
+          { id: "pz_pa_la_ese", name: "La Ese" },
+          { id: "pz_pa_matazanos", name: "Matazanos" },
+          { id: "pz_pa_valencia", name: "Valencia" },
+          { id: "pz_pa_sr_sur", name: "San Ramón Sur" },
+          { id: "pz_pa_sr_norte", name: "San Ramón Norte" },
+          { id: "pz_pa_berlin", name: "Berlín" },
+          { id: "pz_pa_angeles", name: "Ángeles" },
+          { id: "pz_pa_sto_tomas", name: "Santo Tomás" },
+          { id: "pz_pa_st_eduviges", name: "Santa Eduviges" },
+          { id: "pz_pa_san_miguel", name: "San Miguel" },
+          { id: "pz_pa_pedregosito", name: "Pedregosito" },
+        ],
+      },
+      la_amistad: {
+        cabecera: "San Antonio",
+        barrios: [
+          { id: "pz_am_corralillo", name: "Corralillo" },
+          { id: "pz_am_china_kicha", name: "China Kicha" },
+          { id: "pz_am_montezuma", name: "Montezuma" },
+          { id: "pz_am_oratorio", name: "Oratorio" },
+          { id: "pz_am_san_carlos", name: "San Carlos" },
+          { id: "pz_am_san_gabriel", name: "San Gabriel" },
+          { id: "pz_am_san_roque", name: "San Roque" },
+          { id: "pz_am_st_cecilia", name: "Santa Cecilia" },
+          { id: "pz_am_st_luisa", name: "Santa Luisa" },
+        ],
+      },
+    },
+  },
+  osa: {
+    distritos: {
+      puerto_cortes: {
+        barrios: [
+          { id: "osa_pc_canada", name: "Canadá" },
+          { id: "osa_pc_cementerio", name: "Cementerio" },
+          { id: "osa_pc_5esquinas", name: "Cinco Esquinas" },
+          { id: "osa_pc_montreal", name: "Montreal" },
+          { id: "osa_pc_precario", name: "Precario" },
+          { id: "osa_pc_pueblo_nuevo", name: "Pueblo Nuevo" },
+          { id: "osa_pc_renacimiento", name: "Renacimiento" },
+          { id: "osa_pc_yuca", name: "Yuca" },
+          { id: "osa_pc_balsar", name: "Balsar" },
+          { id: "osa_pc_bocabrava", name: "Bocabrava" },
+          { id: "osa_pc_bocachica", name: "Bocachica" },
+          { id: "osa_pc_cerron", name: "Cerrón" },
+          { id: "osa_pc_coronado", name: "Coronado" },
+          { id: "osa_pc_chontales", name: "Chontales" },
+          { id: "osa_pc_delicias", name: "Delicias" },
+          { id: "osa_pc_embarcadero", name: "Embarcadero" },
+          { id: "osa_pc_fuente", name: "Fuente" },
+          { id: "osa_pc_isla_sorpresa", name: "Isla Sorpresa" },
+          { id: "osa_pc_lindavista", name: "Lindavista" },
+          { id: "osa_pc_lourdes", name: "Lourdes" },
+          { id: "osa_pc_ojochal", name: "Ojochal" },
+          { id: "osa_pc_ojo_agua", name: "Ojo de Agua" },
+          { id: "osa_pc_parcelas", name: "Parcelas" },
+          { id: "osa_pc_pozo", name: "Pozo" },
+          { id: "osa_pc_punta_mala", name: "Punta Mala" },
+          { id: "osa_pc_p_mala_arriba", name: "Punta Mala Arriba" },
+          { id: "osa_pc_s_buenaventura", name: "San Buenaventura" },
+          { id: "osa_pc_san_juan", name: "San Juan" },
+          { id: "osa_pc_san_marcos", name: "San Marcos" },
+          { id: "osa_pc_tagual", name: "Tagual" },
+          { id: "osa_pc_tortuga_abajo", name: "Tortuga Abajo" },
+          { id: "osa_pc_tres_rios", name: "Tres Ríos" },
+          { id: "osa_pc_v_terraba", name: "Vista de Térraba" },
+        ],
+      },
+      palmar: {
+        cabecera: "Palmar Norte",
+        barrios: [
+          { id: "osa_pa_betania", name: "Betania" },
+          { id: "osa_pa_11abril", name: "Once de Abril" },
+          { id: "osa_pa_brisas", name: "Las Brisas" },
+          { id: "osa_pa_luz_mundo", name: "La luz del mundo" },
+          { id: "osa_pa_alemania", name: "Alemania" },
+          { id: "osa_pa_alto_angeles", name: "Alto Ángeles" },
+          { id: "osa_pa_alto_encanto", name: "Alto Encanto" },
+          { id: "osa_pa_alto_montura", name: "Alto Montura" },
+          { id: "osa_pa_bellavista", name: "Bellavista" },
+          { id: "osa_pa_calavera", name: "Calavera" },
+          { id: "osa_pa_cansot", name: "Cansot" },
+          { id: "osa_pa_canablancal_e", name: "Cañablancal Este" },
+          { id: "osa_pa_canablancal_o", name: "Cañablancal Oeste" },
+          { id: "osa_pa_coobo", name: "Coobó Progreso" },
+          { id: "osa_pa_coquito", name: "Coquito" },
+          { id: "osa_pa_gorrion", name: "Gorrión" },
+          { id: "osa_pa_jalaca", name: "Jalaca" },
+          { id: "osa_pa_olla_cero", name: "Olla Cero" },
+          { id: "osa_pa_palma", name: "Palma" },
+          { id: "osa_pa_paraiso", name: "Paraíso" },
+          { id: "osa_pa_1marzo", name: "Primero de Marzo" },
+          { id: "osa_pa_p_del_sol", name: "Puerta del Sol" },
+          { id: "osa_pa_s_cristobal", name: "San Cristóbal" },
+          { id: "osa_pa_s_francisco", name: "San Francisco Tinoco" },
+          { id: "osa_pa_s_gabriel", name: "San Gabriel" },
+          { id: "osa_pa_s_isidro", name: "San Isidro" },
+          { id: "osa_pa_s_rafael", name: "San Rafael" },
+          { id: "osa_pa_santa_elena", name: "Santa Elena" },
+          { id: "osa_pa_silencio", name: "Silencio" },
+          { id: "osa_pa_trocha", name: "Trocha" },
+          { id: "osa_pa_vergel", name: "Vergel" },
+          { id: "osa_pa_victoria", name: "Victoria" },
+          { id: "osa_pa_zapote", name: "Zapote" },
+        ],
+      },
+      sierpe: {
+        barrios: [
+          { id: "osa_si_ajuntaderas", name: "Ajuntaderas" },
+          { id: "osa_si_alto_mogos", name: "Alto Los Mogos" },
+          { id: "osa_si_alto_sj", name: "Alto San Juan" },
+          { id: "osa_si_bahia_chal", name: "Bahía Chal" },
+          { id: "osa_si_bajos_matias", name: "Bajos Matías" },
+          { id: "osa_si_barco", name: "Barco" },
+          { id: "osa_si_bejuco", name: "Bejuco" },
+          { id: "osa_si_b_chocuaco", name: "Boca Chocuaco" },
+          { id: "osa_si_gallega", name: "Gallega" },
+          { id: "osa_si_camibar", name: "Camíbar" },
+          { id: "osa_si_c_aguabuena", name: "Campo de Aguabuena" },
+          { id: "osa_si_cantarrana", name: "Cantarrana" },
+          { id: "osa_si_charcos", name: "Charcos" },
+          { id: "osa_si_chocuaco", name: "Chocuaco" },
+          { id: "osa_si_garrobo", name: "Garrobo" },
+          { id: "osa_si_guabos", name: "Guabos" },
+          { id: "osa_si_isidora", name: "Isidora" },
+          { id: "osa_si_islotes", name: "Islotes" },
+          { id: "osa_si_jalaca", name: "Jalaca" },
+          { id: "osa_si_julia", name: "Julia" },
+          { id: "osa_si_miramar", name: "Miramar" },
+          { id: "osa_si_mogos", name: "Mogos" },
+          { id: "osa_si_monterrey", name: "Monterrey" },
+          { id: "osa_si_p_palma", name: "Playa Palma" },
+          { id: "osa_si_playitas", name: "Playitas" },
+          { id: "osa_si_potrero", name: "Potrero" },
+          { id: "osa_si_p_escondido", name: "Puerto Escondido" },
+          { id: "osa_si_rincon", name: "Rincón" },
+          { id: "osa_si_sabalo", name: "Sábalo" },
+          { id: "osa_si_s_gerardo", name: "San Gerardo" },
+          { id: "osa_si_san_juan", name: "San Juan" },
+          { id: "osa_si_taboga", name: "Taboga" },
+          { id: "osa_si_taboguita", name: "Taboguita" },
+          { id: "osa_si_tigre", name: "Tigre" },
+          { id: "osa_si_varillal", name: "Varillal" },
+        ],
+      },
+      piedras_blancas: {
+        barrios: [
+          { id: "osa_pb_angeles", name: "Ángeles" },
+          { id: "osa_pb_bellavista", name: "Bellavista" },
+          { id: "osa_pb_calera", name: "Calera" },
+          { id: "osa_pb_c_oscuro", name: "Cerro Oscuro" },
+          { id: "osa_pb_chacarita", name: "Chacarita" },
+          { id: "osa_pb_fila", name: "Fila" },
+          { id: "osa_pb_f_alajuela", name: "Finca Alajuela" },
+          { id: "osa_pb_f_guanacaste", name: "Finca Guanacaste" },
+          { id: "osa_pb_f_puntarenas", name: "Finca Puntarenas" },
+          { id: "osa_pb_florida", name: "Florida" },
+          { id: "osa_pb_guaria", name: "Guaria" },
+          { id: "osa_pb_k40", name: "Kilómetro 40" },
+          { id: "osa_pb_navidad", name: "Navidad" },
+          { id: "osa_pb_nubes", name: "Nubes" },
+          { id: "osa_pb_porvenir", name: "Porvenir" },
+          { id: "osa_pb_r_caliente", name: "Rincón Caliente" },
+          { id: "osa_pb_salama", name: "Salamá" },
+          { id: "osa_pb_san_martin", name: "San Martín" },
+          { id: "osa_pb_st_cecilia", name: "Santa Cecilia" },
+          { id: "osa_pb_santa_rosa", name: "Santa Rosa" },
+          { id: "osa_pb_sinai", name: "Sinaí" },
+          { id: "osa_pb_venecia", name: "Venecia" },
+          { id: "osa_pb_v_bonita", name: "Villa Bonita" },
+          { id: "osa_pb_v_colon", name: "Villa Colón" },
+        ],
+      },
+      bahia_ballena: {
+        cabecera: "Villa de Uvita",
+        barrios: [
+          { id: "osa_bb_b_ballena", name: "Bahía Ballena" },
+          { id: "osa_bb_cambutal", name: "Cambutal" },
+          { id: "osa_bb_dominical", name: "Dominical" },
+          { id: "osa_bb_dominicalito", name: "Dominicalito" },
+          { id: "osa_bb_escaleras", name: "Escaleras" },
+          { id: "osa_bb_pinuela", name: "Piñuela" },
+          { id: "osa_bb_p_hermosa", name: "Playa Hermosa" },
+          { id: "osa_bb_q_grande", name: "Quebrada Grande" },
+          { id: "osa_bb_s_josecito", name: "San Josecito" },
+          { id: "osa_bb_san_martin", name: "San Martín" },
+          { id: "osa_bb_tortuga_arr", name: "Tortuga Arriba" },
+        ],
+      },
+      bahia_drake: {
+        cabecera: "Villa Agujitas Drake",
+        barrios: [
+          { id: "osa_bd_angeles", name: "Ángeles" },
+          { id: "osa_bd_banegas", name: "Banegas" },
+          { id: "osa_bd_boca_ganado", name: "Boca Ganado" },
+          { id: "osa_bd_campanario", name: "Campanario" },
+          { id: "osa_bd_caletas", name: "Caletas" },
+          { id: "osa_bd_guerra", name: "Guerra" },
+          { id: "osa_bd_planes", name: "Planes" },
+          { id: "osa_bd_progreso", name: "Progreso" },
+          { id: "osa_bd_q_ganado", name: "Quebrada Ganado" },
+          { id: "osa_bd_r_quemado", name: "Rancho Quemado" },
+          { id: "osa_bd_riyito", name: "Riyito" },
+          { id: "osa_bd_s_josecito", name: "San Josecito Rincón" },
+          { id: "osa_bd_san_pedrillo", name: "San Pedrillo" },
+        ],
+      },
+    },
+  },
+};
 
-const PZ_DISTRICTS: District[] = [
-  {
-    slug: "san-isidro",
-    label: "San Isidro de El General",
-    parentSlug: "perez-zeledon",
-    coords: [9.3787, -83.7008, 14],
-  },
-  {
-    slug: "el-general",
-    label: "El General",
-    parentSlug: "perez-zeledon",
-    coords: [9.355, -83.655, 14],
-  },
-  {
-    slug: "daniel-flores",
-    label: "Daniel Flores",
-    parentSlug: "perez-zeledon",
-    coords: [9.345, -83.68, 14],
-  },
-  { slug: "rivas", label: "Rivas", parentSlug: "perez-zeledon", coords: [9.465, -83.685, 13] },
-  {
-    slug: "san-pedro",
-    label: "San Pedro",
-    parentSlug: "perez-zeledon",
-    coords: [9.315, -83.63, 13],
-  },
-  {
-    slug: "platanares",
-    label: "Platanares",
-    parentSlug: "perez-zeledon",
-    coords: [9.31, -83.72, 13],
-  },
-  { slug: "pejibaye", label: "Pejibaye", parentSlug: "perez-zeledon", coords: [9.28, -83.59, 13] },
-  { slug: "cajon", label: "Cajón", parentSlug: "perez-zeledon", coords: [9.22, -83.61, 13] },
-  { slug: "baru", label: "Barú", parentSlug: "perez-zeledon", coords: [9.29, -83.81, 13] },
-  {
-    slug: "rio-nuevo",
-    label: "Río Nuevo",
-    parentSlug: "perez-zeledon",
-    coords: [9.305, -83.77, 13],
-  },
-  { slug: "paramo", label: "Páramo", parentSlug: "perez-zeledon", coords: [9.51, -83.72, 13] },
-  {
-    slug: "la-amistad",
-    label: "La Amistad",
-    parentSlug: "perez-zeledon",
-    coords: [9.31, -83.52, 12],
-  },
-];
+// ─── Adapters for Backward Compatibility ────────────────────────────────────
 
-// ─── Osa (Dominical–Uvita) — 6 Districts ───────────────────────────────────
+export interface LegacyDistrict {
+  slug: string;
+  label: string;
+  parentSlug: string;
+  coords?: [number, number, number];
+}
 
-const OSA_DISTRICTS: District[] = [
-  {
-    slug: "bahia-ballena",
-    label: "Bahía Ballena",
-    parentSlug: "dominical",
-    coords: [9.155, -83.745, 14],
-  },
-  {
-    slug: "puerto-cortes",
-    label: "Puerto Cortés",
-    parentSlug: "ojochal",
-    coords: [8.96, -83.53, 13],
-  },
-  { slug: "palmar", label: "Palmar", parentSlug: "ojochal", coords: [8.95, -83.47, 13] },
-  { slug: "sierpe", label: "Sierpe", parentSlug: "ojochal", coords: [8.87, -83.48, 13] },
-  {
-    slug: "piedras-blancas",
-    label: "Piedras Blancas",
-    parentSlug: "ojochal",
-    coords: [8.78, -83.35, 13],
-  },
-  { slug: "bahia-drake", label: "Bahía Drake", parentSlug: "ojochal", coords: [8.7, -83.55, 13] },
-];
+export interface LegacyCanton {
+  label: string;
+  areaSlug: string;
+  districts: LegacyDistrict[];
+}
 
-// ─── Quepos — 4 Districts ───────────────────────────────────────────────────
+function formatSlug(slug: string): string {
+  return slug.replace(/_/g, "-");
+}
 
-const QUEPOS_DISTRICTS: District[] = [
+export const ALL_DISTRICTS: LegacyDistrict[] = [];
+export const ACM_CANTONS: LegacyCanton[] = [];
+
+// Fallback coordinates for legacy integration
+const COORDS_MAP: Record<string, [number, number, number]> = {
+  "san-isidro-de-el-general": [9.3787, -83.7008, 14],
+  "el-general": [9.355, -83.655, 14],
+  "daniel-flores": [9.345, -83.68, 14],
+  rivas: [9.465, -83.685, 13],
+  "san-pedro": [9.315, -83.63, 13],
+  platanares: [9.31, -83.72, 13],
+  pejibaye: [9.28, -83.59, 13],
+  cajon: [9.22, -83.61, 13],
+  baru: [9.29, -83.81, 13],
+  "rio-nuevo": [9.305, -83.77, 13],
+  paramo: [9.51, -83.72, 13],
+  "la-amistad": [9.31, -83.52, 12],
+  "bahia-ballena": [9.155, -83.745, 14],
+  "puerto-cortes": [8.96, -83.53, 13],
+  palmar: [8.95, -83.47, 13],
+  sierpe: [8.87, -83.48, 13],
+  "piedras-blancas": [8.78, -83.35, 13],
+  "bahia-drake": [8.7, -83.55, 13],
+  "quepos-centro": [9.431, -84.162, 14],
+  savegre: [9.32, -83.91, 13],
+  naranjito: [9.41, -84.07, 13],
+  "manuel-antonio": [9.392, -84.14, 14],
+};
+
+for (const [cantonKey, cantonData] of Object.entries(costaRicaLocations)) {
+  const areaSlug = cantonKey === "osa" ? "dominical" : formatSlug(cantonKey);
+  const label =
+    cantonKey === "perez_zeledon"
+      ? "Pérez Zeledón"
+      : cantonKey === "osa"
+        ? "Osa (Dominical–Uvita)"
+        : cantonKey;
+
+  const districts: LegacyDistrict[] = [];
+
+  for (const [distritoKey, distritoData] of Object.entries(cantonData.distritos)) {
+    const slug = formatSlug(distritoKey);
+    let dLabel = distritoData.cabecera;
+    if (!dLabel) {
+      dLabel = slug
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+    }
+
+    // Attempt to map coords for older district slugs
+    // User structure changed san-isidro to san-isidro-de-el-general
+    const coordKey = slug === "san-isidro-de-el-general" ? "san-isidro-de-el-general" : slug;
+
+    const district: LegacyDistrict = {
+      slug,
+      label: dLabel,
+      parentSlug: areaSlug,
+      coords: COORDS_MAP[coordKey] || COORDS_MAP[slug],
+    };
+    districts.push(district);
+    ALL_DISTRICTS.push(district);
+  }
+
+  ACM_CANTONS.push({
+    label,
+    areaSlug,
+    districts,
+  });
+}
+
+// Ensure Quepos is still available since it's in the old structure but missing from the user's snippet
+const QUEPOS_DISTRICTS: LegacyDistrict[] = [
   { slug: "quepos-centro", label: "Quepos", parentSlug: "quepos", coords: [9.431, -84.162, 14] },
   { slug: "savegre", label: "Savegre", parentSlug: "quepos", coords: [9.32, -83.91, 13] },
   { slug: "naranjito", label: "Naranjito", parentSlug: "quepos", coords: [9.41, -84.07, 13] },
@@ -127,448 +623,83 @@ const QUEPOS_DISTRICTS: District[] = [
   },
 ];
 
-// ─── Full Canton Registry ───────────────────────────────────────────────────
+ACM_CANTONS.push({
+  label: "Quepos",
+  areaSlug: "quepos",
+  districts: QUEPOS_DISTRICTS,
+});
+QUEPOS_DISTRICTS.forEach((d) => ALL_DISTRICTS.push(d));
 
-export const ACM_CANTONS: Canton[] = [
-  {
-    label: "Pérez Zeledón",
-    areaSlug: "perez-zeledon",
-    districts: PZ_DISTRICTS,
-  },
-  {
-    label: "Osa (Dominical–Uvita)",
-    areaSlug: "dominical",
-    districts: OSA_DISTRICTS,
-  },
-  {
-    label: "Quepos",
-    areaSlug: "quepos",
-    districts: QUEPOS_DISTRICTS,
-  },
-];
-
-// ─── Exports for convenience ────────────────────────────────────────────────
-
-/** All districts across all cantons */
-export const ALL_DISTRICTS: District[] = ACM_CANTONS.flatMap((c) => c.districts);
-
-/** Quick slug → District lookup */
-export const DISTRICT_BY_SLUG: Record<string, District> = Object.fromEntries(
+export const DISTRICT_BY_SLUG: Record<string, LegacyDistrict> = Object.fromEntries(
   ALL_DISTRICTS.map((d) => [d.slug, d]),
 );
 
-/** Get display label for a district slug, or title-case fallback */
 export function getDistrictLabel(slug: string): string {
   const d = DISTRICT_BY_SLUG[slug];
   if (d) return d.label;
-  // Fallback: title-case the slug
   return slug
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
 
-/** Get parent area slug for a district */
 export function getDistrictParent(slug: string): string | null {
   return DISTRICT_BY_SLUG[slug]?.parentSlug ?? null;
 }
 
 // ─── Keyword Matching (for resolving API Location strings) ──────────────────
 
-/**
- * Maps keyword strings → district slugs for text-based resolution.
- * Ordered longest-first so "San Isidro de El General" matches before "San Isidro".
- */
-export const DISTRICT_KEYWORDS: { keyword: string; slug: string; parent: string }[] = [
-  // PZ — longest first
-  { keyword: "san isidro de el general", slug: "san-isidro", parent: "perez-zeledon" }, // San Isidro de El General
-  { keyword: "daniel flores zavaleta", slug: "daniel-flores", parent: "perez-zeledon" }, // Daniel Flores Zavaleta
-  { keyword: "san gerardo de rivas", slug: "rivas", parent: "perez-zeledon" }, // san gerardo de rivas
-  { keyword: "san juan de la cruz", slug: "rio-nuevo", parent: "perez-zeledon" }, // San Juan de la Cruz
-  { keyword: "barrio laboratorio", slug: "daniel-flores", parent: "perez-zeledon" }, // Barrio Laboratorio
-  { keyword: "corazón de jesús", slug: "daniel-flores", parent: "perez-zeledon" }, // Corazón de Jesús
-  { keyword: "juntas de pacuar", slug: "daniel-flores", parent: "perez-zeledon" }, // Juntas de Pacuar
-  { keyword: "bajos de zapotal", slug: "baru", parent: "perez-zeledon" }, // Bajos de Zapotal
-  { keyword: "san juan de dios", slug: "baru", parent: "perez-zeledon" }, // San Juan de Dios
-  { keyword: "santa margarita", slug: "daniel-flores", parent: "perez-zeledon" }, // Santa Margarita
-  { keyword: "bajos de pacuar", slug: "daniel-flores", parent: "perez-zeledon" }, // Bajos de Pacuar
-  { keyword: "nueva hortensia", slug: "san-pedro", parent: "perez-zeledon" }, // Nueva Hortensia
-  { keyword: "nueva santa ana", slug: "san-pedro", parent: "perez-zeledon" }, // Nueva Santa Ana
-  { keyword: "villa argentina", slug: "platanares", parent: "perez-zeledon" }, // Villa Argentina
-  { keyword: "piedras blancas", slug: "rio-nuevo", parent: "perez-zeledon" }, // Piedras Blancas
-  { keyword: "alto macho mora", slug: "paramo", parent: "perez-zeledon" }, // Alto Macho Mora
-  { keyword: "san ramón norte", slug: "paramo", parent: "perez-zeledon" }, // San Ramón Norte
-  { keyword: "rise costa rica", slug: "el-general", parent: "perez-zeledon" }, // rise costa rica
-  { keyword: "bajo los arias", slug: "el-general", parent: "perez-zeledon" }, // Bajo Los Arias
-  { keyword: "san juan bosco", slug: "daniel-flores", parent: "perez-zeledon" }, // San Juan Bosco
-  { keyword: "quebrada honda", slug: "daniel-flores", parent: "perez-zeledon" }, // Quebrada Honda
-  { keyword: "calle los mora", slug: "rivas", parent: "perez-zeledon" }, // Calle Los Mora
-  { keyword: "san juan norte", slug: "rivas", parent: "perez-zeledon" }, // San Juan Norte
-  { keyword: "rinconada vega", slug: "san-pedro", parent: "perez-zeledon" }, // Rinconada Vega
-  { keyword: "santa eduviges", slug: "paramo", parent: "perez-zeledon" }, // Santa Eduviges
-  { keyword: "general viejo", slug: "el-general", parent: "perez-zeledon" }, // General Viejo
-  { keyword: "nuevo general", slug: "el-general", parent: "perez-zeledon" }, // Nuevo General
-  { keyword: "peñas blancas", slug: "el-general", parent: "perez-zeledon" }, // Peñas Blancas
-  { keyword: "calle hidalgo", slug: "el-general", parent: "perez-zeledon" }, // Calle Hidalgo
-  { keyword: "daniel flores", slug: "daniel-flores", parent: "perez-zeledon" }, // Daniel Flores
-  { keyword: "patio de agua", slug: "daniel-flores", parent: "perez-zeledon" }, // Patio de Agua
-  { keyword: "alto calderón", slug: "san-pedro", parent: "perez-zeledon" }, // Alto Calderón
-  { keyword: "santo domingo", slug: "san-pedro", parent: "perez-zeledon" }, // Santo Domingo
-  { keyword: "bajo espinoza", slug: "platanares", parent: "perez-zeledon" }, // Bajo Espinoza
-  { keyword: "alto trinidad", slug: "pejibaye", parent: "perez-zeledon" }, // Alto Trinidad
-  { keyword: "bajo caliente", slug: "pejibaye", parent: "perez-zeledon" }, // Bajo Caliente
-  { keyword: "san cristóbal", slug: "baru", parent: "perez-zeledon" }, // San Cristóbal
-  { keyword: "alto los mena", slug: "rio-nuevo", parent: "perez-zeledon" }, // Alto los Mena
-  { keyword: "san ramón sur", slug: "paramo", parent: "perez-zeledon" }, // San Ramón Sur
-  { keyword: "barrio nuevo", slug: "el-general", parent: "perez-zeledon" }, // Barrio Nuevo
-  { keyword: "el chumpulún", slug: "el-general", parent: "perez-zeledon" }, // El Chumpulún
-  { keyword: "calle guzmán", slug: "el-general", parent: "perez-zeledon" }, // Calle Guzmán
-  { keyword: "linda arriba", slug: "el-general", parent: "perez-zeledon" }, // Linda Arriba
-  { keyword: "san jerónimo", slug: "san-pedro", parent: "perez-zeledon" }, // San Jerónimo
-  { keyword: "san juancito", slug: "san-pedro", parent: "perez-zeledon" }, // San Juancito
-  { keyword: "bajo bonitas", slug: "platanares", parent: "perez-zeledon" }, // Bajo Bonitas
-  { keyword: "buenos aires", slug: "platanares", parent: "perez-zeledon" }, // Buenos Aires
-  { keyword: "mollejoncito", slug: "platanares", parent: "perez-zeledon" }, // Mollejoncito
-  { keyword: "vista de mar", slug: "platanares", parent: "perez-zeledon" }, // Vista de Mar
-  { keyword: "desamparados", slug: "pejibaye", parent: "perez-zeledon" }, // Desamparados
-  { keyword: "santa teresa", slug: "cajon", parent: "perez-zeledon" }, // Santa Teresa
-  { keyword: "san salvador", slug: "baru", parent: "perez-zeledon" }, // San Salvador
-  { keyword: "santo cristo", slug: "baru", parent: "perez-zeledon" }, // Santo Cristo
-  { keyword: "tres piedras", slug: "baru", parent: "perez-zeledon" }, // Tres Piedras
-  { keyword: "la hortensia", slug: "paramo", parent: "perez-zeledon" }, // La Hortensia
-  { keyword: "santa elena", slug: "el-general", parent: "perez-zeledon" }, // Santa Elena
-  { keyword: "playa verde", slug: "el-general", parent: "perez-zeledon" }, // Playa Verde
-  { keyword: "alto brisas", slug: "daniel-flores", parent: "perez-zeledon" }, // Alto Brisas
-  { keyword: "villa ligia", slug: "daniel-flores", parent: "perez-zeledon" }, // Villa Ligia
-  { keyword: "buena vista", slug: "rivas", parent: "perez-zeledon" }, // Buena Vista
-  { keyword: "piedra alta", slug: "rivas", parent: "perez-zeledon" }, // Piedra Alta
-  { keyword: "alto jaular", slug: "rivas", parent: "perez-zeledon" }, // Alto Jaular
-  { keyword: "linda vista", slug: "rivas", parent: "perez-zeledon" }, // Linda Vista
-  { keyword: "villa mills", slug: "rivas", parent: "perez-zeledon" }, // Villa Mills
-  { keyword: "san pablito", slug: "platanares", parent: "perez-zeledon" }, // San Pablito
-  { keyword: "barrionuevo", slug: "pejibaye", parent: "perez-zeledon" }, // Barrionuevo
-  { keyword: "calientillo", slug: "pejibaye", parent: "perez-zeledon" }, // Calientillo
-  { keyword: "el progreso", slug: "pejibaye", parent: "perez-zeledon" }, // El Progreso
-  { keyword: "san ignacio", slug: "cajon", parent: "perez-zeledon" }, // San Ignacio
-  { keyword: "san pedrito", slug: "cajon", parent: "perez-zeledon" }, // San Pedrito
-  { keyword: "santa maría", slug: "cajon", parent: "perez-zeledon" }, // Santa María
-  { keyword: "santa juana", slug: "baru", parent: "perez-zeledon" }, // Santa Juana
-  { keyword: "villabonita", slug: "baru", parent: "perez-zeledon" }, // Villabonita
-  { keyword: "santa lucía", slug: "rio-nuevo", parent: "perez-zeledon" }, // Santa Lucía
-  { keyword: "santo tomás", slug: "paramo", parent: "perez-zeledon" }, // Santo Tomás
-  { keyword: "pedregosito", slug: "paramo", parent: "perez-zeledon" }, // Pedregosito
-  { keyword: "china kicha", slug: "la-amistad", parent: "perez-zeledon" }, // China Kicha
-  { keyword: "san gabriel", slug: "la-amistad", parent: "perez-zeledon" }, // San Gabriel
-  { keyword: "santa luisa", slug: "la-amistad", parent: "perez-zeledon" }, // Santa Luisa
-  { keyword: "san isidro", slug: "san-isidro", parent: "perez-zeledon" }, // San Isidro
-  { keyword: "el general", slug: "el-general", parent: "perez-zeledon" }, // El General
-  { keyword: "el ingenio", slug: "el-general", parent: "perez-zeledon" }, // El Ingenio
-  { keyword: "miraflores", slug: "el-general", parent: "perez-zeledon" }, // Miraflores
-  { keyword: "santa cruz", slug: "el-general", parent: "perez-zeledon" }, // Santa Cruz
-  { keyword: "la hermosa", slug: "el-general", parent: "perez-zeledon" }, // La Hermosa
-  { keyword: "los chiles", slug: "daniel-flores", parent: "perez-zeledon" }, // Los Chiles
-  { keyword: "crematorio", slug: "daniel-flores", parent: "perez-zeledon" }, // Crematorio
-  { keyword: "loma verde", slug: "daniel-flores", parent: "perez-zeledon" }, // Loma Verde
-  { keyword: "río blanco", slug: "rivas", parent: "perez-zeledon" }, // Río Blanco
-  { keyword: "las playas", slug: "rivas", parent: "perez-zeledon" }, // Las Playas
-  { keyword: "miravalles", slug: "rivas", parent: "perez-zeledon" }, // Miravalles
-  { keyword: "macho mora", slug: "rivas", parent: "perez-zeledon" }, // Macho Mora
-  { keyword: "platanares", slug: "platanares", parent: "perez-zeledon" }, // Platanares
-  { keyword: "mollejones", slug: "platanares", parent: "perez-zeledon" }, // Mollejones
-  { keyword: "villa flor", slug: "platanares", parent: "perez-zeledon" }, // Villa Flor
-  { keyword: "bajo minas", slug: "pejibaye", parent: "perez-zeledon" }, // Bajo Minas
-  { keyword: "bellavista", slug: "pejibaye", parent: "perez-zeledon" }, // Bellavista
-  { keyword: "las cruces", slug: "pejibaye", parent: "perez-zeledon" }, // Las Cruces
-  { keyword: "el quemado", slug: "cajon", parent: "perez-zeledon" }, // El Quemado
-  { keyword: "las brisas", slug: "cajon", parent: "perez-zeledon" }, // Las Brisas
-  { keyword: "navajuelar", slug: "cajon", parent: "perez-zeledon" }, // Navajuelar
-  { keyword: "salitrales", slug: "cajon", parent: "perez-zeledon" }, // Salitrales
-  { keyword: "platanillo", slug: "baru", parent: "perez-zeledon" }, // Platanillo
-  { keyword: "alto perla", slug: "baru", parent: "perez-zeledon" }, // Alto Perla
-  { keyword: "cañablanca", slug: "baru", parent: "perez-zeledon" }, // Cañablanca
-  { keyword: "tinamastes", slug: "baru", parent: "perez-zeledon" }, // Tinamastes
-  { keyword: "santa rosa", slug: "rio-nuevo", parent: "perez-zeledon" }, // Santa Rosa
-  { keyword: "calle mora", slug: "rio-nuevo", parent: "perez-zeledon" }, // Calle Mora
-  { keyword: "la purruja", slug: "rio-nuevo", parent: "perez-zeledon" }, // La Purruja
-  { keyword: "chirricano", slug: "rio-nuevo", parent: "perez-zeledon" }, // Chirricano
-  { keyword: "california", slug: "rio-nuevo", parent: "perez-zeledon" }, // California
-  { keyword: "la amistad", slug: "la-amistad", parent: "perez-zeledon" }, // La Amistad
-  { keyword: "corralillo", slug: "la-amistad", parent: "perez-zeledon" }, // Corralillo
-  { keyword: "san carlos", slug: "la-amistad", parent: "perez-zeledon" }, // San Carlos
-  { keyword: "las nubes", slug: "el-general", parent: "perez-zeledon" }, // Las Nubes
-  { keyword: "el carril", slug: "el-general", parent: "perez-zeledon" }, // El Carril
-  { keyword: "los pinos", slug: "daniel-flores", parent: "perez-zeledon" }, // Los Pinos
-  { keyword: "rosa iris", slug: "daniel-flores", parent: "perez-zeledon" }, // Rosa Iris
-  { keyword: "la trocha", slug: "daniel-flores", parent: "perez-zeledon" }, // La Trocha
-  { keyword: "paso bote", slug: "daniel-flores", parent: "perez-zeledon" }, // Paso Bote
-  { keyword: "los reyes", slug: "daniel-flores", parent: "perez-zeledon" }, // Los Reyes
-  { keyword: "la ribera", slug: "daniel-flores", parent: "perez-zeledon" }, // La Ribera
-  { keyword: "herradura", slug: "rivas", parent: "perez-zeledon" }, // Herradura
-  { keyword: "monterrey", slug: "rivas", parent: "perez-zeledon" }, // Monterrey
-  { keyword: "la piedra", slug: "rivas", parent: "perez-zeledon" }, // La Piedra
-  { keyword: "la bonita", slug: "rivas", parent: "perez-zeledon" }, // La Bonita
-  { keyword: "el jardín", slug: "rivas", parent: "perez-zeledon" }, // El Jardín
-  { keyword: "san pedro", slug: "san-pedro", parent: "perez-zeledon" }, // San Pedro
-  { keyword: "cruz roja", slug: "san-pedro", parent: "perez-zeledon" }, // Cruz Roja
-  { keyword: "esperanza", slug: "san-pedro", parent: "perez-zeledon" }, // Esperanza
-  { keyword: "santa ana", slug: "san-pedro", parent: "perez-zeledon" }, // Santa Ana
-  { keyword: "la sierra", slug: "platanares", parent: "perez-zeledon" }, // La Sierra
-  { keyword: "san pablo", slug: "platanares", parent: "perez-zeledon" }, // San Pablo
-  { keyword: "camarones", slug: "baru", parent: "perez-zeledon" }, // Camarones
-  { keyword: "chontales", slug: "baru", parent: "perez-zeledon" }, // Chontales
-  { keyword: "tinamaste", slug: "baru", parent: "perez-zeledon" }, // Tinamaste
-  { keyword: "vista mar", slug: "baru", parent: "perez-zeledon" }, // Vista Mar
-  { keyword: "río nuevo", slug: "rio-nuevo", parent: "perez-zeledon" }, // Río Nuevo
-  { keyword: "rio nuevo", slug: "rio-nuevo", parent: "perez-zeledon" }, // Rio Nuevo
-  { keyword: "matazanos", slug: "paramo", parent: "perez-zeledon" }, // Matazanos
-  { keyword: "montezuma", slug: "la-amistad", parent: "perez-zeledon" }, // Montezuma
-  { keyword: "san roque", slug: "la-amistad", parent: "perez-zeledon" }, // San Roque
-  { keyword: "la arepa", slug: "el-general", parent: "perez-zeledon" }, // La Arepa
-  { keyword: "la linda", slug: "el-general", parent: "perez-zeledon" }, // La Linda
-  { keyword: "san luis", slug: "el-general", parent: "perez-zeledon" }, // San Luis
-  { keyword: "san blas", slug: "el-general", parent: "perez-zeledon" }, // San Blas
-  { keyword: "palmares", slug: "daniel-flores", parent: "perez-zeledon" }, // Palmares
-  { keyword: "la suiza", slug: "daniel-flores", parent: "perez-zeledon" }, // La Suiza
-  { keyword: "chimirol", slug: "rivas", parent: "perez-zeledon" }, // Chimirol
-  { keyword: "san josé", slug: "rivas", parent: "perez-zeledon" }, // San José
-  { keyword: "palmital", slug: "rivas", parent: "perez-zeledon" }, // Palmital
-  { keyword: "la bambú", slug: "rivas", parent: "perez-zeledon" }, // La Bambú
-  { keyword: "el nivel", slug: "rivas", parent: "perez-zeledon" }, // El Nivel
-  { keyword: "arenilla", slug: "san-pedro", parent: "perez-zeledon" }, // Arenilla
-  { keyword: "san juan", slug: "san-pedro", parent: "perez-zeledon" }, // San Juan
-  { keyword: "santiago", slug: "san-pedro", parent: "perez-zeledon" }, // Santiago
-  { keyword: "mastatal", slug: "platanares", parent: "perez-zeledon" }, // Mastatal
-  { keyword: "naranjos", slug: "platanares", parent: "perez-zeledon" }, // Naranjos
-  { keyword: "pejibaye", slug: "pejibaye", parent: "perez-zeledon" }, // Pejibaye
-  { keyword: "achiotal", slug: "pejibaye", parent: "perez-zeledon" }, // Achiotal
-  { keyword: "delicias", slug: "pejibaye", parent: "perez-zeledon" }, // Delicias
-  { keyword: "santa fe", slug: "pejibaye", parent: "perez-zeledon" }, // Santa Fe
-  { keyword: "veracruz", slug: "pejibaye", parent: "perez-zeledon" }, // Veracruz
-  { keyword: "los vega", slug: "cajon", parent: "perez-zeledon" }, // Los Vega
-  { keyword: "mercedes", slug: "cajon", parent: "perez-zeledon" }, // Mercedes
-  { keyword: "alfombra", slug: "baru", parent: "perez-zeledon" }, // Alfombra
-  { keyword: "barucito", slug: "baru", parent: "perez-zeledon" }, // Barucito
-  { keyword: "farallas", slug: "baru", parent: "perez-zeledon" }, // Farallas
-  { keyword: "magnolia", slug: "baru", parent: "perez-zeledon" }, // Magnolia
-  { keyword: "el llano", slug: "rio-nuevo", parent: "perez-zeledon" }, // El Llano
-  { keyword: "el brujo", slug: "rio-nuevo", parent: "perez-zeledon" }, // El Brujo
-  { keyword: "zaragoza", slug: "rio-nuevo", parent: "perez-zeledon" }, // Zaragoza
-  { keyword: "valencia", slug: "paramo", parent: "perez-zeledon" }, // Valencia
-  { keyword: "oratorio", slug: "la-amistad", parent: "perez-zeledon" }, // Oratorio
-  { keyword: "venecia", slug: "el-general", parent: "perez-zeledon" }, // Venecia
-  { keyword: "repunta", slug: "daniel-flores", parent: "perez-zeledon" }, // Repunta
-  { keyword: "colonia", slug: "san-pedro", parent: "perez-zeledon" }, // Colonia
-  { keyword: "fortuna", slug: "san-pedro", parent: "perez-zeledon" }, // Fortuna
-  { keyword: "bolivia", slug: "platanares", parent: "perez-zeledon" }, // Bolivia
-  { keyword: "bonitas", slug: "platanares", parent: "perez-zeledon" }, // Bonitas
-  { keyword: "socorro", slug: "platanares", parent: "perez-zeledon" }, // Socorro
-  { keyword: "florida", slug: "baru", parent: "perez-zeledon" }, // Florida
-  { keyword: "savegre", slug: "rio-nuevo", parent: "perez-zeledon" }, // Savegre
-  { keyword: "miramar", slug: "paramo", parent: "perez-zeledon" }, // Miramar
-  { keyword: "ángeles", slug: "paramo", parent: "perez-zeledon" }, // Ángeles
-  { keyword: "la paz", slug: "el-general", parent: "perez-zeledon" }, // La Paz
-  { keyword: "aurora", slug: "daniel-flores", parent: "perez-zeledon" }, // Aurora
-  { keyword: "percal", slug: "daniel-flores", parent: "perez-zeledon" }, // Percal
-  { keyword: "canaán", slug: "rivas", parent: "perez-zeledon" }, // Canaán
-  { keyword: "talari", slug: "rivas", parent: "perez-zeledon" }, // Talari
-  { keyword: "chispa", slug: "rivas", parent: "perez-zeledon" }, // Chispa
-  { keyword: "alaska", slug: "rivas", parent: "perez-zeledon" }, // Alaska
-  { keyword: "fátima", slug: "san-pedro", parent: "perez-zeledon" }, // Fátima
-  { keyword: "guaria", slug: "san-pedro", parent: "perez-zeledon" }, // Guaria
-  { keyword: "laguna", slug: "san-pedro", parent: "perez-zeledon" }, // Laguna
-  { keyword: "tambor", slug: "san-pedro", parent: "perez-zeledon" }, // Tambor
-  { keyword: "águila", slug: "pejibaye", parent: "perez-zeledon" }, // Águila
-  { keyword: "zapote", slug: "pejibaye", parent: "perez-zeledon" }, // Zapote
-  { keyword: "gloria", slug: "cajon", parent: "perez-zeledon" }, // Gloria
-  { keyword: "líbano", slug: "baru", parent: "perez-zeledon" }, // Líbano
-  { keyword: "torito", slug: "baru", parent: "perez-zeledon" }, // Torito
-  { keyword: "tumbas", slug: "baru", parent: "perez-zeledon" }, // Tumbas
-  { keyword: "páramo", slug: "paramo", parent: "perez-zeledon" }, // Páramo
-  { keyword: "paramo", slug: "paramo", parent: "perez-zeledon" }, // Paramo
-  { keyword: "jardín", slug: "paramo", parent: "perez-zeledon" }, // Jardín
-  { keyword: "la ese", slug: "paramo", parent: "perez-zeledon" }, // La Ese
-  { keyword: "berlín", slug: "paramo", parent: "perez-zeledon" }, // Berlín
-  { keyword: "rosas", slug: "daniel-flores", parent: "perez-zeledon" }, // Rosas
-  { keyword: "rivas", slug: "rivas", parent: "perez-zeledon" }, // Rivas
-  { keyword: "chuma", slug: "rivas", parent: "perez-zeledon" }, // Chuma
-  { keyword: "tirrá", slug: "rivas", parent: "perez-zeledon" }, // Tirrá
-  { keyword: "junta", slug: "san-pedro", parent: "perez-zeledon" }, // Junta
-  { keyword: "unión", slug: "san-pedro", parent: "perez-zeledon" }, // Unión
-  { keyword: "puñal", slug: "pejibaye", parent: "perez-zeledon" }, // Puñal
-  { keyword: "gibre", slug: "pejibaye", parent: "perez-zeledon" }, // Gibre
-  { keyword: "mesas", slug: "pejibaye", parent: "perez-zeledon" }, // Mesas
-  { keyword: "minas", slug: "pejibaye", parent: "perez-zeledon" }, // Minas
-  { keyword: "cajón", slug: "cajon", parent: "perez-zeledon" }, // Cajón
-  { keyword: "cajon", slug: "cajon", parent: "perez-zeledon" }, // Cajon
-  { keyword: "nubes", slug: "cajon", parent: "perez-zeledon" }, // Nubes
-  { keyword: "pilar", slug: "cajon", parent: "perez-zeledon" }, // Pilar
-  { keyword: "bajos", slug: "baru", parent: "perez-zeledon" }, // Bajos
-  { keyword: "cacao", slug: "baru", parent: "perez-zeledon" }, // Cacao
-  { keyword: "ceiba", slug: "baru", parent: "perez-zeledon" }, // Ceiba
-  { keyword: "guabo", slug: "baru", parent: "perez-zeledon" }, // Guabo
-  { keyword: "pozos", slug: "baru", parent: "perez-zeledon" }, // Pozos
-  { keyword: "reina", slug: "baru", parent: "perez-zeledon" }, // Reina
-  { keyword: "peje", slug: "daniel-flores", parent: "perez-zeledon" }, // Peje
-  { keyword: "barú", slug: "baru", parent: "perez-zeledon" }, // Barú
-  { keyword: "baru", slug: "baru", parent: "perez-zeledon" }, // Baru
-  { keyword: "rise", slug: "el-general", parent: "perez-zeledon" }, // rise
+export const DISTRICT_KEYWORDS: { keyword: string; slug: string; parent: string }[] = [];
 
-  // Osa
-  { keyword: "quebrada grande", slug: "bahia-ballena", parent: "dominical" }, // Quebrada Grande
-  { keyword: "tortuga arriba", slug: "bahia-ballena", parent: "dominical" }, // Tortuga Arriba
-  { keyword: "bahía ballena", slug: "bahia-ballena", parent: "dominical" }, // Bahía Ballena
-  { keyword: "bahia ballena", slug: "bahia-ballena", parent: "dominical" }, // Bahia Ballena
-  { keyword: "playa hermosa", slug: "bahia-ballena", parent: "dominical" }, // Playa Hermosa
-  { keyword: "dominicalito", slug: "bahia-ballena", parent: "dominical" }, // Dominicalito
-  { keyword: "san josecito", slug: "bahia-ballena", parent: "dominical" }, // San Josecito
-  { keyword: "san martín", slug: "bahia-ballena", parent: "dominical" }, // San Martín
-  { keyword: "dominical", slug: "bahia-ballena", parent: "dominical" }, // Dominical
-  { keyword: "escaleras", slug: "bahia-ballena", parent: "dominical" }, // Escaleras
-  { keyword: "cambutal", slug: "bahia-ballena", parent: "dominical" }, // Cambutal
-  { keyword: "piñuela", slug: "bahia-ballena", parent: "dominical" }, // Piñuela
-  { keyword: "uvita", slug: "bahia-ballena", parent: "dominical" }, // Uvita
-  { keyword: "campo de aguabuena", slug: "sierpe", parent: "ojochal" }, // Campo de Aguabuena
-  { keyword: "punta mala arriba", slug: "puerto-cortes", parent: "ojochal" }, // Punta Mala Arriba
-  { keyword: "san buenaventura", slug: "puerto-cortes", parent: "ojochal" }, // San Buenaventura
-  { keyword: "vista de térraba", slug: "puerto-cortes", parent: "ojochal" }, // Vista de Térraba
-  { keyword: "la luz del mundo", slug: "palmar", parent: "ojochal" }, // La luz del mundo
-  { keyword: "primero de marzo", slug: "palmar", parent: "ojochal" }, // Primero de Marzo
-  { keyword: "puerto escondido", slug: "sierpe", parent: "ojochal" }, // Puerto Escondido
-  { keyword: "finca guanacaste", slug: "piedras-blancas", parent: "ojochal" }, // Finca Guanacaste
-  { keyword: "finca puntarenas", slug: "piedras-blancas", parent: "ojochal" }, // Finca Puntarenas
-  { keyword: "piedras blancas", slug: "piedras-blancas", parent: "ojochal" }, // Piedras Blancas
-  { keyword: "rincón caliente", slug: "piedras-blancas", parent: "ojochal" }, // Rincón Caliente
-  { keyword: "quebrada ganado", slug: "bahia-drake", parent: "ojochal" }, // Quebrada Ganado
-  { keyword: "cinco esquinas", slug: "puerto-cortes", parent: "ojochal" }, // Cinco Esquinas
-  { keyword: "puerta del sol", slug: "palmar", parent: "ojochal" }, // Puerta del Sol
-  { keyword: "alto los mogos", slug: "sierpe", parent: "ojochal" }, // Alto Los Mogos
-  { keyword: "finca alajuela", slug: "piedras-blancas", parent: "ojochal" }, // Finca Alajuela
-  { keyword: "villa agujitas", slug: "bahia-drake", parent: "ojochal" }, // Villa Agujitas
-  { keyword: "rancho quemado", slug: "bahia-drake", parent: "ojochal" }, // Rancho Quemado
-  { keyword: "puerto cortés", slug: "puerto-cortes", parent: "ojochal" }, // Puerto Cortés
-  { keyword: "puerto cortes", slug: "puerto-cortes", parent: "ojochal" }, // Puerto Cortes
-  { keyword: "isla sorpresa", slug: "puerto-cortes", parent: "ojochal" }, // Isla Sorpresa
-  { keyword: "tortuga abajo", slug: "puerto-cortes", parent: "ojochal" }, // Tortuga Abajo
-  { keyword: "once de abril", slug: "palmar", parent: "ojochal" }, // Once de Abril
-  { keyword: "san cristóbal", slug: "palmar", parent: "ojochal" }, // San Cristóbal
-  { keyword: "san francisco", slug: "palmar", parent: "ojochal" }, // San Francisco
-  { keyword: "alto san juan", slug: "sierpe", parent: "ojochal" }, // Alto San Juan
-  { keyword: "boca chocuaco", slug: "sierpe", parent: "ojochal" }, // Boca Chocuaco
-  { keyword: "santa cecilia", slug: "piedras-blancas", parent: "ojochal" }, // Santa Cecilia
-  { keyword: "pueblo nuevo", slug: "puerto-cortes", parent: "ojochal" }, // Pueblo Nuevo
-  { keyword: "renacimiento", slug: "puerto-cortes", parent: "ojochal" }, // Renacimiento
-  { keyword: "palmar norte", slug: "palmar", parent: "ojochal" }, // Palmar Norte
-  { keyword: "alto ángeles", slug: "palmar", parent: "ojochal" }, // Alto Ángeles
-  { keyword: "alto encanto", slug: "palmar", parent: "ojochal" }, // Alto Encanto
-  { keyword: "alto montura", slug: "palmar", parent: "ojochal" }, // Alto Montura
-  { keyword: "bajos matías", slug: "sierpe", parent: "ojochal" }, // Bajos Matías
-  { keyword: "cerro oscuro", slug: "piedras-blancas", parent: "ojochal" }, // Cerro Oscuro
-  { keyword: "kilómetro 40", slug: "piedras-blancas", parent: "ojochal" }, // Kilómetro 40
-  { keyword: "villa bonita", slug: "piedras-blancas", parent: "ojochal" }, // Villa Bonita
-  { keyword: "san josecito", slug: "bahia-drake", parent: "ojochal" }, // San Josecito
-  { keyword: "san pedrillo", slug: "bahia-drake", parent: "ojochal" }, // San Pedrillo
-  { keyword: "embarcadero", slug: "puerto-cortes", parent: "ojochal" }, // Embarcadero
-  { keyword: "ojo de agua", slug: "puerto-cortes", parent: "ojochal" }, // Ojo de Agua
-  { keyword: "cañablancal", slug: "palmar", parent: "ojochal" }, // Cañablancal
-  { keyword: "san gabriel", slug: "palmar", parent: "ojochal" }, // San Gabriel
-  { keyword: "santa elena", slug: "palmar", parent: "ojochal" }, // Santa Elena
-  { keyword: "ajuntaderas", slug: "sierpe", parent: "ojochal" }, // Ajuntaderas
-  { keyword: "playa palma", slug: "sierpe", parent: "ojochal" }, // Playa Palma
-  { keyword: "san gerardo", slug: "sierpe", parent: "ojochal" }, // San Gerardo
-  { keyword: "villa colón", slug: "piedras-blancas", parent: "ojochal" }, // Villa Colón
-  { keyword: "bahía drake", slug: "bahia-drake", parent: "ojochal" }, // Bahía Drake
-  { keyword: "bahia drake", slug: "bahia-drake", parent: "ojochal" }, // Bahia Drake
-  { keyword: "boca ganado", slug: "bahia-drake", parent: "ojochal" }, // Boca Ganado
-  { keyword: "cementerio", slug: "puerto-cortes", parent: "ojochal" }, // Cementerio
-  { keyword: "lindavista", slug: "puerto-cortes", parent: "ojochal" }, // Lindavista
-  { keyword: "punta mala", slug: "puerto-cortes", parent: "ojochal" }, // Punta Mala
-  { keyword: "san marcos", slug: "puerto-cortes", parent: "ojochal" }, // San Marcos
-  { keyword: "palmar sur", slug: "palmar", parent: "ojochal" }, // Palmar Sur
-  { keyword: "las brisas", slug: "palmar", parent: "ojochal" }, // Las Brisas
-  { keyword: "san isidro", slug: "palmar", parent: "ojochal" }, // San Isidro
-  { keyword: "san rafael", slug: "palmar", parent: "ojochal" }, // San Rafael
-  { keyword: "bahía chal", slug: "sierpe", parent: "ojochal" }, // Bahía Chal
-  { keyword: "cantarrana", slug: "sierpe", parent: "ojochal" }, // Cantarrana
-  { keyword: "san martín", slug: "piedras-blancas", parent: "ojochal" }, // San Martín
-  { keyword: "santa rosa", slug: "piedras-blancas", parent: "ojochal" }, // Santa Rosa
-  { keyword: "campanario", slug: "bahia-drake", parent: "ojochal" }, // Campanario
-  { keyword: "bocabrava", slug: "puerto-cortes", parent: "ojochal" }, // Bocabrava
-  { keyword: "bocachica", slug: "puerto-cortes", parent: "ojochal" }, // Bocachica
-  { keyword: "chontales", slug: "puerto-cortes", parent: "ojochal" }, // Chontales
-  { keyword: "tres ríos", slug: "puerto-cortes", parent: "ojochal" }, // Tres Ríos
-  { keyword: "olla cero", slug: "palmar", parent: "ojochal" }, // Olla Cero
-  { keyword: "monterrey", slug: "sierpe", parent: "ojochal" }, // Monterrey
-  { keyword: "taboguita", slug: "sierpe", parent: "ojochal" }, // Taboguita
-  { keyword: "chacarita", slug: "piedras-blancas", parent: "ojochal" }, // Chacarita
-  { keyword: "montreal", slug: "puerto-cortes", parent: "ojochal" }, // Montreal
-  { keyword: "precario", slug: "puerto-cortes", parent: "ojochal" }, // Precario
-  { keyword: "coronado", slug: "puerto-cortes", parent: "ojochal" }, // Coronado
-  { keyword: "delicias", slug: "puerto-cortes", parent: "ojochal" }, // Delicias
-  { keyword: "parcelas", slug: "puerto-cortes", parent: "ojochal" }, // Parcelas
-  { keyword: "alemania", slug: "palmar", parent: "ojochal" }, // Alemania
-  { keyword: "calavera", slug: "palmar", parent: "ojochal" }, // Calavera
-  { keyword: "silencio", slug: "palmar", parent: "ojochal" }, // Silencio
-  { keyword: "victoria", slug: "palmar", parent: "ojochal" }, // Victoria
-  { keyword: "chocuaco", slug: "sierpe", parent: "ojochal" }, // Chocuaco
-  { keyword: "playitas", slug: "sierpe", parent: "ojochal" }, // Playitas
-  { keyword: "varillal", slug: "sierpe", parent: "ojochal" }, // Varillal
-  { keyword: "porvenir", slug: "piedras-blancas", parent: "ojochal" }, // Porvenir
-  { keyword: "lourdes", slug: "puerto-cortes", parent: "ojochal" }, // Lourdes
-  { keyword: "ojochal", slug: "puerto-cortes", parent: "ojochal" }, // Ojochal
-  { keyword: "betania", slug: "palmar", parent: "ojochal" }, // Betania
-  { keyword: "coquito", slug: "palmar", parent: "ojochal" }, // Coquito
-  { keyword: "gorrión", slug: "palmar", parent: "ojochal" }, // Gorrión
-  { keyword: "paraíso", slug: "palmar", parent: "ojochal" }, // Paraíso
-  { keyword: "gallega", slug: "sierpe", parent: "ojochal" }, // Gallega
-  { keyword: "camíbar", slug: "sierpe", parent: "ojochal" }, // Camíbar
-  { keyword: "charcos", slug: "sierpe", parent: "ojochal" }, // Charcos
-  { keyword: "garrobo", slug: "sierpe", parent: "ojochal" }, // Garrobo
-  { keyword: "isidora", slug: "sierpe", parent: "ojochal" }, // Isidora
-  { keyword: "islotes", slug: "sierpe", parent: "ojochal" }, // Islotes
-  { keyword: "miramar", slug: "sierpe", parent: "ojochal" }, // Miramar
-  { keyword: "potrero", slug: "sierpe", parent: "ojochal" }, // Potrero
-  { keyword: "florida", slug: "piedras-blancas", parent: "ojochal" }, // Florida
-  { keyword: "navidad", slug: "piedras-blancas", parent: "ojochal" }, // Navidad
-  { keyword: "venecia", slug: "piedras-blancas", parent: "ojochal" }, // Venecia
-  { keyword: "banegas", slug: "bahia-drake", parent: "ojochal" }, // Banegas
-  { keyword: "caletas", slug: "bahia-drake", parent: "ojochal" }, // Caletas
-  { keyword: "canadá", slug: "puerto-cortes", parent: "ojochal" }, // Canadá
-  { keyword: "balsar", slug: "puerto-cortes", parent: "ojochal" }, // Balsar
-  { keyword: "cerrón", slug: "puerto-cortes", parent: "ojochal" }, // Cerrón
-  { keyword: "fuente", slug: "puerto-cortes", parent: "ojochal" }, // Fuente
-  { keyword: "tagual", slug: "puerto-cortes", parent: "ojochal" }, // Tagual
-  { keyword: "palmar", slug: "palmar", parent: "ojochal" }, // Palmar
-  { keyword: "cansot", slug: "palmar", parent: "ojochal" }, // Cansot
-  { keyword: "tinoco", slug: "palmar", parent: "ojochal" }, // Tinoco
-  { keyword: "trocha", slug: "palmar", parent: "ojochal" }, // Trocha
-  { keyword: "vergel", slug: "palmar", parent: "ojochal" }, // Vergel
-  { keyword: "zapote", slug: "palmar", parent: "ojochal" }, // Zapote
-  { keyword: "sierpe", slug: "sierpe", parent: "ojochal" }, // Sierpe
-  { keyword: "bejuco", slug: "sierpe", parent: "ojochal" }, // Bejuco
-  { keyword: "guabos", slug: "sierpe", parent: "ojochal" }, // Guabos
-  { keyword: "rincón", slug: "sierpe", parent: "ojochal" }, // Rincón
-  { keyword: "sábalo", slug: "sierpe", parent: "ojochal" }, // Sábalo
-  { keyword: "taboga", slug: "sierpe", parent: "ojochal" }, // Taboga
-  { keyword: "calera", slug: "piedras-blancas", parent: "ojochal" }, // Calera
-  { keyword: "guaria", slug: "piedras-blancas", parent: "ojochal" }, // Guaria
-  { keyword: "salamá", slug: "piedras-blancas", parent: "ojochal" }, // Salamá
-  { keyword: "guerra", slug: "bahia-drake", parent: "ojochal" }, // Guerra
-  { keyword: "planes", slug: "bahia-drake", parent: "ojochal" }, // Planes
-  { keyword: "riyito", slug: "bahia-drake", parent: "ojochal" }, // Riyito
-  { keyword: "coobó", slug: "palmar", parent: "ojochal" }, // Coobó
-  { keyword: "palma", slug: "palmar", parent: "ojochal" }, // Palma
-  { keyword: "barco", slug: "sierpe", parent: "ojochal" }, // Barco
-  { keyword: "julia", slug: "sierpe", parent: "ojochal" }, // Julia
-  { keyword: "mogos", slug: "sierpe", parent: "ojochal" }, // Mogos
-  { keyword: "tigre", slug: "sierpe", parent: "ojochal" }, // Tigre
-  { keyword: "nubes", slug: "piedras-blancas", parent: "ojochal" }, // Nubes
-  { keyword: "sinaí", slug: "piedras-blancas", parent: "ojochal" }, // Sinaí
-  { keyword: "drake", slug: "bahia-drake", parent: "ojochal" }, // Drake
-  { keyword: "yuca", slug: "puerto-cortes", parent: "ojochal" }, // Yuca
-  { keyword: "pozo", slug: "puerto-cortes", parent: "ojochal" }, // Pozo
-  { keyword: "fila", slug: "piedras-blancas", parent: "ojochal" }, // Fila
-  // Quepos
-  { keyword: "manuel antonio", slug: "manuel-antonio", parent: "quepos" },
-  { keyword: "naranjito", slug: "naranjito", parent: "quepos" },
-  { keyword: "savegre", slug: "savegre", parent: "quepos" },
+// Dynamically generate keywords from the new hierarchy
+for (const [cantonKey, cantonData] of Object.entries(costaRicaLocations)) {
+  const parent = cantonKey === "osa" ? "dominical" : formatSlug(cantonKey);
+
+  for (const [distritoKey, distritoData] of Object.entries(cantonData.distritos)) {
+    const slug = formatSlug(distritoKey);
+
+    // Add distrito name/cabecera
+    if (distritoData.cabecera) {
+      DISTRICT_KEYWORDS.push({ keyword: distritoData.cabecera.toLowerCase(), slug, parent });
+    }
+    DISTRICT_KEYWORDS.push({ keyword: distritoKey.replace(/_/g, " ").toLowerCase(), slug, parent });
+
+    // Add all barrios to map to this distrito
+    for (const barrio of distritoData.barrios) {
+      // Avoid tiny generic words
+      if (barrio.name.length > 3) {
+        // Some names are "San Isidro de El General", some are "Barrio Nuevo"
+        // In the reconnect strings, we want to match these against the property description
+        // Store both exact name and some variations if needed
+        const cleanName = barrio.name.toLowerCase();
+        DISTRICT_KEYWORDS.push({ keyword: cleanName, slug, parent });
+
+        // If there's a compound name like "Patio de Agua San Juan Bosco", add the parts
+        if (cleanName.includes(" ")) {
+          const parts = cleanName.split(" ");
+          // If it's something like "daniel flores zavaleta", let's not split it to single words,
+          // but we rely on the full phrase matching.
+        }
+      }
+    }
+  }
+}
+
+// Custom manual additions for common reconnect aliases that don't match exactly
+const MANUAL_ALIASES = [
+  { keyword: "rise costa rica", slug: "el-general", parent: "perez-zeledon" },
+  { keyword: "rise", slug: "el-general", parent: "perez-zeledon" },
+  { keyword: "nuevo general", slug: "general-viejo", parent: "perez-zeledon" },
+  { keyword: "peñas blancas", slug: "general-viejo", parent: "perez-zeledon" },
+  { keyword: "daniel flores zavaleta", slug: "daniel-flores", parent: "perez-zeledon" },
+  { keyword: "marino ballena", slug: "bahia-ballena", parent: "dominical" },
+  { keyword: "uvita", slug: "bahia-ballena", parent: "dominical" },
+  { keyword: "tinamastes", slug: "baru", parent: "perez-zeledon" },
+  { keyword: "ciudad cortes", slug: "puerto-cortes", parent: "ojochal" },
 ];
+
+MANUAL_ALIASES.forEach((alias) => DISTRICT_KEYWORDS.push(alias));
+
+// Sort by length descending so longer, more specific phrases match first
+// (e.g. "san isidro de el general" matches before "san isidro")
+DISTRICT_KEYWORDS.sort((a, b) => b.keyword.length - a.keyword.length);
