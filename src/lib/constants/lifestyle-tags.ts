@@ -23,6 +23,7 @@ export const LIFESTYLE_TAGS = [
   "Off grid",
   "Fácil acceso",
   "Requiere 4x4",
+  "Árboles frutales",
 ] as const;
 
 /** Union type of all valid lifestyle tag strings. */
@@ -216,6 +217,19 @@ export const LIFESTYLE_TAG_RULES: LifestyleTagRule[] = [
       const text =
         `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
       return text.includes("4x4") || text.includes("four wheel drive") || text.includes("4wd");
+    },
+  },
+  {
+    tag: "Árboles frutales",
+    match: (raw) => {
+      const text =
+        `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return (
+        text.includes("fruit tree") ||
+        text.includes("árboles frutales") ||
+        text.includes("arboles frutales") ||
+        text.includes("fruit orchard")
+      );
     },
   },
 ];
