@@ -53,7 +53,12 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
       key: "type",
       reactKey: "type",
       label: t("filters.type"),
-      value: filters.type,
+      value:
+        filters.type === "Lote"
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            `${t("filters.propertyTypes.Lote" as any)} / ${t("filters.propertyTypes.Terreno" as any)}`
+          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            t(`filters.propertyTypes.${filters.type}` as any) || filters.type,
     });
   }
 

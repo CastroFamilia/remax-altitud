@@ -1,49 +1,38 @@
 "use client";
 
 /**
- * PriceFilterPopover — Wraps the PriceRangeSlider in a Popover trigger button.
+ * PriceFilterPopover — Wraps the PriceRangeInputs in a Popover trigger button.
  *
- * Instead of showing the full slider + inputs inline (which takes ~280px),
- * this shows a compact button like "Price ▾" or "$100K–$2M ▾" that opens
- * a floating panel with the full slider interface.
+ * Instead of showing the inputs inline, this shows a compact button
+ * like "Price ▾" or "$100K–$2M ▾" that opens a floating panel with the full interface.
  */
 
 import { useState } from "react";
 import { Popover } from "radix-ui";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PriceRangeSlider } from "@/components/search/price-range-slider";
+import { PriceRangeInputs } from "@/components/search/price-range-inputs";
 import { formatPriceAbbrev } from "@/lib/map/geo-utils";
 
 interface PriceFilterPopoverProps {
   /** Placeholder shown when no price range is active */
   placeholder: string;
   /** Current price range [min, max] */
-  value: [number, number];
+  value: [number | undefined, number | undefined];
   /** Called when range changes */
-  onChange: (value: [number, number]) => void;
-  /** Min possible value */
-  min?: number;
-  /** Max possible value */
-  max?: number;
+  onChange: (value: [number | undefined, number | undefined]) => void;
 }
 
-export function PriceFilterPopover({
-  placeholder,
-  value,
-  onChange,
-  min = 0,
-  max = 800_000,
-}: PriceFilterPopoverProps) {
+export function PriceFilterPopover({ placeholder, value, onChange }: PriceFilterPopoverProps) {
   const [open, setOpen] = useState(false);
   const [minVal, maxVal] = value;
 
   // Determine if a custom range is active
-  const hasRange = minVal > min || maxVal < max;
+  const hasRange = minVal !== undefined || maxVal !== undefined;
 
   // Format the button label
   const displayLabel = hasRange
-    ? `${formatPriceAbbrev(minVal)}–${maxVal >= max ? "Any" : formatPriceAbbrev(maxVal)}`
+    ? `${minVal !== undefined ? formatPriceAbbrev(minVal) : "$0"}–${maxVal !== undefined ? formatPriceAbbrev(maxVal) : "Any"}`
     : placeholder;
 
   return (
@@ -88,14 +77,14 @@ export function PriceFilterPopover({
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
           )}
         >
-          <PriceRangeSlider value={value} onChange={onChange} min={min} max={max} />
+          <PriceRangeInputs value={value} onChange={onChange} />
 
           {/* Quick reset button when range is active */}
           {hasRange && (
             <button
               type="button"
-              onClick={() => onChange([min, max])}
-              className="mt-3 w-full rounded-md border border-border bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              onClick={() => onChange([undefined, undefined])}
+              className="mt-4 w-full rounded-md border border-border bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
             >
               Reset price range
             </button>

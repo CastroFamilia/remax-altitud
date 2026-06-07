@@ -177,8 +177,8 @@ export function SplitViewLayout({
             "h-full pt-2",
           )}
         >
-          {/* Grid sort group for grid-only view */}
-          {mapHidden && (
+          {/* Grid sort group for grid and split views */}
+          {!gridHidden && (
             <div className="flex items-center justify-end px-2 lg:px-4 mb-2">
               <GridSortGroup />
             </div>
