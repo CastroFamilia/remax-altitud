@@ -532,7 +532,7 @@ export function PropertyCard({
           </div>
 
           {/* ZMT badge (placed on image bottom-left overlay) */}
-          {zmtVisual && property.zmtStatus && (
+          {zmtVisual && property.zmtStatus && property.zmtStatus !== "titled" && (
             <span
               data-testid="zmt-badge"
               className={`absolute left-3 bottom-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold shadow-sm border ${zmtVisual.classes}`}

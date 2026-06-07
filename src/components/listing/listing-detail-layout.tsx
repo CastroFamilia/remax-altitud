@@ -150,7 +150,7 @@ export async function ListingDetailLayout({
                   )}
 
                   {/* ZMT badge (more prominent than in property card) */}
-                  {zmtVisual && zmtStatusKey && (
+                  {zmtVisual && zmtStatusKey && zmtStatusKey !== "titled" && (
                     <span
                       className={`ml-2 mt-2 inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold ${zmtVisual.classes}`}
                     >

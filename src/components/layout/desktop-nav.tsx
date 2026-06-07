@@ -18,6 +18,7 @@ import { LanguageToggle } from "@/components/layout/language-toggle";
 import { CurrencyToggle } from "@/components/layout/currency-toggle";
 import { UnitToggle } from "@/components/layout/unit-toggle";
 import { useLocaleCurrency } from "@/hooks/use-locale-currency";
+import { useLocaleUnits } from "@/hooks/use-locale-units";
 import { Globe } from "lucide-react";
 import {
   NavigationMenu,
@@ -32,6 +33,7 @@ export function DesktopNav() {
   const pathname = usePathname();
   const locale = useLocale();
   const { currency } = useLocaleCurrency();
+  const { unitSystem } = useLocaleUnits(locale);
   const t = useTranslations("Navigation");
 
   return (
@@ -60,7 +62,7 @@ export function DesktopNav() {
             >
               <Globe className="mr-1.5 size-3.5 opacity-80" />
               <span>
-                {locale.toUpperCase()} / {currency}
+                {locale.toUpperCase()} / {currency} / {unitSystem === "metric" ? "m²" : "ft²"}
               </span>
             </NavigationMenuTrigger>
             <NavigationMenuContent className="z-50 md:left-auto md:right-0">
