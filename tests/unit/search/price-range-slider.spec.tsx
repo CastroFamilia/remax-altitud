@@ -118,9 +118,9 @@ describe("PriceRangeSlider — dual-handle Radix Slider for price range (AC #1, 
   it(
     "[P0] displays formatted max price value in $M format for values >= 1,000,000",
     () => {
-      // THIS TEST WILL FAIL — price-range-slider.tsx not yet implemented
+      // Test formatting logic for values > 1M without being clamped to the default 800k max
       const onChange = vi.fn();
-      render(<PriceRangeSlider value={[0, 1_500_000]} onChange={onChange} />);
+      render(<PriceRangeSlider max={5_000_000} value={[0, 1_500_000]} onChange={onChange} />);
 
       const slider = document.querySelector('[data-testid="price-range-slider"]');
       expect(slider?.textContent).toMatch(/\$1\.[5]M|\$1\.5M/);
