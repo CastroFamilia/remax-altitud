@@ -159,7 +159,7 @@ describe("StickySpecsBar (Story 4.1)", () => {
   );
 
   it(
-    "[P0] renders ZMT status text",
+    "[P0] renders ZMT status text for concession",
     () => {
       render(
         <StickySpecsBar
@@ -168,14 +168,14 @@ describe("StickySpecsBar (Story 4.1)", () => {
           bathrooms={2}
           lotSizeM2={1200}
           constructionM2={180}
-          zmtStatus="titled"
+          zmtStatus="concession"
           locale="en"
         />,
       );
 
       const specsBar = screen.getByTestId("sticky-specs-bar");
-      // ZMT status "titled" translates to "zmtStatus.titled" via our mock
-      expect(specsBar.textContent).toContain("titled");
+      // ZMT status "concession" translates to "zmtStatus.concession" via our mock
+      expect(specsBar.textContent).toContain("concession");
     },
   );
 

@@ -485,26 +485,12 @@ describe("PropertyCard — AC #1: card displays key property data", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P0] ZMT badge shows 'Titled Property' text for zmtStatus='titled'",
+    "[P0] ZMT badge is not rendered for zmtStatus='titled'",
     () => {
-      // THIS TEST WILL FAIL — property-card.tsx not yet implemented
-      render(<PropertyCard property={mockPropertyMountain} locale="en" />);
-
-      const card = document.querySelector('[data-testid="property-card"]');
-      expect(card?.textContent).toMatch(/Titled Property/i);
-    },
-  );
-
-  it(
-    "[P0] ZMT badge uses green classes for zmtStatus='titled'",
-    () => {
-      // THIS TEST WILL FAIL — property-card.tsx not yet implemented
       render(<PropertyCard property={mockPropertyMountain} locale="en" />);
 
       const zmtBadge = document.querySelector('[data-testid="zmt-badge"]');
-      expect(zmtBadge).not.toBeNull();
-      expect(zmtBadge?.className).toContain("bg-green-100");
-      expect(zmtBadge?.className).toContain("text-green-800");
+      expect(zmtBadge).toBeNull();
     },
   );
 
