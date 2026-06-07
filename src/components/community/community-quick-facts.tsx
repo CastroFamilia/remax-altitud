@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Community } from "@/lib/db/schema/communities";
+import { Mountain, Plane, Wifi, Waves, Building2, Calendar } from "lucide-react";
+
 interface CommunityQuickFactsProps {
   community: Community;
   locale: string;
@@ -23,64 +25,42 @@ export async function CommunityQuickFacts({ community, locale }: CommunityQuickF
   const t = await getTranslations({ locale, namespace: "CommunityPage" });
   const quickFacts = community.quickFacts as Record<string, string | undefined>;
 
+  const iconProps = { className: "h-8 w-8 transition-colors duration-300", strokeWidth: 1.5 };
+
   const facts: QuickFact[] = [
     {
       key: "elevation",
-      icon: (
-        <span className="text-3xl" role="img" aria-hidden="true">
-          📍
-        </span>
-      ),
+      icon: <Mountain {...iconProps} />,
       labelKey: "quickFacts.elevation",
       value: quickFacts.elevation,
     },
     {
       key: "airportDistance",
-      icon: (
-        <span className="text-3xl" role="img" aria-hidden="true">
-          ✈
-        </span>
-      ),
+      icon: <Plane {...iconProps} />,
       labelKey: "quickFacts.airport",
       value: quickFacts.airportDistance,
     },
     {
       key: "internet",
-      icon: (
-        <span className="text-3xl" role="img" aria-hidden="true">
-          🌐
-        </span>
-      ),
+      icon: <Wifi {...iconProps} />,
       labelKey: "quickFacts.internet",
       value: quickFacts.internet,
     },
     {
       key: "amenities",
-      icon: (
-        <span className="text-3xl" role="img" aria-hidden="true">
-          🏊
-        </span>
-      ),
+      icon: <Waves {...iconProps} />,
       labelKey: "quickFacts.amenities",
       value: quickFacts.amenities,
     },
     {
       key: "developer",
-      icon: (
-        <span className="text-3xl" role="img" aria-hidden="true">
-          🏗
-        </span>
-      ),
+      icon: <Building2 {...iconProps} />,
       labelKey: "quickFacts.developer",
       value: quickFacts.developer,
     },
     {
       key: "established",
-      icon: (
-        <span className="text-3xl" role="img" aria-hidden="true">
-          📅
-        </span>
-      ),
+      icon: <Calendar {...iconProps} />,
       labelKey: "quickFacts.established",
       value: quickFacts.established,
     },
