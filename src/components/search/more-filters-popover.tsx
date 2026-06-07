@@ -81,7 +81,7 @@ export function MoreFiltersPopover({ filters, setFilter, toggleTag }: MoreFilter
             open && "border-brand-navy/40 bg-brand-navy/5 shadow-sm",
           )}
         >
-          <span>{t("filters.moreFilters") || "More Filters"}</span>
+          <span>{t("filters.tags") || "Filters"}</span>
           {moreFiltersCount > 0 && (
             <span className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-navy text-[10px] font-bold text-white shadow-sm">
               {moreFiltersCount}

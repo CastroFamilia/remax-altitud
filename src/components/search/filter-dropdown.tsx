@@ -41,6 +41,8 @@ interface FilterDropdownProps {
   className?: string;
   /** Format for the selected label — e.g. "3+ Beds" instead of just "3+" */
   formatSelected?: (option: FilterOption) => string;
+  /** Visual variant: default (bordered pill) or ghost (flat text) */
+  variant?: "default" | "ghost";
 }
 
 export function FilterDropdown({
@@ -51,6 +53,7 @@ export function FilterDropdown({
   testId,
   className,
   formatSelected,
+  variant = "default",
 }: FilterDropdownProps) {
   const [open, setOpen] = useState(false);
   const selectedOption = options.find((o) => o.value === value);
@@ -89,16 +92,21 @@ export function FilterDropdown({
           data-testid={testId}
           className={cn(
             // Base
-            "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium",
+            "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium",
             "transition-all duration-200 cursor-pointer whitespace-nowrap",
+            variant === "default" && "rounded-lg border",
+            variant === "ghost" && "rounded-md",
             // Focus
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30 focus-visible:border-brand-blue",
             // States
-            hasValue
-              ? "border-brand-navy/30 bg-brand-navy/5 text-brand-navy shadow-sm"
-              : "border-brand-gold/30 bg-background text-brand-navy/70 hover:border-brand-gold/60 hover:bg-brand-gold/5",
-            // Open state
-            open && "border-brand-navy/40 bg-brand-navy/5 shadow-sm",
+            variant === "default" &&
+              (hasValue
+                ? "border-brand-navy/30 bg-brand-navy/5 text-brand-navy shadow-sm"
+                : "border-brand-gold/30 bg-background text-brand-navy/70 hover:border-brand-gold/60 hover:bg-brand-gold/5"),
+            variant === "default" && open && "border-brand-navy/40 bg-brand-navy/5 shadow-sm",
+            variant === "ghost" &&
+              (hasValue ? "text-brand-navy font-bold" : "text-brand-navy/90 hover:bg-brand-navy/5"),
+            variant === "ghost" && open && "bg-brand-navy/5",
             className,
           )}
         >
