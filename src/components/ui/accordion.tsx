@@ -17,7 +17,10 @@ const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("border-b border-brand-dark/10 last:border-0 pb-2", className)}
+    className={cn(
+      "border-b border-brand-gold/20 last:border-0 pb-2 transition-colors hover:border-brand-gold/40",
+      className,
+    )}
     {...props}
   />
 ));
@@ -33,18 +36,20 @@ const AccordionTrigger = React.forwardRef<
     onClick={onToggle}
     aria-expanded={isOpen}
     className={cn(
-      "flex w-full items-center justify-between py-4 text-left text-lg font-semibold transition-all hover:text-brand-dark",
+      "flex w-full items-center justify-between py-6 text-left text-xl font-semibold text-brand-navy transition-all hover:text-brand-gold group",
       className,
     )}
     {...props}
   >
     {children}
-    <ChevronDown
+    <span
       className={cn(
-        "h-5 w-5 shrink-0 text-brand-dark transition-transform duration-200",
-        isOpen && "rotate-180",
+        "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-brand-gold/30 bg-brand-crema/50 text-brand-gold transition-all duration-[var(--duration-normal)] group-hover:bg-brand-gold group-hover:text-white",
+        isOpen && "bg-brand-gold text-white rotate-180",
       )}
-    />
+    >
+      <ChevronDown className="h-5 w-5" />
+    </span>
   </button>
 ));
 AccordionTrigger.displayName = "AccordionTrigger";
@@ -56,12 +61,12 @@ const AccordionContent = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "overflow-hidden text-base text-brand-dark/80 transition-all",
-      isOpen ? "max-h-96 opacity-100 mb-4" : "max-h-0 opacity-0",
+      "overflow-hidden text-lg text-text-secondary transition-all duration-[var(--duration-normal)] ease-in-out",
+      isOpen ? "max-h-96 opacity-100 mb-6" : "max-h-0 opacity-0",
     )}
     {...props}
   >
-    <div className={cn("pb-4 pt-0", className)}>{children}</div>
+    <div className={cn("pb-6 pt-2 pl-2 leading-relaxed", className)}>{children}</div>
   </div>
 ));
 AccordionContent.displayName = "AccordionContent";
