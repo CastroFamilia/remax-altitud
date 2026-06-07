@@ -12,23 +12,14 @@ interface TagsFilterPopoverProps {
   activeTags: string[];
   /** Callback when a tag is toggled */
   onToggle: (tag: string) => void;
-  /** Current active property type (some tags act as property types) */
-  activeType?: string;
-  /** Callback when a property type tag is toggled */
-  onTypeToggle?: (type: string) => void;
 }
 
-export function TagsFilterPopover({
-  activeTags,
-  onToggle,
-  activeType,
-  onTypeToggle,
-}: TagsFilterPopoverProps) {
+export function TagsFilterPopover({ activeTags, onToggle }: TagsFilterPopoverProps) {
   const [open, setOpen] = useState(false);
   const t = useTranslations("SearchPage");
 
   // Determine if any filters are active in this popover
-  const activeCount = activeTags.length + (activeType ? 1 : 0);
+  const activeCount = activeTags.length;
   const hasValue = activeCount > 0;
 
   // Placeholder text for the button
@@ -84,19 +75,13 @@ export function TagsFilterPopover({
           <div className="space-y-3">
             <h4 className="text-sm font-semibold text-brand-navy">{placeholder}</h4>
             <div className="flex flex-wrap gap-2">
-              <LifestyleTagChips
-                activeTags={activeTags}
-                onToggle={onToggle}
-                activeType={activeType}
-                onTypeToggle={onTypeToggle}
-              />
+              <LifestyleTagChips activeTags={activeTags} onToggle={onToggle} />
             </div>
             {hasValue && (
               <button
                 type="button"
                 onClick={() => {
                   activeTags.forEach((tag) => onToggle(tag));
-                  if (activeType && onTypeToggle) onTypeToggle(activeType);
                 }}
                 className="mt-4 w-full rounded-md border border-border bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >

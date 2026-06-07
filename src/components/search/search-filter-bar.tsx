@@ -148,12 +148,7 @@ export function SearchFilterBar({
   const mobileFilterControls = (
     <div className="flex flex-wrap items-center gap-3 w-full">
       {/* Story 3.4: Lifestyle tag chips (AC #1, #2, #3) */}
-      <LifestyleTagChips
-        activeTags={filters.tags ?? []}
-        onToggle={toggleTag}
-        activeType={filters.type}
-        onTypeToggle={handleTypeToggle}
-      />
+      <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
       {/* Listing Type dropdown (Sale / Lease) */}
       <div className="flex flex-col gap-1">
         <label className="text-xs font-medium text-muted-foreground">
@@ -335,12 +330,7 @@ export function SearchFilterBar({
                 />
 
                 {/* Lifestyle Tags / Characteristics */}
-                <TagsFilterPopover
-                  activeTags={filters.tags ?? []}
-                  onToggle={toggleTag}
-                  activeType={filters.type}
-                  onTypeToggle={handleTypeToggle}
-                />
+                <TagsFilterPopover activeTags={filters.tags ?? []} onToggle={toggleTag} />
 
                 {/* Beds — hidden for land types */}
                 {!isLandType && (
