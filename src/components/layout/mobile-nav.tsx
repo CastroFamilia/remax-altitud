@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,11 +20,13 @@ import { mainNavItems, mobileOnlyItems, type NavItem } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import { CurrencyToggle } from "@/components/layout/currency-toggle";
+import { UnitToggle } from "@/components/layout/unit-toggle";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const locale = useLocale();
   const t = useTranslations("Navigation");
   const tMobile = useTranslations("MobileNav");
 
@@ -92,9 +94,14 @@ export function MobileNav() {
             </ul>
           </nav>
 
-          <SheetFooter className="border-t border-brand-warm px-4 pt-4 flex flex-row items-center justify-between">
-            <LanguageToggle variant="light" />
-            <CurrencyToggle variant="light" />
+          <SheetFooter className="border-t border-brand-warm px-4 pt-4 flex flex-col gap-4">
+            <div className="flex flex-row items-center justify-between w-full">
+              <LanguageToggle variant="light" />
+              <CurrencyToggle variant="light" />
+            </div>
+            <div className="flex flex-row items-center justify-center w-full">
+              <UnitToggle locale={locale} />
+            </div>
           </SheetFooter>
         </SheetContent>
       </Sheet>
