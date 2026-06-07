@@ -88,7 +88,7 @@ export function SearchFilterBar({
 
   const isLandType = filters.type ? LAND_TYPES.includes(filters.type) : false;
 
-  const priceValue: [number, number] = [filters.priceMin ?? 0, filters.priceMax ?? 5_000_000];
+  const priceValue: [number, number] = [filters.priceMin ?? 0, filters.priceMax ?? 800_000];
 
   /** Get facet count label for a property type, e.g. "Casa (12)" */
   /** Display label for a property type — "Lote" renders as "Lote / Terreno" */
@@ -245,7 +245,7 @@ export function SearchFilterBar({
           value={priceValue}
           onChange={([min, max]) => {
             setFilter("priceMin", min > 0 ? min : undefined);
-            setFilter("priceMax", max < 5_000_000 ? max : undefined);
+            setFilter("priceMax", max < 800_000 ? max : undefined);
           }}
         />
       </div>
@@ -267,6 +267,7 @@ export function SearchFilterBar({
             placeholder={t("filters.location")}
             locale={locale}
             variant="light"
+            allowCustom={true}
           />
         </div>
       )}
@@ -383,7 +384,7 @@ export function SearchFilterBar({
                   value={priceValue}
                   onChange={([min, max]) => {
                     setFilter("priceMin", min > 0 ? min : undefined);
-                    setFilter("priceMax", max < 5_000_000 ? max : undefined);
+                    setFilter("priceMax", max < 800_000 ? max : undefined);
                   }}
                 />
 
@@ -401,6 +402,7 @@ export function SearchFilterBar({
                       placeholder={t("filters.location")}
                       locale={locale}
                       variant="light"
+                      allowCustom={true}
                     />
                   </div>
                 )}

@@ -13,7 +13,7 @@
  */
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { Search, X, MapPin, ChevronDown } from "lucide-react";
+import { Search, X, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -211,6 +211,13 @@ export function AreaSearchCombobox({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Sync query with selectedLabel when closed
+  useEffect(() => {
+    if (!isOpen) {
+      setQuery(selectedLabel);
+    }
+  }, [isOpen, selectedLabel]);
+
   // Reset highlight when filtered items change
   useEffect(() => {
     setHighlightedIndex(-1);
@@ -234,7 +241,6 @@ export function AreaSearchCombobox({
         onAreaChange(item.option.slug, "");
       }
       setIsOpen(false);
-      setQuery("");
       inputRef.current?.blur();
     },
     [onAreaChange],
@@ -280,12 +286,11 @@ export function AreaSearchCombobox({
         case "Escape":
           e.preventDefault();
           setIsOpen(false);
-          setQuery("");
           inputRef.current?.blur();
           break;
       }
     },
-    [isOpen, filteredItems, highlightedIndex, handleSelect],
+    [isOpen, filteredItems, highlightedIndex, handleSelect, allowCustom, query],
   );
 
   // Build grouped display for the dropdown
@@ -358,46 +363,30 @@ export function AreaSearchCombobox({
           )}
         />
 
-        {/* Show selected chip or input */}
-        {hasSelection && !isOpen ? (
-          <button
-            type="button"
-            onClick={() => {
-              setIsOpen(true);
-              setTimeout(() => inputRef.current?.focus(), 50);
-            }}
-            className={cn(
-              "flex-1 text-left text-sm font-medium truncate cursor-pointer",
-              isDark ? "text-white" : "text-foreground",
-            )}
-          >
-            {selectedLabel}
-          </button>
-        ) : (
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              if (!isOpen) setIsOpen(true);
-            }}
-            onFocus={() => setIsOpen(true)}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            className={cn(
-              "flex-1 bg-transparent text-sm outline-none min-w-0",
-              isDark
-                ? "text-white placeholder:text-white/40"
-                : "text-foreground placeholder:text-muted-foreground",
-            )}
-            role="combobox"
-            aria-expanded={isOpen}
-            aria-controls="area-combobox-list"
-            aria-haspopup="listbox"
-            autoComplete="off"
-          />
-        )}
+        {/* Show input (acts as autocomplete) */}
+        <input
+          ref={inputRef}
+          type="text"
+          value={isOpen ? query : selectedLabel || query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            if (!isOpen) setIsOpen(true);
+          }}
+          onFocus={() => setIsOpen(true)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          className={cn(
+            "flex-1 bg-transparent text-sm outline-none min-w-0",
+            isDark
+              ? "text-white placeholder:text-white/40"
+              : "text-foreground placeholder:text-muted-foreground",
+          )}
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-controls="area-combobox-list"
+          aria-haspopup="listbox"
+          autoComplete="off"
+        />
 
         {/* Clear / Chevron */}
         {hasSelection ? (
@@ -414,15 +403,7 @@ export function AreaSearchCombobox({
           >
             <X className="h-3 w-3" />
           </button>
-        ) : (
-          <ChevronDown
-            className={cn(
-              "h-4 w-4 shrink-0 transition-transform duration-200",
-              isDark ? "text-white/50" : "text-muted-foreground",
-              isOpen && "rotate-180",
-            )}
-          />
-        )}
+        ) : null}
       </div>
 
       {/* Dropdown */}

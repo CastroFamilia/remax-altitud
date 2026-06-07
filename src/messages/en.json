@@ -377,10 +377,11 @@
       "clearAll": "Clear all",
       "activeChip": "{label}: {value}",
       "dismiss": "Remove {label} filter",
-      "listingType": "Listing Type",
-      "listingTypeAll": "All Transactions",
+      "listingType": "Transaction",
+      "listingTypeAll": "Transaction",
       "listingTypeSale": "For Sale",
       "listingTypeLease": "For Lease",
+      "tags": "Filters",
       "propertyTypes": {
         "Casa": "House",
         "Apartamento": "Apartment",
