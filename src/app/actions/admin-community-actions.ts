@@ -13,6 +13,7 @@ import {
   getCommunityById,
 } from "@/lib/db/queries/communities";
 import { updatePropertyCommunity } from "@/lib/db/queries/properties";
+import { updateCommunityListingCounts } from "@/lib/db/queries/communities";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 
 function triggerRevalidation() {
@@ -163,6 +164,7 @@ export async function updatePropertyCommunityAction(
       }
     }
     await updatePropertyCommunity(propertyId, communityId);
+    await updateCommunityListingCounts();
     triggerRevalidation();
     return { success: true };
   } catch (error) {
