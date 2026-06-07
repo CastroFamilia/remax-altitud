@@ -45,6 +45,7 @@ interface AreaSearchComboboxProps {
   /** Locale for display labels */
   locale?: string;
   /** Visual variant */
+  variant?: "dark" | "light";
   /** Allow typing and selecting custom area values not in the list */
   allowCustom?: boolean;
 }
