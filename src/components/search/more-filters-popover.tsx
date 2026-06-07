@@ -33,8 +33,7 @@ export function MoreFiltersPopover({ filters, setFilter, toggleTag }: MoreFilter
     if (filters[key] === value) {
       setFilter(key, undefined);
     } else {
-      // @ts-expect-error key is generic
-      setFilter(key, value);
+      setFilter(key, value as SearchFilters[typeof key]);
     }
   };
 

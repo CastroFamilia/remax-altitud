@@ -16,7 +16,7 @@ import { formatPriceAbbrev } from "@/lib/map/geo-utils";
 
 interface PriceRangeSliderProps {
   min?: number; // default 0
-  max?: number; // default 800_000
+  max?: number; // default 5_000_000
   step?: number; // default 10_000
   value: [number, number];
   onChange: (value: [number, number]) => void; // called with debounce from parent
@@ -24,7 +24,7 @@ interface PriceRangeSliderProps {
 
 export function PriceRangeSlider({
   min = 0,
-  max = 800_000,
+  max = 5_000_000,
   step = 10_000,
   value,
   onChange,
