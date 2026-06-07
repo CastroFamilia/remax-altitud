@@ -277,7 +277,7 @@ export function SearchFilterBar({
       {/* Filter bar wrapper */}
       <div
         data-testid="search-filter-bar"
-        className="sticky top-[var(--header-height)] z-30 py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
+        className="relative flex-shrink-0 z-30 shadow-sm py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
       >
         <div className="flex items-stretch px-4 gap-3 h-full">
           {/* Mobile compact bar — visible below md breakpoint */}

@@ -328,6 +328,7 @@ export async function searchProperties(
         "with",
         "and",
         "a",
+        "al",
         "en",
         "la",
         "el",

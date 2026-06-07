@@ -135,52 +135,35 @@ function getLandFeatures(property: PropertySearchItem, locale: string): string[]
   const features: string[] = [];
 
   // Creek / River
-  if (
-    combined.includes("rio") ||
-    combined.includes("río") ||
-    combined.includes("creek") ||
-    combined.includes("stream") ||
-    combined.includes("quebrada")
-  ) {
+  if (/(^|[^a-záéíóúüñ])(rio|río|creek|stream|quebrada)([^a-záéíóúüñ]|$)/i.test(combined)) {
     features.push(locale === "es" ? "con río" : "creek");
   }
 
   // Ocean view
   if (
-    combined.includes("vista al mar") ||
-    combined.includes("vista del mar") ||
-    combined.includes("ocean view") ||
-    combined.includes("sea view") ||
-    combined.includes("vista mar")
+    /(^|[^a-záéíóúüñ])(vista al mar|vista del mar|ocean view|sea view|vista mar)([^a-záéíóúüñ]|$)/i.test(
+      combined,
+    )
   ) {
     features.push(locale === "es" ? "vista al mar" : "ocean view");
   }
 
   // Mountain view
   if (
-    combined.includes("vista a la montaña") ||
-    combined.includes("mountain view") ||
-    combined.includes("vista montaña")
+    /(^|[^a-záéíóúüñ])(vista a la montaña|mountain view|vista montaña)([^a-záéíóúüñ]|$)/i.test(
+      combined,
+    )
   ) {
     features.push(locale === "es" ? "vista a la montaña" : "mountain view");
   }
 
   // Flat
-  if (
-    combined.includes("plano") ||
-    combined.includes("plana") ||
-    combined.includes("flat") ||
-    combined.includes("terreno plano")
-  ) {
+  if (/(^|[^a-záéíóúüñ])(plano|plana|flat|terreno plano)([^a-záéíóúüñ]|$)/i.test(combined)) {
     features.push(locale === "es" ? "plano" : "flat");
   }
 
   // Waterfall
-  if (
-    combined.includes("cascada") ||
-    combined.includes("waterfall") ||
-    combined.includes("catarata")
-  ) {
+  if (/(^|[^a-záéíóúüñ])(cascada|waterfall|catarata)([^a-záéíóúüñ]|$)/i.test(combined)) {
     features.push(locale === "es" ? "cascada" : "waterfall");
   }
 
