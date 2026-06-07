@@ -418,7 +418,9 @@
         "Con río": "With river",
         "Con cascada": "With waterfall",
         "Con vista al mar": "Ocean view",
-        "Con vista a la montaña": "Mountain view"
+        "Con vista a la montaña": "Mountain view",
+        "Para inversión": "Investment property",
+        "Retiro": "Retire"
       }
     },
     "presets": {
