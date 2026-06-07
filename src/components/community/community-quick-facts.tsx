@@ -23,8 +23,6 @@ export async function CommunityQuickFacts({ community, locale }: CommunityQuickF
   const t = await getTranslations({ locale, namespace: "CommunityPage" });
   const quickFacts = community.quickFacts as Record<string, string | undefined>;
 
-  const iconProps = { className: "h-8 w-8 transition-colors duration-300", strokeWidth: 1.5 };
-
   const facts: QuickFact[] = [
     {
       key: "elevation",
