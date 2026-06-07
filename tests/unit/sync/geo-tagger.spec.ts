@@ -53,7 +53,7 @@ describe("autoTagCommunities — Spatial Auto-Tagging (ATDD — RED PHASE)", () 
       const taggedCount = await autoTagCommunities();
 
       // Then: the tagger returns the count of processed listings and queries ST_Within
-      expect(mockExecute).toHaveBeenCalledTimes(2);
+      expect(mockExecute).toHaveBeenCalledTimes(3);
       expect(taggedCount).toBe(3);
 
       const sqlCall = mockExecute.mock.calls[0][0] as {
@@ -113,7 +113,7 @@ describe("autoTagCommunities — Spatial Auto-Tagging (ATDD — RED PHASE)", () 
       const result = await autoTagCommunities();
 
       // Then: 1 relocated property is successfully matched and updated
-      expect(mockExecute).toHaveBeenCalledTimes(2);
+      expect(mockExecute).toHaveBeenCalledTimes(3);
       expect(result).toBe(1);
     }
   );

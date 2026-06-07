@@ -696,6 +696,35 @@ const MANUAL_ALIASES = [
   { keyword: "uvita", slug: "bahia-ballena", parent: "dominical" },
   { keyword: "tinamastes", slug: "baru", parent: "perez-zeledon" },
   { keyword: "ciudad cortes", slug: "puerto-cortes", parent: "ojochal" },
+  {
+    keyword: "santa elena, general viejo",
+    slug: "santa-elena-de-el-general",
+    parent: "perez-zeledon",
+  },
+  {
+    keyword: "santa elena, san isidro",
+    slug: "santa-elena-de-el-general",
+    parent: "perez-zeledon",
+  },
+  {
+    keyword: "santa elena, perez zeledon",
+    slug: "santa-elena-de-el-general",
+    parent: "perez-zeledon",
+  },
+  {
+    keyword: "santa elena, pérez zeledón",
+    slug: "santa-elena-de-el-general",
+    parent: "perez-zeledon",
+  },
+  { keyword: "pueblo nuevo de cajon", slug: "cajon", parent: "perez-zeledon" },
+  { keyword: "pueblo nuevo de cajón", slug: "cajon", parent: "perez-zeledon" },
+  { keyword: "san francisco de cajon", slug: "cajon", parent: "perez-zeledon" },
+  { keyword: "san francisco de cajón", slug: "cajon", parent: "perez-zeledon" },
+  { keyword: "cedral de cajon", slug: "cajon", parent: "perez-zeledon" },
+  { keyword: "cedral de cajón", slug: "cajon", parent: "perez-zeledon" },
+  { keyword: "san miguel de paramo", slug: "paramo", parent: "perez-zeledon" },
+  { keyword: "san miguel de páramo", slug: "paramo", parent: "perez-zeledon" },
+  { keyword: "san rafael de platanares", slug: "platanares", parent: "perez-zeledon" },
 ];
 
 MANUAL_ALIASES.forEach((alias) => DISTRICT_KEYWORDS.push(alias));

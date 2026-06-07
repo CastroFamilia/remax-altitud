@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { trackPropertyViewInBackground } from "@/lib/services/tracking";
+import { db } from "@/lib/db/client";
+import { propertyViews } from "@/lib/db/schema/property-views";
 
 const viewInputSchema = z.object({
   propertyId: z.string().uuid("Invalid property ID format"),
@@ -27,7 +29,13 @@ export async function POST(request: Request) {
 
     const { propertyId, slug, locale } = parseResult.data;
 
-    // Trigger property view tracking in the background
+    // 1. Insert into local property_views table for admin dashboard analytics
+    await db.insert(propertyViews).values({
+      propertyId,
+      locale,
+    });
+
+    // 2. Trigger property view tracking in the background to Altitud Hub
     trackPropertyViewInBackground({
       propertyId,
       slug,
