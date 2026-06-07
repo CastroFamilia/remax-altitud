@@ -28,7 +28,6 @@ import { LifestyleTagChips } from "@/components/search/lifestyle-tag-chips";
 import { TagsFilterPopover } from "@/components/search/tags-filter-popover";
 import { PriceFilterPopover } from "@/components/search/price-filter-popover";
 import { FilterDropdown } from "@/components/search/filter-dropdown";
-import { MoreFiltersPopover } from "@/components/search/more-filters-popover";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 import type { AreaOption } from "@/components/search/area-search-combobox";
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
@@ -107,6 +106,12 @@ export function SearchFilterBar({
     const facet = facets.byType.find((f) => f.value === type);
     return facet ? `${display} (${facet.count})` : display;
   }
+
+  /** Build options for the Listing Type dropdown */
+  const listingTypeOptions = [
+    { value: "Sale", label: t("filters.listingTypeSale") },
+    { value: "Lease", label: t("filters.listingTypeLease") },
+  ];
 
   /** Build options for the Property Type dropdown */
   const propertyTypeOptions = PROPERTY_TYPES.map((type) => {
@@ -314,6 +319,17 @@ export function SearchFilterBar({
                   <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
                 )}
 
+                {/* Listing Type (Ghost text style) */}
+                <FilterDropdown
+                  variant="ghost"
+                  placeholder={t("filters.listingTypeAll") || "Venta / alquiler"}
+                  value={filters.listingType ?? undefined}
+                  options={listingTypeOptions}
+                  onChange={(val) => setFilter("listingType", val)}
+                  testId="listing-type-filter"
+                  className="px-2"
+                />
+
                 {/* Property Type */}
                 <FilterDropdown
                   placeholder={t("filters.typeAll")}
@@ -349,9 +365,6 @@ export function SearchFilterBar({
                     formatSelected={(opt) => `${opt.label} ${t("filters.bathrooms")}`}
                   />
                 )}
-
-                {/* More Filters Popover (combines Listing Type, Tags) */}
-                <MoreFiltersPopover filters={filters} setFilter={setFilter} toggleTag={toggleTag} />
 
                 {/* Price Range Popover */}
                 <PriceFilterPopover
