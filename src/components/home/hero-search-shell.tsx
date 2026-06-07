@@ -50,15 +50,6 @@ const AREA_KEYWORDS: Record<string, string> = {
   sámara: "samara",
   "santa teresa": "santa-teresa",
   "playa hermosa": "playa-hermosa",
-  liberia: "liberia",
-  "san jose": "san-jose",
-  "san josé": "san-jose",
-  escazu: "escazu",
-  escazú: "escazu",
-  "santa ana": "santa-ana",
-  heredia: "heredia",
-  alajuela: "alajuela",
-  cartago: "cartago",
   tinamastes: "tinamastes-platanillo",
   platanillo: "tinamastes-platanillo",
   barú: "tinamastes-platanillo",
@@ -95,13 +86,6 @@ const AREA_LABELS: Record<string, string> = {
   samara: "Sámara",
   "santa-teresa": "Santa Teresa",
   "playa-hermosa": "Playa Hermosa",
-  liberia: "Liberia",
-  "san-jose": "San José",
-  escazu: "Escazú",
-  "santa-ana": "Santa Ana",
-  heredia: "Heredia",
-  alajuela: "Alajuela",
-  cartago: "Cartago",
   "tinamastes-platanillo": "Tinamastes & Platanillo",
   // PZ sub-location labels (used in smart search chips)
   // Aligned with ALTITUD HUB locations.js — 12 districts
@@ -303,16 +287,6 @@ const AREA_GROUPS: AreaGrouping[] = [
     labelEn: "Mountain & Valley",
     labelEs: "Montaña y Valle",
     slugs: ["perez-zeledon", "tinamastes-platanillo"],
-  },
-  {
-    labelEn: "Central Valley",
-    labelEs: "Valle Central",
-    slugs: ["san-jose", "escazu", "santa-ana", "heredia", "alajuela", "cartago"],
-  },
-  {
-    labelEn: "Guanacaste",
-    labelEs: "Guanacaste",
-    slugs: ["liberia"],
   },
 ];
 
