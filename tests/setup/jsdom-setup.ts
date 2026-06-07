@@ -47,4 +47,20 @@ if (typeof globalThis.document !== "undefined") {
       configurable: true,
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // ResizeObserver polyfill for Radix UI (use-size)
+  // ---------------------------------------------------------------------------
+  if (typeof globalThis.ResizeObserver === "undefined") {
+    class ResizeObserverMock {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    Object.defineProperty(globalThis, "ResizeObserver", {
+      value: ResizeObserverMock,
+      writable: true,
+      configurable: true,
+    });
+  }
 }
