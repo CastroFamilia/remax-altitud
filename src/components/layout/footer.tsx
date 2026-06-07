@@ -62,6 +62,7 @@ const quickLinks = [
   { key: "contact", href: "/contact" },
   { key: "joinTeam", href: "/join" },
   { key: "faq", href: "/faq" },
+  { key: "blog", href: "/blog" },
 ] as const;
 
 const socialLinks = [
