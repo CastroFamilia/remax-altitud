@@ -510,6 +510,22 @@ export async function updatePropertyTags(id: string, tags: string[]): Promise<vo
 }
 
 /**
+ * Updates the legal status (zmt_status) for a specific property id.
+ *
+ * @param id        - The property's UUID
+ * @param zmtStatus - The new zmtStatus string ('titled', 'concession', 'zmt_restricted', 'none')
+ */
+export async function updatePropertyZmtStatus(id: string, zmtStatus: string): Promise<void> {
+  await db
+    .update(properties)
+    .set({
+      zmtStatus,
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.id, id));
+}
+
+/**
  * Fetches all slugs for visible properties.
  * Used by `generateStaticParams` for SSG build-time generation (Story 4.1, Task 1).
  *
