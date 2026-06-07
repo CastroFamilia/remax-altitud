@@ -10,6 +10,7 @@ import {
   updateCommunityAction,
 } from "@/app/actions/admin-community-actions";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
+import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 
 const CommunityGeoFenceMap = dynamic(
   () => import("@/components/map/community-geofence-map").then((m) => m.CommunityGeoFenceMap),
@@ -363,20 +364,24 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 {t("formLabelArea")} <span className="text-red-500">*</span>
               </label>
-              <select
-                required
-                value={areaId}
-                onChange={(e) => setAreaId(e.target.value)}
-                data-testid="community-area-select"
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
-              >
-                <option value="">Select Area...</option>
-                {areas.map((area) => (
-                  <option key={area.id} value={area.id}>
-                    {locale === "es" ? area.nameEs : area.nameEn}
-                  </option>
-                ))}
-              </select>
+              <AreaSearchCombobox
+                areas={areas.map((a) => ({
+                  slug: a.slug,
+                  label: locale === "es" ? a.nameEs : a.nameEn,
+                  isSubLocation: false,
+                }))}
+                selectedArea={areas.find((a) => a.id === areaId)?.slug || ""}
+                selectedSubLocation=""
+                onAreaChange={(selectedSlug) => {
+                  const matchedArea = areas.find((a) => a.slug === selectedSlug);
+                  if (matchedArea) {
+                    setAreaId(matchedArea.id);
+                  }
+                }}
+                placeholder={locale === "es" ? "Seleccione un Área..." : "Select Area..."}
+                locale={locale}
+                variant="dark"
+              />
             </div>
 
             {/* Image URLs */}

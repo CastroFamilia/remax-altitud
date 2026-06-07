@@ -47,6 +47,17 @@ function FAQPageContent() {
     { value: "q4", title: t("q4_question"), content: t("q4_answer") },
     { value: "q5", title: t("q5_question"), content: t("q5_answer") },
     { value: "q6", title: t("q6_question"), content: t("q6_answer") },
+    { value: "q7", title: t("q7_question"), content: t("q7_answer") },
+    { value: "q8", title: t("q8_question"), content: t("q8_answer") },
+    { value: "q9", title: t("q9_question"), content: t("q9_answer") },
+    { value: "q10", title: t("q10_question"), content: t("q10_answer") },
+    { value: "q11", title: t("q11_question"), content: t("q11_answer") },
+    { value: "q12", title: t("q12_question"), content: t("q12_answer") },
+    { value: "q13", title: t("q13_question"), content: t("q13_answer") },
+    { value: "q14", title: t("q14_question"), content: t("q14_answer") },
+    { value: "q15", title: t("q15_question"), content: t("q15_answer") },
+    { value: "q16", title: t("q16_question"), content: t("q16_answer") },
+    { value: "q17", title: t("q17_question"), content: t("q17_answer") },
   ];
 
   // Generate JSON-LD Schema for SEO
@@ -77,6 +88,9 @@ function FAQPageContent() {
           </h2>
           <div className="rounded-xl border border-brand-warm bg-white p-6 shadow-sm md:p-8">
             <SimpleAccordion items={faqItems} />
+          </div>
+          <div className="mt-8 rounded-xl bg-brand-sand/50 p-6 text-brand-navy">
+            <p className="text-lg font-medium italic">{t("conclusion")}</p>
           </div>
         </section>
 

@@ -129,8 +129,8 @@ export async function PropertyPrintView({
           </div>
 
           {/* 3 Secondary Images Strip */}
-          <div className="h-[25%] grid grid-cols-3 w-full border-t border-white">
-            <div className="relative overflow-hidden bg-gray-200 border-r border-white">
+          <div className="h-[25%] grid grid-cols-3 w-full bg-white gap-3 p-3">
+            <div className="relative overflow-hidden bg-gray-200 rounded-sm">
               {secondaryImage1 && (
                 <PropertyImage
                   src={secondaryImage1.src}
@@ -143,7 +143,7 @@ export async function PropertyPrintView({
                 />
               )}
             </div>
-            <div className="relative overflow-hidden bg-gray-300 border-r border-white">
+            <div className="relative overflow-hidden bg-gray-300 rounded-sm">
               {secondaryImage2 && (
                 <PropertyImage
                   src={secondaryImage2.src}
@@ -156,7 +156,7 @@ export async function PropertyPrintView({
                 />
               )}
             </div>
-            <div className="relative overflow-hidden bg-gray-400">
+            <div className="relative overflow-hidden bg-gray-400 rounded-sm">
               {secondaryImage3 && (
                 <PropertyImage
                   src={secondaryImage3.src}

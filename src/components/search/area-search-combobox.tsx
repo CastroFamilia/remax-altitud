@@ -46,6 +46,8 @@ interface AreaSearchComboboxProps {
   locale?: string;
   /** Visual variant */
   variant?: "dark" | "light";
+  /** Allow typing and selecting custom area values not in the list */
+  allowCustom?: boolean;
 }
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -124,6 +126,7 @@ export function AreaSearchCombobox({
   placeholder = "Search location...",
   locale = "en",
   variant = "dark",
+  allowCustom = false,
 }: AreaSearchComboboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -222,8 +225,10 @@ export function AreaSearchCombobox({
   }, [highlightedIndex]);
 
   const handleSelect = useCallback(
-    (item: FlatItem) => {
-      if (item.type === "sub") {
+    (item: FlatItem | string) => {
+      if (typeof item === "string") {
+        onAreaChange(item, "");
+      } else if (item.type === "sub") {
         onAreaChange(item.option.parentSlug ?? "perez-zeledon", item.option.slug);
       } else {
         onAreaChange(item.option.slug, "");
@@ -268,6 +273,8 @@ export function AreaSearchCombobox({
           e.preventDefault();
           if (highlightedIndex >= 0 && filteredItems[highlightedIndex]) {
             handleSelect(filteredItems[highlightedIndex]);
+          } else if (allowCustom && query.trim()) {
+            handleSelect(query.trim());
           }
           break;
         case "Escape":
