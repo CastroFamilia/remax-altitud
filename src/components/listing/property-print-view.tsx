@@ -251,9 +251,22 @@ export async function PropertyPrintView({
             </div>
           </div>
 
-          {/* Footer: Agent & QR */}
-          <div className="flex justify-between items-end border-t border-gray-100 pt-4 mt-auto">
-            <div className="flex-1 flex items-center pr-4">
+          {/* Footer: QR Code & Agent */}
+          <div className="mt-auto flex flex-col">
+            {/* QR Code Section */}
+            <div className="flex items-center mb-6">
+              <div className="bg-white p-1.5 border border-gray-200 shadow-sm mr-3">
+                <QRCode value={qrTrackingUrl} size={64} level="M" />
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-amber-600 leading-tight">
+                Scan for
+                <br />
+                more info
+              </span>
+            </div>
+
+            {/* Agent Section */}
+            <div className="flex items-center border-t border-gray-100 pt-4">
               {(agent?.photoOptimizedUrl || agent?.photoUrl) && (
                 <div className="w-16 h-16 mr-4 relative rounded-full overflow-hidden border border-gray-200 shrink-0 shadow-sm">
                   <PropertyImage
@@ -282,15 +295,6 @@ export async function PropertyPrintView({
                   {officeName}
                 </p>
               </div>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <div className="bg-white p-2 border border-gray-200 shadow-sm">
-                <QRCode value={qrTrackingUrl} size={64} level="M" />
-              </div>
-              <span className="text-[9px] uppercase font-bold tracking-widest text-amber-600 mt-1.5">
-                Scan for info
-              </span>
             </div>
           </div>
         </div>
