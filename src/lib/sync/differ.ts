@@ -120,7 +120,14 @@ export function diffProperties(
         typeof dbImages[0] !== "object" ||
         dbImages[0] === null ||
         !("src" in (dbImages[0] as Record<string, unknown>)) ||
-        !(dbImages[0] as Record<string, unknown>).src);
+        !(dbImages[0] as Record<string, unknown>).src ||
+        dbImages.some(
+          (img: unknown) =>
+            typeof img === "object" &&
+            img !== null &&
+            typeof (img as Record<string, unknown>).src === "string" &&
+            ((img as Record<string, unknown>).src as string).includes("%20"),
+        ));
 
     if (
       !db.isVisible ||
