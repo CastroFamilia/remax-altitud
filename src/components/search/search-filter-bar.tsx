@@ -304,11 +304,11 @@ export function SearchFilterBar({
           </Sheet>
 
           {/* Desktop/tablet filter controls — visible at md: and above */}
-          <div className="hidden md:flex flex-col gap-1 w-full">
-            {/* Row 2: All controls in a single unified row (wraps if needed) */}
-            <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-2 w-full">
+          <div className="hidden md:flex flex-col gap-1 w-full min-w-0">
+            {/* Row 2: All controls in a single unified row (scrolls horizontally) */}
+            <div className="flex items-center justify-between gap-y-2 gap-x-2 w-full min-w-0">
               {/* Left group: View toggle + Filter dropdowns */}
-              <div className="flex flex-wrap items-center gap-2 flex-1 min-w-[300px]">
+              <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto no-scrollbar py-1">
                 {/* View Mode Toggle (inline) */}
                 {onViewModeChange && (
                   <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
@@ -422,7 +422,9 @@ export function SearchFilterBar({
 
       {/* Active filter chips row — shown below filter bar when filters are active */}
       {activeFilterCount > 0 && (
-        <FilterChips filters={filters} onClearFilter={clearFilter} onClearAll={clearAll} />
+        <div className="flex-shrink-0 bg-background border-b border-border z-30 relative">
+          <FilterChips filters={filters} onClearFilter={clearFilter} onClearAll={clearAll} />
+        </div>
       )}
     </>
   );
