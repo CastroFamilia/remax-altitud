@@ -104,7 +104,7 @@ export async function optimizePropertyImages(
     let base: string;
     try {
       const pathname = new URL(url).pathname;
-      const basename = path.basename(pathname);
+      const basename = path.basename(decodeURIComponent(pathname));
       base = basename.replace(/\.[^.]+$/, "");
     } catch {
       base = "";

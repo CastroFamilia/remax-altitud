@@ -23,6 +23,7 @@ export const DEFAULT_MAP_ZOOM = 10;
  * Ideal for southern Costa Rica's mountainous/coastal geography.
  */
 export const MAP_STYLE = "mapbox://styles/mapbox/outdoors-v12";
+export const MAP_STYLE_SATELLITE = "mapbox://styles/mapbox/satellite-streets-v12";
 
 /**
  * Max bounds — tightly fits the southern Costa Rica region.

@@ -15,7 +15,8 @@ import type { MapRef } from "react-map-gl";
 import Supercluster from "supercluster";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { MAPBOX_TOKEN, MAP_STYLE, MAX_BOUNDS } from "@/lib/map/config";
+import { MAPBOX_TOKEN, MAP_STYLE, MAP_STYLE_SATELLITE, MAX_BOUNDS } from "@/lib/map/config";
+import { Layers } from "lucide-react";
 import { boundsFromMapboxEvent } from "@/lib/map/geo-utils";
 import { useMapStore } from "@/store/map-store";
 import { MapClusterPin } from "@/components/map/map-cluster-pin";
@@ -98,6 +99,7 @@ export function MapView({
   const [currentZoom, setCurrentZoom] = useState(zoom);
   const [currentBounds, setCurrentBounds] =
     useState<[number, number, number, number]>(INITIAL_BBOX);
+  const [mapStyle, setMapStyle] = useState(MAP_STYLE);
 
   // Convert properties to GeoJSON points for Supercluster
   const points = useMemo<GeoJSON.Feature<GeoJSON.Point, { cluster: false; propertyId: string }>[]>(
@@ -304,7 +306,7 @@ export function MapView({
       <MapboxMap
         ref={mapRef}
         mapboxAccessToken={MAPBOX_TOKEN}
-        mapStyle={MAP_STYLE}
+        mapStyle={mapStyle}
         initialViewState={{
           longitude: center.lng,
           latitude: center.lat,
@@ -324,6 +326,22 @@ export function MapView({
         }}
       >
         <NavigationControl position="bottom-right" showCompass={false} />
+
+        {/* Map Style Toggle */}
+        <div className="absolute top-4 right-4 z-10">
+          <button
+            type="button"
+            className="bg-white p-2 rounded-md shadow-md border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors text-slate-700"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setMapStyle((prev) => (prev === MAP_STYLE ? MAP_STYLE_SATELLITE : MAP_STYLE));
+            }}
+            title={mapStyle === MAP_STYLE ? "Switch to Satellite view" : "Switch to Map view"}
+          >
+            <Layers className="w-5 h-5" />
+          </button>
+        </div>
 
         {/* Render clusters and individual pins */}
         {clusters.map((feature) => {

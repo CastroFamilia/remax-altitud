@@ -13,7 +13,14 @@ import { useState, useCallback } from "react";
 import { Map as MapboxMap, Marker, NavigationControl } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { MAPBOX_TOKEN, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, MAP_STYLE } from "@/lib/map/config";
+import {
+  MAPBOX_TOKEN,
+  DEFAULT_MAP_CENTER,
+  DEFAULT_MAP_ZOOM,
+  MAP_STYLE,
+  MAP_STYLE_SATELLITE,
+} from "@/lib/map/config";
+import { Layers } from "lucide-react";
 
 interface PinDropMapProps {
   /** Current pin position — null if not yet placed */
@@ -35,6 +42,7 @@ export function PinDropMap({
   readOnly = false,
 }: PinDropMapProps) {
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapStyle, setMapStyle] = useState(MAP_STYLE);
 
   const handleClick = useCallback(
     (evt: { lngLat: { lat: number; lng: number } }) => {
@@ -70,13 +78,29 @@ export function PinDropMap({
           longitude: validLng,
           zoom: DEFAULT_MAP_ZOOM,
         }}
-        mapStyle={MAP_STYLE}
+        mapStyle={mapStyle}
         onClick={readOnly ? undefined : handleClick}
         onLoad={() => setMapLoaded(true)}
         style={{ width: "100%", height: "100%", borderRadius: "0.5rem" }}
         cursor={readOnly ? "grab" : "crosshair"}
       >
         <NavigationControl position="bottom-right" showCompass={false} />
+
+        {/* Map Style Toggle */}
+        <div className="absolute top-4 right-4 z-10">
+          <button
+            type="button"
+            className="bg-white p-2 rounded-md shadow-md border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors text-slate-700"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setMapStyle((prev) => (prev === MAP_STYLE ? MAP_STYLE_SATELLITE : MAP_STYLE));
+            }}
+            title={mapStyle === MAP_STYLE ? "Switch to Satellite view" : "Switch to Map view"}
+          >
+            <Layers className="w-5 h-5" />
+          </button>
+        </div>
         {mapLoaded && lat !== null && lng !== null && <Marker latitude={lat} longitude={lng} />}
       </MapboxMap>
     </div>
