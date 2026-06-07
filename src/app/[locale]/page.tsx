@@ -45,10 +45,10 @@ function HomeContent({
         <LifestyleQuestionnaire initialProperties={questionnaireProperties} locale={locale} />
         <FeaturedCommunities locale={locale} />
         <FeaturedAreas locale={locale} />
-        <LatestBlogPosts locale={locale} />
       </div>
-      <div className="container pb-16">
+      <div className="container space-y-16 pb-16">
         <SellCtaShell />
+        <LatestBlogPosts locale={locale} />
       </div>
     </>
   );
