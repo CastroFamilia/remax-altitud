@@ -122,7 +122,7 @@ export function StickySpecsBar({
         <UnitToggle locale={locale} aria-label={t("toggleUnits")} />
 
         {/* ZMT status badge */}
-        {zmtVisual && (
+        {zmtVisual && zmtStatus !== "titled" && (
           <span
             className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${zmtVisual.classes}`}
           >

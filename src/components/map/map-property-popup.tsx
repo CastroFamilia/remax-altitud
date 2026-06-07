@@ -194,9 +194,11 @@ export function MapPropertyPopup({
           )}
 
           {/* ZMT badge */}
-          <span className="inline-block mt-1.5 bg-muted text-muted-foreground text-xs rounded px-1.5 py-0.5">
-            {zmtLabel}
-          </span>
+          {property.zmtStatus !== "titled" && (
+            <span className="inline-block mt-1.5 bg-muted text-muted-foreground text-xs rounded px-1.5 py-0.5">
+              {zmtLabel}
+            </span>
+          )}
 
           {/* Actions row */}
           <div className="flex items-center justify-between mt-3">
