@@ -9,6 +9,8 @@ export * from "./relations";
 export type { GeoPoint } from "../types/postgis";
 export { geographyPoint } from "../types/postgis";
 export * from "./shortlist-shares";
+export * from "./property-views";
 export * from "./lead-assignment-logs";
 export * from "./shortlist-events";
 export * from "./blog";
+export * from "./settings";

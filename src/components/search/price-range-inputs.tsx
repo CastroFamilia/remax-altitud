@@ -99,14 +99,12 @@ export function PriceRangeInputs({ value, onChange }: PriceRangeInputsProps) {
   const [maxInput, setMaxInput] = useState<string>("");
 
   useEffect(() => {
-    const localMin = toLocalCurrency(minValUsd);
-    setMinInput(localMin !== undefined ? localMin.toString() : "");
-  }, [minValUsd, toLocalCurrency]);
+    setMinInput(minValUsd !== undefined ? formatPrice(minValUsd).replace(/\.00$/, "") : "");
+  }, [minValUsd, formatPrice]);
 
   useEffect(() => {
-    const localMax = toLocalCurrency(maxValUsd);
-    setMaxInput(localMax !== undefined ? localMax.toString() : "");
-  }, [maxValUsd, toLocalCurrency]);
+    setMaxInput(maxValUsd !== undefined ? formatPrice(maxValUsd).replace(/\.00$/, "") : "");
+  }, [maxValUsd, formatPrice]);
 
   const options = useMemo(() => {
     return currency === "CRC" ? CRC_OPTIONS : USD_OPTIONS;
@@ -115,6 +113,16 @@ export function PriceRangeInputs({ value, onChange }: PriceRangeInputsProps) {
   // Handlers for Slider
   const handleSliderValueChange = (newVals: number[]) => {
     setSliderVals([newVals[0], newVals[1]]);
+
+    const draggingMinUsd = newVals[0] === 0 ? undefined : sliderPercentToUsd(newVals[0]);
+    const draggingMaxUsd = newVals[1] >= 100 ? undefined : sliderPercentToUsd(newVals[1]);
+
+    setMinInput(
+      draggingMinUsd !== undefined ? formatPrice(draggingMinUsd).replace(/\.00$/, "") : "",
+    );
+    setMaxInput(
+      draggingMaxUsd !== undefined ? formatPrice(draggingMaxUsd).replace(/\.00$/, "") : "",
+    );
   };
 
   const handleSliderCommit = (newVals: number[]) => {
@@ -139,8 +147,7 @@ export function PriceRangeInputs({ value, onChange }: PriceRangeInputsProps) {
     if (parsedUsd !== minValUsd) {
       onChange([parsedUsd, maxValUsd]);
     } else {
-      const localMin = toLocalCurrency(minValUsd);
-      setMinInput(localMin !== undefined ? localMin.toString() : "");
+      setMinInput(minValUsd !== undefined ? formatPrice(minValUsd).replace(/\.00$/, "") : "");
     }
   };
 
@@ -157,8 +164,7 @@ export function PriceRangeInputs({ value, onChange }: PriceRangeInputsProps) {
     if (parsedUsd !== maxValUsd) {
       onChange([minValUsd, parsedUsd]);
     } else {
-      const localMax = toLocalCurrency(maxValUsd);
-      setMaxInput(localMax !== undefined ? localMax.toString() : "");
+      setMaxInput(maxValUsd !== undefined ? formatPrice(maxValUsd).replace(/\.00$/, "") : "");
     }
   };
 
@@ -240,13 +246,25 @@ export function PriceRangeInputs({ value, onChange }: PriceRangeInputsProps) {
             <Slider.Range className="absolute bg-brand-blue rounded-full h-full" />
           </Slider.Track>
           <Slider.Thumb
-            className="block w-6 h-6 bg-brand-blue border-2 border-white shadow-md rounded-full focus:outline-none focus:ring-4 focus:ring-brand-blue/20 transition-shadow cursor-grab active:cursor-grabbing"
+            className="relative block w-6 h-6 bg-brand-blue border-2 border-white shadow-md rounded-full focus:outline-none focus:ring-4 focus:ring-brand-blue/20 transition-shadow cursor-grab active:cursor-grabbing group"
             aria-label="Minimum price"
-          />
+          >
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-brand-navy text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 group-focus:opacity-100 group-active:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+              {sliderVals[0] === 0
+                ? t("noMin")
+                : formatPrice(sliderPercentToUsd(sliderVals[0])).replace(/\.00$/, "")}
+            </div>
+          </Slider.Thumb>
           <Slider.Thumb
-            className="block w-6 h-6 bg-brand-blue border-2 border-white shadow-md rounded-full focus:outline-none focus:ring-4 focus:ring-brand-blue/20 transition-shadow cursor-grab active:cursor-grabbing"
+            className="relative block w-6 h-6 bg-brand-blue border-2 border-white shadow-md rounded-full focus:outline-none focus:ring-4 focus:ring-brand-blue/20 transition-shadow cursor-grab active:cursor-grabbing group"
             aria-label="Maximum price"
-          />
+          >
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-brand-navy text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 group-focus:opacity-100 group-active:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+              {sliderVals[1] >= 100
+                ? t("noMax")
+                : formatPrice(sliderPercentToUsd(sliderVals[1])).replace(/\.00$/, "")}
+            </div>
+          </Slider.Thumb>
         </Slider.Root>
       </div>
 
@@ -261,8 +279,7 @@ export function PriceRangeInputs({ value, onChange }: PriceRangeInputsProps) {
               className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
               value={minInput}
               onChange={(e) => {
-                const val = e.target.value.replace(/[^0-9]/g, "");
-                setMinInput(val);
+                setMinInput(e.target.value);
               }}
               onFocus={() => {
                 setMinDropdownOpen(true);
@@ -309,8 +326,7 @@ export function PriceRangeInputs({ value, onChange }: PriceRangeInputsProps) {
               className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
               value={maxInput}
               onChange={(e) => {
-                const val = e.target.value.replace(/[^0-9]/g, "");
-                setMaxInput(val);
+                setMaxInput(e.target.value);
               }}
               onFocus={() => {
                 setMaxDropdownOpen(true);

@@ -10,6 +10,7 @@ import {
   getQuestionnaireRecommendationProperties,
   type QuestionnaireProperties,
 } from "@/lib/db/queries/questionnaire";
+import { LatestBlogPosts } from "@/components/home/latest-blog-posts";
 
 /** Opt out of static caching so DB-driven sections (featured properties,
  *  communities, areas) always render with fresh data. */
@@ -45,8 +46,9 @@ function HomeContent({
         <FeaturedCommunities locale={locale} />
         <FeaturedAreas locale={locale} />
       </div>
-      <div className="container pb-16">
+      <div className="container space-y-16 pb-16">
         <SellCtaShell />
+        <LatestBlogPosts locale={locale} />
       </div>
     </>
   );

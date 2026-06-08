@@ -68,6 +68,41 @@ export async function fetchAdminSyncDashboardData(params: {
 }
 
 /**
+ * Server Action to unlock stuck sync processes.
+ */
+export async function unlockSyncProcess() {
+  const cookieStore = await cookies();
+  if (!cookieStore.get("admin_session")) {
+    throw new Error("Unauthorized");
+  }
+  const { unlockStuckSyncs } = await import("@/lib/db/queries/sync-log");
+  const count = await unlockStuckSyncs();
+  return { success: true, count };
+}
+
+/**
+ * Server Action to trigger a manual synchronization.
+ */
+export async function triggerManualSync() {
+  const cookieStore = await cookies();
+  if (!cookieStore.get("admin_session")) {
+    throw new Error("Unauthorized");
+  }
+  // Call the pipeline asynchronously so we don't block the UI for too long,
+  // or await it if we want to return results immediately.
+  // The pipeline could take a while on Vercel (10s limit on free, 15s on pro).
+  // We will just invoke it and let it run.
+  const { runSyncPipeline } = await import("@/lib/sync/pipeline");
+  try {
+    // Start it asynchronously to prevent Vercel Serverless Function timeout
+    runSyncPipeline().catch((err) => console.error("Manual sync failed:", err));
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+}
+
+/**
  * Server Action to authenticate admin using a simple cookie-based session.
  */
 export async function loginAdmin(password: string): Promise<{ success: boolean }> {

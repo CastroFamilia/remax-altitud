@@ -270,7 +270,7 @@ export function SearchFilterBar({
       {/* Filter bar wrapper */}
       <div
         data-testid="search-filter-bar"
-        className="sticky top-[var(--header-height)] flex-shrink-0 z-40 shadow-sm py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
+        className="sticky top-[var(--header-height)] flex-shrink-0 z-20 shadow-sm py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
       >
         <div className="flex items-stretch px-4 gap-3 h-full">
           {/* Mobile compact bar — visible below md breakpoint */}
@@ -304,11 +304,11 @@ export function SearchFilterBar({
           </Sheet>
 
           {/* Desktop/tablet filter controls — visible at md: and above */}
-          <div className="hidden md:flex flex-col gap-1 w-full">
-            {/* Row 2: All controls in a single unified row */}
-            <div className="flex items-center gap-2 w-full">
+          <div className="hidden md:flex flex-col gap-1 w-full min-w-0">
+            {/* Row 2: All controls in a single unified row (scrolls horizontally) */}
+            <div className="flex items-center justify-between gap-y-2 gap-x-2 w-full min-w-0">
               {/* Left group: View toggle + Filter dropdowns */}
-              <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto no-scrollbar py-1">
                 {/* View Mode Toggle (inline) */}
                 {onViewModeChange && (
                   <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
@@ -397,7 +397,7 @@ export function SearchFilterBar({
               </div>
 
               {/* Right group: Result count + Sort + Near Me + Unit toggle */}
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2 shrink-0 ml-auto">
                 {/* Result count */}
                 {resultCount !== undefined && (
                   <span className="text-xs text-muted-foreground font-medium whitespace-nowrap hidden xl:inline">
@@ -422,7 +422,9 @@ export function SearchFilterBar({
 
       {/* Active filter chips row — shown below filter bar when filters are active */}
       {activeFilterCount > 0 && (
-        <FilterChips filters={filters} onClearFilter={clearFilter} onClearAll={clearAll} />
+        <div className="flex-shrink-0 bg-background border-b border-border z-10 relative">
+          <FilterChips filters={filters} onClearFilter={clearFilter} onClearAll={clearAll} />
+        </div>
       )}
     </>
   );

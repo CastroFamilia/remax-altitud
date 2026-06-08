@@ -31,7 +31,6 @@ const PropertyGalleryDynamic = dynamic(
       default: m.PropertyGallery,
     })),
   {
-    ssr: false,
     loading: () => (
       <div
         data-testid="gallery-hero"

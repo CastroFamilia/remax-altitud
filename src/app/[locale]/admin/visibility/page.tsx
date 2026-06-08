@@ -50,6 +50,9 @@ export default async function AdminVisibilityPage({ params, searchParams }: Page
     showHiddenOnly,
   });
 
+  const { getSettingAction } = await import("@/app/actions/admin-settings-actions");
+  const ga4Setting = await getSettingAction("GA_MEASUREMENT_ID");
+
   return (
     <div className="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
       {/* Page Header */}
@@ -70,6 +73,7 @@ export default async function AdminVisibilityPage({ params, searchParams }: Page
         currentPage={page}
         totalPages={totalPages}
         showHiddenOnly={showHiddenOnly}
+        initialGa4MeasurementId={ga4Setting.value || ""}
       />
     </div>
   );

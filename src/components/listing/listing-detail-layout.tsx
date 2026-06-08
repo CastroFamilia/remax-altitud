@@ -25,7 +25,7 @@ import { getRegionFromAreaSlug } from "@/components/property/property-card";
 import { PropertyDescription } from "@/components/listing/property-description";
 import { MapViewLoader } from "@/components/map/map-view-loader";
 import { PrintButton } from "@/components/listing/print-button";
-import { PropertyPrintView } from "@/components/listing/property-print-view";
+import { PropertyPrintViewLoader } from "@/components/listing/property-print-view-loader";
 
 function extractYoutubeVideoId(url: string): string | null {
   if (!url) return null;
@@ -95,7 +95,7 @@ export async function ListingDetailLayout({
 
   return (
     <>
-      <PropertyPrintView
+      <PropertyPrintViewLoader
         property={property}
         locale={locale}
         agent={agent}
@@ -254,6 +254,7 @@ export async function ListingDetailLayout({
                       title="Property Video"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
+                      loading="lazy"
                       className="w-full aspect-video"
                     />
                   </div>
@@ -278,6 +279,7 @@ export async function ListingDetailLayout({
                     title="Property Video"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                    loading="lazy"
                     className="w-full aspect-video"
                   />
                 </div>

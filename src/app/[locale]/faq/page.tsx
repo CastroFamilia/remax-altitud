@@ -82,34 +82,49 @@ function FAQPageContent() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <SimplePageLayout pageTitle={t("pageTitle")} intro={t("intro")}>
-        <section aria-labelledby="faq-heading" className="mx-auto max-w-3xl mb-16">
+        <section aria-labelledby="faq-heading" className="mx-auto max-w-4xl mb-16">
           <h2 id="faq-heading" className="sr-only">
             {t("pageTitle")}
           </h2>
-          <div className="rounded-xl border border-brand-warm bg-white p-6 shadow-sm md:p-8">
+
+          <div className="rounded-2xl border border-brand-gold/20 bg-white p-8 shadow-[var(--shadow-xl)] md:p-12 relative overflow-hidden">
+            {/* Decorative top accent */}
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-brand-gold-dark via-brand-gold to-brand-gold-light" />
+
             <SimpleAccordion items={faqItems} />
           </div>
-          <div className="mt-8 rounded-xl bg-brand-sand/50 p-6 text-brand-navy">
-            <p className="text-lg font-medium italic">{t("conclusion")}</p>
+
+          <div className="mt-10 rounded-2xl bg-gradient-to-br from-brand-gold/5 to-transparent border border-brand-gold/20 p-8 text-brand-navy text-center shadow-sm">
+            <p className="text-xl font-medium tracking-wide">{t("conclusion")}</p>
           </div>
         </section>
 
         {/* Call to Action Section */}
         <section
           aria-labelledby="faq-cta-heading"
-          className="mx-auto mt-16 max-w-3xl rounded-xl bg-brand-navy p-8 text-center text-white md:p-12"
+          className="mx-auto mt-16 max-w-4xl relative overflow-hidden rounded-2xl bg-brand-navy p-10 text-center text-white md:p-16 shadow-[var(--shadow-xl)]"
         >
-          <h2 id="faq-cta-heading" className="text-2xl font-bold text-white md:text-3xl">
-            {common("vipSearchBanner.title")}
-          </h2>
-          <p className="mt-4 text-white/80">{common("vipSearchBanner.body")}</p>
-          <div className="mt-6 flex flex-col items-center justify-center gap-3 md:flex-row">
-            <Link
-              href="/search"
-              className="inline-flex h-11 items-center rounded-md bg-brand-gold px-6 font-semibold text-brand-navy shadow-[var(--shadow-cta)] transition-colors duration-[var(--duration-fast)] hover:bg-brand-gold/90"
+          {/* Subtle luxurious background accent */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-gold/10 via-brand-navy to-brand-navy pointer-events-none" />
+
+          <div className="relative z-10">
+            <h2
+              id="faq-cta-heading"
+              className="text-3xl font-bold text-white md:text-4xl tracking-tight"
             >
-              {common("vipSearchBanner.ctaButton")}
-            </Link>
+              {common("vipSearchBanner.title")}
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-white/80 leading-relaxed">
+              {common("vipSearchBanner.body")}
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 md:flex-row">
+              <Link
+                href="/search"
+                className="inline-flex h-14 items-center rounded-full bg-brand-gold px-10 text-lg font-semibold text-brand-navy shadow-[var(--shadow-cta)] transition-all duration-[var(--duration-normal)] hover:bg-white hover:text-brand-navy hover:scale-105 hover:shadow-xl"
+              >
+                {common("vipSearchBanner.ctaButton")}
+              </Link>
+            </div>
           </div>
         </section>
       </SimplePageLayout>

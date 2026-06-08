@@ -76,16 +76,6 @@ const AREA_GROUPS: AreaGroup[] = [
     labelEs: "Montaña y Valle",
     slugs: ["perez-zeledon", "tinamastes-platanillo"],
   },
-  {
-    labelEn: "Central Valley",
-    labelEs: "Valle Central",
-    slugs: ["san-jose", "escazu", "santa-ana", "heredia", "alajuela", "cartago"],
-  },
-  {
-    labelEn: "Guanacaste",
-    labelEs: "Guanacaste",
-    slugs: ["liberia"],
-  },
 ];
 
 /**
@@ -133,13 +123,6 @@ const STATIC_MAIN_AREAS: AreaOption[] = [
   { slug: "playa-hermosa", label: "Playa Hermosa" },
   { slug: "perez-zeledon", label: "Pérez Zeledón" },
   { slug: "tinamastes-platanillo", label: "Tinamastes, Platanillo & Barú" },
-  { slug: "san-jose", label: "San José" },
-  { slug: "escazu", label: "Escazú" },
-  { slug: "santa-ana", label: "Santa Ana" },
-  { slug: "heredia", label: "Heredia" },
-  { slug: "alajuela", label: "Alajuela" },
-  { slug: "cartago", label: "Cartago" },
-  { slug: "liberia", label: "Liberia" },
 ];
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -320,6 +303,8 @@ export function AreaSearchCombobox({
           e.preventDefault();
           if (highlightedIndex >= 0 && filteredItems[highlightedIndex]) {
             handleSelect(filteredItems[highlightedIndex]);
+          } else if (filteredItems.length > 0) {
+            handleSelect(filteredItems[0]);
           } else if (allowCustom && query.trim()) {
             handleSelect(query.trim());
           }

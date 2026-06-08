@@ -61,7 +61,8 @@
     "socialYoutube": "Visita REMAX Altitud en YouTube",
     "socialWhatsApp": "Contacta a REMAX Altitud por WhatsApp",
     "socialEmail": "Envía un correo a REMAX Altitud",
-    "faq": "Preguntas Frecuentes"
+    "faq": "Preguntas Frecuentes",
+    "blog": "Blog"
   },
   "HomePage": {
     "title": "REMAX Altitud",
@@ -118,6 +119,11 @@
       "body": "Vos solo ves lo publicado; nosotros conocemos lo que está por salir. Buscamos en nuestro sistema, conectamos con otras inmobiliarias y recorremos las zonas que te encantan para traerte la opción perfecta.",
       "ctaText": "Hacemos que comprar o alquilar sea simple.",
       "ctaButton": "Búsqueda VIP"
+    },
+    "latestBlogPosts": {
+      "heading": "Últimos Artículos",
+      "description": "Insights, guías y mapeo de estilo de vida por nuestro equipo.",
+      "viewAll": "Ver todos los artículos"
     }
   },
   "AboutPage": {
@@ -430,7 +436,8 @@
         "Eco amigable": "Eco amigable",
         "Off grid": "Off grid",
         "Fácil acceso": "Fácil acceso",
-        "Requiere 4x4": "Requiere 4x4"
+        "Requiere 4x4": "Requiere 4x4",
+        "Árboles frutales": "Árboles frutales"
       }
     },
     "presets": {
@@ -1407,7 +1414,7 @@
     "q14_question": "¿Necesito hablar español fluido de manera absoluta?",
     "q14_answer": "No necesita ser fluido para sobrevivir, especialmente en centros de expatriados o destinos turísticos donde se habla mucho inglés. Sin embargo, para integrarse verdaderamente, construir relaciones con sus vecinos, navegar la burocracia gubernamental y mostrar respeto por la cultura local, poner esfuerzo en aprender español marca una gran diferencia en qué tan exitosa será su reubicación.",
     "q15_question": "¿Es seguro vivir en Costa Rica?",
-    "q15_answer": "Costa Rica sigue siendo una de las democracias más estables y pacíficas de la región (es famosa por no tener ejército). Si bien los delitos violentos contra turistas o expatriados son relativamente raros, los hurtos menores y delitos de oportunidad (como robos en viviendas o tomar un bolso descuidado en la playa) son comunes. La conciencia básica y los hábitos de seguridad estándar hacen una gran diferencia.",
+    "q15_answer": "Costa Rica es justamente célebre por su paz, su sólida democracia y la calidez de su gente. Viajar o vivir aquí es una experiencia sumamente segura. En la ciudad y las zonas turísticas más concurridas, el único reto real son los descuidos con los objetos personales. En contraste, las zonas no turísticas son oasis de tranquilidad tan extremos que es normal ver a los vecinos con las puertas de sus casas abiertas.\n\nAquí, la verdadera \"seguridad\" tiene más que ver con la naturaleza y las carreteras: la principal recomendación es evitar manejar de noche o bajo lluvias fuertes, ya que la visibilidad disminuye notablemente y, al ser rutas de montaña o rurales, la asistencia en carretera puede tardar un poco más en llegar. ¡Un manejo precavido es la clave para disfrutar el viaje!",
     "q16_question": "¿Cómo llevo a mis mascotas conmigo?",
     "q16_answer": "Llevar mascotas a Costa Rica es muy factible y no requiere un período de cuarentena. Sin embargo, requiere una estricta coordinación con un veterinario certificado para obtener certificados internacionales de salud específicos, vacunas contra la rabia actualizadas y documentos avalados dentro de un plazo estrecho antes de su vuelo.",
     "q17_question": "¿Cómo es realmente la infraestructura (Internet, calles, servicios)?",

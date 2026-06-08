@@ -7,6 +7,7 @@ import { properties } from "@/lib/db/schema/properties";
 import { propertySearchColumns, mapPropertyRowToSearchItem } from "./properties";
 import type { PropertySearchItem } from "@/types/search";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
+import { sql } from "drizzle-orm";
 
 /**
  * Fetches all communities ordered by name ascending.
@@ -172,6 +173,22 @@ export async function getCommunityBySlug(slug: string) {
     console.error("Database query failed in getCommunityBySlug:", error);
     return null;
   }
+}
+
+/**
+ * Updates the denormalized `listing_count` on every community row to reflect
+ * the current count of active (is_visible=true) properties assigned to them.
+ */
+export async function updateCommunityListingCounts(): Promise<void> {
+  await db.execute(
+    sql`UPDATE communities
+        SET listing_count = (
+          SELECT count(*)::integer
+          FROM properties
+          WHERE properties.community_id = communities.id
+            AND properties.is_visible = true
+        )`,
+  );
 }
 
 export { sortCommunitiesCustom } from "@/lib/community/sort";

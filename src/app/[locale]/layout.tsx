@@ -11,6 +11,8 @@ import { SkipToContent } from "@/components/layout/skip-to-content";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { StickyMobileCta } from "@/components/layout/sticky-mobile-cta";
+import Script from "next/script";
+import { getCachedSetting } from "@/lib/db/queries/settings";
 
 const montserrat = Montserrat({
   subsets: ["latin", "latin-ext"],
@@ -66,39 +68,41 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
 
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-E2EMOCK123";
+  // Try to fetch GA4 Measurement ID from cached query, fallback to environment variable
+  const ga4SettingValue = await getCachedSetting("GA_MEASUREMENT_ID");
+  const gaId = ga4SettingValue || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-E2EMOCK123";
 
   return (
     <html lang={locale} className={cn("font-sans", montserrat.variable)}>
-      <head>
+      <head />
+      <body>
         {gaId && (
           <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-
-                  gtag('consent', 'default', {
-                    'ad_storage': 'denied',
-                    'analytics_storage': 'denied',
-                    'personalization_storage': 'denied',
-                    'wait_for_update': 500
-                  });
-
-                  gtag('config', '${gaId}', {
-                    'client_storage': 'none',
-                    'anonymize_ip': true
-                  });
-                `,
-              }}
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
             />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('consent', 'default', {
+                  'ad_storage': 'denied',
+                  'analytics_storage': 'denied',
+                  'personalization_storage': 'denied',
+                  'wait_for_update': 500
+                });
+
+                gtag('config', '${gaId}', {
+                  'client_storage': 'none',
+                  'anonymize_ip': true
+                });
+              `}
+            </Script>
           </>
         )}
-      </head>
-      <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SkipToContent />
           <Header />

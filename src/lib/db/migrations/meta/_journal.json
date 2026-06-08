@@ -176,6 +176,20 @@
       "when": 1780708452469,
       "tag": "0024_curvy_wasp",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1780858334378,
+      "tag": "0025_brief_the_spike",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1780861664715,
+      "tag": "0026_round_quicksilver",
+      "breakpoints": true
     }
   ]
 }

@@ -46,6 +46,7 @@ export async function fetchAdminPropertiesData(params: { search?: string; page?:
     .select({
       id: properties.id,
       apiId: properties.apiId,
+      listingKey: sql<string>`${properties.apiRaw}->>'ListingKey'`,
       slug: properties.slug,
       propertyType: properties.propertyType,
       status: properties.status,

@@ -1,3 +1,5 @@
+"use client";
+
 import type { Property } from "@/lib/db/schema/properties";
 import type { Agent } from "@/lib/db/schema/agents";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
@@ -13,12 +15,7 @@ interface PropertyPrintViewProps {
   officeName: string;
 }
 
-export async function PropertyPrintView({
-  property,
-  locale,
-  agent,
-  officeName,
-}: PropertyPrintViewProps) {
+export function PropertyPrintView({ property, locale, agent, officeName }: PropertyPrintViewProps) {
   const title = (locale === "es" ? property.titleEs : property.titleEn) || "";
   const images = normalizePropertyImages(property.images, title);
 
@@ -109,7 +106,6 @@ export async function PropertyPrintView({
                 alt={mainImage.alt || title}
                 fallbackSrc={mainImage.fallbackSrc}
                 fill
-                priority
                 sizes="100vw"
                 className="object-cover"
               />
@@ -137,7 +133,6 @@ export async function PropertyPrintView({
                   alt={secondaryImage1.alt || "View 1"}
                   fallbackSrc={secondaryImage1.fallbackSrc}
                   fill
-                  priority
                   sizes="33vw"
                   className="object-cover"
                 />
@@ -150,7 +145,6 @@ export async function PropertyPrintView({
                   alt={secondaryImage2.alt || "View 2"}
                   fallbackSrc={secondaryImage2.fallbackSrc}
                   fill
-                  priority
                   sizes="33vw"
                   className="object-cover"
                 />
@@ -163,7 +157,6 @@ export async function PropertyPrintView({
                   alt={secondaryImage3.alt || "View 3"}
                   fallbackSrc={secondaryImage3.fallbackSrc}
                   fill
-                  priority
                   sizes="33vw"
                   className="object-cover"
                 />

@@ -389,6 +389,8 @@ export async function searchProperties(
               sql`${properties.descriptionEn} ~* ${pattern}`,
               sql`${properties.descriptionEs} ~* ${pattern}`,
               sql`${communities.name} ~* ${pattern}`,
+              sql`REPLACE(${properties.subLocation}, '-', ' ') ~* ${pattern}`,
+              sql`REPLACE(${properties.areaSlug}, '-', ' ') ~* ${pattern}`,
             );
           } else {
             const escapedToken = escapeRegex(token);
@@ -399,6 +401,8 @@ export async function searchProperties(
               sql`${properties.descriptionEn} ~* ${pattern}`,
               sql`${properties.descriptionEs} ~* ${pattern}`,
               sql`${communities.name} ~* ${pattern}`,
+              sql`REPLACE(${properties.subLocation}, '-', ' ') ~* ${pattern}`,
+              sql`REPLACE(${properties.areaSlug}, '-', ' ') ~* ${pattern}`,
             );
           }
         });
