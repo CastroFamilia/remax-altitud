@@ -39,6 +39,9 @@ export async function generateMetadata({
     metadataBase: new URL(SITE_ORIGIN),
     title: t("title"),
     description: t("description"),
+    icons: {
+      icon: "/favicon.ico",
+    },
   };
 }
 

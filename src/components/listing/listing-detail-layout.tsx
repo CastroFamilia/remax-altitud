@@ -114,11 +114,7 @@ export async function ListingDetailLayout({
         />
 
         {/* Hero Gallery — lazy-loaded Client Component via PropertyGalleryLoader (ssr: false) */}
-        <PropertyGalleryLoader
-          images={images}
-          youtubeUrl={property.youtubeUrl}
-          propertyTitle={title}
-        />
+        <PropertyGalleryLoader images={images} propertyTitle={title} />
 
         {/* Sticky specs bar — Client Component (uses useLocaleUnits) */}
         <StickySpecsBar
