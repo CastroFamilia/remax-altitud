@@ -48,7 +48,7 @@ export function PropertyPrintView({ property, locale, agent, officeName }: Prope
       <style
         dangerouslySetInnerHTML={{
           __html: `
-        @page { size: landscape; margin: 0; }
+        @page { size: A4 landscape; margin: 0; }
         @media screen {
           .print-view-container {
             position: absolute;
@@ -108,6 +108,7 @@ export function PropertyPrintView({ property, locale, agent, officeName }: Prope
                 fill
                 sizes="100vw"
                 className="object-cover"
+                priority
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-gray-300">
@@ -135,6 +136,7 @@ export function PropertyPrintView({ property, locale, agent, officeName }: Prope
                   fill
                   sizes="33vw"
                   className="object-cover"
+                  priority
                 />
               )}
             </div>
@@ -147,6 +149,7 @@ export function PropertyPrintView({ property, locale, agent, officeName }: Prope
                   fill
                   sizes="33vw"
                   className="object-cover"
+                  priority
                 />
               )}
             </div>
@@ -159,6 +162,7 @@ export function PropertyPrintView({ property, locale, agent, officeName }: Prope
                   fill
                   sizes="33vw"
                   className="object-cover"
+                  priority
                 />
               )}
             </div>
