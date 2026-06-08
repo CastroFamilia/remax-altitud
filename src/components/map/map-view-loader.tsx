@@ -1,32 +1,22 @@
 "use client";
 
-/**
- * Story 3.2: MapViewLoader — next/dynamic wrapper for MapView.
- *
- * This file is a Client Component because in Next.js 15+, `ssr: false`
- * with `next/dynamic` is only allowed in Client Components.
- * The loading fallback retains data-testid="map-container" so tests pass during load.
- *
- * IMPORTANT: Always use this file as the MapView entry point — never directly from ./map-view.
- *
- * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 7
- */
-
+import { useState, useEffect, useRef, type ComponentProps } from "react";
 import dynamic from "next/dynamic";
+import { MapView as MapViewOriginalComponent } from "./map-view";
+import { PinDropMap as PinDropMapOriginalComponent } from "./pin-drop-map";
 
-const MapView = dynamic(() => import("./map-view").then((m) => ({ default: m.MapView })), {
+type MapViewProps = ComponentProps<typeof MapViewOriginalComponent>;
+type PinDropMapProps = ComponentProps<typeof PinDropMapOriginalComponent>;
+
+// Base dynamic components (loaded client-side only)
+const MapViewBase = dynamic(() => import("./map-view").then((m) => ({ default: m.MapView })), {
   ssr: false,
   loading: () => (
     <div data-testid="map-container" className="h-full w-full bg-muted animate-pulse" />
   ),
 });
 
-/**
- * MapViewLoader — lazy-loaded PinDropMap for the seller form LocationPicker (Story 5.1).
- * Exported as a named export so location-picker.tsx can mock it in tests via:
- *   vi.mock('@/components/map/map-view-loader', () => ({ MapViewLoader: ... }))
- */
-const MapViewLoader = dynamic(
+const PinDropMapBase = dynamic(
   () => import("./pin-drop-map").then((m) => ({ default: m.PinDropMap })),
   {
     ssr: false,
@@ -36,4 +26,66 @@ const MapViewLoader = dynamic(
   },
 );
 
-export { MapView, MapViewLoader };
+// Lazy loaded MapView using IntersectionObserver
+export function MapView(props: MapViewProps) {
+  const [inView, setInView] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }, // Load 200px before entering viewport
+    );
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="h-full w-full">
+      {inView ? (
+        <MapViewBase {...props} />
+      ) : (
+        <div data-testid="map-container" className="h-full w-full bg-muted animate-pulse" />
+      )}
+    </div>
+  );
+}
+
+// Lazy loaded MapViewLoader (PinDropMap) using IntersectionObserver
+export function MapViewLoader(props: PinDropMapProps) {
+  const [inView, setInView] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="h-full w-full">
+      {inView ? (
+        <PinDropMapBase {...props} />
+      ) : (
+        <div data-testid="location-map" className="h-64 w-full bg-muted rounded-lg animate-pulse" />
+      )}
+    </div>
+  );
+}

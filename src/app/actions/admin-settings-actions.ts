@@ -3,7 +3,7 @@
 import { db } from "@/lib/db/client";
 import { settings } from "@/lib/db/schema/settings";
 import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function updateSettingAction(key: string, value: string) {
   try {
@@ -12,7 +12,8 @@ export async function updateSettingAction(key: string, value: string) {
       set: { value },
     });
 
-    // Revalidate the layout so the new setting takes effect immediately
+    // Invalidate settings cache and revalidate layout
+    revalidateTag("settings");
     revalidatePath("/", "layout");
 
     return { success: true };
