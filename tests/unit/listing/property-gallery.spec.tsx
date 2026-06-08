@@ -15,7 +15,6 @@
  * Component interface:
  *   interface PropertyGalleryProps {
  *     images: OptimizedImage[];
- *     youtubeUrl?: string | null;
  *     propertyTitle: string;
  *   }
  *
@@ -170,7 +169,6 @@ const mockImages: OptimizedImage[] = [
   },
 ];
 
-const YOUTUBE_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 const PROPERTY_TITLE = "Beautiful Mountain Home in Pérez Zeledón";
 
 // ---------------------------------------------------------------------------
@@ -352,57 +350,6 @@ describe("PropertyGallery (Story 4.1)", () => {
     },
   );
 
-  it(
-    "[P1] YouTube embed renders data-testid=gallery-video-embed when youtubeUrl provided",
-    () => {
-      render(
-        <PropertyGallery
-          images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
-          youtubeUrl={YOUTUBE_URL}
-          propertyTitle={PROPERTY_TITLE}
-        />,
-      );
-
-      const videoEmbed = screen.getByTestId("gallery-video-embed");
-      expect(videoEmbed).toBeDefined();
-
-      // The iframe inside the embed should have a src with youtube.com/embed
-      const iframe = videoEmbed.querySelector("iframe");
-      expect(iframe).toBeDefined();
-      expect(iframe?.getAttribute("src")).toContain("youtube.com/embed");
-    },
-  );
-
-  it(
-    "[P1] no video embed renders when youtubeUrl is null",
-    () => {
-      render(
-        <PropertyGallery
-          images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
-          youtubeUrl={null}
-          propertyTitle={PROPERTY_TITLE}
-        />,
-      );
-
-      const videoEmbed = screen.queryByTestId("gallery-video-embed");
-      expect(videoEmbed).toBeNull();
-    },
-  );
-
-  it(
-    "[P1] no video embed renders when youtubeUrl is undefined (not provided)",
-    () => {
-      render(
-        <PropertyGallery
-          images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
-          propertyTitle={PROPERTY_TITLE}
-        />,
-      );
-
-      const videoEmbed = screen.queryByTestId("gallery-video-embed");
-      expect(videoEmbed).toBeNull();
-    },
-  );
 
   // ---------------------------------------------------------------------------
   // P2: LQIP blur and thumbnail interaction (4.1-COMP-001, 4.1-COMP-002)

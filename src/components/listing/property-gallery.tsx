@@ -19,23 +19,10 @@ import type { OptimizedImage } from "@/types/images";
 
 interface PropertyGalleryProps {
   images: OptimizedImage[];
-  youtubeUrl?: string | null;
   propertyTitle: string;
 }
 
-/**
- * Extracts the YouTube video ID from a YouTube URL.
- * Supports various formats including watch?v=, youtu.be/, shorts/, and embed/.
- */
-function extractYoutubeVideoId(url: string): string | null {
-  if (!url) return null;
-  const match = url.match(
-    /(?:v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/v\/)([A-Za-z0-9_-]{11})/i,
-  );
-  return match ? match[1] : null;
-}
-
-export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyGalleryProps) {
+export function PropertyGallery({ images, propertyTitle }: PropertyGalleryProps) {
   const t = useTranslations("PropertyGallery");
   // Single index used for both the hero gallery and the lightbox navigation.
   // This ensures `gallery-photo-count` (in the hero) always reflects the current photo,
@@ -62,9 +49,6 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
     if (swipeX === 1) setActiveIndex((i) => Math.max(i - 1, 0));
     if (swipeX === -1) setActiveIndex((i) => Math.min(i + 1, total - 1));
   });
-
-  // YouTube embed
-  const videoId = youtubeUrl ? extractYoutubeVideoId(youtubeUrl) : null;
 
   if (!images || images.length === 0) {
     return (
@@ -432,19 +416,6 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
           </button>
         ))}
       </div>
-
-      {/* YouTube video embed (AC #5) */}
-      {videoId && (
-        <div data-testid="gallery-video-embed" className="aspect-video w-full mt-4">
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}`}
-            title={t("videoTitle")}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full rounded-lg"
-          />
-        </div>
-      )}
 
       {/* Lightbox (Radix UI Dialog) */}
       <Dialog.Root open={lightboxOpen} onOpenChange={setLightboxOpen}>

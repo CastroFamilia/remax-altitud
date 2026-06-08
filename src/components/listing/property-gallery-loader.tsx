@@ -21,7 +21,6 @@ import type { OptimizedImage } from "@/types/images";
 
 interface PropertyGalleryLoaderProps {
   images: OptimizedImage[];
-  youtubeUrl?: string | null;
   propertyTitle: string;
 }
 
