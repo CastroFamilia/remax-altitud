@@ -19,8 +19,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { SellerHero } from "@/components/seller/seller-hero";
 import { SellerFormLoader } from "@/components/seller/seller-form-loader";
-import { CmaHero } from "@/components/seller/cma-hero";
-import { CmaFormLoader } from "@/components/seller/cma-form-loader";
+
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
 
@@ -67,11 +66,6 @@ export default async function SellPage({ params }: { params: Promise<{ locale: s
     <main>
       <SellerHero locale={locale} />
       <SellerFormLoader locale={locale} fallbackAgent={fallbackAgent} officeName={officeName} />
-
-      {/* CMA section — secondary CTA (Story 5.2, AC #5) */}
-      <CmaHero locale={locale}>
-        <CmaFormLoader locale={locale} fallbackAgent={fallbackAgent} officeName={officeName} />
-      </CmaHero>
     </main>
   );
 }
