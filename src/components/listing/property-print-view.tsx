@@ -8,6 +8,8 @@ import { SITE_ORIGIN } from "@/lib/seo/constants";
 import QRCode from "react-qr-code";
 import { PropertyImage } from "@/components/property/property-image";
 
+import { useEffect, useState } from "react";
+
 interface PropertyPrintViewProps {
   property: Property;
   locale: string;
@@ -16,6 +18,14 @@ interface PropertyPrintViewProps {
 }
 
 export function PropertyPrintView({ property, locale, agent, officeName }: PropertyPrintViewProps) {
+  const [origin, setOrigin] = useState(SITE_ORIGIN);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
+  }, []);
+
   const title = (locale === "es" ? property.titleEs : property.titleEn) || "";
   const images = normalizePropertyImages(property.images, title);
 
@@ -41,7 +51,7 @@ export function PropertyPrintView({ property, locale, agent, officeName }: Prope
   const constructionImperial =
     constructionM2 != null ? convertArea(constructionM2, "imperial", locale, false) : "—";
 
-  const qrTrackingUrl = `${SITE_ORIGIN}/api/tracking/qr?propertyId=${property.id}&slug=${property.slug}&locale=${locale}`;
+  const qrTrackingUrl = `${origin}/api/tracking/qr?propertyId=${property.id}&slug=${property.slug}&locale=${locale}`;
 
   return (
     <div className="print-view-container font-sans text-black box-border mx-auto">
