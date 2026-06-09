@@ -476,6 +476,19 @@ export function PropertyGallery({ images, propertyTitle }: PropertyGalleryProps)
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
+
+      {/* Preload adjacent images for immediate display upon navigation */}
+      <div
+        className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
+        aria-hidden="true"
+      >
+        {activeIndex > 0 && (
+          <PropertyImage src={images[activeIndex - 1].src} alt="" fill sizes="100vw" priority />
+        )}
+        {activeIndex < images.length - 1 && (
+          <PropertyImage src={images[activeIndex + 1].src} alt="" fill sizes="100vw" priority />
+        )}
+      </div>
     </div>
   );
 }
