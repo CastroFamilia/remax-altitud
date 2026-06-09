@@ -699,7 +699,7 @@
       "nextButtonAriaLabel": "Continue to next step",
       "backButton": "Back",
       "backButtonAriaLabel": "Return to previous step",
-      "submitButton": "Submit My Property",
+      "submitButton": "SEND",
       "submitButtonAriaLabel": "Submit your property listing request",
       "submittingButton": "Submitting...",
       "step1": {

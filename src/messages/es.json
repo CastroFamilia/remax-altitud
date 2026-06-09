@@ -699,7 +699,7 @@
       "nextButtonAriaLabel": "Continuar al siguiente paso",
       "backButton": "Atrás",
       "backButtonAriaLabel": "Regresar al paso anterior",
-      "submitButton": "Enviar mi Propiedad",
+      "submitButton": "SEND",
       "submitButtonAriaLabel": "Enviar la solicitud de publicación de su propiedad",
       "submittingButton": "Enviando...",
       "step1": {
