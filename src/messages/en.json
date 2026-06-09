@@ -540,6 +540,7 @@
       "Sale": "For Sale",
       "Lease": "For Lease"
     },
+    "videoTitle": "Property Video Tour",
     "description": "Description",
     "features": "Features & Amenities",
     "specs": {
