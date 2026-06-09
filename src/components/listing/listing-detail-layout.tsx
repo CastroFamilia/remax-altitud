@@ -259,7 +259,7 @@ export async function ListingDetailLayout({
             </div>
 
             {/* Right 1/3 Column: Sticky Sidebar Form & Agent details */}
-            <div className="lg:col-span-1 lg:sticky lg:top-24 space-y-6">
+            <div className="lg:col-span-1 lg:sticky lg:top-24 lg:max-h-[calc(100vh-6.5rem)] lg:overflow-y-auto space-y-6 pb-4 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
               <PropertyInquiryForm
                 property={property}
                 agent={agent}
