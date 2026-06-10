@@ -44,6 +44,12 @@ export function AgentIndexCard({ agent, officeName, locale }: AgentIndexCardProp
     )
     .join(", ");
 
+  const isOwner =
+    agent.name.toLowerCase().includes("cesar") ||
+    agent.name.toLowerCase().includes("césar") ||
+    agent.name.toLowerCase().includes("alejandra");
+  const displayTitle = isOwner ? "BROKER/OWNER" : officeName;
+
   return (
     <Link href={`/agents/${agent.slug}`} locale={locale}>
       <article
@@ -64,15 +70,17 @@ export function AgentIndexCard({ agent, officeName, locale }: AgentIndexCardProp
         </div>
         <div className="min-w-0 flex-1">
           <h2 className="text-base font-bold text-brand-navy">{agent.name}</h2>
-          <p className="mt-0.5 text-sm text-text-muted">{officeName}</p>
+          <p className="mt-0.5 text-sm text-text-muted">{displayTitle}</p>
           {languages && (
             <p className="mt-0.5 text-sm text-text-muted" data-testid="agent-index-languages">
               {languages}
             </p>
           )}
-          <p className="mt-0.5 text-xs text-text-muted" data-testid="agent-index-listing-count">
-            {agent.listingCount} {t("listings")}
-          </p>
+          {!isOwner && (
+            <p className="mt-0.5 text-xs text-text-muted" data-testid="agent-index-listing-count">
+              {agent.listingCount} {t("listings")}
+            </p>
+          )}
         </div>
       </article>
     </Link>

@@ -26,7 +26,7 @@ export function renderPropertyInquiryEmail({
     : `Thank you for your interest in <strong>${propertyName}</strong>. We have received your inquiry and forwarded it directly to the listing agent.`;
 
   const message2 = isEs
-    ? `El agente <strong>${agentName}</strong> se pondrá en contacto con usted muy pronto para ayudarle con más información o programar una visita.`
+    ? `El agente <strong>${agentName}</strong> se pondrá en contacto con vos muy pronto para ayudarte con más información o programar una visita.`
     : `The agent <strong>${agentName}</strong> will reach out to you very soon to assist you with more information or to schedule a showing.`;
 
   const propertyLinkLabel = isEs ? "Ver Propiedad" : "View Property";

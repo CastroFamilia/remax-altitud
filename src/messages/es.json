@@ -135,11 +135,11 @@
       "heading": "La Ventaja Altitud",
       "financing": {
         "title": "Financiamiento de hasta el 80%",
-        "desc": "Asegurá el capital que necesita. Te ayudamos a gestionar financiamiento de hasta el 80% a través de nuestra red bancaria, adaptado a tu nacionalidad, historial crediticio y propiedad."
+        "desc": "Asegurá el capital que necesitás. Te ayudamos a gestionar financiamiento de hasta el 80% a través de nuestra red bancaria, adaptado a tu nacionalidad, historial crediticio y propiedad."
       },
       "architect": {
         "title": "Diseño Arquitectónico Gratuito",
-        "desc": "Visualice su futuro hogar. Aprovechá nuestros convenios exclusivos con constructoras de primer nivel que diseñarán el plano de tu propiedad de forma 100% gratuita."
+        "desc": "Visualizá tu futuro hogar. Aprovechá nuestros convenios exclusivos con constructoras de primer nivel que diseñarán el plano de tu propiedad de forma 100% gratuita."
       },
       "legal": {
         "title": "Asesoría Legal Gratuita",
@@ -213,10 +213,10 @@
     "form": {
       "nameLabel": "Nombre completo",
       "namePlaceholder": "Tu nombre",
-      "nameError": "Por favor ingresa tu nombre.",
+      "nameError": "Por favor ingresá tu nombre.",
       "emailLabel": "Correo",
       "emailPlaceholder": "tu@ejemplo.com",
-      "emailError": "Por favor ingresa un correo válido.",
+      "emailError": "Por favor ingresá un correo válido.",
       "phoneLabel": "Teléfono (opcional)",
       "phonePlaceholder": "+506 0000-0000",
       "officeLabel": "Oficina preferida",
@@ -586,7 +586,7 @@
     "namePlaceholder": "Tu nombre completo",
     "nameError": "Por favor ingresá tu nombre.",
     "emailLabel": "Correo Electrónico",
-    "emailPlaceholder": "su@correo.com",
+    "emailPlaceholder": "tu@correo.com",
     "emailError": "Por favor ingresá un correo válido.",
     "phoneLabel": "Número de Teléfono",
     "phonePlaceholder": "+506 8888-8888",
@@ -605,7 +605,7 @@
     "or": "O contacte directamente:",
     "whatsappCTA": "WhatsApp",
     "emailCTA": "Correo",
-    "transparencyNote": "Su consulta se enviará directamente al agente encargado de esta propiedad."
+    "transparencyNote": "Tu consulta se enviará directamente al agente encargado de esta propiedad."
   },
   "AgentProfile": {
     "listings": "propiedades",
@@ -672,13 +672,13 @@
   },
   "SellerPage": {
     "meta": {
-      "title": "Publicar su Propiedad | REMAX Altitud",
+      "title": "Publicar tu Propiedad | REMAX Altitud",
       "description": "Publicá tu propiedad en Costa Rica con REMAX Altitud — el equipo #1 en bienes raíces de la Zona Sur. Completá nuestro sencillo formulario de 3 pasos para conectar con un experto local.",
-      "ogTitle": "Vendé su Propiedad con REMAX Altitud",
+      "ogTitle": "Vendé tu Propiedad con REMAX Altitud",
       "ogDescription": "Conéctese con un agente REMAX local en 3 minutos. Sin necesidad de cuenta."
     },
     "hero": {
-      "heading": "Publicá su Propiedad con el Equipo #1 de la Zona Sur",
+      "heading": "Publicá tu Propiedad con el Equipo #1 de la Zona Sur",
       "subheading": "De Pérez Zeledón a Dominical — nuestros agentes conocen cada hectárea.",
       "benefit1": "Exposición en la red global de REMAX",
       "benefit2": "Experiencia en el mercado local desde 2008",
@@ -706,7 +706,7 @@
       "step1": {
         "heading": "Contanos sobre tu propiedad",
         "propertyTypeLabel": "Tipo de Propiedad",
-        "propertyTypeAriaLabel": "Seleccione el tipo de propiedad",
+        "propertyTypeAriaLabel": "Seleccioná el tipo de propiedad",
         "typeCasa": "Casa",
         "typeLote": "Lote / Terreno",
         "typeFinca": "Finca",
@@ -750,13 +750,13 @@
         "phoneLabel": "Teléfono / WhatsApp",
         "phonePlaceholder": "+506 8888-8888",
         "phoneAriaLabel": "Ingresá tu número de teléfono o WhatsApp",
-        "phoneDescription": "Preferimos WhatsApp — su agente le contactará aquí",
+        "phoneDescription": "Preferimos WhatsApp — tu agente le contactará aquí",
         "emailLabel": "Correo Electrónico (opcional)",
-        "emailPlaceholder": "su@correo.com",
+        "emailPlaceholder": "tu@correo.com",
         "emailAriaLabel": "Ingresá tu correo electrónico (opcional)",
         "emailOptionalBadge": "Opcional",
         "languageLabel": "Idioma Preferido",
-        "languageAriaLabel": "Seleccione su idioma de contacto preferido",
+        "languageAriaLabel": "Seleccioná tu idioma de contacto preferido",
         "languageEn": "English",
         "languageEs": "Español"
       },
@@ -773,11 +773,11 @@
     },
     "confirmation": {
       "heading": "¡Propiedad Enviada Exitosamente!",
-      "subheading": "Su agente dedicado le contactará dentro de 24 horas.",
-      "agentMatchHeading": "Su Agente Asignado",
+      "subheading": "Tu agente dedicado le contactará dentro de 24 horas.",
+      "agentMatchHeading": "Tu Agente Asignado",
       "whatsappButtonAriaLabel": "Contactar a {agentName} por WhatsApp",
       "emailButtonAriaLabel": "Contactar a {agentName} por correo electrónico",
-      "browseWhileWaiting": "Mientras espera, explore lo que se vende en su área"
+      "browseWhileWaiting": "Mientras esperás, explorá lo que se vende en tu área"
     }
   },
   "CmaForm": {
@@ -823,10 +823,10 @@
       "submitButtonAriaLabel": "Enviar tu solicitud de CMA",
       "submittingButton": "Enviando...",
       "validation": {
-        "nameRequired": "Por favor ingresa tu nombre",
-        "phoneRequired": "Por favor ingresa tu número de teléfono",
-        "phoneInvalid": "Por favor ingresa un número de teléfono válido",
-        "emailInvalid": "Por favor ingresa un correo electrónico válido"
+        "nameRequired": "Por favor ingresá tu nombre",
+        "phoneRequired": "Por favor ingresá tu número de teléfono",
+        "phoneInvalid": "Por favor ingresá un número de teléfono válido",
+        "emailInvalid": "Por favor ingresá un correo electrónico válido"
       }
     },
     "confirmation": {
@@ -975,12 +975,12 @@
     "submitForm": "Enviar mi Lista de Favoritos",
     "submittingForm": "Enviando...",
     "successHeading": "¡Lista Enviada con Éxito!",
-    "successText": "Tu lista de propiedades favoritas ha sido enviada. El agente seleccionado o nuestro coordinador de oficina se pondrá en contacto contigo pronto.",
+    "successText": "Tu lista de propiedades favoritas ha sido enviada. El agente seleccionado o nuestro coordinador de oficina se pondrá en contacto con vos pronto.",
     "backToShortlist": "Volver a mi Lista",
     "formValidationError": "Por favor completa todos los campos requeridos.",
-    "nameError": "Por favor ingresa tu nombre",
-    "emailError": "Por favor ingresa un correo electrónico válido",
-    "phoneError": "Por favor ingresa un número de teléfono válido (mín. 7 dígitos)",
+    "nameError": "Por favor ingresá tu nombre",
+    "emailError": "Por favor ingresá un correo electrónico válido",
+    "phoneError": "Por favor ingresá un número de teléfono válido (mín. 7 dígitos)",
     "formSubmitError": "Error al enviar el formulario. Por favor, inténtelo de nuevo."
   },
   "ShortlistRouting": {
@@ -1044,7 +1044,7 @@
     "tableActions": "Acciones",
     "btnManageTags": "Administrar Etiquetas",
     "modalTitle": "Administrar Etiquetas para {title}",
-    "modalDescription": "Seleccione las etiquetas de estilo de vida que aplican a esta propiedad. Las etiquetas modificadas manualmente tienen prioridad y no serán sobrescritas por el proceso de sincronización automática.",
+    "modalDescription": "Seleccioná las etiquetas de estilo de vida que aplican a esta propiedad. Las etiquetas modificadas manualmente tienen prioridad y no serán sobrescritas por el proceso de sincronización automática.",
     "btnCancel": "Cancelar",
     "btnSave": "Guardar Cambios",
     "saving": "Guardando...",
@@ -1118,7 +1118,7 @@
     "bulkOperationTypeLabel": "Tipo de Operación",
     "bulkOpSingle": "Único Agente de Destino",
     "bulkOpDistribute": "Distribuir Equitativamente (Round-Robin)",
-    "bulkSelectTargetAgents": "Seleccione Agentes de Destino",
+    "bulkSelectTargetAgents": "Seleccioná Agentes de Destino",
     "bulkConfirmTitle": "Confirmación Explícita Requerida",
     "bulkConfirmPrompt": "¿Está seguro? Esto reasignará {count} leads de {source} a {target}.",
     "bulkConfirmPromptMulti": "¿Está seguro? Esto reasignará {count} leads de {source} a los siguientes agentes: {target}.",
@@ -1129,7 +1129,7 @@
     "bulkErrorHeader": "Error",
     "bulkLoadingCount": "Comprobando leads de origen...",
     "bulkExportSuccess": "Exportación completa. Iniciando descarga...",
-    "bulkSelectAgentExport": "Seleccione el Agente para Exportar Contactos",
+    "bulkSelectAgentExport": "Seleccioná el Agente para Exportar Contactos",
     "selectAgentPlaceholder": "Seleccionar Agente...",
     "resetBtn": "Restablecer",
     "continueBtn": "Continuar",
@@ -1157,7 +1157,7 @@
     "btnCreateCommunity": "Crear Nueva Comunidad",
     "btnEdit": "Editar",
     "btnDelete": "Eliminar",
-    "confirmDelete": "¿Está seguro de que desea eliminar {name}? Esto borrará las referencias de la comunidad de todas las propiedades.",
+    "confirmDelete": "¿Está seguro de que deseás eliminar {name}? Esto borrará las referencias de la comunidad de todas las propiedades.",
     "tableHeadName": "Nombre",
     "tableHeadArea": "Área",
     "tableHeadListings": "Propiedades Activas",
@@ -1191,12 +1191,12 @@
     "errorSaveFailed": "Error al guardar la comunidad. Por favor, inténtelo de nuevo."
   },
   "VipBuyerPage": {
-    "metaTitle": "Encontrá la Propiedad de sus Sueños - REMAX Altitud",
-    "metaDescription": "Servicio Exclusivo de Búsqueda de Propiedades: Describí la vida que desea, le mostraremos dónde puede hacerse realidad. Te ayudaremos a descubrir el lugar en Costa Rica que realmente se adapte a su vida.",
+    "metaTitle": "Encontrá la Propiedad de tus Sueños - REMAX Altitud",
+    "metaDescription": "Servicio Exclusivo de Búsqueda de Propiedades: Describí la vida que deseás, te mostraremos dónde puede hacerse realidad. Te ayudaremos a descubrir el lugar en Costa Rica que realmente se adapte a tu vida.",
     "hero": {
       "title": "Servicio Exclusivo de Búsqueda de Propiedades",
-      "subtitle": "Describí la vida que desea, le mostraremos dónde puede hacerse realidad. Te ayudaremos a descubrir el lugar en Costa Rica que realmente se adapte a su vida. Desde su primera llamada hasta el momento en que encuentre tu hogar, nuestro proceso combina experiencia local, experiencias seleccionadas y un plan claro desde el primer día.",
-      "ctaCall": "Reservá su Llamada de Descubrimiento",
+      "subtitle": "Describí la vida que deseás, te mostraremos dónde puede hacerse realidad. Te ayudaremos a descubrir el lugar en Costa Rica que realmente se adapte a tu vida. Desde tu primera llamada hasta el momento en que encontrés tu hogar, nuestro proceso combina experiencia local, experiencias seleccionadas y un plan claro desde el primer día.",
+      "ctaCall": "Reservá tu Llamada de Descubrimiento",
       "ctaWhatsapp": "Envíenos un WhatsApp"
     },
     "howItWorks": {
@@ -1204,11 +1204,11 @@
       "subtitle": "Mudarse a Costa Rica es emocionante, pero también puede resultar abrumador. Por eso diseñamos un proceso que lo hace simple, personal y estratégico.",
       "step1": {
         "title": "Llamada Inicial de Descubrimiento",
-        "body": "No necesita conocer Costa Rica; ese es nuestro trabajo. Contanos qué tipo de vida imagina, tu presupuesto y sus plazos, y le mostraremos las mejores regiones que se adapten a tu estilo de vida."
+        "body": "No necesitás conocer Costa Rica; ese es nuestro trabajo. Contanos qué tipo de vida imaginás, tu presupuesto y tus plazos, y te mostraremos las mejores regiones que se adapten a tu estilo de vida."
       },
       "step2": {
         "title": "Selección y Estrategia",
-        "body": "Mapeamos las zonas y propiedades que realmente se adaptan a sus necesidades, no solo lo que aparece en línea. Cada recomendación proviene de agentes locales que realmente viven allí."
+        "body": "Mapeamos las zonas y propiedades que realmente se adaptan a tus necesidades, no solo lo que aparece en línea. Cada recomendación proviene de agentes locales que realmente viven allí."
       },
       "step3": {
         "title": "Experiencia en el Terreno",
@@ -1220,15 +1220,15 @@
       }
     },
     "chooseExperience": {
-      "heading": "Elegí su Experiencia",
+      "heading": "Elegí tu Experiencia",
       "premium": {
         "tag": "Sin Costo",
         "name": "Premium",
         "description": "Un comienzo claro y guiado para tu viaje a Costa Rica.",
         "bestFor": "Ideal para: Planificación temprana, claridad y un inicio enfocado.",
-        "cta": "Reservá su Llamada de Descubrimiento",
-        "bullet1": "Llamada de Descubrimiento: Compartí tus metas, presupuesto y estilo de vida. No necesita conocer Costa Rica. Te ayudaremos a entender dónde encontrará realmente lo que busca.",
-        "bullet2": "Plan de Información Local: Después de nuestra primera llamada, definiremos los agentes locales adecuados para las zonas que mejor se adapten a su visión.",
+        "cta": "Reservá tu Llamada de Descubrimiento",
+        "bullet1": "Llamada de Descubrimiento: Compartí tus metas, presupuesto y estilo de vida. No necesitás conocer Costa Rica. Te ayudaremos a entender dónde encontrará realmente lo que buscás.",
+        "bullet2": "Plan de Información Local: Después de nuestra primera llamada, definiremos los agentes locales adecuados para las zonas que mejor se adapten a tu visión.",
         "bullet3": "Selección Personalizada: Revisen juntos propiedades preseleccionadas en línea, con respuestas transparentes sobre costos, procesos y plazos.",
         "bullet4": "Plan de Siguiente Paso: Avance con confianza. Visitá en persona o permítanos recorrer las propiedades por vos mediante videollamadas en vivo."
       },
@@ -1252,7 +1252,7 @@
       "subtitle": "Porque comprar una propiedad en Costa Rica debería ser emocionante, no confuso. Hagámoslo simple e inolvidable.",
       "pillar1": {
         "title": "Conocimiento",
-        "body": "No necesita conocer Costa Rica: nosotros conocemos cada rincón."
+        "body": "No necesitás conocer Costa Rica: nosotros conocemos cada rincón."
       },
       "pillar2": {
         "title": "Experiencia Local",
@@ -1272,7 +1272,7 @@
       },
       "pillar6": {
         "title": "El Poder de REMAX",
-        "body": "La marca en la que ya confía, ahora guiando su mudanza aquí mismo."
+        "body": "La marca en la que ya confiás, ahora guiando tu mudanza aquí mismo."
       }
     },
     "booking": {
@@ -1295,7 +1295,7 @@
     "back": "Atrás",
     "seeResults": "Ver mis Resultados",
     "retake": "Repetir Cuestionario",
-    "recommendedListings": "Propiedades recomendadas para ti",
+    "recommendedListings": "Propiedades recomendadas para vos",
     "questions": {
       "q1": {
         "title": "1. El Ritmo de la Mañana y el Clima",
@@ -1386,7 +1386,7 @@
     "metaTitle": "Preguntas Frecuentes sobre Mudarse a Costa Rica | RE/MAX Altitud",
     "metaDescription": "Encontrá respuestas a las preguntas más comunes sobre mudarse a Costa Rica. Aprenda sobre áreas, costo de vida, tipos de propiedad y por qué comprar es mejor que alquilar.",
     "pageTitle": "Preguntas Frecuentes sobre Mudarse a Costa Rica",
-    "intro": "Todo lo que necesita saber antes de mudarse a la Zona Sur de Costa Rica.",
+    "intro": "Todo lo que necesitás saber antes de mudarse a la Zona Sur de Costa Rica.",
     "q1_question": "¿Es Costa Rica un buen lugar para mudarse?",
     "q1_answer": "Sí, Costa Rica es un lugar excepcional para mudarse. Ofrece una amplia variedad de áreas con precios, estilos de vida y accesibilidad completamente diferentes. Ya sea que desee despertar con vistas a las montañas nubladas en Pérez Zeledón o disfrutar del clima tropical y el surf de clase mundial a lo largo de la costa en Dominical y Uvita, hay un área adaptada perfectamente a tu ritmo y presupuesto.",
     "q2_question": "¿Debería alquilar antes de comprar en Costa Rica?",
@@ -1396,9 +1396,9 @@
     "q4_question": "¿Cómo es el costo de vida en Costa Rica?",
     "q4_answer": "El costo de vida varía enormemente según tu estilo de vida y ubicación. Los pueblos costeros como Uvita y Dominical tienden a tener precios más altos debido a la alta demanda turística, mientras que las áreas montañosas como Pérez Zeledón y sus valles circundantes ofrecen un costo de vida mucho menor, abundantes productos orgánicos locales y un estilo de vida costarricense verdaderamente auténtico.",
     "q5_question": "¿Pueden los extranjeros comprar propiedades en Costa Rica?",
-    "q5_answer": "Sí, los extranjeros tienen exactamente los mismos derechos de propiedad que los ciudadanos costarricenses al comprar terrenos titulados. No necesita un socio local para comprar una casa o un lote.",
+    "q5_answer": "Sí, los extranjeros tienen exactamente los mismos derechos de propiedad que los ciudadanos costarricenses al comprar terrenos titulados. No necesitás un socio local para comprar una casa o un lote.",
     "q6_question": "¿Necesito residencia para comprar una casa?",
-    "q6_answer": "No, no necesita ser residente para comprar una propiedad; puede comprar con una visa de turista estándar. De hecho, comprar una propiedad valorada por encima de un cierto umbral puede incluso calificarlo para solicitar una Residencia de Inversionista.",
+    "q6_answer": "No, no necesitás ser residente para comprar una propiedad; podés comprar con una visa de turista estándar. De hecho, comprar una propiedad valorada por encima de un cierto umbral puede incluso calificarte para solicitar una Residencia de Inversionista.",
     "q7_question": "¿Qué hay sobre construir una casa?",
     "q7_answer": "Contamos con constructores de confianza y el diseño de la casa es gratuito cuando compra con nosotros.",
     "q8_question": "¿Cuál es el proceso de comprar una propiedad?",

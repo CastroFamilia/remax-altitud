@@ -102,7 +102,6 @@ export function AgentIndexFilters({ agents, locale, officeMap }: AgentIndexFilte
         </div>
       </div>
 
-      {/* Agent list or empty state */}
       {filteredAgents.length === 0 ? (
         <div data-testid="agent-no-match" className="py-8 text-center">
           <p className="text-base text-text-muted">{t("noAgentsMatch")}</p>
@@ -118,15 +117,29 @@ export function AgentIndexFilters({ agents, locale, officeMap }: AgentIndexFilte
           data-testid="agent-index-list"
           className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {filteredAgents.map((agent) => (
-            <li key={agent.id}>
-              <AgentIndexCard
-                agent={agent}
-                officeName={officeMap[agent.officeId] ?? "REMAX Altitud"}
-                locale={locale}
-              />
-            </li>
-          ))}
+          {[...filteredAgents]
+            .sort((a, b) => {
+              const aOwner =
+                a.name.toLowerCase().includes("cesar") ||
+                a.name.toLowerCase().includes("césar") ||
+                a.name.toLowerCase().includes("alejandra");
+              const bOwner =
+                b.name.toLowerCase().includes("cesar") ||
+                b.name.toLowerCase().includes("césar") ||
+                b.name.toLowerCase().includes("alejandra");
+              if (aOwner && !bOwner) return -1;
+              if (!aOwner && bOwner) return 1;
+              return 0;
+            })
+            .map((agent) => (
+              <li key={agent.id}>
+                <AgentIndexCard
+                  agent={agent}
+                  officeName={officeMap[agent.officeId] ?? "REMAX Altitud"}
+                  locale={locale}
+                />
+              </li>
+            ))}
         </ul>
       )}
     </div>
