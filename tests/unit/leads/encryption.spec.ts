@@ -132,6 +132,7 @@ describe("PII Encryption — encryptField / decryptField (5.3-UNIT-001)", () => 
   it("[P0] 5.3-UNIT-001h: encryptField() throws when LEAD_ENCRYPTION_KEY is missing", async () => {
     // Temporarily remove the key using stubEnv
     vi.stubEnv("LEAD_ENCRYPTION_KEY", "");
+    vi.stubEnv("VERCEL_ENV", "production");
 
     // Force fresh import to pick up missing env var
     // Since the module is cached, we test getKey() indirectly via the function

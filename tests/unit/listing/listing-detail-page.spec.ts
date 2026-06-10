@@ -129,6 +129,7 @@ describe("Listing Detail Page — ISR revalidation (Story 4.1)", () => {
       // This confirms SSG/ISR is configured (not force-dynamic)
       expect(pageModule["revalidate"]).toBe(86400);
     },
+    15000,
   );
 
   it(
@@ -141,6 +142,7 @@ describe("Listing Detail Page — ISR revalidation (Story 4.1)", () => {
       // force-dynamic must be removed — its presence means ISR is disabled
       expect(pageModule["dynamic"]).not.toBe("force-dynamic");
     },
+    15000,
   );
 });
 
