@@ -46,6 +46,12 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
   // Bio: locale-aware, empty bio hidden
   const bio = locale === "es" ? agent.bioEs : agent.bioEn;
 
+  const isOwner =
+    agent.name.toLowerCase().includes("cesar") ||
+    agent.name.toLowerCase().includes("césar") ||
+    agent.name.toLowerCase().includes("alejandra");
+  const displayTitle = isOwner ? "BROKER/OWNER" : officeName;
+
   return (
     <section
       aria-labelledby="agent-name-heading"
@@ -71,15 +77,17 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
           >
             {agent.name}
           </h1>
-          <p className="mt-1 text-base text-text-muted">{officeName}</p>
+          <p className="mt-1 text-base text-text-muted">{displayTitle}</p>
           {languages && (
             <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-languages">
               {languages}
             </p>
           )}
-          <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-listing-count">
-            {agent.listingCount} {t("listings")}
-          </p>
+          {!isOwner && (
+            <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-listing-count">
+              {agent.listingCount} {t("listings")}
+            </p>
+          )}
         </div>
       </div>
 

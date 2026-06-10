@@ -360,15 +360,6 @@ export function ContactForm() {
 
 type RecruitErrors = Partial<Record<"name" | "email" | "phone" | "form", string>>;
 
-const LANGUAGE_KEYS = [
-  "languageEN",
-  "languageES",
-  "languageIT",
-  "languageDE",
-  "languageFR",
-  "languagePT",
-] as const;
-
 export function RecruitmentForm() {
   const t = useTranslations("JoinPage.form");
   const locale = useLocale();
@@ -380,7 +371,7 @@ export function RecruitmentForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [languages, setLanguages] = useState<Set<string>>(() => new Set(["languageEN"]));
+  const [languages, setLanguages] = useState("");
   const [area, setArea] = useState("either");
   const [hasCar, setHasCar] = useState("yes");
   const [time, setTime] = useState("");
@@ -394,15 +385,6 @@ export function RecruitmentForm() {
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState<ToastKind>(null);
   useToastAutoDismiss(toast, setToast);
-
-  function toggleLanguage(key: string) {
-    setLanguages((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }
 
   function validate(): RecruitErrors {
     const next: RecruitErrors = {};
@@ -430,7 +412,7 @@ export function RecruitmentForm() {
     setName("");
     setEmail("");
     setPhone("");
-    setLanguages(new Set(["languageEN"]));
+    setLanguages("");
     setArea("either");
     setHasCar("yes");
     setTime("");
@@ -457,8 +439,7 @@ export function RecruitmentForm() {
     setErrors({});
 
     const subject = `Recruitment inquiry — ${locale}`;
-    const languageSummary =
-      [...languages].map((k) => t(k as (typeof LANGUAGE_KEYS)[number])).join(", ") || "—";
+    const languageSummary = languages || "—";
     const bodyLines = [
       `Name: ${name}`,
       `Email: ${email}`,
@@ -585,27 +566,18 @@ export function RecruitmentForm() {
           )}
         </Field>
 
-        <fieldset className="flex flex-col gap-2">
-          <legend className="text-sm font-semibold text-brand-navy">{t("languagesLabel")}</legend>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {LANGUAGE_KEYS.map((key) => (
-              <label
-                key={key}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-md border border-brand-warm bg-white px-3 py-2 text-sm text-brand-navy"
-              >
-                <input
-                  type="checkbox"
-                  name="languages"
-                  value={key}
-                  checked={languages.has(key)}
-                  onChange={() => toggleLanguage(key)}
-                  className="size-4"
-                />
-                <span>{t(key)}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <Field label={t("languagesLabel")}>
+          {(id) => (
+            <textarea
+              id={id}
+              name="languages"
+              placeholder={t("languagesPlaceholder")}
+              value={languages}
+              onChange={(e) => setLanguages(e.target.value)}
+              className={textareaClassName(false)}
+            />
+          )}
+        </Field>
 
         <Field label={t("areaLabel")}>
           {(id) => (
