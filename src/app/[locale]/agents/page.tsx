@@ -4,6 +4,7 @@ import { SimplePageLayout } from "@/components/layout/simple-page-layout";
 import { AgentIndexFilters } from "@/components/agent/agent-index-filters";
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { getAllOffices } from "@/lib/db/queries/offices";
+import { Link } from "@/i18n/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,14 @@ export default async function AgentsIndexPage({ params }: { params: Promise<{ lo
 
   return (
     <SimplePageLayout pageTitle={t("indexPageTitle")} intro={t("indexPageDescription")}>
+      <div className="flex justify-center mb-8">
+        <Link
+          href="/join"
+          className="inline-flex h-11 items-center justify-center rounded-md bg-brand-navy px-8 text-sm font-medium text-white transition-colors hover:bg-brand-navy/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+        >
+          {t("joinTeamCta")}
+        </Link>
+      </div>
       <AgentIndexFilters agents={allAgents} locale={locale} officeMap={officeMap} />
     </SimplePageLayout>
   );
