@@ -17,6 +17,11 @@ import * as Sentry from "@sentry/nextjs";
 import { createLead, findRecentDuplicate } from "@/lib/db/queries/leads";
 import { matchAgentByCoordinates } from "@/lib/leads/route-agent";
 import { forwardLeadToHubInBackground } from "@/lib/services/tracking";
+import { sendEmailInBackground } from "@/lib/services/email";
+import { renderPropertyInquiryEmail } from "@/lib/emails/PropertyInquiryEmail";
+import { db } from "@/lib/db/client";
+import { properties } from "@/lib/db/schema/properties";
+import { eq } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
 // Zod input schema
@@ -243,6 +248,47 @@ export async function POST(request: Request) {
         }
       } catch {
         // Agent fetch failure is non-fatal — lead was already created
+      }
+    }
+
+    // Auto-responder email for property inquiries
+    if (data.source === "contact_form" && data.email && data.shortlistPropertyIds.length > 0) {
+      try {
+        const [property] = await db
+          .select({
+            titleEn: properties.titleEn,
+            titleEs: properties.titleEs,
+            slug: properties.slug,
+          })
+          .from(properties)
+          .where(eq(properties.id, data.shortlistPropertyIds[0]))
+          .limit(1);
+
+        if (property && agentDetails) {
+          const locale = data.preferredLanguage === "es" ? "es" : "en";
+          const propertyName = locale === "es" ? property.titleEs : property.titleEn;
+          const host = request.headers.get("host") || "dev.remax-altitud.cr";
+          const protocol = host.includes("localhost") ? "http" : "https";
+          const propertyUrl = `${protocol}://${host}/${locale}/property/${property.slug}`;
+
+          const htmlContent = renderPropertyInquiryEmail({
+            locale,
+            propertyName,
+            propertyUrl,
+            agentName: agentDetails.name,
+            agentEmail: agentDetails.email || "",
+            agentPhone: agentDetails.whatsapp || agentDetails.phone || "",
+          });
+
+          sendEmailInBackground({
+            to: data.email,
+            subject:
+              locale === "es" ? "Hemos recibido su consulta" : "We have received your inquiry",
+            html: htmlContent,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to send auto-responder email", err);
       }
     }
 

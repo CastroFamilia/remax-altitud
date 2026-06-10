@@ -23,7 +23,8 @@ function useToastAutoDismiss(
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CONTACT_INBOX = "info@remax-altitud.cr";
-const RECRUIT_INBOX = "join@remax-altitud.cr";
+const RECRUIT_INBOX = "cesar@remax-altitud.cr";
+const RECRUIT_CC = "hola@remax-altitud.cr";
 
 type ContactErrors = Partial<Record<"name" | "email" | "phone" | "message" | "form", string>>;
 
@@ -379,10 +380,11 @@ export function RecruitmentForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [license, setLicense] = useState("licensed");
   const [languages, setLanguages] = useState<Set<string>>(() => new Set(["languageEN"]));
   const [area, setArea] = useState("either");
   const [hasCar, setHasCar] = useState("yes");
+  const [time, setTime] = useState("");
+  const [financial, setFinancial] = useState("");
   const [salesExperience, setSalesExperience] = useState("");
   const [commissionOnly, setCommissionOnly] = useState("");
   const [message, setMessage] = useState("");
@@ -428,10 +430,11 @@ export function RecruitmentForm() {
     setName("");
     setEmail("");
     setPhone("");
-    setLicense("licensed");
     setLanguages(new Set(["languageEN"]));
     setArea("either");
     setHasCar("yes");
+    setTime("");
+    setFinancial("");
     setSalesExperience("");
     setCommissionOnly("");
     setMessage("");
@@ -460,19 +463,20 @@ export function RecruitmentForm() {
       `Name: ${name}`,
       `Email: ${email}`,
       `Phone: ${phone}`,
-      `License status: ${license}`,
       `Languages: ${languageSummary}`,
       `Area of interest: ${area}`,
       `Has vehicle: ${hasCar === "yes" ? "Yes" : "No"}`,
+      `Time availability: ${time || "—"}`,
+      `Financial backing: ${financial || "—"}`,
       `Sales/RE Experience: ${salesExperience || "—"}`,
       `Commission-only outlook: ${commissionOnly || "—"}`,
       "",
       "Message:",
       message || "—",
     ];
-    const mailto = `mailto:${RECRUIT_INBOX}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+    const mailto = `mailto:${RECRUIT_INBOX}?cc=${encodeURIComponent(
+      RECRUIT_CC,
+    )}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
 
     setSubmitting(true);
     setToast("success");
@@ -581,22 +585,6 @@ export function RecruitmentForm() {
           )}
         </Field>
 
-        <Field label={t("licenseLabel")}>
-          {(id) => (
-            <select
-              id={id}
-              name="license"
-              value={license}
-              onChange={(e) => setLicense(e.target.value)}
-              className={selectClassName(false)}
-            >
-              <option value="licensed">{t("licenseOptionLicensed")}</option>
-              <option value="studying">{t("licenseOptionStudying")}</option>
-              <option value="none">{t("licenseOptionNone")}</option>
-            </select>
-          )}
-        </Field>
-
         <fieldset className="flex flex-col gap-2">
           <legend className="text-sm font-semibold text-brand-navy">{t("languagesLabel")}</legend>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -647,6 +635,33 @@ export function RecruitmentForm() {
               <option value="yes">{t("carOptionYes")}</option>
               <option value="no">{t("carOptionNo")}</option>
             </select>
+          )}
+        </Field>
+
+        <Field label={t("timeLabel")}>
+          {(id) => (
+            <input
+              id={id}
+              name="time"
+              type="text"
+              placeholder={t("timePlaceholder")}
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              className={inputClassName(false)}
+            />
+          )}
+        </Field>
+
+        <Field label={t("financialLabel")}>
+          {(id) => (
+            <textarea
+              id={id}
+              name="financial"
+              placeholder={t("financialPlaceholder")}
+              value={financial}
+              onChange={(e) => setFinancial(e.target.value)}
+              className={textareaClassName(false)}
+            />
           )}
         </Field>
 

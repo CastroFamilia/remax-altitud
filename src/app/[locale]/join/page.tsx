@@ -106,6 +106,9 @@ function JoinPageContent() {
         >
           {t("formHeading")}
         </h2>
+        <p className="mt-4 text-center text-lg text-text-muted max-w-2xl mx-auto font-medium">
+          {t("businessWarning")}
+        </p>
         <div className="mt-10">
           <RecruitmentForm />
         </div>
