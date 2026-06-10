@@ -383,6 +383,8 @@ export function RecruitmentForm() {
   const [languages, setLanguages] = useState<Set<string>>(() => new Set(["languageEN"]));
   const [area, setArea] = useState("either");
   const [hasCar, setHasCar] = useState("yes");
+  const [time, setTime] = useState("");
+  const [financial, setFinancial] = useState("");
   const [salesExperience, setSalesExperience] = useState("");
   const [commissionOnly, setCommissionOnly] = useState("");
   const [message, setMessage] = useState("");
@@ -431,6 +433,8 @@ export function RecruitmentForm() {
     setLanguages(new Set(["languageEN"]));
     setArea("either");
     setHasCar("yes");
+    setTime("");
+    setFinancial("");
     setSalesExperience("");
     setCommissionOnly("");
     setMessage("");
@@ -462,6 +466,8 @@ export function RecruitmentForm() {
       `Languages: ${languageSummary}`,
       `Area of interest: ${area}`,
       `Has vehicle: ${hasCar === "yes" ? "Yes" : "No"}`,
+      `Time availability: ${time || "—"}`,
+      `Financial backing: ${financial || "—"}`,
       `Sales/RE Experience: ${salesExperience || "—"}`,
       `Commission-only outlook: ${commissionOnly || "—"}`,
       "",
@@ -629,6 +635,33 @@ export function RecruitmentForm() {
               <option value="yes">{t("carOptionYes")}</option>
               <option value="no">{t("carOptionNo")}</option>
             </select>
+          )}
+        </Field>
+
+        <Field label={t("timeLabel")}>
+          {(id) => (
+            <input
+              id={id}
+              name="time"
+              type="text"
+              placeholder={t("timePlaceholder")}
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              className={inputClassName(false)}
+            />
+          )}
+        </Field>
+
+        <Field label={t("financialLabel")}>
+          {(id) => (
+            <textarea
+              id={id}
+              name="financial"
+              placeholder={t("financialPlaceholder")}
+              value={financial}
+              onChange={(e) => setFinancial(e.target.value)}
+              className={textareaClassName(false)}
+            />
           )}
         </Field>
 
