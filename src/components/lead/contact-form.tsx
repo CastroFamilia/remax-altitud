@@ -23,7 +23,8 @@ function useToastAutoDismiss(
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CONTACT_INBOX = "info@remax-altitud.cr";
-const RECRUIT_INBOX = "join@remax-altitud.cr";
+const RECRUIT_INBOX = "cesar@remax-altitud.cr";
+const RECRUIT_CC = "hola@remax-altitud.cr";
 
 type ContactErrors = Partial<Record<"name" | "email" | "phone" | "message" | "form", string>>;
 
@@ -379,7 +380,6 @@ export function RecruitmentForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [license, setLicense] = useState("licensed");
   const [languages, setLanguages] = useState<Set<string>>(() => new Set(["languageEN"]));
   const [area, setArea] = useState("either");
   const [hasCar, setHasCar] = useState("yes");
@@ -428,7 +428,6 @@ export function RecruitmentForm() {
     setName("");
     setEmail("");
     setPhone("");
-    setLicense("licensed");
     setLanguages(new Set(["languageEN"]));
     setArea("either");
     setHasCar("yes");
@@ -460,7 +459,6 @@ export function RecruitmentForm() {
       `Name: ${name}`,
       `Email: ${email}`,
       `Phone: ${phone}`,
-      `License status: ${license}`,
       `Languages: ${languageSummary}`,
       `Area of interest: ${area}`,
       `Has vehicle: ${hasCar === "yes" ? "Yes" : "No"}`,
@@ -470,9 +468,9 @@ export function RecruitmentForm() {
       "Message:",
       message || "—",
     ];
-    const mailto = `mailto:${RECRUIT_INBOX}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+    const mailto = `mailto:${RECRUIT_INBOX}?cc=${encodeURIComponent(
+      RECRUIT_CC,
+    )}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
 
     setSubmitting(true);
     setToast("success");
@@ -578,22 +576,6 @@ export function RecruitmentForm() {
               onChange={(e) => setPhone(e.target.value)}
               className={inputClassName(Boolean(errors.phone))}
             />
-          )}
-        </Field>
-
-        <Field label={t("licenseLabel")}>
-          {(id) => (
-            <select
-              id={id}
-              name="license"
-              value={license}
-              onChange={(e) => setLicense(e.target.value)}
-              className={selectClassName(false)}
-            >
-              <option value="licensed">{t("licenseOptionLicensed")}</option>
-              <option value="studying">{t("licenseOptionStudying")}</option>
-              <option value="none">{t("licenseOptionNone")}</option>
-            </select>
           )}
         </Field>
 
