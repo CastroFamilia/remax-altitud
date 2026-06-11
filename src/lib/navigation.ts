@@ -78,6 +78,12 @@ export const mainNavItems: NavItem[] = [
     icon: "👥",
   },
   {
+    labelKey: "blog",
+    href: "/blog",
+    activePrefix: "/blog",
+    icon: "📝",
+  },
+  {
     labelKey: "ourAgents",
     href: "/agents",
     activePrefix: "/agents",
