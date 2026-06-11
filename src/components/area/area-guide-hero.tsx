@@ -41,6 +41,20 @@ export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
 
   const regionLabel = t(`region.${area.region === "Mountain" ? "Mountain" : "Coast"}`);
 
+  const getLocalizedValue = (value?: string | number) => {
+    if (typeof value !== "string") return value;
+    const parts = value.split(" / ");
+    if (parts.length === 2) {
+      return locale === "es" ? parts[1] : parts[0];
+    }
+    return value;
+  };
+
+  const elevation = getLocalizedValue(metadata?.elevation as string | number);
+  const climate = getLocalizedValue(metadata?.climate as string);
+  const nearestBeach = getLocalizedValue(metadata?.nearestBeach as string);
+  const nearestHospital = getLocalizedValue(metadata?.nearestHospital as string);
+
   return (
     <section
       data-testid="area-guide-hero"
@@ -89,28 +103,28 @@ export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
           {/* Climate / altitude metadata */}
           {metadata && (
             <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/90">
-              {metadata.elevation && (
+              {elevation && (
                 <span className="flex items-center gap-1.5">
                   <span aria-hidden="true">🏔</span>
-                  {metadata.elevation}
+                  {elevation}
                 </span>
               )}
-              {metadata.climate && (
+              {climate && (
                 <span className="flex items-center gap-1.5">
                   <span aria-hidden="true">🌡</span>
-                  {metadata.climate}
+                  {climate}
                 </span>
               )}
-              {metadata.nearestBeach && (
+              {nearestBeach && (
                 <span className="flex items-center gap-1.5">
                   <span aria-hidden="true">🏖</span>
-                  {metadata.nearestBeach}
+                  {nearestBeach}
                 </span>
               )}
-              {metadata.nearestHospital && (
+              {nearestHospital && (
                 <span className="flex items-center gap-1.5">
                   <span aria-hidden="true">🏥</span>
-                  {metadata.nearestHospital}
+                  {nearestHospital}
                 </span>
               )}
             </div>
