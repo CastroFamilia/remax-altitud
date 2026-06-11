@@ -11,6 +11,7 @@ import {
 } from "@/app/actions/admin-community-actions";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
+import { AdminCommunityListings } from "@/components/admin/admin-community-listings";
 
 const CommunityGeoFenceMap = dynamic(
   () => import("@/components/map/community-geofence-map").then((m) => m.CommunityGeoFenceMap),
@@ -688,6 +689,11 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
           </button>
         </div>
       </form>
+
+      {/* Community Listings (Edit Mode Only) */}
+      {isEdit && initialData && (
+        <AdminCommunityListings communityId={initialData.id} locale={locale} />
+      )}
     </div>
   );
 }
