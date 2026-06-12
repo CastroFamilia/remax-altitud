@@ -669,11 +669,35 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
   }
 
   // 5. Match Bedrooms / Bathrooms count
-  const bedMatch = normalized.match(
-    /(\d+)\s*(?:bed|bedroom|bedrooms|hab|habitacion|habitaciones|dormitorio|dormitorios|cuarto|cuartos)/,
+  // Number-word → digit mapping for natural language bedroom/bathroom parsing
+  const NUMBER_WORDS: Record<string, number> = {
+    // English
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    // Spanish
+    un: 1,
+    uno: 1,
+    una: 1,
+    dos: 2,
+    tres: 3,
+    cuatro: 4,
+    cinco: 5,
+  };
+  const numberWordPattern = Object.keys(NUMBER_WORDS).join("|");
+
+  // Match digit OR number-word before bedroom keywords (includes room/rooms/recámara/pieza synonyms)
+  const bedRegex = new RegExp(
+    `(?:(\\d+)|(${numberWordPattern}))\\s*(?:bed|beds|bedroom|bedrooms|room|rooms|hab|habitacion|habitaciones|habitación|habitaciónes|dormitorio|dormitorios|cuarto|cuartos|recamara|recamaras|recámara|recámaras|pieza|piezas)`,
+    "i",
   );
-  if (bedMatch && bedMatch[1]) {
-    const beds = parseInt(bedMatch[1], 10);
+  const bedMatch = remainingText.match(bedRegex);
+  if (bedMatch) {
+    const beds = bedMatch[1]
+      ? parseInt(bedMatch[1], 10)
+      : (NUMBER_WORDS[bedMatch[2].toLowerCase()] ?? 0);
     if (beds >= 1 && beds <= 5) {
       params.bedrooms = String(beds);
       detected.push({
@@ -686,9 +710,16 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
     remainingText = remainingText.replace(bedMatch[0], " ");
   }
 
-  const bathMatch = normalized.match(/(\d+)\s*(?:bath|bathroom|bathrooms|baño|baños|bañ)/);
-  if (bathMatch && bathMatch[1]) {
-    const baths = parseInt(bathMatch[1], 10);
+  // Match digit OR number-word before bathroom keywords
+  const bathRegex = new RegExp(
+    `(?:(\\d+)|(${numberWordPattern}))\\s*(?:bath|baths|bathroom|bathrooms|baño|baños|bañ)`,
+    "i",
+  );
+  const bathMatch = remainingText.match(bathRegex);
+  if (bathMatch) {
+    const baths = bathMatch[1]
+      ? parseInt(bathMatch[1], 10)
+      : (NUMBER_WORDS[bathMatch[2].toLowerCase()] ?? 0);
     if (baths >= 1 && baths <= 4) {
       params.bathrooms = String(baths);
       detected.push({
