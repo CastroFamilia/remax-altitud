@@ -82,7 +82,7 @@ export default async function CommunityPage({
   ]);
   if (!area || !community) notFound();
 
-  const [communityProperties, similarCommunities] = await Promise.all([
+  const [communityProperties, similarResult] = await Promise.all([
     getPropertiesByCommunityId(community.id),
     getSimilarCommunities(community.areaId, communitySlug),
   ]);
@@ -128,10 +128,12 @@ export default async function CommunityPage({
       <CommunityMiniMap community={community} areaName={areaName} locale={locale} />
       <CommunityTabs properties={communityProperties} community={community} locale={locale} />
       <SimilarCommunitiesSlider
-        communities={similarCommunities}
+        communities={similarResult.communities}
         locale={locale}
         areaSlug={slug}
         areaName={areaName}
+        isFallback={similarResult.isFallback}
+        fallbackAreaMap={similarResult.fallbackAreaMap}
       />
     </main>
   );

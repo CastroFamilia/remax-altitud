@@ -432,11 +432,12 @@ describe("getSimilarCommunities — same-area community lookup (AC #6)", () => {
 
       const result = await getSimilarCommunities("uuid-area-1", "rise");
 
-      expect(result).toHaveLength(1);
-      expect(result[0].slug).toBe("santa-elena-hills");
+      expect(result.communities).toHaveLength(1);
+      expect(result.isFallback).toBe(false);
+      expect(result.communities[0].slug).toBe("santa-elena-hills");
       // Must NOT include the excluded community
       expect(
-        result.every(
+        result.communities.every(
           (c: Record<string, unknown>) => c.slug !== "rise",
         ),
       ).toBe(true);
@@ -444,12 +445,13 @@ describe("getSimilarCommunities — same-area community lookup (AC #6)", () => {
   );
 
   it(
-    "[P1] given area with only one community when called then returns empty array",
+    "[P1] given area with only one community when called then falls back to other areas",
     async () => {
       const { getSimilarCommunities } = await import(
         "@/lib/db/queries/communities"
       );
 
+      // First call: same-area query returns empty
       const mockSimilarOrderBy = vi.fn().mockResolvedValueOnce([]);
       const mockSimilarWhere = vi
         .fn()
@@ -459,9 +461,22 @@ describe("getSimilarCommunities — same-area community lookup (AC #6)", () => {
         .mockReturnValue({ where: mockSimilarWhere });
       mockSelect.mockReturnValueOnce({ from: mockSimilarFrom });
 
+      // Second call: fallback query returns communities from other areas
+      const fallbackCommunity = makeCommunity();
+      const mockFallbackLimit = vi.fn().mockResolvedValueOnce([
+        { community: fallbackCommunity, areaSlug: "perez-zeledon", areaNameEn: "Pérez Zeledón", areaNameEs: "Pérez Zeledón" },
+      ]);
+      const mockFallbackOrderBy = vi.fn().mockReturnValue({ limit: mockFallbackLimit });
+      const mockFallbackWhere = vi.fn().mockReturnValue({ orderBy: mockFallbackOrderBy });
+      const mockFallbackInnerJoin = vi.fn().mockReturnValue({ where: mockFallbackWhere });
+      const mockFallbackFrom = vi.fn().mockReturnValue({ innerJoin: mockFallbackInnerJoin });
+      mockSelect.mockReturnValueOnce({ from: mockFallbackFrom });
+
       const result = await getSimilarCommunities("uuid-area-2", "serena-del-mar");
 
-      expect(result).toEqual([]);
+      expect(result.isFallback).toBe(true);
+      expect(result.communities).toHaveLength(1);
+      expect(result.fallbackAreaMap).not.toBeNull();
     },
   );
 
@@ -487,7 +502,7 @@ describe("getSimilarCommunities — same-area community lookup (AC #6)", () => {
 
       const result = await getSimilarCommunities("uuid-area-1", "serena");
 
-      expect(result[0].name.localeCompare(result[1].name)).toBeLessThanOrEqual(0);
+      expect(result.communities[0].name.localeCompare(result.communities[1].name)).toBeLessThanOrEqual(0);
     },
   );
 });
