@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { HeartParticles } from "@/components/shortlist/heart-particles";
 
 interface SaveButtonProps {
   propertyId: string;
@@ -44,6 +45,7 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
   const t = useTranslations("PropertyCard");
   const [isSaved, setIsSaved] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [showParticles, setShowParticles] = useState(false);
 
   // Initialize + subscribe to cross-instance updates (same window) and
   // cross-tab updates (storage event).
@@ -71,6 +73,13 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
     return () => window.clearTimeout(id);
   }, [showToast]);
 
+  // Auto-clear particles after animation completes (400ms + buffer)
+  useEffect(() => {
+    if (!showParticles) return;
+    const timer = setTimeout(() => setShowParticles(false), 500);
+    return () => clearTimeout(timer);
+  }, [showParticles]);
+
   function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
     e.preventDefault();
@@ -91,6 +100,8 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
       const updated = [...shortlist, propertyId];
       setShortlist(updated);
       setIsSaved(true);
+      // Trigger particle burst + scale pop animation (UX-DR22)
+      setShowParticles(true);
     }
   }
 
@@ -103,10 +114,12 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
         onClick={handleClick}
         className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
           isSaved ? "text-[--color-accent]" : "text-muted-foreground hover:text-[--color-accent]"
-        }`}
+        } ${showParticles ? "heart-pop" : ""}`}
       >
         {isSaved ? "♥" : "♡"}
       </button>
+      {/* Particle burst on save (UX-DR22) */}
+      {showParticles && <HeartParticles />}
       {showToast && (
         <div
           role="status"

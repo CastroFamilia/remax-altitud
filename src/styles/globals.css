@@ -467,6 +467,81 @@
     }
   }
 
+  /* ♡ Save — scale pop animation (UX-DR22)
+     Sequence: 1.0 → 0.9 → 1.2 → 1.0 over 200ms ease-out */
+  @keyframes heart-pop {
+    0% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(0.9);
+    }
+    60% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .heart-pop {
+    animation: heart-pop 0.2s ease-out;
+  }
+
+  /* ♡ Save — CSS particle burst (UX-DR22)
+     3-4 tiny heart outlines float up and fade using pure CSS @keyframes.
+     Each particle is a small heart shape created with CSS, offset to a
+     different angle/distance for organic feel. */
+  @keyframes heart-particle-1 {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(0.6) rotate(-15deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-12px, -22px) scale(0.3) rotate(-30deg);
+    }
+  }
+
+  @keyframes heart-particle-2 {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(0.5) rotate(10deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(10px, -26px) scale(0.2) rotate(20deg);
+    }
+  }
+
+  @keyframes heart-particle-3 {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(0.5) rotate(-5deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-18px, -16px) scale(0.25) rotate(-20deg);
+    }
+  }
+
+  @keyframes heart-particle-4 {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(0.4) rotate(15deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(16px, -18px) scale(0.15) rotate(35deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .heart-pop {
+      animation: none;
+    }
+  }
+
   /* Hide scrollbar on horizontal mobile carousels while keeping scroll */
   .scrollbar-hide {
     scrollbar-width: none;

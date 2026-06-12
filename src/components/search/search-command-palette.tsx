@@ -480,10 +480,31 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
     }
   }
 
-  // Beds
-  const bedMatch = normalized.match(/(\d+)\s*(?:bed|bedroom|bedrooms|hab|habitacion|dormitorio)/);
-  if (bedMatch?.[1]) {
-    const beds = parseInt(bedMatch[1], 10);
+  // Beds — supports digit and number-word forms + room synonyms
+  const NUMBER_WORDS_CP: Record<string, number> = {
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    un: 1,
+    uno: 1,
+    una: 1,
+    dos: 2,
+    tres: 3,
+    cuatro: 4,
+    cinco: 5,
+  };
+  const numWordPatternCP = Object.keys(NUMBER_WORDS_CP).join("|");
+  const bedRegexCP = new RegExp(
+    `(?:(\\d+)|(${numWordPatternCP}))\\s*(?:bed|beds|bedroom|bedrooms|room|rooms|hab|habitacion|habitaciones|habitación|habitaciónes|dormitorio|dormitorios|cuarto|cuartos|recamara|recamaras|recámara|recámaras|pieza|piezas)`,
+    "i",
+  );
+  const bedMatchCP = remainingText.match(bedRegexCP);
+  if (bedMatchCP) {
+    const beds = bedMatchCP[1]
+      ? parseInt(bedMatchCP[1], 10)
+      : (NUMBER_WORDS_CP[bedMatchCP[2].toLowerCase()] ?? 0);
     if (beds >= 1 && beds <= 5) {
       params.bedrooms = String(beds);
       detected.push({
@@ -493,6 +514,29 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
         value: String(beds),
       });
     }
+    remainingText = remainingText.replace(bedMatchCP[0], " ");
+  }
+
+  // Baths — same number-word support
+  const bathRegexCP = new RegExp(
+    `(?:(\\d+)|(${numWordPatternCP}))\\s*(?:bath|baths|bathroom|bathrooms|baño|baños|bañ)`,
+    "i",
+  );
+  const bathMatchCP = remainingText.match(bathRegexCP);
+  if (bathMatchCP) {
+    const baths = bathMatchCP[1]
+      ? parseInt(bathMatchCP[1], 10)
+      : (NUMBER_WORDS_CP[bathMatchCP[2].toLowerCase()] ?? 0);
+    if (baths >= 1 && baths <= 4) {
+      params.bathrooms = String(baths);
+      detected.push({
+        type: "baths",
+        label: `${baths}+ ${locale === "es" ? "baños" : "bath"}`,
+        icon: "bed",
+        value: String(baths),
+      });
+    }
+    remainingText = remainingText.replace(bathMatchCP[0], " ");
   }
 
   // Stop words + remaining q
