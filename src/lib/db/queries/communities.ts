@@ -83,18 +83,56 @@ export async function getPropertiesByCommunityId(
 
 /**
  * Fetches communities in the same area, excluding current community.
+ * Falls back to communities from other areas when none exist in the same area.
  * Used by SimilarCommunitiesSlider (AC #6).
  */
 export async function getSimilarCommunities(areaId: string, excludeSlug: string) {
   try {
-    return await db
+    const sameArea = await db
       .select()
       .from(communities)
       .where(and(eq(communities.areaId, areaId), not(eq(communities.slug, excludeSlug))))
       .orderBy(asc(communities.name));
+
+    if (sameArea.length > 0) {
+      return { communities: sameArea, isFallback: false, fallbackAreaMap: null };
+    }
+
+    // Fallback: show communities from other areas, joining to get area info
+    const rows = await db
+      .select({
+        community: communities,
+        areaSlug: areas.slug,
+        areaNameEn: areas.nameEn,
+        areaNameEs: areas.nameEs,
+      })
+      .from(communities)
+      .innerJoin(areas, eq(communities.areaId, areas.id))
+      .where(not(eq(communities.slug, excludeSlug)))
+      .orderBy(asc(communities.name))
+      .limit(6);
+
+    // Build a map from community slug → { areaSlug, areaName }
+    const fallbackAreaMap: Record<
+      string,
+      { areaSlug: string; areaNameEn: string; areaNameEs: string }
+    > = {};
+    for (const row of rows) {
+      fallbackAreaMap[row.community.slug] = {
+        areaSlug: row.areaSlug,
+        areaNameEn: row.areaNameEn,
+        areaNameEs: row.areaNameEs,
+      };
+    }
+
+    return {
+      communities: rows.map((r) => r.community),
+      isFallback: true,
+      fallbackAreaMap,
+    };
   } catch (error) {
     console.error("Database query failed in getSimilarCommunities:", error);
-    return [];
+    return { communities: [], isFallback: false, fallbackAreaMap: null };
   }
 }
 

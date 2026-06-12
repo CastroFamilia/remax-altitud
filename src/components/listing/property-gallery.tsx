@@ -334,9 +334,6 @@ export function PropertyGallery({ images, propertyTitle }: PropertyGalleryProps)
             fill
             sizes="100vw"
             priority={activeIndex === 0}
-            {...(activeImage.blurDataUrl
-              ? { placeholder: "blur" as const, blurDataURL: activeImage.blurDataUrl }
-              : {})}
             className="object-cover"
           />
 
@@ -434,9 +431,6 @@ export function PropertyGallery({ images, propertyTitle }: PropertyGalleryProps)
                   fallbackSrc={activeImage.fallbackSrc || "/property-placeholder.svg"}
                   fill
                   sizes="100vw"
-                  {...(activeImage.blurDataUrl
-                    ? { placeholder: "blur" as const, blurDataURL: activeImage.blurDataUrl }
-                    : {})}
                   className="object-contain"
                 />
               </div>

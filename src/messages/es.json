@@ -918,6 +918,10 @@
     "similarCommunities": {
       "heading": "Comunidades Similares"
     },
+    "exploreCommunities": {
+      "heading": "Explorar Otras Comunidades",
+      "subtitle": "Esta es la única comunidad en esta zona — aquí tienes otras que podrían interesarte."
+    },
     "miniMap": {
       "heading": "Ubicación de la Comunidad",
       "alt": "Mapa de {community} en {area}",
