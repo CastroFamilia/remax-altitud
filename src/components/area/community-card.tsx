@@ -190,24 +190,25 @@ export function CommunityCard({
           </div>
         </div>
 
-        {/* Listings Counter */}
-        {typeof listingCount === "number" && listingCount > 0 && (
-          <div className="mt-4 flex items-center justify-between text-xs font-semibold text-text-muted">
-            <span>
-              {listingCount}{" "}
-              {listingCount === 1
-                ? locale === "es"
-                  ? "propiedad disponible"
-                  : "listing available"
-                : locale === "es"
-                  ? "propiedades disponibles"
-                  : "listings available"}
-            </span>
-            <span className="text-[var(--color-gold,#C2A661)] transition-transform duration-300 group-hover:translate-x-1 font-bold">
-              {locale === "es" ? "Ver detalles →" : "View details →"}
-            </span>
-          </div>
-        )}
+        {/* Listings Counter & View Details CTA */}
+        <div className="mt-4 flex items-center justify-between text-xs font-semibold text-text-muted">
+          <span>
+            {typeof listingCount === "number" && listingCount > 0
+              ? `${listingCount} ${
+                  listingCount === 1
+                    ? locale === "es"
+                      ? "propiedad disponible"
+                      : "listing available"
+                    : locale === "es"
+                      ? "propiedades disponibles"
+                      : "listings available"
+                }`
+              : ""}
+          </span>
+          <span className="text-[var(--color-gold,#C2A661)] transition-transform duration-300 group-hover:translate-x-1 font-bold">
+            {locale === "es" ? "Ver detalles →" : "View details →"}
+          </span>
+        </div>
       </div>
     </a>
   );
