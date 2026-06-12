@@ -49,7 +49,7 @@ export const mainNavItems: NavItem[] = [
         children: [
           {
             labelKey: "rise",
-            href: "/areas/perez-zeledon/communities/rise",
+            href: "/areas/perez-zeledon/communities/rise-costa-rica",
           },
           {
             labelKey: "santaElenaHills",
