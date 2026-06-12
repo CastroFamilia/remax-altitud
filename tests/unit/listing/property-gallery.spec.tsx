@@ -356,7 +356,7 @@ describe("PropertyGallery (Story 4.1)", () => {
   // ---------------------------------------------------------------------------
 
   it(
-    "[P2] 4.1-COMP-002: first image has blur placeholder (blurDataURL passed to next/image)",
+    "[P2] 4.1-COMP-002: first image does NOT use blur placeholder (removed to fix cycling artifact)",
     () => {
       render(
         <PropertyGallery
@@ -365,15 +365,15 @@ describe("PropertyGallery (Story 4.1)", () => {
         />,
       );
 
-      // Our next/image mock sets data-blur-data-url="has-blur" when blurDataURL is provided
-      // and data-placeholder="blur" when placeholder="blur"
+      // Blur placeholder was intentionally removed to fix a visual artifact
+      // that appeared when cycling through gallery images.
       const heroContainer = screen.getByTestId("gallery-hero");
       const firstImage = heroContainer.querySelector("img");
       expect(firstImage).toBeDefined();
 
-      // Assert that blur placeholder was passed
-      expect(firstImage?.getAttribute("data-blur-data-url")).toBe("has-blur");
-      expect(firstImage?.getAttribute("data-placeholder")).toBe("blur");
+      // Assert that blur placeholder is NOT passed
+      expect(firstImage?.getAttribute("data-blur-data-url")).toBeNull();
+      expect(firstImage?.getAttribute("data-placeholder")).toBeNull();
     },
   );
 
