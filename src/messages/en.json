@@ -23,7 +23,8 @@
     "language": "Language",
     "currency": "Currency",
     "preferences": "Preferences",
-    "faq": "Relocation FAQ"
+    "faq": "Relocation FAQ",
+    "blog": "Blog"
   },
   "LanguageToggle": {
     "switchLanguage": "Switch language",
@@ -392,6 +393,7 @@
       "listingTypeSale": "For Sale",
       "listingTypeLease": "For Lease",
       "tags": "Filters",
+      "clearTags": "Remove filters",
       "propertyTypes": {
         "Casa": "House",
         "Apartamento": "Apartment",

@@ -23,7 +23,8 @@
     "language": "Idioma",
     "currency": "Moneda",
     "preferences": "Preferencias",
-    "faq": "Preguntas Frecuentes"
+    "faq": "Preguntas Frecuentes",
+    "blog": "Blog"
   },
   "LanguageToggle": {
     "switchLanguage": "Cambiar idioma",
@@ -392,6 +393,7 @@
       "listingTypeSale": "En Venta",
       "listingTypeLease": "En Alquiler",
       "tags": "Filtros",
+      "clearTags": "Quitar filtros",
       "propertyTypes": {
         "Casa": "Casa",
         "Apartamento": "Apartamento",
