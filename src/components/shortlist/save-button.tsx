@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Heart } from "lucide-react";
 import { useShortlist } from "@/hooks/use-shortlist";
 import { hasShownTooltipThisSession, markTooltipShownThisSession } from "@/lib/utils/shortlist";
+import { HeartParticles } from "./heart-particles";
 
 interface SaveButtonProps {
   propertyId: string;
@@ -18,6 +19,7 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
 
   const [showToast, setShowToast] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showParticles, setShowParticles] = useState(false);
 
   const saved = typeof isSaved === "function" ? isSaved(propertyId) : false;
 
@@ -35,38 +37,51 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
     return () => clearTimeout(timer);
   }, [showTooltip]);
 
-  const handleToggle = (e: React.MouseEvent | React.KeyboardEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
+  // Auto-clear particles after animation completes (400ms + buffer)
+  useEffect(() => {
+    if (!showParticles) return;
+    const timer = setTimeout(() => setShowParticles(false), 500);
+    return () => clearTimeout(timer);
+  }, [showParticles]);
 
-    if (saved) {
-      remove(propertyId);
-      fetch("/api/shortlist/events", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ propertyId, action: "unsave", locale }),
-      }).catch((err) => console.error("Failed to track shortlist event:", err));
-    } else {
-      const res = save(propertyId);
-      if (res.success) {
+  const handleToggle = useCallback(
+    (e: React.MouseEvent | React.KeyboardEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      if (saved) {
+        remove(propertyId);
         fetch("/api/shortlist/events", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ propertyId, action: "save", locale }),
+          body: JSON.stringify({ propertyId, action: "unsave", locale }),
         }).catch((err) => console.error("Failed to track shortlist event:", err));
+      } else {
+        const res = save(propertyId);
+        if (res.success) {
+          // Trigger particle burst + scale pop animation (UX-DR22)
+          setShowParticles(true);
 
-        // Since we saved it, shortlist.length + 1 will reflect the count.
-        // If length is now 2, trigger tooltip once per session.
-        const currentLength = shortlist.length + 1;
-        if (currentLength === 2 && !hasShownTooltipThisSession()) {
-          setShowTooltip(true);
-          markTooltipShownThisSession();
+          fetch("/api/shortlist/events", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ propertyId, action: "save", locale }),
+          }).catch((err) => console.error("Failed to track shortlist event:", err));
+
+          // Since we saved it, shortlist.length + 1 will reflect the count.
+          // If length is now 2, trigger tooltip once per session.
+          const currentLength = shortlist.length + 1;
+          if (currentLength === 2 && !hasShownTooltipThisSession()) {
+            setShowTooltip(true);
+            markTooltipShownThisSession();
+          }
+        } else if (res.error === "limit") {
+          setShowToast(true);
         }
-      } else if (res.error === "limit") {
-        setShowToast(true);
       }
-    }
-  };
+    },
+    [saved, propertyId, locale, remove, save, shortlist.length],
+  );
 
   // Safe SSR placeholder for hydration
   if (!isLoaded) {
@@ -98,7 +113,7 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
         data-testid="save-button"
         aria-label={saved ? t("removeLabel") : t("saveLabel")}
         onClick={handleToggle}
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-white/80 backdrop-blur-xs shadow-xs hover:scale-105 transition-transform cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold"
+        className={`flex h-11 w-11 items-center justify-center rounded-full bg-white/80 backdrop-blur-xs shadow-xs hover:scale-105 transition-transform cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold ${showParticles ? "heart-pop" : ""}`}
       >
         <Heart
           className={`h-5 w-5 transition-colors ${
@@ -107,6 +122,9 @@ export function SaveButton({ propertyId }: SaveButtonProps) {
           strokeWidth={2}
         />
       </button>
+
+      {/* Particle burst on save (UX-DR22) */}
+      {showParticles && <HeartParticles />}
 
       {/* Toast Limit reached notification */}
       {showToast && (
