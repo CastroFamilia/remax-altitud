@@ -194,6 +194,13 @@
     {
       "idx": 27,
       "version": "7",
+      "when": 1781869770000,
+      "tag": "0027_add_uvita_cardinal_tokens",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
       "when": 1781869780000,
       "tag": "0028_fix_santa_elena_hero_image",
       "breakpoints": true
