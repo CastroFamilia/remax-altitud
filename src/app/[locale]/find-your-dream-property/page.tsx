@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   MessageCircle,
 } from "lucide-react";
+import { VipBookingSection } from "@/components/vip/vip-booking-section";
 
 export async function generateMetadata({
   params,
@@ -76,7 +77,7 @@ function VipBuyerPageContent() {
           <h1 className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
             {t("hero.title")}
           </h1>
-          <p className="mx-auto mt-8 max-w-3xl text-lg leading-relaxed text-white/80 md:text-xl">
+          <p className="mx-auto mt-8 max-w-3xl text-lg leading-relaxed text-white/90 md:text-xl">
             {t("hero.subtitle")}
           </p>
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
@@ -188,7 +189,7 @@ function VipBuyerPageContent() {
                 {t("chooseExperience.vip.tag")}
               </span>
               <h3 className="mt-4 text-2xl font-extrabold">{t("chooseExperience.vip.name")}</h3>
-              <p className="mt-2 text-sm text-white/70">{t("chooseExperience.vip.description")}</p>
+              <p className="mt-2 text-sm text-white/85">{t("chooseExperience.vip.description")}</p>
 
               <div className="my-8 h-px bg-white/10" />
 
@@ -249,27 +250,8 @@ function VipBuyerPageContent() {
         </div>
       </section>
 
-      {/* Calendly Booking Section */}
-      <section id="call" className="bg-brand-navy py-20 text-white md:py-24">
-        <div className="container mx-auto max-w-4xl px-4">
-          <div className="text-center">
-            <h2 className="text-3xl font-extrabold md:text-4xl">{t("booking.heading")}</h2>
-            <p className="mx-auto mt-4 max-w-xl text-white/80">{t("booking.subtitle")}</p>
-          </div>
-
-          {/* Secure embedded iframe wrapper */}
-          <div className="mt-12 overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl">
-            <iframe
-              src="https://calendly.com/acastro-remax-altitud/buyers-calendar?embed_domain=remax-altitud.cr&embed_type=Inline&primary_color=458ad0"
-              width="100%"
-              height="700px"
-              style={{ border: 0 }}
-              allowFullScreen
-              title="Calendly Scheduler"
-            />
-          </div>
-        </div>
-      </section>
+      {/* Booking Section — Tabbed: Calendly + Inquiry Form */}
+      <VipBookingSection />
     </div>
   );
 }
