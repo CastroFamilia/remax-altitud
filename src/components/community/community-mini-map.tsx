@@ -14,6 +14,7 @@
 
 import { getTranslations } from "next-intl/server";
 import { buildCommunityMiniMapUrl } from "@/lib/map/static-map";
+import { normalizeGeoFenceCoords } from "@/lib/map/normalize-geofence";
 import type { Community } from "@/lib/db/schema/communities";
 
 interface CommunityMiniMapProps {
@@ -36,10 +37,13 @@ export async function CommunityMiniMap({ community, areaName, locale }: Communit
 
   const t = await getTranslations({ locale, namespace: "CommunityPage" });
 
+  // Normalize: handles both flat array and GeoJSON { type, coordinates } shapes
+  const geoFenceCoords = normalizeGeoFenceCoords(community.geoFenceCoords);
+
   const staticMapUrl = buildCommunityMiniMapUrl({
     latitude: community.latitude,
     longitude: community.longitude,
-    geoFenceCoords: community.geoFenceCoords as [number, number][] | null | undefined,
+    geoFenceCoords,
     communityName: community.name,
   });
 
@@ -62,7 +66,7 @@ export async function CommunityMiniMap({ community, areaName, locale }: Communit
           decoding="async"
           className="w-full h-auto aspect-[3/2]"
         />
-        {!!community.geoFenceCoords && (
+        {!!geoFenceCoords && (
           <span
             data-testid="geo-fence-overlay"
             className="sr-only"
