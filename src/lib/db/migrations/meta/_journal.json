@@ -190,6 +190,13 @@
       "when": 1780861664715,
       "tag": "0026_round_quicksilver",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1781869780000,
+      "tag": "0028_fix_santa_elena_hero_image",
+      "breakpoints": true
     }
   ]
 }
