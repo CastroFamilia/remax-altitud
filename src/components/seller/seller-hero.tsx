@@ -86,11 +86,6 @@ export async function SellerHero({ locale }: SellerHeroProps) {
           {t("hero.process")}
         </p>
 
-        {/* Testimonial */}
-        <blockquote className="mt-8 italic text-white/80 text-sm border-l-4 border-brand-gold pl-4 text-left max-w-xl mx-auto backdrop-blur-xs bg-white/5 p-4 rounded-r-lg border-y border-r border-white/10 shadow-sm">
-          {t("hero.testimonial1")}
-        </blockquote>
-
         {/* CTA — scrolls to form (AC #2) */}
         <div className="mt-10">
           <Link
