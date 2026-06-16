@@ -27,7 +27,7 @@ export function VipBookingSection() {
       <div className="container mx-auto max-w-4xl px-4">
         {/* Section Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold md:text-4xl">{t("heading")}</h2>
+          <h2 className="text-3xl font-extrabold text-white md:text-4xl">{t("heading")}</h2>
           <p className="mx-auto mt-4 max-w-xl text-white/90">{t("subtitle")}</p>
         </div>
 
