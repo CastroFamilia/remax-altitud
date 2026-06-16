@@ -16,6 +16,7 @@
  */
 
 import { MAPBOX_TOKEN } from "@/lib/map/config";
+import { normalizeGeoFenceCoords } from "@/lib/map/normalize-geofence";
 
 const MAPBOX_STATIC_BASE = "https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/static";
 
@@ -99,7 +100,10 @@ interface StaticMapParams {
  * an optional geo-fence GeoJSON polygon overlay and a pin marker.
  */
 function buildStaticMapUrl(params: StaticMapParams): string {
-  const { latitude, longitude, geoFenceCoords, zoom, width, height, retina } = params;
+  const { latitude, longitude, geoFenceCoords: rawCoords, zoom, width, height, retina } = params;
+
+  // Normalize: handles both flat array and GeoJSON { type, coordinates } shapes
+  const geoFenceCoords = normalizeGeoFenceCoords(rawCoords);
 
   const overlays: string[] = [];
 

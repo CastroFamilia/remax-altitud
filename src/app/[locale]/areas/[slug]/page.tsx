@@ -12,6 +12,7 @@ import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { AreaGuideHero } from "@/components/area/area-guide-hero";
 import { AreaGuideDescription } from "@/components/area/area-guide-description";
 import { CommunityCard } from "@/components/area/community-card";
+import { normalizeGeoFenceCoords } from "@/lib/map/normalize-geofence";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FeaturedAreas } from "@/components/home/featured-areas";
@@ -152,7 +153,7 @@ export default async function AreaGuidePage({
                   listingCount={community.listingCount}
                   latitude={community.latitude}
                   longitude={community.longitude}
-                  geoFenceCoords={community.geoFenceCoords as [number, number][] | null}
+                  geoFenceCoords={normalizeGeoFenceCoords(community.geoFenceCoords)}
                   location={location}
                   propertyTypes={propertyTypes}
                   sizeMin={sizeMin}
