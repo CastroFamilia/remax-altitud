@@ -11,7 +11,32 @@ interface QuickFact {
   key: string;
   icon: React.ReactNode;
   labelKey: string;
-  value: string | undefined;
+  value: string | string[] | undefined;
+}
+
+/**
+ * Reads a locale-specific value from the quickFacts JSONB.
+ *
+ * Lookup order:
+ *   1. `keyEn` / `keyEs`  (new i18n keys)
+ *   2. `key`              (legacy unsuffixed fallback)
+ */
+function getLocalizedValue(
+  qf: Record<string, unknown>,
+  key: string,
+  locale: string,
+): string | string[] | undefined {
+  const suffix = locale === "es" ? "Es" : "En";
+  const localized = qf[`${key}${suffix}`];
+  if (localized !== undefined && localized !== null && localized !== "") {
+    return localized as string | string[];
+  }
+  // Fallback to unsuffixed legacy key
+  const legacy = qf[key];
+  if (legacy !== undefined && legacy !== null && legacy !== "") {
+    return legacy as string | string[];
+  }
+  return undefined;
 }
 
 /**
@@ -20,10 +45,12 @@ interface QuickFact {
  * Icon grid displaying community facts: elevation, airport distance,
  * internet, amenities, developer, established year.
  * Renders only facts with data (handles missing fields gracefully).
+ * Values are locale-aware: reads `keyEn`/`keyEs` suffixed JSONB keys first,
+ * falling back to unsuffixed legacy keys.
  */
 export async function CommunityQuickFacts({ community, locale }: CommunityQuickFactsProps) {
   const t = await getTranslations({ locale, namespace: "CommunityPage" });
-  const quickFacts = community.quickFacts as Record<string, string | undefined>;
+  const quickFacts = (community.quickFacts ?? {}) as Record<string, unknown>;
 
   const iconProps = { className: "h-8 w-8 transition-colors duration-300", strokeWidth: 1.5 };
 
@@ -32,37 +59,37 @@ export async function CommunityQuickFacts({ community, locale }: CommunityQuickF
       key: "elevation",
       icon: <Mountain {...iconProps} />,
       labelKey: "quickFacts.elevation",
-      value: quickFacts.elevation,
+      value: getLocalizedValue(quickFacts, "elevation", locale),
     },
     {
       key: "airportDistance",
       icon: <Plane {...iconProps} />,
       labelKey: "quickFacts.airport",
-      value: quickFacts.airportDistance,
+      value: getLocalizedValue(quickFacts, "airportDistance", locale),
     },
     {
       key: "internet",
       icon: <Wifi {...iconProps} />,
       labelKey: "quickFacts.internet",
-      value: quickFacts.internet,
+      value: getLocalizedValue(quickFacts, "internet", locale),
     },
     {
       key: "amenities",
       icon: <Waves {...iconProps} />,
       labelKey: "quickFacts.amenities",
-      value: quickFacts.amenities,
+      value: getLocalizedValue(quickFacts, "amenities", locale),
     },
     {
       key: "developer",
       icon: <Building2 {...iconProps} />,
       labelKey: "quickFacts.developer",
-      value: quickFacts.developer,
+      value: getLocalizedValue(quickFacts, "developer", locale),
     },
     {
       key: "established",
       icon: <Calendar {...iconProps} />,
       labelKey: "quickFacts.established",
-      value: quickFacts.established,
+      value: getLocalizedValue(quickFacts, "established", locale),
     },
   ];
 

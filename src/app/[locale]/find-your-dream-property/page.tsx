@@ -74,7 +74,7 @@ function VipBuyerPageContent() {
           <span className="inline-block rounded-full bg-brand-gold/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-gold">
             {t("metaTitle").split(" - ")[0]}
           </span>
-          <h1 className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+          <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
             {t("hero.title")}
           </h1>
           <p className="mx-auto mt-8 max-w-3xl text-lg leading-relaxed text-white/90 md:text-xl">
@@ -188,7 +188,9 @@ function VipBuyerPageContent() {
               <span className="self-start rounded-full bg-brand-gold/15 px-4 py-1 text-xs font-semibold text-brand-gold">
                 {t("chooseExperience.vip.tag")}
               </span>
-              <h3 className="mt-4 text-2xl font-extrabold">{t("chooseExperience.vip.name")}</h3>
+              <h3 className="mt-4 text-2xl font-extrabold text-white">
+                {t("chooseExperience.vip.name")}
+              </h3>
               <p className="mt-2 text-sm text-white/85">{t("chooseExperience.vip.description")}</p>
 
               <div className="my-8 h-px bg-white/10" />

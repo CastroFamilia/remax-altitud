@@ -12,6 +12,7 @@ import {
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 import { AdminCommunityListings } from "@/components/admin/admin-community-listings";
+import { normalizeGeoFenceCoords } from "@/lib/map/normalize-geofence";
 
 const CommunityGeoFenceMap = dynamic(
   () => import("@/components/map/community-geofence-map").then((m) => m.CommunityGeoFenceMap),
@@ -84,58 +85,87 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
       : "",
   );
 
-  // Quick facts
+  // Quick facts — bilingual (EN/ES suffixed keys, with legacy fallback)
   interface QuickFactsType {
     elevation?: string;
+    elevationEn?: string;
+    elevationEs?: string;
     airportDistance?: string;
-    amenities?: string[];
+    airportDistanceEn?: string;
+    airportDistanceEs?: string;
+    amenities?: string[] | string;
+    amenitiesEn?: string[] | string;
+    amenitiesEs?: string[] | string;
     developer?: string;
+    developerEn?: string;
+    developerEs?: string;
     establishedYear?: string;
     established?: string;
+    establishedEn?: string;
+    establishedEs?: string;
     infrastructure?: string;
+    infrastructureEn?: string;
+    infrastructureEs?: string;
     internet?: string;
+    internetEn?: string;
+    internetEs?: string;
   }
   const quickFacts = initialData?.quickFacts as QuickFactsType | null | undefined;
 
-  const [elevation, setElevation] = useState(quickFacts?.elevation || "");
-  const [airportDistance, setAirportDistance] = useState(quickFacts?.airportDistance || "");
-  const [amenities, setAmenities] = useState(
-    Array.isArray(quickFacts?.amenities)
-      ? quickFacts.amenities.join(", ")
-      : typeof quickFacts?.amenities === "string"
-        ? quickFacts.amenities
-        : "",
+  /** Read locale-suffixed key first, fall back to legacy unsuffixed key */
+  const qfStr = (en: string | undefined, legacy: string | undefined) => en || legacy || "";
+  const qfAmenities = (
+    localized: string[] | string | undefined,
+    legacy: string[] | string | undefined,
+  ) => {
+    const val = localized || legacy;
+    if (Array.isArray(val)) return val.join(", ");
+    if (typeof val === "string") return val;
+    return "";
+  };
+
+  const [elevationEn, setElevationEn] = useState(
+    qfStr(quickFacts?.elevationEn, quickFacts?.elevation),
   );
-  const [developer, setDeveloper] = useState(quickFacts?.developer || "");
-  const [establishedYear, setEstablishedYear] = useState(
-    quickFacts?.establishedYear || quickFacts?.established || "",
+  const [elevationEs, setElevationEs] = useState(quickFacts?.elevationEs || "");
+  const [airportDistanceEn, setAirportDistanceEn] = useState(
+    qfStr(quickFacts?.airportDistanceEn, quickFacts?.airportDistance),
   );
-  const [infrastructure, setInfrastructure] = useState(quickFacts?.infrastructure || "");
-  const [internet, setInternet] = useState(quickFacts?.internet || "");
+  const [airportDistanceEs, setAirportDistanceEs] = useState(quickFacts?.airportDistanceEs || "");
+  const [amenitiesEn, setAmenitiesEn] = useState(
+    qfAmenities(quickFacts?.amenitiesEn, quickFacts?.amenities),
+  );
+  const [amenitiesEs, setAmenitiesEs] = useState(qfAmenities(quickFacts?.amenitiesEs, undefined));
+  const [developerEn, setDeveloperEn] = useState(
+    qfStr(quickFacts?.developerEn, quickFacts?.developer),
+  );
+  const [developerEs, setDeveloperEs] = useState(quickFacts?.developerEs || "");
+  const [establishedYearEn, setEstablishedYearEn] = useState(
+    qfStr(quickFacts?.establishedEn, quickFacts?.establishedYear || quickFacts?.established),
+  );
+  const [establishedYearEs, setEstablishedYearEs] = useState(quickFacts?.establishedEs || "");
+  const [infrastructureEn, setInfrastructureEn] = useState(
+    qfStr(quickFacts?.infrastructureEn, quickFacts?.infrastructure),
+  );
+  const [infrastructureEs, setInfrastructureEs] = useState(quickFacts?.infrastructureEs || "");
+  const [internetEn, setInternetEn] = useState(qfStr(quickFacts?.internetEn, quickFacts?.internet));
+  const [internetEs, setInternetEs] = useState(quickFacts?.internetEs || "");
 
   // Geofence polygon points
-  // Check if we have initial coordinates in geoFenceCoords
+  // Use normalizeGeoFenceCoords to handle both flat-array (seed data) and
+  // GeoJSON { type: "Polygon", coordinates: [...] } (admin-saved) formats.
   const initialPoints = (() => {
-    const geoCoords = initialData?.geoFenceCoords as
-      | {
-          type: "Polygon";
-          coordinates: [number, number][][];
-        }
-      | null
-      | undefined;
-    if (geoCoords?.coordinates?.[0]) {
-      const coords = geoCoords.coordinates[0];
-      // Filter out last closed point if it matches the first one to avoid duplicate on render click
-      if (coords.length > 2) {
-        const first = coords[0];
-        const last = coords[coords.length - 1];
-        if (first[0] === last[0] && first[1] === last[1]) {
-          return coords.slice(0, -1);
-        }
+    const normalized = normalizeGeoFenceCoords(initialData?.geoFenceCoords);
+    if (!normalized || normalized.length === 0) return [];
+    // Filter out last closed point if it matches the first one to avoid duplicate on render click
+    if (normalized.length > 2) {
+      const first = normalized[0];
+      const last = normalized[normalized.length - 1];
+      if (first[0] === last[0] && first[1] === last[1]) {
+        return normalized.slice(0, -1);
       }
-      return coords;
     }
-    return [];
+    return normalized;
   })();
 
   const [polygonPoints, setPolygonPoints] = useState<[number, number][]>(initialPoints);
@@ -201,26 +231,52 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
     setAlert(null);
 
     try {
-      const parsedElevation = elevation.trim();
-      const parsedAirportDistance = airportDistance.trim();
-      const parsedAmenities = amenities
-        .split(",")
-        .map((a: string) => a.trim())
-        .filter((a: string) => a !== "");
-      const parsedDeveloper = developer.trim();
-      const parsedEstablishedYear = establishedYear.trim();
-      const parsedInfrastructure = infrastructure.trim();
-      const parsedInternet = internet.trim();
+      const parseAmenities = (raw: string) =>
+        raw
+          .split(",")
+          .map((a: string) => a.trim())
+          .filter((a: string) => a !== "");
+
+      const parsedElevationEn = elevationEn.trim();
+      const parsedElevationEs = elevationEs.trim();
+      const parsedAirportDistanceEn = airportDistanceEn.trim();
+      const parsedAirportDistanceEs = airportDistanceEs.trim();
+      const parsedAmenitiesEn = parseAmenities(amenitiesEn);
+      const parsedAmenitiesEs = parseAmenities(amenitiesEs);
+      const parsedDeveloperEn = developerEn.trim();
+      const parsedDeveloperEs = developerEs.trim();
+      const parsedEstablishedYearEn = establishedYearEn.trim();
+      const parsedEstablishedYearEs = establishedYearEs.trim();
+      const parsedInfrastructureEn = infrastructureEn.trim();
+      const parsedInfrastructureEs = infrastructureEs.trim();
+      const parsedInternetEn = internetEn.trim();
+      const parsedInternetEs = internetEs.trim();
 
       const quickFactsObj = {
-        elevation: parsedElevation,
-        airportDistance: parsedAirportDistance,
-        amenities: parsedAmenities,
-        developer: parsedDeveloper,
-        establishedYear: parsedEstablishedYear,
-        established: parsedEstablishedYear, // support bothestablished formats
-        infrastructure: parsedInfrastructure,
-        internet: parsedInternet,
+        // Locale-suffixed keys (primary)
+        elevationEn: parsedElevationEn,
+        elevationEs: parsedElevationEs,
+        airportDistanceEn: parsedAirportDistanceEn,
+        airportDistanceEs: parsedAirportDistanceEs,
+        amenitiesEn: parsedAmenitiesEn,
+        amenitiesEs: parsedAmenitiesEs,
+        developerEn: parsedDeveloperEn,
+        developerEs: parsedDeveloperEs,
+        establishedEn: parsedEstablishedYearEn,
+        establishedEs: parsedEstablishedYearEs,
+        infrastructureEn: parsedInfrastructureEn,
+        infrastructureEs: parsedInfrastructureEs,
+        internetEn: parsedInternetEn,
+        internetEs: parsedInternetEs,
+        // Legacy unsuffixed keys (backward compatibility)
+        elevation: parsedElevationEn,
+        airportDistance: parsedAirportDistanceEn,
+        amenities: parsedAmenitiesEn,
+        developer: parsedDeveloperEn,
+        establishedYear: parsedEstablishedYearEn,
+        established: parsedEstablishedYearEn,
+        infrastructure: parsedInfrastructureEn,
+        internet: parsedInternetEn,
       };
 
       const latNum = latitude.trim() !== "" ? parseFloat(latitude) : null;
@@ -485,107 +541,198 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
               <span>{t("formLabelQuickFacts")}</span>
             </h3>
 
-            {/* elevation */}
+            {/* elevation — EN / ES */}
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-400">
-                {t("formLabelElevation")}
+                {t("formLabelElevation")} — EN
               </label>
               <input
                 type="text"
-                value={elevation}
-                onChange={(e) => setElevation(e.target.value)}
+                value={elevationEn}
+                onChange={(e) => setElevationEn(e.target.value)}
                 placeholder="e.g. 800m"
-                data-testid="quickfact-elevation"
+                data-testid="quickfact-elevation-en"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelElevation")} — ES
+              </label>
+              <input
+                type="text"
+                value={elevationEs}
+                onChange={(e) => setElevationEs(e.target.value)}
+                placeholder="ej. 800m"
+                data-testid="quickfact-elevation-es"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
-            {/* airportDistance */}
+            {/* airportDistance — EN / ES */}
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-400">
-                {t("formLabelAirport")}
+                {t("formLabelAirport")} — EN
               </label>
               <input
                 type="text"
-                value={airportDistance}
-                onChange={(e) => setAirportDistance(e.target.value)}
+                value={airportDistanceEn}
+                onChange={(e) => setAirportDistanceEn(e.target.value)}
                 placeholder="e.g. 45 mins"
-                data-testid="quickfact-airportDistance"
+                data-testid="quickfact-airportDistance-en"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelAirport")} — ES
+              </label>
+              <input
+                type="text"
+                value={airportDistanceEs}
+                onChange={(e) => setAirportDistanceEs(e.target.value)}
+                placeholder="ej. 45 mins"
+                data-testid="quickfact-airportDistance-es"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
-            {/* internet */}
+            {/* internet — EN / ES */}
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-400">
-                Internet / Connectivity
+                Internet / Connectivity — EN
               </label>
               <input
                 type="text"
-                value={internet}
-                onChange={(e) => setInternet(e.target.value)}
+                value={internetEn}
+                onChange={(e) => setInternetEn(e.target.value)}
                 placeholder="e.g. Fiber Optic, High Speed"
-                data-testid="quickfact-internet"
+                data-testid="quickfact-internet-en"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400">
+                Internet / Connectivity — ES
+              </label>
+              <input
+                type="text"
+                value={internetEs}
+                onChange={(e) => setInternetEs(e.target.value)}
+                placeholder="ej. Fibra óptica"
+                data-testid="quickfact-internet-es"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
-            {/* amenities */}
+            {/* amenities — EN / ES */}
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-400">
-                {t("formLabelAmenities")}
+                {t("formLabelAmenities")} — EN
               </label>
               <input
                 type="text"
-                value={amenities}
-                onChange={(e) => setAmenities(e.target.value)}
+                value={amenitiesEn}
+                onChange={(e) => setAmenitiesEn(e.target.value)}
                 placeholder="e.g. Pool, Security, Gym"
-                data-testid="quickfact-amenities"
+                data-testid="quickfact-amenities-en"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelAmenities")} — ES
+              </label>
+              <input
+                type="text"
+                value={amenitiesEs}
+                onChange={(e) => setAmenitiesEs(e.target.value)}
+                placeholder="ej. Piscina, Seguridad, Gimnasio"
+                data-testid="quickfact-amenities-es"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
-            {/* developer */}
+            {/* developer — EN / ES */}
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-400">
-                {t("formLabelDeveloper")}
+                {t("formLabelDeveloper")} — EN
               </label>
               <input
                 type="text"
-                value={developer}
-                onChange={(e) => setDeveloper(e.target.value)}
+                value={developerEn}
+                onChange={(e) => setDeveloperEn(e.target.value)}
                 placeholder="Developer Name"
-                data-testid="quickfact-developer"
+                data-testid="quickfact-developer-en"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelDeveloper")} — ES
+              </label>
+              <input
+                type="text"
+                value={developerEs}
+                onChange={(e) => setDeveloperEs(e.target.value)}
+                placeholder="Nombre del desarrollador"
+                data-testid="quickfact-developer-es"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
-            {/* establishedYear */}
+            {/* establishedYear — EN / ES */}
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-400">
-                {t("formLabelEstablished")}
+                {t("formLabelEstablished")} — EN
               </label>
               <input
                 type="text"
-                value={establishedYear}
-                onChange={(e) => setEstablishedYear(e.target.value)}
+                value={establishedYearEn}
+                onChange={(e) => setEstablishedYearEn(e.target.value)}
                 placeholder="e.g. 2018"
-                data-testid="quickfact-established"
+                data-testid="quickfact-established-en"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelEstablished")} — ES
+              </label>
+              <input
+                type="text"
+                value={establishedYearEs}
+                onChange={(e) => setEstablishedYearEs(e.target.value)}
+                placeholder="ej. 2018"
+                data-testid="quickfact-established-es"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>
 
-            {/* infrastructure */}
+            {/* infrastructure — EN / ES */}
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-400">
-                {t("formLabelInfrastructure")}
+                {t("formLabelInfrastructure")} — EN
               </label>
               <input
                 type="text"
-                value={infrastructure}
-                onChange={(e) => setInfrastructure(e.target.value)}
+                value={infrastructureEn}
+                onChange={(e) => setInfrastructureEn(e.target.value)}
                 placeholder="details..."
-                data-testid="quickfact-infrastructure"
+                data-testid="quickfact-infrastructure-en"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400">
+                {t("formLabelInfrastructure")} — ES
+              </label>
+              <input
+                type="text"
+                value={infrastructureEs}
+                onChange={(e) => setInfrastructureEs(e.target.value)}
+                placeholder="detalles..."
+                data-testid="quickfact-infrastructure-es"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 font-semibold"
               />
             </div>

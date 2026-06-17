@@ -117,17 +117,9 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
             );
           }
 
-          // Code block / ASCII Art parsing
+          // Code block / ASCII Art — skip rendering (no legitimate use in area guides)
           if (block.startsWith("```")) {
-            const content = block.replace(/```[a-zA-Z]*/g, "").trim();
-            return (
-              <pre
-                key={idx}
-                className="font-mono bg-brand-navy/5 text-brand-navy p-6 rounded-2xl border border-border/60 overflow-x-auto text-xs sm:text-sm leading-relaxed my-6 flex justify-center text-center shadow-inner"
-              >
-                <code className="text-left inline-block">{content}</code>
-              </pre>
-            );
+            return null;
           }
 
           // Table parsing
