@@ -37,7 +37,7 @@ export function Logo({ variant = "default" }: LogoProps) {
   // variant prop reserved for future light-background logo support
   void variant;
   return (
-    <Link href="/" className="flex shrink-0 items-center">
+    <Link href="/" className="flex items-center">
       <Image
         src={LOGO_SRC}
         alt="REMAX Altitud — Costa Rica Real Estate"
