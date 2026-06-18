@@ -24,6 +24,7 @@ export const LIFESTYLE_TAGS = [
   "Fácil acceso",
   "Requiere 4x4",
   "Árboles frutales",
+  "Terreno de conservación",
 ] as const;
 
 /** Union type of all valid lifestyle tag strings. */
