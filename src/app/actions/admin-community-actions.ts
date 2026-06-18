@@ -18,7 +18,7 @@ import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 
 function triggerRevalidation() {
   revalidatePath("/[locale]/communities");
-  revalidatePath("/[locale]/areas/[slug]/communities/[communitySlug]");
+  revalidatePath("/[locale]/areas/[slug]/communities/[community]");
   revalidatePath("/[locale]/areas/[slug]");
   revalidatePath("/[locale]/search");
   revalidatePath("/[locale]/properties/[slug]");
