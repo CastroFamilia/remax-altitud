@@ -1,6 +1,6 @@
 "use client";
 
-// TODO (Epic 5 / Story 5-3): replace mailto: with POST /api/leads.
+// Done (Epic 5 / Story 5-3): replaced mailto: with POST /api/leads.
 // Form submission is intentionally isolated in a single client-side function
 // so the full lead pipeline can swap the implementation without touching markup.
 
@@ -8,7 +8,6 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 const TOAST_DISMISS_MS = 5000;
-const MAILTO_DELAY_MS = 200;
 
 function useToastAutoDismiss(
   toast: "success" | "error" | null,
@@ -22,9 +21,6 @@ function useToastAutoDismiss(
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const CONTACT_INBOX = "info@remax-altitud.cr";
-const RECRUIT_INBOX = "cesar@remax-altitud.cr";
-const RECRUIT_CC = "hola@remax-altitud.cr";
 
 type ContactErrors = Partial<Record<"name" | "email" | "phone" | "message" | "form", string>>;
 
@@ -145,12 +141,7 @@ export function ContactForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setToast(null);
-
-    // Honeypot — silently drop bot submissions.
-    if (honeypot.trim().length > 0) {
-      return;
-    }
+    if (honeypot.trim().length > 0) return;
 
     const nextErrors = validate();
     if (Object.keys(nextErrors).length > 0) {
@@ -159,44 +150,40 @@ export function ContactForm() {
       return;
     }
     setErrors({});
-
-    const subject = `Contact inquiry — ${locale}`;
-    const bodyLines = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      phone ? `Phone: ${phone}` : undefined,
-      `Preferred office: ${office}`,
-      `Preferred language: ${language}`,
-      "",
-      "Message:",
-      message,
-    ].filter(Boolean) as string[];
-    const mailto = `mailto:${CONTACT_INBOX}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
-
-    // Show success + clear form BEFORE navigating so the user sees
-    // feedback even if the mail client opens in a new window/tab.
     setSubmitting(true);
-    setToast("success");
-    resetForm();
-    setSubmitting(false);
-    window.setTimeout(() => {
-      try {
-        window.location.href = mailto;
-      } catch {
+    setToast(null);
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || "0000000",
+          source: "contact_form" as const,
+          intent: "buy" as const,
+          preferredLanguage: language,
+          notes: [`Office: ${office}`, message.trim()].filter(Boolean).join(" | "),
+          referrer: typeof document !== "undefined" ? document.referrer || null : null,
+        }),
+      });
+
+      if (response.ok || response.status === 409) {
+        setToast("success");
+        resetForm();
+      } else {
         setToast("error");
       }
-    }, MAILTO_DELAY_MS);
+    } catch {
+      setToast("error");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
-    <form
-      noValidate
-      onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-2xl"
-      aria-describedby="contact-form-help"
-    >
+    <form noValidate onSubmit={handleSubmit} className="mx-auto w-full max-w-2xl">
       {toast === "success" ? (
         <div
           role="status"
@@ -215,10 +202,6 @@ export function ContactForm() {
           {t("errorToast")}
         </div>
       ) : null}
-
-      <p id="contact-form-help" className="sr-only">
-        {t("mailtoFallback")}
-      </p>
 
       {/* Honeypot — sr-only + tabIndex=-1 keep humans from reaching it.
           Do not add aria-hidden here: aria-hidden on a focusable form
@@ -362,7 +345,6 @@ type RecruitErrors = Partial<Record<"name" | "email" | "phone" | "form", string>
 
 export function RecruitmentForm() {
   const t = useTranslations("JoinPage.form");
-  const locale = useLocale();
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -424,11 +406,7 @@ export function RecruitmentForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setToast(null);
-
-    if (honeypot.trim().length > 0) {
-      return;
-    }
+    if (honeypot.trim().length > 0) return;
 
     const nextErrors = validate();
     if (Object.keys(nextErrors).length > 0) {
@@ -437,39 +415,48 @@ export function RecruitmentForm() {
       return;
     }
     setErrors({});
-
-    const subject = `Recruitment inquiry — ${locale}`;
-    const languageSummary = languages || "—";
-    const bodyLines = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Phone: ${phone}`,
-      `Languages: ${languageSummary}`,
-      `Area of interest: ${area}`,
-      `Has vehicle: ${hasCar === "yes" ? "Yes" : "No"}`,
-      `Time availability: ${time || "—"}`,
-      `Financial backing: ${financial || "—"}`,
-      `Sales/RE Experience: ${salesExperience || "—"}`,
-      `Commission-only outlook: ${commissionOnly || "—"}`,
-      "",
-      "Message:",
-      message || "—",
-    ];
-    const mailto = `mailto:${RECRUIT_INBOX}?cc=${encodeURIComponent(
-      RECRUIT_CC,
-    )}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
-
     setSubmitting(true);
-    setToast("success");
-    resetForm();
-    setSubmitting(false);
-    window.setTimeout(() => {
-      try {
-        window.location.href = mailto;
-      } catch {
+    setToast(null);
+
+    const noteParts = [
+      languages ? `Languages: ${languages}` : null,
+      `Area: ${area}`,
+      `Has vehicle: ${hasCar === "yes" ? "Yes" : "No"}`,
+      time ? `Time availability: ${time}` : null,
+      financial ? `Financial: ${financial}` : null,
+      salesExperience ? `Experience: ${salesExperience}` : null,
+      commissionOnly ? `Commission outlook: ${commissionOnly}` : null,
+      message ? `Message: ${message}` : null,
+    ]
+      .filter(Boolean)
+      .join(" | ");
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          source: "contact_form" as const,
+          intent: "recruit" as const,
+          notes: noteParts,
+          referrer: typeof document !== "undefined" ? document.referrer || null : null,
+        }),
+      });
+
+      if (response.ok || response.status === 409) {
+        setToast("success");
+        resetForm();
+      } else {
         setToast("error");
       }
-    }, MAILTO_DELAY_MS);
+    } catch {
+      setToast("error");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (

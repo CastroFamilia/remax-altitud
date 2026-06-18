@@ -1,12 +1,15 @@
 /**
  * POST /api/leads — Story 5.3 (AC #1, #2, #3, #4, #8, #9, #10)
  *
- * Creates a seller/CMA/whatsapp_click lead record with:
+ * Creates a lead record for all sources (seller, CMA, VIP buyer,
+ * contact, agent contact, WhatsApp click) with:
  * - Zod input validation (AR18)
  * - Idempotency dedup (60s window, phone_hash + source)
  * - PII encryption (phone, email) via encryptField()
  * - Agent routing via matchAgentByCoordinates()
  * - UTM / referrer source tracking (FR54)
+ * - Auto-responder emails for all sources with email provided
+ * - Agent notification emails for agent_contact source
  * - Sentry error capture (AR19)
  * - In-memory rate limiting (10 req/min/IP)
  */
@@ -19,6 +22,8 @@ import { matchAgentByCoordinates } from "@/lib/leads/route-agent";
 import { forwardLeadToHubInBackground } from "@/lib/services/tracking";
 import { sendEmailInBackground } from "@/lib/services/email";
 import { renderPropertyInquiryEmail } from "@/lib/emails/PropertyInquiryEmail";
+import { renderGenericLeadConfirmationEmail } from "@/lib/emails/GenericLeadConfirmationEmail";
+import { renderAgentLeadNotificationEmail } from "@/lib/emails/AgentLeadNotificationEmail";
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { eq } from "drizzle-orm";
@@ -39,7 +44,14 @@ const leadInputSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(7, "Phone must have at least 7 characters"),
   email: z.string().email("Invalid email").nullable().optional().or(z.literal("")),
-  source: z.enum(["whatsapp", "seller_form", "contact_form", "cma_form", "whatsapp_click"]),
+  source: z.enum([
+    "whatsapp",
+    "seller_form",
+    "contact_form",
+    "cma_form",
+    "whatsapp_click",
+    "agent_contact",
+  ]),
   intent: z.enum(["buy", "sell", "invest", "recruit"]),
   propertyType: z.string().optional().default(""),
   location: locationSchema,
@@ -251,44 +263,92 @@ export async function POST(request: Request) {
       }
     }
 
-    // Auto-responder email for property inquiries
-    if (data.source === "contact_form" && data.email && data.shortlistPropertyIds.length > 0) {
+    // -----------------------------------------------------------------------
+    // Auto-responder emails — send confirmation to leads who provide email
+    // -----------------------------------------------------------------------
+    if (data.email && data.source !== "whatsapp_click" && data.source !== "whatsapp") {
       try {
-        const [property] = await db
-          .select({
-            titleEn: properties.titleEn,
-            titleEs: properties.titleEs,
-            slug: properties.slug,
-          })
-          .from(properties)
-          .where(eq(properties.id, data.shortlistPropertyIds[0]))
-          .limit(1);
+        const locale = data.preferredLanguage === "es" ? "es" : "en";
 
-        if (property && agentDetails) {
-          const locale = data.preferredLanguage === "es" ? "es" : "en";
-          const propertyName = locale === "es" ? property.titleEs : property.titleEn;
-          const host = request.headers.get("host") || "dev.remax-altitud.cr";
-          const protocol = host.includes("localhost") ? "http" : "https";
-          const propertyUrl = `${protocol}://${host}/${locale}/property/${property.slug}`;
+        // Property-specific email (existing behavior for property inquiry forms)
+        if (data.source === "contact_form" && data.shortlistPropertyIds.length > 0) {
+          const [property] = await db
+            .select({
+              titleEn: properties.titleEn,
+              titleEs: properties.titleEs,
+              slug: properties.slug,
+            })
+            .from(properties)
+            .where(eq(properties.id, data.shortlistPropertyIds[0]))
+            .limit(1);
 
-          const htmlContent = renderPropertyInquiryEmail({
+          if (property && agentDetails) {
+            const propertyName = locale === "es" ? property.titleEs : property.titleEn;
+            const host = request.headers.get("host") || "dev.remax-altitud.cr";
+            const protocol = host.includes("localhost") ? "http" : "https";
+            const propertyUrl = `${protocol}://${host}/${locale}/property/${property.slug}`;
+
+            const htmlContent = renderPropertyInquiryEmail({
+              locale,
+              propertyName,
+              propertyUrl,
+              agentName: agentDetails.name,
+              agentEmail: agentDetails.email || "",
+              agentPhone: agentDetails.whatsapp || agentDetails.phone || "",
+            });
+
+            sendEmailInBackground({
+              to: data.email,
+              subject:
+                locale === "es" ? "Hemos recibido su consulta" : "We have received your inquiry",
+              html: htmlContent,
+            });
+          }
+        } else {
+          // Generic confirmation for seller, CMA, VIP, contact, agent_contact forms
+          const { subject, html } = renderGenericLeadConfirmationEmail({
             locale,
-            propertyName,
-            propertyUrl,
-            agentName: agentDetails.name,
-            agentEmail: agentDetails.email || "",
-            agentPhone: agentDetails.whatsapp || agentDetails.phone || "",
+            source: data.source,
+            leadName: data.name,
+            agentName: agentDetails?.name,
+            agentEmail: agentDetails?.email,
+            agentPhone: agentDetails?.whatsapp || agentDetails?.phone,
+            contactedAgentName: data.source === "agent_contact" ? agentDetails?.name : null,
           });
 
           sendEmailInBackground({
             to: data.email,
-            subject:
-              locale === "es" ? "Hemos recibido su consulta" : "We have received your inquiry",
-            html: htmlContent,
+            subject,
+            html,
           });
         }
       } catch (err) {
         console.error("Failed to send auto-responder email", err);
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // Agent notification email — notify the agent when contacted via profile
+    // -----------------------------------------------------------------------
+    if (data.source === "agent_contact" && agentDetails?.email) {
+      try {
+        const locale = data.preferredLanguage === "es" ? "es" : "en";
+        const { subject, html } = renderAgentLeadNotificationEmail({
+          locale,
+          agentName: agentDetails.name,
+          leadName: data.name,
+          leadPhone: data.phone,
+          leadEmail: data.email || null,
+          leadMessage: data.notes || null,
+        });
+
+        sendEmailInBackground({
+          to: agentDetails.email,
+          subject,
+          html,
+        });
+      } catch (err) {
+        console.error("Failed to send agent notification email", err);
       }
     }
 
