@@ -4,7 +4,6 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 
 const TOAST_DISMISS_MS = 5000;
-const MAILTO_DELAY_MS = 200;
 
 function useToastAutoDismiss(
   toast: "success" | "error" | null,
@@ -72,11 +71,16 @@ function textareaClassName(hasError: boolean): string {
 }
 
 interface AgentContactFormProps {
+  agentId: string;
   agentEmail: string | null;
   agentName: string;
 }
 
-export function AgentContactForm({ agentEmail, agentName }: AgentContactFormProps) {
+export function AgentContactForm({
+  agentId,
+  agentEmail: _agentEmail,
+  agentName,
+}: AgentContactFormProps) {
   // Using the ContactPage.form translations as a base
   const t = useTranslations("ContactPage.form");
   const tProfile = useTranslations("AgentProfile");
@@ -129,14 +133,7 @@ export function AgentContactForm({ agentEmail, agentName }: AgentContactFormProp
     event.preventDefault();
     setToast(null);
 
-    if (!agentEmail) {
-      setToast("error");
-      return;
-    }
-
-    if (honeypot.trim().length > 0) {
-      return;
-    }
+    if (honeypot.trim().length > 0) return;
 
     const nextErrors = validate();
     if (Object.keys(nextErrors).length > 0) {
@@ -145,41 +142,42 @@ export function AgentContactForm({ agentEmail, agentName }: AgentContactFormProp
       return;
     }
     setErrors({});
-
-    const subject = `Inquiry from REMAX Altitud website — ${name}`;
-    const bodyLines = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      phone ? `Phone: ${phone}` : undefined,
-      "",
-      "Message:",
-      message,
-    ].filter(Boolean) as string[];
-    const mailto = `mailto:${agentEmail}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
-
     setSubmitting(true);
-    setToast("success");
-    resetForm();
-    setSubmitting(false);
-    window.setTimeout(() => {
-      try {
-        window.location.href = mailto;
-      } catch {
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || "0000000",
+          source: "agent_contact" as const,
+          intent: "buy" as const,
+          assignedAgentId: agentId,
+          notes: message.trim(),
+          referrer: typeof document !== "undefined" ? document.referrer || null : null,
+        }),
+      });
+
+      if (response.ok || response.status === 409) {
+        setToast("success");
+        resetForm();
+      } else {
         setToast("error");
       }
-    }, MAILTO_DELAY_MS);
+    } catch {
+      setToast("error");
+    } finally {
+      setSubmitting(false);
+    }
   }
-
-  if (!agentEmail) return null;
 
   return (
     <form
       noValidate
       onSubmit={handleSubmit}
       className="mx-auto mt-8 w-full max-w-2xl rounded-xl border border-brand-warm bg-brand-light p-6 shadow-sm sm:p-8"
-      aria-describedby="agent-contact-form-help"
     >
       <h2 className="mb-6 text-xl font-bold text-brand-navy">
         {tProfile("contactAgent", { name: agentName }) || `Contact ${agentName}`}
@@ -203,10 +201,6 @@ export function AgentContactForm({ agentEmail, agentName }: AgentContactFormProp
           {t("errorToast")}
         </div>
       ) : null}
-
-      <p id="agent-contact-form-help" className="sr-only">
-        {t("mailtoFallback")}
-      </p>
 
       <input
         type="text"

@@ -132,7 +132,7 @@ export default async function AgentProfilePage({
           locale={locale}
           agentName={agent.name}
         />
-        <AgentContactForm agentEmail={agent.email} agentName={agent.name} />
+        <AgentContactForm agentId={agent.id} agentEmail={agent.email} agentName={agent.name} />
       </div>
     </>
   );
