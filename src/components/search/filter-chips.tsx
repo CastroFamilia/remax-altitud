@@ -205,13 +205,13 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
   return (
     <div
       data-testid="filter-chips"
-      className="flex items-center gap-2 px-4 py-2 overflow-x-auto scrollbar-hide md:flex-wrap"
+      className="flex items-center gap-1.5 px-4 py-1.5 overflow-x-auto scrollbar-hide"
     >
       {chips.map((chip) => (
         <span
           key={chip.reactKey}
           data-testid="filter-chip"
-          className="inline-flex items-center gap-1 rounded-full bg-brand-blue border border-brand-blue px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-semibold text-white shrink-0 min-h-[2.25rem] md:min-h-[2.75rem] shadow-sm transition-all duration-200"
+          className="inline-flex items-center gap-1 rounded-full bg-brand-blue border border-brand-blue px-2.5 py-0.5 text-xs font-semibold text-white shrink-0 shadow-sm transition-all duration-200"
         >
           <span className="whitespace-nowrap">
             {chip.label}: {chip.value}

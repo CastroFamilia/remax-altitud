@@ -12,6 +12,7 @@ import { DesktopNav } from "@/components/layout/desktop-nav";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { ShortlistIcon } from "@/components/shortlist/shortlist-icon";
 import { NavSearchButton } from "@/components/layout/nav-search-button";
+import { LanguageToggle } from "@/components/layout/language-toggle";
 
 export function Header() {
   return (
@@ -32,6 +33,10 @@ export function Header() {
         <div className="flex items-center gap-2">
           <NavSearchButton />
           <ShortlistIcon />
+          {/* Language toggle visible inline on mobile; desktop nav has its own */}
+          <div className="lg:hidden">
+            <LanguageToggle variant="header" />
+          </div>
           <MobileNav />
         </div>
       </div>

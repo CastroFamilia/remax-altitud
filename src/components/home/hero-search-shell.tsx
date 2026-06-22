@@ -1101,7 +1101,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
   const containerClass =
     variant === "desktop-overlay"
       ? "pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 px-6"
-      : "px-4 py-3 md:hidden";
+      : "px-4 py-3 md:hidden bg-brand-navy";
 
   const shellClass =
     variant === "desktop-overlay"

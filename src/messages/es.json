@@ -1470,5 +1470,71 @@
     "q17_question": "¿Cómo es realmente la infraestructura (Internet, calles, servicios)?",
     "q17_answer": "El internet de fibra óptica de alta velocidad ahora está ampliamente disponible en la mayoría de los pueblos populares de playa y montaña, lo que hace que el trabajo remoto sea completamente fluido. Dicho esto, dependiendo de qué tan remoto viva, debe estar preparado para algún corte ocasional de energía o agua durante tormentas fuertes, y navegar por ciertas áreas rurales aún requiere un vehículo 4x4 confiable debido a calles sin pavimentar y cruces de ríos.",
     "conclusion": "Para llevar: Las personas que hacen la transición más exitosa a Costa Rica son aquellas que no intentan forzar tu antiguo estilo de vida en tu nuevo país. Se trata de cambiar comodidad por calidad de vida, y velocidad por paz mental."
+  },
+  "PrivacyPage": {
+    "metaTitle": "Política de Privacidad — REMAX Altitud",
+    "metaDescription": "Conozca cómo REMAX Altitud recopila, usa y protege su información personal.",
+    "pageTitle": "Política de Privacidad",
+    "intro": "Su privacidad nos importa. Esta política explica cómo REMAX Altitud recopila, utiliza y protege la información que usted comparte con nosotros.",
+    "collect": {
+      "heading": "Información que recopilamos",
+      "body": "Recopilamos la información que usted nos proporciona directamente — como su nombre, correo electrónico y número de teléfono — cuando envía un formulario de contacto, se registra en nuestro servicio de Comprador VIP o se comunica con alguno de nuestros agentes. También recopilamos automáticamente datos básicos de uso (como páginas visitadas y tipo de navegador) para ayudarnos a mejorar la plataforma."
+    },
+    "use": {
+      "heading": "Cómo usamos su información",
+      "body": "Utilizamos su información para responder a sus consultas, conectarlo con el agente adecuado, enviarle actualizaciones de propiedades que ha solicitado y mejorar nuestros servicios. No vendemos su información personal a terceros."
+    },
+    "cookies": {
+      "heading": "Cookies",
+      "body": "Nuestro sitio web utiliza cookies para recordar sus preferencias y analizar patrones de tráfico. Puede deshabilitar las cookies en la configuración de su navegador en cualquier momento; sin embargo, algunas funciones del sitio pueden no funcionar correctamente sin ellas."
+    },
+    "third": {
+      "heading": "Servicios de terceros",
+      "body": "Podemos compartir datos limitados con proveedores de terceros de confianza (como plataformas de entrega de correos y analíticas) únicamente para operar y mejorar nuestros servicios. Estos proveedores están contractualmente obligados a proteger sus datos y no pueden utilizarlos para sus propios fines."
+    },
+    "rights": {
+      "heading": "Sus derechos",
+      "body": "Usted tiene derecho a acceder, corregir o solicitar la eliminación de sus datos personales en cualquier momento. Para ejercer estos derechos, contáctenos en hola@remax-altitud.cr y responderemos en un plazo razonable."
+    },
+    "contact": {
+      "heading": "Contáctenos",
+      "body": "Si tiene alguna pregunta sobre esta Política de Privacidad, comuníquese con nosotros en hola@remax-altitud.cr o visítenos en cualquiera de nuestras oficinas en Pérez Zeledón o Dominical."
+    },
+    "lastUpdated": "Última actualización: junio de 2025"
+  },
+  "TermsPage": {
+    "metaTitle": "Términos de Servicio — REMAX Altitud",
+    "metaDescription": "Lea los términos y condiciones que rigen el uso de la plataforma inmobiliaria REMAX Altitud.",
+    "pageTitle": "Términos de Servicio",
+    "intro": "Al utilizar el sitio web y los servicios de REMAX Altitud, usted acepta los siguientes términos y condiciones. Por favor, léalos detenidamente.",
+    "acceptance": {
+      "heading": "Aceptación de los términos",
+      "body": "Al acceder o utilizar remax-altitud.cr, usted acepta quedar vinculado por estos Términos de Servicio y nuestra Política de Privacidad. Si no está de acuerdo, por favor deje de utilizar el sitio."
+    },
+    "use": {
+      "heading": "Uso del sitio",
+      "body": "Usted acepta utilizar este sitio únicamente para fines lícitos y de manera que no vulnere los derechos de terceros. El scraping no autorizado, el acceso automatizado o el uso indebido de los datos de listados está estrictamente prohibido."
+    },
+    "listings": {
+      "heading": "Listados y precisión de la información",
+      "body": "Los listados de propiedades y la información relacionada se proporcionan de buena fe y se actualizan regularmente. Sin embargo, REMAX Altitud no garantiza la integridad ni la exactitud de ningún listado. Los precios, la disponibilidad y los detalles de las propiedades están sujetos a cambios sin previo aviso. Siempre verifique los detalles con el agente correspondiente antes de tomar cualquier decisión."
+    },
+    "ip": {
+      "heading": "Propiedad intelectual",
+      "body": "Todo el contenido de este sitio — incluidos textos, fotografías, logotipos y diseño — es propiedad de REMAX Altitud o de sus licenciantes y está protegido por las leyes de derechos de autor y marcas registradas aplicables. No puede reproducir ni distribuir ningún contenido sin autorización previa por escrito."
+    },
+    "liability": {
+      "heading": "Limitación de responsabilidad",
+      "body": "REMAX Altitud no será responsable de ningún daño indirecto, incidental o consecuente que surja del uso de este sitio o de la confianza depositada en cualquier información contenida en él. Nuestra responsabilidad total ante usted por cualquier reclamo no superará el monto pagado, si corresponde, por los servicios directamente prestados por nosotros."
+    },
+    "law": {
+      "heading": "Ley aplicable",
+      "body": "Estos términos se rigen por las leyes de la República de Costa Rica. Cualquier disputa que surja de estos términos o del uso del sitio estará sujeta a la jurisdicción exclusiva de los tribunales de Costa Rica."
+    },
+    "contact": {
+      "heading": "Contacto",
+      "body": "Para cualquier pregunta sobre estos Términos de Servicio, contáctenos en hola@remax-altitud.cr."
+    },
+    "lastUpdated": "Última actualización: junio de 2025"
   }
 }
