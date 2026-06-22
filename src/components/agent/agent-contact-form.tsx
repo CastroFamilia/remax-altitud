@@ -74,12 +74,16 @@ interface AgentContactFormProps {
   agentId: string;
   agentEmail: string | null;
   agentName: string;
+  onClose?: () => void;
+  variant?: "inline" | "modal";
 }
 
 export function AgentContactForm({
   agentId,
   agentEmail: _agentEmail,
   agentName,
+  onClose,
+  variant = "inline",
 }: AgentContactFormProps) {
   // Using the ContactPage.form translations as a base
   const t = useTranslations("ContactPage.form");
@@ -163,6 +167,9 @@ export function AgentContactForm({
       if (response.ok || response.status === 409) {
         setToast("success");
         resetForm();
+        if (onClose) {
+          setTimeout(() => onClose(), 2000);
+        }
       } else {
         setToast("error");
       }
@@ -177,11 +184,17 @@ export function AgentContactForm({
     <form
       noValidate
       onSubmit={handleSubmit}
-      className="mx-auto mt-8 w-full max-w-2xl rounded-xl border border-brand-warm bg-brand-light p-6 shadow-sm sm:p-8"
+      className={
+        variant === "modal"
+          ? "w-full space-y-5"
+          : "mx-auto mt-8 w-full max-w-2xl rounded-xl border border-brand-warm bg-brand-light p-6 shadow-sm sm:p-8"
+      }
     >
-      <h2 className="mb-6 text-xl font-bold text-brand-navy">
-        {tProfile("contactAgent", { name: agentName }) || `Contact ${agentName}`}
-      </h2>
+      {variant !== "modal" && (
+        <h2 className="mb-6 text-xl font-bold text-brand-navy">
+          {tProfile("contactAgent", { name: agentName }) || `Contact ${agentName}`}
+        </h2>
+      )}
 
       {toast === "success" ? (
         <div

@@ -186,8 +186,11 @@ export async function POST(request: Request) {
     }
 
     // Agent routing
-    const assignedAgentId =
-      data.assignedAgentId || (await matchAgentByCoordinates(data.location.lat, data.location.lng));
+    const isSellerOrCma = data.source === "seller_form" || data.source === "cma_form";
+    const assignedAgentId = isSellerOrCma
+      ? null
+      : data.assignedAgentId ||
+        (await matchAgentByCoordinates(data.location.lat, data.location.lng));
 
     // Build notes from property details
     const noteParts: string[] = [];
@@ -328,9 +331,12 @@ export async function POST(request: Request) {
     }
 
     // -----------------------------------------------------------------------
-    // Agent notification email — notify the agent when contacted via profile
+    // Agent notification email — notify the agent when contacted via profile or property inquiry
     // -----------------------------------------------------------------------
-    if (data.source === "agent_contact" && agentDetails?.email) {
+    if (
+      (data.source === "agent_contact" || data.source === "contact_form") &&
+      agentDetails?.email
+    ) {
       try {
         const locale = data.preferredLanguage === "es" ? "es" : "en";
         const { subject, html } = renderAgentLeadNotificationEmail({
@@ -349,6 +355,31 @@ export async function POST(request: Request) {
         });
       } catch (err) {
         console.error("Failed to send agent notification email", err);
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // Office notification email — notify the office for seller and CMA leads
+    // -----------------------------------------------------------------------
+    if (isSellerOrCma) {
+      try {
+        const locale = data.preferredLanguage === "es" ? "es" : "en";
+        const { subject, html } = renderAgentLeadNotificationEmail({
+          locale,
+          agentName: "RE/MAX Altitud",
+          leadName: data.name,
+          leadPhone: data.phone,
+          leadEmail: data.email || null,
+          leadMessage: data.notes || null,
+        });
+
+        sendEmailInBackground({
+          to: "hola@remax-altitud.cr",
+          subject,
+          html,
+        });
+      } catch (err) {
+        console.error("Failed to send office notification email", err);
       }
     }
 
