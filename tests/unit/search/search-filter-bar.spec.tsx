@@ -138,10 +138,10 @@ describe("SearchFilterBar", () => {
       expect(filterBar).not.toBeNull();
 
       // sticky + offset are the critical positioning classes (AC #6)
-      // Filter bar sits below the global sticky header, so its `top` must
-      // equal the header height — not `0` — to avoid stacking on top of it.
+      // Filter bar uses top-0 since the header offset is handled by the
+      // page layout container, avoiding a double-offset gap.
       expect(filterBar?.className).toContain("sticky");
-      expect(filterBar?.className).toContain("top-[var(--header-height)]");
+      expect(filterBar?.className).toContain("top-0");
 
       // z-index must be above content but below modals (z-40)
       expect(filterBar?.className).toContain("z-20");

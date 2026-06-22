@@ -278,7 +278,7 @@ export function SearchFilterBar({
   return (
     <div
       data-testid="search-filter-bar"
-      className="sticky top-[var(--header-height)] flex-shrink-0 z-20 shadow-sm py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
+      className="sticky top-0 flex-shrink-0 z-20 shadow-sm py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
     >
       {/* Filter controls row */}
       <div className="flex items-stretch px-4 gap-3 h-full">
