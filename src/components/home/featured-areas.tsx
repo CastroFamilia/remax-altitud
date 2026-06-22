@@ -188,7 +188,7 @@ export async function FeaturedAreas({ locale, showSectionHeader = true }: Featur
           return (
             <Link
               key={area.slug}
-              href={`/${locale}/areas/${area.slug}`}
+              href={`/areas/${area.slug}`}
               className="group relative flex aspect-[3/4] w-[78%] shrink-0 snap-start flex-col justify-end overflow-hidden rounded-xl shadow-md transition-all duration-300 ease-out hover:translate-y-[-6px] hover:shadow-xl lg:w-auto"
             >
               {/* Background gradient fallback */}

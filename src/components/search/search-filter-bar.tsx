@@ -274,34 +274,56 @@ export function SearchFilterBar({
       >
         <div className="flex items-stretch px-4 gap-3 h-full">
           {/* Mobile compact bar — visible below md breakpoint */}
-          <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
-            <SheetTrigger asChild>
-              <button
-                type="button"
-                data-testid="mobile-filters-button"
-                className="flex md:hidden items-center gap-2 text-sm font-semibold text-brand-navy"
-                aria-label={t("filterBar.label")}
-              >
-                <SlidersHorizontal size={16} aria-hidden="true" className="text-brand-gold" />
-                <span>{t("filterBar.label")}</span>
-                {activeFilterCount > 0 && (
-                  <span className="inline-flex items-center justify-center rounded-full bg-brand-blue text-white text-xs w-5 h-5 font-bold shadow-sm">
-                    {activeFilterCount}
-                  </span>
-                )}
-              </button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[320px] sm:w-[400px]">
-              <SheetHeader>
-                <SheetTitle className="text-brand-navy font-bold">
-                  {t("filterBar.label")}
-                </SheetTitle>
-              </SheetHeader>
-              <div className="py-6 px-1 h-[calc(100vh-80px)] overflow-y-auto no-scrollbar">
-                {mobileFilterControls}
+          <div className="flex md:hidden items-center gap-2 flex-1 min-w-0 py-1">
+            {/* Location search bar — always visible on mobile */}
+            {areas.length > 0 && (
+              <div className="flex-1 min-w-0 z-50 relative">
+                <AreaSearchCombobox
+                  areas={areas}
+                  selectedArea={filters.areaSlug ?? ""}
+                  selectedSubLocation={filters.subLocation ?? ""}
+                  onAreaChange={(areaSlug, subLocationSlug) => {
+                    setFilter("areaSlug", areaSlug || undefined);
+                    setFilter("subLocation", subLocationSlug || undefined);
+                  }}
+                  placeholder={t("filters.location")}
+                  locale={locale}
+                  variant="light"
+                  allowCustom={true}
+                />
               </div>
-            </SheetContent>
-          </Sheet>
+            )}
+
+            {/* Filters button — opens sheet with all other filters */}
+            <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
+              <SheetTrigger asChild>
+                <button
+                  type="button"
+                  data-testid="mobile-filters-button"
+                  className="flex items-center gap-2 text-sm font-semibold text-brand-navy shrink-0"
+                  aria-label={t("filterBar.label")}
+                >
+                  <SlidersHorizontal size={16} aria-hidden="true" className="text-brand-gold" />
+                  <span>{t("filterBar.label")}</span>
+                  {activeFilterCount > 0 && (
+                    <span className="inline-flex items-center justify-center rounded-full bg-brand-blue text-white text-xs w-5 h-5 font-bold shadow-sm">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[320px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle className="text-brand-navy font-bold">
+                    {t("filterBar.label")}
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="py-6 px-1 h-[calc(100vh-80px)] overflow-y-auto no-scrollbar">
+                  {mobileFilterControls}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
 
           {/* Desktop/tablet filter controls — visible at md: and above */}
           <div className="hidden md:flex flex-col gap-1 w-full min-w-0">
