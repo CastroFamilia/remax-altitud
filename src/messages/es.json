@@ -392,6 +392,10 @@
       "listingTypeAll": "Transacción",
       "listingTypeSale": "En Venta",
       "listingTypeLease": "En Alquiler",
+      "region": "Región",
+      "regionAll": "Todas",
+      "regionMountain": "Montaña",
+      "regionBeach": "Playa",
       "tags": "Filtros",
       "clearTags": "Quitar filtros",
       "propertyTypes": {

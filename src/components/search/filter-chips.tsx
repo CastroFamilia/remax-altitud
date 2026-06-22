@@ -22,6 +22,7 @@ interface FilterChipsProps {
 
 /** Filter keys that generate chips (exclude 'view' and 'sort') */
 const CHIP_KEYS: Array<keyof SearchFilters> = [
+  "region",
   "type",
   "listingType",
   "priceMin",
@@ -47,6 +48,22 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
 
   // Build the list of active chips
   const chips: ChipInfo[] = [];
+
+  if (filters.region) {
+    const regionLabel =
+      filters.region === "mountain"
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          t("filters.regionMountain" as any)
+        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          t("filters.regionBeach" as any);
+    chips.push({
+      key: "region",
+      reactKey: "region",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      label: t("filters.region" as any),
+      value: regionLabel,
+    });
+  }
 
   if (filters.type) {
     chips.push({

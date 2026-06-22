@@ -32,6 +32,7 @@ import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 import type { AreaOption } from "@/components/search/area-search-combobox";
 import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { NearMeButton } from "@/components/search/near-me-button";
+import { RegionToggle } from "@/components/search/region-toggle";
 import { PriceRangeInputs } from "@/components/search/price-range-inputs";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { FilterFacets } from "@/types/search";
@@ -147,6 +148,15 @@ export function SearchFilterBar({
    * Keeps native selects + inline slider for better mobile UX. */
   const mobileFilterControls = (
     <div className="flex flex-wrap items-center gap-3 w-full">
+      {/* Region toggle — Mountain / Beach / All */}
+      <div className="flex flex-col gap-1 w-full">
+        <label className="text-xs font-medium text-muted-foreground">{t("filters.region")}</label>
+        <RegionToggle
+          value={filters.region ?? undefined}
+          onChange={(val) => setFilter("region", val)}
+        />
+      </div>
+
       {/* Story 3.4: Lifestyle tag chips (AC #1, #2, #3) */}
       <LifestyleTagChips activeTags={filters.tags ?? []} onToggle={toggleTag} />
       <div className="flex flex-col gap-1">
@@ -341,6 +351,15 @@ export function SearchFilterBar({
                   <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
                 )}
 
+                {/* Region toggle — first and most prominent */}
+                <RegionToggle
+                  value={filters.region ?? undefined}
+                  onChange={(val) => setFilter("region", val)}
+                />
+
+                {/* Divider */}
+                <div className="h-6 w-px bg-border/60 shrink-0" />
+
                 {/* Listing Type (Ghost text style) */}
                 <FilterDropdown
                   variant="ghost"
@@ -442,9 +461,9 @@ export function SearchFilterBar({
         </div>
       </div>
 
-      {/* Active filter chips row — shown below filter bar when filters are active */}
+      {/* Active filter chips row — shown below filter bar when filters are active (desktop only) */}
       {activeFilterCount > 0 && (
-        <div className="flex-shrink-0 bg-background border-b border-border z-10 relative">
+        <div className="hidden md:block flex-shrink-0 bg-background border-b border-border z-10 relative">
           <FilterChips filters={filters} onClearFilter={clearFilter} onClearAll={clearAll} />
         </div>
       )}

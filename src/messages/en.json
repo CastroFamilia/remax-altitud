@@ -392,6 +392,10 @@
       "listingTypeAll": "Transaction",
       "listingTypeSale": "For Sale",
       "listingTypeLease": "For Lease",
+      "region": "Region",
+      "regionAll": "All",
+      "regionMountain": "Mountain",
+      "regionBeach": "Beach",
       "tags": "Filters",
       "clearTags": "Remove filters",
       "propertyTypes": {
