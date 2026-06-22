@@ -112,7 +112,7 @@ export function SplitViewLayout({
   }
 
   return (
-    <div className="relative flex flex-col flex-1 min-h-0 pt-2 lg:pt-4">
+    <div className="relative flex flex-col flex-1 min-h-0">
       {/* Toolbar row removed — controls now live in SearchFilterBar */}
 
       {/* Story 3.8: Near Me fallback notification banner */}

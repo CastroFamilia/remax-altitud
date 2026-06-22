@@ -276,197 +276,197 @@ export function SearchFilterBar({
   );
 
   return (
-    <>
-      {/* Filter bar wrapper */}
-      <div
-        data-testid="search-filter-bar"
-        className="sticky top-[var(--header-height)] flex-shrink-0 z-20 shadow-sm py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
-      >
-        <div className="flex items-stretch px-4 gap-3 h-full">
-          {/* Mobile compact bar — visible below md breakpoint */}
-          <div className="flex md:hidden items-center gap-2 flex-1 min-w-0 py-1">
-            {/* Location search bar — always visible on mobile */}
-            {areas.length > 0 && (
-              <div className="flex-1 min-w-0 z-50 relative">
-                <AreaSearchCombobox
-                  areas={areas}
-                  selectedArea={filters.areaSlug ?? ""}
-                  selectedSubLocation={filters.subLocation ?? ""}
-                  onAreaChange={(areaSlug, subLocationSlug) => {
-                    setFilter("areaSlug", areaSlug || undefined);
-                    setFilter("subLocation", subLocationSlug || undefined);
-                  }}
-                  placeholder={t("filters.location")}
-                  locale={locale}
-                  variant="light"
-                  allowCustom={true}
-                />
-              </div>
-            )}
+    <div
+      data-testid="search-filter-bar"
+      className="sticky top-[var(--header-height)] flex-shrink-0 z-20 shadow-sm py-1 md:py-1.5 bg-background border-b border-border flex flex-col"
+    >
+      {/* Filter controls row */}
+      <div className="flex items-stretch px-4 gap-3 h-full">
+        {/* Mobile compact bar — visible below md breakpoint */}
+        <div className="flex md:hidden items-center gap-2 flex-1 min-w-0 py-1">
+          {/* Location search bar — always visible on mobile */}
+          {areas.length > 0 && (
+            <div className="flex-1 min-w-0 z-50 relative">
+              <AreaSearchCombobox
+                areas={areas}
+                selectedArea={filters.areaSlug ?? ""}
+                selectedSubLocation={filters.subLocation ?? ""}
+                onAreaChange={(areaSlug, subLocationSlug) => {
+                  setFilter("areaSlug", areaSlug || undefined);
+                  setFilter("subLocation", subLocationSlug || undefined);
+                }}
+                placeholder={t("filters.location")}
+                locale={locale}
+                variant="light"
+                allowCustom={true}
+              />
+            </div>
+          )}
 
-            {/* Filters button — opens sheet with all other filters */}
-            <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
-              <SheetTrigger asChild>
-                <button
-                  type="button"
-                  data-testid="mobile-filters-button"
-                  className="flex items-center gap-2 text-sm font-semibold text-brand-navy shrink-0"
-                  aria-label={t("filterBar.label")}
-                >
-                  <SlidersHorizontal size={16} aria-hidden="true" className="text-brand-gold" />
-                  <span>{t("filterBar.label")}</span>
-                  {activeFilterCount > 0 && (
-                    <span className="inline-flex items-center justify-center rounded-full bg-brand-blue text-white text-xs w-5 h-5 font-bold shadow-sm">
-                      {activeFilterCount}
-                    </span>
-                  )}
-                </button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[320px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle className="text-brand-navy font-bold">
-                    {t("filterBar.label")}
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="py-6 px-1 h-[calc(100vh-80px)] overflow-y-auto no-scrollbar">
-                  {mobileFilterControls}
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          {/* Desktop/tablet filter controls — visible at md: and above */}
-          <div className="hidden md:flex flex-col gap-1 w-full min-w-0">
-            {/* Row 2: All controls in a single unified row (scrolls horizontally) */}
-            <div className="flex items-center justify-between gap-y-2 gap-x-2 w-full min-w-0">
-              {/* Left group: View toggle + Filter dropdowns */}
-              <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto no-scrollbar py-1">
-                {/* View Mode Toggle (inline) */}
-                {onViewModeChange && (
-                  <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
-                )}
-
-                {/* Divider between view toggle and filters */}
-                {onViewModeChange && (
-                  <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
-                )}
-
-                {/* Region toggle — first and most prominent */}
-                <RegionToggle
-                  value={filters.region ?? undefined}
-                  onChange={(val) => setFilter("region", val)}
-                />
-
-                {/* Divider */}
-                <div className="h-6 w-px bg-border/60 shrink-0" />
-
-                {/* Listing Type (Ghost text style) */}
-                <FilterDropdown
-                  variant="ghost"
-                  placeholder={t("filters.listingTypeAll") || "Venta / alquiler"}
-                  value={filters.listingType ?? undefined}
-                  options={listingTypeOptions}
-                  onChange={(val) => setFilter("listingType", val)}
-                  testId="listing-type-filter"
-                  className="px-2"
-                />
-
-                {/* Property Type */}
-                <FilterDropdown
-                  placeholder={t("filters.typeAll")}
-                  value={filters.type ?? undefined}
-                  options={propertyTypeOptions}
-                  onChange={(val) => setFilter("type", val)}
-                  testId="type-filter"
-                />
-
-                {/* Lifestyle Tags / Characteristics */}
-                <TagsFilterPopover activeTags={filters.tags ?? []} onToggle={toggleTag} />
-
-                {/* Beds — hidden for land types */}
-                {!isLandType && (
-                  <FilterDropdown
-                    placeholder={t("filters.bedrooms")}
-                    value={filters.bedrooms?.toString() ?? undefined}
-                    options={bedroomOptions}
-                    onChange={(val) => setFilter("bedrooms", val ? parseInt(val, 10) : undefined)}
-                    testId="bedrooms-filter"
-                    formatSelected={(opt) => `${opt.label} ${t("filters.bedrooms")}`}
-                  />
-                )}
-
-                {/* Baths — hidden for land types */}
-                {!isLandType && (
-                  <FilterDropdown
-                    placeholder={t("filters.bathrooms")}
-                    value={filters.bathrooms?.toString() ?? undefined}
-                    options={bathroomOptions}
-                    onChange={(val) => setFilter("bathrooms", val ? parseInt(val, 10) : undefined)}
-                    testId="bathrooms-filter"
-                    formatSelected={(opt) => `${opt.label} ${t("filters.bathrooms")}`}
-                  />
-                )}
-
-                {/* Price Range Popover */}
-                <PriceFilterPopover
-                  placeholder={t("filters.price")}
-                  value={priceValue}
-                  onChange={([min, max]) => {
-                    setFilter("priceMin", min);
-                    setFilter("priceMax", max);
-                  }}
-                />
-
-                {/* Location */}
-                {areas.length > 0 && (
-                  <div className="w-[180px] lg:w-[220px] shrink-0">
-                    <AreaSearchCombobox
-                      areas={areas}
-                      selectedArea={filters.areaSlug ?? ""}
-                      selectedSubLocation={filters.subLocation ?? ""}
-                      onAreaChange={(areaSlug, subLocationSlug) => {
-                        setFilter("areaSlug", areaSlug || undefined);
-                        setFilter("subLocation", subLocationSlug || undefined);
-                      }}
-                      placeholder={t("filters.location")}
-                      locale={locale}
-                      variant="light"
-                      allowCustom={true}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Right group: Result count + Sort + Near Me + Unit toggle */}
-              <div className="flex items-center gap-2 shrink-0 ml-auto">
-                {/* Result count */}
-                {resultCount !== undefined && (
-                  <span className="text-xs text-muted-foreground font-medium whitespace-nowrap hidden xl:inline">
-                    {resultCount.toLocaleString()} {resultCount === 1 ? "result" : "results"}
+          {/* Filters button — opens sheet with all other filters */}
+          <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
+            <SheetTrigger asChild>
+              <button
+                type="button"
+                data-testid="mobile-filters-button"
+                className="flex items-center gap-2 text-sm font-semibold text-brand-navy shrink-0"
+                aria-label={t("filterBar.label")}
+              >
+                <SlidersHorizontal size={16} aria-hidden="true" className="text-brand-gold" />
+                <span>{t("filterBar.label")}</span>
+                {activeFilterCount > 0 && (
+                  <span className="inline-flex items-center justify-center rounded-full bg-brand-blue text-white text-xs w-5 h-5 font-bold shadow-sm">
+                    {activeFilterCount}
                   </span>
                 )}
-
-                {/* Divider */}
-                <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
-
-                {onNearMeSuccess && onNearMeFallback && (
-                  <NearMeButton
-                    onLocationSuccess={onNearMeSuccess}
-                    onLocationFallback={onNearMeFallback}
-                  />
-                )}
+              </button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[320px] sm:w-[400px]">
+              <SheetHeader>
+                <SheetTitle className="text-brand-navy font-bold">
+                  {t("filterBar.label")}
+                </SheetTitle>
+              </SheetHeader>
+              <div className="py-6 px-1 h-[calc(100vh-80px)] overflow-y-auto no-scrollbar">
+                {mobileFilterControls}
               </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        {/* Desktop/tablet filter controls — visible at md: and above */}
+        <div className="hidden md:flex flex-col gap-1 w-full min-w-0">
+          {/* Row 2: All controls in a single unified row (scrolls horizontally) */}
+          <div className="flex items-center justify-between gap-y-2 gap-x-2 w-full min-w-0">
+            {/* Left group: View toggle + Filter dropdowns */}
+            <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto no-scrollbar py-1">
+              {/* View Mode Toggle (inline) */}
+              {onViewModeChange && (
+                <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+              )}
+
+              {/* Divider between view toggle and filters */}
+              {onViewModeChange && (
+                <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
+              )}
+
+              {/* Region toggle — first and most prominent */}
+              <RegionToggle
+                value={filters.region ?? undefined}
+                onChange={(val) => setFilter("region", val)}
+              />
+
+              {/* Divider */}
+              <div className="h-6 w-px bg-border/60 shrink-0" />
+
+              {/* Listing Type (Ghost text style) */}
+              <FilterDropdown
+                variant="ghost"
+                placeholder={t("filters.listingTypeAll") || "Venta / alquiler"}
+                value={filters.listingType ?? undefined}
+                options={listingTypeOptions}
+                onChange={(val) => setFilter("listingType", val)}
+                testId="listing-type-filter"
+                className="px-2"
+              />
+
+              {/* Property Type */}
+              <FilterDropdown
+                placeholder={t("filters.typeAll")}
+                value={filters.type ?? undefined}
+                options={propertyTypeOptions}
+                onChange={(val) => setFilter("type", val)}
+                testId="type-filter"
+              />
+
+              {/* Lifestyle Tags / Characteristics */}
+              <TagsFilterPopover activeTags={filters.tags ?? []} onToggle={toggleTag} />
+
+              {/* Beds — hidden for land types */}
+              {!isLandType && (
+                <FilterDropdown
+                  placeholder={t("filters.bedrooms")}
+                  value={filters.bedrooms?.toString() ?? undefined}
+                  options={bedroomOptions}
+                  onChange={(val) => setFilter("bedrooms", val ? parseInt(val, 10) : undefined)}
+                  testId="bedrooms-filter"
+                  formatSelected={(opt) => `${opt.label} ${t("filters.bedrooms")}`}
+                />
+              )}
+
+              {/* Baths — hidden for land types */}
+              {!isLandType && (
+                <FilterDropdown
+                  placeholder={t("filters.bathrooms")}
+                  value={filters.bathrooms?.toString() ?? undefined}
+                  options={bathroomOptions}
+                  onChange={(val) => setFilter("bathrooms", val ? parseInt(val, 10) : undefined)}
+                  testId="bathrooms-filter"
+                  formatSelected={(opt) => `${opt.label} ${t("filters.bathrooms")}`}
+                />
+              )}
+
+              {/* Price Range Popover */}
+              <PriceFilterPopover
+                placeholder={t("filters.price")}
+                value={priceValue}
+                onChange={([min, max]) => {
+                  setFilter("priceMin", min);
+                  setFilter("priceMax", max);
+                }}
+              />
+
+              {/* Location */}
+              {areas.length > 0 && (
+                <div className="w-[180px] lg:w-[220px] shrink-0">
+                  <AreaSearchCombobox
+                    areas={areas}
+                    selectedArea={filters.areaSlug ?? ""}
+                    selectedSubLocation={filters.subLocation ?? ""}
+                    onAreaChange={(areaSlug, subLocationSlug) => {
+                      setFilter("areaSlug", areaSlug || undefined);
+                      setFilter("subLocation", subLocationSlug || undefined);
+                    }}
+                    placeholder={t("filters.location")}
+                    locale={locale}
+                    variant="light"
+                    allowCustom={true}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Right group: Result count + Sort + Near Me + Unit toggle */}
+            <div className="flex items-center gap-2 shrink-0 ml-auto">
+              {/* Result count */}
+              {resultCount !== undefined && (
+                <span className="text-xs text-muted-foreground font-medium whitespace-nowrap hidden xl:inline">
+                  {resultCount.toLocaleString()} {resultCount === 1 ? "result" : "results"}
+                </span>
+              )}
+
+              {/* Divider */}
+              <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
+
+              {onNearMeSuccess && onNearMeFallback && (
+                <NearMeButton
+                  onLocationSuccess={onNearMeSuccess}
+                  onLocationFallback={onNearMeFallback}
+                />
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Active filter chips row — shown below filter bar when filters are active (desktop only) */}
+      {/* Active filter chips row — shown below filter controls when any filter is active.
+          Lives INSIDE the sticky wrapper so it doesn't get obscured by SplitViewLayout
+          (which uses flex-1 min-h-0 and would overlap a sibling chip row). */}
       {activeFilterCount > 0 && (
-        <div className="hidden md:block flex-shrink-0 bg-background border-b border-border z-10 relative">
+        <div className="border-t border-border/60">
           <FilterChips filters={filters} onClearFilter={clearFilter} onClearAll={clearAll} />
         </div>
       )}
-    </>
+    </div>
   );
 }
