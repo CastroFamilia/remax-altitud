@@ -62,7 +62,6 @@ const quickLinks = [
   { key: "contact", href: "/contact" },
   { key: "joinTeam", href: "/join" },
   { key: "faq", href: "/faq" },
-  { key: "blog", href: "/blog" },
 ] as const;
 
 const socialLinks = [
@@ -88,7 +87,6 @@ const socialLinks = [
 const legalLinks = [
   { key: "privacy", href: "/privacy" },
   { key: "terms", href: "/terms" },
-  { key: "sitemap", href: "/sitemap.xml" },
 ] as const;
 
 export async function Footer() {
