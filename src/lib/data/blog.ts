@@ -56,7 +56,7 @@ export async function getCategories(): Promise<string[]> {
       .from(blogPosts)
       .where(and(isNotNull(blogPosts.publishedAt), lte(blogPosts.publishedAt, new Date())));
     return rows.map((r) => r.category);
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 }
@@ -68,7 +68,7 @@ export async function getLocations(): Promise<string[]> {
       .from(blogPosts)
       .where(and(isNotNull(blogPosts.publishedAt), lte(blogPosts.publishedAt, new Date())));
     return rows.map((r) => r.location);
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 }

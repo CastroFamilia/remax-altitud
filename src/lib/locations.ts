@@ -674,12 +674,8 @@ for (const [cantonKey, cantonData] of Object.entries(costaRicaLocations)) {
         const cleanName = barrio.name.toLowerCase();
         DISTRICT_KEYWORDS.push({ keyword: cleanName, slug, parent });
 
-        // If there's a compound name like "Patio de Agua San Juan Bosco", add the parts
-        if (cleanName.includes(" ")) {
-          const parts = cleanName.split(" ");
-          // If it's something like "daniel flores zavaleta", let's not split it to single words,
-          // but we rely on the full phrase matching.
-        }
+        // If there's a compound name like "Patio de Agua San Juan Bosco",
+        // full-phrase matching is sufficient — no need to split into parts.
       }
     }
   }

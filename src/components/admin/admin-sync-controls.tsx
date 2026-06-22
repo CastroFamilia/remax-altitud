@@ -9,7 +9,7 @@ interface AdminSyncControlsProps {
   locale: string;
 }
 
-export function AdminSyncControls({ locale }: AdminSyncControlsProps) {
+export function AdminSyncControls({ locale: _locale }: AdminSyncControlsProps) {
   const router = useRouter();
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -29,7 +29,7 @@ export function AdminSyncControls({ locale }: AdminSyncControlsProps) {
       } else {
         setMessage({ type: "error", text: "Error al intentar desbloquear los procesos." });
       }
-    } catch (err) {
+    } catch (_err) {
       setMessage({ type: "error", text: "Ocurrió un error inesperado." });
     } finally {
       setIsUnlocking(false);
@@ -48,7 +48,7 @@ export function AdminSyncControls({ locale }: AdminSyncControlsProps) {
       } else {
         setMessage({ type: "error", text: res.error || "Error al iniciar sincronización." });
       }
-    } catch (err) {
+    } catch (_err) {
       setMessage({ type: "error", text: "Ocurrió un error inesperado." });
     } finally {
       setIsSyncing(false);

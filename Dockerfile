@@ -8,6 +8,14 @@ FROM node:24-alpine@sha256:d1b3b4da11eefd5941e7f0b9cf17783fc99d9c6fc34884a665f40
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Disable Next.js telemetry during build (avoids network calls + saves time)
+ENV NEXT_TELEMETRY_DISABLED=1
+# Give Node.js a generous heap — prevents OOM kills in memory-constrained
+# Docker build environments (e.g. Coolify). Next.js + SWC + webpack can
+# spike to 2–3 GB during compilation.
+ENV NODE_OPTIONS=--max-old-space-size=4096
+
 RUN npm run build
 RUN npm run scripts:build
 
