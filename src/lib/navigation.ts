@@ -100,11 +100,6 @@ export const mobileOnlyItems: NavItem[] = [
     icon: "🤝",
   },
   {
-    labelKey: "ourTeam",
-    href: "/about/team",
-    icon: "👥",
-  },
-  {
     labelKey: "contact",
     href: "/contact",
     icon: "📞",
