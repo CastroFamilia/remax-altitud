@@ -118,8 +118,8 @@ export async function getLeadById(id: string) {
   const lead = rows[0];
   return {
     ...lead,
-    phone: decryptField(lead.phone),
-    email: lead.email ? decryptField(lead.email) : null,
+    phone: safeDecrypt(lead.phone) || lead.phone,
+    email: safeDecrypt(lead.email),
   };
 }
 
@@ -132,8 +132,8 @@ export async function getShortlistLeadDetails(leadId: string): Promise<any> {
   if (leadRows.length === 0) return null;
   const lead = {
     ...leadRows[0],
-    phone: decryptField(leadRows[0].phone),
-    email: leadRows[0].email ? decryptField(leadRows[0].email) : null,
+    phone: safeDecrypt(leadRows[0].phone) || leadRows[0].phone,
+    email: safeDecrypt(leadRows[0].email),
   };
 
   const propIds = lead.shortlistPropertyIds || [];
@@ -281,8 +281,8 @@ export async function getLeads(filters: GetLeadsFilters) {
       agentName: row.agentName,
       propertyApiId: row.propertyApiId,
       propertyPopularityCount: (row as any).propertyPopularityCount ?? 0,
-      phone: decryptField(row.lead.phone),
-      email: row.lead.email ? decryptField(row.lead.email) : null,
+      phone: safeDecrypt(row.lead.phone) || row.lead.phone,
+      email: safeDecrypt(row.lead.email),
     };
   });
 }

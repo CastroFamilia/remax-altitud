@@ -21,6 +21,7 @@
     "dist:migrate": "node dist/migrate.mjs",
     "dist:sync": "node dist/run-sync.mjs",
     "dist:sync:dry-run": "node dist/run-sync.mjs --dry-run --verbose",
+    "dist:test-resend": "node dist/test-resend.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:agents": "tsx scripts/test-smart-search-agents.ts",

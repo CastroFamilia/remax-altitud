@@ -8,7 +8,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-remax}
       POSTGRES_DB: ${POSTGRES_DB:-remax_altitud}
     ports:
-      - "5432:5432"
+      # Host port is configurable via POSTGRES_PORT (defaults to 5432). Set
+      # POSTGRES_PORT in .env when 5432 is already taken by another service.
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - remax_altitud_postgres_data:/var/lib/postgresql/data
     healthcheck:
