@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useTransition } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+
 import { Search, Loader2, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { fetchAdminPropertiesData } from "@/app/actions/admin-tag-actions";
 import { updatePropertyCommunityAction } from "@/app/actions/admin-community-actions";
@@ -15,7 +15,6 @@ interface AdminCommunityListingsProps {
 }
 
 export function AdminCommunityListings({ communityId, locale }: AdminCommunityListingsProps) {
-  const t = useTranslations("AdminTags"); // Reusing translations for table headers if possible, or fallback to english strings
   const [properties, setProperties] = useState<AdminProperty[]>([]);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,7 +41,6 @@ export function AdminCommunityListings({ communityId, locale }: AdminCommunityLi
 
   useEffect(() => {
     loadProperties(1, "");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {

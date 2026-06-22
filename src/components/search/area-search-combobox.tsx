@@ -78,35 +78,6 @@ const AREA_GROUPS: AreaGroup[] = [
   },
 ];
 
-/**
- * PZ sub-locations fallback — aligned with ALTITUD HUB's locations.js
- * Hierarchy: Cantón → Distrito (12 districts of Pérez Zeledón)
- */
-const FALLBACK_PZ_SUB_LOCATIONS: AreaOption[] = [
-  {
-    slug: "san-isidro",
-    label: "San Isidro de El General",
-    parentSlug: "perez-zeledon",
-    isSubLocation: true,
-  },
-  { slug: "el-general", label: "El General", parentSlug: "perez-zeledon", isSubLocation: true },
-  {
-    slug: "daniel-flores",
-    label: "Daniel Flores",
-    parentSlug: "perez-zeledon",
-    isSubLocation: true,
-  },
-  { slug: "rivas", label: "Rivas", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "san-pedro", label: "San Pedro", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "platanares", label: "Platanares", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "pejibaye", label: "Pejibaye", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "cajon", label: "Cajón", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "baru", label: "Barú", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "rio-nuevo", label: "Río Nuevo", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "paramo", label: "Páramo", parentSlug: "perez-zeledon", isSubLocation: true },
-  { slug: "la-amistad", label: "La Amistad", parentSlug: "perez-zeledon", isSubLocation: true },
-];
-
 // ─── Static Areas Fallback ───────────────────────────────────────────────────
 
 const STATIC_MAIN_AREAS: AreaOption[] = [

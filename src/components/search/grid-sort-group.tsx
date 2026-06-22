@@ -1,8 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { Popover } from "radix-ui";
-import { ChevronDown, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchFilters } from "@/hooks/use-search-filters";
 import { cn } from "@/lib/utils";
@@ -10,17 +7,13 @@ import { cn } from "@/lib/utils";
 export function GridSortGroup() {
   const t = useTranslations("SearchPage");
   const { filters, setFilter } = useSearchFilters();
-  const [moreOpen, setMoreOpen] = useState(false);
 
   // Default to relevance if not set
   const currentSort = filters.sort ?? "relevance";
 
   const handleSort = (val: "relevance" | "price_asc" | "newest" | "price_desc") => {
     setFilter("sort", val);
-    setMoreOpen(false);
   };
-
-  const isMoreSelected = currentSort === "price_desc";
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-sm mb-4 lg:px-0">

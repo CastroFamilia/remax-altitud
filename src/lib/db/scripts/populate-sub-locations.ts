@@ -20,7 +20,7 @@ const originalResolve = (Module as any)._resolveFilename;
 import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { eq, and, isNotNull, sql } from "drizzle-orm";
+import { eq, isNotNull, sql } from "drizzle-orm";
 import { properties } from "../schema/properties";
 
 config({ path: ".env.local" });
