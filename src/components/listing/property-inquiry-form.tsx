@@ -311,9 +311,11 @@ export function PropertyInquiryForm({
         {/* Honeypot anti-spam input */}
         <input
           type="text"
-          name="comp"
+          name="_hp_field"
           tabIndex={-1}
           autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
           aria-hidden="true"
           value={honeypot}
           onChange={(e) => setHoneypot(e.target.value)}

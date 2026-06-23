@@ -209,9 +209,11 @@ export function ContactForm() {
           the input a programmatic name so axe's label rule passes. */}
       <input
         type="text"
-        name="company"
+        name="_hp_field"
         tabIndex={-1}
         autoComplete="off"
+        data-1p-ignore
+        data-lpignore="true"
         aria-label="Leave this field empty"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}
@@ -483,9 +485,11 @@ export function RecruitmentForm() {
       {/* Honeypot — see ContactForm for rationale (no aria-hidden). */}
       <input
         type="text"
-        name="company"
+        name="_hp_field"
         tabIndex={-1}
         autoComplete="off"
+        data-1p-ignore
+        data-lpignore="true"
         aria-label="Leave this field empty"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}
