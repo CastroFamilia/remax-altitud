@@ -884,7 +884,8 @@
     },
     "communities": {
       "heading": "Communities in This Area"
-    }
+    },
+    "searchProperties": "Search Properties in this Area"
   },
   "CommunityPage": {
     "meta": {

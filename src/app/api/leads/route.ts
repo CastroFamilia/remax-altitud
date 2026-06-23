@@ -274,7 +274,7 @@ export async function POST(request: Request) {
         const locale = data.preferredLanguage === "es" ? "es" : "en";
 
         // Property-specific email (existing behavior for property inquiry forms)
-        if (data.source === "contact_form" && data.shortlistPropertyIds.length > 0) {
+        if (data.source === "contact_form" && data.shortlistPropertyIds.length === 1) {
           const [property] = await db
             .select({
               titleEn: properties.titleEn,
@@ -308,7 +308,12 @@ export async function POST(request: Request) {
             });
           }
         } else {
-          // Generic confirmation for seller, CMA, VIP, contact, agent_contact forms
+          // Generic confirmation for seller, CMA, VIP, contact, agent_contact, and shortlist forms
+          // Extract shortlist URL from notes if present (added by shortlist form)
+          const shortlistUrlMatch = data.notes?.match(/Shortlist Link: (https?:\/\/\S+)/);
+          const shortlistUrl =
+            data.shortlistPropertyIds.length > 1 && shortlistUrlMatch ? shortlistUrlMatch[1] : null;
+
           const { subject, html } = renderGenericLeadConfirmationEmail({
             locale,
             source: data.source,
@@ -317,6 +322,7 @@ export async function POST(request: Request) {
             agentEmail: agentDetails?.email,
             agentPhone: agentDetails?.whatsapp || agentDetails?.phone,
             contactedAgentName: data.source === "agent_contact" ? agentDetails?.name : null,
+            shortlistUrl,
           });
 
           sendEmailInBackground({
@@ -359,9 +365,13 @@ export async function POST(request: Request) {
     }
 
     // -----------------------------------------------------------------------
-    // Office notification email — notify the office for seller and CMA leads
+    // Office notification email — notify the office for seller, CMA, and
+    // unrouted contact_form leads (general contact, VIP, recruitment)
     // -----------------------------------------------------------------------
-    if (isSellerOrCma) {
+    const shouldNotifyOffice =
+      isSellerOrCma || (data.source === "contact_form" && !agentDetails?.email);
+
+    if (shouldNotifyOffice) {
       try {
         const locale = data.preferredLanguage === "es" ? "es" : "en";
         const { subject, html } = renderAgentLeadNotificationEmail({

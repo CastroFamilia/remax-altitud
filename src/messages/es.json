@@ -884,7 +884,8 @@
     },
     "communities": {
       "heading": "Comunidades en Esta Zona"
-    }
+    },
+    "searchProperties": "Buscar Propiedades en esta Zona"
   },
   "CommunityPage": {
     "meta": {

@@ -147,9 +147,11 @@ export function VipInquiryForm() {
       {/* Honeypot */}
       <input
         type="text"
-        name="company"
+        name="_hp_field"
         tabIndex={-1}
         autoComplete="off"
+        data-1p-ignore
+        data-lpignore="true"
         aria-label="Leave this field empty"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}

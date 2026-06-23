@@ -25,6 +25,8 @@ export interface GenericLeadConfirmationEmailProps {
   agentPhone?: string | null;
   /** Only used for agent_contact — shows the specific agent they reached out to */
   contactedAgentName?: string | null;
+  /** When set, overrides the contact_form copy to reference the shortlist */
+  shortlistUrl?: string | null;
 }
 
 /**
@@ -34,6 +36,7 @@ function getSourceCopy(
   source: LeadSource,
   isEs: boolean,
   contactedAgentName?: string | null,
+  shortlistUrl?: string | null,
 ): { subject: string; headline: string; message: string } {
   switch (source) {
     case "seller_form":
@@ -69,6 +72,17 @@ function getSourceCopy(
 
     case "contact_form":
     default:
+      if (shortlistUrl) {
+        return {
+          subject: isEs
+            ? "Hemos recibido su consulta sobre su lista de propiedades"
+            : "We have received your inquiry about your property shortlist",
+          headline: isEs ? "¡Consulta recibida!" : "Inquiry Received!",
+          message: isEs
+            ? `Gracias por ponerse en contacto con RE/MAX Altitud. Hemos recibido su consulta sobre su <a href="${shortlistUrl}" style="color: #d4af37; font-weight: bold;">lista de propiedades</a> y uno de nuestros agentes se comunicará con usted a la brevedad posible.`
+            : `Thank you for contacting RE/MAX Altitud. We have received your inquiry about your <a href="${shortlistUrl}" style="color: #d4af37; font-weight: bold;">property shortlist</a> and one of our agents will get in touch with you as soon as possible.`,
+        };
+      }
       return {
         subject: isEs ? "Hemos recibido su consulta" : "We have received your inquiry",
         headline: isEs ? "¡Consulta recibida!" : "Inquiry Received!",
@@ -89,6 +103,7 @@ export function renderGenericLeadConfirmationEmail(props: GenericLeadConfirmatio
     props.source,
     isEs,
     props.contactedAgentName,
+    props.shortlistUrl,
   );
 
   const greeting = isEs ? `¡Hola, ${props.leadName}!` : `Hello, ${props.leadName}!`;
