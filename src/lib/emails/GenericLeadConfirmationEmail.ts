@@ -12,6 +12,7 @@ export type LeadSource =
   | "seller_form"
   | "cma_form"
   | "contact_form"
+  | "vip_buyer_form"
   | "agent_contact"
   | "whatsapp"
   | "whatsapp_click";
@@ -68,6 +69,17 @@ function getSourceCopy(
         message: isEs
           ? `Gracias por contactar a ${contactedAgentName || "nuestro agente"} a través de RE/MAX Altitud. Su mensaje ha sido entregado y recibirá una respuesta muy pronto.`
           : `Thank you for reaching out to ${contactedAgentName || "our agent"} through RE/MAX Altitud. Your message has been delivered and you will receive a response very soon.`,
+      };
+
+    case "vip_buyer_form":
+      return {
+        subject: isEs
+          ? "Hemos recibido su solicitud de Servicio VIP"
+          : "We received your VIP Buyer Service request",
+        headline: isEs ? "¡Solicitud VIP recibida!" : "VIP Request Received!",
+        message: isEs
+          ? "Gracias por su interés en nuestro Servicio de Comprador VIP. Hemos recibido su información y uno de nuestros agentes especializados se pondrá en contacto con usted muy pronto para brindarle una atención personalizada."
+          : "Thank you for your interest in our VIP Buyer Service. We have received your information and one of our specialized agents will contact you very soon to provide you with personalized attention.",
       };
 
     case "contact_form":
