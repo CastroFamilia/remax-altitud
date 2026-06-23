@@ -51,6 +51,7 @@ const leadInputSchema = z.object({
     "cma_form",
     "whatsapp_click",
     "agent_contact",
+    "vip_buyer_form",
   ]),
   intent: z.enum(["buy", "sell", "invest", "recruit"]),
   propertyType: z.string().optional().default(""),
@@ -352,6 +353,8 @@ export async function POST(request: Request) {
           leadPhone: data.phone,
           leadEmail: data.email || null,
           leadMessage: data.notes || null,
+          source: data.source,
+          intent: data.intent,
         });
 
         sendEmailInBackground({
@@ -369,7 +372,9 @@ export async function POST(request: Request) {
     // unrouted contact_form leads (general contact, VIP, recruitment)
     // -----------------------------------------------------------------------
     const shouldNotifyOffice =
-      isSellerOrCma || (data.source === "contact_form" && !agentDetails?.email);
+      isSellerOrCma ||
+      ((data.source === "contact_form" || data.source === "vip_buyer_form") &&
+        !agentDetails?.email);
 
     if (shouldNotifyOffice) {
       try {
@@ -381,6 +386,8 @@ export async function POST(request: Request) {
           leadPhone: data.phone,
           leadEmail: data.email || null,
           leadMessage: data.notes || null,
+          source: data.source,
+          intent: data.intent,
         });
 
         sendEmailInBackground({

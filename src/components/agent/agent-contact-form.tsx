@@ -219,13 +219,21 @@ export function AgentContactForm({
         type="text"
         name="_hp_field"
         tabIndex={-1}
-        autoComplete="off"
+        autoComplete="nope"
         data-1p-ignore
         data-lpignore="true"
+        data-bwignore="true"
         aria-label="Leave this field empty"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}
-        className="sr-only"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          opacity: 0,
+        }}
       />
 
       <div className="flex flex-col gap-4">

@@ -18,7 +18,7 @@ export const leads = pgTable(
     email: text("email"), // nullable, encrypted ciphertext
     phone: text("phone").notNull(), // encrypted ciphertext
     phoneHash: text("phone_hash").notNull(), // SHA-256 for dedup
-    source: text("source").notNull(), // whatsapp|seller_form|contact_form|cma_form|whatsapp_click
+    source: text("source").notNull(), // whatsapp|seller_form|contact_form|vip_buyer_form|cma_form|agent_contact|whatsapp_click
     intent: text("intent").notNull(), // buy|sell|invest|recruit
     language: text("language"),
     assignedAgentId: uuid("assigned_agent_id").references(() => agents.id, {

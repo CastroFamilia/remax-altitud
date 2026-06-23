@@ -1,9 +1,25 @@
 /**
- * AgentLeadNotificationEmail — Notification email sent TO an agent
+ * AgentLeadNotificationEmail — Notification email sent TO an agent or the office
  *
- * Triggered when a visitor contacts an agent through their profile page.
- * Contains the lead's details so the agent can follow up directly.
+ * Triggered when a visitor contacts an agent through their profile page,
+ * submits a property inquiry, or submits any office-routed form (seller,
+ * CMA, VIP buyer, recruitment, general contact).
+ *
+ * Contains the lead's details so the recipient can follow up directly.
+ * When `source` and `intent` are provided, the email displays a clear
+ * origin label so the office can instantly distinguish lead types.
  */
+
+export type LeadSourceType =
+  | "seller_form"
+  | "cma_form"
+  | "contact_form"
+  | "vip_buyer_form"
+  | "agent_contact"
+  | "whatsapp"
+  | "whatsapp_click";
+
+export type LeadIntentType = "buy" | "sell" | "invest" | "recruit";
 
 export interface AgentLeadNotificationEmailProps {
   locale: string;
@@ -12,6 +28,63 @@ export interface AgentLeadNotificationEmailProps {
   leadPhone: string;
   leadEmail: string | null;
   leadMessage: string | null;
+  /** Form source — used to generate a human-readable origin label */
+  source?: LeadSourceType | null;
+  /** Lead intent — combined with source to refine the label */
+  intent?: LeadIntentType | null;
+}
+
+// ---------------------------------------------------------------------------
+// Human-readable source labels (bilingual)
+// ---------------------------------------------------------------------------
+
+interface SourceLabel {
+  en: string;
+  es: string;
+  /** Color used for the badge background */
+  color: string;
+}
+
+function getSourceLabel(
+  source?: LeadSourceType | null,
+  intent?: LeadIntentType | null,
+): SourceLabel {
+  if (!source) {
+    return { en: "Website", es: "Sitio Web", color: "#6b7280" };
+  }
+
+  // Recruitment is a special case — same source as general contact but very different intent
+  if (source === "contact_form" && intent === "recruit") {
+    return {
+      en: "🤝 Recruitment — Join Our Team",
+      es: "🤝 Reclutamiento — Únete al Equipo",
+      color: "#7c3aed",
+    };
+  }
+
+  const labels: Record<LeadSourceType, SourceLabel> = {
+    seller_form: { en: "🏠 Seller Inquiry", es: "🏠 Consulta de Vendedor", color: "#059669" },
+    cma_form: {
+      en: "📊 Property Valuation (CMA)",
+      es: "📊 Valoración de Propiedad (CMA)",
+      color: "#0284c7",
+    },
+    contact_form: { en: "📋 General Contact", es: "📋 Contacto General", color: "#d97706" },
+    vip_buyer_form: {
+      en: "⭐ VIP Buyer Service",
+      es: "⭐ Servicio Comprador VIP",
+      color: "#b45309",
+    },
+    agent_contact: {
+      en: "👤 Agent Profile Contact",
+      es: "👤 Contacto desde Perfil de Agente",
+      color: "#dc2626",
+    },
+    whatsapp: { en: "💬 WhatsApp", es: "💬 WhatsApp", color: "#16a34a" },
+    whatsapp_click: { en: "💬 WhatsApp Click", es: "💬 WhatsApp Click", color: "#16a34a" },
+  };
+
+  return labels[source];
 }
 
 export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEmailProps): {
@@ -19,10 +92,13 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
   html: string;
 } {
   const isEs = props.locale === "es";
+  const sourceLabel = getSourceLabel(props.source, props.intent);
+  const sourceName = isEs ? sourceLabel.es : sourceLabel.en;
 
+  // Subject line now includes the origin so it's scannable from the inbox
   const subject = isEs
-    ? `Nuevo lead: ${props.leadName} te contactó desde la web`
-    : `New lead: ${props.leadName} contacted you from the website`;
+    ? `[${sourceName}] Nuevo lead: ${props.leadName}`
+    : `[${sourceName}] New lead: ${props.leadName}`;
 
   const greeting = isEs ? `Hola ${props.agentName},` : `Hi ${props.agentName},`;
 
@@ -33,6 +109,7 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
   const nameLabel = isEs ? "Nombre" : "Name";
   const phoneLabel = isEs ? "Teléfono" : "Phone";
   const emailLabel = isEs ? "Correo" : "Email";
+  const sourceFieldLabel = isEs ? "Origen" : "Source";
   const messageLabel = isEs ? "Mensaje" : "Message";
   const noMessage = isEs ? "Sin mensaje adicional" : "No additional message";
   const ctaText = isEs ? "Responder lo antes posible" : "Please respond as soon as possible";
@@ -76,6 +153,15 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
             font-size: 14px;
             color: #ffffff;
             opacity: 0.8;
+          }
+          .source-badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #ffffff;
           }
           .content {
             padding: 32px;
@@ -135,6 +221,7 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
           <div class="header">
             <h1>RE/MAX Altitud</h1>
             <p>${isEs ? "🔔 Nuevo Lead" : "🔔 New Lead"}</p>
+            <span class="source-badge" style="background-color: ${sourceLabel.color};">${sourceName}</span>
           </div>
           <div class="content">
             <p>${greeting}</p>
@@ -155,6 +242,10 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
                     ? `<tr><td>${emailLabel}:</td><td><a href="mailto:${props.leadEmail}">${props.leadEmail}</a></td></tr>`
                     : ""
                 }
+                <tr>
+                  <td>${sourceFieldLabel}:</td>
+                  <td><strong>${sourceName}</strong></td>
+                </tr>
               </table>
 
               ${
