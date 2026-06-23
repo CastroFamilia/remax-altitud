@@ -293,13 +293,13 @@ describe("SplitViewLayout", () => {
   // -------------------------------------------------------------------------
 
   it(
-    "[P2] ViewModeToggle is NOT rendered inside SplitViewLayout (moved to SearchFilterBar)",
+    "[P2] ViewModeToggle IS rendered inside SplitViewLayout (sort row + map overlay)",
     () => {
       render(<SplitViewLayout viewMode="split" onViewModeChange={noop} />);
 
-      // ViewModeToggle was moved to SearchFilterBar — it should NOT be inside SplitViewLayout
+      // ViewModeToggle was moved back into SplitViewLayout — sort row above the grid
       const toggle = document.querySelector('[data-testid="view-mode-toggle"]');
-      expect(toggle).toBeNull();
+      expect(toggle).not.toBeNull();
     },
   );
 

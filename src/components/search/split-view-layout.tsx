@@ -8,6 +8,7 @@ import { MapView } from "@/components/map/map-view-loader";
 import { PropertyGrid } from "@/components/property/property-grid";
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
 import { GridSortGroup } from "@/components/search/grid-sort-group";
+import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets, SearchFilters } from "@/types/search";
@@ -68,7 +69,7 @@ interface SplitViewLayoutProps {
 
 export function SplitViewLayout({
   viewMode,
-  onViewModeChange: _onViewModeChange,
+  onViewModeChange,
   properties = [],
   locale = "en",
   propertyCount,
@@ -91,7 +92,6 @@ export function SplitViewLayout({
   // Suppress unused-var warnings for forward-compat props; they are part of
   // the public API surface used by SearchPageClient today.
   void _facets;
-  void _onViewModeChange;
   // Unit preference (localStorage-persisted)
   const { unitSystem } = useLocaleUnits(locale);
   // Tablet side-panel toggle state
@@ -161,6 +161,15 @@ export function SplitViewLayout({
               unitSystem={unitSystem}
             />
           </div>
+
+          {/* Floating view-mode toggle — only in full-map mode (grid panel hidden) */}
+          {gridHidden && onViewModeChange && (
+            <div className="absolute top-6 right-6 z-10 hidden lg:block">
+              <div className="rounded-lg shadow-lg border border-brand-gold/20 backdrop-blur-sm bg-background/90">
+                <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Grid panel — hidden on mobile, shown on desktop */}
@@ -179,7 +188,12 @@ export function SplitViewLayout({
         >
           {/* Grid sort group for grid and split views */}
           {!gridHidden && (
-            <div className="flex items-center justify-end px-2 lg:px-4 mb-2">
+            <div className="hidden lg:flex items-center justify-between px-2 lg:px-4 mb-2">
+              {onViewModeChange ? (
+                <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+              ) : (
+                <div />
+              )}
               <GridSortGroup />
             </div>
           )}

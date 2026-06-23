@@ -2,7 +2,25 @@
 
 import React, { useState } from "react";
 import { fetchShortlistDetailsAction, reassignLeadAction } from "@/app/actions/admin-lead-actions";
-import { UserCheck, ShieldAlert, BookOpen, Loader2 } from "lucide-react";
+import { UserCheck, ShieldAlert, BookOpen, Loader2, Clock } from "lucide-react";
+
+/** Format a Date into Costa Rica timezone (America/Costa_Rica, UTC-6) */
+function formatCostaRicaDate(date: Date): { date: string; time: string } {
+  const d = new Date(date);
+  const dateStr = d.toLocaleDateString("en-US", {
+    timeZone: "America/Costa_Rica",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+  const timeStr = d.toLocaleTimeString("en-US", {
+    timeZone: "America/Costa_Rica",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+  return { date: dateStr, time: timeStr };
+}
 
 export interface Agent {
   id: string;
@@ -152,6 +170,12 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
           <thead>
             <tr className="border-b border-slate-800 bg-slate-950 text-slate-400 text-xs font-bold uppercase tracking-wider">
               <th className="px-6 py-4">Lead</th>
+              <th className="px-6 py-4">
+                Date{" "}
+                <span className="text-[9px] normal-case tracking-normal font-medium text-slate-500">
+                  (Costa Rica)
+                </span>
+              </th>
               <th className="px-6 py-4">Status & Language</th>
               <th className="px-6 py-4">Details</th>
               <th className="px-6 py-4">utm info</th>
@@ -178,6 +202,22 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                     <div className="font-semibold text-slate-100">{lead.name}</div>
                     <div className="text-xs text-slate-500 mt-0.5">{lead.email || "No Email"}</div>
                     <div className="text-xs text-slate-400 font-mono mt-0.5">{lead.phone}</div>
+                  </td>
+
+                  {/* Date & Time (Costa Rica TZ) */}
+                  <td className="px-6 py-4 lead-created-at">
+                    {(() => {
+                      const { date, time } = formatCostaRicaDate(lead.createdAt);
+                      return (
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
+                          <div className="flex flex-col">
+                            <span className="text-xs font-semibold text-slate-200">{date}</span>
+                            <span className="text-[11px] text-slate-400">{time}</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </td>
 
                   {/* Status & Language */}
@@ -315,7 +355,7 @@ export function AdminLeadsTable({ locale, leads, agents }: AdminLeadsTableProps)
                   </td>
 
                   {/* Actions Column */}
-                  <td className="px-6 py-4 text-right lead-created-at">
+                  <td className="px-6 py-4 text-right">
                     {!isEditing && (
                       <button
                         data-testid="reassign-lead"

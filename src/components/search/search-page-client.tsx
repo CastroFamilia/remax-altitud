@@ -250,8 +250,6 @@ export function SearchPageClient() {
       <SearchFilterBar
         facets={facets}
         areas={areas}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
         locale={locale}
         onNearMeSuccess={handleNearMeSuccess}
         onNearMeFallback={handleNearMeFallback}
