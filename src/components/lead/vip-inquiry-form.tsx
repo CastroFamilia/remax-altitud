@@ -93,7 +93,7 @@ export function VipInquiryForm() {
           name: name.trim(),
           email: email.trim() || null,
           phone: phone.trim(),
-          source: "contact_form" as const,
+          source: "vip_buyer_form" as const,
           intent: "buy" as const,
           propertyType: propertyType !== "any" ? propertyType : "",
           location: { text: area.trim(), lat: null, lng: null },
@@ -149,13 +149,21 @@ export function VipInquiryForm() {
         type="text"
         name="_hp_field"
         tabIndex={-1}
-        autoComplete="off"
+        autoComplete="nope"
         data-1p-ignore
         data-lpignore="true"
+        data-bwignore="true"
         aria-label="Leave this field empty"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}
-        className="sr-only"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          opacity: 0,
+        }}
       />
 
       {/* Name (required) */}

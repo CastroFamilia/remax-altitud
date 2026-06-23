@@ -203,21 +203,28 @@ export function ContactForm() {
         </div>
       ) : null}
 
-      {/* Honeypot — sr-only + tabIndex=-1 keep humans from reaching it.
-          Do not add aria-hidden here: aria-hidden on a focusable form
-          control trips axe's aria-hidden-focus rule. aria-label gives
-          the input a programmatic name so axe's label rule passes. */}
+      {/* Honeypot — hidden via absolute positioning + zero size to prevent
+          password managers / browser autofill from filling it.
+          (sr-only keeps it in the autofill flow causing silent submission drops) */}
       <input
         type="text"
         name="_hp_field"
         tabIndex={-1}
-        autoComplete="off"
+        autoComplete="nope"
         data-1p-ignore
         data-lpignore="true"
+        data-bwignore="true"
         aria-label="Leave this field empty"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}
-        className="sr-only"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          opacity: 0,
+        }}
       />
 
       <div className="flex flex-col gap-4">
@@ -482,18 +489,26 @@ export function RecruitmentForm() {
         </div>
       ) : null}
 
-      {/* Honeypot — see ContactForm for rationale (no aria-hidden). */}
+      {/* Honeypot — hidden via absolute positioning (see ContactForm for rationale). */}
       <input
         type="text"
         name="_hp_field"
         tabIndex={-1}
-        autoComplete="off"
+        autoComplete="nope"
         data-1p-ignore
         data-lpignore="true"
+        data-bwignore="true"
         aria-label="Leave this field empty"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}
-        className="sr-only"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          opacity: 0,
+        }}
       />
 
       <div className="flex flex-col gap-4">
