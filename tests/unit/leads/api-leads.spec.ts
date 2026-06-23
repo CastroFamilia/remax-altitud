@@ -177,6 +177,11 @@ afterEach(() => {
 
 describe("POST /api/leads — Seller form (5.3-API-001)", () => {
   it("[P0] 5.3-API-001: stores all seller form fields and returns 201 with leadId + assignedAgentId", async () => {
+    mockCreateLead.mockResolvedValue({
+      id: "lead-test-001",
+      assignedAgentId: null,
+    });
+
     // R-002: lead must be persisted, not silently dropped
     const { POST } = await import("@/app/api/leads/route");
 
@@ -191,7 +196,7 @@ describe("POST /api/leads — Seller form (5.3-API-001)", () => {
 
     // Response must include leadId and assignedAgentId with correct values
     expect(body.leadId).toBe("lead-test-001");
-    expect(body.assignedAgentId).toBe("agent-pz-001");
+    expect(body.assignedAgentId).toBeNull();
 
     // createLead must have been called with all critical fields
     expect(mockCreateLead).toHaveBeenCalledTimes(1);
@@ -202,7 +207,7 @@ describe("POST /api/leads — Seller form (5.3-API-001)", () => {
     expect(createArgs.source).toBe("seller_form");
     expect(createArgs.intent).toBe("sell");
     expect(createArgs.language).toBe("es");
-    expect(createArgs.assignedAgentId).toBe("agent-pz-001");
+    expect(createArgs.assignedAgentId).toBeNull();
     expect(createArgs.status).toBe("new");
   });
 });
@@ -506,6 +511,8 @@ describe("POST /api/leads — Full schema (5.3-API-009)", () => {
     const { POST } = await import("@/app/api/leads/route");
 
     const payload = buildSellerLeadPayload({
+      source: "contact_form",
+      intent: "buy",
       utm_source: "facebook",
       utm_medium: "ad",
       utm_campaign: "sellers_pz",
@@ -525,8 +532,8 @@ describe("POST /api/leads — Full schema (5.3-API-009)", () => {
     expect(createArgs.email).toBe("carlos@example.com");
 
     // Source tracking fields
-    expect(createArgs.source).toBe("seller_form");
-    expect(createArgs.intent).toBe("sell");
+    expect(createArgs.source).toBe("contact_form");
+    expect(createArgs.intent).toBe("buy");
     expect(createArgs.language).toBe("es");
 
     // Agent assignment
@@ -611,6 +618,7 @@ describe("POST /api/leads — Edge cases", () => {
     const { POST } = await import("@/app/api/leads/route");
 
     const payload = buildSellerLeadPayload({
+      source: "contact_form",
       location: { text: "Dominical", lat: 9.257, lng: -83.885 },
     });
     const request = createMockRequest(payload);

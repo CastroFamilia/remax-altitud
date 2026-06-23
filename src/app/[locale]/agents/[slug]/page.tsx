@@ -7,7 +7,6 @@ import { getAgentBySlug, getAllAgentSlugs, getPropertiesByAgentId } from "@/lib/
 import { getOfficeById } from "@/lib/db/queries/offices";
 import { AgentProfileHero } from "@/components/agent/agent-profile-hero";
 import { AgentListingsGrid } from "@/components/agent/agent-listings-grid";
-import { AgentContactForm } from "@/components/agent/agent-contact-form";
 import type { PropertySearchItem } from "@/types/search";
 import {
   generateAgentJsonLd,
@@ -132,7 +131,6 @@ export default async function AgentProfilePage({
           locale={locale}
           agentName={agent.name}
         />
-        <AgentContactForm agentId={agent.id} agentEmail={agent.email} agentName={agent.name} />
       </div>
     </>
   );

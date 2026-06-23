@@ -615,6 +615,7 @@
     "transparencyNote": "Tu consulta se enviará directamente al agente encargado de esta propiedad."
   },
   "AgentProfile": {
+    "contactAgent": "Contactar a {name}",
     "listings": "propiedades",
     "whatsapp": "WhatsApp",
     "email": "Correo",
@@ -781,7 +782,9 @@
     "confirmation": {
       "heading": "¡Propiedad Enviada Exitosamente!",
       "subheading": "Tu agente dedicado le contactará dentro de 24 horas.",
+      "officeSubheading": "Nuestro equipo se pondrá en contacto contigo en un plazo de 24 horas.",
       "agentMatchHeading": "Tu Agente Asignado",
+      "officeContactHeading": "Nuestra Oficina",
       "whatsappButtonAriaLabel": "Contactar a {agentName} por WhatsApp",
       "emailButtonAriaLabel": "Contactar a {agentName} por correo electrónico",
       "browseWhileWaiting": "Mientras esperás, explorá lo que se vende en tu área"
@@ -839,7 +842,9 @@
     "confirmation": {
       "heading": "¡Solicitud de CMA Recibida!",
       "subheading": "Tu agente preparará tu Análisis Comparativo de Mercado y te contactará dentro de 24 horas.",
+      "officeSubheading": "Nuestro equipo preparará tu Análisis Comparativo de Mercado y te contactará dentro de 24 horas.",
       "agentMatchHeading": "Tu Agente Asignado",
+      "officeContactHeading": "Nuestra Oficina",
       "browseWhileWaiting": "Mientras esperas, explora lo que se vende en tu zona"
     }
   },

@@ -122,7 +122,7 @@ interface SellerFormProps {
 
 export function SellerForm({
   locale,
-  fallbackAgent,
+  fallbackAgent: _fallbackAgent,
   officeName = "REMAX Altitud",
 }: SellerFormProps) {
   const t = useTranslations("SellerPage");
@@ -137,7 +137,6 @@ export function SellerForm({
   // ---- Form state ----
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [matchedAgent, setMatchedAgent] = useState<Partial<Agent> | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<SellerFormData>({
@@ -217,9 +216,6 @@ export function SellerForm({
       const body = await response.json();
 
       if (response.status === 201) {
-        if (body.agent) {
-          setMatchedAgent(body.agent);
-        }
         setSubmitting(false);
         setSubmitted(true);
       } else if (response.status === 409) {
@@ -249,10 +245,7 @@ export function SellerForm({
   }
 
   if (submitted) {
-    const agentToShow = (matchedAgent as Agent | null) ?? fallbackAgent;
-    if (agentToShow) {
-      return <SellerConfirmation agent={agentToShow} officeName={officeName} locale={locale} />;
-    }
+    return <SellerConfirmation agent={null} officeName={officeName} locale={locale} />;
   }
 
   return (

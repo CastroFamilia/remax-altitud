@@ -615,6 +615,7 @@
     "transparencyNote": "Your inquiry will be routed directly to the listing agent for this property."
   },
   "AgentProfile": {
+    "contactAgent": "Contact {name}",
     "listings": "listings",
     "whatsapp": "WhatsApp",
     "email": "Email",
@@ -781,7 +782,9 @@
     "confirmation": {
       "heading": "Property Submitted Successfully!",
       "subheading": "Your dedicated agent will contact you within 24 hours.",
+      "officeSubheading": "Our team will contact you within 24 hours.",
       "agentMatchHeading": "Your Agent Match",
+      "officeContactHeading": "Our Office",
       "whatsappButtonAriaLabel": "Contact {agentName} via WhatsApp",
       "emailButtonAriaLabel": "Contact {agentName} via email",
       "browseWhileWaiting": "While you wait, explore what's selling in your area"
@@ -839,7 +842,9 @@
     "confirmation": {
       "heading": "CMA Request Received!",
       "subheading": "Your agent will prepare your Comparative Market Analysis and contact you within 24 hours.",
+      "officeSubheading": "Our team will prepare your Comparative Market Analysis and contact you within 24 hours.",
       "agentMatchHeading": "Your Agent Match",
+      "officeContactHeading": "Our Office",
       "browseWhileWaiting": "While you wait, explore what's selling in your area"
     }
   },
