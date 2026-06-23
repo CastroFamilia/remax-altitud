@@ -30,7 +30,7 @@ import { PriceFilterPopover } from "@/components/search/price-filter-popover";
 import { FilterDropdown } from "@/components/search/filter-dropdown";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 import type { AreaOption } from "@/components/search/area-search-combobox";
-import { ViewModeToggle } from "@/components/search/view-mode-toggle";
+
 import { NearMeButton } from "@/components/search/near-me-button";
 import { RegionToggle } from "@/components/search/region-toggle";
 import { PriceRangeInputs } from "@/components/search/price-range-inputs";
@@ -45,15 +45,9 @@ const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Comercial", "Finca"];
 const BEDROOM_OPTIONS = [1, 2, 3, 4, 5];
 const BATHROOM_OPTIONS = [1, 2, 3, 4];
 
-type ViewMode = "split" | "map" | "grid";
-
 interface SearchFilterBarProps {
   facets?: FilterFacets;
   areas?: AreaOption[];
-  /** View mode for the toolbar (from SplitViewLayout merge) */
-  viewMode?: ViewMode;
-  /** View mode change handler */
-  onViewModeChange?: (mode: ViewMode) => void;
   /** Locale for UnitToggle */
   locale?: string;
   /** Near Me success handler — fly to user's location */
@@ -67,8 +61,6 @@ interface SearchFilterBarProps {
 export function SearchFilterBar({
   facets,
   areas = [],
-  viewMode = "split",
-  onViewModeChange,
   locale = "en",
   onNearMeSuccess,
   onNearMeFallback,
@@ -340,16 +332,6 @@ export function SearchFilterBar({
           <div className="flex items-center justify-between gap-y-2 gap-x-2 w-full min-w-0">
             {/* Left group: View toggle + Filter dropdowns */}
             <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto no-scrollbar py-1">
-              {/* View Mode Toggle (inline) */}
-              {onViewModeChange && (
-                <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
-              )}
-
-              {/* Divider between view toggle and filters */}
-              {onViewModeChange && (
-                <div className="h-6 w-px bg-border/60 shrink-0 hidden lg:block" />
-              )}
-
               {/* Region toggle — first and most prominent */}
               <RegionToggle
                 value={filters.region ?? undefined}
