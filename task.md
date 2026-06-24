@@ -1,9 +1,7 @@
-# Task: Update Footer Email Link to Open Contact Form
+# Task: Split CI Tests into a Separate Job
 
-- [x] Implement Footer Contact Button component
-  - [x] Create `src/components/layout/footer-contact-button.tsx` with modal and form
-- [x] Integrate into Footer component
-  - [x] Modify `src/components/layout/footer.tsx` to use the new button component
+- [x] Update GitHub Actions CI Workflow
+  - [x] Modify `.github/workflows/ci.yml` to split tests into a dedicated job
 - [x] Verification
-  - [x] Run `npm run test` to verify unit and integration tests pass
-  - [x] Run `npm run build` to verify clean build and static generation
+  - [x] Validate YAML syntax
+  - [/] Commit, push, and create a Pull Request
