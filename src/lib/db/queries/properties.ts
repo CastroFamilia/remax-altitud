@@ -3,6 +3,7 @@ import { and, or, ilike, asc, desc, eq, gte, inArray, lte, not, sql } from "driz
 import { db } from "@/lib/db/client";
 import { properties } from "@/lib/db/schema/properties";
 import { shortlistEvents } from "@/lib/db/schema/shortlist-events";
+import { propertyViews } from "@/lib/db/schema/property-views";
 import { slugify } from "@/lib/sync/utils/slugify";
 import type { RawProperty } from "@/types/remax-api";
 import type { OptimizedImage } from "@/types/images";
@@ -179,6 +180,44 @@ export function resolveAreaSlug(raw: {
   return "dominical";
 }
 
+// ─── Sub-Location Resolution ──────────────────────────────────────────────
+// Uses the shared locations module (src/lib/locations.ts) as single source of truth.
+// Aligned with ALTITUD HUB locations.js — Cantón → Distrito hierarchy.
+
+import { DISTRICT_KEYWORDS } from "@/lib/locations";
+
+/**
+ * Resolves a sub-location (district) slug from the RECONNECT API's Location field.
+ * Uses the shared DISTRICT_KEYWORDS from locations.ts for matching.
+ *
+ * @param location  - The Location string from the RECONNECT API (e.g. "Cajón de Pérez Zeledón")
+ * @param areaSlug  - The resolved main area slug (filters keywords to matching parent)
+ * @returns Sub-location slug (e.g. "cajon") or null if not resolvable
+ */
+export function resolveSubLocation(
+  location: string | null,
+  areaSlug: string,
+  titleEn?: string | null,
+  titleEs?: string | null,
+  unparsedAddress?: string | null,
+): string | null {
+  const loc = (location ?? "").toLowerCase();
+  const tEn = (titleEn ?? "").toLowerCase();
+  const tEs = (titleEs ?? "").toLowerCase();
+  const addr = (unparsedAddress ?? "").toLowerCase();
+
+  const combined = `${loc} ${tEn} ${tEs} ${addr}`;
+
+  for (const { keyword, slug, parent } of DISTRICT_KEYWORDS) {
+    // Only match keywords whose parent matches the resolved area
+    if (parent === areaSlug && combined.includes(keyword)) {
+      return slug;
+    }
+  }
+
+  return null;
+}
+
 export async function upsertProperty(
   raw: RawProperty,
   officeId: string,
@@ -195,6 +234,13 @@ export async function upsertProperty(
 
   const resolvedAreaSlug = resolveAreaSlug(raw);
   const resolvedAreaId = await getAreaIdBySlug(resolvedAreaSlug);
+  const resolvedSubLocation = resolveSubLocation(
+    raw.location,
+    resolvedAreaSlug,
+    raw.titleEn,
+    raw.titleEs,
+    raw.unparsedAddress,
+  );
 
   const values = {
     apiId: raw.apiId,
@@ -221,6 +267,7 @@ export async function upsertProperty(
     agentId,
     areaId: resolvedAreaId,
     areaSlug: resolvedAreaSlug,
+    subLocation: resolvedSubLocation,
     communityId: null,
     lifestyleTags: [],
     zmtStatus: "titled" as const,
@@ -252,6 +299,7 @@ export async function upsertProperty(
     agentId: values.agentId,
     areaId: resolvedAreaId,
     areaSlug: resolvedAreaSlug,
+    subLocation: resolvedSubLocation,
     communityId: sql`CASE 
       WHEN ${properties.latitude} IS DISTINCT FROM ${values.latitude} 
         OR ${properties.longitude} IS DISTINCT FROM ${values.longitude} 
@@ -463,6 +511,22 @@ export async function updatePropertyTags(id: string, tags: string[]): Promise<vo
 }
 
 /**
+ * Updates the legal status (zmt_status) for a specific property id.
+ *
+ * @param id        - The property's UUID
+ * @param zmtStatus - The new zmtStatus string ('titled', 'concession', 'zmt_restricted', 'none')
+ */
+export async function updatePropertyZmtStatus(id: string, zmtStatus: string): Promise<void> {
+  await db
+    .update(properties)
+    .set({
+      zmtStatus,
+      updatedAt: new Date(),
+    })
+    .where(eq(properties.id, id));
+}
+
+/**
  * Fetches all slugs for visible properties.
  * Used by `generateStaticParams` for SSG build-time generation (Story 4.1, Task 1).
  *
@@ -491,10 +555,6 @@ export async function getPropertyBySlug(slug: string) {
   return rows[0] ?? null;
 }
 
-/**
- * Maps DB property rows to PropertySearchItem shape.
- * Handles normalization of images (Story 3.5 transition).
- */
 export function mapPropertyRowToSearchItem(row: {
   id: string;
   slug: string;
@@ -517,6 +577,7 @@ export function mapPropertyRowToSearchItem(row: {
   descriptionEn?: string | null;
   descriptionEs?: string | null;
   listingType?: string | null;
+  subLocation?: string | null;
 }): PropertySearchItem {
   return {
     id: row.id,
@@ -540,6 +601,7 @@ export function mapPropertyRowToSearchItem(row: {
     descriptionEn: row.descriptionEn ?? "",
     descriptionEs: row.descriptionEs ?? "",
     listingType: row.listingType ?? "Sale",
+    subLocation: row.subLocation ?? null,
   };
 }
 
@@ -559,6 +621,7 @@ export const propertySearchColumns = {
   listingType: properties.listingType,
   status: properties.status,
   areaSlug: properties.areaSlug,
+  subLocation: properties.subLocation,
   images: properties.images,
   latitude: properties.latitude,
   longitude: properties.longitude,
@@ -790,7 +853,39 @@ export async function fetchShortlistAnalyticsData(filters: {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  // Group-by aggregations query
+  const savesSubquery = db
+    .select({
+      propertyId: shortlistEvents.propertyId,
+      totalSaves:
+        sql<number>`count(case when ${shortlistEvents.action} = 'save' then 1 end)::int`.as(
+          "totalSaves",
+        ),
+      saves30Days:
+        sql<number>`count(case when ${shortlistEvents.action} = 'save' and ${shortlistEvents.createdAt} >= ${thirtyDaysAgo} then 1 end)::int`.as(
+          "saves30Days",
+        ),
+      activeSaves:
+        sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`.as(
+          "activeSaves",
+        ),
+    })
+    .from(shortlistEvents)
+    .groupBy(shortlistEvents.propertyId)
+    .as("saves_sq");
+
+  const viewsSubquery = db
+    .select({
+      propertyId: propertyViews.propertyId,
+      totalViews: sql<number>`count(*)::int`.as("totalViews"),
+      views30Days:
+        sql<number>`count(case when ${propertyViews.createdAt} >= ${thirtyDaysAgo} then 1 end)::int`.as(
+          "views30Days",
+        ),
+    })
+    .from(propertyViews)
+    .groupBy(propertyViews.propertyId)
+    .as("views_sq");
+
   let query = db
     .select({
       id: properties.id,
@@ -799,12 +894,15 @@ export async function fetchShortlistAnalyticsData(filters: {
       titleEs: properties.titleEs,
       slug: properties.slug,
       images: properties.images,
-      totalSaves: sql<number>`count(case when ${shortlistEvents.action} = 'save' then 1 end)::int`,
-      saves30Days: sql<number>`count(case when ${shortlistEvents.action} = 'save' and ${shortlistEvents.createdAt} >= ${thirtyDaysAgo} then 1 end)::int`,
-      activeSaves: sql<number>`coalesce(sum(case when ${shortlistEvents.action} = 'save' then 1 when ${shortlistEvents.action} = 'unsave' then -1 else 0 end), 0)::int`,
+      totalSaves: sql<number>`coalesce(${savesSubquery.totalSaves}, 0)::int`,
+      saves30Days: sql<number>`coalesce(${savesSubquery.saves30Days}, 0)::int`,
+      activeSaves: sql<number>`coalesce(${savesSubquery.activeSaves}, 0)::int`,
+      totalViews: sql<number>`coalesce(${viewsSubquery.totalViews}, 0)::int`,
+      views30Days: sql<number>`coalesce(${viewsSubquery.views30Days}, 0)::int`,
     })
     .from(properties)
-    .leftJoin(shortlistEvents, eq(properties.id, shortlistEvents.propertyId));
+    .leftJoin(savesSubquery, eq(properties.id, savesSubquery.propertyId))
+    .leftJoin(viewsSubquery, eq(properties.id, viewsSubquery.propertyId));
 
   if (filters.search) {
     const hasWhere = "where" in query && typeof (query as { where?: unknown }).where === "function";
@@ -823,24 +921,22 @@ export async function fetchShortlistAnalyticsData(filters: {
     }
   }
 
-  const groupedQuery = query.groupBy(properties.id);
-
   // Handle sorting (with case-sensitive PostgreSQL double-quoted identifier safety)
   const order = filters.sortOrder === "asc" ? asc : desc;
   if (filters.sortBy === "saves30") {
-    groupedQuery.orderBy(order(sql`"saves30Days"`), desc(properties.createdAt));
+    query.orderBy(order(sql`"saves30Days"`), desc(properties.createdAt));
   } else if (filters.sortBy === "savesAll") {
-    groupedQuery.orderBy(order(sql`"totalSaves"`), desc(properties.createdAt));
+    query.orderBy(order(sql`"totalSaves"`), desc(properties.createdAt));
   } else if (filters.sortBy === "active") {
-    groupedQuery.orderBy(order(sql`"activeSaves"`), desc(properties.createdAt));
+    query.orderBy(order(sql`"activeSaves"`), desc(properties.createdAt));
   } else {
-    groupedQuery.orderBy(order(properties.apiId));
+    query.orderBy(order(properties.apiId));
   }
 
   const limit = filters.limit ?? 20;
   const offset = filters.offset ?? 0;
 
-  return await groupedQuery.offset(offset).limit(limit);
+  return await query.offset(offset).limit(limit);
 }
 
 /**
@@ -850,22 +946,27 @@ export async function fetchShortlistAnalyticsData(filters: {
  * @param limit - Maximum number of properties to fetch (default 3)
  */
 export async function getFeaturedProperties(limit = 3): Promise<PropertySearchItem[]> {
-  const rows = await db
-    .select(propertySearchColumns)
-    .from(properties)
-    .where(and(eq(properties.isVisible, true), eq(properties.isFeatured, true)))
-    .orderBy(desc(properties.syncedAt))
-    .limit(limit);
-
-  if (rows.length === 0) {
-    const fallbackRows = await db
+  try {
+    const rows = await db
       .select(propertySearchColumns)
       .from(properties)
-      .where(eq(properties.isVisible, true))
+      .where(and(eq(properties.isVisible, true), eq(properties.isFeatured, true)))
       .orderBy(desc(properties.syncedAt))
       .limit(limit);
-    return fallbackRows.map(mapPropertyRowToSearchItem);
-  }
 
-  return rows.map(mapPropertyRowToSearchItem);
+    if (rows.length === 0) {
+      const fallbackRows = await db
+        .select(propertySearchColumns)
+        .from(properties)
+        .where(eq(properties.isVisible, true))
+        .orderBy(desc(properties.syncedAt))
+        .limit(limit);
+      return fallbackRows.map(mapPropertyRowToSearchItem);
+    }
+
+    return rows.map(mapPropertyRowToSearchItem);
+  } catch (error) {
+    console.error("getFeaturedProperties: DB query failed (missing column?):", error);
+    return [];
+  }
 }

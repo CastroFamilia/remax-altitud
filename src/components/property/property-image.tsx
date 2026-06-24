@@ -29,12 +29,17 @@ export function PropertyImage({
     }
   }, [src]);
 
+  // If the image is a locally pre-optimized WebP, bypass Next.js image optimization
+  // to avoid 400 Bad Request errors and double-optimization.
+  const isPreOptimized = imgSrc.startsWith("/property-images/") && imgSrc.endsWith(".webp");
+
   return (
     <Image
+      key={imgSrc}
       {...props}
       src={imgSrc}
       alt={alt}
-      unoptimized={props.unoptimized || fallbackAttempted}
+      unoptimized={props.unoptimized || fallbackAttempted || isPreOptimized}
       onError={() => {
         if (!fallbackAttempted && fallbackSrc && fallbackSrc !== "/property-placeholder.svg") {
           setImgSrc(fallbackSrc);

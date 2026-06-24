@@ -13,11 +13,12 @@ import {
   getCommunityById,
 } from "@/lib/db/queries/communities";
 import { updatePropertyCommunity } from "@/lib/db/queries/properties";
+import { updateCommunityListingCounts } from "@/lib/db/queries/communities";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
 
 function triggerRevalidation() {
   revalidatePath("/[locale]/communities");
-  revalidatePath("/[locale]/areas/[slug]/communities/[communitySlug]");
+  revalidatePath("/[locale]/areas/[slug]/communities/[community]");
   revalidatePath("/[locale]/areas/[slug]");
   revalidatePath("/[locale]/search");
   revalidatePath("/[locale]/properties/[slug]");
@@ -163,6 +164,7 @@ export async function updatePropertyCommunityAction(
       }
     }
     await updatePropertyCommunity(propertyId, communityId);
+    await updateCommunityListingCounts();
     triggerRevalidation();
     return { success: true };
   } catch (error) {

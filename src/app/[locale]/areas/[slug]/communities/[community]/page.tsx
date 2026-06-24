@@ -20,7 +20,6 @@ import { CommunityDescription } from "@/components/community/community-descripti
 import { CommunityTabs } from "@/components/community/community-tabs";
 import { SimilarCommunitiesSlider } from "@/components/community/similar-communities-slider";
 import { CommunityMiniMap } from "@/components/community/community-mini-map";
-import { InvestmentContext } from "@/components/area/investment-context";
 
 /**
  * Community Page — SSG + ISR (revalidate = 3600)
@@ -83,9 +82,7 @@ export default async function CommunityPage({
   ]);
   if (!area || !community) notFound();
 
-  const t = await getTranslations({ locale, namespace: "CommunityPage" });
-
-  const [communityProperties, similarCommunities] = await Promise.all([
+  const [communityProperties, similarResult] = await Promise.all([
     getPropertiesByCommunityId(community.id),
     getSimilarCommunities(community.areaId, communitySlug),
   ]);
@@ -129,16 +126,14 @@ export default async function CommunityPage({
       <CommunityQuickFacts community={community} locale={locale} />
       <CommunityDescription community={community} locale={locale} />
       <CommunityMiniMap community={community} areaName={areaName} locale={locale} />
-      <InvestmentContext
-        metadata={area.metadata as Record<string, unknown> | null}
-        locale={locale}
-      />
       <CommunityTabs properties={communityProperties} community={community} locale={locale} />
       <SimilarCommunitiesSlider
-        communities={similarCommunities}
+        communities={similarResult.communities}
         locale={locale}
         areaSlug={slug}
         areaName={areaName}
+        isFallback={similarResult.isFallback}
+        fallbackAreaMap={similarResult.fallbackAreaMap}
       />
     </main>
   );

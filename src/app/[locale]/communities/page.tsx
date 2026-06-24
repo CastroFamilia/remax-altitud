@@ -9,6 +9,10 @@ import { CommunityCard } from "@/components/area/community-card";
 import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { generateBreadcrumbJsonLd, serializeJsonLd } from "@/lib/seo/structured-data";
 import { sortCommunitiesCustom } from "@/lib/db/queries/communities";
+import { normalizeGeoFenceCoords } from "@/lib/map/normalize-geofence";
+
+/** Opt out of static caching so DB-driven communities list always renders with fresh data. */
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -170,7 +174,7 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
                     listingCount={comm.listingCount}
                     latitude={comm.latitude}
                     longitude={comm.longitude}
-                    geoFenceCoords={comm.geoFenceCoords as unknown as [number, number][] | null}
+                    geoFenceCoords={normalizeGeoFenceCoords(comm.geoFenceCoords)}
                     location={location}
                     propertyTypes={propertyTypes}
                     sizeMin={sizeMin}

@@ -7,6 +7,7 @@ import { convertArea, type UnitSystem } from "@/lib/utils/units";
 import { PropertyPriceDisplay } from "@/components/property/property-price-display";
 import { formatUSD } from "@/lib/utils/currency";
 import type { PropertySearchItem } from "@/types/search";
+import { getDistrictLabel } from "@/lib/locations";
 
 interface PropertyCardProps {
   property: PropertySearchItem;
@@ -34,7 +35,65 @@ const BEACH_SLUGS = new Set([
 
 const MOUNTAIN_SLUGS = new Set(["perez-zeledon", "tinamastes-platanillo"]);
 
-const LAND_TYPES = new Set(["Lote", "Terreno", "Finca"]);
+const LAND_TYPES = new Set([
+  "Lote",
+  "Terreno",
+  "Finca",
+  "Lot",
+  "Lot/Land",
+  "Land",
+  "Farm",
+  "Ranch",
+  "Rural area",
+  "Terrenos",
+]);
+
+/** Bi-directional property type display labels (EN ↔ ES) */
+const TYPE_DISPLAY: Record<string, { en: string; es: string }> = {
+  Casa: { en: "House", es: "Casa" },
+  House: { en: "House", es: "Casa" },
+  "House/Villa": { en: "House", es: "Casa" },
+  Residential: { en: "House", es: "Casa" },
+  Lote: { en: "Lot", es: "Lote" },
+  Lot: { en: "Lot", es: "Lote" },
+  "Lot/Land": { en: "Lot", es: "Lote" },
+  Land: { en: "Land", es: "Terreno" },
+  Terreno: { en: "Land", es: "Terreno" },
+  Terrenos: { en: "Land", es: "Terreno" },
+  Finca: { en: "Farm/Ranch", es: "Finca" },
+  Farm: { en: "Farm/Ranch", es: "Finca" },
+  Ranch: { en: "Farm/Ranch", es: "Finca" },
+  "Rural area": { en: "Farm/Ranch", es: "Finca" },
+  Apartamento: { en: "Apartment", es: "Apartamento" },
+  Apartment: { en: "Apartment", es: "Apartamento" },
+  Condominium: { en: "Condo", es: "Condominio" },
+  Condo: { en: "Condo", es: "Condominio" },
+  Comercial: { en: "Commercial", es: "Comercial" },
+  Commercial: { en: "Commercial", es: "Comercial" },
+};
+
+/** Color classes for property type badge — each type gets a distinct color */
+const TYPE_BADGE_COLORS: Record<string, string> = {
+  House: "bg-indigo-600",
+  Lot: "bg-amber-600",
+  "Farm/Ranch": "bg-emerald-700",
+  Apartment: "bg-violet-600",
+  Condo: "bg-sky-600",
+  Commercial: "bg-rose-600",
+};
+
+/**
+ * Get the normalized EN type key for badge display.
+ * Returns the EN label from TYPE_DISPLAY (e.g. "House", "Lot", "Farm/Ranch")
+ * which is used as the key for TYPE_BADGE_COLORS and the typeBadge i18n namespace.
+ */
+function getTypeBadgeKey(propertyType: string | null): string | null {
+  if (!propertyType) return null;
+  const entry = TYPE_DISPLAY[propertyType];
+  if (!entry) return null;
+  // Merge "Land" into "Lot" for the badge
+  return entry.en === "Land" ? "Lot" : entry.en;
+}
 
 /**
  * Determine region from area slug.
@@ -76,52 +135,35 @@ function getLandFeatures(property: PropertySearchItem, locale: string): string[]
   const features: string[] = [];
 
   // Creek / River
-  if (
-    combined.includes("rio") ||
-    combined.includes("río") ||
-    combined.includes("creek") ||
-    combined.includes("stream") ||
-    combined.includes("quebrada")
-  ) {
+  if (/(^|[^a-záéíóúüñ])(rio|río|creek|stream|quebrada)([^a-záéíóúüñ]|$)/i.test(combined)) {
     features.push(locale === "es" ? "con río" : "creek");
   }
 
   // Ocean view
   if (
-    combined.includes("vista al mar") ||
-    combined.includes("vista del mar") ||
-    combined.includes("ocean view") ||
-    combined.includes("sea view") ||
-    combined.includes("vista mar")
+    /(^|[^a-záéíóúüñ])(vista al mar|vista del mar|ocean view|sea view|vista mar)([^a-záéíóúüñ]|$)/i.test(
+      combined,
+    )
   ) {
     features.push(locale === "es" ? "vista al mar" : "ocean view");
   }
 
   // Mountain view
   if (
-    combined.includes("vista a la montaña") ||
-    combined.includes("mountain view") ||
-    combined.includes("vista montaña")
+    /(^|[^a-záéíóúüñ])(vista a la montaña|mountain view|vista montaña)([^a-záéíóúüñ]|$)/i.test(
+      combined,
+    )
   ) {
     features.push(locale === "es" ? "vista a la montaña" : "mountain view");
   }
 
   // Flat
-  if (
-    combined.includes("plano") ||
-    combined.includes("plana") ||
-    combined.includes("flat") ||
-    combined.includes("terreno plano")
-  ) {
+  if (/(^|[^a-záéíóúüñ])(plano|plana|flat|terreno plano)([^a-záéíóúüñ]|$)/i.test(combined)) {
     features.push(locale === "es" ? "plano" : "flat");
   }
 
   // Waterfall
-  if (
-    combined.includes("cascada") ||
-    combined.includes("waterfall") ||
-    combined.includes("catarata")
-  ) {
+  if (/(^|[^a-záéíóúüñ])(cascada|waterfall|catarata)([^a-záéíóúüñ]|$)/i.test(combined)) {
     features.push(locale === "es" ? "cascada" : "waterfall");
   }
 
@@ -129,15 +171,200 @@ function getLandFeatures(property: PropertySearchItem, locale: string): string[]
 }
 
 /**
+ * Get display label for a sub-location slug.
+ * Uses the shared locations module as single source of truth.
+ */
+function getSubLocationLabel(slug: string): string {
+  return getDistrictLabel(slug);
+}
+
+/**
+ * Clean up an apiRaw.Location string for card display.
+ * The API often returns verbose strings like "Cajón de Pérez Zeledón, San José".
+ * We extract the town portion and pair it with the canton for a concise label.
+ */
+function cleanApiLocation(raw: string): string {
+  // Strip trailing province names (", San José", ", Puntarenas", etc.)
+  let cleaned = raw.replace(
+    /,\s*(San José|Puntarenas|Limón|Alajuela|Heredia|Cartago|Guanacaste)\s*$/i,
+    "",
+  );
+  // Strip "de Pérez Zeledón" / "de Osa" suffix to avoid redundancy
+  cleaned = cleaned.replace(/\s+de\s+(Pérez\s*Zeledón|Osa|Aguirre|Quepos)\s*$/i, "");
+  return cleaned.trim();
+}
+
+/**
+ * Helper to extract a specific town from text if known.
+ */
+function extractTownFromText(text: string): string | null {
+  const lowerText = text.toLowerCase();
+  const towns = [
+    { keyword: "general viejo", label: "General Viejo" },
+    { keyword: "santa elena", label: "Santa Elena" },
+    { keyword: "cajón", label: "Cajón" },
+    { keyword: "cajon", label: "Cajón" },
+    { keyword: "quebradas", label: "Quebradas" },
+    { keyword: "miravalles", label: "Miravalles" },
+    { keyword: "la palma", label: "La Palma" },
+    { keyword: "sinaí", label: "Barrio Sinaí" },
+    { keyword: "sinai", label: "Barrio Sinaí" },
+    { keyword: "quizarra", label: "Quizarrá" },
+    { keyword: "quizarrá", label: "Quizarrá" },
+    { keyword: "peñas blancas", label: "Peñas Blancas" },
+    { keyword: "penas blancas", label: "Peñas Blancas" },
+    { keyword: "san francisco", label: "San Francisco" },
+    { keyword: "las mercedes", label: "Las Mercedes" },
+    { keyword: "san miguel", label: "San Miguel" },
+    { keyword: "miraflores", label: "Miraflores" },
+    { keyword: "pavones", label: "Pavones" },
+    { keyword: "santa rosa", label: "Santa Rosa" },
+    { keyword: "rivas", label: "Rivas" },
+    { keyword: "el general", label: "El General" },
+    { keyword: "san isidro", label: "San Isidro" },
+    { keyword: "san pedro", label: "San Pedro" },
+    { keyword: "platanares", label: "Platanares" },
+    { keyword: "pejibaye", label: "Pejibaye" },
+    { keyword: "barú", label: "Barú" },
+    { keyword: "baru", label: "Barú" },
+    { keyword: "rio nuevo", label: "Río Nuevo" },
+    { keyword: "río nuevo", label: "Río Nuevo" },
+    { keyword: "paramo", label: "Páramo" },
+    { keyword: "páramo", label: "Páramo" },
+    { keyword: "platanillo", label: "Platanillo" },
+    { keyword: "tinamastes", label: "Tinamastes" },
+    { keyword: "san juan de dios", label: "San Juan de Dios" },
+    { keyword: "dominical", label: "Dominical" },
+    { keyword: "uvita", label: "Uvita" },
+    { keyword: "ojochal", label: "Ojochal" },
+  ];
+
+  for (const town of towns) {
+    if (lowerText.includes(town.keyword)) {
+      return town.label;
+    }
+  }
+  return null;
+}
+
+/**
  * Helper to resolve the town and canton name.
+ * Priority: subLocation field → apiRaw.Location (cleaned) → areaSlug fallback.
  */
 function getPropertyLocation(property: PropertySearchItem, locale: string): string {
   const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
-  if (typeof apiRaw?.Location === "string" && apiRaw.Location.trim().length > 0) {
-    return apiRaw.Location;
-  }
-  // Fallback based on areaSlug
   const areaSlug = property.areaSlug;
+
+  // 1. Try subLocation field from property (most reliable, resolved from DB)
+  const subLocation = property.subLocation;
+  if (subLocation) {
+    const parentLabel =
+      areaSlug === "perez-zeledon"
+        ? locale === "es"
+          ? "Pérez Zeledón"
+          : "Perez Zeledon"
+        : (areaSlug
+            ?.split("-")
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(" ") ?? "");
+
+    // For "el-general", map to "General Viejo" or "Santa Elena" if title/address has them
+    let label = getSubLocationLabel(subLocation);
+    if (subLocation === "el-general") {
+      const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+      const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.toLowerCase() ?? "";
+      if (title.toLowerCase().includes("santa elena") || unparsedAddress.includes("santa elena")) {
+        label = "Santa Elena";
+      } else {
+        label = "General Viejo";
+      }
+    }
+
+    return `${label}, ${parentLabel}`;
+  }
+
+  // 2. Try to get a specific town name from UnparsedAddress or Title
+  let specificTown: string | null = null;
+  const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+  const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.trim();
+
+  // a. Try to get it from the combined title and unparsed address using keywords
+  const combinedText = `${title} ${unparsedAddress ?? ""}`;
+  specificTown = extractTownFromText(combinedText);
+
+  // b. Try to get it from first part of UnparsedAddress if still not found
+  if (!specificTown && unparsedAddress && unparsedAddress.length > 0) {
+    const parts = unparsedAddress.split(",");
+    const firstPart = parts[0]?.trim();
+    if (firstPart) {
+      const lowerFirst = firstPart.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a"));
+      if (
+        lowerFirst !== "perez zeledon" &&
+        lowerFirst !== "costa rica" &&
+        lowerFirst !== "san jose" &&
+        lowerFirst !== "osa" &&
+        lowerFirst !== "puntarenas"
+      ) {
+        specificTown = firstPart;
+      }
+    }
+  }
+
+  if (specificTown) {
+    let parentRegion = "";
+    if (areaSlug === "uvita" || areaSlug === "dominical" || areaSlug === "ojochal") {
+      parentRegion = "Osa";
+    } else if (
+      areaSlug === "perez-zeledon" ||
+      areaSlug === "tinamastes-platanillo" ||
+      specificTown === "Platanillo" ||
+      specificTown === "Tinamastes" ||
+      specificTown === "Barú"
+    ) {
+      parentRegion = locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
+    } else {
+      const cleanedLoc =
+        typeof apiRaw?.Location === "string" ? cleanApiLocation(apiRaw.Location) : "";
+      if (
+        cleanedLoc.toLowerCase().includes("pérez") ||
+        cleanedLoc.toLowerCase().includes("perez")
+      ) {
+        parentRegion = locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
+      } else if (cleanedLoc.toLowerCase().includes("osa")) {
+        parentRegion = "Osa";
+      } else if (cleanedLoc) {
+        parentRegion = cleanedLoc;
+      } else {
+        parentRegion = locale === "es" ? "Costa Rica" : "Costa Rica";
+      }
+    }
+
+    if (
+      specificTown.toLowerCase() === parentRegion.toLowerCase() ||
+      specificTown.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a")) ===
+        parentRegion.toLowerCase().replace(/[éá]/g, (c) => (c === "é" ? "e" : "a"))
+    ) {
+      return parentRegion;
+    }
+    return `${specificTown}, ${parentRegion}`;
+  }
+
+  // 3. Try apiRaw.Location — clean it up for display
+  if (typeof apiRaw?.Location === "string" && apiRaw.Location.trim().length > 0) {
+    const cleaned = cleanApiLocation(apiRaw.Location);
+    // Add canton context if not already present
+    if (
+      (areaSlug === "perez-zeledon" || areaSlug === "tinamastes-platanillo") &&
+      !cleaned.toLowerCase().includes("pérez") &&
+      !cleaned.toLowerCase().includes("perez") &&
+      cleaned.toLowerCase() !== "costa rica"
+    ) {
+      return `${cleaned}, ${locale === "es" ? "Pérez Zeledón" : "Perez Zeledon"}`;
+    }
+    return cleaned;
+  }
+
+  // 4. Fallback based on areaSlug
   if (areaSlug === "perez-zeledon") {
     return locale === "es" ? "Pérez Zeledón" : "Perez Zeledon";
   }
@@ -189,6 +416,7 @@ export function PropertyCard({
   const region = getRegionFromAreaSlug(property.areaSlug || null);
   const isLand = LAND_TYPES.has(property.propertyType || "");
   const zmtVisual = property.zmtStatus ? ZMT_VISUAL[property.zmtStatus] : null;
+  const typeBadgeKey = getTypeBadgeKey(property.propertyType || null);
 
   const isHorizontal = variant === "horizontal";
   const isCompact = variant === "compact";
@@ -196,7 +424,8 @@ export function PropertyCard({
   const usdPrice = formatUSD(property.priceUsd || 0, locale);
 
   const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
-  const originalPriceColones = apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
+  const originalPriceColones =
+    property.currency === "CRC" && apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
 
   // Build the short description specs line
   const parts: string[] = [];
@@ -221,16 +450,10 @@ export function PropertyCard({
   }
 
   // Add translated property type
-  const typeTranslated =
-    locale === "es"
-      ? property.propertyType || "Propiedad"
-      : property.propertyType === "Casa"
-        ? "House"
-        : property.propertyType === "Lote"
-          ? "Lot"
-          : property.propertyType === "Finca"
-            ? "Farm/Ranch"
-            : property.propertyType;
+  const typeEntry = TYPE_DISPLAY[property.propertyType || ""];
+  const typeTranslated = typeEntry
+    ? typeEntry[locale === "es" ? "es" : "en"]
+    : property.propertyType || (locale === "es" ? "Propiedad" : "Property");
   parts.push(typeTranslated);
 
   const shortDescription = parts.join(" | ");
@@ -285,18 +508,31 @@ export function PropertyCard({
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
 
-          {/* Region badge — top-left overlay */}
-          {region && (
-            <span
-              data-testid="region-badge"
-              className={`absolute ${onRemove ? "left-14" : "left-3"} top-3 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm ${region === "Mountain" ? "bg-brand-mountain" : "bg-brand-beach"}`}
-            >
-              {t(`region.${region === "Mountain" ? "mountain" : "beach"}`)}
-            </span>
-          )}
+          {/* Top-left Badges */}
+          <div
+            className={`absolute top-3 flex flex-wrap gap-2 z-10 ${onRemove ? "left-14" : "left-3"} right-14`}
+          >
+            {region && (
+              <span
+                data-testid="region-badge"
+                className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm whitespace-nowrap ${region === "Mountain" ? "bg-brand-mountain" : "bg-brand-beach"}`}
+              >
+                {t(`region.${region === "Mountain" ? "mountain" : "beach"}`)}
+              </span>
+            )}
+
+            {typeBadgeKey && (
+              <span
+                data-testid="type-badge"
+                className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white shadow-sm backdrop-blur-sm whitespace-nowrap ${TYPE_BADGE_COLORS[typeBadgeKey] || "bg-gray-600"}`}
+              >
+                {t(`typeBadge.${typeBadgeKey}` as Parameters<typeof t>[0])}
+              </span>
+            )}
+          </div>
 
           {/* ZMT badge (placed on image bottom-left overlay) */}
-          {zmtVisual && property.zmtStatus && (
+          {zmtVisual && property.zmtStatus && property.zmtStatus !== "titled" && (
             <span
               data-testid="zmt-badge"
               className={`absolute left-3 bottom-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold shadow-sm border ${zmtVisual.classes}`}

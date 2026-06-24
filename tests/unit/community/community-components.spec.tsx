@@ -115,22 +115,22 @@ describe("CommunityQuickFacts (6.2-COMP-001, AC #2)", () => {
   );
 
   it(
-    "[P2] 6.2-COMP-001c: quick facts uses emoji icons for each category",
+    "[P2] 6.2-COMP-001c: quick facts uses lucide-react icons for each category",
     async () => {
-      // AC #2 — emoji icons: 📍, ✈, 🌐, 🏊, 🏗, 📅
+      // AC #2 — lucide-react icons: Mountain, Plane, Wifi, Waves, Building2, Calendar
       const fs = await import("node:fs");
       const source = fs.readFileSync(
         "src/components/community/community-quick-facts.tsx",
         "utf-8",
       );
 
-      // Must include the specified emoji icons
-      expect(source).toContain("📍");
-      expect(source).toContain("✈");
-      expect(source).toContain("🌐");
-      expect(source).toContain("🏊");
-      expect(source).toContain("🏗");
-      expect(source).toContain("📅");
+      // Must include the specified lucide-react components
+      expect(source).toContain("Mountain");
+      expect(source).toContain("Plane");
+      expect(source).toContain("Wifi");
+      expect(source).toContain("Waves");
+      expect(source).toContain("Building2");
+      expect(source).toContain("Calendar");
     },
   );
 });

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import type { Area } from "@/lib/db/schema/areas";
 import { getAreaHeroImage } from "@/lib/utils";
 
@@ -32,8 +33,8 @@ export async function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
   const regionLabel = t(`region.${area.region === "Mountain" ? "Mountain" : "Coast"}`);
 
   return (
-    <a
-      href={`/${locale}/areas/${area.slug}`}
+    <Link
+      href={`/areas/${area.slug}`}
       data-testid="area-index-card"
       className="group flex flex-col overflow-hidden rounded-[var(--radius-lg,12px)] bg-[var(--color-bg-white,#fff)] shadow-[var(--shadow-sm)] transition-all duration-200 ease-out hover:translate-y-[-4px] hover:shadow-[var(--shadow-lg)]"
     >
@@ -84,6 +85,6 @@ export async function AreaIndexCard({ area, locale }: AreaIndexCardProps) {
           {description}
         </p>
       </div>
-    </a>
+    </Link>
   );
 }

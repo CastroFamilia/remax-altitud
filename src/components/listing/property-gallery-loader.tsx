@@ -21,7 +21,6 @@ import type { OptimizedImage } from "@/types/images";
 
 interface PropertyGalleryLoaderProps {
   images: OptimizedImage[];
-  youtubeUrl?: string | null;
   propertyTitle: string;
 }
 
@@ -31,7 +30,6 @@ const PropertyGalleryDynamic = dynamic(
       default: m.PropertyGallery,
     })),
   {
-    ssr: false,
     loading: () => (
       <div
         data-testid="gallery-hero"

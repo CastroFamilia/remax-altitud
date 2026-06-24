@@ -21,6 +21,12 @@
 import { useTranslations } from "next-intl";
 import { LIFESTYLE_TAGS, tagDisplayLabel } from "@/lib/constants/lifestyle-tags";
 
+/**
+ * Property-type tags that should set the `type` filter (propertyType column)
+ * instead of the `tags` filter (lifestyleTags array column).
+ */
+const PROPERTY_TYPE_TAGS = new Set(["Casa", "Lote", "Finca"]);
+
 interface LifestyleTagChipsProps {
   activeTags: string[];
   onToggle: (tag: string) => void;
@@ -43,25 +49,27 @@ export function LifestyleTagChips({ activeTags, onToggle }: LifestyleTagChipsPro
   };
 
   return (
-    <div
-      data-testid="lifestyle-tag-chips"
-      className="flex gap-2 flex-wrap md:flex-nowrap overflow-x-auto"
-    >
-      {LIFESTYLE_TAGS.map((tag) => {
+    <div data-testid="lifestyle-tag-chips" className="flex gap-2 flex-wrap">
+      {LIFESTYLE_TAGS.filter((tag) => !PROPERTY_TYPE_TAGS.has(tag)).map((tag) => {
         const isActive = activeTags.includes(tag);
         const slug = tag.toLowerCase().replace(/\s+/g, "-");
+
+        const handleClick = () => {
+          onToggle(tag);
+        };
+
         return (
           <button
             key={tag}
             type="button"
             data-testid={`lifestyle-tag-chip-${slug}`}
-            onClick={() => onToggle(tag)}
+            onClick={handleClick}
             aria-pressed={isActive}
             className={[
-              "min-h-[44px] px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 shadow-sm border",
+              "h-8 px-3.5 rounded-full text-xs font-medium transition-all duration-200 border",
               isActive
-                ? "bg-brand-blue text-white border-brand-blue"
-                : "border-brand-gold/30 bg-white text-brand-navy hover:bg-brand-gold/15 hover:border-brand-gold hover:text-brand-navy",
+                ? "bg-brand-navy text-white border-brand-navy shadow-sm"
+                : "border-border bg-background text-brand-navy/70 hover:bg-brand-gold/10 hover:border-brand-gold/40 hover:text-brand-navy",
             ].join(" ")}
           >
             {chipLabel(tag)}

@@ -209,3 +209,61 @@ export async function forwardLeadToHubInBackground(leadPayload: Record<string, u
     console.error("Failed to prepare lead forwarding payload:", error);
   }
 }
+
+export interface TrackQrScanPayload {
+  propertyId: string;
+  slug: string;
+  locale: "en" | "es";
+}
+
+/**
+ * Tracks property QR code scans by sending them to ALTITUD HUB.
+ */
+export async function trackQrScanInBackground(payload: TrackQrScanPayload) {
+  try {
+    let userAgent: string | undefined = undefined;
+    let ipAddress: string | undefined = undefined;
+
+    try {
+      const headersList = await headers();
+      userAgent = headersList.get("user-agent") || undefined;
+      ipAddress =
+        headersList.get("x-forwarded-for")?.split(",")[0] ||
+        headersList.get("x-real-ip") ||
+        undefined;
+    } catch {
+      // Gracefully fall back when outside HTTP context
+    }
+
+    const hubUrl = process.env.ALTITUD_HUB_URL;
+    const apiKey = process.env.ALTITUD_HUB_API_SECRET;
+
+    if (!hubUrl || !apiKey) {
+      console.log("QR scan tracking skipped: ALTITUD_HUB_URL or ALTITUD_HUB_API_SECRET not set.");
+      return;
+    }
+
+    const endpoint = `${hubUrl.replace(/\/$/, "")}/api/v1/tracking/qr`;
+
+    fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        propertyId: payload.propertyId,
+        slug: payload.slug,
+        locale: payload.locale,
+        ipAddress,
+        userAgent,
+        timestamp: new Date().toISOString(),
+      }),
+      keepalive: true,
+    }).catch((err) => {
+      console.error("Failed to POST QR scan tracking data to ALTITUD HUB:", err);
+    });
+  } catch (error) {
+    console.error("Failed to prepare QR scan tracking payload:", error);
+  }
+}

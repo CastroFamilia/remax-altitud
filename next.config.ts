@@ -46,16 +46,76 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["sharp"],
 
   async headers() {
+    // ── Content Security Policy ──────────────────────────────────────
+    // Whitelists all third-party domains the app legitimately loads from.
+    // Launched as Report-Only so violations are logged (in browser console)
+    // without breaking the site. Once confirmed clean, rename the header
+    // key to "Content-Security-Policy" to enforce.
+    const cspDirectives = [
+      // Base fallback — block everything not explicitly allowed
+      "default-src 'self'",
+
+      // Scripts: Next.js inline scripts + GA4 inline snippet require unsafe-inline/eval.
+      // When you add Meta Pixel later, add https://connect.facebook.net here.
+      `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com`,
+
+      // Styles: Next.js injects inline <style> tags; Mapbox GL CSS is loaded from CDN
+      `style-src 'self' 'unsafe-inline' https://api.mapbox.com`,
+
+      // Images: property photos (local), Azure CDN agent photos, REMAX CCA, Mapbox static tiles
+      `img-src 'self' data: blob: https://*.azurefd.net https://*.azureedge.net https://*.blob.core.windows.net https://balloon.remax-cca.com https://api.mapbox.com`,
+
+      // Fonts: Google Fonts (Montserrat loaded via next/font proxies through self, but allow direct too)
+      `font-src 'self' https://fonts.gstatic.com`,
+
+      // API calls (fetch/XHR): Sentry telemetry, Mapbox tiles/events, Google Translate, GA4
+      `connect-src 'self' https://*.ingest.sentry.io https://*.mapbox.com https://api.mapbox.com https://events.mapbox.com https://tiles.mapbox.com https://translate.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com`,
+
+      // Web workers: Mapbox GL uses blob: workers for tile decoding
+      `worker-src 'self' blob:`,
+
+      // Child frames — deny all iframes
+      `frame-src 'none'`,
+
+      // Object/embed — deny Flash/plugins
+      `object-src 'none'`,
+
+      // Form targets — only allow same-origin form submissions
+      `form-action 'self'`,
+
+      // Base URI — prevent <base> tag hijacking
+      `base-uri 'self'`,
+
+      // Prevent the site from being embedded as a frame elsewhere
+      `frame-ancestors 'none'`,
+    ];
+
+    const cspValue = cspDirectives.join("; ");
+
     return [
       {
         source: "/(.*)",
         headers: [
+          // CSP in report-only mode — flip to "Content-Security-Policy" once verified
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: cspValue,
+          },
+          // HSTS — force HTTPS for 1 year; includeSubDomains for full coverage
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains",
+          },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },
-          { key: "X-XSS-Protection", value: "1; mode=block" },
           {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
+          },
+          // Permissions-Policy — restrict browser features not used by the app
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(self), payment=()",
           },
         ],
       },

@@ -26,7 +26,23 @@ const eslintConfig = [
       "index.css",
       "design-artifacts/**",
       ".worktrees/**",
+      "dist/**",
+      "scratch/**",
     ],
+  },
+  {
+    rules: {
+      // Allow underscore-prefixed identifiers as the convention for intentionally unused vars.
+      // e.g. `_agentEmail`, `_locale`, `_err` in catch blocks.
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    },
   },
 ];
 

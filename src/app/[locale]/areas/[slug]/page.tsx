@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { getAreaBySlug, getAllAreaSlugs, getPropertiesByAreaSlug } from "@/lib/db/queries/areas";
+import { getAreaBySlug, getAllAreaSlugs } from "@/lib/db/queries/areas";
 import { getCommunitiesByAreaId, sortCommunitiesCustom } from "@/lib/db/queries/communities";
 import {
   generatePlaceJsonLd,
@@ -11,8 +11,10 @@ import {
 import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { AreaGuideHero } from "@/components/area/area-guide-hero";
 import { AreaGuideDescription } from "@/components/area/area-guide-description";
-import { AreaGuideTabs } from "@/components/area/area-guide-tabs";
 import { CommunityCard } from "@/components/area/community-card";
+import { normalizeGeoFenceCoords } from "@/lib/map/normalize-geofence";
+import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/ui/button";
 import { FeaturedAreas } from "@/components/home/featured-areas";
 import { AreaGalleryCarousel } from "@/components/area/area-gallery-carousel";
 import { AreaVideos } from "@/components/area/area-videos";
@@ -83,10 +85,7 @@ export default async function AreaGuidePage({
 
   const t = await getTranslations({ locale, namespace: "AreaGuide" });
 
-  const [areaProperties, communities] = await Promise.all([
-    getPropertiesByAreaSlug(slug),
-    getCommunitiesByAreaId(area.id),
-  ]);
+  const communities = await getCommunitiesByAreaId(area.id);
 
   const placeJsonLd = generatePlaceJsonLd(area, locale);
   const areaName = locale === "es" ? area.nameEs : area.nameEn;
@@ -154,7 +153,7 @@ export default async function AreaGuidePage({
                   listingCount={community.listingCount}
                   latitude={community.latitude}
                   longitude={community.longitude}
-                  geoFenceCoords={community.geoFenceCoords as [number, number][] | null}
+                  geoFenceCoords={normalizeGeoFenceCoords(community.geoFenceCoords)}
                   location={location}
                   propertyTypes={propertyTypes}
                   sizeMin={sizeMin}
@@ -167,7 +166,16 @@ export default async function AreaGuidePage({
           </div>
         </section>
       )}
-      <AreaGuideTabs properties={areaProperties} locale={locale} />
+      <section className="mx-auto flex justify-center max-w-7xl px-4 py-8 sm:px-6 lg:px-8 border-t border-border/40 mt-8">
+        <Link href={`/search?areas=${slug}`}>
+          <Button
+            size="lg"
+            className="bg-[var(--color-navy,#000E35)] hover:bg-[var(--color-navy,#000E35)]/90 text-white font-semibold"
+          >
+            {t("searchProperties", { defaultValue: "Search Properties in this Area" })}
+          </Button>
+        </Link>
+      </section>
 
       {/* Area Photo Gallery Carousel */}
       <AreaGalleryCarousel

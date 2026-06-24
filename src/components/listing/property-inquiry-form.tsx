@@ -308,16 +308,28 @@ export function PropertyInquiryForm({
       <form onSubmit={handleSubmit} noValidate className="space-y-4 pt-2">
         <h4 className="text-sm font-extrabold text-brand-navy tracking-tight">{t("title")}</h4>
 
-        {/* Honeypot anti-spam input */}
+        {/* Honeypot anti-spam input — hidden via absolute positioning + zero size
+            to prevent password managers / browser autofill from filling it
+            (sr-only keeps it in the autofill flow causing silent submission drops) */}
         <input
           type="text"
-          name="comp"
+          name="_hp_field"
           tabIndex={-1}
-          autoComplete="off"
+          autoComplete="nope"
+          data-1p-ignore
+          data-lpignore="true"
+          data-bwignore="true"
           aria-hidden="true"
           value={honeypot}
           onChange={(e) => setHoneypot(e.target.value)}
-          className="sr-only"
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            width: 0,
+            height: 0,
+            overflow: "hidden",
+            opacity: 0,
+          }}
         />
 
         {/* Name */}

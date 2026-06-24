@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { useRouter, Link } from "@/i18n/navigation";
 import { getAvailableAreas } from "@/app/actions/search-actions";
 import { useSearchHistory } from "@/hooks/use-search-history";
+import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
 
 type Variant = "desktop-overlay" | "mobile-inline";
 
@@ -49,19 +50,26 @@ const AREA_KEYWORDS: Record<string, string> = {
   sámara: "samara",
   "santa teresa": "santa-teresa",
   "playa hermosa": "playa-hermosa",
-  liberia: "liberia",
-  "san jose": "san-jose",
-  "san josé": "san-jose",
-  escazu: "escazu",
-  escazú: "escazu",
-  "santa ana": "santa-ana",
-  heredia: "heredia",
-  alajuela: "alajuela",
-  cartago: "cartago",
   tinamastes: "tinamastes-platanillo",
   platanillo: "tinamastes-platanillo",
   barú: "tinamastes-platanillo",
   baru: "tinamastes-platanillo",
+  "tinamastes-platanillo": "tinamastes-platanillo",
+  "tinamastes & platanillo": "tinamastes-platanillo",
+  "tinamastes, platanillo & barú": "tinamastes-platanillo",
+  "tinamastes, platanillo & baru": "tinamastes-platanillo",
+  // PZ sub-locations
+  "san isidro": "perez-zeledon",
+  "san isidro de el general": "perez-zeledon",
+  cajón: "perez-zeledon",
+  cajon: "perez-zeledon",
+  rivas: "perez-zeledon",
+  "daniel flores": "perez-zeledon",
+  pejibaye: "perez-zeledon",
+  "general viejo": "perez-zeledon",
+  "san gerardo": "perez-zeledon",
+  "san gerardo de rivas": "perez-zeledon",
+  platanares: "perez-zeledon",
 };
 
 // Reverse lookup: slug → display label
@@ -78,14 +86,21 @@ const AREA_LABELS: Record<string, string> = {
   samara: "Sámara",
   "santa-teresa": "Santa Teresa",
   "playa-hermosa": "Playa Hermosa",
-  liberia: "Liberia",
-  "san-jose": "San José",
-  escazu: "Escazú",
-  "santa-ana": "Santa Ana",
-  heredia: "Heredia",
-  alajuela: "Alajuela",
-  cartago: "Cartago",
   "tinamastes-platanillo": "Tinamastes & Platanillo",
+  // PZ sub-location labels (used in smart search chips)
+  // Aligned with ALTITUD HUB locations.js — 12 districts
+  "san-isidro": "San Isidro de El General",
+  "el-general": "El General",
+  "daniel-flores": "Daniel Flores",
+  rivas: "Rivas",
+  "san-pedro": "San Pedro",
+  platanares: "Platanares",
+  pejibaye: "Pejibaye",
+  cajon: "Cajón",
+  baru: "Barú",
+  "rio-nuevo": "Río Nuevo",
+  paramo: "Páramo",
+  "la-amistad": "La Amistad",
 };
 
 const TYPE_KEYWORDS: Record<string, string> = {
@@ -98,8 +113,8 @@ const TYPE_KEYWORDS: Record<string, string> = {
   condominio: "Apartamento",
   lote: "Lote",
   lot: "Lote",
-  terreno: "Terreno",
-  land: "Terreno",
+  terreno: "Lote",
+  land: "Lote",
   comercial: "Comercial",
   commercial: "Comercial",
   finca: "Finca",
@@ -110,8 +125,7 @@ const TYPE_KEYWORDS: Record<string, string> = {
 const TYPE_LABELS: Record<string, { en: string; es: string }> = {
   Casa: { en: "House", es: "Casa" },
   Apartamento: { en: "Apartment", es: "Apartamento" },
-  Lote: { en: "Lot", es: "Lote" },
-  Terreno: { en: "Land", es: "Terreno" },
+  Lote: { en: "Lot / Land", es: "Lote / Terreno" },
   Comercial: { en: "Commercial", es: "Comercial" },
   Finca: { en: "Farm", es: "Finca" },
 };
@@ -182,18 +196,31 @@ const FEATURE_KEYWORDS: Record<string, { q: string; label: { en: string; es: str
   jardin: { q: "garden jardín jardin", label: { en: "Garden", es: "Jardín" } },
 };
 
-const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Terreno", "Comercial", "Finca"];
+const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Comercial", "Finca"];
 
-const FALLBACK_AREAS = [
-  { slug: "perez-zeledon", label: "Pérez Zeledón" },
-  { slug: "dominical", label: "Dominical" },
-  { slug: "uvita", label: "Uvita" },
-  { slug: "ojochal", label: "Ojochal" },
-  { slug: "tinamastes-platanillo", label: "Tinamastes, Platanillo & Barú" },
-  { slug: "quepos", label: "Quepos" },
-  { slug: "manuel-antonio", label: "Manuel Antonio" },
-  { slug: "jaco", label: "Jacó" },
-];
+// Sub-location keyword → slug mapping for smart search
+// Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
+const SUB_LOCATION_KEYWORDS: Record<string, string> = {
+  "san isidro": "san-isidro",
+  "san isidro de el general": "san-isidro",
+  cajón: "cajon",
+  cajon: "cajon",
+  rivas: "rivas",
+  "daniel flores": "daniel-flores",
+  pejibaye: "pejibaye",
+  "el general": "el-general",
+  "general viejo": "el-general",
+  "san pedro": "san-pedro",
+  platanares: "platanares",
+  "río nuevo": "rio-nuevo",
+  "rio nuevo": "rio-nuevo",
+  páramo: "paramo",
+  paramo: "paramo",
+  chirripó: "paramo",
+  "la amistad": "la-amistad",
+  "san gerardo": "rivas",
+  "san gerardo de rivas": "rivas",
+};
 
 // Cycling placeholder examples
 const PLACEHOLDER_EXAMPLES_EN = [
@@ -250,6 +277,32 @@ interface Suggestion {
   icon: "pin" | "home" | "tag" | "sparkle";
 }
 
+// Transaction intent keywords — these indicate buy/sell/rent intent and should
+// map to listing_type rather than polluting the free-text `q` search.
+// Without this, a query like "house for sell in ojochal" would pass "sell"
+// into the DB regex search, matching zero properties.
+const SALE_INTENT_KEYWORDS = [
+  "sell",
+  "sale",
+  "buy",
+  "purchase",
+  "buying",
+  "selling",
+  "comprar",
+  "vender",
+  "venta",
+  "compra",
+];
+const LEASE_INTENT_KEYWORDS = [
+  "rent",
+  "renting",
+  "lease",
+  "leasing",
+  "alquilar",
+  "arrendar",
+  "arriendo",
+];
+
 function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
   const params: Record<string, string> = {};
   const detected: DetectedItem[] = [];
@@ -258,23 +311,58 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
 
   let remainingText = normalized;
 
-  // 1. Match Area
+  // 1. Match Area (check sub-locations first for more specific match)
   let matchedAreaKey = "";
-  for (const [key, slug] of Object.entries(AREA_KEYWORDS)) {
-    if (normalized.includes(key)) {
-      params.area = slug;
-      matchedAreaKey = key;
-      detected.push({
-        type: "area",
-        label: AREA_LABELS[slug] || slug,
-        icon: "pin",
-        value: slug,
-      });
-      break;
+
+  // Sort keys by length descending to match longer phrases first
+  const sortedSubLocationKeywords = Object.entries(SUB_LOCATION_KEYWORDS).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+  const sortedAreaKeywords = Object.entries(AREA_KEYWORDS).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+
+  // Try sub-location keywords first (more specific)
+  for (const [key, subSlug] of sortedSubLocationKeywords) {
+    if (remainingText.includes(key)) {
+      if (!params.sub_location) {
+        params.area = "perez-zeledon"; // Sub-locations are all in PZ
+        params.sub_location = subSlug;
+        matchedAreaKey = key;
+        detected.push({
+          type: "area",
+          label: AREA_LABELS[subSlug] || subSlug,
+          icon: "pin",
+          value: subSlug,
+        });
+      }
+      // Remove all occurrences of keys that map to the same sub_location
+      if (params.sub_location === subSlug) {
+        remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+      }
     }
   }
-  if (matchedAreaKey) {
-    remainingText = remainingText.replace(matchedAreaKey, " ");
+
+  // If no sub-location matched, try main area keywords
+  if (!matchedAreaKey) {
+    for (const [key, slug] of sortedAreaKeywords) {
+      if (remainingText.includes(key)) {
+        if (!params.area) {
+          params.area = slug;
+          matchedAreaKey = key;
+          detected.push({
+            type: "area",
+            label: AREA_LABELS[slug] || slug,
+            icon: "pin",
+            value: slug,
+          });
+        }
+        // Remove all occurrences of keys that map to the same area
+        if (params.area === slug) {
+          remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+        }
+      }
+    }
   }
 
   // 2. Match Property Type
@@ -372,6 +460,27 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
 
   if (tags.length > 0) {
     params.tags = tags.join(",");
+  }
+
+  // 3c. Match transaction intent keywords (buy/sell/rent) → listing_type
+  // These are stripped from remainingText to prevent them from appearing in `q`.
+  // Note: listing_type is also set by the toggle, but smart search intent overrides.
+  for (const keyword of LEASE_INTENT_KEYWORDS) {
+    const intentRegex = new RegExp(`\\b${keyword}\\b`, "gi");
+    if (intentRegex.test(remainingText)) {
+      params.listing_type = "Lease";
+      remainingText = remainingText.replace(intentRegex, " ");
+    }
+  }
+  for (const keyword of SALE_INTENT_KEYWORDS) {
+    const intentRegex = new RegExp(`\\b${keyword}\\b`, "gi");
+    if (intentRegex.test(remainingText)) {
+      // Only set to Sale if not already set to Lease (rent takes priority when both present)
+      if (!params.listing_type) {
+        params.listing_type = "Sale";
+      }
+      remainingText = remainingText.replace(intentRegex, " ");
+    }
   }
 
   // 3b. Match Feature Keywords (pool, furnished, etc.)
@@ -492,11 +601,35 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
   }
 
   // 5. Match Bedrooms / Bathrooms count
-  const bedMatch = normalized.match(
-    /(\d+)\s*(?:bed|bedroom|bedrooms|hab|habitacion|habitaciones|dormitorio|dormitorios|cuarto|cuartos)/,
+  // Number-word → digit mapping for natural language bedroom/bathroom parsing
+  const NUMBER_WORDS: Record<string, number> = {
+    // English
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    // Spanish
+    un: 1,
+    uno: 1,
+    una: 1,
+    dos: 2,
+    tres: 3,
+    cuatro: 4,
+    cinco: 5,
+  };
+  const numberWordPattern = Object.keys(NUMBER_WORDS).join("|");
+
+  // Match digit OR number-word before bedroom keywords (includes room/rooms/recámara/pieza synonyms)
+  const bedRegex = new RegExp(
+    `(?:(\\d+)|(${numberWordPattern}))\\s*(?:bed|beds|bedroom|bedrooms|room|rooms|hab|habitacion|habitaciones|habitación|habitaciónes|dormitorio|dormitorios|cuarto|cuartos|recamara|recamaras|recámara|recámaras|pieza|piezas)`,
+    "i",
   );
-  if (bedMatch && bedMatch[1]) {
-    const beds = parseInt(bedMatch[1], 10);
+  const bedMatch = remainingText.match(bedRegex);
+  if (bedMatch) {
+    const beds = bedMatch[1]
+      ? parseInt(bedMatch[1], 10)
+      : (NUMBER_WORDS[bedMatch[2].toLowerCase()] ?? 0);
     if (beds >= 1 && beds <= 5) {
       params.bedrooms = String(beds);
       detected.push({
@@ -509,9 +642,16 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
     remainingText = remainingText.replace(bedMatch[0], " ");
   }
 
-  const bathMatch = normalized.match(/(\d+)\s*(?:bath|bathroom|bathrooms|baño|baños|bañ)/);
-  if (bathMatch && bathMatch[1]) {
-    const baths = parseInt(bathMatch[1], 10);
+  // Match digit OR number-word before bathroom keywords
+  const bathRegex = new RegExp(
+    `(?:(\\d+)|(${numberWordPattern}))\\s*(?:bath|baths|bathroom|bathrooms|baño|baños|bañ)`,
+    "i",
+  );
+  const bathMatch = remainingText.match(bathRegex);
+  if (bathMatch) {
+    const baths = bathMatch[1]
+      ? parseInt(bathMatch[1], 10)
+      : (NUMBER_WORDS[bathMatch[2].toLowerCase()] ?? 0);
     if (baths >= 1 && baths <= 4) {
       params.bathrooms = String(baths);
       detected.push({
@@ -603,6 +743,8 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
   }
 
   // Filter stop words and pull out keyword query q
+  // Includes transaction intent words as safety net (they should already be
+  // stripped above, but this prevents edge cases from polluting search).
   const STOP_WORDS = new Set([
     "con",
     "de",
@@ -630,6 +772,10 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
     "near",
     "cerca",
     "the",
+    // Transaction intent words (buy/sell/rent) — already handled above but
+    // kept here as safety net to prevent DB regex misses
+    ...SALE_INTENT_KEYWORDS,
+    ...LEASE_INTENT_KEYWORDS,
   ]);
 
   const words = remainingText.split(/[\s,.\-/?!|;:]+/);
@@ -821,9 +967,12 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
   // Traditional Search filter states
   const [selectedType, setSelectedType] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
+  const [selectedSubLocation, setSelectedSubLocation] = useState("");
   const [priceMin, setPriceMin] = useState<number | undefined>(undefined);
   const [priceMax, setPriceMax] = useState<number | undefined>(undefined);
-  const [areas, setAreas] = useState<{ slug: string; label: string }[]>([]);
+  const [areas, setAreas] = useState<
+    { slug: string; label: string; parentSlug?: string; isSubLocation?: boolean }[]
+  >([]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -884,7 +1033,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
   const containerClass =
     variant === "desktop-overlay"
       ? "pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 px-6"
-      : "px-4 py-3 md:hidden";
+      : "px-4 py-3 md:hidden bg-brand-navy";
 
   const shellClass =
     variant === "desktop-overlay"
@@ -915,6 +1064,9 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
       }
       if (selectedArea) {
         params.area = selectedArea;
+      }
+      if (selectedSubLocation) {
+        params.sub_location = selectedSubLocation;
       }
       if (priceMin !== undefined && priceMin !== null && !isNaN(priceMin)) {
         params.price_min = String(priceMin);
@@ -947,6 +1099,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
     router,
     selectedType,
     selectedArea,
+    selectedSubLocation,
     priceMin,
     priceMax,
     addEntry,
@@ -1092,6 +1245,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                   <input
                     ref={inputRef}
                     type="search"
+                    role="combobox"
                     value={query}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
@@ -1102,6 +1256,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                     placeholder=""
                     aria-label={t("searchPlaceholder")}
                     aria-expanded={showSuggestions}
+                    aria-controls="hero-search-suggestions"
                     aria-haspopup="listbox"
                     aria-autocomplete="list"
                     className={cn(
@@ -1235,6 +1390,7 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                 <div
                   ref={dropdownRef}
                   role="listbox"
+                  id="hero-search-suggestions"
                   className="absolute left-0 right-0 top-full mt-2 z-50 rounded-xl bg-brand-navy/95 backdrop-blur-xl border border-white/15 shadow-[0_15px_40px_rgba(0,0,0,0.5)] overflow-hidden animate-in fade-in-0 slide-in-from-top-2 duration-200"
                 >
                   {/* Group suggestions by category */}
@@ -1325,32 +1481,23 @@ export function HeroSearchShell({ variant }: { variant: Variant }) {
                   </div>
                 </div>
 
-                {/* Area / Location Filter */}
+                {/* Area / Location Filter — Searchable Combobox */}
                 <div className="flex flex-col gap-1.5 w-full">
                   <label className="text-[10px] uppercase tracking-widest font-bold text-white/60">
                     {tSearch("filters.location")}
                   </label>
-                  <div className="relative flex items-center bg-black/40 border border-white/20 rounded-xl px-3 py-2.5 focus-within:border-brand-gold/70 focus-within:ring-1 focus-within:ring-brand-gold/30 transition-all duration-200">
-                    <select
-                      value={selectedArea}
-                      onChange={(e) => setSelectedArea(e.target.value)}
-                      className="w-full bg-transparent text-sm text-white outline-none cursor-pointer appearance-none pr-8 select-none"
-                    >
-                      <option value="" className="bg-brand-navy text-white">
-                        {tSearch("filters.locationAll")}
-                      </option>
-                      {(areas.length > 0 ? areas : FALLBACK_AREAS).map((area) => (
-                        <option
-                          key={area.slug}
-                          value={area.slug}
-                          className="bg-brand-navy text-white"
-                        >
-                          {area.label}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 h-4 w-4 text-white/50 pointer-events-none" />
-                  </div>
+                  <AreaSearchCombobox
+                    areas={areas}
+                    selectedArea={selectedArea}
+                    selectedSubLocation={selectedSubLocation}
+                    onAreaChange={(areaSlug: string, subSlug: string) => {
+                      setSelectedArea(areaSlug);
+                      setSelectedSubLocation(subSlug);
+                    }}
+                    placeholder={locale === "es" ? "Buscar zona..." : "Search location..."}
+                    locale={locale}
+                    variant="dark"
+                  />
                 </div>
 
                 {/* Minimum Price Filter */}

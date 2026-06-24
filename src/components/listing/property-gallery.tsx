@@ -19,20 +19,10 @@ import type { OptimizedImage } from "@/types/images";
 
 interface PropertyGalleryProps {
   images: OptimizedImage[];
-  youtubeUrl?: string | null;
   propertyTitle: string;
 }
 
-/**
- * Extracts the YouTube video ID from a YouTube URL.
- * Supports youtube.com/watch?v=... and youtu.be/... formats.
- */
-function extractYoutubeVideoId(url: string): string | null {
-  const match = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  return match ? match[1] : null;
-}
-
-export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyGalleryProps) {
+export function PropertyGallery({ images, propertyTitle }: PropertyGalleryProps) {
   const t = useTranslations("PropertyGallery");
   // Single index used for both the hero gallery and the lightbox navigation.
   // This ensures `gallery-photo-count` (in the hero) always reflects the current photo,
@@ -59,9 +49,6 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
     if (swipeX === 1) setActiveIndex((i) => Math.max(i - 1, 0));
     if (swipeX === -1) setActiveIndex((i) => Math.min(i + 1, total - 1));
   });
-
-  // YouTube embed
-  const videoId = youtubeUrl ? extractYoutubeVideoId(youtubeUrl) : null;
 
   if (!images || images.length === 0) {
     return (
@@ -347,9 +334,6 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
             fill
             sizes="100vw"
             priority={activeIndex === 0}
-            {...(activeImage.blurDataUrl
-              ? { placeholder: "blur" as const, blurDataURL: activeImage.blurDataUrl }
-              : {})}
             className="object-cover"
           />
 
@@ -430,19 +414,6 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
         ))}
       </div>
 
-      {/* YouTube video embed (AC #5) */}
-      {videoId && (
-        <div data-testid="gallery-video-embed" className="aspect-video w-full mt-4">
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}`}
-            title={t("videoTitle")}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full rounded-lg"
-          />
-        </div>
-      )}
-
       {/* Lightbox (Radix UI Dialog) */}
       <Dialog.Root open={lightboxOpen} onOpenChange={setLightboxOpen}>
         <Dialog.Portal>
@@ -460,9 +431,6 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
                   fallbackSrc={activeImage.fallbackSrc || "/property-placeholder.svg"}
                   fill
                   sizes="100vw"
-                  {...(activeImage.blurDataUrl
-                    ? { placeholder: "blur" as const, blurDataURL: activeImage.blurDataUrl }
-                    : {})}
                   className="object-contain"
                 />
               </div>
@@ -502,6 +470,19 @@ export function PropertyGallery({ images, youtubeUrl, propertyTitle }: PropertyG
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
+
+      {/* Preload adjacent images for immediate display upon navigation */}
+      <div
+        className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
+        aria-hidden="true"
+      >
+        {activeIndex > 0 && (
+          <PropertyImage src={images[activeIndex - 1].src} alt="" fill sizes="100vw" priority />
+        )}
+        {activeIndex < images.length - 1 && (
+          <PropertyImage src={images[activeIndex + 1].src} alt="" fill sizes="100vw" priority />
+        )}
+      </div>
     </div>
   );
 }

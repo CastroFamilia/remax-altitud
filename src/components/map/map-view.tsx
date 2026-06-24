@@ -10,18 +10,20 @@
  */
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { Map as MapboxMap, Marker } from "react-map-gl";
+import { Map as MapboxMap, Marker, NavigationControl } from "react-map-gl";
 import type { MapRef } from "react-map-gl";
 import Supercluster from "supercluster";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { MAPBOX_TOKEN, MAP_STYLE, MAX_BOUNDS } from "@/lib/map/config";
+import { MAPBOX_TOKEN, MAP_STYLE, MAP_STYLE_SATELLITE, MAX_BOUNDS } from "@/lib/map/config";
+import { Layers } from "lucide-react";
 import { boundsFromMapboxEvent } from "@/lib/map/geo-utils";
 import { useMapStore } from "@/store/map-store";
 import { MapClusterPin } from "@/components/map/map-cluster-pin";
 import { MapPricePin } from "@/components/map/map-price-pin";
 import { MapPropertyPopup } from "@/components/map/map-property-popup";
 import type { OptimizedImage } from "@/types/images";
+import type { UnitSystem } from "@/lib/utils/units";
 
 export type MapBounds = {
   north: number;
@@ -39,7 +41,12 @@ export type MapProperty = {
   bedrooms: number | null;
   bathrooms: number | null;
   lotSizeM2: number | null;
+  constructionM2?: number | null;
   zmtStatus: string;
+  propertyType?: string;
+  listingType?: string;
+  currency?: string | null;
+  apiRaw?: unknown;
   images: OptimizedImage[];
   latitude: number;
   longitude: number;
@@ -51,6 +58,10 @@ interface MapViewProps {
   onBoundsChange?: (bounds: MapBounds) => void;
   /** Story 3.8: When set, map flies to these coordinates with given zoom */
   flyToTarget?: { lat: number; lng: number; zoom?: number } | null;
+  /** When set, map fits exactly to this bounding box [[west, south], [east, north]] */
+  fitBoundsTarget?: [[number, number], [number, number]] | null;
+  /** Unit system preference for area display in popups */
+  unitSystem?: UnitSystem;
 }
 
 type ClusterFeature = GeoJSON.Feature<
@@ -74,22 +85,38 @@ type PointFeature = GeoJSON.Feature<
 // Stable world bbox for initial cluster rendering before map bounds are known
 const INITIAL_BBOX: [number, number, number, number] = [-180, -85, 180, 85];
 
-export function MapView({ properties, locale, onBoundsChange, flyToTarget }: MapViewProps) {
+export function MapView({
+  properties,
+  locale,
+  onBoundsChange,
+  flyToTarget,
+  fitBoundsTarget,
+  unitSystem,
+}: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const { center, zoom, setCenter, setZoom, setBounds } = useMapStore();
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
   const [currentZoom, setCurrentZoom] = useState(zoom);
   const [currentBounds, setCurrentBounds] =
     useState<[number, number, number, number]>(INITIAL_BBOX);
+  const [mapStyle, setMapStyle] = useState(MAP_STYLE);
 
   // Convert properties to GeoJSON points for Supercluster
   const points = useMemo<GeoJSON.Feature<GeoJSON.Point, { cluster: false; propertyId: string }>[]>(
     () =>
-      properties.map((p) => ({
-        type: "Feature",
-        geometry: { type: "Point", coordinates: [p.longitude, p.latitude] },
-        properties: { cluster: false, propertyId: p.id },
-      })),
+      properties
+        .filter(
+          (p) =>
+            typeof p.latitude === "number" &&
+            typeof p.longitude === "number" &&
+            !Number.isNaN(p.latitude) &&
+            !Number.isNaN(p.longitude),
+        )
+        .map((p) => ({
+          type: "Feature",
+          geometry: { type: "Point", coordinates: [p.longitude as number, p.latitude as number] },
+          properties: { cluster: false, propertyId: p.id },
+        })),
     [properties],
   );
 
@@ -211,6 +238,13 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
     }
   }, [flyToTarget]);
 
+  // Fit bounds when fitBoundsTarget changes (Auto-pan to search results)
+  useEffect(() => {
+    if (fitBoundsTarget && mapRef.current) {
+      mapRef.current.fitBounds(fitBoundsTarget, { padding: 50, duration: 800 });
+    }
+  }, [fitBoundsTarget]);
+
   // Resize the Mapbox canvas when the container element changes size
   // (e.g. switching between split 35% and full-map 100% views).
   const containerRef = useRef<HTMLDivElement>(null);
@@ -229,6 +263,39 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
     return () => observer.disconnect();
   }, []);
 
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div className="w-full h-full min-h-[400px] bg-slate-100 flex items-center justify-center border border-dashed border-slate-300 rounded-xl shadow-inner">
+        <div className="text-center p-6 space-y-2">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-200 text-slate-400 mb-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-bold text-slate-700">Map Disabled</h3>
+          <p className="text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
+            Please configure{" "}
+            <code className="px-1.5 py-0.5 bg-slate-200 rounded text-slate-700 font-mono text-xs">
+              NEXT_PUBLIC_MAPBOX_TOKEN
+            </code>{" "}
+            in your environment variables to enable the interactive map.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
@@ -239,7 +306,7 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
       <MapboxMap
         ref={mapRef}
         mapboxAccessToken={MAPBOX_TOKEN}
-        mapStyle={MAP_STYLE}
+        mapStyle={mapStyle}
         initialViewState={{
           longitude: center.lng,
           latitude: center.lat,
@@ -250,7 +317,32 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
         onLoad={handleMapLoad}
         onMove={handleMove}
         onMoveEnd={handleMoveEnd}
+        onClick={(e) => {
+          // Only close the popup when clicking on the map background,
+          // not when clicking on a marker (pin) or the popup card itself.
+          const target = e.originalEvent?.target as HTMLElement | null;
+          if (target?.closest?.(".mapboxgl-marker, .mapboxgl-popup")) return;
+          setSelectedPropertyId(null);
+        }}
       >
+        <NavigationControl position="bottom-right" showCompass={false} />
+
+        {/* Map Style Toggle */}
+        <div className="absolute top-4 right-4 z-10">
+          <button
+            type="button"
+            className="bg-white p-2 rounded-md shadow-md border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors text-slate-700"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setMapStyle((prev) => (prev === MAP_STYLE ? MAP_STYLE_SATELLITE : MAP_STYLE));
+            }}
+            title={mapStyle === MAP_STYLE ? "Switch to Satellite view" : "Switch to Map view"}
+          >
+            <Layers className="w-5 h-5" />
+          </button>
+        </div>
+
         {/* Render clusters and individual pins */}
         {clusters.map((feature) => {
           const [lng, lat] = feature.geometry.coordinates;
@@ -293,6 +385,7 @@ export function MapView({ properties, locale, onBoundsChange, flyToTarget }: Map
             property={selectedProperty}
             locale={locale}
             onClose={() => setSelectedPropertyId(null)}
+            unitSystem={unitSystem}
           />
         )}
       </MapboxMap>

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
  * Temporary endpoint to run the full sync pipeline with the new image check.
  * Accessible locally to trigger the fix.
  */
-export async function GET(req: Request) {
+export async function GET() {
   try {
     console.log("[retroactive-images] Triggering sync pipeline...");
     const result = await runSyncPipeline();

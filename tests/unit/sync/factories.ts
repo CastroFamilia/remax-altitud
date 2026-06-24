@@ -95,6 +95,9 @@ export function makeRawAgent(overrides: Partial<RawAgent> = {}): RawAgent {
     officeId: "FEA8746D-CC1D-41B8-89F3-D04AC98274AF",
     photoUrl: "https://cdn.example.com/emma.jpg",
     apiRaw: {},
+    videoUrl: null,
+    bioEn: null,
+    bioEs: null,
     ...overrides,
   };
 }

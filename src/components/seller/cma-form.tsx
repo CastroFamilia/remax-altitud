@@ -139,7 +139,11 @@ interface CmaFormProps {
   officeName?: string;
 }
 
-export function CmaForm({ locale, fallbackAgent, officeName = "REMAX Altitud" }: CmaFormProps) {
+export function CmaForm({
+  locale,
+  fallbackAgent: _fallbackAgent,
+  officeName = "REMAX Altitud",
+}: CmaFormProps) {
   const t = useTranslations("CmaForm");
   const { unitSystem, toggleUnits } = useLocaleUnits(locale);
 
@@ -151,7 +155,6 @@ export function CmaForm({ locale, fallbackAgent, officeName = "REMAX Altitud" }:
   // ---- Form state ----
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [matchedAgent, setMatchedAgent] = useState<Partial<Agent> | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<CmaFormData>({
@@ -238,9 +241,6 @@ export function CmaForm({ locale, fallbackAgent, officeName = "REMAX Altitud" }:
       const body = await response.json();
 
       if (response.status === 201) {
-        if (body.agent) {
-          setMatchedAgent(body.agent);
-        }
         setSubmitting(false);
         setSubmitted(true);
       } else if (response.status === 409) {
@@ -274,17 +274,7 @@ export function CmaForm({ locale, fallbackAgent, officeName = "REMAX Altitud" }:
 
   // ---- Post-submit: show confirmation screen ----
   if (submitted) {
-    const agentToShow = (matchedAgent as Agent | null) ?? fallbackAgent;
-    if (agentToShow) {
-      return (
-        <SellerConfirmation
-          agent={agentToShow}
-          officeName={officeName}
-          locale={locale}
-          source="cma"
-        />
-      );
-    }
+    return <SellerConfirmation agent={null} officeName={officeName} locale={locale} source="cma" />;
   }
 
   return (

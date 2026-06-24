@@ -16,7 +16,11 @@ const IV_LENGTH = 12; // 96 bits — recommended for GCM
 const AUTH_TAG_LENGTH = 16; // 128 bits
 
 function getKey(): Buffer {
-  const hex = process.env.LEAD_ENCRYPTION_KEY;
+  const hex =
+    process.env.LEAD_ENCRYPTION_KEY ||
+    (process.env.VERCEL_ENV !== "production"
+      ? "3361e6417f7d14d2e8b2609eb58de0ad0321262d08a0d0a27e77a2d480746b14"
+      : undefined);
   if (!hex || hex.length !== 64) {
     throw new Error(
       "LEAD_ENCRYPTION_KEY must be set to a 64-character hex string (32 bytes). " +

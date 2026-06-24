@@ -27,10 +27,14 @@ export function MapPricePin({ price, isSelected, onClick }: MapPricePinProps) {
       role="button"
       tabIndex={0}
       aria-label={`Property priced at ${abbreviated}`}
-      onClick={onClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
+          e.stopPropagation();
           onClick();
         }
       }}

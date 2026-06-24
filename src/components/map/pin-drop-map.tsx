@@ -10,19 +10,27 @@
  */
 
 import { useState, useCallback } from "react";
-import { Map as MapboxMap, Marker } from "react-map-gl";
+import { Map as MapboxMap, Marker, NavigationControl } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { MAPBOX_TOKEN, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, MAP_STYLE } from "@/lib/map/config";
+import {
+  MAPBOX_TOKEN,
+  DEFAULT_MAP_CENTER,
+  DEFAULT_MAP_ZOOM,
+  MAP_STYLE,
+  MAP_STYLE_SATELLITE,
+} from "@/lib/map/config";
+import { Layers } from "lucide-react";
 
 interface PinDropMapProps {
   /** Current pin position — null if not yet placed */
   lat: number | null;
   lng: number | null;
   /** Called when user drops a pin */
-  onMapClick: (coords: { lat: number; lng: number }) => void;
+  onMapClick?: (coords: { lat: number; lng: number }) => void;
   "data-testid"?: string;
   className?: string;
+  readOnly?: boolean;
 }
 
 export function PinDropMap({
@@ -31,31 +39,68 @@ export function PinDropMap({
   onMapClick,
   "data-testid": testId = "location-map",
   className = "h-64 w-full rounded-lg",
+  readOnly = false,
 }: PinDropMapProps) {
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapStyle, setMapStyle] = useState(MAP_STYLE);
 
   const handleClick = useCallback(
     (evt: { lngLat: { lat: number; lng: number } }) => {
-      onMapClick({ lat: evt.lngLat.lat, lng: evt.lngLat.lng });
+      if (readOnly) return;
+      onMapClick?.({ lat: evt.lngLat.lat, lng: evt.lngLat.lng });
     },
-    [onMapClick],
+    [onMapClick, readOnly],
   );
+
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div
+        data-testid={testId}
+        className={`${className} bg-slate-100 flex items-center justify-center border border-dashed border-slate-300`}
+      >
+        <div className="text-center p-4">
+          <p className="text-sm font-semibold text-slate-500 mb-1">Interactive Map Disabled</p>
+          <p className="text-xs text-slate-400">Mapbox access token is required.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const validLat = typeof lat === "number" && !Number.isNaN(lat) ? lat : DEFAULT_MAP_CENTER.lat;
+  const validLng = typeof lng === "number" && !Number.isNaN(lng) ? lng : DEFAULT_MAP_CENTER.lng;
 
   return (
     <div data-testid={testId} className={className}>
       <MapboxMap
         mapboxAccessToken={MAPBOX_TOKEN}
         initialViewState={{
-          latitude: lat ?? DEFAULT_MAP_CENTER.lat,
-          longitude: lng ?? DEFAULT_MAP_CENTER.lng,
+          latitude: validLat,
+          longitude: validLng,
           zoom: DEFAULT_MAP_ZOOM,
         }}
-        mapStyle={MAP_STYLE}
-        onClick={handleClick}
+        mapStyle={mapStyle}
+        onClick={readOnly ? undefined : handleClick}
         onLoad={() => setMapLoaded(true)}
         style={{ width: "100%", height: "100%", borderRadius: "0.5rem" }}
-        cursor="crosshair"
+        cursor={readOnly ? "grab" : "crosshair"}
       >
+        <NavigationControl position="bottom-right" showCompass={false} />
+
+        {/* Map Style Toggle */}
+        <div className="absolute top-4 right-4 z-10">
+          <button
+            type="button"
+            className="bg-white p-2 rounded-md shadow-md border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors text-slate-700"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setMapStyle((prev) => (prev === MAP_STYLE ? MAP_STYLE_SATELLITE : MAP_STYLE));
+            }}
+            title={mapStyle === MAP_STYLE ? "Switch to Satellite view" : "Switch to Map view"}
+          >
+            <Layers className="w-5 h-5" />
+          </button>
+        </div>
         {mapLoaded && lat !== null && lng !== null && <Marker latitude={lat} longitude={lng} />}
       </MapboxMap>
     </div>

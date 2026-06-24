@@ -14,7 +14,7 @@
     "santaElenaHills": "Santa Elena Hills",
     "allCommunities": "All Communities",
     "sellYourProperty": "Sell Your Property",
-    "about": "About",
+    "about": "The Altitud Advantage",
     "ourTeam": "Our Team",
     "contact": "Contact",
     "ourAgents": "Our Agents",
@@ -22,7 +22,9 @@
     "vipBuyerService": "VIP Buyer Service",
     "language": "Language",
     "currency": "Currency",
-    "preferences": "Preferences"
+    "preferences": "Preferences",
+    "faq": "Relocation FAQ",
+    "blog": "Blog"
   },
   "LanguageToggle": {
     "switchLanguage": "Switch language",
@@ -42,14 +44,14 @@
     "followUs": "Follow Us",
     "allRightsReserved": "All rights reserved",
     "sellWithUs": "Sell with Us",
-    "aboutUs": "About Us",
+    "aboutUs": "The Altitud Advantage",
     "ourAgents": "Our Agents",
     "vipBuyer": "VIP Buyer Service",
     "contactUs": "Contact Us",
     "properties": "Properties",
     "communities": "Communities",
     "areas": "Areas",
-    "about": "About",
+    "about": "The Altitud Advantage",
     "contact": "Contact",
     "joinTeam": "Join Our Team",
     "privacy": "Privacy Policy",
@@ -59,7 +61,9 @@
     "socialInstagram": "Visit REMAX Altitud on Instagram",
     "socialYoutube": "Visit REMAX Altitud on YouTube",
     "socialWhatsApp": "Contact REMAX Altitud via WhatsApp",
-    "socialEmail": "Email REMAX Altitud"
+    "socialEmail": "Email REMAX Altitud",
+    "faq": "Relocation FAQ",
+    "blog": "Blog"
   },
   "HomePage": {
     "title": "REMAX Altitud",
@@ -116,13 +120,33 @@
       "body": "You only see what is published; we know what is about to hit the market. We search our database, connect with other agencies, and scout the areas you love to bring you the perfect option.",
       "ctaText": "We make buying or renting simple.",
       "ctaButton": "VIP Search"
+    },
+    "latestBlogPosts": {
+      "heading": "Latest Articles",
+      "description": "Insights, guides, and lifestyle mapping from our team.",
+      "viewAll": "View all articles"
     }
   },
   "AboutPage": {
-    "metaTitle": "About REMAX Altitud — Costa Rica's Southern Zone",
-    "metaDescription": "Learn about REMAX Altitud and Altitud Cero — the premier real estate team serving Pérez Zeledón, Dominical, and Uvita.",
-    "pageTitle": "About REMAX Altitud",
-    "intro": "REMAX Altitud and REMAX Altitud Cero unite two offices under one promise: guide international and local clients through buying, selling, and investing in Costa Rica's Southern Zone — in the language they prefer.",
+    "metaTitle": "The Altitud Advantage — REMAX Altitud",
+    "metaDescription": "Discover the Altitud Advantage: up to 80% financing, free custom architectural design plans, complimentary legal consultation, and our premier offices serving Costa Rica's Southern Zone.",
+    "pageTitle": "The Altitud Advantage",
+    "intro": "We do more than list properties—we pave the path to your dream lifestyle. Buy, sell, or build with exclusive benefits you won't find anywhere else.",
+    "advantage": {
+      "heading": "The Altitud Advantage",
+      "financing": {
+        "title": "Up to 80% Financing",
+        "desc": "Secure the capital you need. We help facilitate financing up to 80% through our banking network, tailored to your nationality, credit score, and selected property."
+      },
+      "architect": {
+        "title": "Free Architectural Design",
+        "desc": "Visualize your future home. Benefit from our exclusive partnerships (convenios) with premier building companies that will design your property plans entirely free of charge."
+      },
+      "legal": {
+        "title": "Free Legal Consultation",
+        "desc": "Invest with total confidence. Our trusted partner attorneys provide a complimentary initial consultation to review contracts, titles, and concession structures (ZMT)."
+      }
+    },
     "officesHeading": "Our Offices",
     "officesIntro": "Two offices, one team — covering the mountains of Pérez Zeledón and the Pacific coast from Dominical to Uvita.",
     "office": {
@@ -219,6 +243,7 @@
     "metaDescription": "Become a REMAX Altitud agent. Multilingual lead generation, training, and the REMAX brand — in Costa Rica's Southern Zone.",
     "pageTitle": "Join Our Team",
     "intro": "Grow your real estate career with REMAX Altitud. Leads in six languages, proven tools, and offices in Pérez Zeledón and Dominical/Uvita.",
+    "businessWarning": "The real estate industry is excellent, but it is not a job, it is a business to which you must dedicate 100% of your focus.",
     "benefitsHeading": "Why REMAX Altitud",
     "benefit1Title": "Global brand",
     "benefit1Body": "Backed by the world's most recognized real estate brand.",
@@ -244,12 +269,7 @@
       "licenseOptionStudying": "Studying for license",
       "licenseOptionNone": "Not yet licensed",
       "languagesLabel": "Languages spoken",
-      "languageEN": "English",
-      "languageES": "Spanish",
-      "languageIT": "Italian",
-      "languageDE": "German",
-      "languageFR": "French",
-      "languagePT": "Portuguese",
+      "languagesPlaceholder": "E.g: Fluent English, Basic Spanish...",
       "areaLabel": "Area of interest",
       "areaOptionPZ": "Pérez Zeledón",
       "areaOptionDOM": "Dominical / Uvita",
@@ -261,6 +281,10 @@
       "experiencePlaceholder": "Describe your background (years of experience, achievements, or niche)...",
       "commissionLabel": "How do you feel about working on a commission-only structure?",
       "commissionPlaceholder": "Share your perspective or preparedness for a commission-only role...",
+      "timeLabel": "How much time do you have to dedicate to real estate?",
+      "timePlaceholder": "E.g. Full-time, part-time...",
+      "financialLabel": "Since it is a commission-based business, it's important to have financial backing until the first sale. Do you have financial backing?",
+      "financialPlaceholder": "Yes, I have savings / Not at the moment...",
       "messageLabel": "Anything else we should know? (optional)",
       "messagePlaceholder": "Tell us about your experience or goals.",
       "submit": "Send inquiry",
@@ -343,6 +367,10 @@
       "type": "Type",
       "typeAll": "All Types",
       "price": "Price",
+      "minPrice": "Min",
+      "maxPrice": "Max",
+      "noMin": "No Min",
+      "noMax": "No Max",
       "pricePlaceholder": "$0 – Any",
       "bedrooms": "Beds",
       "bedroomsAny": "Any",
@@ -360,10 +388,16 @@
       "clearAll": "Clear all",
       "activeChip": "{label}: {value}",
       "dismiss": "Remove {label} filter",
-      "listingType": "Listing Type",
-      "listingTypeAll": "All Transactions",
+      "listingType": "Transaction",
+      "listingTypeAll": "Transaction",
       "listingTypeSale": "For Sale",
       "listingTypeLease": "For Lease",
+      "region": "Region",
+      "regionAll": "All",
+      "regionMountain": "Mountain",
+      "regionBeach": "Beach",
+      "tags": "Filters",
+      "clearTags": "Remove filters",
       "propertyTypes": {
         "Casa": "House",
         "Apartamento": "Apartment",
@@ -401,7 +435,16 @@
         "Con río": "With river",
         "Con cascada": "With waterfall",
         "Con vista al mar": "Ocean view",
-        "Con vista a la montaña": "Mountain view"
+        "Con vista a la montaña": "Mountain view",
+        "Para inversión": "Investment property",
+        "Retiro": "Retire",
+        "Potencial de desarrollo": "Development potential",
+        "Eco amigable": "Eco-friendly",
+        "Off grid": "Off grid",
+        "Fácil acceso": "Easy access",
+        "Requiere 4x4": "4x4 required",
+        "Árboles frutales": "Fruit trees",
+        "Terreno de conservación": "Conservation-friendly land"
       }
     },
     "presets": {
@@ -423,6 +466,18 @@
         "concession": "Concession",
         "zmt_restricted": "ZMT Restricted"
       },
+      "listingType": {
+        "Sale": "For Sale",
+        "Lease": "For Lease"
+      },
+      "typeBadge": {
+        "House": "House",
+        "Lot": "Lot",
+        "Farm/Ranch": "Farm",
+        "Apartment": "Apt",
+        "Condo": "Condo",
+        "Commercial": "Commercial"
+      },
       "specs": {
         "beds": "{count} bed",
         "baths": "{count} bath",
@@ -441,6 +496,14 @@
     "region": {
       "mountain": "Mountain",
       "beach": "Beach"
+    },
+    "typeBadge": {
+      "House": "House",
+      "Lot": "Lot",
+      "Farm/Ranch": "Farm",
+      "Apartment": "Apt",
+      "Condo": "Condo",
+      "Commercial": "Commercial"
     },
     "zmtStatus": {
       "titled": "Titled Property",
@@ -484,6 +547,7 @@
       "Sale": "For Sale",
       "Lease": "For Lease"
     },
+    "videoTitle": "Property Video Tour",
     "description": "Description",
     "features": "Features & Amenities",
     "specs": {
@@ -551,6 +615,7 @@
     "transparencyNote": "Your inquiry will be routed directly to the listing agent for this property."
   },
   "AgentProfile": {
+    "contactAgent": "Contact {name}",
     "listings": "listings",
     "whatsapp": "WhatsApp",
     "email": "Email",
@@ -561,6 +626,7 @@
     "clearFilters": "Clear filters",
     "indexPageTitle": "Meet Our Agents",
     "indexPageDescription": "Browse REMAX Altitud agents — find an agent who speaks your language and knows your area.",
+    "joinTeamCta": "Join our team",
     "filterByOffice": "Filter by office",
     "filterByLanguage": "Filter by language",
     "allOffices": "All offices",
@@ -642,7 +708,7 @@
       "nextButtonAriaLabel": "Continue to next step",
       "backButton": "Back",
       "backButtonAriaLabel": "Return to previous step",
-      "submitButton": "Submit My Property",
+      "submitButton": "SEND",
       "submitButtonAriaLabel": "Submit your property listing request",
       "submittingButton": "Submitting...",
       "step1": {
@@ -716,7 +782,9 @@
     "confirmation": {
       "heading": "Property Submitted Successfully!",
       "subheading": "Your dedicated agent will contact you within 24 hours.",
+      "officeSubheading": "Our team will contact you within 24 hours.",
       "agentMatchHeading": "Your Agent Match",
+      "officeContactHeading": "Our Office",
       "whatsappButtonAriaLabel": "Contact {agentName} via WhatsApp",
       "emailButtonAriaLabel": "Contact {agentName} via email",
       "browseWhileWaiting": "While you wait, explore what's selling in your area"
@@ -774,7 +842,9 @@
     "confirmation": {
       "heading": "CMA Request Received!",
       "subheading": "Your agent will prepare your Comparative Market Analysis and contact you within 24 hours.",
+      "officeSubheading": "Our team will prepare your Comparative Market Analysis and contact you within 24 hours.",
       "agentMatchHeading": "Your Agent Match",
+      "officeContactHeading": "Our Office",
       "browseWhileWaiting": "While you wait, explore what's selling in your area"
     }
   },
@@ -814,7 +884,8 @@
     },
     "communities": {
       "heading": "Communities in This Area"
-    }
+    },
+    "searchProperties": "Search Properties in this Area"
   },
   "CommunityPage": {
     "meta": {
@@ -857,6 +928,10 @@
     },
     "similarCommunities": {
       "heading": "Similar Communities"
+    },
+    "exploreCommunities": {
+      "heading": "Explore Other Communities",
+      "subtitle": "This is the only community in this area — here are others you might like."
     },
     "miniMap": {
       "heading": "Community Location",
@@ -1219,7 +1294,253 @@
     },
     "booking": {
       "heading": "Start Here: Tell Us About You",
-      "subtitle": "Let’s start your Costa Rica journey. Tell us what you’re dreaming of, and we’ll make it real."
+      "subtitle": "Let's start your Costa Rica journey. Tell us what you're dreaming of, and we'll make it real.",
+      "tabSchedule": "Schedule a Call",
+      "tabForm": "Send Us a Message",
+      "tabFormHint": "Not ready to call? Send us a quick message instead"
+    },
+    "form": {
+      "nameLabel": "Full Name",
+      "namePlaceholder": "Your full name",
+      "nameError": "Please enter your name (at least 2 characters)",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "emailError": "Please enter a valid email address",
+      "phoneLabel": "Phone / WhatsApp",
+      "phonePlaceholder": "+1 (555) 000-0000",
+      "phoneError": "Please enter a valid phone number (at least 7 digits)",
+      "languageLabel": "Preferred Language",
+      "languageOptionEN": "English",
+      "languageOptionES": "Español",
+      "budgetLabel": "Budget Range",
+      "budgetPlaceholder": "e.g. $200,000 – $500,000",
+      "propertyTypeLabel": "Property Type",
+      "propertyTypeOptionAny": "Any / Not Sure Yet",
+      "propertyTypeOptionHouse": "House",
+      "propertyTypeOptionCondo": "Condo / Apartment",
+      "propertyTypeOptionLot": "Lot / Land",
+      "propertyTypeOptionFarm": "Farm / Finca",
+      "propertyTypeOptionCommercial": "Commercial",
+      "areaLabel": "Preferred Area",
+      "areaPlaceholder": "e.g. Dominical, Pérez Zeledón, Uvita…",
+      "messageLabel": "Tell Us About Your Dream",
+      "messagePlaceholder": "What are you looking for? Timeline, must-haves, questions — anything helps.",
+      "messageError": "Please write at least 10 characters",
+      "submit": "Send My Inquiry",
+      "submitting": "Sending…",
+      "successHeading": "Message Sent!",
+      "successMessage": "Our VIP team will reach out within 24 hours. You can also schedule a call anytime.",
+      "errorHeading": "Something went wrong",
+      "errorMessage": "Please try again or reach us via WhatsApp."
     }
+  },
+  "LifestyleQuestionnaire": {
+    "title": "Costa Rica Lifestyle Discovery Questionnaire",
+    "tagline": "Tell Me How You Want to Live, and I'll Tell You Where to Find It",
+    "welcome": {
+      "heading": "Welcome to the Southern Zone & Valley Region!",
+      "description": "Finding your perfect home here isn't just about bedrooms or square footage—it’s about matching your daily rhythm to the right microclimate, road infrastructure, and community vibe.",
+      "timeEstimate": "Take 3 minutes to fill out this lifestyle check, and we will pinpoint the exact local neighborhood that matches your vision.",
+      "start": "Start Lifestyle Questionnaire"
+    },
+    "question": "Question",
+    "of": "of",
+    "next": "Next Question",
+    "back": "Back",
+    "seeResults": "See My Results",
+    "retake": "Retake Questionnaire",
+    "recommendedListings": "Recommended Listings For You",
+    "questions": {
+      "q1": {
+        "title": "1. The Morning Rhythm & Climate",
+        "subtitle": "When you wake up and look out the window, what do you want to see and feel?",
+        "a": "High-energy vibe. I want to feel the tropical heat and enjoy a vibrant, sun-drenched environment.",
+        "b": "Immersed in nature. I want elevated, sweeping views, lush green surroundings, and a continuous breeze.",
+        "c": "Fresh and tranquil. I prefer cool breezes, rolling green hills, and a milder climate where I can avoid using A/C."
+      },
+      "q2": {
+        "title": "2. Driving, Access & Road Realities",
+        "subtitle": "How do you honestly feel about unpaved roads and rugged terrain?",
+        "a": "All paved, flat, and easy roads. I prefer highly accessible streets where any standard vehicle can go.",
+        "b": "I can handle some adventure, but within limits. Solid gravel or well-maintained community roads are fine.",
+        "c": "Bring on the adventure! Fully comfortable with rugged 4x4 tracks to get ultimate privacy and pristine nature."
+      },
+      "q3": {
+        "title": "3. Convenience, Errands & Healthcare",
+        "subtitle": "How far are you willing to drive for major supermarkets, banking, and medical care?",
+        "a": "Boutique convenience right down the street. Walk or 5-minute drive to organic markets, pharmacies, and local eateries.",
+        "b": "Quiet seclusion. I don't mind a 15- to 20-minute scenic drive to get my errands done.",
+        "c": "Full municipal city convenience. I want immediate access to regional hospitals, corporate banks, and major supermarkets."
+      },
+      "q4": {
+        "title": "4. Community Vibe & Social Circles",
+        "subtitle": "What does your ideal neighbor network and social scene look like?",
+        "a": "Bohemian and fluid blend of world-class surfers, digital nomads, eco-travelers, and active evening social scenes.",
+        "b": "International, wellness-oriented expat community tightly integrated with local Tico culture (farmers' markets, yoga).",
+        "c": "Authentic, relationship-driven Costa Rican lifestyle. Sprawling country estates, local farmers, and homesteaders."
+      }
+    },
+    "results": {
+      "a": {
+        "title": "The Coastal Surf & High-Energy Hub",
+        "vibe": "You want immediate beach energy, a walkable or easy-drive lifestyle, and a lively social connection. You don't want to be isolated on a high mountain ridge; you want to be where the action is.",
+        "matches": "Your Best Matches:",
+        "places": {
+          "p1": {
+            "name": "Dominical",
+            "desc": "The ultimate capital for world-class surf, bohemian nightlife, and digital nomad energy. Mostly flat, highly walkable town center with paved access right off the Costanera."
+          },
+          "p2": {
+            "name": "Dominicalito",
+            "desc": "Just south of Dominical. It offers a slightly quieter, gentler cove beach vibe, highly favored by long-term residents who want easy 2WD ocean proximity without the high tourist traffic of main Dominical."
+          },
+          "p3": {
+            "name": "Bahía Ballena",
+            "desc": "Nestled right against the Marino Ballena National Park. Flat, easy to drive, highly bikeable, and perfect for buyers who want to walk into the national park every morning to see the pristine shoreline."
+          }
+        }
+      },
+      "b": {
+        "title": "The Coastal Jungle Ridge & Eco-Luxury Lifestyle",
+        "vibe": "You want the dramatic \"wow factor\"—where the lush jungle canopy directly overlooks the Pacific Ocean. You prioritize sweeping views, wildlife, and premium alternative learning/wellness communities, and you don't mind a 4x4 mountain road to get to your private sanctuary.",
+        "matches": "Your Best Matches:",
+        "places": {
+          "p1": {
+            "name": "Uvita",
+            "desc": "The undisputed center of gravity for services on the coast. Home to diverse restaurants, supermarkets, pharmacies, and thriving bilingual and alternative learning communities. The lower parts are flat and easy; the ridges require a solid 4x4 but offer spectacular views of the Whale's Tail."
+          },
+          "p2": {
+            "name": "Platanillo",
+            "desc": "Perched on the paved ridge road halfway between the coast and the inland valley. It sits at a higher elevation, offering cooler temperatures, lush mountain rainforest views, rushing waterfalls, and a strong, tight-knit community of eco-conscious expats and locals just 15 minutes from the beach."
+          },
+          "p3": {
+            "name": "Barú",
+            "desc": "A pristine, nature-first river valley and mountain zone stretching inland along the Barú River. Ideal for those who want massive biodiversity, privacy, and close proximity to nature reserves while keeping the beach within a short, scenic drive."
+          }
+        }
+      },
+      "c": {
+        "title": "The Authentic Mountain Valley & High-Convenience Lifestyle",
+        "vibe": "You want maximum value, spacious acreage, an authentic connection to Costa Rican culture, and zero reliance on 24/7 air conditioning. You prioritize robust, city-level infrastructure over immediate beach access.",
+        "matches": "Your Best Matches:",
+        "places": {
+          "p1": {
+            "name": "Pérez Zeledón (including San Isidro de El General)",
+            "desc": "The major economic and agricultural powerhouse of the region. This is a full-scale municipal city hub offering a top-tier regional hospital, major private medical clinics, corporate banking, massive weekly organic Ferias, and endless commercial conveniences."
+          },
+          "p2": {
+            "name": "Surrounding Pérez Areas (e.g., General Viejo, Miravalles, Quebradas, Cajón)",
+            "desc": "These surrounding mountain foothills offer sprawling country estates, rich soil for planting, cool mountain air, and dramatic vistas of the Talamanca mountain range—all while being a seamless 10- to 15-minute paved drive into downtown San Isidro for errands."
+          }
+        }
+      }
+    }
+  },
+  "FAQ": {
+    "metaTitle": "Relocating to Costa Rica FAQs | RE/MAX Altitud",
+    "metaDescription": "Find answers to the most common questions about relocating to Costa Rica. Learn about areas, cost of living, property types, and why buying is better than renting.",
+    "pageTitle": "Relocating to Costa Rica FAQs",
+    "intro": "Everything you need to know before making your move to Costa Rica's Southern Zone.",
+    "q1_question": "Is Costa Rica a good place to relocate?",
+    "q1_answer": "Yes, Costa Rica is an exceptional place to relocate. It offers a wide variety of areas with completely different prices, lifestyles, and affordability. Whether you want to wake up to misty mountain views in Pérez Zeledón or enjoy the tropical warmth and world-class surfing along the coast in Dominical and Uvita, there's an area tailored perfectly to your pace and budget.",
+    "q2_question": "Should I rent before buying in Costa Rica?",
+    "q2_answer": "It is not needed to rent. If you do your investigation and scouting trips you do not need to rent before buying. Instead of reading online, have a discovery call... people talk about Costa Rica online as if it were a small city and because they spent 2 months in the north, they think that is the reality of the south too. And you can always sell what you bought if you did not like it.",
+    "q3_question": "Are there places for specific lifestyles (e.g., bohemian, luxury, off-grid)?",
+    "q3_answer": "Absolutely. Costa Rica is culturally and socially diverse. There are specific enclaves for almost every lifestyle: luxury and entrepreneur-oriented communities for networking, bohemian coastal towns perfect for creatives, and places for individuals prioritizing medical freedom and natural health choices (such as those who prefer no vaccines). We can match you with the exact community that shares your values.",
+    "q4_question": "What is the cost of living like in Costa Rica?",
+    "q4_answer": "The cost of living varies wildly depending on your lifestyle and location. Coastal towns like Uvita and Dominical lean toward premium pricing due to high tourist demand, whereas mountain areas like Pérez Zeledón and its surrounding valleys offer a much lower cost of living, abundant local organic produce, and a truly authentic Costa Rican lifestyle.",
+    "q5_question": "Can foreigners buy property in Costa Rica?",
+    "q5_answer": "Yes, foreigners have the exact same property rights as Costa Rican citizens when buying titled land. You do not need a local partner to buy a house or a lot.",
+    "q6_question": "Do I need residency to buy a house?",
+    "q6_answer": "No, you do not need to be a resident to purchase property; you can buy on a standard tourist visa. In fact, purchasing a property valued over a certain threshold can actually qualify you to apply for an Investor Residency.",
+    "q7_question": "What about building a home?",
+    "q7_answer": "We have trustable builders and the design of the house is free of charge when you buy with us.",
+    "q8_question": "What is the process of buying a property?",
+    "q8_answer": "Once you choose the property, we do a Letter of Intent (LOI) or Sales and Purchase Agreement (SPA). You do a downpayment (which is refundable if the Due Diligence is not what we expected) and then you buy the house.",
+    "q9_question": "Do I buy under my name or a company?",
+    "q9_answer": "We can have a call with our lawyers to see what is best for you and your plans.",
+    "q10_question": "Do we use an escrow?",
+    "q10_answer": "It is very important to do it. This will secure and also nationalize the funds.",
+    "q11_question": "Are there schools in English?",
+    "q11_answer": "Yes. Many areas of Costa Rica have schools in English.",
+    "q12_question": "What is the healthcare system like?",
+    "q12_answer": "Costa Rica has a dual, highly regarded healthcare system. There is the public system, known as the Caja (CCSS), which legal residents pay into monthly and can use for free. There is also an excellent private healthcare system with world-class hospitals (mostly centered around the Central Valley) where procedures and private insurance are a fraction of US costs.",
+    "q13_question": "Can I legally work or start a business there?",
+    "q13_answer": "As a general rule, immigrants cannot hold a local job that could otherwise be filled by a Costa Rican citizen. However, you can legally own a business and manage it, work completely online as a remote employee or freelancer for companies outside of Costa Rica, or work legally once you achieve permanent residency (which usually takes a few years of temporary residency).",
+    "q14_question": "Do I absolutely need to speak fluent Spanish?",
+    "q14_answer": "You don't need to be fluent to survive, especially in heavily populated expat hubs or tourist destinations where English is widely spoken. However, to truly integrate, build relationships with your neighbors, navigate government bureaucracy, and show respect to the local culture, putting effort into learning Spanish makes a massive difference in how successful your relocation will be.",
+    "q15_question": "Is Costa Rica safe to live in?",
+    "q15_answer": "Costa Rica is rightfully famous for its peace, its solid democracy, and the warmth of its people. Traveling or living here is an extremely safe experience. In the city and the busiest tourist areas, the only real challenge is being careless with personal belongings. In contrast, non-tourist areas are oases of tranquility so extreme that it's normal to see neighbors with their house doors open.\n\nHere, true \"safety\" has more to do with nature and the roads: the main recommendation is to avoid driving at night or under heavy rain, as visibility decreases significantly and, being mountain or rural routes, roadside assistance can take a little longer to arrive. Cautious driving is the key to enjoying the trip!",
+    "q16_question": "How do I bring my pets with me?",
+    "q16_answer": "Bringing domestic pets to Costa Rica is highly doable and does not require a quarantine period. It does, however, require strict coordination with a certified veterinarian to secure specific international health certificates, up-to-date rabies vaccinations, and endorsed paperwork within a tight window before your flight.",
+    "q17_question": "What is the infrastructure really like (Internet, Roads, Utilities)?",
+    "q17_answer": "High-speed fiber optic internet is now widely available across most popular beach and mountain towns, making remote work entirely seamless. That said, depending on how remote you live, you have to be prepared for the occasional power bump or water outage during major storms, and navigating certain rural areas still requires a reliable 4x4 vehicle due to unpaved roads and river crossings.",
+    "conclusion": "The Takeaway: The people who transition most successfully to Costa Rica are the ones who don't try to force their old lifestyle onto their new country. It’s all about trading convenience for quality of life, and speed for peace of mind."
+  },
+  "PrivacyPage": {
+    "metaTitle": "Privacy Policy — REMAX Altitud",
+    "metaDescription": "Learn how REMAX Altitud collects, uses, and protects your personal information.",
+    "pageTitle": "Privacy Policy",
+    "intro": "Your privacy matters to us. This policy explains how REMAX Altitud collects, uses, and safeguards the information you share with us.",
+    "collect": {
+      "heading": "Information We Collect",
+      "body": "We collect information you provide directly — such as your name, email address, and phone number — when you submit a contact form, register for a VIP Buyer service, or reach out to one of our agents. We also automatically collect basic usage data (such as pages visited and browser type) to help us improve the platform."
+    },
+    "use": {
+      "heading": "How We Use Your Information",
+      "body": "We use your information to respond to your inquiries, connect you with the right agent, send you property updates you have requested, and improve our services. We do not sell your personal information to third parties."
+    },
+    "cookies": {
+      "heading": "Cookies",
+      "body": "Our website uses cookies to remember your preferences and analyze traffic patterns. You can disable cookies in your browser settings at any time; however, some features of the site may not function as intended without them."
+    },
+    "third": {
+      "heading": "Third-Party Services",
+      "body": "We may share limited data with trusted third-party providers (such as email delivery and analytics platforms) solely to operate and improve our services. These providers are contractually required to protect your data and may not use it for their own purposes."
+    },
+    "rights": {
+      "heading": "Your Rights",
+      "body": "You have the right to access, correct, or request deletion of your personal data at any time. To exercise these rights, please contact us at hola@remax-altitud.cr and we will respond within a reasonable timeframe."
+    },
+    "contact": {
+      "heading": "Contact Us",
+      "body": "If you have any questions about this Privacy Policy, please reach out to us at hola@remax-altitud.cr or visit either of our offices in Pérez Zeledón or Dominical."
+    },
+    "lastUpdated": "Last updated: June 2025"
+  },
+  "TermsPage": {
+    "metaTitle": "Terms of Service — REMAX Altitud",
+    "metaDescription": "Read the terms and conditions governing use of the REMAX Altitud real estate platform.",
+    "pageTitle": "Terms of Service",
+    "intro": "By using the REMAX Altitud website and services, you agree to the following terms and conditions. Please read them carefully.",
+    "acceptance": {
+      "heading": "Acceptance of Terms",
+      "body": "By accessing or using remax-altitud.cr, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, please discontinue use of the site."
+    },
+    "use": {
+      "heading": "Use of the Site",
+      "body": "You agree to use this site only for lawful purposes and in a manner that does not infringe the rights of others. Unauthorized scraping, automated access, or misuse of listing data is strictly prohibited."
+    },
+    "listings": {
+      "heading": "Listings & Information Accuracy",
+      "body": "Property listings and related information are provided in good faith and updated regularly. However, REMAX Altitud does not guarantee the completeness or accuracy of any listing. Prices, availability, and property details are subject to change without notice. Always verify details with the relevant agent before making any decisions."
+    },
+    "ip": {
+      "heading": "Intellectual Property",
+      "body": "All content on this site — including text, photographs, logos, and design — is the property of REMAX Altitud or its licensors and is protected by applicable copyright and trademark laws. You may not reproduce or distribute any content without prior written permission."
+    },
+    "liability": {
+      "heading": "Limitation of Liability",
+      "body": "REMAX Altitud shall not be liable for any indirect, incidental, or consequential damages arising from your use of this site or reliance on any information contained herein. Our total liability to you for any claim shall not exceed the amount paid, if any, for services directly provided by us."
+    },
+    "law": {
+      "heading": "Governing Law",
+      "body": "These terms are governed by the laws of the Republic of Costa Rica. Any disputes arising from these terms or your use of the site shall be subject to the exclusive jurisdiction of the courts of Costa Rica."
+    },
+    "contact": {
+      "heading": "Contact",
+      "body": "For any questions regarding these Terms of Service, please contact us at hola@remax-altitud.cr."
+    },
+    "lastUpdated": "Last updated: June 2025"
   }
 }

@@ -12,6 +12,7 @@ import { DesktopNav } from "@/components/layout/desktop-nav";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { ShortlistIcon } from "@/components/shortlist/shortlist-icon";
 import { NavSearchButton } from "@/components/layout/nav-search-button";
+import { LanguageToggle } from "@/components/layout/language-toggle";
 
 export function Header() {
   return (
@@ -24,12 +25,18 @@ export function Header() {
         zIndex: "var(--z-sticky-nav)" as unknown as number,
       }}
     >
-      <div className="container flex h-14 items-center justify-between lg:h-16">
-        <Logo />
-        <DesktopNav />
+      <div className="w-full px-4 md:px-6 lg:px-8 xl:px-12 flex h-14 items-center justify-between lg:h-16">
+        <div className="flex items-center gap-6 xl:gap-10">
+          <Logo />
+          <DesktopNav />
+        </div>
         <div className="flex items-center gap-2">
           <NavSearchButton />
           <ShortlistIcon />
+          {/* Language toggle visible inline on mobile; desktop nav has its own */}
+          <div className="lg:hidden">
+            <LanguageToggle variant="header" />
+          </div>
           <MobileNav />
         </div>
       </div>

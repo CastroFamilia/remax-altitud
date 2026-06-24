@@ -1,0 +1,13 @@
+# Rebranding Update: RE/MAX to REMAX
+
+## Overview
+This pull request introduces a minor but important branding update across the codebase, replacing instances of the legacy "RE/MAX" branding with the updated "REMAX" standard.
+
+## Changes
+- **`src/lib/locations.ts`**: Updated text references to use the new branding.
+- **`public/property-placeholder.svg`**: Updated the placeholder SVG text elements to "REMAX".
+- **`_bmad-output/competitor-gap-findings.md`**: Updated strategy documentation references.
+
+## Testing
+- Verified successful static compilation (`npm run build`).
+- Verified zero linting errors (`npm run lint`).

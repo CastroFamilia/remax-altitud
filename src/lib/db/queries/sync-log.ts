@@ -40,6 +40,23 @@ export async function updateSyncLog(id: string, patch: Partial<NewSyncLog>): Pro
 }
 
 /**
+ * Unlocks any sync_logs currently stuck in "running" status by setting them to "failure".
+ * Returns the number of logs updated.
+ */
+export async function unlockStuckSyncs(): Promise<number> {
+  const result = await db
+    .update(syncLogs)
+    .set({
+      status: "failure",
+      errorMessage: "Manually unlocked by admin",
+      completedAt: new Date(),
+    })
+    .where(eq(syncLogs.status, "running"));
+
+  return result.count;
+}
+
+/**
  * getSyncLogs fetches chronological sync logs successfully.
  * Supports status, date range filters, and pagination.
  */

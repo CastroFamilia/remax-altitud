@@ -46,6 +46,7 @@ export async function fetchAdminPropertiesData(params: { search?: string; page?:
     .select({
       id: properties.id,
       apiId: properties.apiId,
+      listingKey: sql<string>`${properties.apiRaw}->>'ListingKey'`,
       slug: properties.slug,
       propertyType: properties.propertyType,
       status: properties.status,
@@ -58,6 +59,7 @@ export async function fetchAdminPropertiesData(params: { search?: string; page?:
       latitude: properties.latitude,
       longitude: properties.longitude,
       communityId: properties.communityId,
+      zmtStatus: properties.zmtStatus,
     })
     .from(properties)
     .where(whereClause)
@@ -90,6 +92,31 @@ export async function updatePropertyTagsAction(
   await updatePropertyTags(propertyId, tags);
 
   // Trigger path revalidations as specified in the Dev Notes
+  revalidatePath("/[locale]/properties/[slug]");
+  revalidatePath("/[locale]/search");
+  revalidatePath("/[locale]");
+
+  return { success: true };
+}
+
+/**
+ * Server Action to update the legal status (zmtStatus) for a specific property.
+ *
+ * @param propertyId - The UUID of the property
+ * @param zmtStatus  - The string of the legal status
+ */
+export async function updatePropertyZmtStatusAction(
+  propertyId: string,
+  zmtStatus: string,
+): Promise<{ success: boolean }> {
+  await verifyAdminAuth();
+
+  // Import dynamically or explicitly if missing from top imports
+  const { updatePropertyZmtStatus } = await import("@/lib/db/queries/properties");
+
+  await updatePropertyZmtStatus(propertyId, zmtStatus);
+
+  // Trigger path revalidations
   revalidatePath("/[locale]/properties/[slug]");
   revalidatePath("/[locale]/search");
   revalidatePath("/[locale]");

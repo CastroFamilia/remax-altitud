@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 import { SplitViewLayout } from "@/components/search/split-view-layout";
 import { SearchFilterBar } from "@/components/search/search-filter-bar";
 import { getPropertiesForMap } from "@/app/actions/map-actions";
 import { searchProperties, getAvailableAreas } from "@/app/actions/search-actions";
 import { useSearchFilters } from "@/hooks/use-search-filters";
-import type { MapProperty } from "@/app/actions/map-actions";
+import type { MapProperty, MapFilters } from "@/app/actions/map-actions";
 import type { PropertySearchItem, FilterFacets } from "@/types/search";
 
 type ViewMode = "split" | "map" | "grid";
@@ -49,7 +49,9 @@ export function SearchPageClient() {
   const [total, setTotal] = useState(0);
 
   // Available areas for the area filter dropdown
-  const [areas, setAreas] = useState<{ slug: string; label: string }[]>([]);
+  const [areas, setAreas] = useState<
+    { slug: string; label: string; parentSlug?: string; isSubLocation?: boolean }[]
+  >([]);
 
   // Monotonic sequence counters for race condition prevention
   // Using a single counter is fine since only one fetch at a time is needed
@@ -67,21 +69,96 @@ export function SearchPageClient() {
     };
   }, []);
 
-  // Initial load — fetch all visible properties with coordinates for the map
+  // Build mapFilters from the full search filters so the map query applies the
+  // same dimensions as the grid (fixes split view showing mismatched results).
+  const mapFilters: MapFilters | undefined = useMemo(() => {
+    const hasAnyFilter =
+      filters.type ||
+      filters.listingType ||
+      filters.priceMin !== undefined ||
+      filters.priceMax !== undefined ||
+      filters.bedrooms !== undefined ||
+      filters.bathrooms !== undefined ||
+      filters.lotSizeMin !== undefined ||
+      filters.lotSizeMax !== undefined ||
+      filters.areaSlug ||
+      filters.subLocation ||
+      (filters.tags && filters.tags.length > 0) ||
+      filters.q ||
+      filters.region;
+    if (!hasAnyFilter) return undefined;
+    return {
+      type: filters.type,
+      listingType: filters.listingType,
+      priceMin: filters.priceMin,
+      priceMax: filters.priceMax,
+      bedrooms: filters.bedrooms,
+      bathrooms: filters.bathrooms,
+      lotSizeMin: filters.lotSizeMin,
+      lotSizeMax: filters.lotSizeMax,
+      areaSlug: filters.areaSlug,
+      subLocation: filters.subLocation,
+      tags: filters.tags,
+      q: filters.q,
+      region: filters.region,
+    };
+  }, [filters]);
+
+  // Keep a ref to the latest mapFilters so the handleBoundsChange callback
+  // always sees the current value without needing to be re-created.
+  const mapFiltersRef = useRef(mapFilters);
+  mapFiltersRef.current = mapFilters;
+
+  const prevMapFiltersRef = useRef(mapFilters);
+  const isFirstLoadRef = useRef(true);
+
+  // Fetch map properties whenever filters change (and on initial load).
+  // This ensures map pins update when the user selects any filter.
   useEffect(() => {
     let cancelled = false;
-    getPropertiesForMap()
+    const seq = ++requestSeqRef.current;
+
+    const isFirstLoad = isFirstLoadRef.current;
+    isFirstLoadRef.current = false;
+    const isFilterChange = prevMapFiltersRef.current !== mapFilters || isFirstLoad;
+    prevMapFiltersRef.current = mapFilters;
+
+    getPropertiesForMap(undefined, mapFilters)
       .then((data) => {
-        if (!cancelled) setMapProperties(data);
+        if (!cancelled && seq === requestSeqRef.current) {
+          setMapProperties(data);
+
+          if (isFilterChange && data.length > 0) {
+            let minLat = 90,
+              maxLat = -90,
+              minLng = 180,
+              maxLng = -180;
+            data.forEach((p) => {
+              if (p.latitude < minLat) minLat = p.latitude;
+              if (p.latitude > maxLat) maxLat = p.latitude;
+              if (p.longitude < minLng) minLng = p.longitude;
+              if (p.longitude > maxLng) maxLng = p.longitude;
+            });
+
+            // If it's just a single point or exactly overlapping points, we can't fit bounds well
+            if (minLat === maxLat && minLng === maxLng) {
+              setFlyToTarget({ lat: minLat, lng: minLng, zoom: 14 });
+            } else {
+              setFitBoundsTarget([
+                [minLng, minLat],
+                [maxLng, maxLat],
+              ]);
+            }
+          }
+        }
       })
       .catch((error) => {
-        // Server Action failure — log and leave the property list empty
-        console.error("[search] initial getPropertiesForMap failed", error);
+        console.error("[search] getPropertiesForMap failed", error);
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [mapFilters]);
 
   // Initial load — fetch available areas for the location filter
   useEffect(() => {
@@ -136,25 +213,48 @@ export function SearchPageClient() {
       });
   }, [filters, page, bounds, viewMode]);
 
-  // Refresh map properties when map bounds change.
-  // Uses a monotonically increasing sequence number to discard stale responses.
+  // Update bounds state when the map viewport changes.
+  // Map property fetching is handled by the unified effect above
+  // (which reacts to bounds AND filter changes).
   const handleBoundsChange = useCallback((newBounds: MapBounds) => {
     setBoundsState(newBounds);
-    const seq = ++requestSeqRef.current;
-    getPropertiesForMap(newBounds)
-      .then((data) => {
-        if (seq === requestSeqRef.current) {
-          setMapProperties(data);
-        }
-      })
-      .catch((error) => {
-        console.error("[search] bounds-change getPropertiesForMap failed", error);
-      });
   }, []);
 
+  // Near Me handlers — lifted here to pass into SearchFilterBar
+  // while SplitViewLayout still uses the flyToTarget state.
+  const [flyToTarget, setFlyToTarget] = useState<{
+    lat: number;
+    lng: number;
+    zoom?: number;
+  } | null>(null);
+  const [fitBoundsTarget, setFitBoundsTarget] = useState<
+    [[number, number], [number, number]] | null
+  >(null);
+  const [nearMeFallbackMessage, setNearMeFallbackMessage] = useState<string | null>(null);
+
+  const handleNearMeSuccess = useCallback((coords: { lat: number; lng: number }) => {
+    setFlyToTarget({ ...coords, zoom: 13 });
+    setNearMeFallbackMessage(null);
+  }, []);
+
+  const handleNearMeFallback = useCallback(
+    (coords: { lat: number; lng: number }, message: string) => {
+      setFlyToTarget({ ...coords, zoom: 11 });
+      setNearMeFallbackMessage(message);
+    },
+    [],
+  );
+
   return (
-    <div className="flex flex-col overscroll-none h-[calc(100vh-var(--header-height))]">
-      <SearchFilterBar facets={facets} areas={areas} />
+    <div className="flex flex-col overflow-hidden overscroll-none h-[calc(100vh-var(--header-height))]">
+      <SearchFilterBar
+        facets={facets}
+        areas={areas}
+        locale={locale}
+        onNearMeSuccess={handleNearMeSuccess}
+        onNearMeFallback={handleNearMeFallback}
+        resultCount={total}
+      />
       <SplitViewLayout
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -169,6 +269,10 @@ export function SearchPageClient() {
         page={page}
         onPageChange={setPage}
         filters={filters}
+        flyToTarget={flyToTarget}
+        fitBoundsTarget={fitBoundsTarget}
+        nearMeFallbackMessage={nearMeFallbackMessage}
+        onDismissFallback={() => setNearMeFallbackMessage(null)}
       />
     </div>
   );

@@ -4,13 +4,11 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { SearchResultsSkeleton } from "@/components/search/search-results-skeleton";
-import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { MapView } from "@/components/map/map-view-loader";
 import { PropertyGrid } from "@/components/property/property-grid";
 import { MapPullUpSheet } from "@/components/map/map-pull-up-sheet";
-import { UnitToggle } from "@/components/layout/unit-toggle";
-import { NearMeButton } from "@/components/search/near-me-button";
-import { SortSelect } from "@/components/search/sort-select";
+import { GridSortGroup } from "@/components/search/grid-sort-group";
+import { ViewModeToggle } from "@/components/search/view-mode-toggle";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 import type { MapBounds } from "@/store/map-store";
 import type { PropertySearchItem, FilterFacets, SearchFilters } from "@/types/search";
@@ -27,7 +25,12 @@ export type MapProperty = {
   bedrooms: number | null;
   bathrooms: number | null;
   lotSizeM2: number | null;
+  constructionM2?: number | null;
   zmtStatus: string;
+  propertyType?: string;
+  listingType?: string;
+  currency?: string | null;
+  apiRaw?: unknown;
   images: OptimizedImage[];
   latitude: number;
   longitude: number;
@@ -54,6 +57,14 @@ interface SplitViewLayoutProps {
   onPageChange?: (page: number) => void;
   /** Story 3.8: Active search filters to forward to PropertyGrid for NoResultsState */
   filters?: SearchFilters;
+  /** Story 3.8: Fly to target feature (Near Me) */
+  flyToTarget?: { lat: number; lng: number; zoom?: number } | null;
+  /** Auto-pan to search results bounding box */
+  fitBoundsTarget?: [[number, number], [number, number]] | null;
+  /** Fallback message when location access fails */
+  nearMeFallbackMessage?: string | null;
+  /** Dismiss fallback handler */
+  onDismissFallback?: () => void;
 }
 
 export function SplitViewLayout({
@@ -73,6 +84,10 @@ export function SplitViewLayout({
   page,
   onPageChange,
   filters,
+  flyToTarget,
+  fitBoundsTarget,
+  nearMeFallbackMessage,
+  onDismissFallback,
 }: SplitViewLayoutProps) {
   // Suppress unused-var warnings for forward-compat props; they are part of
   // the public API surface used by SearchPageClient today.
@@ -81,13 +96,6 @@ export function SplitViewLayout({
   const { unitSystem } = useLocaleUnits(locale);
   // Tablet side-panel toggle state
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
-  // Story 3.8: Near Me — fly-to target and fallback message
-  const [flyToTarget, setFlyToTarget] = useState<{
-    lat: number;
-    lng: number;
-    zoom?: number;
-  } | null>(null);
-  const [nearMeFallbackMessage, setNearMeFallbackMessage] = useState<string | null>(null);
   const tSidePanel = useTranslations("SearchPage.sidePanel");
   const tNearMe = useTranslations("NearMe");
   const mapHidden = viewMode === "grid";
@@ -105,27 +113,7 @@ export function SplitViewLayout({
 
   return (
     <div className="relative flex flex-col flex-1 min-h-0">
-      {/* View mode + unit toggle row — desktop/tablet only, hidden on mobile.
-          The outer wrapper provides the full-width border-b and bg-background so
-          the bottom border spans the entire toolbar width (ViewModeToggle's own
-          inner border-b only extends to its content width). */}
-      <div className="hidden lg:flex items-center justify-between border-b border-border bg-background">
-        <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
-        <div className="flex items-center gap-2 px-4 py-2">
-          <SortSelect />
-          <NearMeButton
-            onLocationSuccess={(coords) => {
-              setFlyToTarget({ ...coords, zoom: 13 });
-              setNearMeFallbackMessage(null);
-            }}
-            onLocationFallback={(coords, message) => {
-              setFlyToTarget({ ...coords, zoom: 11 });
-              setNearMeFallbackMessage(message);
-            }}
-          />
-          <UnitToggle locale={locale} />
-        </div>
-      </div>
+      {/* Toolbar row removed — controls now live in SearchFilterBar */}
 
       {/* Story 3.8: Near Me fallback notification banner */}
       {nearMeFallbackMessage && (
@@ -139,7 +127,7 @@ export function SplitViewLayout({
           <button
             type="button"
             aria-label={tNearMe("fallbackDismiss")}
-            onClick={() => setNearMeFallbackMessage(null)}
+            onClick={onDismissFallback}
             className="ml-4 text-amber-600 hover:text-amber-800"
           >
             ✕
@@ -148,7 +136,7 @@ export function SplitViewLayout({
       )}
 
       {/* Split-view container */}
-      <div className="relative flex flex-row flex-1 min-h-0">
+      <div className="relative flex flex-row flex-1 min-h-0 h-full">
         {/* Map panel */}
         <div
           data-testid="map-panel"
@@ -169,8 +157,19 @@ export function SplitViewLayout({
               locale={locale}
               onBoundsChange={handleBoundsChange}
               flyToTarget={flyToTarget}
+              fitBoundsTarget={fitBoundsTarget}
+              unitSystem={unitSystem}
             />
           </div>
+
+          {/* Floating view-mode toggle — only in full-map mode (grid panel hidden) */}
+          {gridHidden && onViewModeChange && (
+            <div className="absolute top-6 right-6 z-10 hidden lg:block">
+              <div className="rounded-lg shadow-lg border border-brand-gold/20 backdrop-blur-sm bg-background/90">
+                <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Grid panel — hidden on mobile, shown on desktop */}
@@ -184,9 +183,21 @@ export function SplitViewLayout({
             // Desktop: show in split/grid mode, hide in full-map mode
             gridHidden ? "lg:hidden" : mapHidden ? "lg:w-full lg:block" : "lg:w-[65%] lg:block",
             "overflow-y-auto",
-            "lg:h-full",
+            "h-full pt-2",
           )}
         >
+          {/* Grid sort group for grid and split views */}
+          {!gridHidden && (
+            <div className="hidden lg:flex items-center justify-between px-2 lg:px-4 mb-2">
+              {onViewModeChange ? (
+                <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+              ) : (
+                <div />
+              )}
+              <GridSortGroup />
+            </div>
+          )}
+
           {/* Story 3.5: render PropertyGrid when filterProperties provided, else skeleton */}
           {filterProperties ? (
             <PropertyGrid

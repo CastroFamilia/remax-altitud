@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useTransition } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Search,
@@ -22,6 +23,8 @@ export interface AnalyticsRow {
   totalSaves: number;
   saves30Days: number;
   activeSaves: number;
+  totalViews: number;
+  views30Days: number;
   slug?: string;
   priceUsd?: number;
   images?: Array<{ src: string }>;
@@ -53,6 +56,8 @@ export function AdminShortlistAnalyticsDashboard({
   const totalSavesSum = analytics.reduce((acc, curr) => acc + (curr.totalSaves || 0), 0);
   const saves30DaysSum = analytics.reduce((acc, curr) => acc + (curr.saves30Days || 0), 0);
   const activeSavesSum = analytics.reduce((acc, curr) => acc + (curr.activeSaves || 0), 0);
+  const totalViewsSum = analytics.reduce((acc, curr) => acc + (curr.totalViews || 0), 0);
+  const views30DaysSum = analytics.reduce((acc, curr) => acc + (curr.views30Days || 0), 0);
   const topProperty =
     analytics.length > 0 ? [...analytics].sort((a, b) => b.totalSaves - a.totalSaves)[0] : null;
 
@@ -107,10 +112,14 @@ export function AdminShortlistAnalyticsDashboard({
       colSaves30: "Saves (30 Days)",
       colTotalSaves: "Saves (All Time)",
       colActiveSaves: "Active Saves",
+      colViews30: "Views (30 Days)",
+      colTotalViews: "Views (All Time)",
       colActions: "Actions",
       statTotalSaves: "Total Shortlist Saves",
       statSaves30: "Saves (Last 30 Days)",
       statActiveSaves: "Active Shortlists",
+      statTotalViews: "Total Property Views",
+      statViews30: "Views (Last 30 Days)",
       statTopProperty: "Most Saved Property",
       statTopPropertyDesc: "Highest total popularity score",
       viewFront: "View Property",
@@ -128,10 +137,14 @@ export function AdminShortlistAnalyticsDashboard({
       colSaves30: "Favoritos (Últimos 30d)",
       colTotalSaves: "Total de Favoritos",
       colActiveSaves: "Favoritos Activos",
+      colViews30: "Visitas (Últimos 30d)",
+      colTotalViews: "Total de Visitas",
       colActions: "Acciones",
       statTotalSaves: "Total de Favoritos",
       statSaves30: "Favoritos (Últimos 30 Días)",
       statActiveSaves: "Favoritos Activos",
+      statTotalViews: "Total de Visitas",
+      statViews30: "Visitas (Últimos 30 Días)",
       statTopProperty: "Propiedad Más Guardada",
       statTopPropertyDesc: "Mayor puntuación de popularidad",
       viewFront: "Ver Propiedad",
@@ -149,10 +162,14 @@ export function AdminShortlistAnalyticsDashboard({
     colSaves30: "Saves (30 Days)",
     colTotalSaves: "Saves (All Time)",
     colActiveSaves: "Active Saves",
+    colViews30: "Views (30 Days)",
+    colTotalViews: "Views (All Time)",
     colActions: "Actions",
     statTotalSaves: "Total Shortlist Saves",
     statSaves30: "Saves (Last 30 Days)",
     statActiveSaves: "Active Shortlists",
+    statTotalViews: "Total Property Views",
+    statViews30: "Views (Last 30 Days)",
     statTopProperty: "Most Saved Property",
     statTopPropertyDesc: "Highest total popularity score",
     viewFront: "View Property",
@@ -163,7 +180,7 @@ export function AdminShortlistAnalyticsDashboard({
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Premium Statistics Overview Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Total Saves Card */}
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-md group hover:border-red-500/30 transition-all duration-300">
           <div className="absolute top-0 right-0 w-24 h-24 bg-red-600/5 rounded-full blur-xl group-hover:bg-red-600/10 transition-all duration-300"></div>
@@ -214,6 +231,38 @@ export function AdminShortlistAnalyticsDashboard({
           </div>
           <div className="mt-4 flex items-baseline gap-2">
             <span className="text-3xl font-black text-white">{activeSavesSum}</span>
+          </div>
+        </div>
+
+        {/* Total Views Card */}
+        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-md group hover:border-blue-500/30 transition-all duration-300">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-blue-600/5 rounded-full blur-xl group-hover:bg-blue-600/10 transition-all duration-300"></div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              {labels.statTotalViews}
+            </span>
+            <div className="p-2 bg-blue-500/10 text-blue-500 rounded-xl">
+              <BarChart3 className="w-5 h-5 fill-current" />
+            </div>
+          </div>
+          <div className="mt-4 flex items-baseline gap-2">
+            <span className="text-3xl font-black text-white">{totalViewsSum}</span>
+          </div>
+        </div>
+
+        {/* 30 Days Views Card */}
+        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-md group hover:border-blue-500/30 transition-all duration-300">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-blue-600/5 rounded-full blur-xl group-hover:bg-blue-600/10 transition-all duration-300"></div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              {labels.statViews30}
+            </span>
+            <div className="p-2 bg-blue-500/10 text-blue-500 rounded-xl">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="mt-4 flex items-baseline gap-2">
+            <span className="text-3xl font-black text-white">{views30DaysSum}</span>
           </div>
         </div>
 
@@ -315,13 +364,23 @@ export function AdminShortlistAnalyticsDashboard({
                   <th className="px-6 py-4">
                     <button
                       type="button"
-                      data-testid="sort-active"
+                      data-testid="sort-savesAll"
                       className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold text-xs uppercase tracking-wider text-slate-400 focus:outline-none"
-                      onClick={() => handleSortChange("active")}
+                      onClick={() => handleSortChange("savesAll")}
                     >
-                      <span>{labels.colActiveSaves}</span>
+                      <span>{labels.colTotalSaves}</span>
                       <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
                     </button>
+                  </th>
+                  <th className="px-6 py-4">
+                    <div className="flex items-center gap-1.5 font-bold text-xs uppercase tracking-wider text-slate-400">
+                      <span>{labels.colViews30}</span>
+                    </div>
+                  </th>
+                  <th className="px-6 py-4">
+                    <div className="flex items-center gap-1.5 font-bold text-xs uppercase tracking-wider text-slate-400">
+                      <span>{labels.colTotalViews}</span>
+                    </div>
                   </th>
                   <th className="px-6 py-4 text-right">{labels.colActions}</th>
                 </tr>
@@ -348,9 +407,12 @@ export function AdminShortlistAnalyticsDashboard({
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-4">
-                            <img
+                            <Image
                               src={imageSrc}
                               alt={title}
+                              width={48}
+                              height={32}
+                              unoptimized
                               className="w-12 h-8 object-cover rounded border border-slate-700 bg-slate-800"
                             />
                             <div className="flex flex-col">
@@ -384,16 +446,11 @@ export function AdminShortlistAnalyticsDashboard({
                         <td className="px-6 py-4 font-bold text-slate-200">
                           {row.totalSaves === 0 ? "0 saves" : row.totalSaves}
                         </td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded ${
-                              row.activeSaves > 0
-                                ? "bg-green-500/20 text-green-400"
-                                : "bg-slate-800 text-slate-400"
-                            }`}
-                          >
-                            {row.activeSaves > 0 ? `+${row.activeSaves}` : row.activeSaves}
-                          </span>
+                        <td className="px-6 py-4 font-bold text-slate-200">
+                          {row.views30Days === 0 ? "-" : row.views30Days}
+                        </td>
+                        <td className="px-6 py-4 font-bold text-slate-200">
+                          {row.totalViews === 0 ? "-" : row.totalViews}
                         </td>
                         <td className="px-6 py-4 text-right">
                           {row.slug && (

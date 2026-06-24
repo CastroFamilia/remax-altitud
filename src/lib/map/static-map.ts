@@ -102,10 +102,11 @@ function buildStaticMapUrl(params: StaticMapParams): string {
   const { latitude, longitude, geoFenceCoords, zoom, width, height, retina } = params;
 
   const overlays: string[] = [];
+  const hasPolygon = geoFenceCoords && geoFenceCoords.length >= 3;
 
   // Geo-fence polygon overlay using Mapbox GeoJSON overlay format
   // (simplestyle-spec properties for stroke/fill styling)
-  if (geoFenceCoords && geoFenceCoords.length >= 3) {
+  if (hasPolygon) {
     overlays.push(encodeGeoFencePath(geoFenceCoords));
   }
 
@@ -115,7 +116,14 @@ function buildStaticMapUrl(params: StaticMapParams): string {
   const overlayStr = overlays.join(",");
   const retinaStr = retina ? "@2x" : "";
 
-  return `${MAPBOX_STATIC_BASE}/${overlayStr}/${longitude},${latitude},${zoom}/${width}x${height}${retinaStr}?access_token=${MAPBOX_TOKEN}`;
+  // When a polygon overlay is present, use 'auto' viewport so Mapbox
+  // automatically fits all overlays (polygon + pin) in the rendered image.
+  // Fall back to fixed center + zoom for pin-only maps.
+  const viewport = hasPolygon ? "auto" : `${longitude},${latitude},${zoom}`;
+
+  const paddingParam = hasPolygon ? "&padding=40" : "";
+
+  return `${MAPBOX_STATIC_BASE}/${overlayStr}/${viewport}/${width}x${height}${retinaStr}?access_token=${MAPBOX_TOKEN}${paddingParam}`;
 }
 
 /**
@@ -127,12 +135,19 @@ function buildStaticMapUrl(params: StaticMapParams): string {
  * @see https://docs.mapbox.com/api/maps/static-images/#overlay-options
  */
 function encodeGeoFencePath(coords: [number, number][]): string {
+  // Reduce coordinate precision to 5 decimal places (~1.1m accuracy)
+  // to keep the encoded URL compact and well within Mapbox's 8,192 char limit.
+  const trimmed = coords.map(
+    ([lng, lat]) => [parseFloat(lng.toFixed(5)), parseFloat(lat.toFixed(5))] as [number, number],
+  );
+
   // Ensure the polygon ring is closed (first === last coordinate)
   const ring =
-    coords.length > 0 &&
-    (coords[0][0] !== coords[coords.length - 1][0] || coords[0][1] !== coords[coords.length - 1][1])
-      ? [...coords, coords[0]]
-      : coords;
+    trimmed.length > 0 &&
+    (trimmed[0][0] !== trimmed[trimmed.length - 1][0] ||
+      trimmed[0][1] !== trimmed[trimmed.length - 1][1])
+      ? [...trimmed, trimmed[0]]
+      : trimmed;
 
   const geojson = {
     type: "Feature" as const,

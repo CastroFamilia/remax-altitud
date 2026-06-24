@@ -105,6 +105,46 @@ const AREA_KEYWORDS: Record<string, string> = {
   platanillo: "tinamastes-platanillo",
   barú: "tinamastes-platanillo",
   baru: "tinamastes-platanillo",
+  "tinamastes-platanillo": "tinamastes-platanillo",
+  "tinamastes & platanillo": "tinamastes-platanillo",
+  "tinamastes, platanillo & barú": "tinamastes-platanillo",
+  "tinamastes, platanillo & baru": "tinamastes-platanillo",
+  // PZ sub-locations
+  "san isidro": "perez-zeledon",
+  "san isidro de el general": "perez-zeledon",
+  cajón: "perez-zeledon",
+  cajon: "perez-zeledon",
+  rivas: "perez-zeledon",
+  "daniel flores": "perez-zeledon",
+  pejibaye: "perez-zeledon",
+  "general viejo": "perez-zeledon",
+  "san gerardo": "perez-zeledon",
+  "san gerardo de rivas": "perez-zeledon",
+  platanares: "perez-zeledon",
+};
+
+// Sub-location keyword → slug mapping for command palette smart search
+// Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
+const SUB_LOCATION_KEYWORDS: Record<string, string> = {
+  "san isidro": "san-isidro",
+  "san isidro de el general": "san-isidro",
+  cajón: "cajon",
+  cajon: "cajon",
+  rivas: "rivas",
+  "daniel flores": "daniel-flores",
+  pejibaye: "pejibaye",
+  "el general": "el-general",
+  "general viejo": "el-general",
+  "san pedro": "san-pedro",
+  platanares: "platanares",
+  "río nuevo": "rio-nuevo",
+  "rio nuevo": "rio-nuevo",
+  páramo: "paramo",
+  paramo: "paramo",
+  chirripó: "paramo",
+  "la amistad": "la-amistad",
+  "san gerardo": "rivas",
+  "san gerardo de rivas": "rivas",
 };
 
 const AREA_LABELS: Record<string, string> = {
@@ -128,6 +168,19 @@ const AREA_LABELS: Record<string, string> = {
   alajuela: "Alajuela",
   cartago: "Cartago",
   "tinamastes-platanillo": "Tinamastes & Platanillo",
+  // PZ sub-location labels — aligned with ALTITUD HUB (12 districts)
+  "san-isidro": "San Isidro de El General",
+  "el-general": "El General",
+  "daniel-flores": "Daniel Flores",
+  rivas: "Rivas",
+  "san-pedro": "San Pedro",
+  platanares: "Platanares",
+  pejibaye: "Pejibaye",
+  cajon: "Cajón",
+  baru: "Barú",
+  "rio-nuevo": "Río Nuevo",
+  paramo: "Páramo",
+  "la-amistad": "La Amistad",
 };
 
 const TYPE_KEYWORDS: Record<string, string> = {
@@ -140,8 +193,8 @@ const TYPE_KEYWORDS: Record<string, string> = {
   condominio: "Apartamento",
   lote: "Lote",
   lot: "Lote",
-  terreno: "Terreno",
-  land: "Terreno",
+  terreno: "Lote",
+  land: "Lote",
   comercial: "Comercial",
   commercial: "Comercial",
   finca: "Finca",
@@ -152,8 +205,7 @@ const TYPE_KEYWORDS: Record<string, string> = {
 const TYPE_LABELS: Record<string, { en: string; es: string }> = {
   Casa: { en: "House", es: "Casa" },
   Apartamento: { en: "Apartment", es: "Apartamento" },
-  Lote: { en: "Lot", es: "Lote" },
-  Terreno: { en: "Land", es: "Terreno" },
+  Lote: { en: "Lot / Land", es: "Lote / Terreno" },
   Comercial: { en: "Commercial", es: "Comercial" },
   Finca: { en: "Farm", es: "Finca" },
 };
@@ -215,6 +267,29 @@ const PLACEHOLDER_EXAMPLES_ES = [
 
 // ─── Parse + Suggest (compact version) ──────────────────────────────────────
 
+// Transaction intent keywords — buy/sell/rent intent → listing_type
+const SALE_INTENT_KEYWORDS_CP = [
+  "sell",
+  "sale",
+  "buy",
+  "purchase",
+  "buying",
+  "selling",
+  "comprar",
+  "vender",
+  "venta",
+  "compra",
+];
+const LEASE_INTENT_KEYWORDS_CP = [
+  "rent",
+  "renting",
+  "lease",
+  "leasing",
+  "alquilar",
+  "arrendar",
+  "arriendo",
+];
+
 function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
   const params: Record<string, string> = {};
   const detected: DetectedItem[] = [];
@@ -223,13 +298,51 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
 
   let remainingText = normalized;
 
-  // Area
-  for (const [key, slug] of Object.entries(AREA_KEYWORDS)) {
-    if (normalized.includes(key)) {
-      params.area = slug;
-      detected.push({ type: "area", label: AREA_LABELS[slug] || slug, icon: "pin", value: slug });
-      remainingText = remainingText.replace(key, " ");
-      break;
+  // Area — check sub-locations first for more specific match
+  let matchedSubLocation = false;
+
+  const sortedSubLocationKeywords = Object.entries(SUB_LOCATION_KEYWORDS).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+  const sortedAreaKeywords = Object.entries(AREA_KEYWORDS).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+
+  for (const [key, subSlug] of sortedSubLocationKeywords) {
+    if (remainingText.includes(key)) {
+      if (!params.sub_location) {
+        params.area = "perez-zeledon";
+        params.sub_location = subSlug;
+        detected.push({
+          type: "area",
+          label: AREA_LABELS[subSlug] || subSlug,
+          icon: "pin",
+          value: subSlug,
+        });
+        matchedSubLocation = true;
+      }
+      if (params.sub_location === subSlug) {
+        remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+      }
+    }
+  }
+  // If no sub-location matched, try main area keywords
+  if (!matchedSubLocation) {
+    for (const [key, slug] of sortedAreaKeywords) {
+      if (remainingText.includes(key)) {
+        if (!params.area) {
+          params.area = slug;
+          detected.push({
+            type: "area",
+            label: AREA_LABELS[slug] || slug,
+            icon: "pin",
+            value: slug,
+          });
+        }
+        if (params.area === slug) {
+          remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+        }
+      }
     }
   }
 
@@ -284,6 +397,22 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
     }
   }
   if (tags.length > 0) params.tags = tags.join(",");
+
+  // Transaction intent keywords (buy/sell/rent) → listing_type
+  for (const keyword of LEASE_INTENT_KEYWORDS_CP) {
+    const intentRegex = new RegExp(`\\b${keyword}\\b`, "gi");
+    if (intentRegex.test(remainingText)) {
+      params.listing_type = "Lease";
+      remainingText = remainingText.replace(intentRegex, " ");
+    }
+  }
+  for (const keyword of SALE_INTENT_KEYWORDS_CP) {
+    const intentRegex = new RegExp(`\\b${keyword}\\b`, "gi");
+    if (intentRegex.test(remainingText)) {
+      if (!params.listing_type) params.listing_type = "Sale";
+      remainingText = remainingText.replace(intentRegex, " ");
+    }
+  }
 
   // Features
   const featureQTerms: string[] = [];
@@ -351,10 +480,31 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
     }
   }
 
-  // Beds
-  const bedMatch = normalized.match(/(\d+)\s*(?:bed|bedroom|bedrooms|hab|habitacion|dormitorio)/);
-  if (bedMatch?.[1]) {
-    const beds = parseInt(bedMatch[1], 10);
+  // Beds — supports digit and number-word forms + room synonyms
+  const NUMBER_WORDS_CP: Record<string, number> = {
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    un: 1,
+    uno: 1,
+    una: 1,
+    dos: 2,
+    tres: 3,
+    cuatro: 4,
+    cinco: 5,
+  };
+  const numWordPatternCP = Object.keys(NUMBER_WORDS_CP).join("|");
+  const bedRegexCP = new RegExp(
+    `(?:(\\d+)|(${numWordPatternCP}))\\s*(?:bed|beds|bedroom|bedrooms|room|rooms|hab|habitacion|habitaciones|habitación|habitaciónes|dormitorio|dormitorios|cuarto|cuartos|recamara|recamaras|recámara|recámaras|pieza|piezas)`,
+    "i",
+  );
+  const bedMatchCP = remainingText.match(bedRegexCP);
+  if (bedMatchCP) {
+    const beds = bedMatchCP[1]
+      ? parseInt(bedMatchCP[1], 10)
+      : (NUMBER_WORDS_CP[bedMatchCP[2].toLowerCase()] ?? 0);
     if (beds >= 1 && beds <= 5) {
       params.bedrooms = String(beds);
       detected.push({
@@ -364,6 +514,29 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
         value: String(beds),
       });
     }
+    remainingText = remainingText.replace(bedMatchCP[0], " ");
+  }
+
+  // Baths — same number-word support
+  const bathRegexCP = new RegExp(
+    `(?:(\\d+)|(${numWordPatternCP}))\\s*(?:bath|baths|bathroom|bathrooms|baño|baños|bañ)`,
+    "i",
+  );
+  const bathMatchCP = remainingText.match(bathRegexCP);
+  if (bathMatchCP) {
+    const baths = bathMatchCP[1]
+      ? parseInt(bathMatchCP[1], 10)
+      : (NUMBER_WORDS_CP[bathMatchCP[2].toLowerCase()] ?? 0);
+    if (baths >= 1 && baths <= 4) {
+      params.bathrooms = String(baths);
+      detected.push({
+        type: "baths",
+        label: `${baths}+ ${locale === "es" ? "baños" : "bath"}`,
+        icon: "bed",
+        value: String(baths),
+      });
+    }
+    remainingText = remainingText.replace(bathMatchCP[0], " ");
   }
 
   // Stop words + remaining q
@@ -394,6 +567,8 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
     "near",
     "cerca",
     "the",
+    ...SALE_INTENT_KEYWORDS_CP,
+    ...LEASE_INTENT_KEYWORDS_CP,
   ]);
   const words = remainingText.split(/[\s,.\-/?!|;:]+/).filter((w) => w.length > 0 && !STOP.has(w));
   const allQ = [...words, ...featureQTerms];

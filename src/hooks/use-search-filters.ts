@@ -39,11 +39,13 @@ const PARAM_MAP: Record<keyof SearchFilters, string> = {
   lotSizeMin: "lot_min",
   lotSizeMax: "lot_max",
   areaSlug: "area",
+  subLocation: "sub_location",
   sort: "sort",
   view: "view",
   // Story 3.4: tags — comma-separated string (?tags=Investment+Property,Rental+Potential)
   tags: "tags",
   q: "q",
+  region: "region",
 };
 
 /**
@@ -80,7 +82,9 @@ const FILTER_KEYS: Array<keyof SearchFilters> = [
   "lotSizeMin",
   "lotSizeMax",
   "areaSlug",
+  "subLocation",
   "q",
+  "region",
 ];
 
 /** Valid sort options */
@@ -125,6 +129,9 @@ function parseFilters(params: URLSearchParams): SearchFilters {
   const areaSlug = params.get("area");
   if (areaSlug) filters.areaSlug = areaSlug;
 
+  const subLocation = params.get("sub_location");
+  if (subLocation) filters.subLocation = subLocation;
+
   const sort = params.get("sort");
   if (sort && VALID_SORT_OPTIONS.includes(sort as SortOption)) {
     filters.sort = sort as SortOption;
@@ -147,6 +154,9 @@ function parseFilters(params: URLSearchParams): SearchFilters {
 
   const q = params.get("q");
   if (q) filters.q = q;
+
+  const region = params.get("region");
+  if (region) filters.region = region;
 
   return filters;
 }
@@ -242,20 +252,22 @@ export function useSearchFilters(): UseSearchFiltersReturn {
   const clearFilter = useCallback(
     (key: keyof SearchFilters) => {
       const paramKey = PARAM_MAP[key];
-      const newParams = new URLSearchParams(searchParams.toString());
+      const newParams = new URLSearchParams(latestParamsRef.current.toString());
       newParams.delete(paramKey);
+      latestParamsRef.current = newParams;
       commitParams(newParams);
     },
-    [searchParams, commitParams],
+    [commitParams],
   );
 
   const clearAll = useCallback(() => {
     // Remove all filter params but preserve 'view' (it's not a filter — AR10)
     const newParams = new URLSearchParams();
-    const view = searchParams.get("view");
+    const view = latestParamsRef.current.get("view");
     if (view) newParams.set("view", view);
+    latestParamsRef.current = newParams;
     commitParams(newParams);
-  }, [searchParams, commitParams]);
+  }, [commitParams]);
 
   /**
    * Story 3.4: toggleTag — add/remove a single lifestyle tag from the URL state.

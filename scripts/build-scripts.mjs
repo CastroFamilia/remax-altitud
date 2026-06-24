@@ -8,6 +8,7 @@
  * Output:
  *   dist/migrate.mjs
  *   dist/run-sync.mjs
+ *   dist/test-resend.mjs
  */
 import { build } from "esbuild";
 import { mkdirSync } from "node:fs";
@@ -73,6 +74,10 @@ const entries = [
   {
     entryPoints: [path.resolve(root, "scripts/run-sync.ts")],
     outfile: path.resolve(root, "dist/run-sync.mjs"),
+  },
+  {
+    entryPoints: [path.resolve(root, "scripts/test-resend.ts")],
+    outfile: path.resolve(root, "dist/test-resend.mjs"),
   },
 ];
 

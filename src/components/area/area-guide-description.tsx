@@ -117,17 +117,9 @@ export async function AreaGuideDescription({ area, locale }: AreaGuideDescriptio
             );
           }
 
-          // Code block / ASCII Art parsing
+          // Code block / ASCII Art — skip rendering (no legitimate use in area guides)
           if (block.startsWith("```")) {
-            const content = block.replace(/```[a-zA-Z]*/g, "").trim();
-            return (
-              <pre
-                key={idx}
-                className="font-mono bg-brand-navy/5 text-brand-navy p-6 rounded-2xl border border-border/60 overflow-x-auto text-xs sm:text-sm leading-relaxed my-6 flex justify-center text-center shadow-inner"
-              >
-                <code className="text-left inline-block">{content}</code>
-              </pre>
-            );
+            return null;
           }
 
           // Table parsing
@@ -371,7 +363,7 @@ function CardinalMap({ locale, areaSlug }: { locale: string; areaSlug: string })
           </div>
 
           {/* ROW 1: North */}
-          <div className="col-start-2 flex flex-col items-center">
+          <div className="row-start-1 col-start-2 flex flex-col items-center">
             <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
                 ▲ {isEs ? "NORTE" : "NORTH"}
@@ -388,7 +380,7 @@ function CardinalMap({ locale, areaSlug }: { locale: string; areaSlug: string })
 
           {/* ROW 2: West | Center (Dominical) | East */}
           {/* West */}
-          <div className="flex items-center">
+          <div className="row-start-2 col-start-1 flex items-center">
             <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-right">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
                 {isEs ? "OESTE" : "WEST"} ◀
@@ -404,7 +396,7 @@ function CardinalMap({ locale, areaSlug }: { locale: string; areaSlug: string })
           </div>
 
           {/* Center Compass Needle */}
-          <div className="flex flex-col items-center justify-center p-6 rounded-full bg-brand-navy border-4 border-brand-gold text-white text-center w-44 h-44 mx-auto shadow-2xl relative z-10">
+          <div className="row-start-2 col-start-2 flex flex-col items-center justify-center p-6 rounded-full bg-brand-navy border-4 border-brand-gold text-white text-center w-44 h-44 mx-auto shadow-2xl relative z-10">
             <Compass className="w-8 h-8 text-brand-gold animate-[pulse_4s_ease-in-out_infinite]" />
             <span className="text-[10px] font-bold tracking-widest text-brand-gold/80 mt-2 block">
               {isEs ? "PORTAL COSTEÑO" : "COASTAL HUB"}
@@ -413,7 +405,7 @@ function CardinalMap({ locale, areaSlug }: { locale: string; areaSlug: string })
           </div>
 
           {/* East */}
-          <div className="flex items-center">
+          <div className="row-start-2 col-start-3 flex items-center">
             <div className="w-8 h-0.5 bg-gradient-to-l from-brand-gold/45 to-transparent mr-2" />
             <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-left">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
@@ -429,7 +421,7 @@ function CardinalMap({ locale, areaSlug }: { locale: string; areaSlug: string })
           </div>
 
           {/* ROW 3: South */}
-          <div className="col-start-2 flex flex-col items-center">
+          <div className="row-start-3 col-start-2 flex flex-col items-center">
             <div className="w-0.5 h-8 bg-gradient-to-t from-brand-gold/45 to-transparent mb-2" />
             <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
@@ -485,6 +477,139 @@ function CardinalMap({ locale, areaSlug }: { locale: string; areaSlug: string })
           </div>
           <div className="col-span-2 p-3 rounded-xl bg-brand-navy text-white text-center text-xs font-semibold shadow-inner">
             📍 {isEs ? "Núcleo Central: Dominical Centro" : "Central Hub: Dominical Centro"}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (areaSlug === "uvita") {
+    return (
+      <div className="my-10 relative">
+        {/* Desktop compass visual grid */}
+        <div className="hidden lg:grid grid-cols-3 gap-6 items-center justify-center max-w-4xl mx-auto p-8 rounded-3xl bg-brand-navy/5 border border-border/50 relative overflow-hidden">
+          {/* Decorative background circle */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+            <div className="w-80 h-80 rounded-full border-4 border-dashed border-brand-gold/30 animate-[spin_180s_linear_infinite]" />
+          </div>
+
+          {/* ROW 1: North — Mountain Ridges */}
+          <div className="row-start-1 col-start-2 flex flex-col items-center">
+            <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
+                ▲ {isEs ? "NORTE" : "NORTH"}
+              </span>
+              <h4 className="font-semibold text-brand-navy text-sm">Escaleras & San Josecito</h4>
+              <p className="text-[11px] text-text-muted mt-1 leading-snug">
+                {isEs
+                  ? "Eco-mansiones de lujo, vistas panorámicas de 180°"
+                  : "Luxury eco-mansions, 180° panoramic ocean views"}
+              </p>
+            </div>
+            <div className="w-0.5 h-8 bg-gradient-to-b from-brand-gold/45 to-transparent mt-2" />
+          </div>
+
+          {/* ROW 2: West | Center (Uvita) | East */}
+          {/* West — Hermosa & San Martín */}
+          <div className="row-start-2 col-start-1 flex items-center">
+            <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-right">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
+                {isEs ? "OESTE" : "WEST"} ◀
+              </span>
+              <h4 className="font-semibold text-brand-navy text-sm">Las Brisas & Hermosa</h4>
+              <p className="text-[11px] text-text-muted mt-1 leading-snug">
+                {isEs
+                  ? "Cordillera costera, brisas frescas, privacidad"
+                  : "Coastal ridges, refreshing breezes, privacy"}
+              </p>
+            </div>
+            <div className="w-8 h-0.5 bg-gradient-to-r from-brand-gold/45 to-transparent ml-2" />
+          </div>
+
+          {/* Center Compass Needle */}
+          <div className="row-start-2 col-start-2 flex flex-col items-center justify-center p-6 rounded-full bg-brand-navy border-4 border-brand-gold text-white text-center w-44 h-44 mx-auto shadow-2xl relative z-10">
+            <Compass className="w-8 h-8 text-brand-gold animate-[pulse_4s_ease-in-out_infinite]" />
+            <span className="text-[10px] font-bold tracking-widest text-brand-gold/80 mt-2 block">
+              {isEs ? "CENTRO COSTERO" : "COASTAL HUB"}
+            </span>
+            <span className="text-xs font-extrabold leading-tight mt-1">Uvita Centro</span>
+          </div>
+
+          {/* East — Bahía Ballena */}
+          <div className="row-start-2 col-start-3 flex items-center">
+            <div className="w-8 h-0.5 bg-gradient-to-l from-brand-gold/45 to-transparent mr-2" />
+            <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-left">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
+                ▶ {isEs ? "ESTE" : "EAST"}
+              </span>
+              <h4 className="font-semibold text-brand-navy text-sm">Bahía Ballena & Chamán</h4>
+              <p className="text-[11px] text-text-muted mt-1 leading-snug">
+                {isEs
+                  ? "Frente al mar, surf, alquileres vacacionales"
+                  : "Beachfront, surf breaks, vacation rentals"}
+              </p>
+            </div>
+          </div>
+
+          {/* ROW 3: South — Playa Hermosa */}
+          <div className="row-start-3 col-start-2 flex flex-col items-center">
+            <div className="w-0.5 h-8 bg-gradient-to-t from-brand-gold/45 to-transparent mb-2" />
+            <div className="w-full p-4 rounded-xl border border-brand-gold/25 bg-background shadow-md hover:shadow-lg transition-all duration-300 text-center">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-gold block mb-1">
+                ▼ {isEs ? "SUR" : "SOUTH"}
+              </span>
+              <h4 className="font-semibold text-brand-navy text-sm">
+                Playa Hermosa & Marino Ballena
+              </h4>
+              <p className="text-[11px] text-text-muted mt-1 leading-snug">
+                {isEs
+                  ? "Cola de Ballena, parque nacional, arrecifes"
+                  : "Whale Tail, national park, protected reefs"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile stacked visual list */}
+        <div className="grid grid-cols-2 gap-4 lg:hidden max-w-lg mx-auto">
+          <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
+            <span className="text-xs font-bold text-brand-gold block">
+              ▲ {isEs ? "NORTE" : "NORTH"}
+            </span>
+            <h4 className="font-bold text-brand-navy text-sm mt-1">Escaleras</h4>
+            <p className="text-[11px] text-text-muted mt-1 leading-tight">
+              {isEs ? "Eco-mansiones, vistas" : "Eco-mansions, panoramic views"}
+            </p>
+          </div>
+          <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
+            <span className="text-xs font-bold text-brand-gold block">
+              ▶ {isEs ? "ESTE" : "EAST"}
+            </span>
+            <h4 className="font-bold text-brand-navy text-sm mt-1">Bahía Ballena</h4>
+            <p className="text-[11px] text-text-muted mt-1 leading-tight">
+              {isEs ? "Playa, surf, alquiler" : "Beach, surf & rentals"}
+            </p>
+          </div>
+          <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
+            <span className="text-xs font-bold text-brand-gold block">
+              ▼ {isEs ? "SUR" : "SOUTH"}
+            </span>
+            <h4 className="font-bold text-brand-navy text-sm mt-1">Playa Hermosa</h4>
+            <p className="text-[11px] text-text-muted mt-1 leading-tight">
+              {isEs ? "Cola de Ballena, parque" : "Whale Tail & national park"}
+            </p>
+          </div>
+          <div className="p-4 rounded-xl border border-border bg-gradient-to-br from-brand-navy/5 to-background text-center">
+            <span className="text-xs font-bold text-brand-gold block">
+              ◀ {isEs ? "OESTE" : "WEST"}
+            </span>
+            <h4 className="font-bold text-brand-navy text-sm mt-1">Las Brisas</h4>
+            <p className="text-[11px] text-text-muted mt-1 leading-tight">
+              {isEs ? "Cordillera, brisas" : "Coastal ridges & breezes"}
+            </p>
+          </div>
+          <div className="col-span-2 p-3 rounded-xl bg-brand-navy text-white text-center text-xs font-semibold shadow-inner">
+            📍 {isEs ? "Núcleo Central: Uvita Centro" : "Central Hub: Uvita Centro"}
           </div>
         </div>
       </div>
@@ -741,7 +866,51 @@ function CardinalCards({ locale, areaSlug }: { locale: string; areaSlug: string 
     },
   ];
 
-  const sectors = areaSlug === "dominical" ? dominicalSectors : perezZeledonSectors;
+  const uvitaSectors = [
+    {
+      title: isEs
+        ? "1. Vida de montaña de alta gama y propiedades de lujo"
+        : "1. High-End Mountain Living & Luxury Estates",
+      direction: isEs ? "NORTE — Eco-Lujo Exclusivo" : "NORTH — Ultra-Luxury Eco-Living",
+      vibe: isEs
+        ? "Posados en las cordilleras costeras, estos enclaves exclusivos albergan algunas de las eco-mansiones contemporáneas más impresionantes del país. Privacidad absoluta, brisas de montaña refrescantes y vistas panorámicas de 180° al océano."
+        : "Perched on the coastal mountain ridges, these exclusive enclaves host some of the country's most breathtaking contemporary eco-mansions. Absolute privacy, refreshing mountain breezes, and 180° panoramic ocean views.",
+      properties: isEs
+        ? "Eco-mansiones arquitectónicas contemporáneas de millones de dólares, propiedades de alquiler vacacional ultra-premium y lotes con vistas al mar y la Cola de Ballena."
+        : "Multi-million dollar contemporary eco-mansions, ultra-premium vacation rental properties, and oceanview lots overlooking the Whale Tail.",
+    },
+    {
+      title: isEs
+        ? "2. Vibrante vida junto a la playa y alquileres vacacionales"
+        : "2. Beachside Vibrancy & Vacation Rentals",
+      direction: isEs ? "SUR — Frente al Mar" : "SOUTH — Beachfront Living",
+      vibe: isEs
+        ? "La vida en las planicies costeras se define por la proximidad inmediata al océano. Camine o tome un carrito de golf directo a las arenas doradas de Playa Hermosa o los arrecifes protegidos del Parque Nacional."
+        : "Life in the lower coastal flats is defined by immediate proximity to the ocean. Walk or take a golf-cart ride to the golden sands of Playa Hermosa or the protected reefs of the National Park.",
+      properties: isEs
+        ? "Propiedades tipo Airbnb con alta ocupación, casas de playa de surf, y residencias de estilo de vida costero relajado."
+        : "High-occupancy Airbnb properties, surf beach houses, and laid-back coastal lifestyle residences.",
+    },
+    {
+      title: isEs
+        ? "3. Conveniencia del pueblo y comunidades familiares"
+        : "3. Town Convenience & Family Communities",
+      direction: isEs ? "CENTRO — Vida Moderna" : "CENTER — Modern Hub Living",
+      vibe: isEs
+        ? "Uvita es un centro moderno y completamente equipado: supermercados gourmet, bancos, clínicas médicas premium, panaderías artesanales y una próspera escena culinaria internacional. Epicentro de educación alternativa de clase mundial."
+        : "Uvita is a fully-equipped, modern hub with gourmet supermarkets, banks, premium medical clinics, artisanal bakeries, and a thriving international culinary scene. Epicenter for world-class alternative education.",
+      properties: isEs
+        ? "Propiedades planas y accesibles, locales comerciales, residencias familiares y apartamentos para nómadas digitales."
+        : "Flat, easily accessible properties, commercial spaces, family residences, and digital nomad apartments.",
+    },
+  ];
+
+  const sectors =
+    areaSlug === "dominical"
+      ? dominicalSectors
+      : areaSlug === "uvita"
+        ? uvitaSectors
+        : perezZeledonSectors;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">

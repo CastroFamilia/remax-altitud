@@ -41,17 +41,36 @@ function JoinPageContent() {
   const t = useTranslations("JoinPage");
   return (
     <SimplePageLayout pageTitle={t("pageTitle")} intro={t("intro")}>
-      {/* Premium Widescreen Hero Image */}
-      <div className="relative mb-16 overflow-hidden rounded-2xl shadow-lg border border-brand-warm aspect-[21/9] w-full bg-brand-warm/10">
-        <Image
-          src="/images/join-team-hero.png"
-          alt="REMAX Altitud Luxury Tropical Office"
-          fill
-          priority
-          className="object-cover"
-          sizes="(max-width: 1200px) 100vw, 1200px"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/35 via-transparent to-transparent" />
+      {/* Office Locations */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div className="flex flex-col items-center">
+          <div className="relative overflow-hidden rounded-2xl shadow-lg border border-brand-warm aspect-[16/9] w-full bg-brand-warm/20 mb-4">
+            <Image
+              src="/images/office-dominical.jpg"
+              alt="Dominical Office"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+          <h3 className="text-xl font-bold text-brand-navy tracking-widest uppercase">Dominical</h3>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="relative overflow-hidden rounded-2xl shadow-lg border border-brand-warm aspect-[16/9] w-full bg-brand-warm/20 mb-4">
+            <Image
+              src="/images/office-pz.jpg"
+              alt="Pérez Zeledón Office"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+          <h3 className="text-xl font-bold text-brand-navy tracking-widest uppercase">
+            Pérez Zeledón
+          </h3>
+        </div>
       </div>
 
       {/* Two-Column Split Layout for Benefits and Team Collaboration */}
@@ -106,6 +125,9 @@ function JoinPageContent() {
         >
           {t("formHeading")}
         </h2>
+        <p className="mt-4 text-center text-lg text-text-muted max-w-2xl mx-auto font-medium">
+          {t("businessWarning")}
+        </p>
         <div className="mt-10">
           <RecruitmentForm />
         </div>

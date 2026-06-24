@@ -15,7 +15,7 @@ export async function autoTagCommunities(): Promise<number> {
       AND p.geo IS NOT NULL
   `);
 
-  // Also correct/tag all properties to their closest area based on coordinate distance
+  // Correct/tag all properties to their closest area based on coordinate distance
   await db.execute(sql`
     UPDATE properties p
     SET area_id = sub.area_id,
@@ -37,6 +37,29 @@ export async function autoTagCommunities(): Promise<number> {
       ) ASC
     ) sub
     WHERE p.id = sub.property_id
+  `);
+
+  // Text-based fallback: Override distance calculation for properties that explicitly state they are in Pérez Zeledón
+  // This prevents boundary properties (like in San Pedro) from being incorrectly tagged as coastal areas like Ojochal.
+  await db.execute(sql`
+    UPDATE properties p
+    SET area_id = a.id,
+        area_slug = a.slug
+    FROM areas a
+    WHERE a.slug = 'perez-zeledon'
+      AND (
+        p.api_raw->>'Location' ILIKE '%Pérez Zeledón%' OR 
+        p.api_raw->>'Location' ILIKE '%Perez Zeledon%' OR
+        p.api_raw->>'UnparsedAddress' ILIKE '%Pérez Zeledón%' OR
+        p.api_raw->>'UnparsedAddress' ILIKE '%Perez Zeledon%' OR
+        p.api_raw->>'UnparsedAddress' ILIKE '%San Pedro%' OR
+        p.api_raw->>'UnparsedAddress' ILIKE '%San Isidro%' OR
+        p.api_raw->>'UnparsedAddress' ILIKE '%Rivas%' OR
+        p.api_raw->>'UnparsedAddress' ILIKE '%General Viejo%' OR
+        p.api_raw->>'UnparsedAddress' ILIKE '%Cajón%' OR
+        p.api_raw->>'UnparsedAddress' ILIKE '%Pejibaye%'
+      )
+      AND (p.area_slug IS NULL OR p.area_slug != 'perez-zeledon')
   `);
 
   return result.count ?? 0;

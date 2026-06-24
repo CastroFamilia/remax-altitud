@@ -22,6 +22,7 @@ interface FilterChipsProps {
 
 /** Filter keys that generate chips (exclude 'view' and 'sort') */
 const CHIP_KEYS: Array<keyof SearchFilters> = [
+  "region",
   "type",
   "listingType",
   "priceMin",
@@ -31,6 +32,7 @@ const CHIP_KEYS: Array<keyof SearchFilters> = [
   "lotSizeMin",
   "lotSizeMax",
   "areaSlug",
+  "subLocation",
   "q",
 ];
 
@@ -47,12 +49,33 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
   // Build the list of active chips
   const chips: ChipInfo[] = [];
 
+  if (filters.region) {
+    const regionLabel =
+      filters.region === "mountain"
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          t("filters.regionMountain" as any)
+        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          t("filters.regionBeach" as any);
+    chips.push({
+      key: "region",
+      reactKey: "region",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      label: t("filters.region" as any),
+      value: regionLabel,
+    });
+  }
+
   if (filters.type) {
     chips.push({
       key: "type",
       reactKey: "type",
       label: t("filters.type"),
-      value: filters.type,
+      value:
+        filters.type === "Lote"
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            `${t("filters.propertyTypes.Lote" as any)} / ${t("filters.propertyTypes.Terreno" as any)}`
+          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            t(`filters.propertyTypes.${filters.type}` as any) || filters.type,
     });
   }
 
@@ -115,6 +138,15 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
     });
   }
 
+  if (filters.subLocation) {
+    chips.push({
+      key: "subLocation",
+      reactKey: "subLocation",
+      label: t("filters.location"),
+      value: filters.subLocation,
+    });
+  }
+
   if (filters.q) {
     chips.push({
       key: "q",
@@ -162,26 +194,32 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
     } else if (key === "lotSizeMin") {
       onClearFilter("lotSizeMin");
       onClearFilter("lotSizeMax");
+    } else if (key === "areaSlug") {
+      onClearFilter("areaSlug");
+      onClearFilter("subLocation");
     } else {
       onClearFilter(key);
     }
   }
 
   return (
-    <div data-testid="filter-chips" className="flex flex-wrap items-center gap-2 px-4 py-2">
+    <div
+      data-testid="filter-chips"
+      className="flex items-center gap-1.5 px-4 py-1.5 overflow-x-auto scrollbar-hide"
+    >
       {chips.map((chip) => (
         <span
           key={chip.reactKey}
           data-testid="filter-chip"
-          className="inline-flex items-center gap-1 rounded-full bg-brand-blue border border-brand-blue px-4 py-1.5 text-sm font-semibold text-white min-h-[2.75rem] shadow-sm transition-all duration-200"
+          className="inline-flex items-center gap-1 rounded-full bg-brand-blue border border-brand-blue px-2.5 py-0.5 text-xs font-semibold text-white shrink-0 shadow-sm transition-all duration-200"
         >
-          <span>
+          <span className="whitespace-nowrap">
             {chip.label}: {chip.value}
           </span>
           <button
             type="button"
             data-testid="chip-dismiss"
-            className="ml-1 flex h-5 w-5 items-center justify-center rounded-full hover:bg-white/20"
+            className="ml-1 flex h-4 w-4 md:h-5 md:w-5 items-center justify-center rounded-full hover:bg-white/20"
             aria-label={t("filters.dismiss", { label: chip.label })}
             onClick={() => handleDismiss(chip.key)}
           >
@@ -195,7 +233,7 @@ export function FilterChips({ filters, onClearFilter, onClearAll }: FilterChipsP
         <button
           type="button"
           data-testid="clear-all-filters"
-          className="text-sm text-muted-foreground underline hover:text-foreground"
+          className="shrink-0 text-sm text-muted-foreground underline hover:text-foreground whitespace-nowrap"
           onClick={onClearAll}
         >
           {t("filters.clearAll")}

@@ -142,12 +142,16 @@ describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
   describe("Shortlist Analytics Queries: fetchShortlistAnalyticsData", () => {
     it("[P0] 8.7-UNIT-004: should compile the aggregation query with correct metrics and outer joins (AC3, AC6)", async () => {
       // Mock db.select/leftJoin/groupBy query chain
-      const mockLimit = vi.fn().mockResolvedValue([]);
-      const mockOffset = vi.fn().mockReturnValue({ limit: mockLimit });
-      const mockOrderBy = vi.fn().mockReturnValue({ offset: mockOffset, limit: mockLimit });
-      const mockGroupBy = vi.fn().mockReturnValue({ offset: mockOffset, limit: mockLimit, orderBy: mockOrderBy });
-      const mockLeftJoin = vi.fn().mockReturnValue({ groupBy: mockGroupBy });
-      const mockFrom = vi.fn().mockReturnValue({ leftJoin: mockLeftJoin });
+      const mockBuilder: any = {};
+      mockBuilder.limit = vi.fn().mockResolvedValue([]);
+      mockBuilder.offset = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.orderBy = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.where = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.leftJoin = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.as = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.groupBy = vi.fn().mockReturnValue(mockBuilder);
+      
+      const mockFrom = vi.fn().mockReturnValue(mockBuilder);
       mockSelect.mockReturnValue({ from: mockFrom });
 
       const { fetchShortlistAnalyticsData } = await import("@/lib/db/queries/properties");
@@ -164,8 +168,8 @@ describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       // Then the Drizzle query builder should have built a left join aggregation
       expect(mockSelect).toHaveBeenCalled();
       expect(mockFrom).toHaveBeenCalled();
-      expect(mockLeftJoin).toHaveBeenCalled();
-      expect(mockGroupBy).toHaveBeenCalled();
+      expect(mockBuilder.leftJoin).toHaveBeenCalled();
+      expect(mockBuilder.groupBy).toHaveBeenCalled();
     });
   });
 
@@ -197,12 +201,16 @@ describe("Story 8.7: Shortlist Analytics - Unit Tests (ATDD RED)", () => {
       ];
 
       // Mock database queries
-      const mockLimit = vi.fn().mockResolvedValue(mockQueryResult);
-      const mockOffset = vi.fn().mockReturnValue({ limit: mockLimit });
-      const mockOrderBy = vi.fn().mockReturnValue({ offset: mockOffset, limit: mockLimit });
-      const mockGroupBy = vi.fn().mockReturnValue({ offset: mockOffset, limit: mockLimit, orderBy: mockOrderBy });
-      const mockLeftJoin = vi.fn().mockReturnValue({ groupBy: mockGroupBy });
-      const mockFrom = vi.fn().mockReturnValue({ leftJoin: mockLeftJoin });
+      const mockBuilder: any = {};
+      mockBuilder.limit = vi.fn().mockResolvedValue(mockQueryResult);
+      mockBuilder.offset = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.orderBy = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.where = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.leftJoin = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.as = vi.fn().mockReturnValue(mockBuilder);
+      mockBuilder.groupBy = vi.fn().mockReturnValue(mockBuilder);
+      
+      const mockFrom = vi.fn().mockReturnValue(mockBuilder);
       mockSelect.mockReturnValue({ from: mockFrom });
 
       const { getShortlistAnalyticsAction } = await import("@/app/actions/admin-analytics-actions");

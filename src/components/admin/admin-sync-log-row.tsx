@@ -129,7 +129,7 @@ export function AdminSyncLogRow({ log, locale, translations }: AdminSyncLogRowPr
         minute: "2-digit",
         second: "2-digit",
       });
-    } catch (e) {
+    } catch {
       return "N/A";
     }
   };

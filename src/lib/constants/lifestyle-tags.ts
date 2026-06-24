@@ -16,6 +16,15 @@ export const LIFESTYLE_TAGS = [
   "Con cascada",
   "Con vista al mar",
   "Con vista a la montaña",
+  "Para inversión",
+  "Retiro",
+  "Potencial de desarrollo",
+  "Eco amigable",
+  "Off grid",
+  "Fácil acceso",
+  "Requiere 4x4",
+  "Árboles frutales",
+  "Terreno de conservación",
 ] as const;
 
 /** Union type of all valid lifestyle tag strings. */
@@ -118,6 +127,109 @@ export const LIFESTYLE_TAG_RULES: LifestyleTagRule[] = [
         desc.includes("vista de montaña") ||
         desc.includes("vistas a las montañas") ||
         desc.includes("mountain-view")
+      );
+    },
+  },
+  {
+    tag: "Para inversión",
+    match: (raw) => {
+      const text =
+        `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return (
+        text.includes("investment") ||
+        text.includes("inversión") ||
+        text.includes("inversion") ||
+        text.includes("income producing") ||
+        text.includes("rentabilidad") ||
+        text.includes("rental income") ||
+        text.includes("roi") ||
+        text.includes("commercial")
+      );
+    },
+  },
+  {
+    tag: "Retiro",
+    match: (raw) => {
+      const text = `${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return text.includes("retire") || text.includes("retiro");
+    },
+  },
+  {
+    tag: "Potencial de desarrollo",
+    match: (raw) => {
+      const text =
+        `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return (
+        text.includes("development potential") ||
+        text.includes("potencial de desarrollo") ||
+        text.includes("para desarrollar") ||
+        text.includes("segregable") ||
+        text.includes("subdividable")
+      );
+    },
+  },
+  {
+    tag: "Eco amigable",
+    match: (raw) => {
+      const text =
+        `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return (
+        text.includes("eco-friendly") ||
+        text.includes("eco amigable") ||
+        text.includes("eco-amigable") ||
+        text.includes("sustainable") ||
+        text.includes("sostenible") ||
+        text.includes("green building")
+      );
+    },
+  },
+  {
+    tag: "Off grid",
+    match: (raw) => {
+      const text =
+        `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return (
+        text.includes("off grid") ||
+        text.includes("off-grid") ||
+        text.includes("fuera de la red") ||
+        text.includes("solar panel") ||
+        text.includes("paneles solares")
+      );
+    },
+  },
+  {
+    tag: "Fácil acceso",
+    match: (raw) => {
+      const text =
+        `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return (
+        text.includes("easy access") ||
+        text.includes("fácil acceso") ||
+        text.includes("facil acceso") ||
+        text.includes("paved road") ||
+        text.includes("calle pavimentada") ||
+        text.includes("2wd")
+      );
+    },
+  },
+  {
+    tag: "Requiere 4x4",
+    match: (raw) => {
+      const text =
+        `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return text.includes("4x4") || text.includes("four wheel drive") || text.includes("4wd");
+    },
+  },
+  {
+    tag: "Árboles frutales",
+    match: (raw) => {
+      const text =
+        `${raw.titleEn ?? ""} ${raw.titleEs ?? ""} ${raw.publicRemarksEn ?? ""} ${raw.publicRemarksEs ?? ""}`.toLowerCase();
+      return (
+        text.includes("fruit tree") ||
+        text.includes("árboles frutales") ||
+        text.includes("arboles frutales") ||
+        text.includes("fruit orchard")
       );
     },
   },

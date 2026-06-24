@@ -13,7 +13,7 @@
 
 import { useTranslations } from "next-intl";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
-import { formatUSD } from "@/lib/utils/currency";
+import { useLocaleCurrency } from "@/hooks/use-locale-currency";
 import { UnitToggle } from "@/components/layout/unit-toggle";
 
 interface StickySpecsBarProps {
@@ -57,6 +57,7 @@ export function StickySpecsBar({
 }: StickySpecsBarProps) {
   const t = useTranslations("StickySpecsBar");
   const { unitSystem, convertArea } = useLocaleUnits(locale);
+  const { formatPrice, currency: activeCurrency } = useLocaleCurrency(locale);
   const zmtVisual = ZMT_VISUAL[zmtStatus];
 
   return (
@@ -69,8 +70,8 @@ export function StickySpecsBar({
         <div className="flex flex-col min-w-0">
           <span className="text-xs text-gray-500 uppercase tracking-wide">{t("price")}</span>
           <span className="text-xl font-bold text-brand-navy">
-            {formatUSD(priceUsd, locale)}
-            {currency === "CRC" && originalPriceColones != null && (
+            {formatPrice(priceUsd, originalPriceColones)}
+            {activeCurrency !== "CRC" && currency === "CRC" && originalPriceColones != null && (
               <span className="ml-2 text-xs font-normal text-gray-500">
                 (₡{originalPriceColones.toLocaleString("es-CR")})
               </span>
@@ -121,7 +122,7 @@ export function StickySpecsBar({
         <UnitToggle locale={locale} aria-label={t("toggleUnits")} />
 
         {/* ZMT status badge */}
-        {zmtVisual && (
+        {zmtVisual && zmtStatus !== "titled" && (
           <span
             className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${zmtVisual.classes}`}
           >

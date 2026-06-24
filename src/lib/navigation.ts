@@ -49,7 +49,7 @@ export const mainNavItems: NavItem[] = [
         children: [
           {
             labelKey: "rise",
-            href: "/areas/perez-zeledon/communities/rise",
+            href: "/areas/perez-zeledon/communities/rise-costa-rica",
           },
           {
             labelKey: "santaElenaHills",
@@ -83,6 +83,12 @@ export const mainNavItems: NavItem[] = [
     activePrefix: "/agents",
     icon: "🤝",
   },
+  {
+    labelKey: "blog",
+    href: "/blog",
+    activePrefix: "/blog",
+    icon: "📝",
+  },
 ];
 
 /** Mobile-only items (Our Team, Contact) — not shown in desktop nav */
@@ -94,13 +100,13 @@ export const mobileOnlyItems: NavItem[] = [
     icon: "🤝",
   },
   {
-    labelKey: "ourTeam",
-    href: "/about/team",
-    icon: "👥",
-  },
-  {
     labelKey: "contact",
     href: "/contact",
     icon: "📞",
+  },
+  {
+    labelKey: "faq",
+    href: "/faq",
+    icon: "❓",
   },
 ];

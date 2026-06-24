@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,11 +20,20 @@ import { mainNavItems, mobileOnlyItems, type NavItem } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import { CurrencyToggle } from "@/components/layout/currency-toggle";
+import { UnitToggle } from "@/components/layout/unit-toggle";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+
+/** A logical section of items shown under a labelled heading in the mobile menu */
+interface MobileNavSection {
+  /** i18n key for the section heading, or null for standalone items */
+  headingKey: string | null;
+  items: NavItem[];
+}
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const locale = useLocale();
   const t = useTranslations("Navigation");
   const tMobile = useTranslations("MobileNav");
 
@@ -33,8 +42,8 @@ export function MobileNav() {
     setOpen(false);
   }, [pathname]);
 
-  // Build flat mobile nav: main items flattened + mobile-only + language
-  const mobileItems = buildMobileItems(mainNavItems);
+  // Build grouped sections for mobile nav
+  const sections = buildMobileSections(mainNavItems);
 
   return (
     <div className="lg:hidden">
@@ -60,11 +69,25 @@ export function MobileNav() {
           </SheetHeader>
 
           <nav className="flex flex-1 flex-col px-4" aria-label={tMobile("mobileNav")}>
-            <ul className="flex flex-col gap-1">
-              {mobileItems.map((item) => (
-                <MobileNavItem key={item.href} item={item} pathname={pathname} t={t} />
-              ))}
-            </ul>
+            {sections.map((section, idx) => (
+              <div key={idx}>
+                {/* Divider before every section except the first */}
+                {idx > 0 && <hr className="my-3 border-brand-warm" />}
+
+                {/* Section heading */}
+                {section.headingKey && (
+                  <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                    {t(section.headingKey)}
+                  </p>
+                )}
+
+                <ul className="flex flex-col gap-1">
+                  {section.items.map((item) => (
+                    <MobileNavItem key={item.href} item={item} pathname={pathname} t={t} />
+                  ))}
+                </ul>
+              </div>
+            ))}
 
             <hr className="my-3 border-brand-warm" />
 
@@ -92,9 +115,14 @@ export function MobileNav() {
             </ul>
           </nav>
 
-          <SheetFooter className="border-t border-brand-warm px-4 pt-4 flex flex-row items-center justify-between">
-            <LanguageToggle variant="light" />
-            <CurrencyToggle variant="light" />
+          <SheetFooter className="border-t border-brand-warm px-4 pt-4 flex flex-col gap-4">
+            <div className="flex flex-row items-center justify-between w-full">
+              <LanguageToggle variant="light" />
+              <CurrencyToggle variant="light" />
+            </div>
+            <div className="flex flex-row items-center justify-center w-full">
+              <UnitToggle locale={locale} />
+            </div>
           </SheetFooter>
         </SheetContent>
       </Sheet>
@@ -102,34 +130,54 @@ export function MobileNav() {
   );
 }
 
-/** Flatten nav items for mobile (no nested dropdowns per UX-DR15) */
-function buildMobileItems(items: NavItem[]): NavItem[] {
-  const result: NavItem[] = [];
+/**
+ * Build the mobile nav as a list of labelled sections with dividers.
+ *
+ * Structure produced:
+ *   [Properties section]  — Mountains / Coast / All
+ *   [Areas section]       — Pérez Zeledón / Dominical / Uvita
+ *   [Communities section] — Rise / Santa Elena Hills / All communities
+ *   [standalone items]    — VIP Buyer Service / About / Blog
+ */
+function buildMobileSections(items: NavItem[]): MobileNavSection[] {
+  const sections: MobileNavSection[] = [];
+  const standaloneItems: NavItem[] = [];
+
   for (const item of items) {
-    if (item.isCta) continue; // CTA is rendered separately
+    if (item.isCta) continue; // CTA rendered separately
+
     if (item.children) {
-      // Add the children directly (flat)
+      // Separate regular children from isGroup children
+      const regularChildren: NavItem[] = [];
+      const groupSections: MobileNavSection[] = [];
+
       for (const child of item.children) {
         if (child.isGroup && child.children) {
-          // Add group header + its children inline
-          result.push({
-            labelKey: child.labelKey,
-            href: child.href,
-            icon: "🏘",
+          // Becomes its own section (e.g. Communities)
+          groupSections.push({
+            headingKey: child.labelKey,
+            items: child.children.map((gc) => ({ ...gc })),
           });
-          // Sub-items shown as compact inline text in the group item
         } else {
-          result.push({
-            ...child,
-            icon: child.icon || item.icon,
-          });
+          regularChildren.push({ ...child, icon: child.icon || item.icon });
         }
       }
+
+      if (regularChildren.length > 0) {
+        sections.push({ headingKey: item.labelKey, items: regularChildren });
+      }
+      sections.push(...groupSections);
     } else {
-      result.push(item);
+      standaloneItems.push(item);
     }
   }
-  return result;
+
+  // Standalone items (VIP, About, Blog) go in a single un-labelled section
+  if (standaloneItems.length > 0) {
+    sections.push({ headingKey: null, items: standaloneItems });
+  }
+
+  return sections;
 }
 
 function MobileNavItem({

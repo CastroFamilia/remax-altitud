@@ -18,9 +18,10 @@
  * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 8
  */
 
-import { and, isNotNull, eq, gte, lte } from "drizzle-orm";
+import { and, isNotNull, eq, ilike, gte, lte, inArray, sql, or } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
 import { db } from "@/lib/db/client";
-import { properties } from "@/lib/db/schema";
+import { properties, areas } from "@/lib/db/schema";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import type { OptimizedImage } from "@/types/images";
 
@@ -33,7 +34,12 @@ export type MapProperty = {
   bedrooms: number | null;
   bathrooms: number | null;
   lotSizeM2: number | null;
+  constructionM2: number | null;
   zmtStatus: string;
+  propertyType: string;
+  listingType: string;
+  currency: string;
+  apiRaw: unknown;
   images: OptimizedImage[];
   latitude: number;
   longitude: number;
@@ -45,6 +51,125 @@ type RawBounds = {
   east: number;
   west: number;
 };
+
+/** Optional filters to apply to map property queries.
+ * Mirrors SearchFilters from @/types/search so the map stays in sync with
+ * the grid when any filter is active (not just type/listingType). */
+export type MapFilters = {
+  type?: string;
+  listingType?: string;
+  priceMin?: number;
+  priceMax?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  lotSizeMin?: number;
+  lotSizeMax?: number;
+  areaSlug?: string;
+  subLocation?: string;
+  tags?: string[];
+  q?: string;
+  region?: string;
+};
+
+/**
+ * Sanitize a numeric value — returns undefined if the value is not a finite,
+ * non-negative number.
+ */
+function sanitizeNumber(value: number | undefined): number | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (!Number.isFinite(value)) return undefined;
+  if (value < 0) return undefined;
+  return value;
+}
+
+/**
+ * Escapes special regex characters in a query token to prevent regex injection.
+ */
+function escapeRegex(text: string): string {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
+/**
+ * Maps a user-facing type label (Spanish or English) to all equivalent
+ * property_type values stored in the DB. Mirrors the TYPE_EQUIVALENTS
+ * in search-actions.ts so map and grid stay in sync.
+ */
+const TYPE_EQUIVALENTS: Record<string, string[]> = {
+  casa: ["Casa", "House", "Residential", "House/Villa"],
+  house: ["Casa", "House", "Residential", "House/Villa"],
+  apartamento: ["Apartamento", "Apartment", "Condominium", "Condo"],
+  apartment: ["Apartamento", "Apartment", "Condominium", "Condo"],
+  lote: [
+    "Lote",
+    "Lot",
+    "Land",
+    "Lot/Land",
+    "Terreno",
+    "Terrenos",
+    "Finca",
+    "Farm",
+    "Ranch",
+    "Rural area",
+  ],
+  lot: [
+    "Lote",
+    "Lot",
+    "Land",
+    "Lot/Land",
+    "Terreno",
+    "Terrenos",
+    "Finca",
+    "Farm",
+    "Ranch",
+    "Rural area",
+  ],
+  terreno: [
+    "Terreno",
+    "Terrenos",
+    "Land",
+    "Lot",
+    "Lot/Land",
+    "Lote",
+    "Finca",
+    "Farm",
+    "Ranch",
+    "Rural area",
+  ],
+  comercial: ["Comercial", "Commercial", "Business"],
+  commercial: ["Comercial", "Commercial", "Business"],
+  finca: [
+    "Finca",
+    "Farm",
+    "Ranch",
+    "Rural area",
+    "Lote",
+    "Lot",
+    "Land",
+    "Lot/Land",
+    "Terreno",
+    "Terrenos",
+  ],
+  farm: [
+    "Finca",
+    "Farm",
+    "Ranch",
+    "Rural area",
+    "Lote",
+    "Lot",
+    "Land",
+    "Lot/Land",
+    "Terreno",
+    "Terrenos",
+  ],
+};
+
+function getPropertyTypeEquivalents(type: string): string[] {
+  const normalized = type.toLowerCase().trim();
+  const equivalents = TYPE_EQUIVALENTS[normalized];
+  if (equivalents) return equivalents;
+  const capitalized = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+  return [type, normalized, capitalized];
+}
 
 /**
  * Validates a client-supplied bounds object. Returns sanitized bounds when
@@ -84,7 +209,10 @@ function sanitizeBounds(bounds: RawBounds): RawBounds | null {
   };
 }
 
-export async function getPropertiesForMap(bounds?: RawBounds): Promise<MapProperty[]> {
+export async function getPropertiesForMap(
+  bounds?: RawBounds,
+  filters?: MapFilters,
+): Promise<MapProperty[]> {
   const baseConditions = and(
     eq(properties.isVisible, true),
     isNotNull(properties.latitude),
@@ -93,19 +221,187 @@ export async function getPropertiesForMap(bounds?: RawBounds): Promise<MapProper
 
   const safeBounds = bounds != null ? sanitizeBounds(bounds) : null;
 
-  // Use simple lat/lng range comparisons instead of PostGIS geo operators.
-  // The `&&` operator with ST_MakeEnvelope doesn't work correctly on
-  // geography(Point, 4326) columns — it requires geometry type.
-  const conditions =
+  // Build filter conditions from the active search filters so map pins
+  // stay in sync with the card grid.
+  const typeCondition = filters?.type
+    ? inArray(properties.propertyType, getPropertyTypeEquivalents(filters.type))
+    : undefined;
+
+  const listingTypeCondition = filters?.listingType
+    ? eq(properties.listingType, filters.listingType)
+    : undefined;
+
+  // Numeric filter conditions — mirror searchProperties logic
+  const priceMin = sanitizeNumber(filters?.priceMin);
+  const priceMax = sanitizeNumber(filters?.priceMax);
+  const bedrooms = sanitizeNumber(filters?.bedrooms);
+  const bathrooms = sanitizeNumber(filters?.bathrooms);
+  const lotSizeMin = sanitizeNumber(filters?.lotSizeMin);
+  const lotSizeMax = sanitizeNumber(filters?.lotSizeMax);
+
+  const priceMinCondition = priceMin !== undefined ? gte(properties.priceUsd, priceMin) : undefined;
+  const priceMaxCondition = priceMax !== undefined ? lte(properties.priceUsd, priceMax) : undefined;
+  const bedroomsCondition = bedrooms !== undefined ? gte(properties.bedrooms, bedrooms) : undefined;
+  const bathroomsCondition =
+    bathrooms !== undefined ? gte(properties.bathrooms, bathrooms) : undefined;
+  const lotSizeMinCondition =
+    lotSizeMin !== undefined ? gte(properties.lotSizeM2, lotSizeMin) : undefined;
+  const lotSizeMaxCondition =
+    lotSizeMax !== undefined ? lte(properties.lotSizeM2, lotSizeMax) : undefined;
+
+  // Area / sub-location conditions
+  const areaCondition = filters?.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined;
+  const subLocationCondition = filters?.subLocation
+    ? eq(properties.subLocation, filters.subLocation)
+    : undefined;
+
+  // Lifestyle tags — OR filter using PostgreSQL && (overlap) operator
+  const MAX_TAGS = 20;
+  const sanitizedTags = filters?.tags
+    ?.filter((t): t is string => typeof t === "string")
+    .map((t) => t.trim())
+    .filter((t) => t.length > 0)
+    .slice(0, MAX_TAGS);
+  const tagsCondition = sanitizedTags?.length
+    ? sql`${properties.lifestyleTags} && ARRAY[${sql.join(sanitizedTags, sql`, `)}]::text[]`
+    : undefined;
+
+  // Keyword search — match against title/description fields (mirrors search-actions)
+  let searchCondition: SQL | undefined = undefined;
+  if (filters?.q && filters.q.trim().length > 0) {
+    const queryTerm = filters.q.trim();
+    const SYNONYM_GROUPS = [
+      {
+        keywords: /r[ií]o|river|quebrada|creek|stream/i,
+        synonyms: ["rio", "río", "river", "quebrada", "creek", "stream"],
+      },
+      {
+        keywords: /waterfall|cascada|catarata/i,
+        synonyms: ["waterfall", "waterfalls", "cascada", "cascadas", "catarata", "cataratas"],
+      },
+      {
+        keywords: /view|vista|panorama|mirador|paisaje/i,
+        synonyms: [
+          "view",
+          "views",
+          "vista",
+          "vistas",
+          "panorama",
+          "panorámica",
+          "panoramica",
+          "mirador",
+          "paisaje",
+        ],
+      },
+      {
+        keywords: /beach|playa|ocean|sea|mar|oc[eé]ano/i,
+        synonyms: ["beach", "playa", "ocean", "sea", "mar", "océano", "oceano", "costa"],
+      },
+    ];
+
+    const QUERY_STOP_WORDS = new Set([
+      "con",
+      "de",
+      "in",
+      "with",
+      "and",
+      "a",
+      "en",
+      "la",
+      "el",
+      "un",
+      "una",
+      "for",
+      "para",
+      "los",
+      "las",
+      "del",
+      "y",
+      "o",
+      "or",
+      "to",
+      "at",
+      "by",
+      "of",
+    ]);
+
+    const tokens = queryTerm
+      .split(/[\s,.\-/?!|;:]+/)
+      .map((t) => t.toLowerCase())
+      .filter((t) => t.length > 0 && !QUERY_STOP_WORDS.has(t));
+
+    if (tokens.length > 0) {
+      const tokenConditions = tokens.map((token) => {
+        const matchedGroup = SYNONYM_GROUPS.find((group) => group.keywords.test(token));
+        if (matchedGroup) {
+          const escapedSynonyms = matchedGroup.synonyms.map(escapeRegex);
+          const pattern = `\\y(${escapedSynonyms.join("|")})\\y`;
+          return or(
+            sql`${properties.titleEn} ~* ${pattern}`,
+            sql`${properties.titleEs} ~* ${pattern}`,
+            sql`${properties.descriptionEn} ~* ${pattern}`,
+            sql`${properties.descriptionEs} ~* ${pattern}`,
+          );
+        } else {
+          const escapedToken = escapeRegex(token);
+          const pattern = `\\y(${escapedToken})\\y`;
+          return or(
+            sql`${properties.titleEn} ~* ${pattern}`,
+            sql`${properties.titleEs} ~* ${pattern}`,
+            sql`${properties.descriptionEn} ~* ${pattern}`,
+            sql`${properties.descriptionEs} ~* ${pattern}`,
+          );
+        }
+      });
+      searchCondition = and(...tokenConditions);
+    }
+  }
+
+  // Region filter logic (resolve area slugs from areas table)
+  let matchingAreaSlugs: string[] = [];
+  if (filters?.region) {
+    const areaRows = await db
+      .select({ slug: areas.slug })
+      .from(areas)
+      .where(ilike(areas.region, filters.region));
+    matchingAreaSlugs = areaRows.map((r) => r.slug).filter((s): s is string => s !== null);
+  }
+
+  const regionCondition = filters?.region
+    ? matchingAreaSlugs.length > 0
+      ? inArray(properties.areaSlug, matchingAreaSlugs)
+      : eq(properties.id, "00000000-0000-0000-0000-000000000000") // No results if region has no areas
+    : undefined;
+
+  // Bounds conditions using simple lat/lng range comparisons
+  const boundsCondition =
     safeBounds != null
       ? and(
-          baseConditions,
           gte(properties.latitude, safeBounds.south),
           lte(properties.latitude, safeBounds.north),
           gte(properties.longitude, safeBounds.west),
           lte(properties.longitude, safeBounds.east),
         )
-      : baseConditions;
+      : undefined;
+
+  // Compose all conditions — every set dimension applies
+  const conditions = and(
+    baseConditions,
+    typeCondition,
+    listingTypeCondition,
+    priceMinCondition,
+    priceMaxCondition,
+    bedroomsCondition,
+    bathroomsCondition,
+    lotSizeMinCondition,
+    lotSizeMaxCondition,
+    areaCondition,
+    subLocationCondition,
+    tagsCondition,
+    searchCondition,
+    boundsCondition,
+    regionCondition,
+  );
 
   const rows = await db
     .select({
@@ -117,7 +413,12 @@ export async function getPropertiesForMap(bounds?: RawBounds): Promise<MapProper
       bedrooms: properties.bedrooms,
       bathrooms: properties.bathrooms,
       lotSizeM2: properties.lotSizeM2,
+      constructionM2: properties.constructionM2,
       zmtStatus: properties.zmtStatus,
+      propertyType: properties.propertyType,
+      listingType: properties.listingType,
+      currency: properties.currency,
+      apiRaw: properties.apiRaw,
       images: properties.images,
       latitude: properties.latitude,
       longitude: properties.longitude,

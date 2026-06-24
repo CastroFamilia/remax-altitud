@@ -15,7 +15,6 @@
  * Component interface:
  *   interface PropertyGalleryProps {
  *     images: OptimizedImage[];
- *     youtubeUrl?: string | null;
  *     propertyTitle: string;
  *   }
  *
@@ -170,7 +169,6 @@ const mockImages: OptimizedImage[] = [
   },
 ];
 
-const YOUTUBE_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 const PROPERTY_TITLE = "Beautiful Mountain Home in Pérez Zeledón";
 
 // ---------------------------------------------------------------------------
@@ -352,64 +350,13 @@ describe("PropertyGallery (Story 4.1)", () => {
     },
   );
 
-  it(
-    "[P1] YouTube embed renders data-testid=gallery-video-embed when youtubeUrl provided",
-    () => {
-      render(
-        <PropertyGallery
-          images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
-          youtubeUrl={YOUTUBE_URL}
-          propertyTitle={PROPERTY_TITLE}
-        />,
-      );
-
-      const videoEmbed = screen.getByTestId("gallery-video-embed");
-      expect(videoEmbed).toBeDefined();
-
-      // The iframe inside the embed should have a src with youtube.com/embed
-      const iframe = videoEmbed.querySelector("iframe");
-      expect(iframe).toBeDefined();
-      expect(iframe?.getAttribute("src")).toContain("youtube.com/embed");
-    },
-  );
-
-  it(
-    "[P1] no video embed renders when youtubeUrl is null",
-    () => {
-      render(
-        <PropertyGallery
-          images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
-          youtubeUrl={null}
-          propertyTitle={PROPERTY_TITLE}
-        />,
-      );
-
-      const videoEmbed = screen.queryByTestId("gallery-video-embed");
-      expect(videoEmbed).toBeNull();
-    },
-  );
-
-  it(
-    "[P1] no video embed renders when youtubeUrl is undefined (not provided)",
-    () => {
-      render(
-        <PropertyGallery
-          images={mockImages as Parameters<typeof PropertyGallery>[0]["images"]}
-          propertyTitle={PROPERTY_TITLE}
-        />,
-      );
-
-      const videoEmbed = screen.queryByTestId("gallery-video-embed");
-      expect(videoEmbed).toBeNull();
-    },
-  );
 
   // ---------------------------------------------------------------------------
   // P2: LQIP blur and thumbnail interaction (4.1-COMP-001, 4.1-COMP-002)
   // ---------------------------------------------------------------------------
 
   it(
-    "[P2] 4.1-COMP-002: first image has blur placeholder (blurDataURL passed to next/image)",
+    "[P2] 4.1-COMP-002: first image does NOT use blur placeholder (removed to fix cycling artifact)",
     () => {
       render(
         <PropertyGallery
@@ -418,15 +365,15 @@ describe("PropertyGallery (Story 4.1)", () => {
         />,
       );
 
-      // Our next/image mock sets data-blur-data-url="has-blur" when blurDataURL is provided
-      // and data-placeholder="blur" when placeholder="blur"
+      // Blur placeholder was intentionally removed to fix a visual artifact
+      // that appeared when cycling through gallery images.
       const heroContainer = screen.getByTestId("gallery-hero");
       const firstImage = heroContainer.querySelector("img");
       expect(firstImage).toBeDefined();
 
-      // Assert that blur placeholder was passed
-      expect(firstImage?.getAttribute("data-blur-data-url")).toBe("has-blur");
-      expect(firstImage?.getAttribute("data-placeholder")).toBe("blur");
+      // Assert that blur placeholder is NOT passed
+      expect(firstImage?.getAttribute("data-blur-data-url")).toBeNull();
+      expect(firstImage?.getAttribute("data-placeholder")).toBeNull();
     },
   );
 

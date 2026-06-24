@@ -18,6 +18,7 @@ const { mockInsert, mockUpdate, mockDelete, mockDb, mockRevalidatePath } = vi.ho
     update: mockUpdate,
     delete: mockDelete,
     select: mockSelect,
+    execute: vi.fn().mockResolvedValue(true),
   };
   mockDb.transaction = vi.fn((cb) => cb(mockDb));
   const mockRevalidatePath = vi.fn();
@@ -156,7 +157,7 @@ describe("Story 8.5: Community Administration - Unit Tests", () => {
       // And trigger revalidation
       expect(mockRevalidatePath).toHaveBeenCalledWith("/[locale]/communities");
       expect(mockRevalidatePath).toHaveBeenCalledWith("/[locale]/areas/[slug]");
-      expect(mockRevalidatePath).toHaveBeenCalledWith("/[locale]/areas/[slug]/communities/[communitySlug]");
+      expect(mockRevalidatePath).toHaveBeenCalledWith("/[locale]/areas/[slug]/communities/[community]");
       expect(mockRevalidatePath).toHaveBeenCalledWith("/[locale]/search");
 
       expect(result.success).toBe(true);

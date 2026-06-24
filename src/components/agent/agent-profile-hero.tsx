@@ -46,6 +46,12 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
   // Bio: locale-aware, empty bio hidden
   const bio = locale === "es" ? agent.bioEs : agent.bioEn;
 
+  const isOwner =
+    agent.name.toLowerCase().includes("cesar") ||
+    agent.name.toLowerCase().includes("césar") ||
+    agent.name.toLowerCase().includes("alejandra");
+  const displayTitle = isOwner ? "BROKER/OWNER" : officeName;
+
   return (
     <section
       aria-labelledby="agent-name-heading"
@@ -71,15 +77,17 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
           >
             {agent.name}
           </h1>
-          <p className="mt-1 text-base text-text-muted">{officeName}</p>
+          <p className="mt-1 text-base text-text-muted">{displayTitle}</p>
           {languages && (
             <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-languages">
               {languages}
             </p>
           )}
-          <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-listing-count">
-            {agent.listingCount} {t("listings")}
-          </p>
+          {!isOwner && (
+            <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-listing-count">
+              {agent.listingCount} {t("listings")}
+            </p>
+          )}
         </div>
       </div>
 
@@ -94,6 +102,29 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
           agentId={agent.id}
         />
       </div>
+
+      {agent.videoUrl && (
+        <div className="mt-8 overflow-hidden rounded-xl bg-brand-light shadow-sm">
+          {agent.videoUrl.includes("youtube.com") || agent.videoUrl.includes("youtu.be") ? (
+            <iframe
+              className="aspect-video w-full"
+              src={agent.videoUrl
+                .replace("watch?v=", "embed/")
+                .replace("youtu.be/", "youtube.com/embed/")}
+              title={`${agent.name} Presentation Video`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <video
+              className="aspect-video w-full"
+              controls
+              src={agent.videoUrl}
+              title={`${agent.name} Presentation Video`}
+            />
+          )}
+        </div>
+      )}
     </section>
   );
 }

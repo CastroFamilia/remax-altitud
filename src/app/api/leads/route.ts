@@ -1,12 +1,15 @@
 /**
  * POST /api/leads — Story 5.3 (AC #1, #2, #3, #4, #8, #9, #10)
  *
- * Creates a seller/CMA/whatsapp_click lead record with:
+ * Creates a lead record for all sources (seller, CMA, VIP buyer,
+ * contact, agent contact, WhatsApp click) with:
  * - Zod input validation (AR18)
  * - Idempotency dedup (60s window, phone_hash + source)
  * - PII encryption (phone, email) via encryptField()
  * - Agent routing via matchAgentByCoordinates()
  * - UTM / referrer source tracking (FR54)
+ * - Auto-responder emails for all sources with email provided
+ * - Agent notification emails for agent_contact source
  * - Sentry error capture (AR19)
  * - In-memory rate limiting (10 req/min/IP)
  */
@@ -17,6 +20,13 @@ import * as Sentry from "@sentry/nextjs";
 import { createLead, findRecentDuplicate } from "@/lib/db/queries/leads";
 import { matchAgentByCoordinates } from "@/lib/leads/route-agent";
 import { forwardLeadToHubInBackground } from "@/lib/services/tracking";
+import { sendEmailInBackground } from "@/lib/services/email";
+import { renderPropertyInquiryEmail } from "@/lib/emails/PropertyInquiryEmail";
+import { renderGenericLeadConfirmationEmail } from "@/lib/emails/GenericLeadConfirmationEmail";
+import { renderAgentLeadNotificationEmail } from "@/lib/emails/AgentLeadNotificationEmail";
+import { db } from "@/lib/db/client";
+import { properties } from "@/lib/db/schema/properties";
+import { eq } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
 // Zod input schema
@@ -34,7 +44,15 @@ const leadInputSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(7, "Phone must have at least 7 characters"),
   email: z.string().email("Invalid email").nullable().optional().or(z.literal("")),
-  source: z.enum(["whatsapp", "seller_form", "contact_form", "cma_form", "whatsapp_click"]),
+  source: z.enum([
+    "whatsapp",
+    "seller_form",
+    "contact_form",
+    "cma_form",
+    "whatsapp_click",
+    "agent_contact",
+    "vip_buyer_form",
+  ]),
   intent: z.enum(["buy", "sell", "invest", "recruit"]),
   propertyType: z.string().optional().default(""),
   location: locationSchema,
@@ -169,8 +187,11 @@ export async function POST(request: Request) {
     }
 
     // Agent routing
-    const assignedAgentId =
-      data.assignedAgentId || (await matchAgentByCoordinates(data.location.lat, data.location.lng));
+    const isSellerOrCma = data.source === "seller_form" || data.source === "cma_form";
+    const assignedAgentId = isSellerOrCma
+      ? null
+      : data.assignedAgentId ||
+        (await matchAgentByCoordinates(data.location.lat, data.location.lng));
 
     // Build notes from property details
     const noteParts: string[] = [];
@@ -243,6 +264,139 @@ export async function POST(request: Request) {
         }
       } catch {
         // Agent fetch failure is non-fatal — lead was already created
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // Auto-responder emails — send confirmation to leads who provide email
+    // -----------------------------------------------------------------------
+    if (data.email && data.source !== "whatsapp_click" && data.source !== "whatsapp") {
+      try {
+        const locale = data.preferredLanguage === "es" ? "es" : "en";
+
+        // Property-specific email (existing behavior for property inquiry forms)
+        if (data.source === "contact_form" && data.shortlistPropertyIds.length === 1) {
+          const [property] = await db
+            .select({
+              titleEn: properties.titleEn,
+              titleEs: properties.titleEs,
+              slug: properties.slug,
+            })
+            .from(properties)
+            .where(eq(properties.id, data.shortlistPropertyIds[0]))
+            .limit(1);
+
+          if (property && agentDetails) {
+            const propertyName = locale === "es" ? property.titleEs : property.titleEn;
+            const host = request.headers.get("host") || "dev.remax-altitud.cr";
+            const protocol = host.includes("localhost") ? "http" : "https";
+            const propertyUrl = `${protocol}://${host}/${locale}/property/${property.slug}`;
+
+            const htmlContent = renderPropertyInquiryEmail({
+              locale,
+              propertyName,
+              propertyUrl,
+              agentName: agentDetails.name,
+              agentEmail: agentDetails.email || "",
+              agentPhone: agentDetails.whatsapp || agentDetails.phone || "",
+            });
+
+            sendEmailInBackground({
+              to: data.email,
+              subject:
+                locale === "es" ? "Hemos recibido su consulta" : "We have received your inquiry",
+              html: htmlContent,
+            });
+          }
+        } else {
+          // Generic confirmation for seller, CMA, VIP, contact, agent_contact, and shortlist forms
+          // Extract shortlist URL from notes if present (added by shortlist form)
+          const shortlistUrlMatch = data.notes?.match(/Shortlist Link: (https?:\/\/\S+)/);
+          const shortlistUrl =
+            data.shortlistPropertyIds.length > 1 && shortlistUrlMatch ? shortlistUrlMatch[1] : null;
+
+          const { subject, html } = renderGenericLeadConfirmationEmail({
+            locale,
+            source: data.source,
+            leadName: data.name,
+            agentName: agentDetails?.name,
+            agentEmail: agentDetails?.email,
+            agentPhone: agentDetails?.whatsapp || agentDetails?.phone,
+            contactedAgentName: data.source === "agent_contact" ? agentDetails?.name : null,
+            shortlistUrl,
+          });
+
+          sendEmailInBackground({
+            to: data.email,
+            subject,
+            html,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to send auto-responder email", err);
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // Agent notification email — notify the agent when contacted via profile or property inquiry
+    // -----------------------------------------------------------------------
+    if (
+      (data.source === "agent_contact" || data.source === "contact_form") &&
+      agentDetails?.email
+    ) {
+      try {
+        const locale = data.preferredLanguage === "es" ? "es" : "en";
+        const { subject, html } = renderAgentLeadNotificationEmail({
+          locale,
+          agentName: agentDetails.name,
+          leadName: data.name,
+          leadPhone: data.phone,
+          leadEmail: data.email || null,
+          leadMessage: data.notes || null,
+          source: data.source,
+          intent: data.intent,
+        });
+
+        sendEmailInBackground({
+          to: agentDetails.email,
+          subject,
+          html,
+        });
+      } catch (err) {
+        console.error("Failed to send agent notification email", err);
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // Office notification email — notify the office for seller, CMA, and
+    // unrouted contact_form leads (general contact, VIP, recruitment)
+    // -----------------------------------------------------------------------
+    const shouldNotifyOffice =
+      isSellerOrCma ||
+      ((data.source === "contact_form" || data.source === "vip_buyer_form") &&
+        !agentDetails?.email);
+
+    if (shouldNotifyOffice) {
+      try {
+        const locale = data.preferredLanguage === "es" ? "es" : "en";
+        const { subject, html } = renderAgentLeadNotificationEmail({
+          locale,
+          agentName: "RE/MAX Altitud",
+          leadName: data.name,
+          leadPhone: data.phone,
+          leadEmail: data.email || null,
+          leadMessage: data.notes || null,
+          source: data.source,
+          intent: data.intent,
+        });
+
+        sendEmailInBackground({
+          to: "hola@remax-altitud.cr",
+          subject,
+          html,
+        });
+      } catch (err) {
+        console.error("Failed to send office notification email", err);
       }
     }
 

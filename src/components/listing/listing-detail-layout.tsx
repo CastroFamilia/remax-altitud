@@ -9,7 +9,8 @@
  */
 
 import { getTranslations } from "next-intl/server";
-import { convertArea } from "@/lib/utils/units";
+import { Link } from "@/i18n/navigation";
+import { PropertySpecsSummary } from "@/components/listing/property-specs-summary";
 import { StickySpecsBar } from "@/components/listing/sticky-specs-bar";
 import { PropertyGalleryLoader } from "@/components/listing/property-gallery-loader";
 import { PropertyInquiryForm } from "@/components/listing/property-inquiry-form";
@@ -22,6 +23,17 @@ import type { Agent } from "@/lib/db/schema/agents";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
 import { getRegionFromAreaSlug } from "@/components/property/property-card";
 import { PropertyDescription } from "@/components/listing/property-description";
+import { MapViewLoader } from "@/components/map/map-view-loader";
+import { PrintButton } from "@/components/listing/print-button";
+import { PropertyPrintViewLoader } from "@/components/listing/property-print-view-loader";
+
+function extractYoutubeVideoId(url: string): string | null {
+  if (!url) return null;
+  const match = url.match(
+    /(?:v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/v\/)([A-Za-z0-9_-]{11})/i,
+  );
+  return match ? match[1] : null;
+}
 
 // ZMT badge visual config (same as property-card.tsx)
 const ZMT_VISUAL: Record<string, { classes: string; icon: string }> = {
@@ -68,7 +80,8 @@ export async function ListingDetailLayout({
   const images = normalizePropertyImages(property.images, title);
 
   const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
-  const originalPriceColones = apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
+  const originalPriceColones =
+    property.currency === "CRC" && apiRaw?.ListPrice ? Number(apiRaw.ListPrice) : null;
 
   // ZMT badge
   const zmtVisual = property.zmtStatus ? ZMT_VISUAL[property.zmtStatus] : null;
@@ -82,7 +95,13 @@ export async function ListingDetailLayout({
 
   return (
     <>
-      <article className="min-h-screen bg-background">
+      <PropertyPrintViewLoader
+        property={property}
+        locale={locale}
+        agent={agent}
+        officeName={officeName ?? "REMAX Altitud"}
+      />
+      <article className="min-h-screen bg-background print:hidden">
         {/* Breadcrumbs — visual nav (Story 4.5, AC #4) */}
         <Breadcrumbs
           items={[
@@ -95,11 +114,7 @@ export async function ListingDetailLayout({
         />
 
         {/* Hero Gallery — lazy-loaded Client Component via PropertyGalleryLoader (ssr: false) */}
-        <PropertyGalleryLoader
-          images={images}
-          youtubeUrl={property.youtubeUrl}
-          propertyTitle={title}
-        />
+        <PropertyGalleryLoader images={images} propertyTitle={title} />
 
         {/* Sticky specs bar — Client Component (uses useLocaleUnits) */}
         <StickySpecsBar
@@ -131,7 +146,7 @@ export async function ListingDetailLayout({
                   )}
 
                   {/* ZMT badge (more prominent than in property card) */}
-                  {zmtVisual && zmtStatusKey && (
+                  {zmtVisual && zmtStatusKey && zmtStatusKey !== "titled" && (
                     <span
                       className={`ml-2 mt-2 inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold ${zmtVisual.classes}`}
                     >
@@ -156,65 +171,23 @@ export async function ListingDetailLayout({
                     </span>
                   )}
                 </div>
-                <div className="flex-shrink-0 flex items-center">
+                <div className="flex-shrink-0 flex items-center gap-2">
+                  <PrintButton />
                   <SaveButton propertyId={property.id} propertyTitle={title} />
                 </div>
               </div>
 
               {/* Property specs summary */}
-              <div className="grid grid-cols-2 gap-4 rounded-xl border border-border p-6 md:grid-cols-4">
-                {property.priceUsd != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.price")}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">
-                      ${property.priceUsd.toLocaleString("en-US")}
-                      {property.currency === "CRC" && originalPriceColones != null && (
-                        <span className="ml-2 text-sm font-medium text-text-muted">
-                          (₡{originalPriceColones.toLocaleString("es-CR")})
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                )}
-                {property.bedrooms != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.bedrooms", { count: property.bedrooms })}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">{property.bedrooms}</p>
-                  </div>
-                )}
-                {property.bathrooms != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.bathrooms", { count: property.bathrooms })}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">{property.bathrooms}</p>
-                  </div>
-                )}
-                {property.lotSizeM2 != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.lotSize")}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">
-                      {convertArea(property.lotSizeM2, "metric", locale, true)}
-                    </p>
-                  </div>
-                )}
-                {property.constructionM2 != null && (
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                      {t("specs.builtArea")}
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-brand-navy">
-                      {convertArea(property.constructionM2, "metric", locale, false)}
-                    </p>
-                  </div>
-                )}
-              </div>
+              <PropertySpecsSummary
+                priceUsd={property.priceUsd}
+                bedrooms={property.bedrooms}
+                bathrooms={property.bathrooms}
+                lotSizeM2={property.lotSizeM2}
+                constructionM2={property.constructionM2}
+                locale={locale}
+                currency={property.currency}
+                originalPriceColones={originalPriceColones}
+              />
 
               {/* Description */}
               {description && (
@@ -222,7 +195,7 @@ export async function ListingDetailLayout({
                   <h2 id="description-heading" className="text-2xl font-bold text-brand-navy">
                     {t("description")}
                   </h2>
-                  <PropertyDescription description={description} locale={locale} />
+                  <PropertyDescription description={description} />
                 </section>
               )}
 
@@ -247,16 +220,122 @@ export async function ListingDetailLayout({
                   </ul>
                 </section>
               )}
+
+              {/* Map Location */}
+              {property.latitude && property.longitude && (
+                <section aria-labelledby="location-heading" className="space-y-4 pt-4">
+                  <h2 id="location-heading" className="text-2xl font-bold text-brand-navy">
+                    {locale === "es" ? "Ubicación" : "Location"}
+                  </h2>
+                  <div className="rounded-xl overflow-hidden shadow-md border border-brand-warm bg-white w-full h-[350px]">
+                    <MapViewLoader
+                      lat={Number(property.latitude)}
+                      lng={Number(property.longitude)}
+                      readOnly={true}
+                      className="h-full w-full"
+                    />
+                  </div>
+                </section>
+              )}
+
+              {/* Video Embed */}
+              {property.youtubeUrl && (
+                <section aria-labelledby="video-heading" className="space-y-4 pt-4">
+                  <h2 id="video-heading" className="text-2xl font-bold text-brand-navy">
+                    {t("videoTitle", { fallback: "Video Tour" })}
+                  </h2>
+                  <div className="rounded-xl overflow-hidden shadow-md border border-brand-warm bg-white w-full">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${extractYoutubeVideoId(property.youtubeUrl)}`}
+                      title="Property Video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      loading="lazy"
+                      className="w-full aspect-video"
+                    />
+                  </div>
+                </section>
+              )}
             </div>
 
             {/* Right 1/3 Column: Sticky Sidebar Form & Agent details */}
-            <div className="lg:col-span-1 lg:sticky lg:top-24 space-y-6">
+            <div className="lg:col-span-1 lg:sticky lg:top-24 lg:max-h-[calc(100vh-6.5rem)] lg:overflow-y-auto space-y-6 pb-4 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
               <PropertyInquiryForm
                 property={property}
                 agent={agent}
                 locale={locale}
                 officeName={officeName ?? t("unknownOffice")}
               />
+
+              {/* Altitud Perks for This Listing Widget */}
+              <div className="rounded-xl border border-brand-warm bg-white p-6 shadow-md space-y-4">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-brand-gold-dark">
+                  {locale === "es" ? "La Ventaja Altitud" : "The Altitud Advantage"}
+                </h3>
+                <p className="text-xs text-text-muted font-medium">
+                  {locale === "es"
+                    ? "Beneficios exclusivos incluidos con esta propiedad:"
+                    : "Exclusive benefits included with this property:"}
+                </p>
+                <ul className="space-y-3.5 pt-2">
+                  <li className="flex items-start gap-3">
+                    <span className="flex size-7 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark text-xs font-bold flex-shrink-0">
+                      💳
+                    </span>
+                    <div>
+                      <h4 className="text-xs font-bold text-brand-navy">
+                        {locale === "es" ? "Financiamiento hasta 80%" : "Up to 80% Financing"}
+                      </h4>
+                      <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
+                        {locale === "es"
+                          ? "Disponible según su nacionalidad, score y propiedad."
+                          : "Available based on nationality, credit score, and property."}
+                      </p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="flex size-7 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark text-xs font-bold flex-shrink-0">
+                      📐
+                    </span>
+                    <div>
+                      <h4 className="text-xs font-bold text-brand-navy">
+                        {locale === "es"
+                          ? "Diseño de Propiedad Gratuito"
+                          : "Free Architectural Design"}
+                      </h4>
+                      <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
+                        {locale === "es"
+                          ? "Convenios exclusivos con constructoras para su plano personalizado."
+                          : "Exclusive agreements with builders for your custom layout."}
+                      </p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="flex size-7 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold-dark text-xs font-bold flex-shrink-0">
+                      ⚖️
+                    </span>
+                    <div>
+                      <h4 className="text-xs font-bold text-brand-navy">
+                        {locale === "es" ? "Consulta Legal de Cortesía" : "Free Legal Consultation"}
+                      </h4>
+                      <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
+                        {locale === "es"
+                          ? "Revisión de título y ZMT con nuestros abogados aliados."
+                          : "Title and ZMT review with our trusted partner attorneys."}
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+                <div className="pt-3 border-t border-brand-warm text-center">
+                  <Link
+                    href="/about"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-navy hover:text-brand-navy-light transition-colors"
+                  >
+                    <span>{locale === "es" ? "Saber más" : "Learn more"}</span>
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -278,15 +357,17 @@ export async function ListingDetailLayout({
 
       {/* Sticky mobile CTA bar — 56px fixed bottom bar, mobile-only (Story 4.2, AC #6/#7) */}
       {agent && (
-        <StickyMobileCTA
-          agentId={agent.id}
-          agentWhatsapp={agent.whatsapp ?? null}
-          agentEmail={agent.email ?? null}
-          agentName={agent.name}
-          propertyTitle={title}
-          propertyRef={property.apiId ?? property.id}
-          locale={locale}
-        />
+        <div className="print:hidden">
+          <StickyMobileCTA
+            agentId={agent.id}
+            agentWhatsapp={agent.whatsapp ?? null}
+            agentEmail={agent.email ?? null}
+            agentName={agent.name}
+            propertyTitle={title}
+            propertyRef={property.apiId ?? property.id}
+            locale={locale}
+          />
+        </div>
       )}
     </>
   );

@@ -92,6 +92,19 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
             </Link>
 
             <Link
+              href={`/${locale}/admin/blog`}
+              className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-white hover:bg-slate-800 font-semibold transition-all group cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <Tags className="w-5 h-5 text-red-500" />
+                <span>Blog Hub</span>
+              </div>
+              <span className="text-[10px] uppercase tracking-wider font-extrabold px-1.5 py-0.5 rounded bg-red-500/20 text-red-400">
+                Active
+              </span>
+            </Link>
+
+            <Link
               href={`/${locale}/admin/communities`}
               className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-white hover:bg-slate-800 font-semibold transition-all group cursor-pointer"
             >

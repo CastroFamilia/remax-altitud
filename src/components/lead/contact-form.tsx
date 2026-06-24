@@ -1,6 +1,6 @@
 "use client";
 
-// TODO (Epic 5 / Story 5-3): replace mailto: with POST /api/leads.
+// Done (Epic 5 / Story 5-3): replaced mailto: with POST /api/leads.
 // Form submission is intentionally isolated in a single client-side function
 // so the full lead pipeline can swap the implementation without touching markup.
 
@@ -8,7 +8,6 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 const TOAST_DISMISS_MS = 5000;
-const MAILTO_DELAY_MS = 200;
 
 function useToastAutoDismiss(
   toast: "success" | "error" | null,
@@ -22,8 +21,6 @@ function useToastAutoDismiss(
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const CONTACT_INBOX = "info@remax-altitud.cr";
-const RECRUIT_INBOX = "join@remax-altitud.cr";
 
 type ContactErrors = Partial<Record<"name" | "email" | "phone" | "message" | "form", string>>;
 
@@ -144,12 +141,7 @@ export function ContactForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setToast(null);
-
-    // Honeypot — silently drop bot submissions.
-    if (honeypot.trim().length > 0) {
-      return;
-    }
+    if (honeypot.trim().length > 0) return;
 
     const nextErrors = validate();
     if (Object.keys(nextErrors).length > 0) {
@@ -158,44 +150,40 @@ export function ContactForm() {
       return;
     }
     setErrors({});
-
-    const subject = `Contact inquiry — ${locale}`;
-    const bodyLines = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      phone ? `Phone: ${phone}` : undefined,
-      `Preferred office: ${office}`,
-      `Preferred language: ${language}`,
-      "",
-      "Message:",
-      message,
-    ].filter(Boolean) as string[];
-    const mailto = `mailto:${CONTACT_INBOX}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
-
-    // Show success + clear form BEFORE navigating so the user sees
-    // feedback even if the mail client opens in a new window/tab.
     setSubmitting(true);
-    setToast("success");
-    resetForm();
-    setSubmitting(false);
-    window.setTimeout(() => {
-      try {
-        window.location.href = mailto;
-      } catch {
+    setToast(null);
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || "0000000",
+          source: "contact_form" as const,
+          intent: "buy" as const,
+          preferredLanguage: language,
+          notes: [`Office: ${office}`, message.trim()].filter(Boolean).join(" | "),
+          referrer: typeof document !== "undefined" ? document.referrer || null : null,
+        }),
+      });
+
+      if (response.ok || response.status === 409) {
+        setToast("success");
+        resetForm();
+      } else {
         setToast("error");
       }
-    }, MAILTO_DELAY_MS);
+    } catch {
+      setToast("error");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
-    <form
-      noValidate
-      onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-2xl"
-      aria-describedby="contact-form-help"
-    >
+    <form noValidate onSubmit={handleSubmit} className="mx-auto w-full max-w-2xl">
       {toast === "success" ? (
         <div
           role="status"
@@ -215,23 +203,28 @@ export function ContactForm() {
         </div>
       ) : null}
 
-      <p id="contact-form-help" className="sr-only">
-        {t("mailtoFallback")}
-      </p>
-
-      {/* Honeypot — sr-only + tabIndex=-1 keep humans from reaching it.
-          Do not add aria-hidden here: aria-hidden on a focusable form
-          control trips axe's aria-hidden-focus rule. aria-label gives
-          the input a programmatic name so axe's label rule passes. */}
+      {/* Honeypot — hidden via absolute positioning + zero size to prevent
+          password managers / browser autofill from filling it.
+          (sr-only keeps it in the autofill flow causing silent submission drops) */}
       <input
         type="text"
-        name="company"
+        name="_hp_field"
         tabIndex={-1}
-        autoComplete="off"
+        autoComplete="nope"
+        data-1p-ignore
+        data-lpignore="true"
+        data-bwignore="true"
         aria-label="Leave this field empty"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}
-        className="sr-only"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          opacity: 0,
+        }}
       />
 
       <div className="flex flex-col gap-4">
@@ -359,18 +352,8 @@ export function ContactForm() {
 
 type RecruitErrors = Partial<Record<"name" | "email" | "phone" | "form", string>>;
 
-const LANGUAGE_KEYS = [
-  "languageEN",
-  "languageES",
-  "languageIT",
-  "languageDE",
-  "languageFR",
-  "languagePT",
-] as const;
-
 export function RecruitmentForm() {
   const t = useTranslations("JoinPage.form");
-  const locale = useLocale();
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -379,10 +362,11 @@ export function RecruitmentForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [license, setLicense] = useState("licensed");
-  const [languages, setLanguages] = useState<Set<string>>(() => new Set(["languageEN"]));
+  const [languages, setLanguages] = useState("");
   const [area, setArea] = useState("either");
   const [hasCar, setHasCar] = useState("yes");
+  const [time, setTime] = useState("");
+  const [financial, setFinancial] = useState("");
   const [salesExperience, setSalesExperience] = useState("");
   const [commissionOnly, setCommissionOnly] = useState("");
   const [message, setMessage] = useState("");
@@ -392,15 +376,6 @@ export function RecruitmentForm() {
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState<ToastKind>(null);
   useToastAutoDismiss(toast, setToast);
-
-  function toggleLanguage(key: string) {
-    setLanguages((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }
 
   function validate(): RecruitErrors {
     const next: RecruitErrors = {};
@@ -428,10 +403,11 @@ export function RecruitmentForm() {
     setName("");
     setEmail("");
     setPhone("");
-    setLicense("licensed");
-    setLanguages(new Set(["languageEN"]));
+    setLanguages("");
     setArea("either");
     setHasCar("yes");
+    setTime("");
+    setFinancial("");
     setSalesExperience("");
     setCommissionOnly("");
     setMessage("");
@@ -439,11 +415,7 @@ export function RecruitmentForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setToast(null);
-
-    if (honeypot.trim().length > 0) {
-      return;
-    }
+    if (honeypot.trim().length > 0) return;
 
     const nextErrors = validate();
     if (Object.keys(nextErrors).length > 0) {
@@ -452,39 +424,48 @@ export function RecruitmentForm() {
       return;
     }
     setErrors({});
-
-    const subject = `Recruitment inquiry — ${locale}`;
-    const languageSummary =
-      [...languages].map((k) => t(k as (typeof LANGUAGE_KEYS)[number])).join(", ") || "—";
-    const bodyLines = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Phone: ${phone}`,
-      `License status: ${license}`,
-      `Languages: ${languageSummary}`,
-      `Area of interest: ${area}`,
-      `Has vehicle: ${hasCar === "yes" ? "Yes" : "No"}`,
-      `Sales/RE Experience: ${salesExperience || "—"}`,
-      `Commission-only outlook: ${commissionOnly || "—"}`,
-      "",
-      "Message:",
-      message || "—",
-    ];
-    const mailto = `mailto:${RECRUIT_INBOX}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
-
     setSubmitting(true);
-    setToast("success");
-    resetForm();
-    setSubmitting(false);
-    window.setTimeout(() => {
-      try {
-        window.location.href = mailto;
-      } catch {
+    setToast(null);
+
+    const noteParts = [
+      languages ? `Languages: ${languages}` : null,
+      `Area: ${area}`,
+      `Has vehicle: ${hasCar === "yes" ? "Yes" : "No"}`,
+      time ? `Time availability: ${time}` : null,
+      financial ? `Financial: ${financial}` : null,
+      salesExperience ? `Experience: ${salesExperience}` : null,
+      commissionOnly ? `Commission outlook: ${commissionOnly}` : null,
+      message ? `Message: ${message}` : null,
+    ]
+      .filter(Boolean)
+      .join(" | ");
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          source: "contact_form" as const,
+          intent: "recruit" as const,
+          notes: noteParts,
+          referrer: typeof document !== "undefined" ? document.referrer || null : null,
+        }),
+      });
+
+      if (response.ok || response.status === 409) {
+        setToast("success");
+        resetForm();
+      } else {
         setToast("error");
       }
-    }, MAILTO_DELAY_MS);
+    } catch {
+      setToast("error");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -508,16 +489,26 @@ export function RecruitmentForm() {
         </div>
       ) : null}
 
-      {/* Honeypot — see ContactForm for rationale (no aria-hidden). */}
+      {/* Honeypot — hidden via absolute positioning (see ContactForm for rationale). */}
       <input
         type="text"
-        name="company"
+        name="_hp_field"
         tabIndex={-1}
-        autoComplete="off"
+        autoComplete="nope"
+        data-1p-ignore
+        data-lpignore="true"
+        data-bwignore="true"
         aria-label="Leave this field empty"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}
-        className="sr-only"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          opacity: 0,
+        }}
       />
 
       <div className="flex flex-col gap-4">
@@ -581,43 +572,18 @@ export function RecruitmentForm() {
           )}
         </Field>
 
-        <Field label={t("licenseLabel")}>
+        <Field label={t("languagesLabel")}>
           {(id) => (
-            <select
+            <textarea
               id={id}
-              name="license"
-              value={license}
-              onChange={(e) => setLicense(e.target.value)}
-              className={selectClassName(false)}
-            >
-              <option value="licensed">{t("licenseOptionLicensed")}</option>
-              <option value="studying">{t("licenseOptionStudying")}</option>
-              <option value="none">{t("licenseOptionNone")}</option>
-            </select>
+              name="languages"
+              placeholder={t("languagesPlaceholder")}
+              value={languages}
+              onChange={(e) => setLanguages(e.target.value)}
+              className={textareaClassName(false)}
+            />
           )}
         </Field>
-
-        <fieldset className="flex flex-col gap-2">
-          <legend className="text-sm font-semibold text-brand-navy">{t("languagesLabel")}</legend>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {LANGUAGE_KEYS.map((key) => (
-              <label
-                key={key}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-md border border-brand-warm bg-white px-3 py-2 text-sm text-brand-navy"
-              >
-                <input
-                  type="checkbox"
-                  name="languages"
-                  value={key}
-                  checked={languages.has(key)}
-                  onChange={() => toggleLanguage(key)}
-                  className="size-4"
-                />
-                <span>{t(key)}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
 
         <Field label={t("areaLabel")}>
           {(id) => (
@@ -647,6 +613,33 @@ export function RecruitmentForm() {
               <option value="yes">{t("carOptionYes")}</option>
               <option value="no">{t("carOptionNo")}</option>
             </select>
+          )}
+        </Field>
+
+        <Field label={t("timeLabel")}>
+          {(id) => (
+            <input
+              id={id}
+              name="time"
+              type="text"
+              placeholder={t("timePlaceholder")}
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              className={inputClassName(false)}
+            />
+          )}
+        </Field>
+
+        <Field label={t("financialLabel")}>
+          {(id) => (
+            <textarea
+              id={id}
+              name="financial"
+              placeholder={t("financialPlaceholder")}
+              value={financial}
+              onChange={(e) => setFinancial(e.target.value)}
+              className={textareaClassName(false)}
+            />
           )}
         </Field>
 

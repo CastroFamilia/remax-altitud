@@ -124,6 +124,7 @@ export function SplitHero() {
           ctaKey="coastCta"
           href="/search?region=coast"
           accent="coast"
+          priority
           fetchPriority="high"
         />
       </div>
