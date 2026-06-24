@@ -6,10 +6,11 @@
  */
 
 import { getTranslations } from "next-intl/server";
-import { MessageCircle, Mail } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { offices } from "@/lib/constants/offices";
 import { LanguageToggle } from "@/components/layout/language-toggle";
+import { FooterContactButton } from "@/components/layout/footer-contact-button";
 
 function FacebookIcon({ className }: { className?: string }) {
   return (
@@ -81,7 +82,6 @@ const socialLinks = [
     icon: YoutubeIcon,
   },
   { key: "socialWhatsApp", href: "https://wa.me/50660788887", icon: MessageCircle },
-  { key: "socialEmail", href: "mailto:hola@remax-altitud.cr", icon: Mail },
 ] as const;
 
 const legalLinks = [
@@ -153,6 +153,7 @@ export async function Footer() {
                   </a>
                 );
               })}
+              <FooterContactButton />
             </div>
           </div>
 
