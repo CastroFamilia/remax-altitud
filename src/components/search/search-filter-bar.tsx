@@ -400,7 +400,7 @@ export function SearchFilterBar({
 
               {/* Location */}
               {areas.length > 0 && (
-                <div className="w-[180px] lg:w-[220px] shrink-0">
+                <div className="min-w-[140px] flex-1">
                   <AreaSearchCombobox
                     areas={areas}
                     selectedArea={filters.areaSlug ?? ""}
