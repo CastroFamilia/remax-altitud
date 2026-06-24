@@ -7,7 +7,29 @@ on:
     branches: [main, development]
 
 jobs:
+  test:
+    name: Run Unit & Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
   build:
+    name: Build & Verify Application
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -32,9 +54,6 @@ jobs:
       - name: Format check
         run: npm run format:check
 
-      - name: Run tests
-        run: npm test
-
       - name: Build
         run: npm run build
         env:
@@ -42,3 +61,4 @@ jobs:
           # the Next.js build-time page-data collection step. No real connection
           # is made — route handlers that use the DB are marked force-dynamic.
           DATABASE_URL: postgresql://ci:ci@localhost:5432/ci_db
+
