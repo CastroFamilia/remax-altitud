@@ -1,0 +1,19 @@
+name: Branch Enforcement
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  enforce-development-source:
+    name: Enforce Development Source Branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source branch
+        run: |
+          if [ "${{ github.head_ref }}" != "development" ]; then
+            echo "ERROR: Pull requests targeting 'main' must originate from the 'development' branch."
+            echo "Current source branch: ${{ github.head_ref }}"
+            exit 1
+          fi
