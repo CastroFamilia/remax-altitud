@@ -63,6 +63,7 @@ const quickLinks = [
   { key: "contact", href: "/contact" },
   { key: "joinTeam", href: "/join" },
   { key: "faq", href: "/faq" },
+  { key: "agentsLogin", href: "https://sites.google.com/remax-altitud.cr/remax-altitud/home" },
 ] as const;
 
 const socialLinks = [
@@ -102,16 +103,33 @@ export async function Footer() {
               {t("quickLinks")}
             </h3>
             <ul className="flex flex-col gap-2">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-text-on-dark transition-colors duration-[var(--duration-fast)] hover:text-brand-gold"
-                  >
-                    {t(link.key)}
-                  </Link>
-                </li>
-              ))}
+              {quickLinks.map((link) => {
+                const isExternal = link.href.startsWith("http");
+                if (isExternal) {
+                  return (
+                    <li key={link.href}>
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-text-on-dark transition-colors duration-[var(--duration-fast)] hover:text-brand-gold"
+                      >
+                        {t(link.key)}
+                      </a>
+                    </li>
+                  );
+                }
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-text-on-dark transition-colors duration-[var(--duration-fast)] hover:text-brand-gold"
+                    >
+                      {t(link.key)}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

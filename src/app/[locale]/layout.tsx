@@ -40,7 +40,11 @@ export async function generateMetadata({
     title: t("title"),
     description: t("description"),
     icons: {
-      icon: "/favicon.ico",
+      icon: [{ url: "/favicon.ico" }, { url: "/favicon.png", sizes: "192x192", type: "image/png" }],
+      apple: [{ url: "/favicon.png", sizes: "192x192", type: "image/png" }],
+    },
+    formatDetection: {
+      address: false,
     },
   };
 }

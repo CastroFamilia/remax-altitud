@@ -271,3 +271,22 @@ describe("getPropertiesByAgentId (ATDD Red Phase)", () => {
     expect(result).toEqual([]);
   });
 });
+
+describe("getAgentLanguages overrides", () => {
+  it("resolves language overrides correctly for specific agents including Natalia Soto and Rodrigo Fernandez", async () => {
+    const { getAgentLanguages } = await import("@/lib/db/queries/agents");
+    
+    // Test our new overrides
+    expect(getAgentLanguages("Natalia Soto", "es")).toEqual(["es", "en"]);
+    expect(getAgentLanguages("Rodrigo Fernandez", "es")).toEqual(["es", "en"]);
+    expect(getAgentLanguages("Rodrigo Fernández", "es")).toEqual(["es", "en"]); // should normalize accents
+    
+    // Test existing overrides
+    expect(getAgentLanguages("Alejandra Castro", "es")).toEqual(["es", "pt", "en"]);
+    
+    // Test fallback when no override exists
+    expect(getAgentLanguages("Some Other Agent", "es")).toEqual(["es"]);
+    expect(getAgentLanguages("Some Other Agent", null)).toEqual([]);
+  });
+});
+
