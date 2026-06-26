@@ -38,4 +38,6 @@ export const AGENT_LANGUAGE_OVERRIDES: Record<string, string[]> = {
   "rafael lee": ["es", "en"],
   "kevin alvarez": ["es", "en"],
   "andrey perez": ["es"],
+  "natalia soto": ["es", "en"],
+  "rodrigo fernandez": ["es", "en"],
 };
