@@ -652,7 +652,7 @@ function CardinalMap({ locale, areaSlug }: { locale: string; areaSlug: string })
             <h4 className="font-semibold text-brand-navy text-sm">Tinamastes / Platanillo</h4>
             <p className="text-[11px] text-text-muted mt-1 leading-snug">
               {isEs
-                ? "Brisa marina, permacultura, transición"
+                ? "Brisas marinas, permacultura, transición"
                 : "Ocean breezes, permaculture, marine transition"}
             </p>
           </div>
@@ -738,7 +738,7 @@ function CardinalMap({ locale, areaSlug }: { locale: string; areaSlug: string })
           </span>
           <h4 className="font-bold text-brand-navy text-sm mt-1">Tinamastes</h4>
           <p className="text-[11px] text-text-muted mt-1 leading-tight">
-            {isEs ? "Brisa marina, RISE" : "Sea breeze & permaculture"}
+            {isEs ? "Brisas marinas, RISE" : "Sea breeze & permaculture"}
           </p>
         </div>
         <div className="col-span-2 p-3 rounded-xl bg-brand-navy text-white text-center text-xs font-semibold shadow-inner">
@@ -773,7 +773,7 @@ function CardinalCards({ locale, areaSlug }: { locale: string; areaSlug: string 
       title: isEs
         ? "2. El Oeste (Tinamastes, Platanillo y Barú)"
         : "2. The West (Tinamastes & Platanillo)",
-      direction: isEs ? "OESTE — Brisa Marina" : "WEST — Ocean Breezes",
+      direction: isEs ? "OESTE — Brisas Marinas" : "WEST — Ocean Breezes",
       vibe: isEs
         ? "El puente natural entre montaña y mar. Al ascender por la cordillera costera, se disfrutan de constantes brisas frescas del Pacífico."
         : "The bridge between mountain and sea. As you ascend the coastal ridge, you catch refreshing, dynamic ocean breezes.",
