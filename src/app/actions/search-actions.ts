@@ -20,6 +20,7 @@ import type { SearchFilters, SearchResult, PropertySearchItem, FilterFacets } fr
 import { mapPropertyRowToSearchItem, propertySearchColumns } from "@/lib/db/queries/properties";
 import { trackSearchInBackground } from "@/lib/services/tracking";
 import { getDistrictLabel } from "@/lib/locations";
+import { normalizeAreaSlug, normalizeSubLocation } from "@/lib/normalize-search-params";
 
 export type RawBounds = {
   north: number;
@@ -427,9 +428,11 @@ export async function searchProperties(
       bathrooms: bathrooms !== undefined ? gte(properties.bathrooms, bathrooms) : undefined,
       lotSizeMin: safeLotMin !== undefined ? gte(properties.lotSizeM2, safeLotMin) : undefined,
       lotSizeMax: safeLotMax !== undefined ? lte(properties.lotSizeM2, safeLotMax) : undefined,
-      areaSlug: filters.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined,
+      areaSlug: filters.areaSlug
+        ? eq(properties.areaSlug, normalizeAreaSlug(filters.areaSlug))
+        : undefined,
       subLocation: filters.subLocation
-        ? eq(properties.subLocation, filters.subLocation)
+        ? eq(properties.subLocation, normalizeSubLocation(filters.subLocation))
         : undefined,
       // Story 3.4: lifestyle tag OR filter using PostgreSQL && (overlap) operator on GIN-indexed array
       // The && operator returns rows where lifestyleTags and the filter array share at least one element

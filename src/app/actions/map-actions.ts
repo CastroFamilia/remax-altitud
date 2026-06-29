@@ -23,6 +23,7 @@ import type { SQL } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { properties, areas } from "@/lib/db/schema";
 import { normalizePropertyImages } from "@/lib/utils/normalize-images";
+import { normalizeAreaSlug, normalizeSubLocation } from "@/lib/normalize-search-params";
 import type { OptimizedImage } from "@/types/images";
 
 export type MapProperty = {
@@ -249,10 +250,12 @@ export async function getPropertiesForMap(
   const lotSizeMaxCondition =
     lotSizeMax !== undefined ? lte(properties.lotSizeM2, lotSizeMax) : undefined;
 
-  // Area / sub-location conditions
-  const areaCondition = filters?.areaSlug ? eq(properties.areaSlug, filters.areaSlug) : undefined;
+  // Area / sub-location conditions (normalized for accent/case/space tolerance)
+  const areaCondition = filters?.areaSlug
+    ? eq(properties.areaSlug, normalizeAreaSlug(filters.areaSlug))
+    : undefined;
   const subLocationCondition = filters?.subLocation
-    ? eq(properties.subLocation, filters.subLocation)
+    ? eq(properties.subLocation, normalizeSubLocation(filters.subLocation))
     : undefined;
 
   // Lifestyle tags — OR filter using PostgreSQL && (overlap) operator
