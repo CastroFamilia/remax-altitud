@@ -150,6 +150,44 @@ export function resolveAreaSlug(raw: {
     return "perez-zeledon";
   }
 
+  // 4b. Match other Costa Rica Areas
+  // Check titleAndLocation first (most specific)
+  if (titleAndLocation.includes("san mateo")) return "san-mateo";
+  if (titleAndLocation.includes("heredia")) return "heredia";
+  if (titleAndLocation.includes("san jose") || titleAndLocation.includes("san josé"))
+    return "san-jose";
+  if (titleAndLocation.includes("escazu") || titleAndLocation.includes("escazú")) return "escazu";
+  if (titleAndLocation.includes("santa ana")) return "santa-ana";
+  if (titleAndLocation.includes("liberia")) return "liberia";
+  if (titleAndLocation.includes("alajuela")) return "alajuela";
+  if (titleAndLocation.includes("cartago")) return "cartago";
+  if (titleAndLocation.includes("quepos")) return "quepos";
+  if (titleAndLocation.includes("manuel antonio")) return "manuel-antonio";
+  if (titleAndLocation.includes("jaco") || titleAndLocation.includes("jacó")) return "jaco";
+  if (titleAndLocation.includes("tamarindo")) return "tamarindo";
+  if (titleAndLocation.includes("nosara")) return "nosara";
+  if (titleAndLocation.includes("samara") || titleAndLocation.includes("sámara")) return "samara";
+  if (titleAndLocation.includes("santa teresa")) return "santa-teresa";
+  if (titleAndLocation.includes("playa hermosa")) return "playa-hermosa";
+
+  // Check publicRemarks description (fallback)
+  if (publicRemarks.includes("san mateo")) return "san-mateo";
+  if (publicRemarks.includes("heredia")) return "heredia";
+  if (publicRemarks.includes("san jose") || publicRemarks.includes("san josé")) return "san-jose";
+  if (publicRemarks.includes("escazu") || publicRemarks.includes("escazú")) return "escazu";
+  if (publicRemarks.includes("santa ana")) return "santa-ana";
+  if (publicRemarks.includes("liberia")) return "liberia";
+  if (publicRemarks.includes("alajuela")) return "alajuela";
+  if (publicRemarks.includes("cartago")) return "cartago";
+  if (publicRemarks.includes("quepos")) return "quepos";
+  if (publicRemarks.includes("manuel antonio")) return "manuel-antonio";
+  if (publicRemarks.includes("jaco") || publicRemarks.includes("jacó")) return "jaco";
+  if (publicRemarks.includes("tamarindo")) return "tamarindo";
+  if (publicRemarks.includes("nosara")) return "nosara";
+  if (publicRemarks.includes("samara") || publicRemarks.includes("sámara")) return "samara";
+  if (publicRemarks.includes("santa teresa")) return "santa-teresa";
+  if (publicRemarks.includes("playa hermosa")) return "playa-hermosa";
+
   // 5. Geographic Bounding / Distance Fallback
   if (raw.latitude != null && raw.longitude != null) {
     const lat = Number(raw.latitude);

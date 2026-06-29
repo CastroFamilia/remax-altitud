@@ -70,8 +70,9 @@ const AREA_SLUG_ALIASES: Record<string, string> = {
 // ── Canonical sub-location slug lookup ──────────────────────────────────────
 const SUB_LOCATION_SLUG_ALIASES: Record<string, string> = {
   // Canonical slugs (identity)
-  "san-isidro": "san-isidro",
+  "san-isidro-de-el-general": "san-isidro-de-el-general",
   "el-general": "el-general",
+  "general-viejo": "general-viejo",
   "daniel-flores": "daniel-flores",
   rivas: "rivas",
   "san-pedro": "san-pedro",
@@ -82,9 +83,11 @@ const SUB_LOCATION_SLUG_ALIASES: Record<string, string> = {
   "rio-nuevo": "rio-nuevo",
   paramo: "paramo",
   "la-amistad": "la-amistad",
-  // Accented display-label variants (after slug normalization)
-  "san-isidro-de-el-general": "san-isidro",
-  "general-viejo": "el-general",
+  // Map non-canonical simplified slugs to canonical database slugs
+  "san-isidro": "san-isidro-de-el-general",
+  "general-viejo-de-perez-zeledon": "general-viejo",
+  "santa-elena": "santa-elena-de-el-general",
+  "santa-elena-de-el-general": "santa-elena-de-el-general",
   "san-gerardo": "rivas",
   "san-gerardo-de-rivas": "rivas",
 };
