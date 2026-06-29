@@ -37,6 +37,7 @@ import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useRouter } from "@/i18n/navigation";
 import { useSearchHistory, type SearchHistoryEntry } from "@/hooks/use-search-history";
+import { stripDiacritics } from "@/lib/normalize-search-params";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -81,6 +82,7 @@ const AREA_KEYWORDS: Record<string, string> = {
   pz: "perez-zeledon",
   uvita: "uvita",
   dominical: "dominical",
+  osa: "dominical",
   ojochal: "ojochal",
   quepos: "quepos",
   "manuel antonio": "manuel-antonio",
@@ -126,15 +128,15 @@ const AREA_KEYWORDS: Record<string, string> = {
 // Sub-location keyword → slug mapping for command palette smart search
 // Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
 const SUB_LOCATION_KEYWORDS: Record<string, string> = {
-  "san isidro": "san-isidro",
-  "san isidro de el general": "san-isidro",
+  "san isidro": "san-isidro-de-el-general",
+  "san isidro de el general": "san-isidro-de-el-general",
   cajón: "cajon",
   cajon: "cajon",
   rivas: "rivas",
   "daniel flores": "daniel-flores",
   pejibaye: "pejibaye",
   "el general": "el-general",
-  "general viejo": "el-general",
+  "general viejo": "general-viejo",
   "san pedro": "san-pedro",
   platanares: "platanares",
   "río nuevo": "rio-nuevo",
@@ -145,12 +147,14 @@ const SUB_LOCATION_KEYWORDS: Record<string, string> = {
   "la amistad": "la-amistad",
   "san gerardo": "rivas",
   "san gerardo de rivas": "rivas",
+  "santa elena": "santa-elena-de-el-general",
+  "santa elena de el general": "santa-elena-de-el-general",
 };
 
 const AREA_LABELS: Record<string, string> = {
   "perez-zeledon": "Pérez Zeledón",
   uvita: "Uvita",
-  dominical: "Dominical",
+  dominical: "Osa (Dominical–Uvita)",
   ojochal: "Ojochal",
   quepos: "Quepos",
   "manuel-antonio": "Manuel Antonio",
@@ -170,7 +174,10 @@ const AREA_LABELS: Record<string, string> = {
   "tinamastes-platanillo": "Tinamastes & Platanillo",
   // PZ sub-location labels — aligned with ALTITUD HUB (12 districts)
   "san-isidro": "San Isidro de El General",
+  "san-isidro-de-el-general": "San Isidro de El General",
   "el-general": "El General",
+  "general-viejo": "General Viejo",
+  "santa-elena-de-el-general": "Santa Elena",
   "daniel-flores": "Daniel Flores",
   rivas: "Rivas",
   "san-pedro": "San Pedro",
@@ -308,8 +315,12 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
     (a, b) => b[0].length - a[0].length,
   );
 
+  // Accent-stripped version of the remaining text for fallback matching
+  const remainingTextNorm = stripDiacritics(remainingText);
+
   for (const [key, subSlug] of sortedSubLocationKeywords) {
-    if (remainingText.includes(key)) {
+    const keyNorm = stripDiacritics(key);
+    if (remainingText.includes(key) || remainingTextNorm.includes(keyNorm)) {
       if (!params.sub_location) {
         params.area = "perez-zeledon";
         params.sub_location = subSlug;
@@ -323,13 +334,17 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
       }
       if (params.sub_location === subSlug) {
         remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+        if (keyNorm !== key) {
+          remainingText = remainingText.replace(new RegExp(keyNorm, "gi"), " ");
+        }
       }
     }
   }
   // If no sub-location matched, try main area keywords
   if (!matchedSubLocation) {
     for (const [key, slug] of sortedAreaKeywords) {
-      if (remainingText.includes(key)) {
+      const keyNorm = stripDiacritics(key);
+      if (remainingText.includes(key) || remainingTextNorm.includes(keyNorm)) {
         if (!params.area) {
           params.area = slug;
           detected.push({
@@ -341,6 +356,9 @@ function parseQueryCompact(queryText: string, locale: string): ParsedSearch {
         }
         if (params.area === slug) {
           remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+          if (keyNorm !== key) {
+            remainingText = remainingText.replace(new RegExp(keyNorm, "gi"), " ");
+          }
         }
       }
     }
@@ -581,10 +599,18 @@ function getSuggestionsCompact(query: string, locale: string): Suggestion[] {
   const n = query.toLowerCase().trim();
   if (!n || n.length < 2) return [];
   const suggestions: Suggestion[] = [];
+  const nNorm = stripDiacritics(n);
 
   for (const [kw, slug] of Object.entries(AREA_KEYWORDS)) {
     if (suggestions.filter((s) => s.category === "area").length >= 3) break;
-    if (kw.includes(n) || n.includes(kw)) {
+    const kwNorm = stripDiacritics(kw);
+    const isMatch =
+      kw.startsWith(n) ||
+      kwNorm.startsWith(nNorm) ||
+      new RegExp(`\\b${n}\\b`, "i").test(kw) ||
+      new RegExp(`\\b${nNorm}\\b`, "i").test(kwNorm);
+
+    if (isMatch) {
       if (!suggestions.some((s) => s.value === slug)) {
         suggestions.push({
           category: "area",

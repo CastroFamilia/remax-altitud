@@ -105,6 +105,30 @@ describe("resolveAreaSlug", () => {
     expect(resolveAreaSlug(raw)).toBe("tinamastes-platanillo");
   });
 
+  it("[P0] returns 'heredia' for properties containing 'Heredia' in title or remarks", () => {
+    const raw1 = makeRawInput({ titleEn: "House in Heredia" });
+    const raw2 = makeRawInput({ publicRemarksEn: "Close to Heredia downtown" });
+    expect(resolveAreaSlug(raw1)).toBe("heredia");
+    expect(resolveAreaSlug(raw2)).toBe("heredia");
+  });
+
+  it("[P0] returns 'san-mateo' for properties containing 'San Mateo' in title or remarks", () => {
+    const raw = makeRawInput({ titleEn: "Beautiful lot in San Mateo" });
+    expect(resolveAreaSlug(raw)).toBe("san-mateo");
+  });
+
+  it("[P0] returns 'san-jose' for properties containing 'San Jose' or 'San José' in title or remarks", () => {
+    const raw1 = makeRawInput({ titleEn: "Apartment in San Jose" });
+    const raw2 = makeRawInput({ titleEs: "Apartamento en San José" });
+    expect(resolveAreaSlug(raw1)).toBe("san-jose");
+    expect(resolveAreaSlug(raw2)).toBe("san-jose");
+  });
+
+  it("[P0] returns 'jaco' for properties containing 'Jaco' or 'Jacó' in title or remarks", () => {
+    const raw = makeRawInput({ titleEn: "Condo in Jaco Beach" });
+    expect(resolveAreaSlug(raw)).toBe("jaco");
+  });
+
   it("[P2] returns 'dominical' as the default fallback for office 235", () => {
     const raw = makeRawInput({ officeApiId: 235 });
     expect(resolveAreaSlug(raw)).toBe("dominical");

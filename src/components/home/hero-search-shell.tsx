@@ -28,6 +28,7 @@ import { useRouter, Link } from "@/i18n/navigation";
 import { getAvailableAreas } from "@/app/actions/search-actions";
 import { useSearchHistory } from "@/hooks/use-search-history";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
+import { stripDiacritics } from "@/lib/normalize-search-params";
 
 type Variant = "desktop-overlay" | "mobile-inline";
 
@@ -39,6 +40,7 @@ const AREA_KEYWORDS: Record<string, string> = {
   pz: "perez-zeledon",
   uvita: "uvita",
   dominical: "dominical",
+  osa: "dominical",
   ojochal: "ojochal",
   quepos: "quepos",
   "manuel antonio": "manuel-antonio",
@@ -76,7 +78,7 @@ const AREA_KEYWORDS: Record<string, string> = {
 const AREA_LABELS: Record<string, string> = {
   "perez-zeledon": "Pérez Zeledón",
   uvita: "Uvita",
-  dominical: "Dominical",
+  dominical: "Osa (Dominical–Uvita)",
   ojochal: "Ojochal",
   quepos: "Quepos",
   "manuel-antonio": "Manuel Antonio",
@@ -90,7 +92,10 @@ const AREA_LABELS: Record<string, string> = {
   // PZ sub-location labels (used in smart search chips)
   // Aligned with ALTITUD HUB locations.js — 12 districts
   "san-isidro": "San Isidro de El General",
+  "san-isidro-de-el-general": "San Isidro de El General",
   "el-general": "El General",
+  "general-viejo": "General Viejo",
+  "santa-elena-de-el-general": "Santa Elena",
   "daniel-flores": "Daniel Flores",
   rivas: "Rivas",
   "san-pedro": "San Pedro",
@@ -201,15 +206,15 @@ const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Comercial", "Finca"];
 // Sub-location keyword → slug mapping for smart search
 // Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
 const SUB_LOCATION_KEYWORDS: Record<string, string> = {
-  "san isidro": "san-isidro",
-  "san isidro de el general": "san-isidro",
+  "san isidro": "san-isidro-de-el-general",
+  "san isidro de el general": "san-isidro-de-el-general",
   cajón: "cajon",
   cajon: "cajon",
   rivas: "rivas",
   "daniel flores": "daniel-flores",
   pejibaye: "pejibaye",
   "el general": "el-general",
-  "general viejo": "el-general",
+  "general viejo": "general-viejo",
   "san pedro": "san-pedro",
   platanares: "platanares",
   "río nuevo": "rio-nuevo",
@@ -220,6 +225,8 @@ const SUB_LOCATION_KEYWORDS: Record<string, string> = {
   "la amistad": "la-amistad",
   "san gerardo": "rivas",
   "san gerardo de rivas": "rivas",
+  "santa elena": "santa-elena-de-el-general",
+  "santa elena de el general": "santa-elena-de-el-general",
 };
 
 // Cycling placeholder examples
@@ -322,9 +329,14 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
     (a, b) => b[0].length - a[0].length,
   );
 
+  // Accent-stripped version of the remaining text for fallback matching
+  const remainingTextNorm = stripDiacritics(remainingText);
+
   // Try sub-location keywords first (more specific)
   for (const [key, subSlug] of sortedSubLocationKeywords) {
-    if (remainingText.includes(key)) {
+    // Match with original text OR accent-stripped text against accent-stripped key
+    const keyNorm = stripDiacritics(key);
+    if (remainingText.includes(key) || remainingTextNorm.includes(keyNorm)) {
       if (!params.sub_location) {
         params.area = "perez-zeledon"; // Sub-locations are all in PZ
         params.sub_location = subSlug;
@@ -339,6 +351,10 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
       // Remove all occurrences of keys that map to the same sub_location
       if (params.sub_location === subSlug) {
         remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+        // Also strip the accent-stripped variant if it differs
+        if (keyNorm !== key) {
+          remainingText = remainingText.replace(new RegExp(keyNorm, "gi"), " ");
+        }
       }
     }
   }
@@ -346,7 +362,9 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
   // If no sub-location matched, try main area keywords
   if (!matchedAreaKey) {
     for (const [key, slug] of sortedAreaKeywords) {
-      if (remainingText.includes(key)) {
+      // Match with original text OR accent-stripped text against accent-stripped key
+      const keyNorm = stripDiacritics(key);
+      if (remainingText.includes(key) || remainingTextNorm.includes(keyNorm)) {
         if (!params.area) {
           params.area = slug;
           matchedAreaKey = key;
@@ -360,6 +378,10 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
         // Remove all occurrences of keys that map to the same area
         if (params.area === slug) {
           remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+          // Also strip the accent-stripped variant if it differs
+          if (keyNorm !== key) {
+            remainingText = remainingText.replace(new RegExp(keyNorm, "gi"), " ");
+          }
         }
       }
     }
@@ -798,11 +820,19 @@ function getSuggestions(query: string, locale: string): Suggestion[] {
   const suggestions: Suggestion[] = [];
   const maxPerCategory = 3;
 
-  // Match areas
+  // Match areas (accent-insensitive)
+  const normalizedNorm = stripDiacritics(normalized);
   let areaCount = 0;
   for (const [keyword, slug] of Object.entries(AREA_KEYWORDS)) {
     if (areaCount >= maxPerCategory) break;
-    if (keyword.includes(normalized) || normalized.includes(keyword)) {
+    const keywordNorm = stripDiacritics(keyword);
+    const isMatch =
+      keyword.startsWith(normalized) ||
+      keywordNorm.startsWith(normalizedNorm) ||
+      new RegExp(`\\b${normalized}\\b`, "i").test(keyword) ||
+      new RegExp(`\\b${normalizedNorm}\\b`, "i").test(keywordNorm);
+
+    if (isMatch) {
       // Skip duplicates (same slug)
       if (suggestions.some((s) => s.category === "area" && s.value === slug)) continue;
       suggestions.push({
