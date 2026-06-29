@@ -81,7 +81,7 @@ const AREA_GROUPS: AreaGroup[] = [
 // ─── Static Areas Fallback ───────────────────────────────────────────────────
 
 const STATIC_MAIN_AREAS: AreaOption[] = [
-  { slug: "dominical", label: "Dominical" },
+  { slug: "dominical", label: "Osa (Dominical–Uvita)" },
   { slug: "uvita", label: "Uvita" },
   { slug: "ojochal", label: "Ojochal" },
   { slug: "quepos", label: "Quepos" },
@@ -166,15 +166,40 @@ export function AreaSearchCombobox({
     return items;
   }, [mainAreas, subLocations]);
 
-  // Filter items by search query
+  // Filter and sort items by search query
   const filteredItems = useMemo(() => {
     if (!query.trim()) return flatItems;
 
     const q = query.toLowerCase().trim();
-    return flatItems.filter((item) => {
+    const matches = flatItems.filter((item) => {
       const label = item.option.label.toLowerCase();
       const slug = item.option.slug.toLowerCase();
       return label.includes(q) || slug.includes(q);
+    });
+
+    // Sort matching results:
+    // 1. Exact matches on label or slug
+    // 2. Starts-with matches on label or slug
+    // 3. Main areas ("area") before sub-locations ("sub")
+    // 4. Fall back to original order
+    return [...matches].sort((a, b) => {
+      const labelA = a.option.label.toLowerCase();
+      const labelB = b.option.label.toLowerCase();
+
+      const exactA = labelA === q || a.option.slug === q;
+      const exactB = labelB === q || b.option.slug === q;
+      if (exactA && !exactB) return -1;
+      if (!exactA && exactB) return 1;
+
+      const startsA = labelA.startsWith(q) || a.option.slug.startsWith(q);
+      const startsB = labelB.startsWith(q) || b.option.slug.startsWith(q);
+      if (startsA && !startsB) return -1;
+      if (!startsA && startsB) return 1;
+
+      if (a.type === "area" && b.type === "sub") return -1;
+      if (a.type === "sub" && b.type === "area") return 1;
+
+      return 0;
     });
   }, [flatItems, query]);
 

@@ -668,7 +668,7 @@ export async function getAvailableAreas(): Promise<
 function formatAreaLabel(slug: string): string {
   const knownAreas: Record<string, string> = {
     "perez-zeledon": "Pérez Zeledón",
-    dominical: "Dominical",
+    dominical: "Osa (Dominical–Uvita)",
     uvita: "Uvita",
     ojochal: "Ojochal",
     "tinamastes-platanillo": "Tinamastes, Platanillo & Barú",

@@ -40,6 +40,7 @@ const AREA_KEYWORDS: Record<string, string> = {
   pz: "perez-zeledon",
   uvita: "uvita",
   dominical: "dominical",
+  osa: "dominical",
   ojochal: "ojochal",
   quepos: "quepos",
   "manuel antonio": "manuel-antonio",
@@ -77,7 +78,7 @@ const AREA_KEYWORDS: Record<string, string> = {
 const AREA_LABELS: Record<string, string> = {
   "perez-zeledon": "Pérez Zeledón",
   uvita: "Uvita",
-  dominical: "Dominical",
+  dominical: "Osa (Dominical–Uvita)",
   ojochal: "Ojochal",
   quepos: "Quepos",
   "manuel-antonio": "Manuel Antonio",
@@ -91,7 +92,10 @@ const AREA_LABELS: Record<string, string> = {
   // PZ sub-location labels (used in smart search chips)
   // Aligned with ALTITUD HUB locations.js — 12 districts
   "san-isidro": "San Isidro de El General",
+  "san-isidro-de-el-general": "San Isidro de El General",
   "el-general": "El General",
+  "general-viejo": "General Viejo",
+  "santa-elena-de-el-general": "Santa Elena",
   "daniel-flores": "Daniel Flores",
   rivas: "Rivas",
   "san-pedro": "San Pedro",
@@ -202,15 +206,15 @@ const PROPERTY_TYPES = ["Casa", "Apartamento", "Lote", "Comercial", "Finca"];
 // Sub-location keyword → slug mapping for smart search
 // Aligned with ALTITUD HUB locations.js — 12 districts of Pérez Zeledón
 const SUB_LOCATION_KEYWORDS: Record<string, string> = {
-  "san isidro": "san-isidro",
-  "san isidro de el general": "san-isidro",
+  "san isidro": "san-isidro-de-el-general",
+  "san isidro de el general": "san-isidro-de-el-general",
   cajón: "cajon",
   cajon: "cajon",
   rivas: "rivas",
   "daniel flores": "daniel-flores",
   pejibaye: "pejibaye",
   "el general": "el-general",
-  "general viejo": "el-general",
+  "general viejo": "general-viejo",
   "san pedro": "san-pedro",
   platanares: "platanares",
   "río nuevo": "rio-nuevo",
@@ -221,6 +225,8 @@ const SUB_LOCATION_KEYWORDS: Record<string, string> = {
   "la amistad": "la-amistad",
   "san gerardo": "rivas",
   "san gerardo de rivas": "rivas",
+  "santa elena": "santa-elena-de-el-general",
+  "santa elena de el general": "santa-elena-de-el-general",
 };
 
 // Cycling placeholder examples
@@ -820,12 +826,13 @@ function getSuggestions(query: string, locale: string): Suggestion[] {
   for (const [keyword, slug] of Object.entries(AREA_KEYWORDS)) {
     if (areaCount >= maxPerCategory) break;
     const keywordNorm = stripDiacritics(keyword);
-    if (
-      keyword.includes(normalized) ||
-      normalized.includes(keyword) ||
-      keywordNorm.includes(normalizedNorm) ||
-      normalizedNorm.includes(keywordNorm)
-    ) {
+    const isMatch =
+      keyword.startsWith(normalized) ||
+      keywordNorm.startsWith(normalizedNorm) ||
+      new RegExp(`\\b${normalized}\\b`, "i").test(keyword) ||
+      new RegExp(`\\b${normalizedNorm}\\b`, "i").test(keywordNorm);
+
+    if (isMatch) {
       // Skip duplicates (same slug)
       if (suggestions.some((s) => s.category === "area" && s.value === slug)) continue;
       suggestions.push({
