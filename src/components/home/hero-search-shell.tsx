@@ -28,6 +28,7 @@ import { useRouter, Link } from "@/i18n/navigation";
 import { getAvailableAreas } from "@/app/actions/search-actions";
 import { useSearchHistory } from "@/hooks/use-search-history";
 import { AreaSearchCombobox } from "@/components/search/area-search-combobox";
+import { stripDiacritics } from "@/lib/normalize-search-params";
 
 type Variant = "desktop-overlay" | "mobile-inline";
 
@@ -322,9 +323,14 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
     (a, b) => b[0].length - a[0].length,
   );
 
+  // Accent-stripped version of the remaining text for fallback matching
+  const remainingTextNorm = stripDiacritics(remainingText);
+
   // Try sub-location keywords first (more specific)
   for (const [key, subSlug] of sortedSubLocationKeywords) {
-    if (remainingText.includes(key)) {
+    // Match with original text OR accent-stripped text against accent-stripped key
+    const keyNorm = stripDiacritics(key);
+    if (remainingText.includes(key) || remainingTextNorm.includes(keyNorm)) {
       if (!params.sub_location) {
         params.area = "perez-zeledon"; // Sub-locations are all in PZ
         params.sub_location = subSlug;
@@ -339,6 +345,10 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
       // Remove all occurrences of keys that map to the same sub_location
       if (params.sub_location === subSlug) {
         remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+        // Also strip the accent-stripped variant if it differs
+        if (keyNorm !== key) {
+          remainingText = remainingText.replace(new RegExp(keyNorm, "gi"), " ");
+        }
       }
     }
   }
@@ -346,7 +356,9 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
   // If no sub-location matched, try main area keywords
   if (!matchedAreaKey) {
     for (const [key, slug] of sortedAreaKeywords) {
-      if (remainingText.includes(key)) {
+      // Match with original text OR accent-stripped text against accent-stripped key
+      const keyNorm = stripDiacritics(key);
+      if (remainingText.includes(key) || remainingTextNorm.includes(keyNorm)) {
         if (!params.area) {
           params.area = slug;
           matchedAreaKey = key;
@@ -360,6 +372,10 @@ function parseQuery(queryText: string, locale: string = "en"): ParsedSearch {
         // Remove all occurrences of keys that map to the same area
         if (params.area === slug) {
           remainingText = remainingText.replace(new RegExp(key, "gi"), " ");
+          // Also strip the accent-stripped variant if it differs
+          if (keyNorm !== key) {
+            remainingText = remainingText.replace(new RegExp(keyNorm, "gi"), " ");
+          }
         }
       }
     }
@@ -798,11 +814,18 @@ function getSuggestions(query: string, locale: string): Suggestion[] {
   const suggestions: Suggestion[] = [];
   const maxPerCategory = 3;
 
-  // Match areas
+  // Match areas (accent-insensitive)
+  const normalizedNorm = stripDiacritics(normalized);
   let areaCount = 0;
   for (const [keyword, slug] of Object.entries(AREA_KEYWORDS)) {
     if (areaCount >= maxPerCategory) break;
-    if (keyword.includes(normalized) || normalized.includes(keyword)) {
+    const keywordNorm = stripDiacritics(keyword);
+    if (
+      keyword.includes(normalized) ||
+      normalized.includes(keyword) ||
+      keywordNorm.includes(normalizedNorm) ||
+      normalizedNorm.includes(keywordNorm)
+    ) {
       // Skip duplicates (same slug)
       if (suggestions.some((s) => s.category === "area" && s.value === slug)) continue;
       suggestions.push({

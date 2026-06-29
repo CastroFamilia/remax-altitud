@@ -17,6 +17,7 @@
 import { useCallback, useMemo, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import type { SearchFilters, SortOption } from "@/types/search";
+import { normalizeAreaSlug, normalizeSubLocation } from "@/lib/normalize-search-params";
 
 export interface UseSearchFiltersReturn {
   filters: SearchFilters;
@@ -127,10 +128,10 @@ function parseFilters(params: URLSearchParams): SearchFilters {
   if (Number.isFinite(lotSizeMax) && lotSizeMax >= 0) filters.lotSizeMax = lotSizeMax;
 
   const areaSlug = params.get("area");
-  if (areaSlug) filters.areaSlug = areaSlug;
+  if (areaSlug) filters.areaSlug = normalizeAreaSlug(areaSlug);
 
   const subLocation = params.get("sub_location");
-  if (subLocation) filters.subLocation = subLocation;
+  if (subLocation) filters.subLocation = normalizeSubLocation(subLocation);
 
   const sort = params.get("sort");
   if (sort && VALID_SORT_OPTIONS.includes(sort as SortOption)) {
