@@ -48,4 +48,8 @@ export const staticRedirects: RedirectEntry[] = [
   // WordPress agent index pages
   { source: "/agents", destination: "/en/agents", permanent: true },
   { source: "/agentes", destination: "/es/agents", permanent: true },
+
+  // WordPress legacy city/area pages to new area guides
+  { source: "/city/:slug*", destination: "/en/areas/:slug*", permanent: true },
+  { source: "/ciudad/:slug*", destination: "/es/areas/:slug*", permanent: true },
 ];

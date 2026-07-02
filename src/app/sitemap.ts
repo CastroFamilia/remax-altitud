@@ -19,6 +19,9 @@ import { getAllAreaSlugs } from "@/lib/db/queries/areas";
 import { getAllCommunityParams } from "@/lib/db/queries/communities";
 import { SITE_ORIGIN, LOCALES } from "@/lib/seo/constants";
 
+// Force dynamic execution at runtime to avoid build-time DB dependencies (which fail on Coolify / CI)
+export const dynamic = "force-dynamic";
+
 const staticRoutes = [
   "",
   "/search",
@@ -30,6 +33,15 @@ const staticRoutes = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
+    staticRoutes.map((route) => ({
+      url: `${SITE_ORIGIN}/${locale}${route}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: route === "" ? 1.0 : 0.5,
+    })),
+  );
+
   try {
     const [propertySlugs, agentSlugs, areaSlugs, communityParams] = await Promise.all([
       getAllPropertySlugs(),
@@ -37,15 +49,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getAllAreaSlugs(),
       getAllCommunityParams(),
     ]);
-
-    const staticEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
-      staticRoutes.map((route) => ({
-        url: `${SITE_ORIGIN}/${locale}${route}`,
-        lastModified: new Date(),
-        changeFrequency: "weekly" as const,
-        priority: route === "" ? 1.0 : 0.5,
-      })),
-    );
 
     const propertyEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
       propertySlugs.map((slug) => ({
@@ -90,8 +93,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...areaEntries,
       ...communityEntries,
     ];
-  } catch {
-    // Build continues; sitemap generates on-demand at runtime
-    return [];
+  } catch (error) {
+    // Dynamic generation failed (e.g. database down); return at least the static entries
+    console.error("Sitemap dynamic generation failed:", error);
+    return staticEntries;
   }
 }
