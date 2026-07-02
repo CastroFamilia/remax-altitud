@@ -143,6 +143,21 @@ describe("staticRedirects data shape (4.4-UNIT-003)", () => {
       expect(sources).toContain("/join");
     },
   );
+
+  it(
+    "covers legacy WordPress city/area redirects",
+    () => {
+      const cityEntry = staticRedirects.find((r: RedirectEntry) => r.source === "/city/:slug*");
+      expect(cityEntry).toBeDefined();
+      expect(cityEntry?.destination).toBe("/en/areas/:slug*");
+      expect(cityEntry?.permanent).toBe(true);
+
+      const ciudadEntry = staticRedirects.find((r: RedirectEntry) => r.source === "/ciudad/:slug*");
+      expect(ciudadEntry).toBeDefined();
+      expect(ciudadEntry?.destination).toBe("/es/areas/:slug*");
+      expect(ciudadEntry?.permanent).toBe(true);
+    },
+  );
 });
 
 // ---------------------------------------------------------------------------
