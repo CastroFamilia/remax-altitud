@@ -172,27 +172,24 @@ export async function updateCommunityAction(
     const name = data.name ?? existing.name;
     const slug = data.slug ?? existing.slug;
 
-    // Check hero image changes
+    // Check hero image changes — always re-optimize when a URL is present.
+    // If optimization fails, clear the JSONB so the frontend falls back to heroImageUrl.
     if (data.heroImageUrl !== undefined) {
       if (data.heroImageUrl === null || data.heroImageUrl.trim() === "") {
         data.heroImage = null;
-      } else if (data.heroImageUrl !== existing.heroImageUrl) {
+      } else {
         const optimized = await optimizeCommunityImage(slug, data.heroImageUrl, "hero", name);
-        if (optimized) {
-          data.heroImage = optimized;
-        }
+        data.heroImage = optimized; // null when optimization fails → clears stale data
       }
     }
 
-    // Check site map image changes
+    // Check site map image changes — same strategy as hero image.
     if (data.siteMapImageUrl !== undefined) {
       if (data.siteMapImageUrl === null || data.siteMapImageUrl.trim() === "") {
         data.siteMapImage = null;
-      } else if (data.siteMapImageUrl !== existing.siteMapImageUrl) {
+      } else {
         const optimized = await optimizeCommunityImage(slug, data.siteMapImageUrl, "sitemap", name);
-        if (optimized) {
-          data.siteMapImage = optimized;
-        }
+        data.siteMapImage = optimized; // null when optimization fails → clears stale data
       }
     }
 
