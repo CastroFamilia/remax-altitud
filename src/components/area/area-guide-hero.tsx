@@ -69,6 +69,7 @@ export async function AreaGuideHero({ area, locale }: AreaGuideHeroProps) {
           className="object-cover"
           sizes="100vw"
           priority
+          unoptimized
         />
       ) : (
         <div

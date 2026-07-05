@@ -54,6 +54,7 @@ export async function CommunityHero({ community, areaName, locale }: CommunityHe
           className="object-cover"
           sizes="100vw"
           priority
+          unoptimized
         />
       ) : (
         <div
