@@ -447,10 +447,10 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
                 {t("formLabelHeroImage")}
               </label>
               <input
-                type="url"
+                type="text"
                 value={heroImageUrl}
                 onChange={(e) => setHeroImageUrl(e.target.value)}
-                placeholder="https://example.com/hero.jpg"
+                placeholder="https://example.com/hero.jpg or /images/hero.jpg"
                 data-testid="community-hero-image-input"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
               />
@@ -523,10 +523,10 @@ export function AdminCommunityForm({ locale, initialData, areas }: CommunityForm
               {t("formLabelSiteMap")}
             </label>
             <input
-              type="url"
+              type="text"
               value={siteMapImageUrl}
               onChange={(e) => setSiteMapImageUrl(e.target.value)}
-              placeholder="https://example.com/sitemap.jpg"
+              placeholder="https://example.com/sitemap.jpg or /images/sitemap.jpg"
               data-testid="community-sitemap-image-input"
               className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 transition-all font-semibold"
             />
