@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Community } from "@/lib/db/schema/communities";
+import type { OptimizedImage } from "@/types/images";
 
 interface CommunityHeroProps {
   community: Community;
@@ -17,7 +18,7 @@ interface CommunityHeroProps {
 export async function CommunityHero({ community, areaName, locale }: CommunityHeroProps) {
   const t = await getTranslations({ locale, namespace: "CommunityPage" });
   const tagline = locale === "es" ? community.taglineEs : community.taglineEn;
-  const hasHeroImage = !!community.heroImageUrl;
+  const heroImage = community.heroImage as OptimizedImage | null;
 
   const priceRange =
     community.priceMinUsd && community.priceMaxUsd
@@ -33,9 +34,21 @@ export async function CommunityHero({ community, areaName, locale }: CommunityHe
       className="relative flex min-h-[50vh] items-end overflow-hidden md:min-h-[60vh]"
     >
       {/* Background: image or gradient fallback */}
-      {hasHeroImage ? (
+      {heroImage ? (
         <Image
-          src={community.heroImageUrl!}
+          src={heroImage.src}
+          alt={community.name}
+          fill
+          className="object-cover"
+          sizes="100vw"
+          priority
+          placeholder={heroImage.blurDataUrl ? "blur" : undefined}
+          blurDataURL={heroImage.blurDataUrl || undefined}
+          unoptimized
+        />
+      ) : community.heroImageUrl ? (
+        <Image
+          src={community.heroImageUrl}
           alt={community.name}
           fill
           className="object-cover"

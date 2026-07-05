@@ -10,6 +10,7 @@ import { buildAlternatesMetadata } from "@/lib/seo/metadata";
 import { generateBreadcrumbJsonLd, serializeJsonLd } from "@/lib/seo/structured-data";
 import { sortCommunitiesCustom } from "@/lib/db/queries/communities";
 import { normalizeGeoFenceCoords } from "@/lib/map/normalize-geofence";
+import type { OptimizedImage } from "@/types/images";
 
 /** Opt out of static caching so DB-driven communities list always renders with fresh data. */
 export const dynamic = "force-dynamic";
@@ -51,6 +52,7 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
     taglineEn: string | null;
     taglineEs: string | null;
     heroImageUrl: string | null;
+    heroImage: unknown;
     priceMinUsd: number | null;
     priceMaxUsd: number | null;
     listingCount: number;
@@ -76,6 +78,7 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
         taglineEn: communities.taglineEn,
         taglineEs: communities.taglineEs,
         heroImageUrl: communities.heroImageUrl,
+        heroImage: communities.heroImage,
         priceMinUsd: communities.priceMinUsd,
         priceMaxUsd: communities.priceMaxUsd,
         listingCount: communities.listingCount,
@@ -167,6 +170,7 @@ export default async function CommunitiesIndexPage({ params }: PageProps) {
                     name={comm.name}
                     tagline={tagline}
                     heroImageUrl={comm.heroImageUrl}
+                    heroImage={comm.heroImage as OptimizedImage | null}
                     href={href}
                     locale={locale}
                     priceMin={comm.priceMinUsd}

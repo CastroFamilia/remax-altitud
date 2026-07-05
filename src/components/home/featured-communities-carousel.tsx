@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CommunityCard } from "@/components/area/community-card";
 import { sortCommunitiesCustom } from "@/lib/community/sort";
+import type { OptimizedImage } from "@/types/images";
 
 interface AreaInfo {
   slug: string;
@@ -23,6 +24,7 @@ interface CommunityRow {
   taglineEn: string | null;
   taglineEs: string | null;
   heroImageUrl: string | null;
+  heroImage?: unknown;
   priceMinUsd: number | null;
   priceMaxUsd: number | null;
   listingCount: number;
@@ -169,6 +171,7 @@ export function FeaturedCommunitiesCarousel({
                   name={community.name}
                   tagline={tagline || undefined}
                   heroImageUrl={community.heroImageUrl}
+                  heroImage={community.heroImage as OptimizedImage | null}
                   href={`/${locale}/areas/${areaSlug}/communities/${community.slug}`}
                   locale={locale}
                   priceMin={community.priceMinUsd}

@@ -15,13 +15,22 @@ import {
 import { updatePropertyCommunity } from "@/lib/db/queries/properties";
 import { updateCommunityListingCounts } from "@/lib/db/queries/communities";
 import type { NewCommunity, Community } from "@/lib/db/schema/communities";
+import { optimizeCommunityImage } from "@/lib/sync/image-optimizer";
 
-function triggerRevalidation() {
+async function triggerRevalidation(areaSlug?: string, communitySlug?: string) {
   revalidatePath("/[locale]/communities");
   revalidatePath("/[locale]/areas/[slug]/communities/[community]");
   revalidatePath("/[locale]/areas/[slug]");
   revalidatePath("/[locale]/search");
   revalidatePath("/[locale]/properties/[slug]");
+  revalidatePath("/[locale]/property/[slug]");
+
+  if (areaSlug && communitySlug) {
+    revalidatePath(`/en/areas/${areaSlug}/communities/${communitySlug}`);
+    revalidatePath(`/es/areas/${areaSlug}/communities/${communitySlug}`);
+    revalidatePath(`/en/areas/${areaSlug}`);
+    revalidatePath(`/es/areas/${areaSlug}`);
+  }
 }
 
 /**
@@ -96,8 +105,42 @@ export async function createCommunityAction(
 ): Promise<{ success: boolean; community?: Community; error?: string }> {
   try {
     await verifyAdminAuth();
+
+    // Optimize images if URLs are provided
+    if (data.heroImageUrl) {
+      const optimized = await optimizeCommunityImage(
+        data.slug,
+        data.heroImageUrl,
+        "hero",
+        data.name,
+      );
+      if (optimized) {
+        data.heroImage = optimized;
+      }
+    }
+    if (data.siteMapImageUrl) {
+      const optimized = await optimizeCommunityImage(
+        data.slug,
+        data.siteMapImageUrl,
+        "sitemap",
+        data.name,
+      );
+      if (optimized) {
+        data.siteMapImage = optimized;
+      }
+    }
+
     const community = await createCommunity(data);
-    triggerRevalidation();
+
+    // Fetch area slug for precise revalidation
+    const areaRows = await db
+      .select({ slug: areas.slug })
+      .from(areas)
+      .where(eq(areas.id, community.areaId))
+      .limit(1);
+    const areaSlug = areaRows[0]?.slug;
+
+    await triggerRevalidation(areaSlug, community.slug);
     return { success: true, community };
   } catch (error) {
     console.error("Failed to create community:", error);
@@ -119,8 +162,51 @@ export async function updateCommunityAction(
 ): Promise<{ success: boolean; community?: Community; error?: string }> {
   try {
     await verifyAdminAuth();
+
+    // Fetch existing community to compare URLs
+    const existing = await getCommunityById(id);
+    if (!existing) {
+      return { success: false, error: "Community not found" };
+    }
+
+    const name = data.name ?? existing.name;
+    const slug = data.slug ?? existing.slug;
+
+    // Check hero image changes
+    if (data.heroImageUrl !== undefined) {
+      if (data.heroImageUrl === null || data.heroImageUrl.trim() === "") {
+        data.heroImage = null;
+      } else if (data.heroImageUrl !== existing.heroImageUrl) {
+        const optimized = await optimizeCommunityImage(slug, data.heroImageUrl, "hero", name);
+        if (optimized) {
+          data.heroImage = optimized;
+        }
+      }
+    }
+
+    // Check site map image changes
+    if (data.siteMapImageUrl !== undefined) {
+      if (data.siteMapImageUrl === null || data.siteMapImageUrl.trim() === "") {
+        data.siteMapImage = null;
+      } else if (data.siteMapImageUrl !== existing.siteMapImageUrl) {
+        const optimized = await optimizeCommunityImage(slug, data.siteMapImageUrl, "sitemap", name);
+        if (optimized) {
+          data.siteMapImage = optimized;
+        }
+      }
+    }
+
     const community = await updateCommunity(id, data);
-    triggerRevalidation();
+
+    // Fetch area slug for precise revalidation
+    const areaRows = await db
+      .select({ slug: areas.slug })
+      .from(areas)
+      .where(eq(areas.id, community.areaId))
+      .limit(1);
+    const areaSlug = areaRows[0]?.slug;
+
+    await triggerRevalidation(areaSlug, community.slug);
     return { success: true, community };
   } catch (error) {
     console.error("Failed to update community:", error);
@@ -141,8 +227,26 @@ export async function deleteCommunityAction(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await verifyAdminAuth();
+
+    // Fetch community and area slug before deletion for revalidation
+    const community = await getCommunityById(id);
+    let areaSlug: string | undefined;
+    if (community) {
+      const areaRows = await db
+        .select({ slug: areas.slug })
+        .from(areas)
+        .where(eq(areas.id, community.areaId))
+        .limit(1);
+      areaSlug = areaRows[0]?.slug;
+    }
+
     await deleteCommunity(id);
-    triggerRevalidation();
+
+    if (community && areaSlug) {
+      await triggerRevalidation(areaSlug, community.slug);
+    } else {
+      await triggerRevalidation();
+    }
     return { success: true };
   } catch (error) {
     console.error("Failed to delete community:", error);
@@ -157,15 +261,28 @@ export async function updatePropertyCommunityAction(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await verifyAdminAuth();
+    let areaSlug: string | undefined;
+    let communitySlug: string | undefined;
+
     if (communityId !== null) {
       const comm = await getCommunityById(communityId);
       if (!comm) {
         return { success: false, error: "Selected community does not exist." };
       }
+      communitySlug = comm.slug;
+
+      const areaRows = await db
+        .select({ slug: areas.slug })
+        .from(areas)
+        .where(eq(areas.id, comm.areaId))
+        .limit(1);
+      areaSlug = areaRows[0]?.slug;
     }
+
     await updatePropertyCommunity(propertyId, communityId);
     await updateCommunityListingCounts();
-    triggerRevalidation();
+
+    await triggerRevalidation(areaSlug, communitySlug);
     return { success: true };
   } catch (error) {
     console.error("Failed to update property community override:", error);
