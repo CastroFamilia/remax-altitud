@@ -114,9 +114,7 @@ export async function createCommunityAction(
         "hero",
         data.name,
       );
-      if (optimized) {
-        data.heroImage = optimized;
-      }
+      data.heroImage = optimized;
     }
     if (data.siteMapImageUrl) {
       const optimized = await optimizeCommunityImage(
@@ -125,9 +123,7 @@ export async function createCommunityAction(
         "sitemap",
         data.name,
       );
-      if (optimized) {
-        data.siteMapImage = optimized;
-      }
+      data.siteMapImage = optimized;
     }
 
     const community = await createCommunity(data);
@@ -178,9 +174,7 @@ export async function updateCommunityAction(
         data.heroImage = null;
       } else if (data.heroImageUrl !== existing.heroImageUrl) {
         const optimized = await optimizeCommunityImage(slug, data.heroImageUrl, "hero", name);
-        if (optimized) {
-          data.heroImage = optimized;
-        }
+        data.heroImage = optimized;
       }
     }
 
@@ -190,9 +184,7 @@ export async function updateCommunityAction(
         data.siteMapImage = null;
       } else if (data.siteMapImageUrl !== existing.siteMapImageUrl) {
         const optimized = await optimizeCommunityImage(slug, data.siteMapImageUrl, "sitemap", name);
-        if (optimized) {
-          data.siteMapImage = optimized;
-        }
+        data.siteMapImage = optimized;
       }
     }
 
