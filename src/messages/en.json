@@ -1107,7 +1107,21 @@
     "ga4Views": "Views",
     "ga4Saves": "Saves",
     "tabProperties": "Listings",
-    "tabAnalytics": "SEO Dashboard"
+    "tabAnalytics": "SEO Dashboard",
+    "gtmTitle": "Google Tag Manager (GTM)",
+    "fbPixelTitle": "Facebook Pixel (Meta)",
+    "labelGtmContainerId": "GTM Container ID",
+    "labelFacebookPixelId": "Facebook Pixel ID",
+    "placeholderGtm": "GTM-XXXXXXX",
+    "placeholderFacebook": "15-digit ID",
+    "btnSave": "Save",
+    "btnSaving": "Saving...",
+    "successGa4Saved": "Google Analytics 4 Measurement ID saved successfully.",
+    "errorGa4Saved": "Failed to save GA4 Measurement ID.",
+    "successGtmSaved": "Google Tag Manager Container ID saved successfully.",
+    "errorGtmSaved": "Failed to save Google Tag Manager Container ID.",
+    "successFacebookSaved": "Facebook Pixel ID saved successfully.",
+    "errorFacebookSaved": "Failed to save Facebook Pixel ID."
   },
   "Admin": {
     "portalTitle": "Admin Portal",

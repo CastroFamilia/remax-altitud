@@ -35,6 +35,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "balloon.remax-cca.com", // REMAX CCA user-uploaded content (agent photos)
       },
+      {
+        protocol: "https",
+        hostname: "*.remax-altitud.cr", // Dev/staging and custom subdomains
+      },
+      {
+        protocol: "https",
+        hostname: "remax-altitud.cr", // Production apex domain
+      },
     ],
   },
   // sharp is a native module — opt it out of Server Component bundling so

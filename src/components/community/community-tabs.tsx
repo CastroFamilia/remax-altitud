@@ -7,6 +7,7 @@ import type { Community } from "@/lib/db/schema/communities";
 import type { PropertySearchItem } from "@/types/search";
 import { PropertyCard } from "@/components/property/property-card";
 import { CommunityLotList } from "./community-lot-list";
+import type { OptimizedImage } from "@/types/images";
 
 interface CommunityTabsProps {
   properties: PropertySearchItem[];
@@ -28,6 +29,7 @@ export function CommunityTabs({ properties, community, locale }: CommunityTabsPr
   const t = useTranslations("CommunityPage");
   const [activeTab, setActiveTab] = useState<TabKey>("properties");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const siteMapImage = community.siteMapImage as OptimizedImage | null;
 
   const tabLabels: Record<TabKey, string> = {
     properties: t("tabs.properties"),
@@ -131,7 +133,20 @@ export function CommunityTabs({ properties, community, locale }: CommunityTabsPr
         hidden={activeTab !== "sitemap"}
         className="hidden md:block"
       >
-        {community.siteMapImageUrl ? (
+        {siteMapImage ? (
+          <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+            <Image
+              src={siteMapImage.src}
+              alt={`${community.name} site map`}
+              fill
+              className="object-contain"
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              placeholder={siteMapImage.blurDataUrl ? "blur" : undefined}
+              blurDataURL={siteMapImage.blurDataUrl || undefined}
+              unoptimized
+            />
+          </div>
+        ) : community.siteMapImageUrl ? (
           <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
             <Image
               src={community.siteMapImageUrl}
@@ -139,6 +154,7 @@ export function CommunityTabs({ properties, community, locale }: CommunityTabsPr
               fill
               className="object-contain"
               sizes="(max-width: 1280px) 100vw, 1280px"
+              unoptimized
             />
           </div>
         ) : (

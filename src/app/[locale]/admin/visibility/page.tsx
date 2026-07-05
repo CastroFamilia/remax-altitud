@@ -52,6 +52,8 @@ export default async function AdminVisibilityPage({ params, searchParams }: Page
 
   const { getSettingAction } = await import("@/app/actions/admin-settings-actions");
   const ga4Setting = await getSettingAction("GA_MEASUREMENT_ID");
+  const gtmSetting = await getSettingAction("GTM_CONTAINER_ID");
+  const fbSetting = await getSettingAction("FACEBOOK_PIXEL_ID");
 
   return (
     <div className="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
@@ -74,6 +76,8 @@ export default async function AdminVisibilityPage({ params, searchParams }: Page
         totalPages={totalPages}
         showHiddenOnly={showHiddenOnly}
         initialGa4MeasurementId={ga4Setting.value || ""}
+        initialGtmContainerId={gtmSetting.value || ""}
+        initialFacebookPixelId={fbSetting.value || ""}
       />
     </div>
   );

@@ -45,6 +45,8 @@ interface AdminVisibilityDashboardProps {
   totalPages: number;
   showHiddenOnly: boolean;
   initialGa4MeasurementId: string;
+  initialGtmContainerId: string;
+  initialFacebookPixelId: string;
 }
 
 export function AdminVisibilityDashboard({
@@ -55,6 +57,8 @@ export function AdminVisibilityDashboard({
   totalPages,
   showHiddenOnly,
   initialGa4MeasurementId,
+  initialGtmContainerId,
+  initialFacebookPixelId,
 }: AdminVisibilityDashboardProps) {
   const t = useTranslations("AdminVisibility");
   const router = useRouter();
@@ -68,6 +72,14 @@ export function AdminVisibilityDashboard({
   // GA4 Configuration state
   const [ga4Id, setGa4Id] = useState(initialGa4MeasurementId);
   const [isSavingGa4, setIsSavingGa4] = useState(false);
+
+  // GTM Configuration state
+  const [gtmId, setGtmId] = useState(initialGtmContainerId);
+  const [isSavingGtm, setIsSavingGtm] = useState(false);
+
+  // Facebook Pixel Configuration state
+  const [fbPixelId, setFbPixelId] = useState(initialFacebookPixelId);
+  const [isSavingFb, setIsSavingFb] = useState(false);
 
   useEffect(() => {
     setLocalProperties(properties);
@@ -143,23 +155,83 @@ export function AdminVisibilityDashboard({
 
   const handleSaveGa4Id = async () => {
     setIsSavingGa4(true);
+    setAlert(null);
     try {
       const { updateSettingAction } = await import("@/app/actions/admin-settings-actions");
       const res = await updateSettingAction("GA_MEASUREMENT_ID", ga4Id);
       if (res.success) {
         setAlert({
           type: "success",
-          message: "Google Analytics 4 Measurement ID guardado correctamente.",
+          message:
+            t("successGa4Saved") || "Google Analytics 4 Measurement ID guardado correctamente.",
         });
         router.refresh();
       } else {
-        setAlert({ type: "error", message: "Error al guardar el Measurement ID de GA4." });
+        setAlert({
+          type: "error",
+          message: t("errorGa4Saved") || "Error al guardar el Measurement ID de GA4.",
+        });
       }
     } catch (error) {
       console.error(error);
       setAlert({ type: "error", message: "Error al guardar el Measurement ID de GA4." });
     } finally {
       setIsSavingGa4(false);
+      setTimeout(() => setAlert(null), 3000);
+    }
+  };
+
+  const handleSaveGtmId = async () => {
+    setIsSavingGtm(true);
+    setAlert(null);
+    try {
+      const { updateSettingAction } = await import("@/app/actions/admin-settings-actions");
+      const res = await updateSettingAction("GTM_CONTAINER_ID", gtmId);
+      if (res.success) {
+        setAlert({
+          type: "success",
+          message:
+            t("successGtmSaved") || "Google Tag Manager Container ID guardado correctamente.",
+        });
+        router.refresh();
+      } else {
+        setAlert({
+          type: "error",
+          message: t("errorGtmSaved") || "Error al guardar el Container ID de GTM.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      setAlert({ type: "error", message: "Error al guardar el Container ID de GTM." });
+    } finally {
+      setIsSavingGtm(false);
+      setTimeout(() => setAlert(null), 3000);
+    }
+  };
+
+  const handleSaveFacebookPixelId = async () => {
+    setIsSavingFb(true);
+    setAlert(null);
+    try {
+      const { updateSettingAction } = await import("@/app/actions/admin-settings-actions");
+      const res = await updateSettingAction("FACEBOOK_PIXEL_ID", fbPixelId);
+      if (res.success) {
+        setAlert({
+          type: "success",
+          message: t("successFacebookSaved") || "Facebook Pixel ID guardado correctamente.",
+        });
+        router.refresh();
+      } else {
+        setAlert({
+          type: "error",
+          message: t("errorFacebookSaved") || "Error al guardar el Pixel ID de Facebook.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      setAlert({ type: "error", message: "Error al guardar el Pixel ID de Facebook." });
+    } finally {
+      setIsSavingFb(false);
       setTimeout(() => setAlert(null), 3000);
     }
   };
@@ -527,7 +599,7 @@ export function AdminVisibilityDashboard({
                 <div className="flex items-center gap-2 bg-slate-950 p-3 rounded-lg border border-slate-850">
                   <div className="flex-1">
                     <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block mb-1">
-                      Measurement ID
+                      GA4 Measurement ID
                     </label>
                     <input
                       type="text"
@@ -543,7 +615,55 @@ export function AdminVisibilityDashboard({
                     className="self-end px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded text-sm transition-all focus:ring-2 focus:ring-slate-500 disabled:opacity-50 cursor-pointer flex items-center gap-2"
                   >
                     {isSavingGa4 ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                    <span>Guardar</span>
+                    <span>{t("btnSave")}</span>
+                  </button>
+                </div>
+
+                {/* GTM Configuration Input */}
+                <div className="flex items-center gap-2 bg-slate-950 p-3 rounded-lg border border-slate-850">
+                  <div className="flex-1">
+                    <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block mb-1">
+                      {t("labelGtmContainerId")}
+                    </label>
+                    <input
+                      type="text"
+                      value={gtmId}
+                      onChange={(e) => setGtmId(e.target.value)}
+                      placeholder={t("placeholderGtm") || "GTM-XXXXXXX"}
+                      className="w-full bg-slate-900 border border-slate-800 rounded px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors font-mono"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSaveGtmId}
+                    disabled={isSavingGtm || gtmId === initialGtmContainerId}
+                    className="self-end px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded text-sm transition-all focus:ring-2 focus:ring-slate-500 disabled:opacity-50 cursor-pointer flex items-center gap-2"
+                  >
+                    {isSavingGtm ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                    <span>{t("btnSave")}</span>
+                  </button>
+                </div>
+
+                {/* Facebook Pixel Configuration Input */}
+                <div className="flex items-center gap-2 bg-slate-950 p-3 rounded-lg border border-slate-850">
+                  <div className="flex-1">
+                    <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block mb-1">
+                      {t("labelFacebookPixelId")}
+                    </label>
+                    <input
+                      type="text"
+                      value={fbPixelId}
+                      onChange={(e) => setFbPixelId(e.target.value)}
+                      placeholder={t("placeholderFacebook") || "15-digit ID"}
+                      className="w-full bg-slate-900 border border-slate-800 rounded px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors font-mono"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSaveFacebookPixelId}
+                    disabled={isSavingFb || fbPixelId === initialFacebookPixelId}
+                    className="self-end px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded text-sm transition-all focus:ring-2 focus:ring-slate-500 disabled:opacity-50 cursor-pointer flex items-center gap-2"
+                  >
+                    {isSavingFb ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                    <span>{t("btnSave")}</span>
                   </button>
                 </div>
               </div>

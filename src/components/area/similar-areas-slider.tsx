@@ -80,6 +80,7 @@ export function SimilarAreasSlider({ areas, locale }: SimilarAreasSliderProps) {
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                     sizes="280px"
+                    unoptimized
                   />
                 ) : (
                   <div

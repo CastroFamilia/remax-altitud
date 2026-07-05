@@ -1107,7 +1107,21 @@
     "ga4Views": "Vistas",
     "ga4Saves": "Guardados",
     "tabProperties": "Propiedades",
-    "tabAnalytics": "Panel SEO"
+    "tabAnalytics": "Panel SEO",
+    "gtmTitle": "Google Tag Manager (GTM)",
+    "fbPixelTitle": "Facebook Pixel (Meta)",
+    "labelGtmContainerId": "ID de Contenedor GTM",
+    "labelFacebookPixelId": "ID de Pixel de Facebook",
+    "placeholderGtm": "GTM-XXXXXXX",
+    "placeholderFacebook": "ID de 15 dígitos",
+    "btnSave": "Guardar",
+    "btnSaving": "Guardando...",
+    "successGa4Saved": "ID de Medición de Google Analytics 4 guardado correctamente.",
+    "errorGa4Saved": "Error al guardar el ID de Medición de GA4.",
+    "successGtmSaved": "ID de Contenedor de Google Tag Manager guardado correctamente.",
+    "errorGtmSaved": "Error al guardar el ID de Contenedor de GTM.",
+    "successFacebookSaved": "ID de Pixel de Facebook guardado correctamente.",
+    "errorFacebookSaved": "Error al guardar el ID de Pixel de Facebook."
   },
   "Admin": {
     "portalTitle": "Portal de Administración",
