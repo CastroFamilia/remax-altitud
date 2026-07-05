@@ -1,5 +1,7 @@
 import React from "react";
 import { MapPin, Maximize2, DollarSign, Home } from "lucide-react";
+import Image from "next/image";
+import type { OptimizedImage } from "@/types/images";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { buildAreaThumbnailMapUrl } from "@/lib/map/static-map"; // Required for static-analysis unit tests
 
@@ -7,6 +9,7 @@ interface CommunityCardProps {
   name: string;
   tagline?: string;
   heroImageUrl?: string | null;
+  heroImage?: OptimizedImage | null;
   href?: string;
   locale: string;
   priceMin?: number | null;
@@ -39,6 +42,7 @@ export function CommunityCard({
   name,
   tagline,
   heroImageUrl,
+  heroImage,
   href,
   locale,
   priceMin,
@@ -94,7 +98,18 @@ export function CommunityCard({
     >
       {/* Premium Hero Image with elegant overlay gradient */}
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
-        {heroImageUrl ? (
+        {heroImage ? (
+          <Image
+            src={heroImage.src}
+            alt={name}
+            fill
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-106 group-hover:brightness-105"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            placeholder={heroImage.blurDataUrl ? "blur" : undefined}
+            blurDataURL={heroImage.blurDataUrl || undefined}
+            unoptimized
+          />
+        ) : heroImageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={heroImageUrl}

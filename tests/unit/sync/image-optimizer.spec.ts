@@ -54,7 +54,7 @@ vi.mock("node:fs", async (importOriginal) => {
 // Imports — resolved after mocks are hoisted
 // ---------------------------------------------------------------------------
 
-import { optimizePropertyImages } from "@/lib/sync/image-optimizer";
+import { optimizePropertyImages, optimizeCommunityImage } from "@/lib/sync/image-optimizer";
 import { mkdirSync } from "node:fs";
 import sharp from "sharp";
 
@@ -468,4 +468,32 @@ describe("optimizePropertyImages — filename collision disambiguation", () => {
       expect(outPaths).toHaveLength(6);
     },
   );
+});
+
+// ---------------------------------------------------------------------------
+// optimizeCommunityImage tests
+// ---------------------------------------------------------------------------
+
+describe("optimizeCommunityImage", () => {
+  it("given a valid URL when called then fetches and resizes single image to 3 variants and LQIP", async () => {
+    const url = "https://cdn.example.com/community-hero.jpg";
+    const result = await optimizeCommunityImage("rise-costa-rica", url, "hero", "RISE Costa Rica");
+
+    expect(result).not.toBeNull();
+    expect(result!.src).toBe("/community-images/rise-costa-rica/hero/hero-400w.webp");
+    expect(result!.srcset).toContain("/community-images/rise-costa-rica/hero/hero-400w.webp 400w");
+    expect(result!.srcset).toContain("/community-images/rise-costa-rica/hero/hero-800w.webp 800w");
+    expect(result!.srcset).toContain("/community-images/rise-costa-rica/hero/hero-1600w.webp 1600w");
+    expect(result!.blurDataUrl).toBe("data:image/webp;base64,ZmFrZS1scWlw");
+    expect(result!.fallbackSrc).toBe(url);
+    expect(global.fetch).toHaveBeenCalledWith(url, expect.any(Object));
+    expect(mkdirSync).toHaveBeenCalledWith(expect.stringContaining("rise-costa-rica/hero"), { recursive: true });
+    expect(mockResize).toHaveBeenCalledTimes(4); // 3 variants + 1 LQIP
+  });
+
+  it("given empty URL when called then returns null and does not fetch", async () => {
+    const result = await optimizeCommunityImage("rise-costa-rica", "", "hero", "RISE Costa Rica");
+    expect(result).toBeNull();
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
 });
