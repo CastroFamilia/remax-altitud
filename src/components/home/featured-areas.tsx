@@ -207,6 +207,7 @@ export async function FeaturedAreas({ locale, showSectionHeader = true }: Featur
                     className="object-cover opacity-75 transition-opacity duration-300 group-hover:opacity-85"
                     sizes="(max-width: 768px) 80vw, (max-width: 1024px) 33vw, 20vw"
                     priority={area.slug === "perez-zeledon" || area.slug === "dominical"}
+                    unoptimized
                   />
                 </div>
               )}

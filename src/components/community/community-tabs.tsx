@@ -154,6 +154,7 @@ export function CommunityTabs({ properties, community, locale }: CommunityTabsPr
               fill
               className="object-contain"
               sizes="(max-width: 1280px) 100vw, 1280px"
+              unoptimized
             />
           </div>
         ) : (
