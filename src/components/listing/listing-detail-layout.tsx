@@ -25,6 +25,7 @@ import { getRegionFromAreaSlug } from "@/components/property/property-card";
 import { PropertyDescription } from "@/components/listing/property-description";
 import { MapViewLoader } from "@/components/map/map-view-loader";
 import { PrintButton } from "@/components/listing/print-button";
+import { SharePropertyButton } from "@/components/listing/share-property-button";
 import { PropertyPrintViewLoader } from "@/components/listing/property-print-view-loader";
 
 function extractYoutubeVideoId(url: string): string | null {
@@ -172,6 +173,7 @@ export async function ListingDetailLayout({
                   )}
                 </div>
                 <div className="flex-shrink-0 flex items-center gap-2">
+                  <SharePropertyButton slug={property.slug} title={title} locale={locale} />
                   <PrintButton />
                   <SaveButton propertyId={property.id} propertyTitle={title} />
                 </div>

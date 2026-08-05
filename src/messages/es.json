@@ -521,6 +521,13 @@
     "viewDetails": "Ver detalles",
     "linkCopied": "¡Enlace copiado!"
   },
+  "ShareProperty": {
+    "trigger": "Compartir",
+    "whatsapp": "Compartir por WhatsApp",
+    "facebook": "Compartir en Facebook",
+    "instagram": "Copiar enlace para Instagram",
+    "linkCopied": "¡Enlace copiado — pégalo en Instagram!"
+  },
   "PropertyUnavailable": {
     "heading": "Esta propiedad ya no está disponible",
     "subtext": "Puede que haya sido vendida o retirada de nuestros listados.",
