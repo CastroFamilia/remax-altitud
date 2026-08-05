@@ -252,6 +252,7 @@ async function main() {
       log(`  Properties updated:  ${result.propertiesUpdated}`);
       log(`  Properties removed:  ${result.propertiesRemoved}`);
       log(`  Agents synced:       ${result.agentsSynced}`);
+      log(`  Agents removed:      ${result.agentsRemoved}`);
       log(`  Images optimized:    ${result.imagesOptimized}`);
       log(`  Translations queued: ${result.translationsQueued}`);
       log(`  Tags queued:         ${result.tagsQueued}`);
