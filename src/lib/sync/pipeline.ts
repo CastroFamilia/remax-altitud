@@ -18,7 +18,7 @@ import {
   fetchPropertyLifestyleTags,
   updatePropertyLifestyleTags,
 } from "@/lib/db/queries/properties";
-import { upsertAgent, updateAgentListingCounts } from "@/lib/db/queries/agents";
+import { upsertAgent, softDeleteAgents, updateAgentListingCounts } from "@/lib/db/queries/agents";
 import { updateCommunityListingCounts } from "@/lib/db/queries/communities";
 import type { ParseError } from "@/types/remax-api";
 
@@ -29,6 +29,7 @@ export interface SyncPipelineResult {
   propertiesUpdated: number;
   propertiesRemoved: number;
   agentsSynced: number;
+  agentsRemoved: number;
   imagesOptimized: number;
   translationsQueued: number;
   tagsQueued: number;
@@ -146,6 +147,13 @@ export async function runSyncPipeline(options?: {
       const officeId = resolveOfficeId(sourceGuid);
       progress({ type: "agent_upsert", apiId: rawAgent.apiId, name: rawAgent.name });
       await upsertAgent(rawAgent, officeId);
+    }
+
+    // Step 5b: Soft-delete agents no longer returned by the API
+    const activeAgentApiIds = allAgents.map(({ raw }) => raw.apiId);
+    const agentsRemoved = await softDeleteAgents(activeAgentApiIds);
+    if (agentsRemoved > 0) {
+      info(`Deactivated ${agentsRemoved} agents no longer in the API.`);
     }
 
     // Step 6a: Build agent id map for FK resolution on property upsert
@@ -302,6 +310,7 @@ export async function runSyncPipeline(options?: {
     const finalStatus: "success" | "partial" = allErrors.length > 0 ? "partial" : "success";
     const propertiesFetched = rawProps.length;
     const agentsSynced = allAgents.length;
+    // agentsRemoved already computed in Step 5b above
 
     // Step 9: Update sync_log with final status and counts (AC #9)
     await updateSyncLog(logId, {
@@ -312,6 +321,8 @@ export async function runSyncPipeline(options?: {
       propertiesUpdated,
       propertiesRemoved,
       agentsSynced,
+      // agentsRemoved is tracked in details JSONB since sync_logs has no dedicated column
+      details: { agentsRemoved },
       imagesOptimized: totalImagesOptimized,
       translationsQueued,
       tagsQueued,
@@ -351,6 +362,7 @@ export async function runSyncPipeline(options?: {
       propertiesUpdated,
       propertiesRemoved,
       agentsSynced,
+      agentsRemoved,
       imagesOptimized: totalImagesOptimized,
       translationsQueued,
       tagsQueued,

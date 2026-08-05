@@ -45,6 +45,7 @@ vi.mock("@/lib/db/queries/properties", () => ({
 vi.mock("@/lib/db/queries/agents", () => ({
   upsertAgent: vi.fn(),
   updateAgentListingCounts: vi.fn(),
+  softDeleteAgents: vi.fn().mockResolvedValue(0),
 }));
 
 vi.mock("@/lib/db/client", () => ({

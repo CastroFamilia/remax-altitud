@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, notInArray, sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { agents } from "@/lib/db/schema/agents";
 import { slugify } from "@/lib/sync/utils/slugify";
@@ -173,6 +173,26 @@ export async function getPropertiesByAgentId(agentId: string) {
     .orderBy(desc(properties.syncedAt));
 
   return rows.map((row) => mapPropertyRowToSearchItem(row));
+}
+
+/**
+ * Soft-deletes agents whose `api_id` is NOT in the provided set of active IDs.
+ * Sets `is_active = false` so they no longer appear on the public agents page
+ * but their slug/URL is preserved for SEO (mirrors softDeleteProperties pattern).
+ *
+ * @param activeApiIds - Set of agent api_id values currently returned by the API
+ * @returns Count of agent rows actually deactivated
+ */
+export async function softDeleteAgents(activeApiIds: string[]): Promise<number> {
+  if (activeApiIds.length === 0) return 0;
+
+  const result = await db
+    .update(agents)
+    .set({ isActive: false, updatedAt: new Date() })
+    .where(and(notInArray(agents.apiId, activeApiIds), eq(agents.isActive, true)))
+    .returning({ id: agents.id });
+
+  return result.length;
 }
 
 /**
