@@ -521,6 +521,13 @@
     "viewDetails": "View details",
     "linkCopied": "Link copied!"
   },
+  "ShareProperty": {
+    "trigger": "Share",
+    "whatsapp": "Share on WhatsApp",
+    "facebook": "Share on Facebook",
+    "instagram": "Copy link for Instagram",
+    "linkCopied": "Link copied — paste it on Instagram!"
+  },
   "PropertyUnavailable": {
     "heading": "No longer available",
     "subtext": "It may have been sold or removed from our listings.",
