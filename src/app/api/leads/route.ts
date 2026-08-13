@@ -187,8 +187,9 @@ export async function POST(request: Request) {
     }
 
     // Agent routing
-    const isSellerOrCma = data.source === "seller_form" || data.source === "cma_form";
-    const assignedAgentId = isSellerOrCma
+    const isOfficeRouted =
+      data.source === "seller_form" || data.source === "cma_form" || data.intent === "recruit";
+    const assignedAgentId = isOfficeRouted
       ? null
       : data.assignedAgentId ||
         (await matchAgentByCoordinates(data.location.lat, data.location.lng));
@@ -324,6 +325,7 @@ export async function POST(request: Request) {
             agentPhone: agentDetails?.whatsapp || agentDetails?.phone,
             contactedAgentName: data.source === "agent_contact" ? agentDetails?.name : null,
             shortlistUrl,
+            intent: data.intent,
           });
 
           sendEmailInBackground({
@@ -341,7 +343,8 @@ export async function POST(request: Request) {
     // Agent notification email — notify the agent when contacted via profile or property inquiry
     // -----------------------------------------------------------------------
     if (
-      (data.source === "agent_contact" || data.source === "contact_form") &&
+      (data.source === "agent_contact" ||
+        (data.source === "contact_form" && data.intent !== "recruit")) &&
       agentDetails?.email
     ) {
       try {
@@ -372,7 +375,7 @@ export async function POST(request: Request) {
     // unrouted contact_form leads (general contact, VIP, recruitment)
     // -----------------------------------------------------------------------
     const shouldNotifyOffice =
-      isSellerOrCma ||
+      isOfficeRouted ||
       ((data.source === "contact_form" || data.source === "vip_buyer_form") &&
         !agentDetails?.email);
 

@@ -17,6 +17,8 @@ export type LeadSource =
   | "whatsapp"
   | "whatsapp_click";
 
+export type LeadIntent = "buy" | "sell" | "invest" | "recruit";
+
 export interface GenericLeadConfirmationEmailProps {
   locale: string;
   source: LeadSource;
@@ -28,6 +30,8 @@ export interface GenericLeadConfirmationEmailProps {
   contactedAgentName?: string | null;
   /** When set, overrides the contact_form copy to reference the shortlist */
   shortlistUrl?: string | null;
+  /** Lead intent — used to detect recruitment and show custom copy */
+  intent?: LeadIntent | null;
 }
 
 /**
@@ -38,15 +42,29 @@ function getSourceCopy(
   isEs: boolean,
   contactedAgentName?: string | null,
   shortlistUrl?: string | null,
+  intent?: LeadIntent | null,
 ): { subject: string; headline: string; message: string } {
+  // Recruitment is detected by intent, not source (same source as general contact)
+  if (source === "contact_form" && intent === "recruit") {
+    return {
+      subject: isEs
+        ? "Hemos recibido su solicitud para unirse al equipo"
+        : "We received your application to join our team",
+      headline: isEs ? "¡Solicitud recibida!" : "Application Received!",
+      message: isEs
+        ? "Gracias por su interés en unirse al equipo de REMAX Altitud. Hemos recibido su información y revisaremos su solicitud. Nos pondremos en contacto con usted a la brevedad."
+        : "Thank you for your interest in joining the REMAX Altitud team. We have received your information and will review your application. We will get back to you shortly.",
+    };
+  }
+
   switch (source) {
     case "seller_form":
       return {
         subject: isEs ? "Hemos recibido su consulta de venta" : "We received your seller inquiry",
         headline: isEs ? "¡Consulta recibida!" : "Inquiry Received!",
         message: isEs
-          ? "Gracias por su interés en vender su propiedad con RE/MAX Altitud. Hemos recibido su información y uno de nuestros agentes se pondrá en contacto con usted muy pronto para ayudarle con el proceso."
-          : "Thank you for your interest in selling your property with RE/MAX Altitud. We have received your information and one of our agents will contact you very soon to assist you with the process.",
+          ? "Gracias por su interés en vender su propiedad con REMAX Altitud. Hemos recibido su información y uno de nuestros agentes se pondrá en contacto con usted muy pronto para ayudarle con el proceso."
+          : "Thank you for your interest in selling your property with REMAX Altitud. We have received your information and one of our agents will contact you very soon to assist you with the process.",
       };
 
     case "cma_form":
@@ -67,8 +85,8 @@ function getSourceCopy(
           : `We received your message${contactedAgentName ? ` for ${contactedAgentName}` : ""}`,
         headline: isEs ? "¡Mensaje recibido!" : "Message Received!",
         message: isEs
-          ? `Gracias por contactar a ${contactedAgentName || "nuestro agente"} a través de RE/MAX Altitud. Su mensaje ha sido entregado y recibirá una respuesta muy pronto.`
-          : `Thank you for reaching out to ${contactedAgentName || "our agent"} through RE/MAX Altitud. Your message has been delivered and you will receive a response very soon.`,
+          ? `Gracias por contactar a ${contactedAgentName || "nuestro agente"} a través de REMAX Altitud. Su mensaje ha sido entregado y recibirá una respuesta muy pronto.`
+          : `Thank you for reaching out to ${contactedAgentName || "our agent"} through REMAX Altitud. Your message has been delivered and you will receive a response very soon.`,
       };
 
     case "vip_buyer_form":
@@ -91,16 +109,16 @@ function getSourceCopy(
             : "We have received your inquiry about your property shortlist",
           headline: isEs ? "¡Consulta recibida!" : "Inquiry Received!",
           message: isEs
-            ? `Gracias por ponerse en contacto con RE/MAX Altitud. Hemos recibido su consulta sobre su <a href="${shortlistUrl}" style="color: #d4af37; font-weight: bold;">lista de propiedades</a> y uno de nuestros agentes se comunicará con usted a la brevedad posible.`
-            : `Thank you for contacting RE/MAX Altitud. We have received your inquiry about your <a href="${shortlistUrl}" style="color: #d4af37; font-weight: bold;">property shortlist</a> and one of our agents will get in touch with you as soon as possible.`,
+            ? `Gracias por ponerse en contacto con REMAX Altitud. Hemos recibido su consulta sobre su <a href="${shortlistUrl}" style="color: #d4af37; font-weight: bold;">lista de propiedades</a> y uno de nuestros agentes se comunicará con usted a la brevedad posible.`
+            : `Thank you for contacting REMAX Altitud. We have received your inquiry about your <a href="${shortlistUrl}" style="color: #d4af37; font-weight: bold;">property shortlist</a> and one of our agents will get in touch with you as soon as possible.`,
         };
       }
       return {
         subject: isEs ? "Hemos recibido su consulta" : "We have received your inquiry",
         headline: isEs ? "¡Consulta recibida!" : "Inquiry Received!",
         message: isEs
-          ? "Gracias por ponerse en contacto con RE/MAX Altitud. Hemos recibido su consulta y uno de nuestros agentes se comunicará con usted a la brevedad posible."
-          : "Thank you for contacting RE/MAX Altitud. We have received your inquiry and one of our agents will get in touch with you as soon as possible.",
+          ? "Gracias por ponerse en contacto con REMAX Altitud. Hemos recibido su consulta y uno de nuestros agentes se comunicará con usted a la brevedad posible."
+          : "Thank you for contacting REMAX Altitud. We have received your inquiry and one of our agents will get in touch with you as soon as possible.",
       };
   }
 }
@@ -116,6 +134,7 @@ export function renderGenericLeadConfirmationEmail(props: GenericLeadConfirmatio
     isEs,
     props.contactedAgentName,
     props.shortlistUrl,
+    props.intent,
   );
 
   const greeting = isEs ? `¡Hola, ${props.leadName}!` : `Hello, ${props.leadName}!`;
@@ -139,7 +158,7 @@ export function renderGenericLeadConfirmationEmail(props: GenericLeadConfirmatio
     : `
       <div class="agent-card">
         <h3>${officeContactLabel}</h3>
-        <p><strong>RE/MAX Altitud</strong></p>
+        <p><strong>REMAX Altitud</strong></p>
         <p>📱 ${officePhone}</p>
         <p>✉️ ${officeEmail}</p>
       </div>
@@ -216,7 +235,7 @@ export function renderGenericLeadConfirmationEmail(props: GenericLeadConfirmatio
       <body>
         <div class="container">
           <div class="header">
-            <h1>RE/MAX Altitud</h1>
+            <h1>REMAX Altitud</h1>
           </div>
           <div class="content">
             <h2>${headline}</h2>
@@ -225,7 +244,7 @@ export function renderGenericLeadConfirmationEmail(props: GenericLeadConfirmatio
             ${agentCard}
           </div>
           <div class="footer">
-            <p>© ${new Date().getFullYear()} RE/MAX Altitud. ${isEs ? "Todos los derechos reservados." : "All rights reserved."}</p>
+            <p>© ${new Date().getFullYear()} REMAX Altitud. ${isEs ? "Todos los derechos reservados." : "All rights reserved."}</p>
           </div>
         </div>
       </body>

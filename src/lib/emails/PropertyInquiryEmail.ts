@@ -111,7 +111,7 @@ export function renderPropertyInquiryEmail({
       <body>
         <div class="container">
           <div class="header">
-            <h1>RE/MAX Altitud</h1>
+            <h1>REMAX Altitud</h1>
           </div>
           <div class="content">
             <p>${greeting}</p>
@@ -130,7 +130,7 @@ export function renderPropertyInquiryEmail({
             </div>
           </div>
           <div class="footer">
-            <p>© ${new Date().getFullYear()} RE/MAX Altitud. Todos los derechos reservados.</p>
+            <p>© ${new Date().getFullYear()} REMAX Altitud. Todos los derechos reservados.</p>
           </div>
         </div>
       </body>
