@@ -103,8 +103,8 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
   const greeting = isEs ? `Hola ${props.agentName},` : `Hi ${props.agentName},`;
 
   const intro = isEs
-    ? `Tenés un nuevo lead desde el sitio web de RE/MAX Altitud. Aquí están los detalles:`
-    : `You have a new lead from the RE/MAX Altitud website. Here are the details:`;
+    ? `Tenés un nuevo lead desde el sitio web de REMAX Altitud. Aquí están los detalles:`
+    : `You have a new lead from the REMAX Altitud website. Here are the details:`;
 
   const nameLabel = isEs ? "Nombre" : "Name";
   const phoneLabel = isEs ? "Teléfono" : "Phone";
@@ -219,7 +219,7 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
       <body>
         <div class="container">
           <div class="header">
-            <h1>RE/MAX Altitud</h1>
+            <h1>REMAX Altitud</h1>
             <p>${isEs ? "🔔 Nuevo Lead" : "🔔 New Lead"}</p>
             <span class="source-badge" style="background-color: ${sourceLabel.color};">${sourceName}</span>
           </div>
@@ -263,7 +263,7 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
             </div>
           </div>
           <div class="footer">
-            <p>© ${new Date().getFullYear()} RE/MAX Altitud. ${isEs ? "Todos los derechos reservados." : "All rights reserved."}</p>
+            <p>© ${new Date().getFullYear()} REMAX Altitud. ${isEs ? "Todos los derechos reservados." : "All rights reserved."}</p>
           </div>
         </div>
       </body>

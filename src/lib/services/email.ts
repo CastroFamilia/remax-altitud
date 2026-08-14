@@ -26,7 +26,7 @@ export async function sendEmailInBackground(payload: SendEmailPayload) {
 
     resend.emails
       .send({
-        from: `RE/MAX Altitud <${sender}>`,
+        from: `REMAX Altitud <${sender}>`,
         to: payload.to,
         subject: payload.subject,
         html: payload.html,

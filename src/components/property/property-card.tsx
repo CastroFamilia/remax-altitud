@@ -202,6 +202,8 @@ function extractTownFromText(text: string): string | null {
   const towns = [
     { keyword: "general viejo", label: "General Viejo" },
     { keyword: "santa elena", label: "Santa Elena" },
+    { keyword: "convento", label: "Convento" },
+    { keyword: "las mesas", label: "Las Mesas" },
     { keyword: "cajón", label: "Cajón" },
     { keyword: "cajon", label: "Cajón" },
     { keyword: "quebradas", label: "Quebradas" },
@@ -277,6 +279,81 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
         label = "Santa Elena";
       } else {
         label = "General Viejo";
+      }
+    }
+
+    // For "rivas", refine to specific barrio if identifiable from title/address
+    if (subLocation === "rivas") {
+      const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+      const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.toLowerCase() ?? "";
+      const apiLocation = (apiRaw?.Location as string | undefined)?.toLowerCase() ?? "";
+      const combined = `${title.toLowerCase()} ${unparsedAddress} ${apiLocation}`;
+      const rivasBarrios: { keyword: string; label: string }[] = [
+        { keyword: "san francisco de rivas", label: "San Francisco de Rivas" },
+        { keyword: "convento", label: "Convento" },
+        { keyword: "miravalles", label: "Miravalles" },
+        { keyword: "san gerardo", label: "San Gerardo" },
+        { keyword: "chimirol", label: "Chimirol" },
+        { keyword: "herradura", label: "Herradura" },
+        { keyword: "canaán", label: "Canaán" },
+        { keyword: "canaan", label: "Canaán" },
+        { keyword: "san francisco", label: "San Francisco de Rivas" },
+        { keyword: "tirrá", label: "Tirrá" },
+        { keyword: "tirra", label: "Tirrá" },
+        { keyword: "división", label: "División" },
+        { keyword: "division", label: "División" },
+      ];
+      for (const barrio of rivasBarrios) {
+        if (combined.includes(barrio.keyword)) {
+          label = barrio.label;
+          break;
+        }
+      }
+    }
+
+    // For "cajon", refine to specific barrio if identifiable
+    if (subLocation === "cajon") {
+      const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+      const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.toLowerCase() ?? "";
+      const apiLocation = (apiRaw?.Location as string | undefined)?.toLowerCase() ?? "";
+      const combined = `${title.toLowerCase()} ${unparsedAddress} ${apiLocation}`;
+      const cajonBarrios: { keyword: string; label: string }[] = [
+        { keyword: "las mesas de cajón", label: "Las Mesas de Cajón" },
+        { keyword: "las mesas de cajon", label: "Las Mesas de Cajón" },
+        { keyword: "las mesas", label: "Las Mesas de Cajón" },
+        { keyword: "salitrales", label: "Salitrales" },
+        { keyword: "navajuelar", label: "Navajuelar" },
+        { keyword: "quizarrá", label: "Quizarrá" },
+        { keyword: "quizarra", label: "Quizarrá" },
+      ];
+      for (const barrio of cajonBarrios) {
+        if (combined.includes(barrio.keyword)) {
+          label = barrio.label;
+          break;
+        }
+      }
+    }
+
+    // For "daniel-flores", refine to specific barrio if identifiable
+    if (subLocation === "daniel-flores") {
+      const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+      const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.toLowerCase() ?? "";
+      const apiLocation = (apiRaw?.Location as string | undefined)?.toLowerCase() ?? "";
+      const combined = `${title.toLowerCase()} ${unparsedAddress} ${apiLocation}`;
+      // Check for "san francisco de rivas" in case the subLocation was mis-resolved
+      if (combined.includes("san francisco de rivas")) {
+        label = "San Francisco de Rivas";
+      }
+    }
+
+    // For "platanares", refine — guard against mis-resolved "Las Mesas de Cajón"
+    if (subLocation === "platanares") {
+      const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+      const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.toLowerCase() ?? "";
+      const apiLocation = (apiRaw?.Location as string | undefined)?.toLowerCase() ?? "";
+      const combined = `${title.toLowerCase()} ${unparsedAddress} ${apiLocation}`;
+      if (combined.includes("las mesas")) {
+        label = "Las Mesas de Cajón";
       }
     }
 
