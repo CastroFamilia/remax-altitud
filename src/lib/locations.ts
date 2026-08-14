@@ -136,6 +136,7 @@ export const costaRicaLocations: Record<string, Canton> = {
           { id: "pz_ri_villa_mills", name: "Villa Mills" },
           { id: "pz_ri_macho_mora", name: "Macho Mora" },
           { id: "pz_ri_siberia", name: "El Nivel Siberia" },
+          { id: "pz_ri_convento", name: "Convento" },
         ],
       },
       san_pedro: {
@@ -246,6 +247,7 @@ export const costaRicaLocations: Record<string, Canton> = {
           { id: "pz_ca_san_pedrito", name: "San Pedrito" },
           { id: "pz_ca_santa_maria", name: "Santa María" },
           { id: "pz_ca_santa_teresa", name: "Santa Teresa" },
+          { id: "pz_ca_las_mesas", name: "Las Mesas" },
         ],
       },
       baru: {
@@ -721,6 +723,18 @@ const MANUAL_ALIASES = [
   { keyword: "san miguel de paramo", slug: "paramo", parent: "perez-zeledon" },
   { keyword: "san miguel de páramo", slug: "paramo", parent: "perez-zeledon" },
   { keyword: "san rafael de platanares", slug: "platanares", parent: "perez-zeledon" },
+  { keyword: "san francisco de rivas", slug: "rivas", parent: "perez-zeledon" },
+  { keyword: "miravalles de rivas", slug: "rivas", parent: "perez-zeledon" },
+  { keyword: "miravalles, rivas", slug: "rivas", parent: "perez-zeledon" },
+  { keyword: "convento de rivas", slug: "rivas", parent: "perez-zeledon" },
+  { keyword: "convento, rivas", slug: "rivas", parent: "perez-zeledon" },
+  { keyword: "convento de pérez zeledón", slug: "rivas", parent: "perez-zeledon" },
+  { keyword: "convento de perez zeledon", slug: "rivas", parent: "perez-zeledon" },
+  { keyword: "convento", slug: "rivas", parent: "perez-zeledon" },
+  { keyword: "las mesas de cajon", slug: "cajon", parent: "perez-zeledon" },
+  { keyword: "las mesas de cajón", slug: "cajon", parent: "perez-zeledon" },
+  { keyword: "las mesas, cajon", slug: "cajon", parent: "perez-zeledon" },
+  { keyword: "las mesas, cajón", slug: "cajon", parent: "perez-zeledon" },
 ];
 
 MANUAL_ALIASES.forEach((alias) => DISTRICT_KEYWORDS.push(alias));
