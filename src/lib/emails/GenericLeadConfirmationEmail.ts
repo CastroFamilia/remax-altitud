@@ -145,6 +145,7 @@ export function renderGenericLeadConfirmationEmail(props: GenericLeadConfirmatio
   const officeEmail = "info@remax-altitud.cr";
 
   const hasAgent = props.agentName && (props.agentEmail || props.agentPhone);
+  const isRecruitment = props.intent === "recruit";
 
   const agentCard = hasAgent
     ? `
@@ -155,7 +156,17 @@ export function renderGenericLeadConfirmationEmail(props: GenericLeadConfirmatio
         ${props.agentEmail ? `<p>✉️ ${props.agentEmail}</p>` : ""}
       </div>
     `
-    : `
+    : isRecruitment
+      ? `
+      <div class="agent-card">
+        <h3>${officeContactLabel}</h3>
+        <p><strong>REMAX Altitud</strong></p>
+        <p>📱 ${officePhone}</p>
+        <p>✉️ cesar@remax-altitud.cr</p>
+        <p>✉️ hola@remax-altitud.cr</p>
+      </div>
+    `
+      : `
       <div class="agent-card">
         <h3>${officeContactLabel}</h3>
         <p><strong>REMAX Altitud</strong></p>
