@@ -21,6 +21,14 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "**",
+      },
+      {
+        protocol: "http",
+        hostname: "**",
+      },
+      {
+        protocol: "https",
         hostname: "*.azurefd.net", // Azure Front Door CDN — REMAX CCA API photos
       },
       {
