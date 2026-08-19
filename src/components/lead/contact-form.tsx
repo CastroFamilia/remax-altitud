@@ -438,6 +438,43 @@ export function RecruitmentForm() {
     }
     setErrors({});
 
+    setSubmitting(true);
+    let apiSuccess = false;
+
+    try {
+      const response = await fetch("/api/recruiting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          languages,
+          area,
+          car: hasCar,
+          time,
+          financial,
+          experience: salesExperience,
+          commission: commissionOnly,
+          message,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to forward candidate to Hub");
+      }
+
+      apiSuccess = true;
+      setToast("success");
+    } catch (error) {
+      console.error("Failed to forward recruitment candidate to Hub:", error);
+      setToast("error");
+    } finally {
+      setSubmitting(false);
+    }
+
     const subject = `Recruitment inquiry — ${locale}`;
     const languageSummary = languages || "—";
     const bodyLines = [
@@ -459,15 +496,17 @@ export function RecruitmentForm() {
       RECRUIT_CC,
     )}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
 
-    setSubmitting(true);
-    setToast("success");
-    resetForm();
-    setSubmitting(false);
+    if (apiSuccess) {
+      resetForm();
+    }
+
     window.setTimeout(() => {
       try {
         window.location.href = mailto;
       } catch {
-        setToast("error");
+        if (!apiSuccess) {
+          setToast("error");
+        }
       }
     }, MAILTO_DELAY_MS);
   }
