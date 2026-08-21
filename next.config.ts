@@ -78,8 +78,8 @@ const nextConfig: NextConfig = {
       // Styles: Next.js injects inline <style> tags; Mapbox GL CSS is loaded from CDN
       `style-src 'self' 'unsafe-inline' https://api.mapbox.com`,
 
-      // Images: property photos (local), Azure CDN agent photos, REMAX CCA, Mapbox static tiles
-      `img-src 'self' data: blob: https://*.azurefd.net https://*.azureedge.net https://*.blob.core.windows.net https://balloon.remax-cca.com https://api.mapbox.com`,
+      // Images: property photos (local), Azure CDN agent photos, REMAX CCA, Mapbox static tiles, Google Drive, external image providers
+      `img-src 'self' data: blob: https: http: https://*.azurefd.net https://*.azureedge.net https://*.blob.core.windows.net https://balloon.remax-cca.com https://api.mapbox.com https://drive.google.com https://*.googleusercontent.com https://*.google.com`,
 
       // Fonts: Google Fonts (Montserrat loaded via next/font proxies through self, but allow direct too)
       `font-src 'self' https://fonts.gstatic.com`,

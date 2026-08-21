@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { MarkdownContent } from "@/components/blog/markdown-content";
+import { normalizeImageUrl } from "@/lib/blog/image-utils";
 
 export function BlogForm({ post, locale }: { post?: BlogPostRow; locale: string }) {
   const router = useRouter();
@@ -90,7 +91,7 @@ export function BlogForm({ post, locale }: { post?: BlogPostRow; locale: string 
       category: formData.get("category") as string,
       location: formData.get("location") as string,
       author: formData.get("author") as string,
-      featuredImage: featuredImage.trim(),
+      featuredImage: normalizeImageUrl(featuredImage.trim()),
       publishedAt: formData.get("isPublished") === "on" ? new Date() : null,
     };
 
@@ -310,7 +311,10 @@ export function BlogForm({ post, locale }: { post?: BlogPostRow; locale: string 
         {/* Featured Image with Live Preview */}
         <div>
           <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
-            Featured Image URL
+            Featured Image URL{" "}
+            <span className="text-slate-400 font-normal normal-case">
+              (Direct link or Google Drive link)
+            </span>
           </label>
           <input
             name="featuredImage"
@@ -319,9 +323,15 @@ export function BlogForm({ post, locale }: { post?: BlogPostRow; locale: string 
               setFeaturedImage(e.target.value);
               setImageValid(null);
             }}
-            placeholder="https://images.unsplash.com/photo-... or direct image URL"
+            placeholder="https://drive.google.com/file/d/... or direct image URL"
             className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none text-sm font-mono"
           />
+          <p className="text-[11px] text-slate-400 mt-1.5">
+            Supports direct image links and{" "}
+            <span className="text-amber-300 font-medium">Google Drive sharing links</span>. (For
+            Google Drive, make sure the file permission is set to{" "}
+            <em>&ldquo;Anyone with the link can view&rdquo;</em>).
+          </p>
 
           {/* Live Thumbnail Preview */}
           {featuredImage.trim() && (
@@ -329,7 +339,7 @@ export function BlogForm({ post, locale }: { post?: BlogPostRow; locale: string 
               <div className="relative w-36 h-20 bg-slate-900 rounded-md overflow-hidden shrink-0 border border-slate-700">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={featuredImage.trim()}
+                  src={normalizeImageUrl(featuredImage.trim())}
                   alt="Featured Preview"
                   className="w-full h-full object-cover"
                   onLoad={() => setImageValid(true)}
@@ -340,13 +350,18 @@ export function BlogForm({ post, locale }: { post?: BlogPostRow; locale: string 
                 {imageValid === true && (
                   <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>Image loaded successfully! Ready for hero and cards.</span>
+                    <span>
+                      Image verified &amp; ready! (Automatically converted to direct stream).
+                    </span>
                   </div>
                 )}
                 {imageValid === false && (
                   <div className="flex items-center gap-1.5 text-red-400 font-medium">
                     <AlertCircle className="w-4 h-4" />
-                    <span>Unable to load image from this URL. Please check the link.</span>
+                    <span>
+                      Unable to load image. If using Google Drive, check that access is set to
+                      &ldquo;Anyone with the link&rdquo;.
+                    </span>
                   </div>
                 )}
                 <p className="text-slate-400">
