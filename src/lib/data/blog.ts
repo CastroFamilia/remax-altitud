@@ -2,6 +2,7 @@ import { db } from "@/lib/db/client";
 import { blogPosts } from "@/lib/db/schema";
 import { BlogPost } from "@/types/blog";
 import { eq, desc, isNotNull, and, lte } from "drizzle-orm";
+import { normalizeImageUrl } from "@/lib/blog/image-utils";
 
 function mapRowToBlogPost(row: typeof blogPosts.$inferSelect, locale: string): BlogPost {
   const isEn = locale === "en";
@@ -17,7 +18,7 @@ function mapRowToBlogPost(row: typeof blogPosts.$inferSelect, locale: string): B
     date: row.publishedAt
       ? row.publishedAt.toISOString().split("T")[0]
       : row.createdAt.toISOString().split("T")[0],
-    featuredImage: row.featuredImage || "/images/blog/placeholder.jpg",
+    featuredImage: normalizeImageUrl(row.featuredImage) || "/images/blog/placeholder.jpg",
   };
 }
 
