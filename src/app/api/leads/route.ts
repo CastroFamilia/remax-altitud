@@ -19,7 +19,7 @@ import { z } from "zod";
 import * as Sentry from "@sentry/nextjs";
 import { createLead, findRecentDuplicate } from "@/lib/db/queries/leads";
 import { matchAgentByCoordinates } from "@/lib/leads/route-agent";
-import { forwardLeadToHubInBackground } from "@/lib/services/tracking";
+import { sendLeadToTheHubJob } from "@/lib/services/thehub";
 import { sendEmailInBackground } from "@/lib/services/email";
 import { renderPropertyInquiryEmail } from "@/lib/emails/PropertyInquiryEmail";
 import { renderGenericLeadConfirmationEmail } from "@/lib/emails/GenericLeadConfirmationEmail";
@@ -224,8 +224,8 @@ export async function POST(request: Request) {
       status: "new",
     });
 
-    // Forward lead details to Altitud Hub in the background (Option B)
-    forwardLeadToHubInBackground({
+    // Forward lead details to TheHub in the background
+    sendLeadToTheHubJob({
       id: lead.id,
       name: data.name,
       phone: data.phone,
