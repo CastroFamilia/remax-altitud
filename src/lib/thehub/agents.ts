@@ -1,0 +1,89 @@
+import { getTheHubApiExternalUrl } from "./config";
+import { normalizeAgentName } from "@/lib/constants/agent-overrides";
+
+export interface TheHubAgent {
+  id: string;
+  name: string;
+  slug: string;
+  role: string;
+  officeName: string;
+  bio?: string | null;
+  languages?: string | null;
+  coverageAreas?: string | null;
+  propertyTypes?: string | null;
+  whyChooseMe?: string | null;
+  profileImageUrl?: string | null;
+  phone?: string | null;
+  email?: string | null;
+}
+
+/**
+ * Fetches all agents published by TheHub referral directory.
+ * Cached with Next.js ISR revalidation (1 hour).
+ * Tolerant to network errors — returns an empty array on failure.
+ */
+export async function fetchTheHubAgents(): Promise<TheHubAgent[]> {
+  try {
+    const url = getTheHubApiExternalUrl();
+    const res = await fetch(url, {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(3000),
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      console.warn(`[TheHub] Failed to fetch agents from ${url}: status ${res.status}`);
+      return [];
+    }
+
+    const data = await res.json();
+    return Array.isArray(data) ? (data as TheHubAgent[]) : [];
+  } catch (error) {
+    console.warn("[TheHub] Network error fetching agents:", error);
+    return [];
+  }
+}
+
+export interface TheHubAgentLookups {
+  byEmail: Map<string, TheHubAgent>;
+  byName: Map<string, TheHubAgent>;
+}
+
+export function buildTheHubLookups(theHubAgents: TheHubAgent[]): TheHubAgentLookups {
+  const byEmail = new Map<string, TheHubAgent>();
+  const byName = new Map<string, TheHubAgent>();
+
+  for (const agent of theHubAgents) {
+    if (agent.email) {
+      byEmail.set(agent.email.toLowerCase().trim(), agent);
+    }
+    if (agent.name) {
+      byName.set(normalizeAgentName(agent.name), agent);
+    }
+  }
+
+  return { byEmail, byName };
+}
+
+/**
+ * Finds matching TheHub agent record by email or normalized name.
+ */
+export function findMatchingTheHubAgent(
+  lookups: TheHubAgentLookups,
+  email?: string | null,
+  name?: string | null,
+): TheHubAgent | null {
+  if (email) {
+    const match = lookups.byEmail.get(email.toLowerCase().trim());
+    if (match) return match;
+  }
+
+  if (name) {
+    const match = lookups.byName.get(normalizeAgentName(name));
+    if (match) return match;
+  }
+
+  return null;
+}

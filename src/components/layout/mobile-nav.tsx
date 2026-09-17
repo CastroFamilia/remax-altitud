@@ -22,6 +22,7 @@ import { LanguageToggle } from "@/components/layout/language-toggle";
 import { CurrencyToggle } from "@/components/layout/currency-toggle";
 import { UnitToggle } from "@/components/layout/unit-toggle";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+import { getTheHubReferralDirectoryUrl } from "@/lib/thehub/config";
 
 /** A logical section of items shown under a labelled heading in the mobile menu */
 interface MobileNavSection {
@@ -46,7 +47,7 @@ export function MobileNav() {
   const sections = buildMobileSections(mainNavItems);
 
   return (
-    <div className="lg:hidden">
+    <div className="xl:hidden">
       <Button
         variant="ghost"
         size="icon"
@@ -104,6 +105,17 @@ export function MobileNav() {
               <span aria-hidden="true">🏠</span>
               {t("sellYourProperty")}
             </Link>
+
+            {/* Referrals CTA */}
+            <a
+              href={getTheHubReferralDirectoryUrl(locale)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-lg px-3 py-3 text-base font-semibold text-brand-navy bg-brand-light/60 transition-colors hover:bg-brand-light"
+            >
+              <span aria-hidden="true">🤝</span>
+              <span>{t("referrals")}</span>
+            </a>
 
             <hr className="my-3 border-brand-warm" />
 

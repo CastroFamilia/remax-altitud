@@ -7,6 +7,13 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  env: {
+    NEXT_PUBLIC_THEHUB_URL:
+      process.env.NEXT_PUBLIC_THEHUB_URL ||
+      process.env.THE_HUB_API_URL ||
+      process.env.THEHUB_API_URL ||
+      "https://dev.hub.remax-altitud.cr",
+  },
   // Pin workspace root so Turbopack doesn't walk up to stray lockfiles
   // in parent directories (e.g. accidental npm install in ~/)
   turbopack: {

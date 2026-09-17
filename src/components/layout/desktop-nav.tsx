@@ -19,7 +19,8 @@ import { CurrencyToggle } from "@/components/layout/currency-toggle";
 import { UnitToggle } from "@/components/layout/unit-toggle";
 import { useLocaleCurrency } from "@/hooks/use-locale-currency";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
-import { Globe } from "lucide-react";
+import { Globe, Users } from "lucide-react";
+import { getTheHubReferralDirectoryUrl } from "@/lib/thehub/config";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -37,9 +38,12 @@ export function DesktopNav() {
   const t = useTranslations("Navigation");
 
   return (
-    <nav className="hidden items-center gap-0.5 lg:flex xl:gap-1" aria-label={t("mainNav")}>
+    <nav
+      className="hidden items-center gap-0.5 xl:flex 2xl:gap-1 ml-auto"
+      aria-label={t("mainNav")}
+    >
       <NavigationMenu delayDuration={150} skipDelayDuration={300} viewport={false}>
-        <NavigationMenuList className="flex items-center gap-0.5 xl:gap-1">
+        <NavigationMenuList className="flex items-center gap-0.5 xl:gap-0.5 2xl:gap-1">
           {mainNavItems.map((item) => (
             <NavigationMenuItem key={item.href}>
               {item.children ? (
@@ -52,17 +56,37 @@ export function DesktopNav() {
             </NavigationMenuItem>
           ))}
 
+          {/* External Referral Directory CTA */}
+          <NavigationMenuItem>
+            <a
+              href={getTheHubReferralDirectoryUrl(locale)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-2 text-xs font-semibold text-white transition hover:bg-white/20 hover:text-white whitespace-nowrap",
+                "xl:h-8 xl:px-2.5 xl:text-xs 2xl:h-9 2xl:px-3 2xl:text-sm",
+              )}
+              title={t("referrals")}
+            >
+              <Users className="size-3.5 opacity-90" />
+              <span>{t("referrals")}</span>
+            </a>
+          </NavigationMenuItem>
+
           {/* Unified Preferences Dropdown Selector */}
           <NavigationMenuItem>
             <NavigationMenuTrigger
               className={cn(
                 "text-white/90 hover:bg-white/10 hover:text-white whitespace-nowrap",
-                "px-2 py-1.5 text-xs lg:px-2 lg:text-xs xl:px-2.5 xl:text-sm",
+                "px-1.5 py-1 text-xs lg:px-1.5 lg:text-xs xl:px-2 xl:text-xs 2xl:px-2.5 2xl:text-sm",
               )}
             >
-              <Globe className="mr-1.5 size-3.5 opacity-80" />
-              <span>
+              <Globe className="mr-1 size-3.5 opacity-80 shrink-0" />
+              <span className="hidden 2xl:inline">
                 {locale.toUpperCase()} / {currency} / {unitSystem === "metric" ? "m²" : "ft²"}
+              </span>
+              <span className="inline 2xl:hidden">
+                {locale.toUpperCase()} / {currency}
               </span>
             </NavigationMenuTrigger>
             <NavigationMenuContent className="z-50 md:left-auto md:right-0">
@@ -108,9 +132,9 @@ function SimpleNavItem({ item, pathname, t }: { item: NavItem; pathname: string;
     <Link
       href={item.href}
       className={cn(
-        "inline-flex h-9 items-center justify-center rounded-lg transition-colors whitespace-nowrap text-text-on-dark",
+        "inline-flex h-8 items-center justify-center rounded-lg transition-colors whitespace-nowrap text-text-on-dark",
         "hover:bg-white/10 hover:text-white",
-        "px-2 py-1.5 text-xs lg:px-2 lg:text-xs xl:px-3 xl:text-sm",
+        "px-1.5 py-1 text-xs lg:px-1.5 lg:text-xs xl:px-2 xl:text-xs 2xl:px-2.5 2xl:text-sm 2xl:h-9",
         isActive && "border-b-2 border-brand-gold text-white rounded-none",
       )}
       {...(isActive ? { "aria-current": "page" as const } : {})}
@@ -129,8 +153,8 @@ function CtaNavItem({ item, pathname, t }: { item: NavItem; pathname: string; t:
       variant="outline"
       asChild
       className={cn(
-        "ml-1 bg-transparent border-brand-gold text-brand-gold hover:bg-brand-gold/10 hover:text-white whitespace-nowrap",
-        "h-8 px-2.5 text-xs lg:h-8 lg:px-2.5 lg:text-xs xl:h-9 xl:px-4 xl:text-sm",
+        "ml-0.5 bg-transparent border-brand-gold text-brand-gold hover:bg-brand-gold/10 hover:text-white whitespace-nowrap",
+        "h-8 px-2 text-xs lg:h-8 lg:px-2 lg:text-xs xl:h-8 xl:px-2.5 xl:text-xs 2xl:h-9 2xl:px-3.5 2xl:text-sm",
         isActive && "bg-brand-gold/15 text-white",
       )}
     >
@@ -164,7 +188,7 @@ function DropdownNavItem({
       <NavigationMenuTrigger
         className={cn(
           "text-text-on-dark hover:bg-white/10 hover:text-white whitespace-nowrap",
-          "px-2 py-1.5 text-xs lg:px-2 lg:text-xs xl:px-2.5 xl:text-sm",
+          "px-1.5 py-1 text-xs lg:px-1.5 lg:text-xs xl:px-2 xl:text-xs 2xl:px-2.5 2xl:text-sm",
           isActive && "border-b-2 border-brand-gold text-white rounded-none",
         )}
         {...(isActive ? { "aria-current": "page" as const } : {})}
