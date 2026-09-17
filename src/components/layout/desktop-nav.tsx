@@ -66,8 +66,7 @@ export function DesktopNav() {
               title={t("referrals")}
             >
               <Users className="size-3.5 opacity-90" />
-              <span className="hidden xl:inline">{t("referrals")}</span>
-              <span className="inline xl:hidden">{t("referralsShort")}</span>
+              <span>{t("referrals")}</span>
             </a>
           </NavigationMenuItem>
 
