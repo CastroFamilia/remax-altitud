@@ -27,6 +27,7 @@ export async function fetchTheHubAgents(): Promise<TheHubAgent[]> {
     const url = getTheHubApiExternalUrl();
     const res = await fetch(url, {
       next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(3000),
       headers: {
         Accept: "application/json",
       },
