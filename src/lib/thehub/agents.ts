@@ -19,15 +19,18 @@ export interface TheHubAgent {
 
 /**
  * Fetches all agents published by TheHub referral directory.
- * Cached with Next.js ISR revalidation (1 hour).
+ * Cached with Next.js ISR revalidation:
+ * - In development: 0 (immediate, no caching)
+ * - In production/staging: 60 seconds (1 minute TTL)
  * Tolerant to network errors — returns an empty array on failure.
  */
 export async function fetchTheHubAgents(): Promise<TheHubAgent[]> {
   try {
     const url = getTheHubApiExternalUrl();
+    const isDev = process.env.NODE_ENV === "development";
     const res = await fetch(url, {
-      next: { revalidate: 3600 },
-      signal: AbortSignal.timeout(3000),
+      next: { revalidate: isDev ? 0 : 60 },
+      signal: AbortSignal.timeout(5000),
       headers: {
         Accept: "application/json",
       },

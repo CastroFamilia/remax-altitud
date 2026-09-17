@@ -91,14 +91,8 @@ export const mainNavItems: NavItem[] = [
   },
 ];
 
-/** Mobile-only items (Our Team, Contact) — not shown in desktop nav */
+/** Mobile-only items (Contact, FAQ) — not shown in desktop nav */
 export const mobileOnlyItems: NavItem[] = [
-  {
-    labelKey: "ourAgents",
-    href: "/agents",
-    activePrefix: "/agents",
-    icon: "🤝",
-  },
   {
     labelKey: "contact",
     href: "/contact",
