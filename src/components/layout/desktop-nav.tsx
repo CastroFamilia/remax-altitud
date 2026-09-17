@@ -21,6 +21,7 @@ import { useLocaleCurrency } from "@/hooks/use-locale-currency";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
 import { Globe, Users } from "lucide-react";
 import { getTheHubReferralDirectoryUrl } from "@/lib/thehub/config";
+import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -58,19 +59,21 @@ export function DesktopNav() {
 
           {/* External Referral Directory CTA */}
           <NavigationMenuItem>
-            <a
-              href={getTheHubReferralDirectoryUrl(locale)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                "inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-2 text-xs font-semibold text-white transition hover:bg-white/20 hover:text-white whitespace-nowrap",
-                "xl:h-8 xl:px-2.5 xl:text-xs 2xl:h-9 2xl:px-3 2xl:text-sm",
-              )}
-              title={t("referrals")}
-            >
-              <Users className="size-3.5 opacity-90" />
-              <span>{t("referrals")}</span>
-            </a>
+            <NavigationMenuPrimitive.Link asChild>
+              <a
+                href={getTheHubReferralDirectoryUrl(locale)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  "inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-2 text-xs font-semibold text-white transition hover:bg-white/20 hover:text-white whitespace-nowrap",
+                  "xl:h-8 xl:px-2.5 xl:text-xs 2xl:h-9 2xl:px-3 2xl:text-sm",
+                )}
+                title={t("referrals")}
+              >
+                <Users className="size-3.5 opacity-90" />
+                <span>{t("referrals")}</span>
+              </a>
+            </NavigationMenuPrimitive.Link>
           </NavigationMenuItem>
 
           {/* Unified Preferences Dropdown Selector */}
@@ -129,18 +132,20 @@ function SimpleNavItem({ item, pathname, t }: { item: NavItem; pathname: string;
     : pathname === item.href;
 
   return (
-    <Link
-      href={item.href}
-      className={cn(
-        "inline-flex h-8 items-center justify-center rounded-lg transition-colors whitespace-nowrap text-text-on-dark",
-        "hover:bg-white/10 hover:text-white",
-        "px-1.5 py-1 text-xs lg:px-1.5 lg:text-xs xl:px-2 xl:text-xs 2xl:px-2.5 2xl:text-sm 2xl:h-9",
-        isActive && "border-b-2 border-brand-gold text-white rounded-none",
-      )}
-      {...(isActive ? { "aria-current": "page" as const } : {})}
-    >
-      {t(item.labelKey)}
-    </Link>
+    <NavigationMenuPrimitive.Link asChild>
+      <Link
+        href={item.href}
+        className={cn(
+          "inline-flex h-8 items-center justify-center rounded-lg transition-colors whitespace-nowrap text-text-on-dark",
+          "hover:bg-white/10 hover:text-white",
+          "px-1.5 py-1 text-xs xl:px-2 xl:text-xs 2xl:px-2.5 2xl:text-sm 2xl:h-9",
+          isActive && "border-b-2 border-brand-gold text-white rounded-none",
+        )}
+        {...(isActive ? { "aria-current": "page" as const } : {})}
+      >
+        {t(item.labelKey)}
+      </Link>
+    </NavigationMenuPrimitive.Link>
   );
 }
 
@@ -149,19 +154,21 @@ function CtaNavItem({ item, pathname, t }: { item: NavItem; pathname: string; t:
   const isActive = pathname === item.href;
 
   return (
-    <Button
-      variant="outline"
-      asChild
-      className={cn(
-        "ml-0.5 bg-transparent border-brand-gold text-brand-gold hover:bg-brand-gold/10 hover:text-white whitespace-nowrap",
-        "h-8 px-2 text-xs lg:h-8 lg:px-2 lg:text-xs xl:h-8 xl:px-2.5 xl:text-xs 2xl:h-9 2xl:px-3.5 2xl:text-sm",
-        isActive && "bg-brand-gold/15 text-white",
-      )}
-    >
-      <Link href={item.href} {...(isActive ? { "aria-current": "page" as const } : {})}>
-        {t(item.labelKey)}
-      </Link>
-    </Button>
+    <NavigationMenuPrimitive.Link asChild>
+      <Button
+        variant="outline"
+        asChild
+        className={cn(
+          "ml-0.5 bg-transparent border-brand-gold text-brand-gold hover:bg-brand-gold/10 hover:text-white whitespace-nowrap",
+          "h-8 px-2 text-xs xl:h-8 xl:px-2.5 xl:text-xs 2xl:h-9 2xl:px-3.5 2xl:text-sm",
+          isActive && "bg-brand-gold/15 text-white",
+        )}
+      >
+        <Link href={item.href} {...(isActive ? { "aria-current": "page" as const } : {})}>
+          {t(item.labelKey)}
+        </Link>
+      </Button>
+    </NavigationMenuPrimitive.Link>
   );
 }
 
