@@ -21,9 +21,9 @@ import {
   findMatchingTheHubAgent,
 } from "@/lib/thehub/agents";
 
-// Story 4.3 Task 5: ISR — revalidate every 24 hours.
-// on-demand revalidation via revalidateTag('agents') from the sync pipeline.
-export const revalidate = 86400;
+// ISR — revalidate every 60 seconds to sync bio/contact updates from TheHub quickly.
+// Also triggered on-demand via revalidateTag('agents') from the sync pipeline.
+export const revalidate = 60;
 
 /**
  * SSG build-time generation — calls getAllAgentSlugs at build time.
@@ -109,7 +109,7 @@ export default async function AgentProfilePage({
   const officeName = office?.name ?? "REMAX Altitud";
 
   const theHubLookups = buildTheHubLookups(theHubAgents);
-  const theHubMatch = findMatchingTheHubAgent(theHubLookups, agent.email, agent.name);
+  const theHubMatch = findMatchingTheHubAgent(theHubLookups, agent.email, agent.name, agent.slug);
 
   // Story 4.4 Task 8: JSON-LD structured data for RealEstateAgent + BreadcrumbList (AC #2, #4, #5)
   const tBreadcrumbs = await getTranslations({ locale, namespace: "Breadcrumbs" });

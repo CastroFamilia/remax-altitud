@@ -135,6 +135,38 @@ describe("TheHub Agent Matching & Lookups", () => {
     expect(match?.slug).toBe("luis-carlos-martinez");
   });
 
+  it("matches agent by slug when email and name do not match directly", () => {
+    const lookups = buildTheHubLookups(mockTheHubAgents);
+    const match = findMatchingTheHubAgent(lookups, null, null, "luis-carlos-martinez");
+    expect(match).not.toBeNull();
+    expect(match?.name).toBe("Luis Carlos Martinez");
+  });
+
+  it("matches Alejandra Castro even if TheHub agent record has an empty name", () => {
+    const agentsWithEmptyName: TheHubAgent[] = [
+      {
+        id: "44e46621-b011-4d97-ad8d-823be7e7923d",
+        name: "",
+        slug: "44e46621-b011-4d97-ad8d-823be7e7923d",
+        role: "broker",
+        officeName: "RE/MAX Altitud Cero",
+        bio: "Broker de REMAX Altitud y REMAX Altitud Cero",
+        email: "acastro@remax-altitud.cr",
+      },
+    ];
+    const lookups = buildTheHubLookups(agentsWithEmptyName);
+
+    // Matching by local agent name
+    const matchByName = findMatchingTheHubAgent(lookups, null, "Alejandra Castro", "alejandra-castro");
+    expect(matchByName).not.toBeNull();
+    expect(matchByName?.bio).toBe("Broker de REMAX Altitud y REMAX Altitud Cero");
+
+    // Matching by email
+    const matchByEmail = findMatchingTheHubAgent(lookups, "acastro@remax-altitud.cr", null, null);
+    expect(matchByEmail).not.toBeNull();
+    expect(matchByEmail?.bio).toBe("Broker de REMAX Altitud y REMAX Altitud Cero");
+  });
+
   it("returns null if no agent matches", () => {
     const lookups = buildTheHubLookups(mockTheHubAgents);
     const match = findMatchingTheHubAgent(lookups, "unknown@test.com", "John Doe");

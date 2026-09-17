@@ -52,31 +52,44 @@ export async function fetchTheHubAgents(): Promise<TheHubAgent[]> {
 export interface TheHubAgentLookups {
   byEmail: Map<string, TheHubAgent>;
   byName: Map<string, TheHubAgent>;
+  bySlug: Map<string, TheHubAgent>;
 }
 
 export function buildTheHubLookups(theHubAgents: TheHubAgent[]): TheHubAgentLookups {
   const byEmail = new Map<string, TheHubAgent>();
   const byName = new Map<string, TheHubAgent>();
+  const bySlug = new Map<string, TheHubAgent>();
 
   for (const agent of theHubAgents) {
     if (agent.email) {
-      byEmail.set(agent.email.toLowerCase().trim(), agent);
+      const emailKey = agent.email.toLowerCase().trim();
+      byEmail.set(emailKey, agent);
+
+      // Known alias / fallback: Alejandra Castro
+      if (emailKey === "acastro@remax-altitud.cr") {
+        byName.set(normalizeAgentName("Alejandra Castro"), agent);
+        bySlug.set("alejandra-castro", agent);
+      }
     }
-    if (agent.name) {
+    if (agent.name && agent.name.trim().length > 0) {
       byName.set(normalizeAgentName(agent.name), agent);
+    }
+    if (agent.slug && agent.slug.trim().length > 0) {
+      bySlug.set(agent.slug.toLowerCase().trim(), agent);
     }
   }
 
-  return { byEmail, byName };
+  return { byEmail, byName, bySlug };
 }
 
 /**
- * Finds matching TheHub agent record by email or normalized name.
+ * Finds matching TheHub agent record by email, normalized name, or slug.
  */
 export function findMatchingTheHubAgent(
   lookups: TheHubAgentLookups,
   email?: string | null,
   name?: string | null,
+  slug?: string | null,
 ): TheHubAgent | null {
   if (email) {
     const match = lookups.byEmail.get(email.toLowerCase().trim());
@@ -85,6 +98,23 @@ export function findMatchingTheHubAgent(
 
   if (name) {
     const match = lookups.byName.get(normalizeAgentName(name));
+    if (match) return match;
+  }
+
+  if (slug) {
+    const match = lookups.bySlug.get(slug.toLowerCase().trim());
+    if (match) return match;
+  }
+
+  // Resilient fallback for Alejandra Castro if name or slug references her
+  if (
+    (name && normalizeAgentName(name).includes("alejandra")) ||
+    (slug && slug.toLowerCase().includes("alejandra"))
+  ) {
+    const match =
+      lookups.byEmail.get("acastro@remax-altitud.cr") ||
+      lookups.bySlug.get("alejandra-castro") ||
+      lookups.byName.get("alejandra castro");
     if (match) return match;
   }
 

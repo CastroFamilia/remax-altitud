@@ -13,7 +13,8 @@ import {
   type TheHubAgent,
 } from "@/lib/thehub/agents";
 
-export const dynamic = "force-dynamic";
+// Revalidate every 60s (ISR) for fast responses and auto-syncing with TheHub
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
@@ -54,7 +55,7 @@ export default async function AgentsIndexPage({ params }: { params: Promise<{ lo
   const theHubLookups = buildTheHubLookups(theHubAgents);
 
   const enrichedAgents = allAgents.map((agent) => {
-    const match = findMatchingTheHubAgent(theHubLookups, agent.email, agent.name);
+    const match = findMatchingTheHubAgent(theHubLookups, agent.email, agent.name, agent.slug);
     return {
       ...agent,
       theHubBio: match?.bio || null,
