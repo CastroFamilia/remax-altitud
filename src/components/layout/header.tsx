@@ -26,18 +26,18 @@ export function Header() {
       }}
     >
       <div className="w-full px-4 md:px-6 lg:px-4 xl:px-6 2xl:px-10 flex h-14 items-center justify-between lg:h-16">
-        <div className="flex items-center gap-3 xl:gap-4 2xl:gap-8 min-w-0">
-          <Logo className="shrink-0" />
+        <Logo className="shrink-0" />
+        <div className="flex items-center gap-1.5 xl:gap-3">
           <DesktopNav />
-        </div>
-        <div className="flex items-center gap-1.5 shrink-0 xl:gap-2">
-          <NavSearchButton />
-          <ShortlistIcon />
-          {/* Language toggle visible inline on mobile; desktop nav has its own */}
-          <div className="lg:hidden">
-            <LanguageToggle variant="header" />
+          <div className="flex items-center gap-1.5 shrink-0 xl:gap-2">
+            <NavSearchButton />
+            <ShortlistIcon />
+            {/* Language toggle visible inline on mobile; desktop nav has its own */}
+            <div className="lg:hidden">
+              <LanguageToggle variant="header" />
+            </div>
+            <MobileNav />
           </div>
-          <MobileNav />
         </div>
       </div>
     </header>
