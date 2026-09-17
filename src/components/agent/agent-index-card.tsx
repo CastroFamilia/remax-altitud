@@ -13,7 +13,6 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Phone, Mail, ArrowUpRight } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
-import { getTheHubAgentReferralUrl } from "@/lib/thehub/config";
 import type { Agent } from "@/lib/db/schema/agents";
 
 export type EnrichedAgent = Agent & {
@@ -69,10 +68,6 @@ export function AgentIndexCard({ agent, officeName, locale }: AgentIndexCardProp
   const rawDigits = phone ? phone.replace(/\D/g, "") : "";
   const whatsappDigits = agent.whatsapp ? agent.whatsapp.replace(/\D/g, "") : rawDigits;
   const email = agent.theHubEmail || agent.email;
-
-  // Referral URL
-  const referralSlug = agent.theHubSlug || agent.slug;
-  const referralUrl = getTheHubAgentReferralUrl(locale, referralSlug);
 
   return (
     <article
@@ -161,16 +156,14 @@ export function AgentIndexCard({ agent, officeName, locale }: AgentIndexCardProp
           )}
         </div>
 
-        {/* Quick action button: "Envíame un referido" */}
-        <a
-          href={referralUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        {/* Quick action button: "Ver perfil" */}
+        <Link
+          href={`/agents/${agent.slug}`}
           className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-brand-navy px-3 py-2 text-xs font-semibold text-white transition hover:bg-brand-navy/90"
         >
-          <span>{t("sendMeReferral")}</span>
+          <span>{t("viewProfile")}</span>
           <ArrowUpRight className="h-3.5 w-3.5" />
-        </a>
+        </Link>
       </div>
     </article>
   );

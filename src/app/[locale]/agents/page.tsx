@@ -5,7 +5,6 @@ import { AgentIndexFilters } from "@/components/agent/agent-index-filters";
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { getAllOffices } from "@/lib/db/queries/offices";
 import { Link } from "@/i18n/navigation";
-import { AgentReferralBanner } from "@/components/agent/agent-referral-banner";
 import {
   fetchTheHubAgents,
   buildTheHubLookups,
@@ -67,7 +66,6 @@ export default async function AgentsIndexPage({ params }: { params: Promise<{ lo
 
   return (
     <SimplePageLayout pageTitle={t("indexPageTitle")} intro={t("indexPageDescription")}>
-      <AgentReferralBanner locale={locale} />
       <div className="flex justify-center mb-8">
         <Link
           href="/join"
