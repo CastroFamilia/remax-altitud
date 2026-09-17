@@ -19,7 +19,8 @@ import { CurrencyToggle } from "@/components/layout/currency-toggle";
 import { UnitToggle } from "@/components/layout/unit-toggle";
 import { useLocaleCurrency } from "@/hooks/use-locale-currency";
 import { useLocaleUnits } from "@/hooks/use-locale-units";
-import { Globe } from "lucide-react";
+import { Globe, Users } from "lucide-react";
+import { getTheHubReferralDirectoryUrl } from "@/lib/thehub/config";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -51,6 +52,24 @@ export function DesktopNav() {
               )}
             </NavigationMenuItem>
           ))}
+
+          {/* External Referral Directory CTA */}
+          <NavigationMenuItem>
+            <a
+              href={getTheHubReferralDirectoryUrl(locale)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-2 text-xs font-semibold text-white transition hover:bg-white/20 hover:text-white whitespace-nowrap",
+                "xl:h-9 xl:px-3 xl:text-sm",
+              )}
+              title={t("referrals")}
+            >
+              <Users className="size-3.5 opacity-90" />
+              <span className="hidden xl:inline">{t("referrals")}</span>
+              <span className="inline xl:hidden">{t("referralsShort")}</span>
+            </a>
+          </NavigationMenuItem>
 
           {/* Unified Preferences Dropdown Selector */}
           <NavigationMenuItem>

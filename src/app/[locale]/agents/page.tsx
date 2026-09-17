@@ -5,6 +5,13 @@ import { AgentIndexFilters } from "@/components/agent/agent-index-filters";
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { getAllOffices } from "@/lib/db/queries/offices";
 import { Link } from "@/i18n/navigation";
+import { AgentReferralBanner } from "@/components/agent/agent-referral-banner";
+import {
+  fetchTheHubAgents,
+  buildTheHubLookups,
+  findMatchingTheHubAgent,
+  type TheHubAgent,
+} from "@/lib/thehub/agents";
 
 export const dynamic = "force-dynamic";
 
@@ -29,16 +36,37 @@ export default async function AgentsIndexPage({ params }: { params: Promise<{ lo
 
   let allAgents: Awaited<ReturnType<typeof getAllAgents>> = [];
   let officeMap: Record<string, string> = {};
+  let theHubAgents: TheHubAgent[] = [];
+
   try {
-    const [agents, allOffices] = await Promise.all([getAllAgents(), getAllOffices()]);
+    const [agents, allOffices, theHubData] = await Promise.all([
+      getAllAgents(),
+      getAllOffices(),
+      fetchTheHubAgents(),
+    ]);
     allAgents = agents;
     officeMap = Object.fromEntries(allOffices.map((o) => [o.id, o.name]));
+    theHubAgents = theHubData;
   } catch (err) {
     console.error("Failed to load agents:", err);
   }
 
+  const theHubLookups = buildTheHubLookups(theHubAgents);
+
+  const enrichedAgents = allAgents.map((agent) => {
+    const match = findMatchingTheHubAgent(theHubLookups, agent.email, agent.name);
+    return {
+      ...agent,
+      theHubBio: match?.bio || null,
+      theHubSlug: match?.slug || agent.slug,
+      theHubPhone: match?.phone || null,
+      theHubEmail: match?.email || null,
+    };
+  });
+
   return (
     <SimplePageLayout pageTitle={t("indexPageTitle")} intro={t("indexPageDescription")}>
+      <AgentReferralBanner locale={locale} />
       <div className="flex justify-center mb-8">
         <Link
           href="/join"
@@ -47,7 +75,7 @@ export default async function AgentsIndexPage({ params }: { params: Promise<{ lo
           {t("joinTeamCta")}
         </Link>
       </div>
-      <AgentIndexFilters agents={allAgents} locale={locale} officeMap={officeMap} />
+      <AgentIndexFilters agents={enrichedAgents} locale={locale} officeMap={officeMap} />
     </SimplePageLayout>
   );
 }

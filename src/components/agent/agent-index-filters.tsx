@@ -9,14 +9,13 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { AgentIndexCard } from "@/components/agent/agent-index-card";
-import type { Agent } from "@/lib/db/schema/agents";
+import { AgentIndexCard, type EnrichedAgent } from "@/components/agent/agent-index-card";
 
 // Same set used in AgentProfileHero / AgentIndexCard — keeps labels in sync.
 const KNOWN_LANGUAGES = new Set(["en", "es", "de", "fr", "it", "pt"]);
 
 interface AgentIndexFiltersProps {
-  agents: Agent[];
+  agents: EnrichedAgent[];
   locale: string;
   officeMap: Record<string, string>; // officeId → officeName, pre-resolved server-side
 }

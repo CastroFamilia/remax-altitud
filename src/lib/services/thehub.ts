@@ -74,12 +74,15 @@ export function normalizeIntent(intent: string): {
 export async function sendLeadToTheHubJob(payload: SendLeadToTheHubPayload): Promise<void> {
   try {
     const baseUrl =
-      process.env.THEHUB_API_URL || process.env.ALTITUD_HUB_URL || "http://localhost:3000";
+      process.env.THE_HUB_API_URL ||
+      process.env.THEHUB_API_URL ||
+      process.env.ALTITUD_HUB_URL ||
+      "http://localhost:3000";
     const apiKey = process.env.THEHUB_API_KEY || process.env.ALTITUD_HUB_API_SECRET;
 
     if (!baseUrl) {
       console.warn(
-        "[TheHub Job] Skipped: Neither THEHUB_API_URL nor ALTITUD_HUB_URL is configured.",
+        "[TheHub Job] Skipped: Neither THE_HUB_API_URL nor THEHUB_API_URL is configured.",
       );
       return;
     }

@@ -24,7 +24,9 @@
     "currency": "Moneda",
     "preferences": "Preferencias",
     "faq": "Preguntas Frecuentes",
-    "blog": "Blog"
+    "blog": "Blog",
+    "referrals": "¿Tienes un cliente? Envía un Referido",
+    "referralsShort": "Referidos"
   },
   "LanguageToggle": {
     "switchLanguage": "Cambiar idioma",
@@ -55,6 +57,7 @@
     "contact": "Contacto",
     "joinTeam": "Únete al Equipo",
     "agentsLogin": "Acceso de Agentes",
+    "referralNetwork": "Red de Referidos",
     "privacy": "Política de Privacidad",
     "terms": "Términos de Servicio",
     "sitemap": "Mapa del Sitio",
@@ -627,6 +630,12 @@
     "listings": "propiedades",
     "whatsapp": "WhatsApp",
     "email": "Correo",
+    "phone": "Teléfono",
+    "sendMeReferral": "Envíame un referido",
+    "referralBannerTitle": "Red Formal de Referidos RE/MAX Altitud",
+    "referralBannerDescription": "¿Eres agente inmobiliario o broker externo con un cliente para Costa Rica? Garantizamos el 25% de comisión formalizada con acuerdo digital, reporte automático y seguimiento transparente.",
+    "referralBannerExploreCta": "Explorar Directorio de Referidos",
+    "referralBannerOfficeCta": "Referir a Oficina Central",
     "generalInquiryEn": "Hola {name}, me gustaría obtener más información sobre tus propiedades.",
     "noListings": "{name} no tiene propiedades activas en este momento.",
     "listingsHeading": "Propiedades de {name}",
