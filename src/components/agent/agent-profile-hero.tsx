@@ -110,6 +110,14 @@ export async function AgentProfileHero({
               🏠 {agent.listingCount} {t("listings")}
             </p>
           )}
+          {bio && (
+            <p
+              className="mt-3 whitespace-pre-line text-sm md:text-base leading-relaxed text-text-body"
+              data-testid="agent-profile-bio"
+            >
+              {bio}
+            </p>
+          )}
         </div>
       </div>
 
@@ -137,12 +145,6 @@ export async function AgentProfileHero({
               </a>
             </div>
           )}
-        </div>
-      )}
-
-      {bio && (
-        <div className="space-y-2">
-          <p className="whitespace-pre-line text-base leading-relaxed text-text-body">{bio}</p>
         </div>
       )}
 
