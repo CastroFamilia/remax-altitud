@@ -10,6 +10,7 @@ import { getTranslations } from "next-intl/server";
 import { Phone, Mail } from "lucide-react";
 import type { Agent } from "@/lib/db/schema/agents";
 import { AgentProfileCTAs } from "@/components/agent/agent-profile-ctas";
+import { AgentProfileBio } from "@/components/agent/agent-profile-bio";
 import { getTheHubAgentReferralUrl } from "@/lib/thehub/config";
 
 interface AgentProfileHeroProps {
@@ -111,12 +112,11 @@ export async function AgentProfileHero({
             </p>
           )}
           {bio && (
-            <p
-              className="mt-3 whitespace-pre-line text-sm md:text-base leading-relaxed text-text-body"
-              data-testid="agent-profile-bio"
-            >
-              {bio}
-            </p>
+            <AgentProfileBio
+              bio={bio}
+              readMoreLabel={t("readMore")}
+              showLessLabel={t("showLess")}
+            />
           )}
         </div>
       </div>

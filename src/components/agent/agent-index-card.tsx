@@ -63,6 +63,15 @@ export function AgentIndexCard({ agent, officeName, locale }: AgentIndexCardProp
   // Bio: priority from TheHub, then localized DB bio
   const bio = agent.theHubBio || (locale === "es" ? agent.bioEs : agent.bioEn);
 
+  // Truncate card bio to ~110 chars on word boundary to prevent breaking grid layout
+  const CARD_BIO_MAX_LENGTH = 110;
+  const cardBio = (() => {
+    if (!bio) return null;
+    if (bio.length <= CARD_BIO_MAX_LENGTH) return bio;
+    const cutoff = bio.lastIndexOf(" ", CARD_BIO_MAX_LENGTH);
+    return `${cutoff > 0 ? bio.slice(0, cutoff).trim() : bio.slice(0, CARD_BIO_MAX_LENGTH).trim()}...`;
+  })();
+
   // Contact details
   const phone = agent.theHubPhone || agent.phone || agent.whatsapp;
   const rawDigits = phone ? phone.replace(/\D/g, "") : "";
@@ -110,7 +119,9 @@ export function AgentIndexCard({ agent, officeName, locale }: AgentIndexCardProp
         </div>
 
         {/* Bio Snippet */}
-        {bio && <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-slate-600">{bio}</p>}
+        {cardBio && (
+          <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-slate-600">{cardBio}</p>
+        )}
       </div>
 
       {/* Contact & Action Section */}
