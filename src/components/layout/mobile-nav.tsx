@@ -47,7 +47,7 @@ export function MobileNav() {
   const sections = buildMobileSections(mainNavItems);
 
   return (
-    <div className="lg:hidden">
+    <div className="xl:hidden">
       <Button
         variant="ghost"
         size="icon"

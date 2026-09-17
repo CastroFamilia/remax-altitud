@@ -39,7 +39,7 @@ export function DesktopNav() {
 
   return (
     <nav
-      className="hidden items-center gap-0.5 lg:flex xl:gap-0.5 2xl:gap-1 ml-auto"
+      className="hidden items-center gap-0.5 xl:flex 2xl:gap-1 ml-auto"
       aria-label={t("mainNav")}
     >
       <NavigationMenu delayDuration={150} skipDelayDuration={300} viewport={false}>

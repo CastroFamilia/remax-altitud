@@ -33,7 +33,7 @@ export function Header() {
             <NavSearchButton />
             <ShortlistIcon />
             {/* Language toggle visible inline on mobile; desktop nav has its own */}
-            <div className="lg:hidden">
+            <div className="xl:hidden">
               <LanguageToggle variant="header" />
             </div>
             <MobileNav />
