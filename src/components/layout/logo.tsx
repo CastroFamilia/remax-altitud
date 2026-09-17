@@ -9,6 +9,7 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 
 /**
  * Swappable logo source path (UX-DR32).
@@ -31,13 +32,14 @@ export type LogoVariant = "default" | "dark-bg";
 interface LogoProps {
   /** Logo variant for future light-background support */
   variant?: LogoVariant;
+  className?: string;
 }
 
-export function Logo({ variant = "default" }: LogoProps) {
-  // variant prop reserved for future light-background logo support
+export function Logo({ variant = "default", className }: LogoProps) {
+  // variant prop reserved for future light-background support
   void variant;
   return (
-    <Link href="/" className="flex items-center">
+    <Link href="/" className={cn("flex items-center shrink-0", className)}>
       <Image
         src={LOGO_SRC}
         alt="REMAX Altitud — Costa Rica Real Estate"
@@ -45,7 +47,7 @@ export function Logo({ variant = "default" }: LogoProps) {
         height={LOGO_HEIGHT}
         priority
         sizes="(max-width: 768px) 120px, 160px"
-        className="h-8 w-auto object-contain md:h-10"
+        className="h-8 w-auto shrink-0 object-contain md:h-9 2xl:h-10"
       />
     </Link>
   );

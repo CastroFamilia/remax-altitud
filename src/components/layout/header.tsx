@@ -25,12 +25,12 @@ export function Header() {
         zIndex: "var(--z-sticky-nav)" as unknown as number,
       }}
     >
-      <div className="w-full px-4 md:px-6 lg:px-8 xl:px-12 flex h-14 items-center justify-between lg:h-16">
-        <div className="flex items-center gap-6 xl:gap-10">
-          <Logo />
+      <div className="w-full px-4 md:px-6 lg:px-4 xl:px-6 2xl:px-10 flex h-14 items-center justify-between lg:h-16">
+        <div className="flex items-center gap-3 xl:gap-4 2xl:gap-8 min-w-0">
+          <Logo className="shrink-0" />
           <DesktopNav />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 shrink-0 xl:gap-2">
           <NavSearchButton />
           <ShortlistIcon />
           {/* Language toggle visible inline on mobile; desktop nav has its own */}
