@@ -5,6 +5,7 @@ import {
   getTheHubAgentReferralUrl,
   getTheHubOfficeReferralUrl,
   getTheHubApiExternalUrl,
+  getTheHubApiCandidateUrls,
   DEFAULT_THEHUB_URL,
 } from "@/lib/thehub/config";
 import {
@@ -79,6 +80,18 @@ describe("TheHub Referral Configuration & URLs", () => {
     expect(getTheHubApiExternalUrl()).toBe(
       "https://dev.hub.remax-altitud.cr/api/referrals/external"
     );
+  });
+
+  it("includes Coolify internal aliases and explicit internal env var in candidate URLs", () => {
+    delete process.env.THEHUB_INTERNAL_API_URL;
+    const candidates = getTheHubApiCandidateUrls();
+    expect(candidates).toContain("http://thehub-dev:3000/api/referrals/external");
+    expect(candidates).toContain("http://thehub:3000/api/referrals/external");
+
+    process.env.THEHUB_INTERNAL_API_URL = "http://custom-hub:3000";
+    const customCandidates = getTheHubApiCandidateUrls();
+    expect(customCandidates[0]).toBe("http://custom-hub:3000/api/referrals/external");
+    delete process.env.THEHUB_INTERNAL_API_URL;
   });
 });
 
