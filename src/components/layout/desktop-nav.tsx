@@ -10,7 +10,7 @@
  */
 
 import { useLocale, useTranslations } from "next-intl";
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { mainNavItems, type NavItem } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
@@ -127,14 +127,23 @@ type Translator = ReturnType<typeof useTranslations<"Navigation">>;
 
 /** Regular nav link (no dropdown, no CTA) */
 function SimpleNavItem({ item, pathname, t }: { item: NavItem; pathname: string; t: Translator }) {
+  const router = useRouter();
   const isActive = item.activePrefix
     ? pathname.startsWith(item.activePrefix)
     : pathname === item.href;
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && e.button === 0) {
+      router.push(item.href);
+    }
+  };
 
   return (
     <NavigationMenuPrimitive.Link asChild>
       <Link
         href={item.href}
+        prefetch={true}
+        onClick={handleClick}
         className={cn(
           "inline-flex h-8 items-center justify-center rounded-lg transition-colors whitespace-nowrap text-text-on-dark",
           "hover:bg-white/10 hover:text-white",
@@ -151,7 +160,14 @@ function SimpleNavItem({ item, pathname, t }: { item: NavItem; pathname: string;
 
 /** CTA nav item ("Sell Your Property") — outline accent button */
 function CtaNavItem({ item, pathname, t }: { item: NavItem; pathname: string; t: Translator }) {
+  const router = useRouter();
   const isActive = pathname === item.href;
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && e.button === 0) {
+      router.push(item.href);
+    }
+  };
 
   return (
     <NavigationMenuPrimitive.Link asChild>
@@ -164,7 +180,12 @@ function CtaNavItem({ item, pathname, t }: { item: NavItem; pathname: string; t:
           isActive && "bg-brand-gold/15 text-white",
         )}
       >
-        <Link href={item.href} {...(isActive ? { "aria-current": "page" as const } : {})}>
+        <Link
+          href={item.href}
+          prefetch={true}
+          onClick={handleClick}
+          {...(isActive ? { "aria-current": "page" as const } : {})}
+        >
           {t(item.labelKey)}
         </Link>
       </Button>
