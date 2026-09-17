@@ -1,4 +1,4 @@
-import { getTheHubApiExternalUrl } from "./config";
+import { getTheHubApiCandidateUrls, getTheHubApiExternalUrl } from "./config";
 import { normalizeAgentName } from "@/lib/constants/agent-overrides";
 
 export interface TheHubAgent {
@@ -19,34 +19,42 @@ export interface TheHubAgent {
 
 /**
  * Fetches all agents published by TheHub referral directory.
+ * Tries internal candidate URLs (Docker / Coolify internal network) first,
+ * falling back to the public domain URL.
  * Cached with Next.js ISR revalidation:
  * - In development: 0 (immediate, no caching)
  * - In production/staging: 60 seconds (1 minute TTL)
  * Tolerant to network errors — returns an empty array on failure.
  */
 export async function fetchTheHubAgents(): Promise<TheHubAgent[]> {
-  try {
-    const url = getTheHubApiExternalUrl();
-    const isDev = process.env.NODE_ENV === "development";
-    const res = await fetch(url, {
-      next: { revalidate: isDev ? 0 : 60 },
-      signal: AbortSignal.timeout(5000),
-      headers: {
-        Accept: "application/json",
-      },
-    });
+  const urls = getTheHubApiCandidateUrls();
+  const isDev = process.env.NODE_ENV === "development";
 
-    if (!res.ok) {
-      console.warn(`[TheHub] Failed to fetch agents from ${url}: status ${res.status}`);
-      return [];
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, {
+        next: { revalidate: isDev ? 0 : 60 },
+        signal: AbortSignal.timeout(2000),
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        continue;
+      }
+
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        return data as TheHubAgent[];
+      }
+    } catch {
+      // Hairpin NAT or network timeout on this candidate URL; try next candidate
     }
-
-    const data = await res.json();
-    return Array.isArray(data) ? (data as TheHubAgent[]) : [];
-  } catch (error) {
-    console.warn("[TheHub] Network error fetching agents:", error);
-    return [];
   }
+
+  console.warn("[TheHub] Could not fetch agents from any candidate URL:", urls);
+  return [];
 }
 
 export interface TheHubAgentLookups {
