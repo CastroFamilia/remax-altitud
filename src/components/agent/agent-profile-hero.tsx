@@ -1,29 +1,43 @@
 /**
- * AgentProfileHero — Story 4.3 (AC #1, #5)
+ * AgentProfileHero — Story 4.3 (AC #1, #5) & Issue #335
  *
- * Server Component: renders agent's photo, name, bio, languages, office,
- * and listing count. Contact CTAs are delegated to AgentProfileCTAs (Client Component).
+ * Server Component: renders agent's photo, name, bio (with TheHub integration),
+ * languages, office, listing count, visible direct phone & email, and contact CTAs.
  */
 
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { Phone, Mail } from "lucide-react";
 import type { Agent } from "@/lib/db/schema/agents";
 import { AgentProfileCTAs } from "@/components/agent/agent-profile-ctas";
+import { AgentProfileBio } from "@/components/agent/agent-profile-bio";
+import { getTheHubAgentReferralUrl } from "@/lib/thehub/config";
 
 interface AgentProfileHeroProps {
   agent: Agent;
   officeName: string;
   locale: string;
+  theHubBio?: string | null;
+  theHubSlug?: string | null;
+  theHubPhone?: string | null;
+  theHubEmail?: string | null;
 }
 
 // Known language code → i18n key. Anything else falls back to upper-cased code.
 const KNOWN_LANGUAGES = new Set(["en", "es", "de", "fr", "it", "pt"]);
 
-export async function AgentProfileHero({ agent, officeName, locale }: AgentProfileHeroProps) {
+export async function AgentProfileHero({
+  agent,
+  officeName,
+  locale,
+  theHubBio,
+  theHubSlug,
+  theHubPhone,
+  theHubEmail,
+}: AgentProfileHeroProps) {
   const t = await getTranslations("AgentProfile");
 
   // Photo fallback chain: photoOptimizedUrl → photoUrl → placeholder.
-  // Treat empty strings as missing — next/image throws on src="".
   const photoSrc =
     (agent.photoOptimizedUrl && agent.photoOptimizedUrl.length > 0
       ? agent.photoOptimizedUrl
@@ -43,8 +57,17 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
     )
     .join(", ");
 
-  // Bio: locale-aware, empty bio hidden
-  const bio = locale === "es" ? agent.bioEs : agent.bioEn;
+  // Bio: priority from TheHub, then localized DB bio
+  const bio = theHubBio || (locale === "es" ? agent.bioEs : agent.bioEn);
+
+  // Direct contact values
+  const phone = theHubPhone || agent.phone || agent.whatsapp;
+  const rawDigits = phone ? phone.replace(/\D/g, "") : "";
+  const email = theHubEmail || agent.email;
+
+  // Referral URL
+  const referralSlug = theHubSlug || agent.slug;
+  const referralUrl = getTheHubAgentReferralUrl(locale, referralSlug);
 
   const isOwner =
     agent.name.toLowerCase().includes("cesar") ||
@@ -66,7 +89,7 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
             width={160}
             height={160}
             sizes="160px"
-            className="rounded-full object-cover"
+            className="rounded-full object-cover shadow-md"
             data-testid="agent-profile-photo"
           />
         </div>
@@ -80,26 +103,59 @@ export async function AgentProfileHero({ agent, officeName, locale }: AgentProfi
           <p className="mt-1 text-base text-text-muted">{displayTitle}</p>
           {languages && (
             <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-languages">
-              {languages}
+              🌐 {languages}
             </p>
           )}
           {!isOwner && (
             <p className="mt-1 text-sm text-text-muted" data-testid="agent-profile-listing-count">
-              {agent.listingCount} {t("listings")}
+              🏠 {agent.listingCount} {t("listings")}
             </p>
+          )}
+          {bio && (
+            <AgentProfileBio
+              bio={bio}
+              readMoreLabel={t("readMore")}
+              showLessLabel={t("showLess")}
+            />
           )}
         </div>
       </div>
 
-      {bio && <p className="text-base text-text-body">{bio}</p>}
+      {/* Visible direct contact block */}
+      {(phone || email) && (
+        <div className="flex flex-wrap items-center gap-y-2 gap-x-6 rounded-xl border border-slate-200 bg-slate-50/90 p-4 text-sm text-slate-700 shadow-sm">
+          {phone && (
+            <div className="flex items-center gap-2">
+              <Phone className="h-4 w-4 text-brand-navy" />
+              <span className="font-semibold text-slate-900">{t("phone")}:</span>
+              <a href={`tel:${rawDigits}`} className="font-medium text-brand-navy hover:underline">
+                {phone}
+              </a>
+            </div>
+          )}
+          {email && (
+            <div className="flex items-center gap-2 truncate">
+              <Mail className="h-4 w-4 text-brand-navy shrink-0" />
+              <span className="font-semibold text-slate-900">{t("email")}:</span>
+              <a
+                href={`mailto:${email}`}
+                className="font-medium text-brand-navy hover:underline truncate"
+              >
+                {email}
+              </a>
+            </div>
+          )}
+        </div>
+      )}
 
       <div>
         <AgentProfileCTAs
           agentWhatsapp={agent.whatsapp}
-          agentEmail={agent.email}
+          agentEmail={email}
           agentName={agent.name}
           locale={locale}
           agentId={agent.id}
+          referralUrl={referralUrl}
         />
       </div>
 

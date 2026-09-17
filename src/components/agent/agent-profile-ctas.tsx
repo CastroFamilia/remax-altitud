@@ -14,6 +14,7 @@ import { extractUtmParams } from "@/lib/utils/utm";
 import { trackWhatsAppClick } from "@/components/lead/whatsapp-cta";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { AgentContactForm } from "@/components/agent/agent-contact-form";
+import { ArrowUpRight } from "lucide-react";
 
 interface AgentProfileCTAsProps {
   agentWhatsapp: string | null;
@@ -21,6 +22,7 @@ interface AgentProfileCTAsProps {
   agentName: string;
   locale: string;
   agentId: string; // for lead tracking
+  referralUrl?: string | null;
 }
 
 export function AgentProfileCTAs({
@@ -29,6 +31,7 @@ export function AgentProfileCTAs({
   agentName,
   locale,
   agentId,
+  referralUrl,
 }: AgentProfileCTAsProps) {
   const t = useTranslations("AgentProfile");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -102,6 +105,19 @@ export function AgentProfileCTAs({
           >
             {t("email")}
           </button>
+        ) : null}
+
+        {referralUrl ? (
+          <a
+            href={referralUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="agent-profile-referral-cta"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-brand-navy to-[#003366] border border-brand-navy px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:opacity-95"
+          >
+            <ArrowUpRight className="h-4 w-4" />
+            <span>{t("sendMeReferral")}</span>
+          </a>
         ) : null}
       </div>
 

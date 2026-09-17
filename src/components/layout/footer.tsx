@@ -5,12 +5,13 @@
  * 4-column grid on desktop, stacked on mobile.
  */
 
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { MessageCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { offices } from "@/lib/constants/offices";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import { FooterContactButton } from "@/components/layout/footer-contact-button";
+import { getTheHubReferralDirectoryUrl } from "@/lib/thehub/config";
 
 function FacebookIcon({ className }: { className?: string }) {
   return (
@@ -91,7 +92,9 @@ const legalLinks = [
 ] as const;
 
 export async function Footer() {
-  const t = await getTranslations("Footer");
+  const [t, locale] = await Promise.all([getTranslations("Footer"), getLocale()]);
+
+  const referralDirectoryUrl = getTheHubReferralDirectoryUrl(locale);
 
   return (
     <footer className="bg-brand-dark text-text-on-dark">
@@ -130,6 +133,16 @@ export async function Footer() {
                   </li>
                 );
               })}
+              <li>
+                <a
+                  href={referralDirectoryUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-text-on-dark transition-colors duration-[var(--duration-fast)] hover:text-brand-gold"
+                >
+                  {t("referralNetwork")}
+                </a>
+              </li>
             </ul>
           </div>
 

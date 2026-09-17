@@ -15,10 +15,15 @@ import {
 } from "@/lib/seo/structured-data";
 import { buildAlternatesMetadata, generateCanonicalUrl } from "@/lib/seo/metadata";
 import { SITE_ORIGIN } from "@/lib/seo/constants";
+import {
+  fetchTheHubAgents,
+  buildTheHubLookups,
+  findMatchingTheHubAgent,
+} from "@/lib/thehub/agents";
 
-// Story 4.3 Task 5: ISR — revalidate every 24 hours.
-// on-demand revalidation via revalidateTag('agents') from the sync pipeline.
-export const revalidate = 86400;
+// ISR — revalidate every 60 seconds to sync bio/contact updates from TheHub quickly.
+// Also triggered on-demand via revalidateTag('agents') from the sync pipeline.
+export const revalidate = 60;
 
 /**
  * SSG build-time generation — calls getAllAgentSlugs at build time.
@@ -94,13 +99,17 @@ export default async function AgentProfilePage({
     );
   }
 
-  // Fetch office name and agent properties in parallel
-  const [office, agentProperties] = await Promise.all([
+  // Fetch office name, agent properties, and TheHub data in parallel
+  const [office, agentProperties, theHubAgents] = await Promise.all([
     agent.officeId ? getOfficeById(agent.officeId) : Promise.resolve(null),
     getPropertiesByAgentId(agent.id),
+    fetchTheHubAgents(),
   ]);
 
   const officeName = office?.name ?? "REMAX Altitud";
+
+  const theHubLookups = buildTheHubLookups(theHubAgents);
+  const theHubMatch = findMatchingTheHubAgent(theHubLookups, agent.email, agent.name, agent.slug);
 
   // Story 4.4 Task 8: JSON-LD structured data for RealEstateAgent + BreadcrumbList (AC #2, #4, #5)
   const tBreadcrumbs = await getTranslations({ locale, namespace: "Breadcrumbs" });
@@ -125,7 +134,15 @@ export default async function AgentProfilePage({
         data-testid="breadcrumb-jsonld"
       />
       <div className="container py-8 md:py-12">
-        <AgentProfileHero agent={agent} officeName={officeName} locale={locale} />
+        <AgentProfileHero
+          agent={agent}
+          officeName={officeName}
+          locale={locale}
+          theHubBio={theHubMatch?.bio}
+          theHubSlug={theHubMatch?.slug}
+          theHubPhone={theHubMatch?.phone}
+          theHubEmail={theHubMatch?.email}
+        />
         <AgentListingsGrid
           properties={agentProperties as unknown as PropertySearchItem[]}
           locale={locale}

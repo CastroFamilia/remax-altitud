@@ -174,40 +174,13 @@ export async function trackPropertyViewInBackground(payload: TrackPropertyViewPa
   }
 }
 
+import { sendLeadToTheHubJob, type SendLeadToTheHubPayload } from "./thehub";
+
 /**
- * Forward user inquiries/leads securely to ALTITUD HUB.
+ * Forward user inquiries/leads securely to TheHub (delegates to sendLeadToTheHubJob).
  */
 export async function forwardLeadToHubInBackground(leadPayload: Record<string, unknown>) {
-  try {
-    const hubUrl = process.env.ALTITUD_HUB_URL;
-    const apiKey = process.env.ALTITUD_HUB_API_SECRET;
-
-    if (!hubUrl || !apiKey) {
-      console.log(
-        "Lead forwarding to Altitud Hub skipped: ALTITUD_HUB_URL or ALTITUD_HUB_API_SECRET not set.",
-      );
-      return;
-    }
-
-    const endpoint = `${hubUrl.replace(/\/$/, "")}/api/v1/leads`;
-
-    fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        ...leadPayload,
-        timestamp: new Date().toISOString(),
-      }),
-      keepalive: true,
-    }).catch((err) => {
-      console.error("Failed to forward lead to ALTITUD HUB:", err);
-    });
-  } catch (error) {
-    console.error("Failed to prepare lead forwarding payload:", error);
-  }
+  return sendLeadToTheHubJob(leadPayload as unknown as SendLeadToTheHubPayload);
 }
 
 export interface TrackQrScanPayload {
