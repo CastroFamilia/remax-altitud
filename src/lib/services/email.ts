@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 
 export interface SendEmailPayload {
-  to: string;
+  to: string | string[];
   subject: string;
   html: string;
 }

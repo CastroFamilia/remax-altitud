@@ -26,18 +26,20 @@ describe("TheHub Integration Service", () => {
   });
 
   describe("normalizeIntent", () => {
-    it("preserves valid intents ('buy', 'sell', 'rent', 'invest')", () => {
+    it("preserves valid intents ('buy', 'sell', 'rent', 'invest', 'recruit')", () => {
       expect(normalizeIntent("buy")).toEqual({ normalizedIntent: "buy" });
       expect(normalizeIntent("sell")).toEqual({ normalizedIntent: "sell" });
       expect(normalizeIntent("rent")).toEqual({ normalizedIntent: "rent" });
       expect(normalizeIntent("invest")).toEqual({ normalizedIntent: "invest" });
+      expect(normalizeIntent("recruit")).toEqual({ normalizedIntent: "recruit" });
       expect(normalizeIntent("BUY")).toEqual({ normalizedIntent: "buy" });
+      expect(normalizeIntent("RECRUIT")).toEqual({ normalizedIntent: "recruit" });
     });
 
-    it("maps non-standard intents (e.g. 'recruit') to 'invest' with extra note", () => {
-      const result = normalizeIntent("recruit");
+    it("maps non-standard intents (e.g. 'partner') to 'invest' with extra note", () => {
+      const result = normalizeIntent("partner");
       expect(result.normalizedIntent).toBe("invest");
-      expect(result.extraNote).toBe("Original Intent: recruit");
+      expect(result.extraNote).toBe("Original Intent: partner");
     });
   });
 
