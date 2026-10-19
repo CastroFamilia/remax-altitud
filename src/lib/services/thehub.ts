@@ -1,5 +1,16 @@
 import * as Sentry from "@sentry/nextjs";
 
+export interface RecruitmentDataPayload {
+  languages?: string;
+  area?: string;
+  car?: string;
+  time?: string;
+  financial?: string;
+  experience?: string;
+  commission?: string;
+  message?: string;
+}
+
 export interface SendLeadToTheHubPayload {
   id?: string;
   name: string;
@@ -12,6 +23,7 @@ export interface SendLeadToTheHubPayload {
   propertyId?: string | null;
   shortlistPropertyIds?: string[];
   notes?: string | null;
+  recruitmentData?: RecruitmentDataPayload | null;
   utmSource?: string | null;
   utmMedium?: string | null;
   utmCampaign?: string | null;
@@ -19,7 +31,7 @@ export interface SendLeadToTheHubPayload {
   status?: string;
 }
 
-export type TheHubIntent = "buy" | "sell" | "rent" | "invest";
+export type TheHubIntent = "buy" | "sell" | "rent" | "invest" | "recruit";
 
 export interface TheHubLeadInput {
   name: string;
@@ -31,6 +43,7 @@ export interface TheHubLeadInput {
   propertyId?: string;
   assignedAgentId?: string;
   utmData?: Record<string, unknown>;
+  recruitmentData?: RecruitmentDataPayload;
 }
 
 export interface TheHubApiResponse {
@@ -46,19 +59,50 @@ export interface TheHubApiResponse {
   };
 }
 
+export function parseRecruitmentNotes(notes?: string | null): RecruitmentDataPayload {
+  if (!notes) return {};
+  const fields: Record<string, string> = {};
+  const parts = notes.includes("\n") ? notes.split("\n") : notes.split(" | ");
+  for (const part of parts) {
+    const idx = part.indexOf(":");
+    if (idx > 0) {
+      const key = part.slice(0, idx).trim().toLowerCase();
+      const val = part.slice(idx + 1).trim();
+      fields[key] = val;
+    }
+  }
+  return {
+    languages: fields.languages || fields.idiomas,
+    area: fields.area || fields["área"],
+    car: fields["has vehicle"] || fields.vehiculo || fields["vehículo"] || fields.car,
+    time: fields["time availability"] || fields.tiempo || fields.time,
+    financial: fields.financial || fields.financiero,
+    experience: fields.experience || fields.experiencia,
+    commission:
+      fields["commission outlook"] || fields.comision || fields["comisión"] || fields.commission,
+    message: fields.message || fields.mensaje,
+  };
+}
+
 /**
- * Normalizes internal lead intent to TheHub's supported enum ("buy" | "sell" | "rent" | "invest").
+ * Normalizes internal lead intent to TheHub's supported enum ("buy" | "sell" | "rent" | "invest" | "recruit").
  */
 export function normalizeIntent(intent: string): {
   normalizedIntent: TheHubIntent;
   extraNote?: string;
 } {
   const lower = (intent || "").toLowerCase().trim();
-  if (lower === "buy" || lower === "sell" || lower === "rent" || lower === "invest") {
+  if (
+    lower === "buy" ||
+    lower === "sell" ||
+    lower === "rent" ||
+    lower === "invest" ||
+    lower === "recruit"
+  ) {
     return { normalizedIntent: lower as TheHubIntent };
   }
 
-  // If intent is "recruit" or other non-standard value, fallback to "invest" and add annotation
+  // Fallback for non-standard value to "invest"
   return {
     normalizedIntent: "invest",
     extraNote: `Original Intent: ${intent}`,
@@ -123,6 +167,7 @@ export async function sendLeadToTheHubJob(payload: SendLeadToTheHubPayload): Pro
       ...(propertyId ? { propertyId } : {}),
       ...(payload.assignedAgentId ? { assignedAgentId: payload.assignedAgentId } : {}),
       ...(Object.keys(utmData).length > 0 ? { utmData } : {}),
+      ...(payload.recruitmentData ? { recruitmentData: payload.recruitmentData } : {}),
     };
 
     const endpoint = `${baseUrl.replace(/\/$/, "")}/api/v1/leads`;
@@ -134,6 +179,47 @@ export async function sendLeadToTheHubJob(payload: SendLeadToTheHubPayload): Pro
     if (apiKey) {
       headers["Authorization"] = `Bearer ${apiKey}`;
       headers["X-API-Key"] = apiKey;
+    }
+
+    // If intent is recruitment, also dispatch to TheHub's recruiting candidate endpoint
+    if (payload.intent === "recruit") {
+      const candidateEndpoint = `${baseUrl.replace(/\/$/, "")}/api/v1/recruiting/candidates`;
+      const rec = payload.recruitmentData || parseRecruitmentNotes(payload.notes);
+
+      const candidatePayload = {
+        name: payload.name,
+        email: payload.email || "",
+        phone: payload.phone,
+        languages: rec.languages,
+        area: rec.area,
+        car: rec.car,
+        time: rec.time,
+        financial: rec.financial,
+        experience: rec.experience,
+        commission: rec.commission,
+        message: rec.message,
+      };
+
+      fetch(candidateEndpoint, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(candidatePayload),
+        signal: AbortSignal.timeout(10000),
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            const txt = await response.text().catch(() => "");
+            console.error(
+              `[TheHub Candidate Job] Failed to post candidate. Status: ${response.status}. Body: ${txt}`,
+            );
+          } else {
+            console.log("[TheHub Candidate Job] Candidate forwarded successfully to TheHub.");
+          }
+        })
+        .catch((err) => {
+          console.error("[TheHub Candidate Job] Error posting candidate to TheHub API:", err);
+          Sentry.captureException(err);
+        });
     }
 
     // Execute non-blocking fetch with 10s timeout

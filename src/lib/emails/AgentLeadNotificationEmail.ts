@@ -87,6 +87,42 @@ function getSourceLabel(
   return labels[source];
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatLeadMessageHtml(message: string): string {
+  // Support both newline-separated and pipe-separated lines
+  const rawLines = message.includes("\n")
+    ? message.split("\n")
+    : message.includes(" | ")
+      ? message.split(" | ")
+      : [message];
+
+  const lines = rawLines.map((l) => l.trim()).filter(Boolean);
+
+  if (lines.length <= 1 && !lines[0]?.includes(":")) {
+    return `<div style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(message)}</div>`;
+  }
+
+  return lines
+    .map((line) => {
+      const colonIdx = line.indexOf(":");
+      if (colonIdx > 0) {
+        const fieldName = line.slice(0, colonIdx).trim();
+        const fieldValue = line.slice(colonIdx + 1).trim();
+        return `<div style="margin-bottom: 8px; line-height: 1.5;"><strong style="color: #0b1528;">${escapeHtml(fieldName)}:</strong> ${escapeHtml(fieldValue)}</div>`;
+      }
+      return `<div style="margin-bottom: 8px; line-height: 1.5;">${escapeHtml(line)}</div>`;
+    })
+    .join("");
+}
+
 export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEmailProps): {
   subject: string;
   html: string;
@@ -194,8 +230,9 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
             border-radius: 6px;
             padding: 16px;
             margin-top: 12px;
-            font-style: italic;
             color: #374151;
+            white-space: pre-wrap;
+            line-height: 1.6;
           }
           .cta {
             text-align: center;
@@ -252,7 +289,7 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
                 props.leadMessage
                   ? `
                 <p style="margin-bottom: 4px; font-weight: bold; color: #0b1528;">${messageLabel}:</p>
-                <div class="message-box">${props.leadMessage}</div>
+                <div class="message-box">${formatLeadMessageHtml(props.leadMessage)}</div>
               `
                   : `<p style="color: #6b7280; font-size: 13px;">${noMessage}</p>`
               }

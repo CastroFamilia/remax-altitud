@@ -438,7 +438,7 @@ export function RecruitmentForm() {
       message ? `Message: ${message}` : null,
     ]
       .filter(Boolean)
-      .join(" | ");
+      .join("\n");
 
     try {
       const response = await fetch("/api/leads", {
@@ -451,6 +451,16 @@ export function RecruitmentForm() {
           source: "contact_form" as const,
           intent: "recruit" as const,
           notes: noteParts,
+          recruitmentData: {
+            languages: languages.trim() || undefined,
+            area,
+            car: hasCar === "yes" ? "Yes" : "No",
+            time: time.trim() || undefined,
+            financial: financial.trim() || undefined,
+            experience: salesExperience.trim() || undefined,
+            commission: commissionOnly.trim() || undefined,
+            message: message.trim() || undefined,
+          },
           referrer: typeof document !== "undefined" ? document.referrer || null : null,
         }),
       });
