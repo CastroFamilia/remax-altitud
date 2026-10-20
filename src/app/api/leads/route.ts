@@ -410,9 +410,7 @@ export async function POST(request: Request) {
             process.env.THE_HUB_API_URL ||
             process.env.THEHUB_API_URL ||
             process.env.ALTITUD_HUB_URL ||
-            (process.env.NODE_ENV === "production"
-              ? "https://thehub.remax-altitud.cr"
-              : "http://localhost:3000");
+            "https://dev.hub.remax-altitud.cr";
           const recruitingHubUrl = `${hubBase.replace(/\/$/, "")}/${locale}/broker/recruiting`;
 
           const { subject, html } = renderAgentLeadNotificationEmail({

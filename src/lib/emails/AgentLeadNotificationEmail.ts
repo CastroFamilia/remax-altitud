@@ -305,7 +305,7 @@ export function renderAgentLeadNotificationEmail(props: AgentLeadNotificationEma
               props.hubUrl || props.intent === "recruit"
                 ? `
               <div style="text-align: center; margin-top: 18px;">
-                <a href="${props.hubUrl || "https://thehub.remax-altitud.cr/es/broker/recruiting"}" style="display: inline-block; background-color: #0b1528; color: #ffffff; padding: 12px 26px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 14px; border: 1px solid #d4af37; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);">
+                <a href="${props.hubUrl || "https://dev.hub.remax-altitud.cr/es/broker/recruiting"}" style="display: inline-block; background-color: #0b1528; color: #ffffff; padding: 12px 26px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 14px; border: 1px solid #d4af37; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);">
                   ${isEs ? "Ver en el Hub →" : "View in The Hub →"}
                 </a>
               </div>

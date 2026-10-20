@@ -135,9 +135,7 @@ export async function sendLeadToTheHubJob(payload: SendLeadToTheHubPayload): Pro
       process.env.THE_HUB_API_URL ||
       process.env.THEHUB_API_URL ||
       process.env.ALTITUD_HUB_URL ||
-      (process.env.NODE_ENV === "production"
-        ? "https://thehub.remax-altitud.cr"
-        : "http://localhost:3000");
+      "https://dev.hub.remax-altitud.cr";
     const apiKey =
       process.env.THEHUB_API_KEY ||
       process.env.THEHUB_INTERNAL_API_SECRET ||

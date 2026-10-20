@@ -56,10 +56,10 @@ describe("AgentLeadNotificationEmail", () => {
       leadMessage: "Test message",
       source: "contact_form",
       intent: "recruit",
-      hubUrl: "https://thehub.remax-altitud.cr/es/broker/recruiting",
+      hubUrl: "https://dev.hub.remax-altitud.cr/es/broker/recruiting",
     });
 
     expect(html).toContain("Ver en el Hub →");
-    expect(html).toContain('href="https://thehub.remax-altitud.cr/es/broker/recruiting"');
+    expect(html).toContain('href="https://dev.hub.remax-altitud.cr/es/broker/recruiting"');
   });
 });
