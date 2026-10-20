@@ -352,7 +352,17 @@ export function ContactForm() {
 
 type RecruitErrors = Partial<Record<"name" | "email" | "phone" | "form", string>>;
 
-export function RecruitmentForm() {
+export interface RecruitmentFormProps {
+  defaultArea?: "dom" | "pz" | "either";
+  hideAreaSelect?: boolean;
+  hideFinancial?: boolean;
+}
+
+export function RecruitmentForm({
+  defaultArea = "either",
+  hideAreaSelect = false,
+  hideFinancial = false,
+}: RecruitmentFormProps = {}) {
   const t = useTranslations("JoinPage.form");
 
   const nameRef = useRef<HTMLInputElement>(null);
@@ -363,7 +373,7 @@ export function RecruitmentForm() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [languages, setLanguages] = useState("");
-  const [area, setArea] = useState("either");
+  const [area, setArea] = useState(defaultArea);
   const [hasCar, setHasCar] = useState("yes");
   const [hasComputer, setHasComputer] = useState("yes");
   const [time, setTime] = useState("");
@@ -406,7 +416,7 @@ export function RecruitmentForm() {
     setEmail("");
     setPhone("");
     setLanguages("");
-    setArea("either");
+    setArea(defaultArea);
     setHasCar("yes");
     setHasComputer("yes");
     setTime("");
@@ -436,7 +446,7 @@ export function RecruitmentForm() {
       `Has car: ${hasCar === "yes" ? "Yes" : "No"}`,
       `Has computer: ${hasComputer === "yes" ? "Yes" : "No"}`,
       time ? `Hours availability: ${time}` : null,
-      financial ? `Financial: ${financial}` : null,
+      !hideFinancial && financial ? `Financial: ${financial}` : null,
       salesExperience ? `Experience: ${salesExperience}` : null,
       commissionOnly ? `Commission outlook: ${commissionOnly}` : null,
       message ? `Message: ${message}` : null,
@@ -461,7 +471,7 @@ export function RecruitmentForm() {
             car: hasCar === "yes" ? "Yes" : "No",
             computer: hasComputer === "yes" ? "Yes" : "No",
             time: time.trim() || undefined,
-            financial: financial.trim() || undefined,
+            financial: !hideFinancial ? financial.trim() || undefined : undefined,
             experience: salesExperience.trim() || undefined,
             commission: commissionOnly.trim() || undefined,
             message: message.trim() || undefined,
@@ -636,21 +646,23 @@ export function RecruitmentForm() {
           )}
         </Field>
 
-        <Field label={t("areaLabel")}>
-          {(id) => (
-            <select
-              id={id}
-              name="area"
-              value={area}
-              onChange={(e) => setArea(e.target.value)}
-              className={selectClassName(false)}
-            >
-              <option value="pz">{t("areaOptionPZ")}</option>
-              <option value="dom">{t("areaOptionDOM")}</option>
-              <option value="either">{t("areaOptionEither")}</option>
-            </select>
-          )}
-        </Field>
+        {!hideAreaSelect ? (
+          <Field label={t("areaLabel")}>
+            {(id) => (
+              <select
+                id={id}
+                name="area"
+                value={area}
+                onChange={(e) => setArea(e.target.value as "dom" | "pz" | "either")}
+                className={selectClassName(false)}
+              >
+                <option value="pz">{t("areaOptionPZ")}</option>
+                <option value="dom">{t("areaOptionDOM")}</option>
+                <option value="either">{t("areaOptionEither")}</option>
+              </select>
+            )}
+          </Field>
+        ) : null}
 
         <Field label={t("carLabel")}>
           {(id) => (
@@ -696,18 +708,20 @@ export function RecruitmentForm() {
           )}
         </Field>
 
-        <Field label={t("financialLabel")}>
-          {(id) => (
-            <textarea
-              id={id}
-              name="financial"
-              placeholder={t("financialPlaceholder")}
-              value={financial}
-              onChange={(e) => setFinancial(e.target.value)}
-              className={textareaClassName(false)}
-            />
-          )}
-        </Field>
+        {!hideFinancial ? (
+          <Field label={t("financialLabel")}>
+            {(id) => (
+              <textarea
+                id={id}
+                name="financial"
+                placeholder={t("financialPlaceholder")}
+                value={financial}
+                onChange={(e) => setFinancial(e.target.value)}
+                className={textareaClassName(false)}
+              />
+            )}
+          </Field>
+        ) : null}
 
         <Field label={t("experienceLabel")}>
           {(id) => (

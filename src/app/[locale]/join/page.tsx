@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { SimplePageLayout } from "@/components/layout/simple-page-layout";
 import { RecruitmentForm } from "@/components/lead/contact-form";
 
@@ -55,6 +56,12 @@ function JoinPageContent() {
             />
           </div>
           <h3 className="text-xl font-bold text-brand-navy tracking-widest uppercase">Dominical</h3>
+          <Link
+            href="/join/dominical-uvita"
+            className="mt-2 text-sm font-semibold text-brand-gold hover:underline inline-flex items-center gap-1"
+          >
+            {t("viewDominicalPage")} &rarr;
+          </Link>
         </div>
         <div className="flex flex-col items-center">
           <div className="relative overflow-hidden rounded-2xl shadow-lg border border-brand-warm aspect-[16/9] w-full bg-brand-warm/20 mb-4">

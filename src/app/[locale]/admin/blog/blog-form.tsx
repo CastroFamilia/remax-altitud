@@ -271,9 +271,9 @@ export function BlogForm({ post, locale }: { post?: BlogPostRow; locale: string 
             <input
               required
               name="author"
-              defaultValue={post?.author || "RE/MAX Altitud"}
+              defaultValue={post?.author || "REMAX Altitud"}
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none text-sm"
-              placeholder="e.g. RE/MAX Altitud Editorial Team"
+              placeholder="e.g. REMAX Altitud Editorial Team"
             />
           </div>
         </div>
