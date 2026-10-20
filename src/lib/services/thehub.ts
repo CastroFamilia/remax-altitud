@@ -4,6 +4,7 @@ export interface RecruitmentDataPayload {
   languages?: string;
   area?: string;
   car?: string;
+  computer?: string;
   time?: string;
   financial?: string;
   experience?: string;
@@ -74,8 +75,21 @@ export function parseRecruitmentNotes(notes?: string | null): RecruitmentDataPay
   return {
     languages: fields.languages || fields.idiomas,
     area: fields.area || fields["área"],
-    car: fields["has vehicle"] || fields.vehiculo || fields["vehículo"] || fields.car,
-    time: fields["time availability"] || fields.tiempo || fields.time,
+    car:
+      fields["has vehicle"] ||
+      fields["has car"] ||
+      fields.vehiculo ||
+      fields["vehículo"] ||
+      fields.car ||
+      fields.carro,
+    computer: fields["has computer"] || fields.computadora || fields.computer || fields.laptop,
+    time:
+      fields["time availability"] ||
+      fields["hours availability"] ||
+      fields.tiempo ||
+      fields.time ||
+      fields.horas ||
+      fields.hours,
     financial: fields.financial || fields.financiero,
     experience: fields.experience || fields.experiencia,
     commission:
@@ -121,8 +135,11 @@ export async function sendLeadToTheHubJob(payload: SendLeadToTheHubPayload): Pro
       process.env.THE_HUB_API_URL ||
       process.env.THEHUB_API_URL ||
       process.env.ALTITUD_HUB_URL ||
-      "http://localhost:3000";
-    const apiKey = process.env.THEHUB_API_KEY || process.env.ALTITUD_HUB_API_SECRET;
+      "https://dev.hub.remax-altitud.cr";
+    const apiKey =
+      process.env.THEHUB_API_KEY ||
+      process.env.THEHUB_INTERNAL_API_SECRET ||
+      process.env.ALTITUD_HUB_API_SECRET;
 
     if (!baseUrl) {
       console.warn(
@@ -193,11 +210,13 @@ export async function sendLeadToTheHubJob(payload: SendLeadToTheHubPayload): Pro
         languages: rec.languages,
         area: rec.area,
         car: rec.car,
+        computer: rec.computer,
         time: rec.time,
         financial: rec.financial,
         experience: rec.experience,
         commission: rec.commission,
         message: rec.message,
+        notes: payload.notes || undefined,
       };
 
       fetch(candidateEndpoint, {

@@ -45,4 +45,21 @@ describe("AgentLeadNotificationEmail", () => {
     expect(html).toContain('<strong style="color: #0b1528;">Area:</strong> pz');
     expect(html).toContain('<strong style="color: #0b1528;">Has vehicle:</strong> Yes');
   });
+
+  it("includes 'Ver en el Hub' CTA button when intent is recruit or hubUrl is provided", () => {
+    const { html } = renderAgentLeadNotificationEmail({
+      locale: "es",
+      agentName: "RE/MAX Altitud",
+      leadName: "Juan Pérez",
+      leadPhone: "+506 8888 8888",
+      leadEmail: "juan@test.com",
+      leadMessage: "Test message",
+      source: "contact_form",
+      intent: "recruit",
+      hubUrl: "https://dev.hub.remax-altitud.cr/es/broker/recruiting",
+    });
+
+    expect(html).toContain("Ver en el Hub →");
+    expect(html).toContain('href="https://dev.hub.remax-altitud.cr/es/broker/recruiting"');
+  });
 });

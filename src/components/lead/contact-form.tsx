@@ -365,6 +365,7 @@ export function RecruitmentForm() {
   const [languages, setLanguages] = useState("");
   const [area, setArea] = useState("either");
   const [hasCar, setHasCar] = useState("yes");
+  const [hasComputer, setHasComputer] = useState("yes");
   const [time, setTime] = useState("");
   const [financial, setFinancial] = useState("");
   const [salesExperience, setSalesExperience] = useState("");
@@ -374,6 +375,7 @@ export function RecruitmentForm() {
 
   const [errors, setErrors] = useState<RecruitErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState<ToastKind>(null);
   useToastAutoDismiss(toast, setToast);
 
@@ -406,6 +408,7 @@ export function RecruitmentForm() {
     setLanguages("");
     setArea("either");
     setHasCar("yes");
+    setHasComputer("yes");
     setTime("");
     setFinancial("");
     setSalesExperience("");
@@ -430,8 +433,9 @@ export function RecruitmentForm() {
     const noteParts = [
       languages ? `Languages: ${languages}` : null,
       `Area: ${area}`,
-      `Has vehicle: ${hasCar === "yes" ? "Yes" : "No"}`,
-      time ? `Time availability: ${time}` : null,
+      `Has car: ${hasCar === "yes" ? "Yes" : "No"}`,
+      `Has computer: ${hasComputer === "yes" ? "Yes" : "No"}`,
+      time ? `Hours availability: ${time}` : null,
       financial ? `Financial: ${financial}` : null,
       salesExperience ? `Experience: ${salesExperience}` : null,
       commissionOnly ? `Commission outlook: ${commissionOnly}` : null,
@@ -455,6 +459,7 @@ export function RecruitmentForm() {
             languages: languages.trim() || undefined,
             area,
             car: hasCar === "yes" ? "Yes" : "No",
+            computer: hasComputer === "yes" ? "Yes" : "No",
             time: time.trim() || undefined,
             financial: financial.trim() || undefined,
             experience: salesExperience.trim() || undefined,
@@ -466,7 +471,7 @@ export function RecruitmentForm() {
       });
 
       if (response.ok || response.status === 409) {
-        setToast("success");
+        setSubmitted(true);
         resetForm();
       } else {
         setToast("error");
@@ -476,6 +481,42 @@ export function RecruitmentForm() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (submitted) {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        className="mx-auto w-full max-w-2xl rounded-2xl border border-emerald-200 bg-emerald-50/90 p-8 text-center shadow-sm md:p-10"
+      >
+        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+          <svg
+            className="h-9 w-9"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 className="text-2xl font-bold text-brand-navy">{t("successTitle")}</h3>
+        <p className="mx-auto mt-3 max-w-lg text-base leading-relaxed text-brand-navy/85">
+          {t("successToast")}
+        </p>
+        <div className="mt-8">
+          <button
+            type="button"
+            onClick={() => setSubmitted(false)}
+            className="inline-flex items-center justify-center rounded-md border border-brand-warm bg-white px-6 py-2.5 text-sm font-semibold text-brand-navy shadow-sm transition-colors hover:bg-brand-warm/20"
+          >
+            {t("submitAnother")}
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -622,6 +663,21 @@ export function RecruitmentForm() {
             >
               <option value="yes">{t("carOptionYes")}</option>
               <option value="no">{t("carOptionNo")}</option>
+            </select>
+          )}
+        </Field>
+
+        <Field label={t("computerLabel")}>
+          {(id) => (
+            <select
+              id={id}
+              name="computer"
+              value={hasComputer}
+              onChange={(e) => setHasComputer(e.target.value)}
+              className={selectClassName(false)}
+            >
+              <option value="yes">{t("computerOptionYes")}</option>
+              <option value="no">{t("computerOptionNo")}</option>
             </select>
           )}
         </Field>
