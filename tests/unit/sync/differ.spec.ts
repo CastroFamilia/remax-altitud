@@ -44,6 +44,22 @@ describe("computePropertyHash", () => {
     expect(computePropertyHash(a)).not.toBe(computePropertyHash(b));
   });
 
+  it("[P1] returns a different hash when propertyTypeEn changes (fixes #410)", () => {
+    const a = makeRawProperty({ propertyTypeEn: "House/Villa" });
+    const b = makeRawProperty({ propertyTypeEn: "Lot/Land" });
+    expect(computePropertyHash(a)).not.toBe(computePropertyHash(b));
+  });
+
+  it("[P1] returns a different hash when location or unparsedAddress changes (fixes #410)", () => {
+    const a = makeRawProperty({ location: "Jardin de Paramo" });
+    const b = makeRawProperty({ location: "Santa Elena" });
+    expect(computePropertyHash(a)).not.toBe(computePropertyHash(b));
+
+    const c = makeRawProperty({ unparsedAddress: "Calle 1" });
+    const d = makeRawProperty({ unparsedAddress: "Calle 2" });
+    expect(computePropertyHash(c)).not.toBe(computePropertyHash(d));
+  });
+
   it("[P1] returns a different hash when images change", () => {
     const a = makeRawProperty({ images: ["https://cdn.example.com/photo1.jpg"] });
     const b = makeRawProperty({ images: ["https://cdn.example.com/photo2.jpg"] });

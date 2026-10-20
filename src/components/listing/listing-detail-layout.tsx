@@ -27,6 +27,7 @@ import { MapViewLoader } from "@/components/map/map-view-loader";
 import { PrintButton } from "@/components/listing/print-button";
 import { SharePropertyButton } from "@/components/listing/share-property-button";
 import { PropertyPrintViewLoader } from "@/components/listing/property-print-view-loader";
+import { getPropertyDisplayId } from "@/lib/utils/property-id";
 
 function extractYoutubeVideoId(url: string): string | null {
   if (!url) return null;
@@ -90,6 +91,9 @@ export async function ListingDetailLayout({
 
   // Region from area slug
   const region = getRegionFromAreaSlug(property.areaSlug);
+
+  // Property public reference ID
+  const displayId = getPropertyDisplayId(property);
 
   // Amenities — stored as a string array in the DB
   const amenities = (property.amenities as unknown as string[]) ?? [];
@@ -169,6 +173,16 @@ export async function ListingDetailLayout({
                           typeof t
                         >[0],
                       )}
+                    </span>
+                  )}
+
+                  {/* Ref ID badge */}
+                  {displayId && (
+                    <span
+                      data-testid="listing-ref-id"
+                      className="ml-2 mt-2 inline-flex items-center rounded-full bg-slate-100 border border-slate-200 px-3 py-1 text-sm font-mono font-medium text-slate-700"
+                    >
+                      Ref: {displayId}
                     </span>
                   )}
                 </div>
@@ -366,7 +380,7 @@ export async function ListingDetailLayout({
             agentEmail={agent.email ?? null}
             agentName={agent.name}
             propertyTitle={title}
-            propertyRef={property.apiId ?? property.id}
+            propertyRef={displayId || property.apiId || property.id}
             locale={locale}
           />
         </div>

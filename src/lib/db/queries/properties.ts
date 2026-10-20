@@ -244,10 +244,17 @@ export function resolveSubLocation(
   const tEs = (titleEs ?? "").toLowerCase();
   const addr = (unparsedAddress ?? "").toLowerCase();
 
-  const combined = `${loc} ${tEn} ${tEs} ${addr}`;
-
+  // 1. First check explicit location and address fields (most reliable & authoritative)
+  const locAndAddr = `${loc} ${addr}`;
   for (const { keyword, slug, parent } of DISTRICT_KEYWORDS) {
-    // Only match keywords whose parent matches the resolved area
+    if (parent === areaSlug && locAndAddr.includes(keyword)) {
+      return slug;
+    }
+  }
+
+  // 2. Fallback: check marketing titles if not matched in address/location
+  const combined = `${loc} ${tEn} ${tEs} ${addr}`;
+  for (const { keyword, slug, parent } of DISTRICT_KEYWORDS) {
     if (parent === areaSlug && combined.includes(keyword)) {
       return slug;
     }
@@ -595,6 +602,7 @@ export async function getPropertyBySlug(slug: string) {
 
 export function mapPropertyRowToSearchItem(row: {
   id: string;
+  apiId?: string | null;
   slug: string;
   titleEn: string;
   titleEs: string;
@@ -619,6 +627,7 @@ export function mapPropertyRowToSearchItem(row: {
 }): PropertySearchItem {
   return {
     id: row.id,
+    apiId: row.apiId ?? undefined,
     slug: row.slug,
     titleEn: row.titleEn,
     titleEs: row.titleEs,
@@ -646,6 +655,7 @@ export function mapPropertyRowToSearchItem(row: {
 /** Columns to select for PropertySearchItem queries */
 export const propertySearchColumns = {
   id: properties.id,
+  apiId: properties.apiId,
   slug: properties.slug,
   titleEn: properties.titleEn,
   titleEs: properties.titleEs,
