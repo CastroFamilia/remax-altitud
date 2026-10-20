@@ -70,6 +70,7 @@ const leadInputSchema = z.object({
       languages: z.string().optional(),
       area: z.string().optional(),
       car: z.string().optional(),
+      computer: z.string().optional(),
       time: z.string().optional(),
       financial: z.string().optional(),
       experience: z.string().optional(),
@@ -405,6 +406,15 @@ export async function POST(request: Request) {
       if (shouldNotifyOffice) {
         try {
           const locale = data.preferredLanguage === "es" ? "es" : "en";
+          const hubBase =
+            process.env.THE_HUB_API_URL ||
+            process.env.THEHUB_API_URL ||
+            process.env.ALTITUD_HUB_URL ||
+            (process.env.NODE_ENV === "production"
+              ? "https://thehub.remax-altitud.cr"
+              : "http://localhost:3000");
+          const recruitingHubUrl = `${hubBase.replace(/\/$/, "")}/${locale}/broker/recruiting`;
+
           const { subject, html } = renderAgentLeadNotificationEmail({
             locale,
             agentName: "RE/MAX Altitud",
@@ -414,6 +424,7 @@ export async function POST(request: Request) {
             leadMessage: data.notes || null,
             source: data.source,
             intent: data.intent,
+            hubUrl: data.intent === "recruit" ? recruitingHubUrl : null,
           });
 
           const recipients =
