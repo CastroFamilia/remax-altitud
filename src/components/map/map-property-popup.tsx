@@ -18,6 +18,7 @@ import { Link } from "@/i18n/navigation";
 import { convertArea, type UnitSystem } from "@/lib/utils/units";
 import { PropertyPriceDisplay } from "@/components/property/property-price-display";
 import type { OptimizedImage } from "@/types/images";
+import { getPropertyDisplayId } from "@/lib/utils/property-id";
 
 /** Bi-directional property type display → normalized EN key */
 const TYPE_DISPLAY: Record<string, string> = {
@@ -70,6 +71,7 @@ const LAND_TYPES = new Set([
 interface MapPropertyPopupProps {
   property: {
     id: string;
+    apiId?: string | null;
     slug: string;
     titleEn: string;
     titleEs: string;
@@ -101,6 +103,7 @@ export function MapPropertyPopup({
   const t = useTranslations("SearchPage.MapView");
 
   const title = locale === "es" ? property.titleEs : property.titleEn;
+  const displayId = getPropertyDisplayId(property);
   const firstImage = property.images[0];
   const isLand = LAND_TYPES.has(property.propertyType ?? "");
 
@@ -175,15 +178,22 @@ export function MapPropertyPopup({
 
         {/* Card body */}
         <div className="p-3">
-          {/* Price — currency-aware */}
-          <PropertyPriceDisplay
-            priceUsd={property.priceUsd}
-            originalCurrency={property.currency}
-            originalPriceColones={originalPriceColones}
-            locale={locale}
-            variant="simple"
-            className="text-base font-bold text-foreground"
-          />
+          {/* Price row with Ref ID */}
+          <div className="flex items-baseline justify-between gap-2">
+            <PropertyPriceDisplay
+              priceUsd={property.priceUsd}
+              originalCurrency={property.currency}
+              originalPriceColones={originalPriceColones}
+              locale={locale}
+              variant="simple"
+              className="text-base font-bold text-foreground"
+            />
+            {displayId && (
+              <span className="text-[10px] font-mono font-medium text-muted-foreground flex-shrink-0">
+                Ref: {displayId}
+              </span>
+            )}
+          </div>
 
           {/* Title */}
           <p className="text-sm font-medium text-foreground mt-0.5 line-clamp-2">{title}</p>

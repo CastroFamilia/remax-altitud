@@ -152,6 +152,7 @@ export async function getPropertiesByAgentId(agentId: string) {
   const rows = await db
     .select({
       id: properties.id,
+      apiId: properties.apiId,
       slug: properties.slug,
       titleEn: properties.titleEn,
       titleEs: properties.titleEs,
@@ -167,6 +168,7 @@ export async function getPropertiesByAgentId(agentId: string) {
       images: properties.images,
       latitude: properties.latitude,
       longitude: properties.longitude,
+      apiRaw: properties.apiRaw,
     })
     .from(properties)
     .where(and(eq(properties.agentId, agentId), eq(properties.isVisible, true)))

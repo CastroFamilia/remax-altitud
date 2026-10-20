@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
+import { getPropertyDisplayId } from "@/lib/utils/property-id";
 
 interface Agent {
   id: string;
@@ -246,7 +247,7 @@ export default function AgentSelectionModal({
                                 {propTitle}
                               </div>
                               <div className="text-[10px] text-slate-500 mt-0.5 flex gap-2">
-                                <span>Ref: {p.apiId}</span>
+                                <span>Ref: {getPropertyDisplayId(p)}</span>
                                 <span>•</span>
                                 <span className="font-medium text-brand-navy">
                                   ${p.priceUsd ? p.priceUsd.toLocaleString() : "N/A"}

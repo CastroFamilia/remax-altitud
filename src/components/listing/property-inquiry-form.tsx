@@ -19,6 +19,7 @@ import { trackWhatsAppClick } from "@/components/lead/whatsapp-cta";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import type { Property } from "@/lib/db/schema/properties";
 import type { Agent } from "@/lib/db/schema/agents";
+import { getPropertyDisplayId } from "@/lib/utils/property-id";
 
 interface PropertyInquiryFormProps {
   property: Property;
@@ -46,7 +47,7 @@ export function PropertyInquiryForm({
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState(() => {
     const title = (locale === "es" ? property.titleEs : property.titleEn) ?? "";
-    const ref = property.apiId ?? property.id;
+    const ref = getPropertyDisplayId(property) || property.apiId || property.id;
     return t("messageDefault", { title, ref });
   });
   const [honeypot, setHoneypot] = useState("");
@@ -66,7 +67,7 @@ export function PropertyInquiryForm({
   const whatsappDigits = agent?.whatsapp ? agent.whatsapp.replace(/\D/g, "") : OFFICE_WHATSAPP;
   const agentName = agent?.name ?? "REMAX Altitud";
   const title = (locale === "es" ? property.titleEs : property.titleEn) ?? "";
-  const ref = property.apiId ?? property.id;
+  const ref = getPropertyDisplayId(property) || property.apiId || property.id;
 
   const whatsappMessage = buildWhatsAppMessage({
     agentName,

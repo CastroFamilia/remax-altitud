@@ -11,6 +11,7 @@ import { PropertyCard } from "@/components/property/property-card";
 import { PropertyCardSkeleton } from "@/components/property/property-card-skeleton";
 import { MapView } from "@/components/map/map-view-loader";
 import { ModalShimmer } from "@/components/shortlist/modal-shimmer";
+import { getPropertyDisplayId } from "@/lib/utils/property-id";
 
 const AgentSelectionModal = dynamic(() => import("@/components/shortlist/agent-selection-modal"), {
   ssr: false,
@@ -150,7 +151,8 @@ export function ShortlistPageClient() {
     const propertyLines = agentProperties
       .map((p) => {
         const title = locale === "es" ? p.titleEs || p.titleEn : p.titleEn;
-        return isOffice ? `- ${title} (${p.id})` : `- ${title} (Ref: ${p.apiId})`;
+        const ref = getPropertyDisplayId(p);
+        return isOffice ? `- ${title} (${ref})` : `- ${title} (Ref: ${ref})`;
       })
       .join("\n");
 
@@ -186,8 +188,9 @@ export function ShortlistPageClient() {
       const propertyLinesWithLinks = agentProperties
         .map((p) => {
           const title = locale === "es" ? p.titleEs || p.titleEn : p.titleEn;
+          const ref = getPropertyDisplayId(p);
           const link = `${window.location.origin}/${locale}/property/${p.slug}`;
-          return `- ${title} (Ref: ${p.apiId}) - ${link}`;
+          return `- ${title} (Ref: ${ref}) - ${link}`;
         })
         .join("\n");
 

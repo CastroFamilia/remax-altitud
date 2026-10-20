@@ -404,10 +404,24 @@ export async function searchProperties(
               sql`${communities.name} ~* ${pattern}`,
               sql`REPLACE(${properties.subLocation}, '-', ' ') ~* ${pattern}`,
               sql`REPLACE(${properties.areaSlug}, '-', ' ') ~* ${pattern}`,
+              sql`${properties.apiId} ILIKE ${"%" + token + "%"}`,
+              sql`(${properties.apiRaw}->>'ListingKey') ILIKE ${"%" + token + "%"}`,
             );
           }
         });
         searchCondition = and(...tokenConditions);
+      }
+
+      // Also allow matching if the whole query (or query stripped of "ref:", "id:", "#") matches apiId or ListingKey
+      const cleanId = queryTerm.replace(/^(ref|id)[:\s#]*/i, "").trim();
+      if (cleanId.length >= 3) {
+        const idMatchCondition = or(
+          sql`${properties.apiId} ILIKE ${"%" + cleanId + "%"}`,
+          sql`(${properties.apiRaw}->>'ListingKey') ILIKE ${"%" + cleanId + "%"}`,
+        );
+        searchCondition = searchCondition
+          ? or(searchCondition, idMatchCondition)
+          : idMatchCondition;
       }
     }
 

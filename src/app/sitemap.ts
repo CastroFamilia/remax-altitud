@@ -29,6 +29,7 @@ const staticRoutes = [
   "/contact",
   "/services",
   "/join",
+  "/join/dominical-uvita",
   "/find-your-dream-property",
 ];
 
