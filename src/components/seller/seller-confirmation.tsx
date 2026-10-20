@@ -68,13 +68,13 @@ export function SellerConfirmation({
             <div className="shrink-0 relative w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100 overflow-hidden">
               <Image
                 src="/images/brand/logo-remax-altitud.png"
-                alt="RE/MAX Altitud Logo"
+                alt="REMAX Altitud Logo"
                 fill
                 className="object-contain p-2"
               />
             </div>
             <div className="flex-1 space-y-1 text-center md:text-left">
-              <h4 className="text-base font-bold text-brand-navy">RE/MAX Altitud</h4>
+              <h4 className="text-base font-bold text-brand-navy">REMAX Altitud</h4>
               <p className="text-xs text-text-muted flex items-center justify-center md:justify-start gap-1">
                 <span>📍</span> Pérez Zeledón, San José, Costa Rica
               </p>

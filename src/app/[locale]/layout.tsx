@@ -92,7 +92,7 @@ export default async function LocaleLayout({
     process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
   return (
-    <html lang={locale} className={cn("font-sans", montserrat.variable)}>
+    <html lang={locale} className={cn("font-sans scroll-smooth", montserrat.variable)}>
       <head />
       <body>
         {gtmId && (

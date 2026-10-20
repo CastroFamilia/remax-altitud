@@ -415,7 +415,7 @@ export async function POST(request: Request) {
 
           const { subject, html } = renderAgentLeadNotificationEmail({
             locale,
-            agentName: "RE/MAX Altitud",
+            agentName: "REMAX Altitud",
             leadName: data.name,
             leadPhone: data.phone,
             leadEmail: data.email || null,
