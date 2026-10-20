@@ -156,6 +156,63 @@ function resolveListingType(p: {
   return "Sale";
 }
 
+/**
+ * Resolves canonical property type names, correcting known feed anomalies
+ * where land/farm properties are misclassified as "House/Villa" in the API.
+ * (e.g. Issue 410: farm/lot listings with 0 bedrooms and no construction).
+ */
+export function resolvePropertyType(p: {
+  PropertyTypeName_en: string;
+  PropertyTypeName_es: string;
+  ListingTitle_en: string;
+  ListingTitle_es?: string | null;
+  PublicRemarks_en?: string | null;
+  publicRemarks_es?: string | null;
+  ConstructionSize?: number | null;
+  ConstructionSizeLiving?: number | null;
+  BedroomsTotal?: number | null;
+  LotSizeArea?: number | null;
+}): { propertyTypeEn: string; propertyTypeEs: string } {
+  const currentEn = p.PropertyTypeName_en.trim();
+  const currentEs = p.PropertyTypeName_es.trim();
+
+  // If already Lot/Land or Farm, keep current
+  const lowerEn = currentEn.toLowerCase();
+  if (
+    lowerEn.includes("lot") ||
+    lowerEn.includes("land") ||
+    lowerEn.includes("farm") ||
+    lowerEn.includes("terreno") ||
+    lowerEn.includes("finca")
+  ) {
+    return { propertyTypeEn: currentEn, propertyTypeEs: currentEs };
+  }
+
+  // Detect when classified as House/Villa/Residential but has NO house
+  // (no construction, no bedrooms) and title explicitly indicates Lot / Farm / Land
+  const hasNoConstruction = !p.ConstructionSize && !p.ConstructionSizeLiving;
+  const hasNoBedrooms = !p.BedroomsTotal || p.BedroomsTotal === 0;
+
+  if (hasNoConstruction && hasNoBedrooms) {
+    const titleOnly = `${p.ListingTitle_en} ${p.ListingTitle_es ?? ""}`.toLowerCase();
+
+    // Check farm/finca or lot/terreno in title
+    if (
+      /\bfarm\b|\bfinca\b|\bhectare\b|\bhect[áa]reas?\b|\blot\b|\blote\b|\bland\b|\bterreno\b|\bquint[as]?\b|\bparcel[as]?\b/i.test(
+        titleOnly,
+      )
+    ) {
+      return { propertyTypeEn: "Lot/Land", propertyTypeEs: "Lote/Terreno" };
+    }
+
+    if (/\bacreage\b|\bacres?\b/i.test(titleOnly) && p.LotSizeArea && p.LotSizeArea > 1000) {
+      return { propertyTypeEn: "Lot/Land", propertyTypeEs: "Lote/Terreno" };
+    }
+  }
+
+  return { propertyTypeEn: currentEn, propertyTypeEs: currentEs };
+}
+
 export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
   const titleEn = p.ListingTitle_en;
   const titleEsRaw = (p.ListingTitle_es ?? "").trim();
@@ -175,11 +232,13 @@ export const rawPropertyApiSchema = rawPropertyApiSchemaBase.transform((p) => {
   const isCrc = p.CurrencyId === 12 || /crc|colon/i.test(p.CurrencyListPrice ?? "");
   const priceUsd = isCrc ? Math.round(p.ListPrice / getCrcToUsdRate()) : p.ListPrice;
 
+  const resolvedType = resolvePropertyType(p);
+
   return {
     apiId: p.ListingId,
     apiKey: p.ListingKey,
-    propertyTypeEn: p.PropertyTypeName_en,
-    propertyTypeEs: p.PropertyTypeName_es,
+    propertyTypeEn: resolvedType.propertyTypeEn,
+    propertyTypeEs: resolvedType.propertyTypeEs,
     listingType: resolveListingType(p),
     titleEn,
     titleEs,

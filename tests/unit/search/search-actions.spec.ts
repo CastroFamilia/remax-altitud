@@ -329,6 +329,16 @@ describe("searchProperties — Server Action for filter queries (AC #1, #6, #9)"
     expect(mockWhere).toHaveBeenCalled();
   });
 
+  it("[P0] searchProperties with 12-digit ListingKey q='400344703015' triggers ID search (fixes #412)", async () => {
+    await searchProperties({ q: "400344703015" });
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
+  it("[P0] searchProperties with numeric apiId q='165758' triggers ID search (fixes #412)", async () => {
+    await searchProperties({ q: "165758" });
+    expect(mockWhere).toHaveBeenCalled();
+  });
+
   it("[P0] searchProperties with Spanish type='Lote' maps to equivalent DB propertyTypes", async () => {
     await searchProperties({ type: "Lote" });
     expect(mockWhere).toHaveBeenCalled();

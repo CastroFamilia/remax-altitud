@@ -24,6 +24,7 @@ import {
 } from "@/lib/seo/structured-data";
 import { buildAlternatesMetadata, generateCanonicalUrl } from "@/lib/seo/metadata";
 import { SITE_ORIGIN } from "@/lib/seo/constants";
+import { getPropertyDisplayId } from "@/lib/utils/property-id";
 
 // Story 4.1 Task 1: Replace force-dynamic with ISR (NFR25, 4.1-UNIT-002)
 // Revalidate every 24 hours — the sync pipeline's revalidateTag('properties') call
@@ -104,7 +105,7 @@ export default async function PropertyPage({
     const officeName = office?.name ?? "REMAX Altitud";
 
     const propertyTitle = locale === "es" ? property.titleEs : property.titleEn;
-    const propertyRef = property.apiId;
+    const propertyRef = getPropertyDisplayId(property) || property.apiId;
 
     // Build WhatsApp URL with "no longer available" mentioned
     const whatsappDigits = assignedAgent?.whatsapp

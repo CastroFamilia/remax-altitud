@@ -28,6 +28,7 @@ import type { OptimizedImage } from "@/types/images";
 
 export type MapProperty = {
   id: string;
+  apiId?: string | null;
   slug: string;
   titleEn: string;
   titleEs: string;
@@ -353,10 +354,21 @@ export async function getPropertiesForMap(
             sql`${properties.titleEs} ~* ${pattern}`,
             sql`${properties.descriptionEn} ~* ${pattern}`,
             sql`${properties.descriptionEs} ~* ${pattern}`,
+            sql`${properties.apiId} ILIKE ${"%" + token + "%"}`,
+            sql`(${properties.apiRaw}->>'ListingKey') ILIKE ${"%" + token + "%"}`,
           );
         }
       });
       searchCondition = and(...tokenConditions);
+
+      const cleanId = queryTerm.replace(/^(ref|id)[:\s#]*/i, "").trim();
+      if (cleanId.length >= 3) {
+        const idMatch = or(
+          sql`${properties.apiId} ILIKE ${"%" + cleanId + "%"}`,
+          sql`(${properties.apiRaw}->>'ListingKey') ILIKE ${"%" + cleanId + "%"}`,
+        );
+        searchCondition = searchCondition ? or(searchCondition, idMatch) : idMatch;
+      }
     }
   }
 
@@ -409,6 +421,7 @@ export async function getPropertiesForMap(
   const rows = await db
     .select({
       id: properties.id,
+      apiId: properties.apiId,
       slug: properties.slug,
       titleEn: properties.titleEn,
       titleEs: properties.titleEs,

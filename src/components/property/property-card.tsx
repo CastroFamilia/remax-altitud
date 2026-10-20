@@ -8,6 +8,7 @@ import { PropertyPriceDisplay } from "@/components/property/property-price-displ
 import { formatUSD } from "@/lib/utils/currency";
 import type { PropertySearchItem } from "@/types/search";
 import { getDistrictLabel } from "@/lib/locations";
+import { getPropertyDisplayId } from "@/lib/utils/property-id";
 
 interface PropertyCardProps {
   property: PropertySearchItem;
@@ -290,6 +291,7 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
       const combined = `${title.toLowerCase()} ${unparsedAddress} ${apiLocation}`;
       const rivasBarrios: { keyword: string; label: string }[] = [
         { keyword: "san francisco de rivas", label: "San Francisco de Rivas" },
+        { keyword: "pueblo nuevo", label: "Pueblo Nuevo de Rivas" },
         { keyword: "convento", label: "Convento" },
         { keyword: "miravalles", label: "Miravalles" },
         { keyword: "san gerardo", label: "San Gerardo" },
@@ -304,6 +306,38 @@ function getPropertyLocation(property: PropertySearchItem, locale: string): stri
         { keyword: "division", label: "División" },
       ];
       for (const barrio of rivasBarrios) {
+        if (combined.includes(barrio.keyword)) {
+          label = barrio.label;
+          break;
+        }
+      }
+    }
+
+    // For "paramo", refine to specific barrio if identifiable
+    if (subLocation === "paramo") {
+      const title = locale === "es" ? (property.titleEs ?? property.titleEn) : property.titleEn;
+      const unparsedAddress = (apiRaw?.UnparsedAddress as string | undefined)?.toLowerCase() ?? "";
+      const apiLocation = (apiRaw?.Location as string | undefined)?.toLowerCase() ?? "";
+      const combined = `${title.toLowerCase()} ${unparsedAddress} ${apiLocation}`;
+      const paramoBarrios: { keyword: string; label: string }[] = [
+        { keyword: "jardin de paramo", label: "Jardín de Páramo" },
+        { keyword: "jardín de páramo", label: "Jardín de Páramo" },
+        { keyword: "jardin", label: "Jardín de Páramo" },
+        { keyword: "jardín", label: "Jardín de Páramo" },
+        { keyword: "san ramon sur", label: "San Ramón Sur" },
+        { keyword: "san ramón sur", label: "San Ramón Sur" },
+        { keyword: "san ramon norte", label: "San Ramón Norte" },
+        { keyword: "san ramón norte", label: "San Ramón Norte" },
+        { keyword: "san rafael norte", label: "San Rafael Norte" },
+        { keyword: "siberia", label: "Siberia" },
+        { keyword: "division", label: "División" },
+        { keyword: "división", label: "División" },
+        { keyword: "la ese", label: "La Ese" },
+        { keyword: "la hortensia", label: "La Hortensia" },
+        { keyword: "berlin", label: "Berlín" },
+        { keyword: "berlín", label: "Berlín" },
+      ];
+      for (const barrio of paramoBarrios) {
         if (combined.includes(barrio.keyword)) {
           label = barrio.label;
           break;
@@ -499,6 +533,7 @@ export function PropertyCard({
   const isCompact = variant === "compact";
 
   const usdPrice = formatUSD(property.priceUsd || 0, locale);
+  const displayId = getPropertyDisplayId(property);
 
   const apiRaw = property.apiRaw as Record<string, unknown> | undefined;
   const originalPriceColones =
@@ -638,7 +673,7 @@ export function PropertyCard({
         >
           <div className="flex flex-col gap-1 w-full">
             {/* Price Line */}
-            <div className="flex items-center justify-between w-full">
+            <div className="flex items-baseline justify-between w-full gap-2">
               <PropertyPriceDisplay
                 priceUsd={property.priceUsd || 0}
                 originalCurrency={property.currency}
@@ -647,6 +682,15 @@ export function PropertyCard({
                 variant="simple"
                 className="font-bold text-xl text-brand-navy tracking-tight"
               />
+
+              {displayId && (
+                <span
+                  data-testid="property-ref-id"
+                  className="text-[11px] font-mono font-medium text-text-secondary/80 flex-shrink-0"
+                >
+                  Ref: {displayId}
+                </span>
+              )}
 
               {/* Hidden elements to satisfy currency unit tests */}
               <div className="hidden">

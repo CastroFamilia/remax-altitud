@@ -7,6 +7,7 @@ import { convertArea } from "@/lib/utils/units";
 import { SITE_ORIGIN } from "@/lib/seo/constants";
 import QRCode from "react-qr-code";
 import { PropertyImage } from "@/components/property/property-image";
+import { getPropertyDisplayId } from "@/lib/utils/property-id";
 
 import { useEffect, useState } from "react";
 
@@ -27,6 +28,7 @@ export function PropertyPrintView({ property, locale, agent, officeName }: Prope
   }, []);
 
   const title = (locale === "es" ? property.titleEs : property.titleEn) || "";
+  const displayId = getPropertyDisplayId(property);
   const images = normalizePropertyImages(property.images, title);
 
   const mainImage = images[0];
@@ -196,9 +198,16 @@ export function PropertyPrintView({ property, locale, agent, officeName }: Prope
 
           {/* Property Title & Location */}
           <div className="mb-4 flex-grow">
-            <p className="text-amber-600 text-[10px] font-bold tracking-[0.2em] uppercase mb-2">
-              {area}
-            </p>
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-amber-600 text-[10px] font-bold tracking-[0.2em] uppercase">
+                {area}
+              </p>
+              {displayId && (
+                <span className="text-[11px] font-mono font-medium text-gray-500">
+                  Ref: {displayId}
+                </span>
+              )}
+            </div>
             <h1 className="text-2xl font-black leading-tight tracking-tight mb-4 text-gray-900 line-clamp-4">
               {title}
             </h1>

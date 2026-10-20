@@ -31,6 +31,7 @@ import type { OptimizedImage } from "./images";
 
 export interface PropertySearchItem {
   id: string;
+  apiId?: string;
   slug: string;
   titleEn: string;
   titleEs: string;

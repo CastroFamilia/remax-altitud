@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { resolveAreaSlug } from "@/lib/db/queries/properties";
+import { resolveAreaSlug, resolveSubLocation } from "@/lib/db/queries/properties";
+import { resolvePropertyType } from "@/lib/sync/schemas/property";
 
 describe("resolveAreaSlug", () => {
   // Helpers to create raw property objects with minimal fields
@@ -134,3 +135,80 @@ describe("resolveAreaSlug", () => {
     expect(resolveAreaSlug(raw)).toBe("dominical");
   });
 });
+
+describe("resolveSubLocation (Issue #410)", () => {
+  it("resolves property 166077 (El Jardín de Páramo) to 'paramo' despite poetic 'sobre las nubes' in title", () => {
+    // Property 166077 had location 'Jardín' and title containing 'sobre las nubes'
+    // Before fix: 'las nubes' matched Santa Elena barrio before paramo.
+    // After fix: explicit location/address is checked first and 'jardin de paramo' alias matches paramo.
+    const sub = resolveSubLocation(
+      "Jardin",
+      "perez-zeledon",
+      "Mountain Cabins at 2,200m ASL in El Jardin de Paramo",
+      "Cabañas de Montaña a 2,200m de Altitud en El Jardin de Paramo, sobre las nubes",
+      "El Jardin de Paramo",
+    );
+    expect(sub).toBe("paramo");
+  });
+
+  it("resolves 'jardin de paramo' location to 'paramo'", () => {
+    const sub = resolveSubLocation("Jardín de Páramo", "perez-zeledon");
+    expect(sub).toBe("paramo");
+  });
+
+  it("resolves 'Pueblo Nuevo, Rivas' to 'rivas'", () => {
+    const sub = resolveSubLocation("Pueblo Nuevo, Rivas", "perez-zeledon");
+    expect(sub).toBe("rivas");
+  });
+
+  it("resolves 'Santa Elena' explicitly to 'santa-elena-de-el-general'", () => {
+    const sub = resolveSubLocation("Santa Elena", "perez-zeledon");
+    expect(sub).toBe("santa-elena-de-el-general");
+  });
+});
+
+describe("resolvePropertyType (Issue #410)", () => {
+  it("corrects House/Villa to Lot/Land when property has 0 bedrooms, 0 construction, and title is a farm/lot", () => {
+    // Property 165758 in feed: House/Villa, 0 beds, 0 m2, title is 1.4-Hectare Farm
+    const res = resolvePropertyType({
+      PropertyTypeName_en: "House/Villa",
+      PropertyTypeName_es: "Casa/Villa",
+      ListingTitle_en: "1.4-Hectare Farm in Pueblo Nuevo de Rivas",
+      ListingTitle_es: "Finca de 1.4 Hectáreas en Pueblo Nuevo de Rivas",
+      ConstructionSize: 0,
+      BedroomsTotal: 0,
+      LotSizeArea: 14000,
+    });
+    expect(res.propertyTypeEn).toBe("Lot/Land");
+    expect(res.propertyTypeEs).toBe("Lote/Terreno");
+  });
+
+  it("preserves House/Villa when property actually has bedrooms or construction", () => {
+    const res = resolvePropertyType({
+      PropertyTypeName_en: "House/Villa",
+      PropertyTypeName_es: "Casa/Villa",
+      ListingTitle_en: "Lovely Mountain House",
+      ListingTitle_es: "Hermosa Casa de Montaña",
+      ConstructionSize: 180,
+      BedroomsTotal: 3,
+      LotSizeArea: 1000,
+    });
+    expect(res.propertyTypeEn).toBe("House/Villa");
+    expect(res.propertyTypeEs).toBe("Casa/Villa");
+  });
+
+  it("preserves Lot/Land when already Lot/Land", () => {
+    const res = resolvePropertyType({
+      PropertyTypeName_en: "Lot/Land",
+      PropertyTypeName_es: "Lote/Terreno",
+      ListingTitle_en: "Panoramic View Lot",
+      ListingTitle_es: "Lote con Vista Panorámica",
+      ConstructionSize: 0,
+      BedroomsTotal: 0,
+      LotSizeArea: 5000,
+    });
+    expect(res.propertyTypeEn).toBe("Lot/Land");
+    expect(res.propertyTypeEs).toBe("Lote/Terreno");
+  });
+});
+
