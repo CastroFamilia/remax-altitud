@@ -17,6 +17,7 @@ import { buildWhatsAppMessage, buildWhatsAppUrl } from "@/lib/utils/whatsapp";
 import { extractUtmParams } from "@/lib/utils/utm";
 import { trackWhatsAppClick } from "@/components/lead/whatsapp-cta";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+import { Link } from "@/i18n/navigation";
 import type { Property } from "@/lib/db/schema/properties";
 import type { Agent } from "@/lib/db/schema/agents";
 import { getPropertyDisplayId } from "@/lib/utils/property-id";
@@ -255,22 +256,54 @@ export function PropertyInquiryForm({
       {/* Agent details or Office Fallback */}
       <div className="flex items-start gap-4 pb-4 border-b border-brand-warm">
         <div className="relative shrink-0">
-          <Image
-            src={photoSrc}
-            alt={tAgent("agentPhotoAlt", { name: agentName })}
-            width={64}
-            height={64}
-            sizes="64px"
-            className="rounded-full object-cover border border-brand-warm shadow-sm"
-          />
+          {agent?.slug ? (
+            <Link
+              href={`/agents/${agent.slug}`}
+              locale={locale}
+              className="shrink-0 block group"
+              title={agentName}
+              data-testid="agent-photo-link"
+            >
+              <Image
+                src={photoSrc}
+                alt={tAgent("agentPhotoAlt", { name: agentName })}
+                width={64}
+                height={64}
+                sizes="64px"
+                className="rounded-full object-cover border border-brand-warm shadow-sm transition-transform group-hover:scale-105"
+              />
+            </Link>
+          ) : (
+            <Image
+              src={photoSrc}
+              alt={tAgent("agentPhotoAlt", { name: agentName })}
+              width={64}
+              height={64}
+              sizes="64px"
+              className="rounded-full object-cover border border-brand-warm shadow-sm"
+            />
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <span className="text-[10px] uppercase font-extrabold tracking-wider text-brand-gold">
             {tAgent("contactAgent")}
           </span>
-          <h3 className="text-base font-black text-brand-navy truncate leading-tight mt-0.5">
-            {agentName}
-          </h3>
+          {agent?.slug ? (
+            <Link
+              href={`/agents/${agent.slug}`}
+              locale={locale}
+              className="group block"
+              data-testid="agent-name-link"
+            >
+              <h3 className="text-base font-black text-brand-navy truncate leading-tight mt-0.5 transition-colors group-hover:text-brand-burgundy hover:underline">
+                {agentName}
+              </h3>
+            </Link>
+          ) : (
+            <h3 className="text-base font-black text-brand-navy truncate leading-tight mt-0.5">
+              {agentName}
+            </h3>
+          )}
           {languages && (
             <p className="text-xs text-text-muted mt-0.5 font-medium truncate">{languages}</p>
           )}

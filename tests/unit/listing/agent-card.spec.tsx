@@ -63,6 +63,18 @@ vi.mock("@/components/lead/whatsapp-cta", () => ({
   trackWhatsAppClick: vi.fn(),
 }));
 
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({
+    href,
+    children,
+    ...props
+  }: {
+    href: string;
+    children: React.ReactNode;
+    [key: string]: unknown;
+  }) => <a href={href} {...props}>{children}</a>,
+}));
+
 vi.mock("@/lib/utils/utm", () => ({
   extractUtmParams: vi.fn(() => ({})),
 }));
@@ -245,5 +257,11 @@ describe("Story 4.2: AgentCard component", () => {
     const card = screen.getByTestId("agent-card");
     const ariaLabel = card.getAttribute("aria-label");
     expect(ariaLabel).toBeTruthy();
+  });
+
+  it("renders a link to the agent profile when agent has a slug", () => {
+    render(<AgentCard {...defaultProps} />);
+    const link = screen.getByRole("link", { name: mockAgent.name });
+    expect(link.getAttribute("href")).toBe(`/agents/${mockAgent.slug}`);
   });
 });

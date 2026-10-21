@@ -13,6 +13,7 @@ import { buildWhatsAppMessage, buildWhatsAppUrl } from "@/lib/utils/whatsapp";
 import { extractUtmParams } from "@/lib/utils/utm";
 import { trackWhatsAppClick } from "@/components/lead/whatsapp-cta";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+import { Link } from "@/i18n/navigation";
 import type { Agent } from "@/lib/db/schema/agents";
 
 interface AgentCardProps {
@@ -94,18 +95,40 @@ export function AgentCard({
       {/* Agent photo + info */}
       <div className="flex items-start gap-4">
         <div className="shrink-0">
-          <Image
-            src={photoSrc}
-            alt={t("agentPhotoAlt", { name: agent.name })}
-            width={80}
-            height={80}
-            sizes="80px"
-            className="rounded-full object-cover"
-            data-testid="agent-photo"
-          />
+          {agent.slug ? (
+            <Link href={`/agents/${agent.slug}`} locale={locale} className="shrink-0 block group">
+              <Image
+                src={photoSrc}
+                alt={t("agentPhotoAlt", { name: agent.name })}
+                width={80}
+                height={80}
+                sizes="80px"
+                className="rounded-full object-cover transition-transform group-hover:scale-105"
+                data-testid="agent-photo"
+              />
+            </Link>
+          ) : (
+            <Image
+              src={photoSrc}
+              alt={t("agentPhotoAlt", { name: agent.name })}
+              width={80}
+              height={80}
+              sizes="80px"
+              className="rounded-full object-cover"
+              data-testid="agent-photo"
+            />
+          )}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-bold text-brand-navy">{agent.name}</h3>
+          {agent.slug ? (
+            <Link href={`/agents/${agent.slug}`} locale={locale} className="group block">
+              <h3 className="text-lg font-bold text-brand-navy transition-colors group-hover:text-brand-burgundy hover:underline">
+                {agent.name}
+              </h3>
+            </Link>
+          ) : (
+            <h3 className="text-lg font-bold text-brand-navy">{agent.name}</h3>
+          )}
           {languages && (
             <p className="mt-1 text-sm text-text-muted" data-testid="agent-languages">
               {languages}
