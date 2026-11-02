@@ -1,24 +1,22 @@
 /**
- * SellPage — Story 5.1 (AC #1, #12, #13, #14) + Story 5.2 (AC #5)
+ * SellPage — nueva landing de captación de propietarios (antes /vender).
  *
- * SSG seller landing page at /{locale}/sell.
- * Follows the exact pattern of src/app/[locale]/about/page.tsx.
- * No export const dynamic = 'force-static' needed — SSG is inherited from layout's
- * generateStaticParams().
+ * Reemplaza la landing anterior (SellerHero + SellerForm). Los videos muestran
+ * "Próximamente" / "Coming soon" hasta que se les pase un videoUrl.
  *
- * SellerForm is lazy-loaded via SellerFormLoader (next/dynamic, ssr: false) — R-006 compliance
- * (AC #14). SellerFormLoader is a thin 'use client' wrapper following the PropertyGalleryLoader
- * pattern — required by Turbopack which enforces that dynamic(ssr:false) must live in a Client
- * Component.
- *
- * Story 5.2 adds the CMA form as a secondary CTA section below the seller form.
+ * El formulario se carga con SellerFormLoaderV2 (next/dynamic, ssr: false) —
+ * wrapper 'use client' requerido por Turbopack (mismo patrón que PropertyGalleryLoader).
  */
 
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { buildAlternatesMetadata } from "@/lib/seo/metadata";
-import { SellerHero } from "@/components/seller/seller-hero";
-import { SellerFormLoader } from "@/components/seller/seller-form-loader";
+import { SellerHeroV2 } from "@/components/seller-v2/seller-hero-v2";
+import { SellerPillars } from "@/components/seller-v2/seller-pillars";
+import { SellerNetworkMap } from "@/components/seller-v2/seller-network-map";
+import { SellerMythsVideos } from "@/components/seller-v2/seller-myths-videos";
+import { SellerFormLoaderV2 } from "@/components/seller-v2/seller-form-loader-v2";
+import { SellerFaqV2 } from "@/components/seller-v2/seller-faq-v2";
 
 import { getAllAgents } from "@/lib/db/queries/agents";
 import { getOfficeById } from "@/lib/db/queries/offices";
@@ -31,14 +29,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "SellerPage" });
+  const t = await getTranslations({ locale, namespace: "SellerPageV2.meta" });
   return {
-    title: t("meta.title"),
-    description: t("meta.description"),
+    title: t("title"),
+    description: t("description"),
     ...buildAlternatesMetadata("/sell"),
     openGraph: {
-      title: t("meta.ogTitle"),
-      description: t("meta.ogDescription"),
+      title: t("ogTitle"),
+      description: t("ogDescription"),
       type: "website",
     },
   };
@@ -48,9 +46,8 @@ export default async function SellPage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // Stub agent for confirmation screen — Story 5.3 replaces with routing logic.
-  // Wrapped in try/catch so SSG build continues if DB is unavailable —
-  // pages are generated on-demand via ISR fallback (same pattern as agents/page.tsx).
+  // Agente para la pantalla de confirmación. try/catch para que el build continúe
+  // si la base de datos no está disponible.
   let fallbackAgent: Awaited<ReturnType<typeof getAllAgents>>[0] | null = null;
   let officeName = "REMAX Altitud";
   try {
@@ -63,9 +60,24 @@ export default async function SellPage({ params }: { params: Promise<{ locale: s
   }
 
   return (
-    <main>
-      <SellerHero locale={locale} />
-      <SellerFormLoader locale={locale} fallbackAgent={fallbackAgent} officeName={officeName} />
+    <main className="min-h-screen bg-slate-50">
+      {/* 1. Hero con propuesta de valor y video vertical 9:16 */}
+      <SellerHeroV2 locale={locale} />
+
+      {/* 2. Los 3 Pilares del Método Altitud */}
+      <SellerPillars locale={locale} />
+
+      {/* 3. El Poder de la Red: mapa de oficinas y +200 agentes */}
+      <SellerNetworkMap locale={locale} />
+
+      {/* 4. Derribando Mitos (videos 2 y 3) */}
+      <SellerMythsVideos locale={locale} />
+
+      {/* 5. Formulario de captación (lazy-loaded) */}
+      <SellerFormLoaderV2 locale={locale} fallbackAgent={fallbackAgent} officeName={officeName} />
+
+      {/* 6. Preguntas frecuentes con JSON-LD */}
+      <SellerFaqV2 locale={locale} />
     </main>
   );
 }
