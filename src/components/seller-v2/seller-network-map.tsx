@@ -44,9 +44,7 @@ export async function SellerNetworkMap({ locale }: SellerNetworkMapProps) {
             <h2 className="mt-2 text-2xl font-bold sm:text-3xl md:text-4xl leading-tight">
               {t("heading")}
             </h2>
-            <p className="mt-4 text-base text-white/80 leading-relaxed">
-              {t("subheading")}
-            </p>
+            <p className="mt-4 text-base text-white/80 leading-relaxed">{t("subheading")}</p>
 
             {/* 3 Estadísticas / Fortalezas */}
             <div className="mt-8 space-y-6">
@@ -55,12 +53,8 @@ export async function SellerNetworkMap({ locale }: SellerNetworkMapProps) {
                   {t("stat1Number")}
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">
-                    {t("stat1Label")}
-                  </h3>
-                  <p className="mt-0.5 text-xs sm:text-sm text-white/70">
-                    {t("stat1Desc")}
-                  </p>
+                  <h3 className="text-base font-bold text-white">{t("stat1Label")}</h3>
+                  <p className="mt-0.5 text-xs sm:text-sm text-white/70">{t("stat1Desc")}</p>
                 </div>
               </div>
 
@@ -69,12 +63,8 @@ export async function SellerNetworkMap({ locale }: SellerNetworkMapProps) {
                   {t("stat2Number")}
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">
-                    {t("stat2Label")}
-                  </h3>
-                  <p className="mt-0.5 text-xs sm:text-sm text-white/70">
-                    {t("stat2Desc")}
-                  </p>
+                  <h3 className="text-base font-bold text-white">{t("stat2Label")}</h3>
+                  <p className="mt-0.5 text-xs sm:text-sm text-white/70">{t("stat2Desc")}</p>
                 </div>
               </div>
 
@@ -83,12 +73,8 @@ export async function SellerNetworkMap({ locale }: SellerNetworkMapProps) {
                   {t("stat3Number")}
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">
-                    {t("stat3Label")}
-                  </h3>
-                  <p className="mt-0.5 text-xs sm:text-sm text-white/70">
-                    {t("stat3Desc")}
-                  </p>
+                  <h3 className="text-base font-bold text-white">{t("stat3Label")}</h3>
+                  <p className="mt-0.5 text-xs sm:text-sm text-white/70">{t("stat3Desc")}</p>
                 </div>
               </div>
             </div>

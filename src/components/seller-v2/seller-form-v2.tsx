@@ -174,12 +174,8 @@ export function SellerFormV2({
           <span className="text-xs font-bold uppercase tracking-wider text-brand-gold">
             Cero Costo · Cero Compromiso
           </span>
-          <h2 className="mt-2 text-2xl font-bold text-brand-navy sm:text-3xl">
-            {t("heading")}
-          </h2>
-          <p className="mt-2 text-sm text-slate-600">
-            {t("subheading")}
-          </p>
+          <h2 className="mt-2 text-2xl font-bold text-brand-navy sm:text-3xl">{t("heading")}</h2>
+          <p className="mt-2 text-sm text-slate-600">{t("subheading")}</p>
         </div>
 
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
@@ -238,9 +234,7 @@ export function SellerFormV2({
               placeholder={t("namePlaceholder")}
               className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
             />
-            {errors.name && (
-              <p className="mt-1 text-xs text-red-600">{errors.name}</p>
-            )}
+            {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
           </div>
 
           {/* Teléfono / WhatsApp */}
@@ -256,9 +250,7 @@ export function SellerFormV2({
               className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
             />
             <p className="mt-1 text-xs text-slate-500">{t("phoneHint")}</p>
-            {errors.phone && (
-              <p className="mt-1 text-xs text-red-600">{errors.phone}</p>
-            )}
+            {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
           </div>
 
           {/* Email */}
@@ -273,9 +265,7 @@ export function SellerFormV2({
               placeholder={t("emailPlaceholder")}
               className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
             />
-            {errors.email && (
-              <p className="mt-1 text-xs text-red-600">{errors.email}</p>
-            )}
+            {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
           </div>
 
           {/* Detalles opcionales */}
@@ -310,9 +300,7 @@ export function SellerFormV2({
 
         {/* Salida Directa a WhatsApp */}
         <div className="mt-8 border-t border-slate-100 pt-6 text-center">
-          <p className="text-xs text-slate-500 mb-2">
-            {t("directWhatsApp")}
-          </p>
+          <p className="text-xs text-slate-500 mb-2">{t("directWhatsApp")}</p>
           <a
             href="https://wa.me/50660788887?text=Hola,%20quisiera%20consultar%20sobre%20vender%20mi%20propiedad%20con%20REMAX%20Altitud."
             target="_blank"

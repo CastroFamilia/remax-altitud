@@ -18,10 +18,7 @@ export async function SellerHeroV2({ locale }: SellerHeroV2Props) {
     t("badges.pacificoSur"),
   ];
 
-  const globalBadges = [
-    t("badges.todoElPais"),
-    t("badges.todoElMundo"),
-  ];
+  const globalBadges = [t("badges.todoElPais"), t("badges.todoElMundo")];
 
   return (
     <section className="relative overflow-hidden bg-brand-navy py-12 px-4 md:py-20 lg:py-24">
@@ -112,9 +109,13 @@ export async function SellerHeroV2({ locale }: SellerHeroV2Props) {
             {/* Divisiones especializadas */}
             <div className="mt-6 flex flex-wrap items-center gap-2 pt-2 border-t border-white/10 text-xs text-white/80">
               <span className="font-semibold text-brand-gold">Divisiones especializadas:</span>
-              <span className="rounded bg-white/10 px-2 py-0.5 font-medium">REMAX Collection (Lujo)</span>
+              <span className="rounded bg-white/10 px-2 py-0.5 font-medium">
+                REMAX Collection (Lujo)
+              </span>
               <span className="rounded bg-white/10 px-2 py-0.5 font-medium">REMAX Commercial</span>
-              <span className="rounded bg-white/10 px-2 py-0.5 font-medium">Especialistas en Fincas</span>
+              <span className="rounded bg-white/10 px-2 py-0.5 font-medium">
+                Especialistas en Fincas
+              </span>
             </div>
 
             {/* CTAs Duos */}

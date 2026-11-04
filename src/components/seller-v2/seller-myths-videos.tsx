@@ -19,9 +19,7 @@ export async function SellerMythsVideos({ locale }: SellerMythsVideosProps) {
           <h2 className="mt-2 text-2xl font-bold text-brand-navy sm:text-3xl md:text-4xl">
             {t("heading")}
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-slate-600">
-            {t("subheading")}
-          </p>
+          <p className="mt-3 text-sm sm:text-base text-slate-600">{t("subheading")}</p>
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-2">
@@ -44,9 +42,7 @@ export async function SellerMythsVideos({ locale }: SellerMythsVideosProps) {
                 <h3 className="mt-4 text-xl font-bold text-brand-navy leading-snug">
                   {t("myth1Title")}
                 </h3>
-                <p className="mt-3 text-sm text-slate-600 leading-relaxed">
-                  {t("myth1Desc")}
-                </p>
+                <p className="mt-3 text-sm text-slate-600 leading-relaxed">{t("myth1Desc")}</p>
               </div>
               <div className="mt-6 border-t border-slate-200 pt-4">
                 <a
@@ -78,9 +74,7 @@ export async function SellerMythsVideos({ locale }: SellerMythsVideosProps) {
                 <h3 className="mt-4 text-xl font-bold text-brand-navy leading-snug">
                   {t("myth2Title")}
                 </h3>
-                <p className="mt-3 text-sm text-slate-600 leading-relaxed">
-                  {t("myth2Desc")}
-                </p>
+                <p className="mt-3 text-sm text-slate-600 leading-relaxed">{t("myth2Desc")}</p>
               </div>
               <div className="mt-6 border-t border-slate-200 pt-4">
                 <a

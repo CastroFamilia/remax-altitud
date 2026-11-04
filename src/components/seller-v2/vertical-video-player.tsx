@@ -27,7 +27,9 @@ export function VerticalVideoPlayer({
   return (
     <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[340px]">
       <div className="relative overflow-hidden rounded-3xl border-4 border-white/20 bg-gradient-to-b from-brand-navy via-slate-900 to-black shadow-2xl transition-all duration-300 hover:border-brand-gold/50 hover:shadow-brand-gold/10">
-        <div className={`relative w-full ${aspectRatio === "9/16" ? "aspect-[9/16]" : "aspect-video"}`}>
+        <div
+          className={`relative w-full ${aspectRatio === "9/16" ? "aspect-[9/16]" : "aspect-video"}`}
+        >
           {isPlaying && videoUrl ? (
             <iframe
               src={`${videoUrl}${videoUrl.includes("?") ? "&" : "?"}autoplay=1&rel=0&playsinline=1`}
@@ -55,7 +57,9 @@ export function VerticalVideoPlayer({
                   type="button"
                   onClick={() => setIsPlaying(true)}
                   disabled={isComingSoon}
-                  aria-label={isComingSoon ? `${title} — ${comingSoonLabel}` : `Reproducir ${title}`}
+                  aria-label={
+                    isComingSoon ? `${title} — ${comingSoonLabel}` : `Reproducir ${title}`
+                  }
                   className={`group relative flex h-20 w-20 items-center justify-center rounded-full bg-brand-gold text-brand-navy shadow-lg shadow-brand-gold/30 transition-transform duration-300 ${
                     isComingSoon
                       ? "cursor-default opacity-60"
@@ -89,9 +93,7 @@ export function VerticalVideoPlayer({
                 <h3 className="text-base font-bold leading-snug text-white drop-shadow-sm">
                   {title}
                 </h3>
-                {subtitle && (
-                  <p className="mt-1 line-clamp-2 text-xs text-white/80">{subtitle}</p>
-                )}
+                {subtitle && <p className="mt-1 line-clamp-2 text-xs text-white/80">{subtitle}</p>}
               </div>
             </div>
           )}
