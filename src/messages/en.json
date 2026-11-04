@@ -592,7 +592,10 @@
     "subtext": "It may have been sold or removed from our listings.",
     "similarHeading": "Similar properties you might like",
     "browseCta": "Browse all properties",
-    "similarCta": "View property"
+    "similarCta": "View property",
+    "assignedAgent": "Assigned Agent",
+    "viewProfile": "View Profile",
+    "speaks": "Speaks"
   },
   "UnitToggle": {
     "label": "Toggle area units",
@@ -639,6 +642,7 @@
     "agentPhotoAlt": "Photo of {name}",
     "listings": "listings",
     "contactAgent": "Contact Agent",
+    "viewProfile": "View Profile",
     "whatsapp": "WhatsApp",
     "email": "Email",
     "emailSubject": "Inquiry: {title} — Ref {ref}",
@@ -1632,5 +1636,121 @@
       "body": "For any questions regarding these Terms of Service, please contact us at hola@remax-altitud.cr."
     },
     "lastUpdated": "Last updated: June 2025"
+  },
+  "SellerPageV2": {
+    "meta": {
+      "title": "Local Experts with Global Reach | REMAX Altitud",
+      "description": "Sell your property in Pérez Zeledón, Dominical, Bahía Ballena, and Uvita with the backing of over 200 agents in Costa Rica and thousands worldwide. Request your free market valuation.",
+      "ogTitle": "Local Experts with Global Reach | REMAX Altitud",
+      "ogDescription": "100% full-time dedicated advisors. Data-backed market pricing, 360° marketing, and a 22-office national network in Costa Rica."
+    },
+    "hero": {
+      "eyebrow": "REMAX Altitud · Southern Zone Costa Rica",
+      "heading": "Local experts with global reach",
+      "subheading": "100% full-time dedicated real estate advisors across Pérez Zeledón and the South Pacific Coast — Dominical, Bahía Ballena, and Uvita. We connect your property with qualified local and international buyers through our 22-office network across Costa Rica and global presence in over 110 countries.",
+      "badges": {
+        "perezZeledon": "Pérez Zeledón",
+        "dominical": "Dominical",
+        "uvita": "Uvita",
+        "bahiaBallena": "Bahía Ballena",
+        "pacificoSur": "South Pacific",
+        "todoElPais": "🇨🇷 Nationwide",
+        "todoElMundo": "🌎 Worldwide"
+      },
+      "bullet1": "Sales force of 200+ agents in Costa Rica and thousands worldwide",
+      "bullet2": "Data-backed valuation (no guesswork or inflated prices)",
+      "bullet3": "360° marketing and 4K drone production with zero upfront fees — we only win when you sell",
+      "ctaForm": "Request Free Valuation",
+      "ctaWhatsApp": "Chat on WhatsApp",
+      "videoBadge": "Video (1 min)",
+      "videoTitle": "See how we sell your property",
+      "videoSubtitle": "The Altitud Method in 60 seconds"
+    },
+    "pillars": {
+      "eyebrow": "The Altitud Method",
+      "heading": "Three pillars to sell at peak market value",
+      "subheading": "We don’t plant a sign and wait for luck. We execute a disciplined system to protect your equity and draw qualified buyers.",
+      "p1Title": "1. Data-Backed Market Valuation",
+      "p1Desc": "Price is not chosen by emotion: it is diagnosed. We analyze recent verified transactions and active competition in your specific zone so your listing launches competitively without sitting stagnant.",
+      "p2Title": "2. 360° Marketing + AI-Powered HUB",
+      "p2Desc": "Professional photography, aerial drone footage, and connection to Grupo Altitud's proprietary AI HUB: cross-matching listings in real time between the mountains (Pérez Zeledón) and the coast (Dominical/Uvita), backed by our nationwide network of 22 offices and 200+ agents.",
+      "p3Title": "3. Continuous Feedback & Strategy Adjustment",
+      "p3Desc": "The market is dynamic. We track buyer engagement, evaluate showing feedback, and actively fine-tune marketing until closing."
+    },
+    "network": {
+      "eyebrow": "The Power of Our Network",
+      "heading": "Your property in front of buyers across the country and the world",
+      "subheading": "A single point of contact with your dedicated local advisor, powered by the world's most productive real estate network.",
+      "stat1Number": "22",
+      "stat1Label": "Offices in Costa Rica",
+      "stat1Desc": "Synchronized through our internal HUB to co-broker your listing",
+      "stat2Number": "200+",
+      "stat2Label": "Agents Nationwide",
+      "stat2Desc": "Actively showing your property to investors from the Central Valley and coastal hubs",
+      "stat3Number": "110+",
+      "stat3Label": "Countries Worldwide",
+      "stat3Desc": "Direct inbound reach to qualified buyers from the US, Canada, and Europe",
+      "mapAlt": "Map of REMAX offices across Costa Rica connected to the Southern Zone HUB"
+    },
+    "myths": {
+      "eyebrow": "Total Transparency",
+      "heading": "Debunking the two biggest myths when selling",
+      "subheading": "We educate the market so you can make informed decisions and safeguard your investment.",
+      "myth1Title": "Afraid of Exclusive Listings? Zero Hostages.",
+      "myth1Desc": "Many fear getting locked into a contract with an inactive agent. For us, an exclusive is a mutual investment: we fund professional production and mobilize 200 agents. If you aren't completely satisfied, our doors are open.",
+      "myth1Action": "Watch video explanation",
+      "myth2Title": "Price is Not Chosen: It is Diagnosed",
+      "myth2Desc": "Overpricing to 'leave room for negotiation' burns your listing in front of smart buyers. A market-diagnosed price sparks immediate demand and secures maximum net proceeds.",
+      "myth2Action": "Watch video explanation"
+    },
+    "form": {
+      "heading": "Request Your Valuation Report & Selling Strategy",
+      "subheading": "A dedicated local advisor will evaluate your property, provide a realistic valuation, and outline the exact marketing plan. Free of charge, zero obligation.",
+      "propertyTypeLabel": "Property Type",
+      "typeCasa": "Single Family Home",
+      "typeLote": "Land / Lot",
+      "typeFinca": "Estate / Farm",
+      "typeCondominio": "Condo",
+      "typeCommercial": "Commercial",
+      "locationLabel": "Location in Southern Zone",
+      "locationPlaceholder": "Pérez Zeledón, Dominical, Uvita, Bahía Ballena...",
+      "descriptionLabel": "Additional Details (optional)",
+      "descriptionPlaceholder": "Approximate size, views, unique features...",
+      "nameLabel": "Full Name",
+      "namePlaceholder": "Your full name",
+      "phoneLabel": "Phone / WhatsApp",
+      "phonePlaceholder": "+1 555 123 4567",
+      "phoneHint": "We prefer WhatsApp or direct call to coordinate your valuation",
+      "emailLabel": "Email Address (optional)",
+      "emailPlaceholder": "you@email.com",
+      "submitButton": "Request Free Valuation",
+      "submittingButton": "Submitting request...",
+      "directWhatsApp": "Need immediate answers or prefer chatting right away?",
+      "directWhatsAppButton": "Chat on WhatsApp with an Advisor"
+    },
+    "faq": {
+      "eyebrow": "Clear Answers",
+      "heading": "Frequently Asked Questions",
+      "q1_question": "How much does it cost to list my property with REMAX Altitud?",
+      "q1_answer": "Zero upfront fees. Our service operates strictly on a success-fee basis: we only earn a commission once your property is successfully sold. All marketing production, professional photography, drone footage, and HUB syndication across 22 Costa Rican offices are covered upfront by us.",
+      "q2_question": "How do you determine the market value of my property?",
+      "q2_answer": "We don’t rely on speculation or wishful asking prices. We perform a Comparative Market Analysis (CMA) evaluating recent closed sales in your specific area (Pérez Zeledón, Dominical, Uvita, Bahía Ballena) and competing active inventory to find the exact pricing sweet spot that maximizes your profit without sitting stale.",
+      "q3_question": "Why should I work exclusively with REMAX Altitud?",
+      "q3_answer": "Because you aren't hiring a lone agent—you are activating a sales force of over 200 agents in Costa Rica presenting your property to verified buyers under unified pricing. Most importantly, we never hold clients hostage: if at any point you feel we aren't delivering on our commitments, you are free to cancel.",
+      "q4_question": "What is the Altitud Group's AI-Powered HUB?",
+      "q4_answer": "The HUB is an AI system exclusive to Grupo Altitud. It bridges our mountain offices (Pérez Zeledón) with our coastal offices (Dominical and Bahía Ballena / Uvita) in real time. This intelligent engine analyzes buyer behavior and automatically cross-distributes listings between both micro-climates, drastically expanding visibility to buyers who initially look at the coast but fall in love with the cooler mountain lifestyle (or vice versa). This proprietary advantage works alongside our nationwide network of 22 REMAX offices and 200+ agents across Costa Rica.",
+      "q5_question": "Can I sell my property if I live outside Costa Rica?",
+      "q5_answer": "Yes. A significant percentage of our clients reside in the US, Canada, or Europe. We manage the entire lifecycle remotely: property inspections, secure key management, live video showings with prospective buyers, transparent weekly reporting, and legal coordination for remote powers of attorney or digital escrow closings.",
+      "q6_question": "How much capital gains tax and closing fees do I pay when selling in Costa Rica?",
+      "q6_answer": "Real estate transactions in Costa Rica are subject to capital gains tax—either 15% on net capital gains (for properties acquired after July 1, 2019) or a one-time transitional rate of 2.25% of the gross sales price (for legacy properties acquired before July 1, 2019). Primary personal residences (vivienda habitual) may qualify for a full tax exemption. At RE/MAX Altitud, we provide upfront legal and tax orientation with vetted real estate attorneys so you understand your exact net proceeds and closing cost allocations before accepting any purchase offer.",
+      "q7_question": "What legal requirements and documents are needed to sell land or a home in the Southern Zone?",
+      "q7_answer": "The two most critical due-diligence items in Pérez Zeledón, Dominical, and Uvita are certified legal water availability (an ASADA letter or registered MINAE well concession) and an officially registered cadastral survey (plano catastrado). Other key documents include an updated title search (folio real), up-to-date municipal and property taxes, and corporate good-standing certifications if held in an LLC (SRL or S.A.). Our team audits these items before launching to prevent closing delays.",
+      "q8_question": "Do you handle commercial real estate and business sales?",
+      "q8_answer": "Yes. We have a dedicated commercial division backed by the global authority of REMAX Commercial. Our commercial specialists analyze cash flow projections, capitalization rates (Cap Rates), commercial zoning regulations, and foot/vehicular traffic in both downtown Pérez Zeledón and prime coastal tourist strips (Dominical and Uvita), directly pitching your asset to regional investors and corporate brands.",
+      "q9_question": "Do you sell large farms, acreage, and development parcels in the Southern Zone?",
+      "q9_answer": "Extensive land and farm sales are a core specialty of Grupo Altitud. We have advisors who specialize exclusively in rural and agricultural acreage. They understand topography, spring-fed water concessions, internal road infrastructure, soil suitability, and conservation or eco-tourism master plans. We know how to properly position large acreage to local and overseas buyers.",
+      "q10_question": "How do you market luxury estates and high-end villas?",
+      "q10_answer": "Through REMAX Collection, the world-renowned luxury real estate division of REMAX. To qualify for REMAX Collection, properties must meet exacting standards of architecture, finish quality, and location. We deploy cinematic drone filmmaking, hyper-targeted campaigns reaching High-Net-Worth Individuals (HNWIs) across North America and Europe, and syndication across premier global luxury portals."
+    }
   }
 }

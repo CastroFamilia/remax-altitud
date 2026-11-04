@@ -39,16 +39,31 @@ export default async function AgentsIndexPage({ params }: { params: Promise<{ lo
   let theHubAgents: TheHubAgent[] = [];
 
   try {
-    const [agents, allOffices, theHubData] = await Promise.all([
+    const [agentsResult, officesResult, theHubResult] = await Promise.allSettled([
       getAllAgents(),
       getAllOffices(),
       fetchTheHubAgents(),
     ]);
-    allAgents = agents;
-    officeMap = Object.fromEntries(allOffices.map((o) => [o.id, o.name]));
-    theHubAgents = theHubData;
+
+    if (agentsResult.status === "fulfilled") {
+      allAgents = agentsResult.value;
+    } else {
+      console.error("Failed to load agents from database:", agentsResult.reason);
+    }
+
+    if (officesResult.status === "fulfilled") {
+      officeMap = Object.fromEntries(officesResult.value.map((o) => [o.id, o.name]));
+    } else {
+      console.error("Failed to load offices from database:", officesResult.reason);
+    }
+
+    if (theHubResult.status === "fulfilled") {
+      theHubAgents = theHubResult.value;
+    } else {
+      console.warn("Failed to load TheHub data (non-fatal):", theHubResult.reason);
+    }
   } catch (err) {
-    console.error("Failed to load agents:", err);
+    console.error("Failed to load agents page data:", err);
   }
 
   const theHubLookups = buildTheHubLookups(theHubAgents);
