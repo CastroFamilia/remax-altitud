@@ -285,9 +285,22 @@ export function PropertyInquiryForm({
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <span className="text-[10px] uppercase font-extrabold tracking-wider text-brand-gold">
-            {tAgent("contactAgent")}
-          </span>
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10px] uppercase font-extrabold tracking-wider text-brand-gold">
+              {tAgent("contactAgent")}
+            </span>
+            {agent?.slug && (
+              <Link
+                href={`/agents/${agent.slug}`}
+                locale={locale}
+                className="text-[11px] font-bold text-brand-navy hover:text-brand-burgundy hover:underline inline-flex items-center gap-0.5"
+                data-testid="agent-profile-link"
+              >
+                <span>{tAgent("viewProfile")}</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            )}
+          </div>
           {agent?.slug ? (
             <Link
               href={`/agents/${agent.slug}`}

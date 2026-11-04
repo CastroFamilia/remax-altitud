@@ -142,6 +142,21 @@ describe("PropertyInquiryForm agent profile link", () => {
     expect(photoLink.getAttribute("href")).toBe("/agents/yeudi-cisneros");
   });
 
+  it("renders a 'view profile' link when agent has a slug", () => {
+    render(
+      <PropertyInquiryForm
+        property={mockProperty}
+        agent={mockAgent}
+        locale="es"
+        officeName="REMAX Altitud"
+      />,
+    );
+
+    const profileLink = screen.getByTestId("agent-profile-link");
+    expect(profileLink).toBeTruthy();
+    expect(profileLink.getAttribute("href")).toBe("/agents/yeudi-cisneros");
+  });
+
   it("renders plain text agent name without link when agent has no slug", () => {
     const agentWithoutSlug = { ...mockAgent, slug: "" };
     render(

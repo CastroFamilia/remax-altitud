@@ -228,29 +228,70 @@ export default async function PropertyPage({
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-red-50/40 to-transparent rounded-bl-full pointer-events-none" />
 
                 <h3 className="text-xs uppercase tracking-wider font-extrabold text-red-600">
-                  Assigned Agent
+                  {t("assignedAgent")}
                 </h3>
 
                 {/* Agent details */}
                 {assignedAgent && (
                   <div className="flex flex-col items-center md:items-start gap-4">
-                    <Image
-                      src={agentPhotoSrc}
-                      alt={assignedAgent.name}
-                      width={80}
-                      height={80}
-                      className="w-20 h-20 rounded-full object-cover border-2 border-red-50 shadow-sm"
-                    />
+                    {assignedAgent.slug ? (
+                      <Link
+                        href={`/agents/${assignedAgent.slug}`}
+                        locale={locale}
+                        className="group block"
+                        data-testid="unavailable-agent-photo-link"
+                      >
+                        <Image
+                          src={agentPhotoSrc}
+                          alt={assignedAgent.name}
+                          width={80}
+                          height={80}
+                          className="w-20 h-20 rounded-full object-cover border-2 border-red-50 shadow-sm transition-transform group-hover:scale-105"
+                        />
+                      </Link>
+                    ) : (
+                      <Image
+                        src={agentPhotoSrc}
+                        alt={assignedAgent.name}
+                        width={80}
+                        height={80}
+                        className="w-20 h-20 rounded-full object-cover border-2 border-red-50 shadow-sm"
+                      />
+                    )}
                     <div className="space-y-1">
-                      <h4 className="text-lg font-black text-slate-900">{assignedAgent.name}</h4>
+                      {assignedAgent.slug ? (
+                        <Link
+                          href={`/agents/${assignedAgent.slug}`}
+                          locale={locale}
+                          className="group block"
+                          data-testid="unavailable-agent-name-link"
+                        >
+                          <h4 className="text-lg font-black text-slate-900 transition-colors group-hover:text-red-600 hover:underline">
+                            {assignedAgent.name}
+                          </h4>
+                        </Link>
+                      ) : (
+                        <h4 className="text-lg font-black text-slate-900">{assignedAgent.name}</h4>
+                      )}
                       <p className="text-xs font-semibold text-slate-450">{officeName}</p>
                       {assignedAgent.languages && (
                         <p className="text-xs text-slate-500 font-medium">
-                          Speaks:{" "}
+                          {t("speaks")}:{" "}
                           {Array.isArray(assignedAgent.languages)
                             ? (assignedAgent.languages as string[]).join(", ")
                             : ""}
                         </p>
+                      )}
+                      {assignedAgent.slug && (
+                        <Link
+                          href={`/agents/${assignedAgent.slug}`}
+                          locale={locale}
+                          className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 hover:underline pt-1"
+                          data-testid="unavailable-agent-profile-link"
+                        >
+                          <span>{t("viewProfile")}</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
                       )}
                     </div>
                   </div>

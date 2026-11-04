@@ -592,7 +592,10 @@
     "subtext": "It may have been sold or removed from our listings.",
     "similarHeading": "Similar properties you might like",
     "browseCta": "Browse all properties",
-    "similarCta": "View property"
+    "similarCta": "View property",
+    "assignedAgent": "Assigned Agent",
+    "viewProfile": "View Profile",
+    "speaks": "Speaks"
   },
   "UnitToggle": {
     "label": "Toggle area units",
@@ -639,6 +642,7 @@
     "agentPhotoAlt": "Photo of {name}",
     "listings": "listings",
     "contactAgent": "Contact Agent",
+    "viewProfile": "View Profile",
     "whatsapp": "WhatsApp",
     "email": "Email",
     "emailSubject": "Inquiry: {title} — Ref {ref}",

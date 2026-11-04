@@ -592,7 +592,10 @@
     "subtext": "Puede que haya sido vendida o retirada de nuestros listados.",
     "similarHeading": "Propiedades similares que podrían interesarte",
     "browseCta": "Ver todas las propiedades",
-    "similarCta": "Ver propiedad"
+    "similarCta": "Ver propiedad",
+    "assignedAgent": "Agente Asignado",
+    "viewProfile": "Ver perfil",
+    "speaks": "Habla"
   },
   "UnitToggle": {
     "label": "Cambiar unidades de área",
@@ -639,6 +642,7 @@
     "agentPhotoAlt": "Foto de {name}",
     "listings": "propiedades",
     "contactAgent": "Contactar Agente",
+    "viewProfile": "Ver perfil",
     "whatsapp": "WhatsApp",
     "email": "Correo",
     "emailSubject": "Consulta: {title} — Ref {ref}",

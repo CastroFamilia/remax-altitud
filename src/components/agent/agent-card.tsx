@@ -140,6 +140,19 @@ export function AgentCard({
               {agent.listingCount} {t("listings")}
             </p>
           )}
+          {agent.slug && (
+            <div className="mt-2">
+              <Link
+                href={`/agents/${agent.slug}`}
+                locale={locale}
+                className="inline-flex items-center gap-1 text-xs font-bold text-brand-navy hover:text-brand-burgundy hover:underline"
+                data-testid="agent-card-profile-link"
+              >
+                <span>{t("viewProfile")}</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
