@@ -263,5 +263,8 @@ describe("Story 4.2: AgentCard component", () => {
     render(<AgentCard {...defaultProps} />);
     const link = screen.getByRole("link", { name: mockAgent.name });
     expect(link.getAttribute("href")).toBe(`/agents/${mockAgent.slug}`);
+
+    const profileLink = screen.getByTestId("agent-card-profile-link");
+    expect(profileLink.getAttribute("href")).toBe(`/agents/${mockAgent.slug}`);
   });
 });
