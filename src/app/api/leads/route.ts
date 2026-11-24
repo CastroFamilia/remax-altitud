@@ -407,10 +407,11 @@ export async function POST(request: Request) {
         try {
           const locale = data.preferredLanguage === "es" ? "es" : "en";
           const hubBase =
+            process.env.NEXT_PUBLIC_THEHUB_URL ||
             process.env.THE_HUB_API_URL ||
             process.env.THEHUB_API_URL ||
             process.env.ALTITUD_HUB_URL ||
-            "https://dev.hub.remax-altitud.cr";
+            "https://hub.remax-altitud.cr";
           const recruitingHubUrl = `${hubBase.replace(/\/$/, "")}/${locale}/broker/recruiting`;
 
           const { subject, html } = renderAgentLeadNotificationEmail({
