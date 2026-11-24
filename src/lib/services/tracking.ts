@@ -33,8 +33,15 @@ export async function trackSearchInBackground(payload: TrackSearchPayload) {
       // Gracefully fall back to defaults when outside an active HTTP request context (e.g. testing)
     }
 
-    const hubUrl = process.env.ALTITUD_HUB_URL;
-    const apiKey = process.env.ALTITUD_HUB_API_SECRET;
+    const hubUrl =
+      process.env.THEHUB_INTERNAL_API_URL ||
+      process.env.THE_HUB_API_URL ||
+      process.env.THEHUB_API_URL ||
+      process.env.ALTITUD_HUB_URL;
+    const apiKey =
+      process.env.THEHUB_API_KEY ||
+      process.env.THEHUB_INTERNAL_API_SECRET ||
+      process.env.ALTITUD_HUB_API_SECRET;
 
     if (!hubUrl || !apiKey) {
       // In development or when not configured, we gracefully log and return
@@ -87,8 +94,15 @@ interface TrackPropertyViewPayload {
  */
 export async function trackShortlistEventInBackground(payload: TrackShortlistPayload) {
   try {
-    const hubUrl = process.env.ALTITUD_HUB_URL;
-    const apiKey = process.env.ALTITUD_HUB_API_SECRET;
+    const hubUrl =
+      process.env.THEHUB_INTERNAL_API_URL ||
+      process.env.THE_HUB_API_URL ||
+      process.env.THEHUB_API_URL ||
+      process.env.ALTITUD_HUB_URL;
+    const apiKey =
+      process.env.THEHUB_API_KEY ||
+      process.env.THEHUB_INTERNAL_API_SECRET ||
+      process.env.ALTITUD_HUB_API_SECRET;
 
     if (!hubUrl || !apiKey) {
       console.log(
@@ -139,8 +153,15 @@ export async function trackPropertyViewInBackground(payload: TrackPropertyViewPa
       // Gracefully fall back when outside HTTP context
     }
 
-    const hubUrl = process.env.ALTITUD_HUB_URL;
-    const apiKey = process.env.ALTITUD_HUB_API_SECRET;
+    const hubUrl =
+      process.env.THEHUB_INTERNAL_API_URL ||
+      process.env.THE_HUB_API_URL ||
+      process.env.THEHUB_API_URL ||
+      process.env.ALTITUD_HUB_URL;
+    const apiKey =
+      process.env.THEHUB_API_KEY ||
+      process.env.THEHUB_INTERNAL_API_SECRET ||
+      process.env.ALTITUD_HUB_API_SECRET;
 
     if (!hubUrl || !apiKey) {
       console.log(
@@ -208,8 +229,15 @@ export async function trackQrScanInBackground(payload: TrackQrScanPayload) {
       // Gracefully fall back when outside HTTP context
     }
 
-    const hubUrl = process.env.ALTITUD_HUB_URL;
-    const apiKey = process.env.ALTITUD_HUB_API_SECRET;
+    const hubUrl =
+      process.env.THEHUB_INTERNAL_API_URL ||
+      process.env.THE_HUB_API_URL ||
+      process.env.THEHUB_API_URL ||
+      process.env.ALTITUD_HUB_URL;
+    const apiKey =
+      process.env.THEHUB_API_KEY ||
+      process.env.THEHUB_INTERNAL_API_SECRET ||
+      process.env.ALTITUD_HUB_API_SECRET;
 
     if (!hubUrl || !apiKey) {
       console.log("QR scan tracking skipped: ALTITUD_HUB_URL or ALTITUD_HUB_API_SECRET not set.");
