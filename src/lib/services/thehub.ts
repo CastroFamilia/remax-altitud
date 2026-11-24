@@ -132,10 +132,11 @@ export function normalizeIntent(intent: string): {
 export async function sendLeadToTheHubJob(payload: SendLeadToTheHubPayload): Promise<void> {
   try {
     const baseUrl =
+      process.env.THEHUB_INTERNAL_API_URL ||
       process.env.THE_HUB_API_URL ||
       process.env.THEHUB_API_URL ||
       process.env.ALTITUD_HUB_URL ||
-      "https://dev.hub.remax-altitud.cr";
+      "https://hub.remax-altitud.cr";
     const apiKey =
       process.env.THEHUB_API_KEY ||
       process.env.THEHUB_INTERNAL_API_SECRET ||

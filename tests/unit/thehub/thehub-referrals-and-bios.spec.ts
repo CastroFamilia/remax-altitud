@@ -25,13 +25,14 @@ describe("TheHub Referral Configuration & URLs", () => {
     process.env.NEXT_PUBLIC_THEHUB_URL = originalEnv;
   });
 
-  it("defaults to dev.hub.remax-altitud.cr when no environment variable is set", () => {
+  it("defaults to hub.remax-altitud.cr when no environment variable is set", () => {
     delete process.env.NEXT_PUBLIC_THEHUB_URL;
     delete process.env.THE_HUB_API_URL;
     delete process.env.THEHUB_API_URL;
     delete process.env.THEHUB_BASE_URL;
+    delete process.env.ALTITUD_HUB_URL;
     expect(getTheHubBaseUrl()).toBe(DEFAULT_THEHUB_URL);
-    expect(getTheHubBaseUrl()).toBe("https://dev.hub.remax-altitud.cr");
+    expect(getTheHubBaseUrl()).toBe("https://hub.remax-altitud.cr");
   });
 
   it("respects THE_HUB_API_URL from Coolify environment", () => {

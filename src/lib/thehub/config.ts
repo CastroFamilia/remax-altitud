@@ -4,7 +4,7 @@
  * Defaults to dev.hub.remax-altitud.cr.
  */
 
-export const DEFAULT_THEHUB_URL = "https://dev.hub.remax-altitud.cr";
+export const DEFAULT_THEHUB_URL = "https://hub.remax-altitud.cr";
 
 export function getTheHubBaseUrl(): string {
   const url =
@@ -12,6 +12,7 @@ export function getTheHubBaseUrl(): string {
     process.env.THE_HUB_API_URL ||
     process.env.THEHUB_API_URL ||
     process.env.THEHUB_BASE_URL ||
+    process.env.ALTITUD_HUB_URL ||
     DEFAULT_THEHUB_URL;
 
   return url.replace(/\/+$/, "");
@@ -72,9 +73,9 @@ export function getTheHubApiCandidateUrls(): string[] {
     urls.push(`${process.env.THE_HUB_INTERNAL_URL.replace(/\/+$/, "")}/api/referrals/external`);
   }
 
-  // 2. Standard Coolify / Docker internal aliases for TheHub
-  urls.push("http://thehub-dev:3000/api/referrals/external");
+  // 2. Standard Coolify / Docker internal aliases for TheHub (Production first)
   urls.push("http://thehub:3000/api/referrals/external");
+  urls.push("http://thehub-dev:3000/api/referrals/external");
 
   // 3. Primary configured external API URL (from THE_HUB_API_URL or NEXT_PUBLIC_THEHUB_URL)
   const primary = getTheHubApiExternalUrl();
