@@ -8,11 +8,12 @@
  * direct phone/WhatsApp, direct email, and "Envíame un referido" quick action.
  */
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Phone, Mail, ArrowUpRight } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+import { AgentAvatar } from "@/components/agent/agent-avatar";
+import { resolveAgentPhotoSrc } from "@/lib/utils/agent-photo";
 import type { Agent } from "@/lib/db/schema/agents";
 
 export type EnrichedAgent = Agent & {
@@ -20,6 +21,7 @@ export type EnrichedAgent = Agent & {
   theHubSlug?: string | null;
   theHubPhone?: string | null;
   theHubEmail?: string | null;
+  theHubProfileImageUrl?: string | null;
 };
 
 interface AgentIndexCardProps {
@@ -34,13 +36,8 @@ const KNOWN_LANGUAGES = new Set(["en", "es", "de", "fr", "it", "pt"]);
 export function AgentIndexCard({ agent, officeName, locale }: AgentIndexCardProps) {
   const t = useTranslations("AgentProfile");
 
-  // Photo fallback chain: photoOptimizedUrl → photoUrl → placeholder.
-  const photoSrc =
-    (agent.photoOptimizedUrl && agent.photoOptimizedUrl.length > 0
-      ? agent.photoOptimizedUrl
-      : null) ??
-    (agent.photoUrl && agent.photoUrl.length > 0 ? agent.photoUrl : null) ??
-    "/images/agent-placeholder.svg";
+  // Photo fallback chain: usable photoOptimizedUrl / photoUrl / TheHub photo → placeholder.
+  const { src: photoSrc, fallbackSrc: photoFallbackSrc } = resolveAgentPhotoSrc(agent);
 
   // Languages: map locale codes to human-readable labels via i18n keys.
   const languageCodes: string[] = Array.isArray(agent.languages)
@@ -88,8 +85,9 @@ export function AgentIndexCard({ agent, officeName, locale }: AgentIndexCardProp
         {/* Header: Photo + Name + Role */}
         <div className="flex items-start gap-4">
           <Link href={`/agents/${agent.slug}`} locale={locale} className="shrink-0">
-            <Image
+            <AgentAvatar
               src={photoSrc}
+              fallbackSrc={photoFallbackSrc}
               alt={agent.name}
               width={72}
               height={72}

@@ -7,12 +7,13 @@
  * Client Component: builds WhatsApp URLs with locale context and tracks clicks.
  */
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { buildWhatsAppMessage, buildWhatsAppUrl } from "@/lib/utils/whatsapp";
 import { extractUtmParams } from "@/lib/utils/utm";
 import { trackWhatsAppClick } from "@/components/lead/whatsapp-cta";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+import { AgentAvatar } from "@/components/agent/agent-avatar";
+import { resolveAgentPhotoSrc } from "@/lib/utils/agent-photo";
 import { Link } from "@/i18n/navigation";
 import type { Agent } from "@/lib/db/schema/agents";
 
@@ -36,14 +37,9 @@ export function AgentCard({
 }: AgentCardProps) {
   const t = useTranslations("AgentCard");
 
-  // Photo fallback chain: photoOptimizedUrl → photoUrl → placeholder.
+  // Photo fallback chain: usable photoOptimizedUrl / photoUrl → placeholder.
   // Treat empty strings as missing — next/image throws on src="".
-  const photoSrc =
-    (agent.photoOptimizedUrl && agent.photoOptimizedUrl.length > 0
-      ? agent.photoOptimizedUrl
-      : null) ??
-    (agent.photoUrl && agent.photoUrl.length > 0 ? agent.photoUrl : null) ??
-    "/images/agent-placeholder.svg";
+  const { src: photoSrc, fallbackSrc: photoFallbackSrc } = resolveAgentPhotoSrc(agent);
 
   // Build WhatsApp URL (only when whatsapp is set; sanitize to digits-only for wa.me).
   const whatsappDigits = agent.whatsapp ? agent.whatsapp.replace(/\D/g, "") : "";
@@ -97,8 +93,9 @@ export function AgentCard({
         <div className="shrink-0">
           {agent.slug ? (
             <Link href={`/agents/${agent.slug}`} locale={locale} className="shrink-0 block group">
-              <Image
+              <AgentAvatar
                 src={photoSrc}
+                fallbackSrc={photoFallbackSrc}
                 alt={t("agentPhotoAlt", { name: agent.name })}
                 width={80}
                 height={80}
@@ -108,8 +105,9 @@ export function AgentCard({
               />
             </Link>
           ) : (
-            <Image
+            <AgentAvatar
               src={photoSrc}
+              fallbackSrc={photoFallbackSrc}
               alt={t("agentPhotoAlt", { name: agent.name })}
               width={80}
               height={80}

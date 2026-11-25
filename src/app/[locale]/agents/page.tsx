@@ -76,6 +76,7 @@ export default async function AgentsIndexPage({ params }: { params: Promise<{ lo
       theHubSlug: match?.slug || agent.slug,
       theHubPhone: match?.phone || null,
       theHubEmail: match?.email || null,
+      theHubProfileImageUrl: match?.profileImageUrl || null,
     };
   });
 
