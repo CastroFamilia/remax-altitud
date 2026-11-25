@@ -142,6 +142,7 @@ export default async function AgentProfilePage({
           theHubSlug={theHubMatch?.slug}
           theHubPhone={theHubMatch?.phone}
           theHubEmail={theHubMatch?.email}
+          theHubProfileImageUrl={theHubMatch?.profileImageUrl}
         />
         <AgentListingsGrid
           properties={agentProperties as unknown as PropertySearchItem[]}

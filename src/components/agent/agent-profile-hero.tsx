@@ -5,13 +5,14 @@
  * languages, office, listing count, visible direct phone & email, and contact CTAs.
  */
 
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Phone, Mail } from "lucide-react";
 import type { Agent } from "@/lib/db/schema/agents";
+import { AgentAvatar } from "@/components/agent/agent-avatar";
 import { AgentProfileCTAs } from "@/components/agent/agent-profile-ctas";
 import { AgentProfileBio } from "@/components/agent/agent-profile-bio";
 import { getTheHubAgentReferralUrl } from "@/lib/thehub/config";
+import { resolveAgentPhotoSrc } from "@/lib/utils/agent-photo";
 
 interface AgentProfileHeroProps {
   agent: Agent;
@@ -21,6 +22,7 @@ interface AgentProfileHeroProps {
   theHubSlug?: string | null;
   theHubPhone?: string | null;
   theHubEmail?: string | null;
+  theHubProfileImageUrl?: string | null;
 }
 
 // Known language code → i18n key. Anything else falls back to upper-cased code.
@@ -34,16 +36,15 @@ export async function AgentProfileHero({
   theHubSlug,
   theHubPhone,
   theHubEmail,
+  theHubProfileImageUrl,
 }: AgentProfileHeroProps) {
   const t = await getTranslations("AgentProfile");
 
-  // Photo fallback chain: photoOptimizedUrl → photoUrl → placeholder.
-  const photoSrc =
-    (agent.photoOptimizedUrl && agent.photoOptimizedUrl.length > 0
-      ? agent.photoOptimizedUrl
-      : null) ??
-    (agent.photoUrl && agent.photoUrl.length > 0 ? agent.photoUrl : null) ??
-    "/images/agent-placeholder.svg";
+  // Photo fallback chain: usable photoOptimizedUrl / photoUrl / TheHub photo → placeholder.
+  const { src: photoSrc, fallbackSrc: photoFallbackSrc } = resolveAgentPhotoSrc(
+    agent,
+    theHubProfileImageUrl,
+  );
 
   // Languages: map locale codes to human-readable labels via i18n keys.
   const languageCodes: string[] = Array.isArray(agent.languages)
@@ -83,8 +84,9 @@ export async function AgentProfileHero({
     >
       <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
         <div className="shrink-0">
-          <Image
+          <AgentAvatar
             src={photoSrc}
+            fallbackSrc={photoFallbackSrc}
             alt={agent.name}
             width={160}
             height={160}

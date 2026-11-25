@@ -10,12 +10,12 @@
  * @see _bmad-output/implementation-artifacts/3-2-interactive-map-with-property-pins.md Task 4
  */
 
-import Image from "next/image";
 import { Popup } from "react-map-gl";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { convertArea, type UnitSystem } from "@/lib/utils/units";
+import { PropertyImage } from "@/components/property/property-image";
 import { PropertyPriceDisplay } from "@/components/property/property-price-display";
 import type { OptimizedImage } from "@/types/images";
 import { getPropertyDisplayId } from "@/lib/utils/property-id";
@@ -146,8 +146,9 @@ export function MapPropertyPopup({
       >
         {/* Thumbnail with badges overlay */}
         <div className="relative h-32 w-full">
-          <Image
+          <PropertyImage
             src={firstImage?.src || "/property-placeholder.svg"}
+            fallbackSrc={firstImage?.fallbackSrc || "/property-placeholder.svg"}
             alt={firstImage?.alt ?? title}
             fill
             className="object-cover"
